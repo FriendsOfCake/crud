@@ -2,24 +2,26 @@
 App::uses('CrudCollection', 'Crud.Lib');
 
 abstract class CrudAppController extends Controller {
+
+    /**
+    * List of form callbacks for CRUD actions
+    *
+    * Each key is the one of the CRUD controller action
+    *
+    * Each value is a key / value pair of class => configuration items
+    * Each class must extend BaseFormDecorator
+    *
+    * @platform
+    * @var array
+    */
     public $formCallbacks = array(
-        'index' => array(
-
-        ),
-        'add' => array(
-
-        ),
-        'edit' => array(
-
-        ),
-        'view' => array(
-
-        ),
+        'index'  => array(),
+        'add'    => array(),
+        'edit'   => array(),
+        'view'   => array(),
+        'delete' => array(),
         'common' => array(
-            'Crud.Default' => array()
-        ),
-        'delete' => array(
-
+            'Crud.Default'
         )
     );
 
