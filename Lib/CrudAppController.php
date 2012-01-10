@@ -52,7 +52,7 @@ abstract class CrudAppController extends Controller {
 		$CallbackCollection->trigger('beforePaginate', array($this));
 		$this->set('items', $this->paginate());
 
-	    return $this->render();
+		return $this->render();
 	}
 
 	public function add() {
