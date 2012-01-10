@@ -41,7 +41,7 @@ abstract class CrudAppController extends Controller {
 	}
 
 	protected function _index() {
-		$CallbackCollection = $this->_getCallbackCollection(__FUNCTION__);
+		$CallbackCollection = $this->_getCallbackCollection($this->action);
 		$CallbackCollection->trigger('beforePaginate', array($this));
 		$this->set('items', $this->paginate());
 	}
@@ -60,7 +60,7 @@ abstract class CrudAppController extends Controller {
 	 * @abstract Overwrite in controller as needed
 	 */
 	protected function _add() {
-		$CallbackCollection = $this->_getCallbackCollection(__FUNCTION__);
+		$CallbackCollection = $this->_getCallbackCollection($this->action);
 
 		if ($this->request->is('post') || $this->request->is('put')) {
 			$CallbackCollection->trigger('beforeSave');
@@ -101,7 +101,7 @@ abstract class CrudAppController extends Controller {
 	 */
 	protected function _edit($id = null) {
 		$this->validateUUID($id);
-		$CallbackCollection = $this->_getCallbackCollection(__FUNCTION__);
+		$CallbackCollection = $this->_getCallbackCollection($this->action);
 
 		if ($this->request->is('post') || $this->request->is('put')) {
 			$CallbackCollection->trigger('beforeSave');
@@ -163,7 +163,7 @@ abstract class CrudAppController extends Controller {
 		$this->validateUUID($id);
 
 		// Initialize callback collection
-		$CallbackCollection = $this->_getCallbackCollection(__FUNCTION__);
+		$CallbackCollection = $this->_getCallbackCollection($this->action);
 
 		// Build conditions
 		$query = array();
@@ -216,7 +216,7 @@ abstract class CrudAppController extends Controller {
 	*/
 	protected function _delete($id = null) {
 		$this->validateUUID($id);
-		$CallbackCollection = $this->_getCallbackCollection(__FUNCTION__);
+		$CallbackCollection = $this->_getCallbackCollection($this->action);
 
 		$query = array();
 		$query['conditions'] = array($this->{$this->modelClass}->escapeField() => $id);
