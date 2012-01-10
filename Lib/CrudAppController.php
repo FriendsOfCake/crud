@@ -2,41 +2,34 @@
 App::uses('CrudCollection', 'Crud.Lib');
 
 abstract class CrudAppController extends Controller {
+
+	/**
+	* List of form callbacks for CRUD actions
+	*
+	* Each key is the one of the CRUD controller action
+	*
+	* Each value is a key / value pair of class => configuration items
+	* Each class must extend BaseFormDecorator
+	*
+	* @platform
+	* @var array
+	*/
 	public $formCallbacks = array(
 		'common' => array(
 			'Crud.Default' => array()
 		),
-		'index' => array(
+		'index' => array(),
+		'add' => array(),
+		'edit' => array(),
+		'view' => array(),
+		'delete' => array(),
 
-		),
-		'add' => array(
-
-		),
-		'edit' => array(
-
-		),
-		'view' => array(
-
-		),
-		'delete' => array(
-
-		),
 		// Admin callbacks
-		'admin_index' => array(
-
-		),
-		'admin_add' => array(
-
-		),
-		'admin_edit' => array(
-
-		),
-		'admin_view' => array(
-
-		),
-		'admin_delete' => array(
-
-		)
+		'admin_index' => array(),
+		'admin_add' => array(),
+		'admin_edit' => array(),
+		'admin_view' => array(),
+		'admin_delete' => array()
 	);
 
 	public function index() {
@@ -48,11 +41,9 @@ abstract class CrudAppController extends Controller {
 	}
 
 	protected function _index() {
-		$CallbackCollection = $this->_getCallbackCollection($this->action);
+		$CallbackCollection = $this->_getCallbackCollection(__FUNCTION__);
 		$CallbackCollection->trigger('beforePaginate', array($this));
 		$this->set('items', $this->paginate());
-
-		return $this->render();
 	}
 
 	public function add() {
@@ -69,7 +60,7 @@ abstract class CrudAppController extends Controller {
 	 * @abstract Overwrite in controller as needed
 	 */
 	protected function _add() {
-		$CallbackCollection = $this->_getCallbackCollection($this->action);
+		$CallbackCollection = $this->_getCallbackCollection(__FUNCTION__);
 
 		if ($this->request->is('post') || $this->request->is('put')) {
 			$CallbackCollection->trigger('beforeSave');
@@ -110,7 +101,7 @@ abstract class CrudAppController extends Controller {
 	 */
 	protected function _edit($id = null) {
 		$this->validateUUID($id);
-		$CallbackCollection = $this->_getCallbackCollection($this->action);
+		$CallbackCollection = $this->_getCallbackCollection(__FUNCTION__);
 
 		if ($this->request->is('post') || $this->request->is('put')) {
 			$CallbackCollection->trigger('beforeSave');
@@ -172,7 +163,7 @@ abstract class CrudAppController extends Controller {
 		$this->validateUUID($id);
 
 		// Initialize callback collection
-		$CallbackCollection = $this->_getCallbackCollection($this->action);
+		$CallbackCollection = $this->_getCallbackCollection(__FUNCTION__);
 
 		// Build conditions
 		$query = array();
@@ -225,7 +216,7 @@ abstract class CrudAppController extends Controller {
 	*/
 	protected function _delete($id = null) {
 		$this->validateUUID($id);
-		$CallbackCollection = $this->_getCallbackCollection($this->action);
+		$CallbackCollection = $this->_getCallbackCollection(__FUNCTION__);
 
 		$query = array();
 		$query['conditions'] = array($this->{$this->modelClass}->escapeField() => $id);
@@ -244,7 +235,6 @@ abstract class CrudAppController extends Controller {
 		} else {
 			$CallbackCollection->trigger('afterDelete', array($id, false));
 		}
-
 		$this->redirect(array('action' => 'index'));
 	}
 
@@ -259,11 +249,9 @@ abstract class CrudAppController extends Controller {
 		if ($this->request->is('api')) {
 			$CallbackCollection->load('Api.Api');
 		}
-
 		if (method_exists($this, '_loadCallbackCollections')) {
 			$CallbackCollection->loadAll($this->_loadCallbackCollections($function));
 		}
-
 		$CallbackCollection->trigger('init', array($this, $function));
 
 		return $CallbackCollection;
