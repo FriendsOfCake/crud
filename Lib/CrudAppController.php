@@ -2,194 +2,270 @@
 App::uses('CrudCollection', 'Crud.Lib');
 
 abstract class CrudAppController extends Controller {
-    public $formCallbacks = array(
-        'index' => array(
+	public $formCallbacks = array(
+		'common' => array(
+			'Crud.Default' => array()
+		),
+		'index' => array(
 
-        ),
-        'add' => array(
+		),
+		'add' => array(
 
-        ),
-        'edit' => array(
+		),
+		'edit' => array(
 
-        ),
-        'view' => array(
+		),
+		'view' => array(
 
-        ),
-        'common' => array(
-            'Crud.Default' => array()
-        ),
-        'delete' => array(
+		),
+		'delete' => array(
 
-        )
-    );
+		),
+		// Admin callbacks
+		'admin_index' => array(
 
-    public function index() {
-        $CallbackCollection = $this->_getCallbackCollection(__FUNCTION__);
-        $CallbackCollection->trigger('beforePaginate', array($this));
-        $this->set('items', $this->paginate());
-    }
+		),
+		'admin_add' => array(
 
-    /**
-     * Default add action
-     *
-     * @abstract Overwrite in controller as needed
-     * @param uuid $id
-     */
-    public function add() {
-        $CallbackCollection = $this->_getCallbackCollection(__FUNCTION__);
+		),
+		'admin_edit' => array(
 
-        if ($this->request->is('post') || $this->request->is('put')) {
-            $CallbackCollection->trigger('beforeSave');
-            if ($this->{$this->modelClass}->saveAll($this->request->data, array('validate' => 'first', 'atomic' => true))) {
-                $CallbackCollection->trigger('afterSave', array(true, $this->{$this->modelClass}->id));
+		),
+		'admin_view' => array(
 
-                $this->Session->setFlash(__d('common', 'Could not create %s', Inflector::humanize($this->{$this->modelClass}->name)), 'flash/success');
-                $this->redirect(array('action' => 'index'));
-            } else {
-                $CallbackCollection->trigger('afterSave', array(false));
-                $this->Session->setFlash(__d('common', 'Could not create %s', Inflector::humanize($this->{$this->modelClass}->name)), 'flash/error');
-            }
-        }
+		),
+		'admin_delete' => array(
 
-        $CallbackCollection->trigger('beforeRender');
-        if ($this->autoRender) {
-            return $this->render('form');
-        }
-    }
+		)
+	);
 
-    /**
-     * Default edit action
-     *
-     * @abstract Overwrite in controller as needed
-     * @param uuid $id
-     */
-    public function edit($id = null) {
-        $this->validateUUID($id);
-        $CallbackCollection = $this->_getCallbackCollection(__FUNCTION__);
+	public function index() {
+		return $this->_index();
+	}
 
-        if ($this->request->is('post') || $this->request->is('put')) {
-            $CallbackCollection->trigger('beforeSave');
-            if ($this->{$this->modelClass}->saveAll($this->data, array('validate' => 'first', 'atomic' => true))) {
-                $CallbackCollection->trigger('afterSave', array(true, $this->{$this->modelClass}->id));
+	public function admin_index() {
+		return $this->_index();
+	}
 
-                $this->Session->setFlash(__d('common', '%s was succesfully updated', ucfirst(Inflector::humanize($this->{$this->modelClass}->name))), 'flash/success');
-                $this->redirect(array('action' => 'index'));
-            } else {
-                $CallbackCollection->trigger('afterSave', array(false));
-                $this->Session->setFlash(__d('common', 'Could not update %s', Inflector::humanize($this->{$this->modelClass}->name)), 'flash/error');
-            }
-        } else {
-            $query = array();
-            $query['conditions'] = array($this->{$this->modelClass}->escapeField() => $id);
-            $query = $CallbackCollection->trigger('beforeFind', array($query));
+	protected function _index() {
+		$CallbackCollection = $this->_getCallbackCollection($this->action);
+		$CallbackCollection->trigger('beforePaginate', array($this));
+		$this->set('items', $this->paginate());
 
-            $this->data = $this->{$this->modelClass}->find('first', $query);
-            if (empty($this->data)) {
-                $CallbackCollection->trigger('recordNotFound', array($id));
-                $this->Session->setFlash(__d('common', 'Could not find %s', Inflector::humanize($this->{$this->modelClass}->name)), 'flash/error');
-                $this->redirect(array('action' => 'index'));
-            }
-            $this->data = $CallbackCollection->trigger('afterFind', array($this->data));
-        }
+	    return $this->render();
+	}
 
-        $CallbackCollection->trigger('beforeRender');
-        if ($this->autoRender) {
-            return $this->render('form');
-        }
-    }
+	public function add() {
+		return $this->_add();
+	}
 
-    /**
-    * Generic view action
-    *
-    * Triggers the following callbacks
-    *  - beforeFind
-    *  - recordNotFound
-    *  - afterFind
-    *  - beforeRender
-    *
-    * @param string $id
-    * @return void
-    */
-    public function view($id = null) {
-        // Validate ID parameter
-        $this->validateUUID($id);
+	public function admin_add() {
+		return $this->_add();
+	}
 
-        // Initialize callback collection
-        $CallbackCollection = $this->_getCallbackCollection(__FUNCTION__);
+	/**
+	 * Default add action
+	 *
+	 * @abstract Overwrite in controller as needed
+	 */
+	protected function _add() {
+		$CallbackCollection = $this->_getCallbackCollection($this->action);
 
-        // Build conditions
-        $query = array();
-        $query['conditions'] = array($this->{$this->modelClass}->escapeField() => $id);
-        $query = $CallbackCollection->trigger('beforeFind', array($query));
+		if ($this->request->is('post') || $this->request->is('put')) {
+			$CallbackCollection->trigger('beforeSave');
+			if ($this->{$this->modelClass}->saveAll($this->request->data, array('validate' => 'first', 'atomic' => true))) {
+				$CallbackCollection->trigger('afterSave', array(true, $this->{$this->modelClass}->id));
 
-        // Try and find the database record
-        $item = $this->{$this->modelClass}->find('first', $query);
+				$this->Session->setFlash(__d('common', 'Could not create %s', Inflector::humanize($this->{$this->modelClass}->name)), 'flash/success');
+				$this->redirect(array('action' => 'index'));
+			} else {
+				$CallbackCollection->trigger('afterSave', array(false));
+				$this->Session->setFlash(__d('common', 'Could not create %s', Inflector::humanize($this->{$this->modelClass}->name)), 'flash/error');
+			}
+		}
 
-        // We could not find any record match the conditions in query
-        if (empty($item)) {
-            $CallbackCollection->trigger('recordNotFound', array($id));
+		$CallbackCollection->trigger('beforeRender');
+		if ($this->autoRender) {
+			if($this->isAdmin() && !$this->request->is('api')) {
+				return $this->render('admin_form');
+			}
 
-            $this->Session->setFlash(__d('common', 'Could not find %s', Inflector::humanize($this->{$this->modelClass}->name)), 'flash/error');
-            $this->redirect(array('action' => 'index'));
-        }
+			return $this->render('form');
+		}
+	}
 
-        // We found a record, trigger an afterFind
-        $item = $CallbackCollection->trigger('afterFind', array($item));
+	public function edit($id = null) {
+		return $this->_edit($id);
+	}
 
-        // Push it to the view
-        $this->set(compact('item'));
+	public function admin_edit($id = null) {
+		return $this->_edit($id);
+	}
 
-        // Trigger a beforeRender
-        $CallbackCollection->trigger('beforeRender');
+	/**
+	 * Default edit action
+	 *
+	 * @abstract Overwrite in controller as needed
+	 * @param uuid $id
+	 */
+	protected function _edit($id = null) {
+		$this->validateUUID($id);
+		$CallbackCollection = $this->_getCallbackCollection($this->action);
 
-        // Render a view if applicable
-        if ($this->autoRender) {
-            return $this->render('view');
-        }
-    }
+		if ($this->request->is('post') || $this->request->is('put')) {
+			$CallbackCollection->trigger('beforeSave');
+			if ($this->{$this->modelClass}->saveAll($this->data, array('validate' => 'first', 'atomic' => true))) {
+				$CallbackCollection->trigger('afterSave', array(true, $this->{$this->modelClass}->id));
 
-    /**
-    * Generic delete action
-    *
-    * Triggers the following callbacks
-    *  -
-    */
-    public function delete($id = null) {
-        $this->validateUUID($id);
-        $CallbackCollection = $this->_getCallbackCollection(__FUNCTION__);
+				$this->Session->setFlash(__d('common', '%s was succesfully updated', ucfirst(Inflector::humanize($this->{$this->modelClass}->name))), 'flash/success');
+				$this->redirect(array('action' => 'index'));
+			} else {
+				$CallbackCollection->trigger('afterSave', array(false));
+				$this->Session->setFlash(__d('common', 'Could not update %s', Inflector::humanize($this->{$this->modelClass}->name)), 'flash/error');
+			}
+		} else {
+			$query = array();
+			$query['conditions'] = array($this->{$this->modelClass}->escapeField() => $id);
+			$query = $CallbackCollection->trigger('beforeFind', array($query));
 
-        $query = array();
-        $query['conditions'] = array($this->{$this->modelClass}->escapeField() => $id);
-        $query = $CallbackCollection->trigger('beforeFind', array($query));
+			$this->data = $this->{$this->modelClass}->find('first', $query);
+			if (empty($this->data)) {
+				$CallbackCollection->trigger('recordNotFound', array($id));
+				$this->Session->setFlash(__d('common', 'Could not find %s', Inflector::humanize($this->{$this->modelClass}->name)), 'flash/error');
+				$this->redirect(array('action' => 'index'));
+			}
+			$this->data = $CallbackCollection->trigger('afterFind', array($this->data));
+		}
 
-        $count = $this->{$this->modelClass}->find('count', $query);
-        if (empty($count)) {
-            $CallbackCollection->trigger('recordNotFound', array($id));
-            $this->Session->setFlash(__d('common', 'Could not find %s', Inflector::humanize($this->{$this->modelClass}->name)), 'flash/error');
-            $this->redirect(array('action' => 'index'));
-        }
+		$CallbackCollection->trigger('beforeRender');
+		if ($this->autoRender) {
+			if($this->isAdmin() && !$this->request->is('api')) {
+				return $this->render('admin_form');
+			}
 
-        $item = $CallbackCollection->trigger('beforeDelete', array($id));
-        if ($this->{$this->modelClass}->delete($id)) {
-            $CallbackCollection->trigger('afterDelete', array($id, true));
-        } else {
-            $CallbackCollection->trigger('afterDelete', array($id, false));
-        }
-        $this->redirect(array('action' => 'index'));
-    }
+			return $this->render('form');
+		}
+	}
 
-    protected function _getCallbackCollection($function = null) {
-        $CallbackCollection = new CrudCollection();
-        $CallbackCollection->loadAll($this->formCallbacks['common']);
-        $CallbackCollection->loadAll($this->formCallbacks[$function]);
-        if ($this->request->is('api')) {
-            $CallbackCollection->load('Api.Api');
-        }
-        if (method_exists($this, '_loadCallbackCollections')) {
-            $CallbackCollection->loadAll($this->_loadCallbackCollections($function));
-        }
-        $CallbackCollection->trigger('init', array($this, $function));
+	public function view($id = null) {
+		return $this->_view($id);
+	}
 
-        return $CallbackCollection;
-    }
+	public function admin_view($id = null) {
+		return $this->_view($id);
+	}
+
+	/**
+	* Generic view action
+	*
+	* Triggers the following callbacks
+	*  - beforeFind
+	*  - recordNotFound
+	*  - afterFind
+	*  - beforeRender
+	*
+	* @param string $id
+	* @return void
+	*/
+	protected function _view($id = null) {
+		// Validate ID parameter
+		$this->validateUUID($id);
+
+		// Initialize callback collection
+		$CallbackCollection = $this->_getCallbackCollection($this->action);
+
+		// Build conditions
+		$query = array();
+		$query['conditions'] = array($this->{$this->modelClass}->escapeField() => $id);
+		$query = $CallbackCollection->trigger('beforeFind', array($query));
+
+		// Try and find the database record
+		$item = $this->{$this->modelClass}->find('first', $query);
+
+		// We could not find any record match the conditions in query
+		if (empty($item)) {
+			$CallbackCollection->trigger('recordNotFound', array($id));
+
+			$this->Session->setFlash(__d('common', 'Could not find %s', Inflector::humanize($this->{$this->modelClass}->name)), 'flash/error');
+			$this->redirect(array('action' => 'index'));
+		}
+
+		// We found a record, trigger an afterFind
+		$item = $CallbackCollection->trigger('afterFind', array($item));
+
+		// Push it to the view
+		$this->set(compact('item'));
+
+		// Trigger a beforeRender
+		$CallbackCollection->trigger('beforeRender');
+
+		// Render a view if applicable
+		if ($this->autoRender) {
+			if($this->isAdmin() && !$this->request->is('api')) {
+				return $this->render('admin_view');
+			}
+
+			return $this->render('view');
+		}
+	}
+
+	public function delete($id = null) {
+		return $this->_delete($id);
+	}
+
+	public function admin_delete($id = null) {
+		return $this->_delete($id);
+	}
+
+	/**
+	* Generic delete action
+	*
+	* Triggers the following callbacks
+	*  -
+	*/
+	protected function _delete($id = null) {
+		$this->validateUUID($id);
+		$CallbackCollection = $this->_getCallbackCollection($this->action);
+
+		$query = array();
+		$query['conditions'] = array($this->{$this->modelClass}->escapeField() => $id);
+		$query = $CallbackCollection->trigger('beforeFind', array($query));
+
+		$count = $this->{$this->modelClass}->find('count', $query);
+		if (empty($count)) {
+			$CallbackCollection->trigger('recordNotFound', array($id));
+			$this->Session->setFlash(__d('common', 'Could not find %s', Inflector::humanize($this->{$this->modelClass}->name)), 'flash/error');
+			$this->redirect(array('action' => 'index'));
+		}
+
+		$item = $CallbackCollection->trigger('beforeDelete', array($id));
+		if ($this->{$this->modelClass}->delete($id)) {
+			$CallbackCollection->trigger('afterDelete', array($id, true));
+		} else {
+			$CallbackCollection->trigger('afterDelete', array($id, false));
+		}
+
+		$this->redirect(array('action' => 'index'));
+	}
+
+	protected function isAdmin() {
+		return $this->request->params['admin'];
+	}
+
+	protected function _getCallbackCollection($function = null) {
+		$CallbackCollection = new CrudCollection();
+		$CallbackCollection->loadAll($this->formCallbacks['common']);
+		$CallbackCollection->loadAll($this->formCallbacks[$function]);
+		if ($this->request->is('api')) {
+			$CallbackCollection->load('Api.Api');
+		}
+
+		if (method_exists($this, '_loadCallbackCollections')) {
+			$CallbackCollection->loadAll($this->_loadCallbackCollections($function));
+		}
+
+		$CallbackCollection->trigger('init', array($this, $function));
+
+		return $CallbackCollection;
+	}
 }
