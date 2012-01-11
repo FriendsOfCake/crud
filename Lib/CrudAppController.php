@@ -71,7 +71,7 @@ abstract class CrudAppController extends Controller {
 			if ($this->{$this->modelClass}->saveAll($this->request->data, array('validate' => 'first', 'atomic' => true))) {
 				$CallbackCollection->trigger('afterSave', array(true, $this->{$this->modelClass}->id));
 
-				$this->Session->setFlash(__d('common', 'Could not create %s', Inflector::humanize($this->{$this->modelClass}->name)), 'flash/success');
+				$this->Session->setFlash(__d('common', 'Succesfully created %s', Inflector::humanize($this->{$this->modelClass}->name)), 'flash/success');
 				$this->redirect(array('action' => 'index'));
 			} else {
 				$CallbackCollection->trigger('afterSave', array(false));
@@ -264,6 +264,6 @@ abstract class CrudAppController extends Controller {
 	* @return boolean
 	*/
 	public function isAdmin() {
-		return $this->request->params['admin'];
+		return isset($this->return->params['admin']) && $this->request->params['admin'];
 	}
 }
