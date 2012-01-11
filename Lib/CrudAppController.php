@@ -238,8 +238,25 @@ abstract class CrudAppController extends Controller {
 		$this->redirect(array('action' => 'index'));
 	}
 
-	protected function isAdmin() {
+	/**
+	 * Is this an admin request?
+	 *
+	 * @return boolean
+	 */
+	public function isAdmin() {
 		return $this->request->params['admin'];
+	}
+
+
+	/**
+	 * undocumented function
+	 *
+	 * @param string $mode only, not
+	 * @param string $actions
+	 * @return boolean
+	 */
+	public function shouldProcess($mode, $actions = array()) {
+
 	}
 
 	protected function _getCallbackCollection($function = null) {
