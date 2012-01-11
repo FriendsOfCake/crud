@@ -247,18 +247,6 @@ abstract class CrudAppController extends Controller {
 		return $this->request->params['admin'];
 	}
 
-
-	/**
-	 * undocumented function
-	 *
-	 * @param string $mode only, not
-	 * @param string $actions
-	 * @return boolean
-	 */
-	public function shouldProcess($mode, $actions = array()) {
-
-	}
-
 	protected function _getCallbackCollection($function = null) {
 		$CallbackCollection = new CrudCollection();
 		$CallbackCollection->loadAll($this->formCallbacks['common']);
