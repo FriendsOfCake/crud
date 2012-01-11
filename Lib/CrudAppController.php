@@ -16,11 +16,11 @@ abstract class CrudAppController extends Controller {
 	*/
 	public $formCallbacks = array(
 		// Public callbacks
-		'index'	 		=> array(),
-		'add'	 		=> array(),
-		'edit'	 		=> array(),
-		'view'	 		=> array(),
-		'delete' 		=> array(),
+		'index'			=> array(),
+		'add'			=> array(),
+		'edit'			=> array(),
+		'view'			=> array(),
+		'delete'		=> array(),
 
 		// Admin callbacks
 		'admin_index'	=> array(),
@@ -30,15 +30,31 @@ abstract class CrudAppController extends Controller {
 		'admin_delete'	=> array(),
 
 		// Shared callbacks
-		'common' 		=> array(
+		'common'		=> array(
 			'Crud.Default'
 		)
 	);
 
 	public function index() {
+		return $this->_index();
+	}
+
+	public function admin_index() {
+		return $this->_index();
+	}
+
+	protected function _index() {
 		$CallbackCollection = $this->_getCallbackCollection();
 		$CallbackCollection->trigger('beforePaginate', array($this));
 		$this->set('items', $this->paginate());
+	}
+
+	public function add() {
+		return $this->_add();
+	}
+
+	public function admin_add() {
+		return $this->_add();
 	}
 
 	/**
@@ -47,7 +63,7 @@ abstract class CrudAppController extends Controller {
 	 * @abstract Overwrite in controller as needed
 	 * @param uuid $id
 	 */
-	public function add() {
+	protected function _add() {
 		$CallbackCollection = $this->_getCallbackCollection();
 
 		if ($this->request->is('post') || $this->request->is('put')) {
@@ -72,13 +88,21 @@ abstract class CrudAppController extends Controller {
 		}
 	}
 
+	public function edit($id = null) {
+		return $this->_edit($id);
+	}
+
+	public function admin_edit($id = null) {
+		return $this->_edit($id);
+	}
+
 	/**
 	 * Default edit action
 	 *
 	 * @abstract Overwrite in controller as needed
 	 * @param uuid $id
 	 */
-	public function edit($id = null) {
+	protected function _edit($id = null) {
 		$this->validateUUID($id);
 		$CallbackCollection = $this->_getCallbackCollection();
 
@@ -116,6 +140,14 @@ abstract class CrudAppController extends Controller {
 		}
 	}
 
+	public function view($id = null) {
+		return $this->_view($id);
+	}
+
+	public function admin_view($id = null) {
+		return $this->_view($id);
+	}
+
 	/**
 	* Generic view action
 	*
@@ -128,7 +160,7 @@ abstract class CrudAppController extends Controller {
 	* @param string $id
 	* @return void
 	*/
-	public function view($id = null) {
+	protected function _view($id = null) {
 		// Validate ID parameter
 		$this->validateUUID($id);
 
@@ -169,13 +201,21 @@ abstract class CrudAppController extends Controller {
 		}
 	}
 
+	public function delete($id = null) {
+		return $this->_delete($id);
+	}
+
+	public function admin_delete($id = null) {
+		return $this->_delete($id);
+	}
+
 	/**
 	* Generic delete action
 	*
 	* Triggers the following callbacks
-	*  -
+	*
 	*/
-	public function delete($id = null) {
+	protected function _delete($id = null) {
 		$this->validateUUID($id);
 		$CallbackCollection = $this->_getCallbackCollection();
 
