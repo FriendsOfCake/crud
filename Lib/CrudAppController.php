@@ -71,7 +71,7 @@ abstract class CrudAppController extends Controller {
 
         if ($this->request->is('post') || $this->request->is('put')) {
             $CallbackCollection->trigger('beforeSave');
-            if ($this->{$this->modelClass}->saveAll($this->data, array('validate' => 'first', 'atomic' => true))) {
+            if ($this->{$this->modelClass}->saveAll($this->request->data, array('validate' => 'first', 'atomic' => true))) {
                 $CallbackCollection->trigger('afterSave', array(true, $this->{$this->modelClass}->id));
 
                 $this->Session->setFlash(__d('common', '%s was succesfully updated', ucfirst(Inflector::humanize($this->{$this->modelClass}->name))), 'flash/success');
@@ -85,13 +85,13 @@ abstract class CrudAppController extends Controller {
             $query['conditions'] = array($this->{$this->modelClass}->escapeField() => $id);
             $query = $CallbackCollection->trigger('beforeFind', array($query));
 
-            $this->data = $this->{$this->modelClass}->find('first', $query);
-            if (empty($this->data)) {
+            $this->request->data = $this->{$this->modelClass}->find('first', $query);
+            if (empty($this->request->data)) {
                 $CallbackCollection->trigger('recordNotFound', array($id));
                 $this->Session->setFlash(__d('common', 'Could not find %s', Inflector::humanize($this->{$this->modelClass}->name)), 'flash/error');
                 $this->redirect(array('action' => 'index'));
             }
-            $this->data = $CallbackCollection->trigger('afterFind', array($this->data));
+            $this->request->data = $CallbackCollection->trigger('afterFind', array($this->request->data));
         }
 
         $CallbackCollection->trigger('beforeRender');
