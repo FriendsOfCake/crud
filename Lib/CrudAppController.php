@@ -81,9 +81,12 @@ abstract class CrudAppController extends Controller {
 
 		$CallbackCollection->trigger('beforeRender');
 		if ($this->autoRender) {
+			var_dump($this->isAdmin());
+			var_dump($this->request->is('api'));
 			if ($this->isAdmin() && !$this->request->is('api')) {
 				return $this->render('admin_form');
 			}
+
 			return $this->render('form');
 		}
 	}
@@ -264,6 +267,6 @@ abstract class CrudAppController extends Controller {
 	* @return boolean
 	*/
 	public function isAdmin() {
-		return isset($this->return->params['admin']) && $this->request->params['admin'];
+		return isset($this->request->params['admin']) && $this->request->params['admin'];
 	}
 }
