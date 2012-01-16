@@ -1,0 +1,1 @@
+Please see https://wiki.ournodes.com/display/platform/Crud+Plugin for documentation

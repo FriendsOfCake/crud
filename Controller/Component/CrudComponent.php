@@ -1,4 +1,13 @@
 <?php
+/**
+ * Crud component
+ *
+ * Handles the automatic transformation of HTTP requests to API responses
+ *
+ * @see https://wiki.ournodes.com/display/platform/Api+Plugin
+ * @see http://book.cakephp.org/2.0/en/controllers/components.html#Component
+ * @copyright Nodes ApS, 2011
+ */
 class CrudComponent extends Component {
 	/**
 	* List of form callbacks for CRUD actions
@@ -208,7 +217,7 @@ class CrudComponent extends Component {
 	protected function _setup() {
 		$this->_loadCallbackCollection();
 
-		$this->modelClassName 	= $this->controller->modelClass;
+		$this->modelClassName	= $this->controller->modelClass;
 		$this->modelClass		= $this->controller->{$this->modelClassName};
 	}
 
@@ -421,7 +430,7 @@ class CrudComponent extends Component {
 		}
 
 		// Initialize Collection and load callbacks
-		$this->collection =new CrudCollection();
+		$this->collection = new CrudCollection();
 		$this->collection->loadAll($this->_callbacks['common']);
 		$this->collection->loadAll($this->_callbacks[$action]);
 
