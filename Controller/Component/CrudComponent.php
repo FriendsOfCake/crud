@@ -293,7 +293,7 @@ class CrudComponent extends Component {
 	*/
 	public function editAction($id = null) {
 		$this->_setup();
-		$this->validateUUID($id);
+		$this->_validateUUID($id);
 
 		if ($this->request->is('post') || $this->request->is('put')) {
 			$this->collection->trigger('beforeSave');
@@ -385,7 +385,7 @@ class CrudComponent extends Component {
 			$id = $this->_getIdFromRequest();
 		}
 
-		$this->validateUUID($id);
+		$this->_validateUUID($id);
 		$query = array();
 		$query['conditions'] = array($this->modelClass->escapeField() => $id);
 		$query = $this->collection->trigger('beforeFind', array($query));
@@ -444,7 +444,7 @@ class CrudComponent extends Component {
 	*
 	* @return boolean
 	*/
-	public function isAdmin() {
-		return isset($this->request->params['admin']) && $this->request->params['admin'];
+	protected function _validateUUID($id) {
+		return Validation::uuid($id);
 	}
 }
