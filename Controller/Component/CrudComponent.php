@@ -4,9 +4,14 @@
  *
  * Handles the automatic transformation of HTTP requests to API responses
  *
+ * Copyright 2010-2012, Nodes ApS. (http://www.nodesagency.com/)
+ *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
  * @see https://wiki.ournodes.com/display/platform/Api+Plugin
  * @see http://book.cakephp.org/2.0/en/controllers/components.html#Component
- * @copyright Nodes ApS, 2011
+ * @copyright Nodes ApS, 2012
  */
 class CrudComponent extends Component {
 	/**
