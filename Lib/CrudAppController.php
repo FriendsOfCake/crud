@@ -224,6 +224,6 @@ abstract class CrudAppController extends Controller {
 	* @return boolean
 	*/
 	public function isAdmin() {
-		return $this->request->params['admin'];
+		return isset($this->request->params['admin']) && $this->request->params['admin'];
 	}
 }
