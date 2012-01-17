@@ -14,6 +14,21 @@
  * @copyright Nodes ApS, 2012
  */
 class CrudComponent extends Component {
+
+	/**
+	* Components used internally
+	*
+	* @var array
+	*/
+	public $components = array('Session');
+
+	/**
+	* Session Component
+	*
+	* @var SessionComponent
+	*/
+	public $Session;
+
 	/**
 	* List of form callbacks for CRUD actions
 	*
@@ -366,7 +381,7 @@ class CrudComponent extends Component {
 		if (empty($item)) {
 			$this->collection->trigger('recordNotFound', array($id));
 
-			$this->controller->Session->setFlash(__d('common', 'Could not find %s', Inflector::humanize($this->modelClassName)), 'flash/error');
+			$this->Session->setFlash(__d('common', 'Could not find %s', Inflector::humanize($this->modelClassName)), 'flash/error');
 			$this->controller->redirect(array('action' => 'index'));
 		}
 
