@@ -108,6 +108,11 @@ class CrudComponent extends Component {
 		if (false === $pos) {
 			$this->settings['actions'][] = $action;
 		}
+
+		$pos = array_search($action, $this->controller->methods);
+		if (false === $pos) {
+			$this->methods[] = $action;
+		}
 	}
 
 	/**
@@ -121,6 +126,11 @@ class CrudComponent extends Component {
 		$pos = array_search($action, $this->settings['actions']);
 		if (false !== $pos) {
 			unset($this->settings['actions'][$pos]);
+		}
+
+		$pos = array_search($action, $this->controller->methods);
+		if (false !== $pos) {
+			unset($this->controller->methods[$post]);
 		}
 	}
 
@@ -172,6 +182,19 @@ class CrudComponent extends Component {
 	}
 
 	/**
+	* Make sure to update the list of known controller methods before startup is called
+	*
+	* The reason for this is that if we don't, the Auth component won't execute any callbacks on the controller
+	* like isAuthorized
+	*
+	* @param Controller $controller
+	* @return void
+	*/
+	public function initialize(Controller $controller) {
+		$controller->methods = array_keys(array_flip($controller->methods) + array_flip($this->settings['actions']));
+	}
+
+	/**
 	* The startup method is called after the controller’s beforeFilter method
 	* but before the controller executes the current action handler.
 	*
@@ -183,6 +206,10 @@ class CrudComponent extends Component {
 	* @return void
 	*/
 	public function startup(Controller $controller) {
+		if ($controller->name == 'CakeError') {
+			return true;
+		}
+
 		// Create some easy accessible class properties
 		$this->action 		= $controller->action;
 		$this->controller	= $controller;
