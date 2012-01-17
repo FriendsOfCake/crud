@@ -23,13 +23,6 @@ class CrudComponent extends Component {
 	public $components = array('Session');
 
 	/**
-	* Session Component
-	*
-	* @var SessionComponent
-	*/
-	public $Session;
-
-	/**
 	* List of form callbacks for CRUD actions
 	*
 	* Each key is the one of the CRUD controller action
