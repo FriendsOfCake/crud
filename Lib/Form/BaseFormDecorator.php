@@ -68,7 +68,7 @@ abstract class BaseFormDecorator {
 	* @return void
 	*/
 	public function init(Controller $controller, $action) {
-		$this->controller	= $Controller;
+		$this->controller	= $controller;
 		$this->action		= $action;
 	}
 
