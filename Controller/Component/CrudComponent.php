@@ -315,6 +315,9 @@ class CrudComponent extends Component {
 	*/
 	public function editAction($id = null) {
 		$this->_setup();
+		if (empty($id)) {
+			$id = $this->_getIdFromRequest();
+		}
 		$this->_validateUUID($id);
 
 		if ($this->request->is('post') || $this->request->is('put')) {
