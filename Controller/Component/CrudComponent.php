@@ -79,7 +79,7 @@ class CrudComponent extends Component {
 	/**
 	* A map of the controller action and the view to render
 	*
-	* * By default it supports non-prefix and admin_ prefixed routes
+	* By default it supports non-prefix and admin_ prefixed routes
 	*
 	* @platform
 	* @var array
@@ -318,7 +318,7 @@ class CrudComponent extends Component {
 		if (empty($id)) {
 			$id = $this->_getIdFromRequest();
 		}
-		$this->_validateUUID($id);
+		$this->_validateId($id);
 
 		if ($this->request->is('post') || $this->request->is('put')) {
 			$this->collection->trigger('beforeSave');
@@ -365,6 +365,8 @@ class CrudComponent extends Component {
 			$id = $this->_getIdFromRequest();
 		}
 
+		$this->_validateId($id);
+
 		// Build conditions
 		$query = array();
 		$query['conditions'] = array($this->modelClass->escapeField() => $id);
@@ -410,7 +412,7 @@ class CrudComponent extends Component {
 			$id = $this->_getIdFromRequest();
 		}
 
-		$this->_validateUUID($id);
+		$this->_validateId($id);
 		$query = array();
 		$query['conditions'] = array($this->modelClass->escapeField() => $id);
 		$query = $this->collection->trigger('beforeFind', array($query));
@@ -465,11 +467,24 @@ class CrudComponent extends Component {
 	}
 
 	/**
-	* Is this an admin request?
+	* Is the passed ID valid ?
+	*
+	* By default we asume you want to validate an UUID string
+	*
+	* Change the validateId settings key to "integer" for is_numeric check instead
 	*
 	* @return boolean
 	*/
-	protected function _validateUUID($id) {
-		return Validation::uuid($id);
+	protected function _validateId($id) {
+		if (empty($this->settings['validateId']) || $this->settings['validateId'] === 'uuid') {
+			$valid = Validation::uuid($id);
+		} else {
+			$valid = is_numeric($id);
+		}
+
+		if (!$valid) {
+			$this->collection->trigger('invalidId', array($id));
+			$this->controller->redirect($this->controller->referer());
+		}
 	}
 }

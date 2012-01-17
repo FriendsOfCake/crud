@@ -166,6 +166,15 @@ abstract class BaseFormDecorator {
 	}
 
 	/**
+	* Called if the ID format validation failed
+	*
+	* @return void
+	*/
+	public function invalidId($id) {
+
+	}
+
+	/**
 	 * Check about they called action, is whitelisted or blacklisted
 	 * Depening on the mode.
 	 *
