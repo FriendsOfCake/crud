@@ -33,7 +33,7 @@ abstract class BaseFormDecorator {
 	*
 	* @var Controller
 	*/
-	protected $Controller;
+	protected $controller;
 
 	/**
 	* A reference to the Controller action for the request
