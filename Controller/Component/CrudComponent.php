@@ -371,6 +371,9 @@ class CrudComponent extends Component {
 			}
 			$this->request->data = $this->collection->trigger('afterFind', array($this->request->data));
 		}
+
+		// Trigger a beforeRender
+		$this->collection->trigger('beforeRender');
 	}
 
 	/**
@@ -477,7 +480,9 @@ class CrudComponent extends Component {
 		// Initialize Collection and load callbacks
 		$this->collection = new CrudCollection();
 		$this->collection->loadAll($this->_callbacks['common']);
-		$this->collection->loadAll($this->_callbacks[$action]);
+		if (isset($this->_callbacks[$action])) {
+			$this->collection->loadAll($this->_callbacks[$action]);
+		}
 
 		// If the Api plugin has been loaded and we are in API request, load Api callback
 		if (CakePlugin::loaded('Api') && $this->request->is('api')) {
