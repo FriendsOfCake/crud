@@ -62,7 +62,7 @@ class CrudCollection extends ObjectCollection {
 		}
 
 		$this->_loaded[$alias] = new $decoratorClass($this, $settings);
-		$enable = isset($config['enabled']) ? $config['enabled'] : true;
+		$enable = isset($settings['enabled']) ? $settings['enabled'] : true;
 		if ($enable) {
 			$this->enable($alias);
 		} else {
