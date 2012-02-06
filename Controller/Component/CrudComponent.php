@@ -23,38 +23,6 @@ class CrudComponent extends Component {
 	public $components = array('Session');
 
 	/**
-	* List of form callbacks for CRUD actions
-	*
-	* Each key is the one of the CRUD controller action
-	*
-	* Each value is a key / value pair of class => configuration items
-	* Each class must extend BaseFormDecorator
-	*
-	* @platform
-	* @var array
-	*/
-	protected $_callbacks = array(
-		// Public callbacks
-		'index'			=> array(),
-		'add'			=> array(),
-		'edit'			=> array(),
-		'view'			=> array(),
-		'delete'		=> array(),
-
-		// Admin callbacks
-		'admin_index'	=> array(),
-		'admin_add'		=> array(),
-		'admin_edit'	=> array(),
-		'admin_view'	=> array(),
-		'admin_delete'	=> array(),
-
-		// Shared callbacks
-		'common'		=> array(
-			'Crud.Default'
-		)
-	);
-
-	/**
 	* A map of the controller action and what CRUD action we should call
 	*
 	* By default it supports non-prefix and admin_ prefixed routes
@@ -95,6 +63,102 @@ class CrudComponent extends Component {
 		'admin_edit'	=> 'admin_form',
 		'admin_view'	=> 'admin_view'
 	);
+
+	/**
+	* Make sure to update the list of known controller methods before startup is called
+	*
+	* The reason for this is that if we don't, the Auth component won't execute any callbacks on the controller
+	* like isAuthorized
+	*
+	* @param Controller $controller
+	* @return void
+	*/
+	public function initialize(Controller $controller) {
+		$controller->methods = array_keys(array_flip($controller->methods) + array_flip($this->settings['actions']));
+	}
+
+	/**
+	* The startup method is called after the controller’s beforeFilter method
+	* but before the controller executes the current action handler.
+	*
+	* We catch our CRUD actions here before Cake complains about them
+	* not existing in the Controller
+	*
+	* @cakephp
+	* @param Controller $controller
+	* @return void
+	*/
+	public function startup(Controller $controller) {
+		if ($controller->name == 'CakeError') {
+			return true;
+		}
+
+		// Create some easy accessible class properties
+		$this->action 		= $controller->request->action;
+		$this->controller	= $controller;
+		$this->request 		= $controller->request;
+		$this->eventManager = $controller->getEventManager();
+
+		// Don't do anything if the action is defined in the controller already
+		if (method_exists($controller, $this->action)) {
+			return;
+		}
+
+		// Don't do anything if the action haven't been marked as CRUD
+		if (!in_array($this->action, $this->settings['actions'])) {
+			return;
+		}
+
+		// Don't do anything if the action isn't mapped
+		if (!array_key_exists($this->action, $this->_actionMap)) {
+			return;
+		}
+
+		// Always attach the default callback object
+		$this->eventManager->attach(new Crud\Event\Base());
+		$this->eventManager->dispatch(new CakeEvent('Crud.init', $this, array($this->controller, $this->controller->action)));
+
+		// Execute the default action, inside this component
+		call_user_func(array($this, $this->_actionMap[$this->action] . 'Action'));
+
+		$view = $this->action;
+		if (array_key_exists($this->action, $this->_viewMap)) {
+			$view = $this->_viewMap[$this->action];
+		}
+
+		// Render the file based on action name
+		$content = $this->controller->render($view);
+
+		// Send the content to the browser
+		$content->send();
+
+		// Stop the request
+		$this->_stop();
+	}
+
+	/**
+	* Initialize properties needed for CRUD behavior
+	*
+	* @platform
+	* @return void
+	*/
+	protected function _setup() {
+		$this->modelClassName	= $this->controller->modelClass;
+		$this->modelClass		= $this->controller->{$this->modelClassName};
+	}
+
+	/**
+	* Helper method to get the passed ID to an action
+	*
+	* @platform
+	* @return string
+	*/
+	protected function _getIdFromRequest() {
+		if (empty($this->request->params['pass'][0])) {
+			return null;
+		}
+		return $this->request->params['pass'][0];
+	}
 
 	/**
 	* Enable a CRUD action
@@ -153,133 +217,15 @@ class CrudComponent extends Component {
 		$this->_viewMap[$action] = $view;
 	}
 
-	/**
-	* Add a callback class to CRUD component
-	*
-	* @platform
-	* @param string $action The controller action
-	* @param string $class  The callback class
-	* @param array  $config Configuration for the callback configuration
-	* @return void
-	*/
-	public function addCallback($action, $class, $config = array()) {
-		$this->_callbacks[$action][$class] = $config;
-	}
-
-	/**
-	* Clear all callbacks for an action
-	*
-	* @platform
-	* @param string $action 	The controller action to clear the callbacks for
-	* @param boolean $common	Also clear the common callback
-	* @return void
-	*/
-	public function clearCallbacks($action, $common = false) {
-		$this->_callbacks[$action] = array();
-		if ($common) {
-			$this->_callbacks['common'] = array();
-		}
-	}
-
-	/**
-	* Make sure to update the list of known controller methods before startup is called
-	*
-	* The reason for this is that if we don't, the Auth component won't execute any callbacks on the controller
-	* like isAuthorized
-	*
-	* @param Controller $controller
-	* @return void
-	*/
-	public function initialize(Controller $controller) {
-		$controller->methods = array_keys(array_flip($controller->methods) + array_flip($this->settings['actions']));
-	}
-
-	/**
-	* The startup method is called after the controller’s beforeFilter method
-	* but before the controller executes the current action handler.
-	*
-	* We catch our CRUD actions here before Cake complains about them
-	* not existing in the Controller
-	*
-	* @cakephp
-	* @param Controller $controller
-	* @return void
-	*/
-	public function startup(Controller $controller) {
-		if ($controller->name == 'CakeError') {
-			return true;
-		}
-
-		// Create some easy accessible class properties
-		$this->action 		= $controller->action;
-		$this->controller	= $controller;
-		$this->request 		= $controller->request;
-
-		// Don't do anything if the action is defined in the controller already
-		if (method_exists($controller, $this->action)) {
-			return;
-		}
-
-		// Don't do anything if the action haven't been marked as CRUD
-		if (!in_array($this->action, $this->settings['actions'])) {
-			return;
-		}
-
-		// Don't do anything if the action isn't mapped
-		if (!array_key_exists($this->action, $this->_actionMap)) {
-			return;
-		}
-
-		// Execute the default action, inside this component
-		call_user_func(array($this, $this->_actionMap[$this->action] . 'Action'));
-
-		$view = $this->action;
-		if (array_key_exists($this->action, $this->_viewMap)) {
-			$view = $this->_viewMap[$this->action];
-		}
-
-		// Render the file based on action name
-		$content = $this->controller->render($view);
-
-		// Send the content to the browser
-		$content->send();
-
-		// Stop the request
-		$this->_stop();
-	}
-
-	/**
-	* Initialize properties needed for CRUD behavior
-	*
-	* @platform
-	* @return void
-	*/
-	protected function _setup() {
-		$this->_loadCallbackCollection();
-
-		$this->modelClassName	= $this->controller->modelClass;
-		$this->modelClass		= $this->controller->{$this->modelClassName};
-	}
-
-	/**
-	* Helper method to get the passed ID to an action
-	*
-	* @platform
-	* @return string
-	*/
-	protected function _getIdFromRequest() {
-		if (empty($this->request->params['pass'][0])) {
-			return null;
-		}
-		return $this->request->params['pass'][0];
-	}
 
 	/**
 	* Generic index action
 	*
 	* Triggers the following callbacks
-	*  - beforePaginate
-	*  - beforeRender
+	*  - Crud.init
+	*  - Crud.beforePaginate
+	*  - Crud.afterPaginate
+	*  - Crud.beforeRender
 	*
 	* @platform
 	* @param string $id
@@ -287,21 +233,26 @@ class CrudComponent extends Component {
 	*/
 	public function indexAction() {
 		$this->_setup();
-		$this->collection->trigger('beforePaginate', array($this->controller));
+
+		$this->eventManager->dispatch(new CakeEvent('Crud.beforePaginate', $this));
 
 		$items = $this->controller->paginate();
-		$this->controller->set(compact('items'));
 
-		$this->collection->trigger('beforeRender');
+		$this->eventManager->dispatch($event = new CakeEvent('Crud.afterPaginate', $this, array($items)));
+		$items = $event->result;
+
+		$this->controller->set(compact('items'));
+		$this->eventManager->dispatch(new CakeEvent('Crud.beforeRender', $this));
 	}
 
 	/**
 	* Generic add action
 	*
 	* Triggers the following callbacks
-	*  - beforeSave
-	*  - afterSave
-	*  - beforeRender
+	*  - Crud.init
+	*  - Crud.beforeSave
+	*  - Crud.afterSave
+	*  - Crud.beforeRender
 	*
 	* @platform
 	* @param string $id
@@ -309,32 +260,33 @@ class CrudComponent extends Component {
 	*/
 	public function addAction() {
 		$this->_setup();
-		if ($this->request->is('post') || $this->request->is('put')) {
-			$this->collection->trigger('beforeSave');
-			if ($this->modelClass->saveAll($this->request->data, array('validate' => 'first', 'atomic' => true))) {
-				$this->collection->trigger('afterSave', array(true, $this->modelClass->id));
 
+		if ($this->request->is('post')) {
+			$this->eventManager->dispatch(new CakeEvent('Crud.beforeSave', $this));
+			if ($this->modelClass->saveAll($this->request->data, array('validate' => 'first', 'atomic' => true))) {
+				$this->eventManager->dispatch(new CakeEvent('Crud.afterSave', $this, array(true, $this->modelClass->id)));
 				$this->Session->setFlash(__d('common', 'Succesfully created %s', Inflector::humanize($this->modelClassName)), 'flash/success');
-				$this->controller->redirect(array('action' => 'index'));
+				$this->redirect(array('action' => 'index'));
 			} else {
-				$this->collection->trigger('afterSave', array(false));
+				$this->eventManager->dispatch(new CakeEvent('Crud.afterSave', $this, array(false, null)));
 				$this->Session->setFlash(__d('common', 'Could not create %s', Inflector::humanize($this->modelClassName)), 'flash/error');
 			}
 		}
 
-		$this->collection->trigger('beforeRender');
+		$this->eventManager->dispatch(new CakeEvent('Crud.beforeRender', $this));
 	}
 
 	/**
 	* Generic edit action
 	*
 	* Triggers the following callbacks
-	*  - beforeSave
-	*  - afterSave
-	*  - beforeFind
-	*  - recordNotFound
-	*  - afterFind
-	*  - beforeRender
+	*  - Crud.init
+	*  - Crud.beforeSave
+	*  - Crud.afterSave
+	*  - Crud.beforeFind
+	*  - Crud.recordNotFound
+	*  - Crud.afterFind
+	*  - Crud.beforeRender
 	*
 	* @platform
 	* @param string $id
@@ -347,33 +299,35 @@ class CrudComponent extends Component {
 		}
 		$this->_validateId($id);
 
-		if ($this->request->is('post') || $this->request->is('put')) {
-			$this->collection->trigger('beforeSave');
+		if ($this->request->is('put')) {
+			$this->eventManager->dispatch(new CakeEvent('Crud.beforeSave', $this));
 			if ($this->modelClass->saveAll($this->request->data, array('validate' => 'first', 'atomic' => true))) {
-				$this->collection->trigger('afterSave', array(true, $this->modelClass->id));
-
+				$this->eventManager->dispatch(new CakeEvent('Crud.afterSave', $this, array(true, $this->modelClass->id)));
 				$this->Session->setFlash(__d('common', '%s was succesfully updated', ucfirst(Inflector::humanize($this->modelClassName))), 'flash/success');
-				$this->controller->redirect(array('action' => 'index'));
+				$this->redirect(array('action' => 'index'));
 			} else {
-				$this->collection->trigger('afterSave', array(false));
+				$this->eventManager->dispatch(new CakeEvent('Crud.afterSave', $this, array(false, null)));
 				$this->Session->setFlash(__d('common', 'Could not update %s', Inflector::humanize($this->modelClassName)), 'flash/error');
 			}
 		} else {
 			$query = array();
 			$query['conditions'] = array($this->modelClass->escapeField() => $id);
-			$query = $this->collection->trigger('beforeFind', array($query));
+			$this->eventManager->dispatch($event = new CakeEvent('Crud.beforeFind', $this, array($query)));
+			$query = $event->result;
 
 			$this->request->data = $this->modelClass->find('first', $query);
 			if (empty($this->request->data)) {
-				$this->collection->trigger('recordNotFound', array($id));
+				$this->eventManager->dispatch(new CakeEvent('Crud.recordNotFound', $this, array($id)));
 				$this->Session->setFlash(__d('common', 'Could not find %s', Inflector::humanize($this->modelClassName)), 'flash/error');
-				$this->controller->redirect(array('action' => 'index'));
+				$this->redirect(array('action' => 'index'));
 			}
-			$this->request->data = $this->collection->trigger('afterFind', array($this->request->data));
+
+			$this->eventManager->dispatch($event = new CakeEvent('Crud.afterFind', $this, array($this->request->data)));
+			$this->request->data = $event->result;
 		}
 
 		// Trigger a beforeRender
-		$this->collection->trigger('beforeRender');
+		$this->eventManager->dispatch(new CakeEvent('Crud.beforeRender', $this));
 	}
 
 	/**
@@ -400,27 +354,28 @@ class CrudComponent extends Component {
 		// Build conditions
 		$query = array();
 		$query['conditions'] = array($this->modelClass->escapeField() => $id);
-		$query = $this->collection->trigger('beforeFind', array($query));
+		$this->eventManager->dispatch($event = new CakeEvent('Crud.beforeFind', $this, array($query)));
+		$query = $event->result;
 
 		// Try and find the database record
 		$item = $this->modelClass->find('first', $query);
 
 		// We could not find any record match the conditions in query
 		if (empty($item)) {
-			$this->collection->trigger('recordNotFound', array($id));
-
+			$this->eventManager->dispatch(new CakeEvent('Crud.recordNotFound', $this, array($id)));
 			$this->Session->setFlash(__d('common', 'Could not find %s', Inflector::humanize($this->modelClassName)), 'flash/error');
-			$this->controller->redirect(array('action' => 'index'));
+			$this->redirect(array('action' => 'index'));
 		}
 
 		// We found a record, trigger an afterFind
-		$item = $this->collection->trigger('afterFind', array($item));
+		$this->eventManager->dispatch($event = new CakeEvent('Crud.afterFind', $this, array($item)));
+		$item = $event->result;
 
 		// Push it to the view
 		$this->controller->set(compact('item'));
 
 		// Trigger a beforeRender
-		$this->collection->trigger('beforeRender');
+		$this->eventManager->dispatch(new CakeEvent('Crud.beforeRender', $this, array($query)));
 	}
 
 	/**
@@ -445,57 +400,43 @@ class CrudComponent extends Component {
 		$this->_validateId($id);
 		$query = array();
 		$query['conditions'] = array($this->modelClass->escapeField() => $id);
-		$query = $this->collection->trigger('beforeFind', array($query));
+		$this->eventManager->dispatch($event = new CakeEvent('Crud.beforeFind', $this, array($query)));
+		$query = $event->result;
 
 		$count = $this->modelClass->find('count', $query);
 		if (empty($count)) {
-			$this->collection->trigger('recordNotFound', array($id));
+			$this->eventManager->dispatch(new CakeEvent('Crud.recordNotFound', $this, array($id)));
 			$this->Session->setFlash(__d('common', 'Could not find %s', Inflector::humanize($this->modelClassName)), 'flash/error');
-			$this->controller->redirect(array('action' => 'index'));
+			$this->redirect(array('action' => 'index'));
 		}
 
-		$item = $this->collection->trigger('beforeDelete', array($id));
+		$this->eventManager->dispatch($event = new CakeEvent('Crud.beforeDelete', $this, array($id)));
+		if ($event->isStopped()) {
+			$this->Session->setFlash(__d('common', 'Could not delete %s', Inflector::humanize($this->modelClassName)), 'flash/error');
+			$this->redirect(array('action' => 'index'));
+			return;
+		}
 
-		if ($this->modelClass->delete($id)) {
-			$this->collection->trigger('afterDelete', array($id, true));
+		if ($this->request->is('delete')) {
+			if ($this->modelClass->delete($id)) {
+				$this->Session->setFlash(__d('common', 'Successfully deleted %s', Inflector::humanize($this->modelClassName)), 'flash/success');
+				$this->eventManager->dispatch(new CakeEvent('Crud.afterDelete', $this, array($id, true)));
+			} else {
+				$this->Session->setFlash(__d('common', 'Could not delete %s', Inflector::humanize($this->modelClassName)), 'flash/error');
+				$this->eventManager->dispatch(new CakeEvent('Crud.afterDelete', $this, array($id, false)));
+			}
 		} else {
-			$this->collection->trigger('afterDelete', array($id, false));
+			$this->Session->setFlash(__d('common', 'Invalid HTTP request', Inflector::humanize($this->modelClassName)), 'flash/error');
 		}
 
-		$this->controller->redirect(array('action' => 'index'));
+		$this->redirect(array('action' => 'index'));
 	}
 
-	/**
-	* Get the callback collection
-	*
-	* @platform
-	* @param string $action
-	* @return void
-	*/
-	protected function _loadCallbackCollection($action = null) {
-		if (empty($action)) {
-			$action = $this->action;
-		}
+	protected function redirect($url = null) {
+		$this->eventManager->dispatch($event = new CakeEvent('Crud.beforeRedirect', $this, array($url)));
+		$url = $event->result;
 
-		// Initialize Collection and load callbacks
-		$this->collection = new CrudCollection();
-		$this->collection->loadAll($this->_callbacks['common']);
-		if (isset($this->_callbacks[$action])) {
-			$this->collection->loadAll($this->_callbacks[$action]);
-		}
-
-		// If the Api plugin has been loaded and we are in API request, load Api callback
-		if (CakePlugin::loaded('Api') && $this->request->is('api')) {
-			$this->collection->load('Api.Api');
-		}
-
-		// Call _loadCallbackCollections if the method exists in the controller
-		if (method_exists($this->controller, '_loadCallbackCollections')) {
-			$this->collection->loadAll($this->controller->_loadCallbackCollections($action));
-		}
-
-		// Trigger init on the Collection
-		$this->collection->trigger('init', array($this->controller, $action));
+		$this->controller->redirect($url);
 	}
 
 	/**
@@ -515,8 +456,8 @@ class CrudComponent extends Component {
 		}
 
 		if (!$valid) {
-			$this->collection->trigger('invalidId', array($id));
-			$this->controller->redirect($this->controller->referer());
+			$this->eventManager->dispatch(new CakeEvent('Crud.invalidId', $this, array($id)));
+			$this->redirect($this->controller->referer());
 		}
 	}
 }

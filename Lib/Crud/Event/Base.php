@@ -1,5 +1,5 @@
 <?php
-App::uses('BaseFormDecorator', 'Crud.Form');
+namespace Crud\Event;
 
 /**
  * The Default Form Decorator
@@ -13,6 +13,6 @@ App::uses('BaseFormDecorator', 'Crud.Form');
  *
  * @copyright Nodes ApS, 2012
  */
-class DefaultFormDecorator extends BaseFormDecorator {
+class Base extends \Crud\BaseEvent {
 
 }

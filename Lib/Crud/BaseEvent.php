@@ -1,4 +1,6 @@
 <?php
+namespace Crud;
+
 /**
  * The Base Form Decorator
  *
@@ -12,21 +14,7 @@
  * @copyright Nodes ApS, 2012
  * @abstract
  */
-abstract class BaseFormDecorator {
-
-	/**
-	* A reference to the original CrudCollection
-	*
-	* @var CrudCollection
-	*/
-	protected $_collection;
-
-	/**
-	* The configuration settings passed from the CrudCollection
-	*
-	* @var mixed
-	*/
-	protected $_settings;
+abstract class BaseEvent implements \CakeEventListener {
 
 	/**
 	* A reference the Controller that created the CrudCollection
@@ -43,17 +31,33 @@ abstract class BaseFormDecorator {
 	protected $action;
 
 	/**
-	* Constructor
-	*
-	* Just set the arguments as instance properties for easier access later
-	*
-	* @param ObjectCollection	$collection
-	* @param mixed				$settings
-	* @return void
-	*/
-	public function __construct(ObjectCollection $collection, $settings) {
-		$this->_collection	= $collection;
-		$this->_settings	= $settings;
+	 * Returns a list of all events that will fire in the controller during it's lifecycle.
+	 * You can override this function to add you own listener callbacks
+	 *
+	 * @return array
+	 */
+	public function implementedEvents() {
+		return array(
+			'Crud.init'				=> array('callable' => 'init', 'passParams' => true),
+
+			'Crud.beforePaginate'	=> 'beforePaginate',
+			'Crud.afterPaginate'	=> array('callable' => 'afterPaginate', 'passParams' => true),
+
+			'Crud.recordNotFound'	=> array('callable' => 'recordNotFound', 'passParams' => true),
+			'Crud.invalidId'		=> array('callable' => 'invalidId', 'passParams' => true),
+
+			'Crud.beforeRender'		=> 'beforeRender',
+			'Crud.beforeRedirect'	=> array('callable' => 'beforeRedirect', 'passParams' => true),
+
+			'Crud.beforeSave'		=> 'beforeSave',
+			'Crud.afterSave'		=> array('callable' => 'afterSave', 'passParams' => true),
+
+			'Crud.beforeFind'		=> array('callable' => 'beforeFind', 'passParams' => true),
+			'Crud.afterFind'		=> array('callable' => 'afterFind', 'passParams' => true),
+
+			'Crud.beforeDelete'		=> array('callable' => 'beforeDelete', 'passParams' => true),
+			'Crud.afterDelete'		=> 'afterDelete'
+		);
 	}
 
 	/**
@@ -67,7 +71,7 @@ abstract class BaseFormDecorator {
 	* @param string $action
 	* @return void
 	*/
-	public function init(Controller $controller, $action) {
+	public function init(\Controller $controller, $action) {
 		$this->controller	= $controller;
 		$this->action		= $action;
 	}
@@ -79,6 +83,15 @@ abstract class BaseFormDecorator {
 	*/
 	public function beforeSave() {
 
+	}
+
+	/**
+	* Called before any CRUD redirection
+	*
+	* @return void
+	*/
+	public function beforeRedirect($url = null) {
+		return $url;
 	}
 
 	/**
@@ -166,6 +179,15 @@ abstract class BaseFormDecorator {
 	}
 
 	/**
+	* Called right after any paginate() method
+	*
+	* @return void
+	*/
+	public function afterPaginate($result) {
+		return $result;
+	}
+
+	/**
 	* Called if the ID format validation failed
 	*
 	* @return void
@@ -202,7 +224,7 @@ abstract class BaseFormDecorator {
 				break;
 
 			default:
-				throw new Exception('Invalid mode');
+				throw new \Exception('Invalid mode');
 				break;
 		}
 	}
