@@ -49,7 +49,7 @@ abstract class BaseEvent implements \CakeEventListener {
 			'Crud.beforeRender'		=> 'beforeRender',
 			'Crud.beforeRedirect'	=> array('callable' => 'beforeRedirect', 'passParams' => true),
 
-			'Crud.beforeSave'		=> 'beforeSave',
+			'Crud.beforeSave'		=> array('callable' => 'beforeSave', 'passParams' => true),
 			'Crud.afterSave'		=> array('callable' => 'afterSave', 'passParams' => true),
 
 			'Crud.beforeFind'		=> array('callable' => 'beforeFind', 'passParams' => true),
@@ -71,8 +71,13 @@ abstract class BaseEvent implements \CakeEventListener {
 	* @param string $action
 	* @return void
 	*/
-	public function init(\Controller $controller, $action) {
+	public function init(\Controller $controller, $action = null) {
 		$this->controller	= $controller;
+
+		if (empty($action)) {
+			$action = $controller->action;
+		}
+
 		$this->action		= $action;
 	}
 
@@ -81,7 +86,7 @@ abstract class BaseEvent implements \CakeEventListener {
 	*
 	* @return void
 	*/
-	public function beforeSave() {
+	public function beforeSave(\CakeRequest $request) {
 
 	}
 

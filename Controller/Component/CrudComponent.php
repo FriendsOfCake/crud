@@ -116,7 +116,7 @@ class CrudComponent extends Component {
 
 		// Always attach the default callback object
 		$this->eventManager->attach(new Crud\Event\Base());
-		$this->eventManager->dispatch(new CakeEvent('Crud.init', $this, array($this->controller, $this->controller->action)));
+		$this->eventManager->dispatch(new CakeEvent('Crud.init', $this, array($this->controller)));
 
 		// Execute the default action, inside this component
 		call_user_func(array($this, $this->_actionMap[$this->action] . 'Action'));
@@ -262,7 +262,7 @@ class CrudComponent extends Component {
 		$this->_setup();
 
 		if ($this->request->is('post')) {
-			$this->eventManager->dispatch(new CakeEvent('Crud.beforeSave', $this));
+			$this->eventManager->dispatch(new CakeEvent('Crud.beforeSave', $this, array($this->request)));
 			if ($this->modelClass->saveAll($this->request->data, array('validate' => 'first', 'atomic' => true))) {
 				$this->eventManager->dispatch(new CakeEvent('Crud.afterSave', $this, array(true, $this->modelClass->id)));
 				$this->Session->setFlash(__d('common', 'Succesfully created %s', Inflector::humanize($this->modelClassName)), 'flash/success');
@@ -300,7 +300,7 @@ class CrudComponent extends Component {
 		$this->_validateId($id);
 
 		if ($this->request->is('put')) {
-			$this->eventManager->dispatch(new CakeEvent('Crud.beforeSave', $this));
+			$this->eventManager->dispatch(new CakeEvent('Crud.beforeSave', $this, array($this->request)));
 			if ($this->modelClass->saveAll($this->request->data, array('validate' => 'first', 'atomic' => true))) {
 				$this->eventManager->dispatch(new CakeEvent('Crud.afterSave', $this, array(true, $this->modelClass->id)));
 				$this->Session->setFlash(__d('common', '%s was succesfully updated', ucfirst(Inflector::humanize($this->modelClassName))), 'flash/success');
@@ -334,10 +334,11 @@ class CrudComponent extends Component {
 	* Generic view action
 	*
 	* Triggers the following callbacks
-	*  - beforeFind
-	*  - recordNotFound
-	*  - afterFind
-	*  - beforeRender
+	*  - Crud.init
+	*  - Crud.beforeFind
+	*  - Crud.recordNotFound
+	*  - Crud.afterFind
+	*  - Crud.beforeRender
 	*
 	* @platform
 	* @param string $id
