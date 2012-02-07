@@ -145,8 +145,6 @@ class CrudComponent extends Component {
 
 		// Render the file based on action name
 		$content = $this->controller->render($view);
-		CakeLog::write('debug', 'executeAction');
-		CakeLog::write('debug', get_class($content));
 
 		// Send the content to the browser
 		$content->send();
