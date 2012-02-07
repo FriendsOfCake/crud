@@ -114,12 +114,29 @@ class CrudComponent extends Component {
 			return;
 		}
 
+		$this->executeAction();
+	}
+
+	/**
+	* Execute a Crud action
+	*
+	* @platform
+	* @param string $action		The CRUD action
+	* @param array $arguments	List of arguments to pass to the CRUD action (Usually an ID to edit / delete)
+	* @return void
+	*/
+	public function executeAction($action = null, $args = array()) {
 		// Always attach the default callback object
 		$this->eventManager->attach(new Crud\Event\Base());
 		$this->eventManager->dispatch(new CakeEvent('Crud.init', $this, array($this->controller)));
 
+		$this->modelClassName = $this->controller->modelClass;
+		$this->modelClass = $this->controller->{$this->modelClassName};
+
+		$action = $action ?: $this->action;
+
 		// Execute the default action, inside this component
-		call_user_func(array($this, $this->_actionMap[$this->action] . 'Action'));
+		call_user_func_array(array($this, $this->_actionMap[$this->action] . 'Action'), $args);
 
 		$view = $this->action;
 		if (array_key_exists($this->action, $this->_viewMap)) {
@@ -128,36 +145,14 @@ class CrudComponent extends Component {
 
 		// Render the file based on action name
 		$content = $this->controller->render($view);
+		CakeLog::write('debug', 'executeAction');
+		CakeLog::write('debug', get_class($content));
 
 		// Send the content to the browser
 		$content->send();
 
 		// Stop the request
 		$this->_stop();
-	}
-
-	/**
-	* Initialize properties needed for CRUD behavior
-	*
-	* @platform
-	* @return void
-	*/
-	protected function _setup() {
-		$this->modelClassName	= $this->controller->modelClass;
-		$this->modelClass		= $this->controller->{$this->modelClassName};
-	}
-
-	/**
-	* Helper method to get the passed ID to an action
-	*
-	* @platform
-	* @return string
-	*/
-	protected function _getIdFromRequest() {
-		if (empty($this->request->params['pass'][0])) {
-			return null;
-		}
-		return $this->request->params['pass'][0];
 	}
 
 	/**
@@ -217,6 +212,18 @@ class CrudComponent extends Component {
 		$this->_viewMap[$action] = $view;
 	}
 
+	/**
+	* Helper method to get the passed ID to an action
+	*
+	* @platform
+	* @return string
+	*/
+	protected function _getIdFromRequest() {
+		if (empty($this->request->params['pass'][0])) {
+			return null;
+		}
+		return $this->request->params['pass'][0];
+	}
 
 	/**
 	* Generic index action
@@ -231,9 +238,7 @@ class CrudComponent extends Component {
 	* @param string $id
 	* @return void
 	*/
-	public function indexAction() {
-		$this->_setup();
-
+	protected function indexAction() {
 		$this->eventManager->dispatch(new CakeEvent('Crud.beforePaginate', $this));
 
 		$items = $this->controller->paginate();
@@ -258,9 +263,7 @@ class CrudComponent extends Component {
 	* @param string $id
 	* @return void
 	*/
-	public function addAction() {
-		$this->_setup();
-
+	protected function addAction() {
 		if ($this->request->is('post')) {
 			$this->eventManager->dispatch(new CakeEvent('Crud.beforeSave', $this, array($this->request)));
 			if ($this->modelClass->saveAll($this->request->data, array('validate' => 'first', 'atomic' => true))) {
@@ -270,6 +273,8 @@ class CrudComponent extends Component {
 			} else {
 				$this->eventManager->dispatch(new CakeEvent('Crud.afterSave', $this, array(false, null)));
 				$this->Session->setFlash(__d('common', 'Could not create %s', Inflector::humanize($this->modelClassName)), 'flash/error');
+				// Make sure to merge any changed data in the model into the post data
+				$this->request->data = Set::merge($this->request->data, $this->modelClass->data);
 			}
 		}
 
@@ -292,8 +297,7 @@ class CrudComponent extends Component {
 	* @param string $id
 	* @return void
 	*/
-	public function editAction($id = null) {
-		$this->_setup();
+	protected function editAction($id = null) {
 		if (empty($id)) {
 			$id = $this->_getIdFromRequest();
 		}
@@ -324,6 +328,9 @@ class CrudComponent extends Component {
 
 			$this->eventManager->dispatch($event = new CakeEvent('Crud.afterFind', $this, array($this->request->data)));
 			$this->request->data = $event->result;
+
+			// Make sure to merge any changed data in the model into the post data
+			$this->request->data = Set::merge($this->request->data, $this->modelClass->data);
 		}
 
 		// Trigger a beforeRender
@@ -344,8 +351,8 @@ class CrudComponent extends Component {
 	* @param string $id
 	* @return void
 	*/
-	public function viewAction($id = null) {
-		$this->_setup();
+	protected function viewAction($id = null) {
+
 		if (empty($id)) {
 			$id = $this->_getIdFromRequest();
 		}
@@ -392,8 +399,7 @@ class CrudComponent extends Component {
 	* @param string $id
 	* @return void
 	*/
-	public function deleteAction($id = null) {
-		$this->_setup();
+	protected function deleteAction($id = null) {
 		if (empty($id)) {
 			$id = $this->_getIdFromRequest();
 		}

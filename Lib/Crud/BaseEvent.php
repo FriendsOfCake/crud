@@ -56,7 +56,7 @@ abstract class BaseEvent implements \CakeEventListener {
 			'Crud.afterFind'		=> array('callable' => 'afterFind', 'passParams' => true),
 
 			'Crud.beforeDelete'		=> array('callable' => 'beforeDelete', 'passParams' => true),
-			'Crud.afterDelete'		=> 'afterDelete'
+			'Crud.afterDelete'		=> array('callable' => 'afterDelete', 'passParams' => true),
 		);
 	}
 
