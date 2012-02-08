@@ -75,6 +75,12 @@ class CrudComponent extends Component {
 	*/
 	public function initialize(Controller $controller) {
 		$controller->methods = array_keys(array_flip($controller->methods) + array_flip($this->settings['actions']));
+
+		// Create some easy accessible class properties
+		$this->action 		= $controller->request->action;
+		$this->controller	= $controller;
+		$this->request 		= $controller->request;
+		$this->eventManager = $controller->getEventManager();
 	}
 
 	/**
@@ -92,12 +98,6 @@ class CrudComponent extends Component {
 		if ($controller->name == 'CakeError') {
 			return true;
 		}
-
-		// Create some easy accessible class properties
-		$this->action 		= $controller->request->action;
-		$this->controller	= $controller;
-		$this->request 		= $controller->request;
-		$this->eventManager = $controller->getEventManager();
 
 		// Don't do anything if the action is defined in the controller already
 		if (method_exists($controller, $this->action)) {
@@ -216,7 +216,7 @@ class CrudComponent extends Component {
 	* @platform
 	* @return string
 	*/
-	protected function _getIdFromRequest() {
+	public function getIdFromRequest() {
 		if (empty($this->request->params['pass'][0])) {
 			return null;
 		}
@@ -297,7 +297,7 @@ class CrudComponent extends Component {
 	*/
 	protected function editAction($id = null) {
 		if (empty($id)) {
-			$id = $this->_getIdFromRequest();
+			$id = $this->getIdFromRequest();
 		}
 		$this->_validateId($id);
 
@@ -352,7 +352,7 @@ class CrudComponent extends Component {
 	protected function viewAction($id = null) {
 
 		if (empty($id)) {
-			$id = $this->_getIdFromRequest();
+			$id = $this->getIdFromRequest();
 		}
 
 		$this->_validateId($id);
@@ -399,7 +399,7 @@ class CrudComponent extends Component {
 	*/
 	protected function deleteAction($id = null) {
 		if (empty($id)) {
-			$id = $this->_getIdFromRequest();
+			$id = $this->getIdFromRequest();
 		}
 
 		$this->_validateId($id);
