@@ -168,7 +168,7 @@ class CrudComponent extends Component {
 
 		$pos = array_search($action, $this->controller->methods);
 		if (false === $pos) {
-			$this->methods[] = $action;
+			$this->controller->methods[] = $action;
 		}
 	}
 
