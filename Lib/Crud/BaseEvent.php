@@ -17,20 +17,6 @@ namespace Crud;
 abstract class BaseEvent implements \CakeEventListener {
 
 	/**
-	* A reference the Controller that created the CrudCollection
-	*
-	* @var Controller
-	*/
-	protected $controller;
-
-	/**
-	* A reference to the Controller action for the request
-	*
-	* @var string
-	*/
-	protected $action;
-
-	/**
 	 * Returns a list of all events that will fire in the controller during it's lifecycle.
 	 * You can override this function to add you own listener callbacks
 	 *
@@ -181,7 +167,7 @@ abstract class BaseEvent implements \CakeEventListener {
 	* @return void
 	*/
 	public function afterPaginate(\CakeEvent $event) {
-		return $event->subject->items;
+
 	}
 
 	/**
