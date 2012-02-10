@@ -38,25 +38,25 @@ abstract class BaseEvent implements \CakeEventListener {
 	 */
 	public function implementedEvents() {
 		return array(
-			'Crud.init'				=> array('callable' => 'init', 'passParams' => true),
+			'Crud.init'				=> array('callable' => 'init'),
 
-			'Crud.beforePaginate'	=> 'beforePaginate',
-			'Crud.afterPaginate'	=> array('callable' => 'afterPaginate', 'passParams' => true),
+			'Crud.beforePaginate'	=> array('callable' => 'beforePaginate'),
+			'Crud.afterPaginate'	=> array('callable' => 'afterPaginate'),
 
-			'Crud.recordNotFound'	=> array('callable' => 'recordNotFound', 'passParams' => true),
-			'Crud.invalidId'		=> array('callable' => 'invalidId', 'passParams' => true),
+			'Crud.recordNotFound'	=> array('callable' => 'recordNotFound'),
+			'Crud.invalidId'		=> array('callable' => 'invalidId'),
 
-			'Crud.beforeRender'		=> 'beforeRender',
-			'Crud.beforeRedirect'	=> array('callable' => 'beforeRedirect', 'passParams' => true),
+			'Crud.beforeRender'		=> array('callable' => 'beforeRender'),
+			'Crud.beforeRedirect'	=> array('callable' => 'beforeRedirect'),
 
-			'Crud.beforeSave'		=> array('callable' => 'beforeSave', 'passParams' => true),
-			'Crud.afterSave'		=> array('callable' => 'afterSave', 'passParams' => true),
+			'Crud.beforeSave'		=> array('callable' => 'beforeSave'),
+			'Crud.afterSave'		=> array('callable' => 'afterSave'),
 
-			'Crud.beforeFind'		=> array('callable' => 'beforeFind', 'passParams' => true),
-			'Crud.afterFind'		=> array('callable' => 'afterFind', 'passParams' => true),
+			'Crud.beforeFind'		=> array('callable' => 'beforeFind'),
+			'Crud.afterFind'		=> array('callable' => 'afterFind'),
 
-			'Crud.beforeDelete'		=> array('callable' => 'beforeDelete', 'passParams' => true),
-			'Crud.afterDelete'		=> array('callable' => 'afterDelete', 'passParams' => true),
+			'Crud.beforeDelete'		=> array('callable' => 'beforeDelete'),
+			'Crud.afterDelete'		=> array('callable' => 'afterDelete'),
 		);
 	}
 
@@ -67,170 +67,130 @@ abstract class BaseEvent implements \CakeEventListener {
 	*
 	* Just set the arguments as instance properties for easier access later
 	*
-	* @param Controller $controller
-	* @param string $action
+	* @param \CakeEvent $event The CakePHP CakeEvent object.
 	* @return void
 	*/
-	public function init(\Controller $controller, $action = null) {
-		$this->controller	= $controller;
+	public function init(\CakeEvent $event) {
 
-		if (empty($action)) {
-			$action = $controller->action;
-		}
-
-		$this->action		= $action;
 	}
 
 	/**
 	* Called before a record is saved in add or edit actions
 	*
+	* @param \CakeEvent $event The CakePHP CakeEvent object.
 	* @return void
 	*/
-	public function beforeSave(\CakeRequest $request) {
+	public function beforeSave(\CakeEvent $event) {
 
 	}
 
 	/**
 	* Called before any CRUD redirection
 	*
+	* @param \CakeEvent $event The CakePHP CakeEvent object.
 	* @return void
 	*/
-	public function beforeRedirect($url = null) {
-		return $url;
+	public function beforeRedirect(\CakeEvent $event) {
+
 	}
 
 	/**
 	* Called before any find() on the model
 	*
-	* Must *always* return an array
-	*
-	* @param array $query Array with contain, conditions, fields, sort ect.
-	* @return array
+	* @param \CakeEvent $event The CakePHP CakeEvent object.
+	* @return void
 	*/
-	public function beforeFind($query) {
-		return $query;
+	public function beforeFind(\CakeEvent $event) {
+
 	}
 
 	/**
 	* After find callback
 	*
-	* Must *always* return an array
-	*
-	* @param array $data Array with model data from find()
-	* @return array
+	* @param \CakeEvent $event The CakePHP CakeEvent object.
+	* @return void
 	*/
-	public function afterFind($data) {
-		return $data;
+	public function afterFind(\CakeEvent $event) {
+
 	}
 
 	/**
 	* Called after any save() method
 	*
-	* @param boolean $success Was the save successful ?
-	* @param string $id The ID of the new record if save was successful
+	* @param \CakeEvent $event The CakePHP CakeEvent object.
 	* @return void
 	*/
-	public function afterSave($success, $id = null) {
+	public function afterSave(\CakeEvent $event) {
 
 	}
 
 	/**
 	* Called before cake's own render()
 	*
+	* \CakeEvent $event The CakePHP CakeEvent object.
 	* @return void
 	*/
-	public function beforeRender() {
+	public function beforeRender(\CakeEvent $event) {
 
 	}
 
 	/**
 	* Called before any delete() action
 	*
-	* @param string $id The ID of the record that will be deleted
+	* @param \CakeEvent $event The CakePHP CakeEvent object.
 	* @return void
 	*/
-	public function beforeDelete($id) {
+	public function beforeDelete(\CakeEvent $event) {
 
 	}
 
 	/**
 	* Called after any delete() action
 	*
-	* @param boolean $success Was the delete successful ?
-	* @param string $id The ID of the deleted record
+	* @param \CakeEvent $event The CakePHP CakeEvent object.
 	* @return void
 	*/
-	public function afterDelete($success, $id) {
+	public function afterDelete(\CakeEvent $event) {
 
 	}
 
 	/**
 	* Called if a find() did not return any records
 	*
-	* @param string $id The ID of the record we tried to find
+	* @param \CakeEvent $event The CakePHP CakeEvent object.
 	* @return void
 	*/
-	public function recordNotFound($id) {
+	public function recordNotFound(\CakeEvent $event) {
 
 	}
 
 	/**
 	* Called right before any paginate() method
 	*
+	* @param \CakeEvent $event The CakePHP CakeEvent object.
 	* @return void
 	*/
-	public function beforePaginate() {
+	public function beforePaginate(\CakeEvent $event) {
 
 	}
 
 	/**
 	* Called right after any paginate() method
 	*
+	* @param \CakeEvent $event The CakePHP CakeEvent object.
 	* @return void
 	*/
-	public function afterPaginate($result) {
-		return $result;
+	public function afterPaginate(\CakeEvent $event) {
+		return $event->subject->items;
 	}
 
 	/**
 	* Called if the ID format validation failed
 	*
+	* @param \CakeEvent $event The CakePHP CakeEvent object.
 	* @return void
 	*/
-	public function invalidId($id) {
+	public function invalidId(\CakeEvent $event) {
 
-	}
-
-	/**
-	 * Check about they called action, is whitelisted or blacklisted
-	 * Depening on the mode.
-	 *
-	 * Modes:
-	 * only => only if in array (whitelist)
-	 * not	=> only if NOT in array (blacklist)
-	 *
-	 * @param string $mode
-	 * @param mixed $actions
-	 *
-	 * @return boolean
-	 */
-	protected function shouldProcess($mode, $actions = array()) {
-		if(is_string($actions)) {
-			$actions = array($actions);
-		}
-
-		switch ($mode) {
-			case 'only':
-				return in_array($this->action, $actions);
-				break;
-
-			case 'not':
-				return !in_array($this->action, $actions);
-				break;
-
-			default:
-				throw new \Exception('Invalid mode');
-				break;
-		}
 	}
 }

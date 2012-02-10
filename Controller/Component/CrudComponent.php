@@ -30,7 +30,7 @@ class CrudComponent extends Component {
 	* @platform
 	* @var array
 	*/
-	protected $_actionMap = array(
+	protected $actionMap = array(
 		'index'			=> 'index',
 		'add'			=> 'add',
 		'edit'			=> 'edit',
@@ -52,7 +52,7 @@ class CrudComponent extends Component {
 	* @platform
 	* @var array
 	*/
-	protected $_viewMap = array(
+	protected $viewMap = array(
 		'index'			=> 'index',
 		'add'			=> 'form',
 		'edit'			=> 'form',
@@ -110,7 +110,7 @@ class CrudComponent extends Component {
 		}
 
 		// Don't do anything if the action isn't mapped
-		if (!array_key_exists($this->action, $this->_actionMap)) {
+		if (!array_key_exists($this->action, $this->actionMap)) {
 			return;
 		}
 
@@ -128,19 +128,19 @@ class CrudComponent extends Component {
 	public function executeAction($action = null, $args = array()) {
 		// Always attach the default callback object
 		$this->eventManager->attach(new Crud\Event\Base());
-		$this->eventManager->dispatch(new CakeEvent('Crud.init', $this, array($this->controller)));
+		$this->eventManager->dispatch(new CakeEvent('Crud.init', $this, $this->getSubject()));
 
-		$this->modelClassName = $this->controller->modelClass;
-		$this->modelClass = $this->controller->{$this->modelClassName};
+		$this->modelName = $this->controller->modelClass;
+		$this->model 	 = $this->controller->{$this->modelName};
 
 		$action = $action ?: $this->action;
 
 		// Execute the default action, inside this component
-		call_user_func_array(array($this, $this->_actionMap[$this->action] . 'Action'), $args);
+		call_user_func_array(array($this, $this->actionMap[$this->action] . 'Action'), $args);
 
 		$view = $this->action;
-		if (array_key_exists($this->action, $this->_viewMap)) {
-			$view = $this->_viewMap[$this->action];
+		if (array_key_exists($this->action, $this->viewMap)) {
+			$view = $this->viewMap[$this->action];
 		}
 
 		// Render the file based on action name
@@ -203,11 +203,11 @@ class CrudComponent extends Component {
 	*/
 	public function mapActionView($action, $view = null) {
 		if (is_array($action)) {
-			$this->_viewMap = $this->_viewMap + $action;
+			$this->viewMap = $this->viewMap + $action;
 			return;
 		}
 
-		$this->_viewMap[$action] = $view;
+		$this->viewMap[$action] = $view;
 	}
 
 	/**
@@ -224,6 +224,24 @@ class CrudComponent extends Component {
 	}
 
 	/**
+	* Create a CakeEvent subject with the required properties
+	*
+	* @param array $additional Additional properties for the subject
+	* @return \Crud\Subject
+	*/
+	protected function getSubject($additional = array()) {
+		$subject = new Crud\Subject();
+		$subject->self			= $this;
+		$subject->controller	= $this->controller;
+		$subject->model 		= $this->model;
+		$subject->action		= $this->action;
+		$subject->request		= $this->request;
+		$subject->set($additional);
+
+		return $subject;
+	}
+
+	/**
 	* Generic index action
 	*
 	* Triggers the following callbacks
@@ -237,15 +255,15 @@ class CrudComponent extends Component {
 	* @return void
 	*/
 	protected function indexAction() {
-		$this->eventManager->dispatch(new CakeEvent('Crud.beforePaginate', $this));
+		$this->eventManager->dispatch(new CakeEvent('Crud.beforePaginate', $this->getSubject()));
 
 		$items = $this->controller->paginate();
 
-		$this->eventManager->dispatch($event = new CakeEvent('Crud.afterPaginate', $this, array($items)));
-		$items = $event->result;
+		$this->eventManager->dispatch(new CakeEvent('Crud.afterPaginate', $subject = $this->getSubject(compact('items'))));
+		$items = $subject->items;
 
 		$this->controller->set(compact('items'));
-		$this->eventManager->dispatch(new CakeEvent('Crud.beforeRender', $this));
+		$this->eventManager->dispatch(new CakeEvent('Crud.beforeRender', $this->getSubject()));
 	}
 
 	/**
@@ -263,20 +281,20 @@ class CrudComponent extends Component {
 	*/
 	protected function addAction() {
 		if ($this->request->is('post')) {
-			$this->eventManager->dispatch(new CakeEvent('Crud.beforeSave', $this, array($this->request)));
-			if ($this->modelClass->saveAll($this->request->data, array('validate' => 'first', 'atomic' => true))) {
-				$this->eventManager->dispatch(new CakeEvent('Crud.afterSave', $this, array(true, $this->modelClass->id)));
-				$this->Session->setFlash(__d('common', 'Succesfully created %s', Inflector::humanize($this->modelClassName)), 'flash/success');
+			$this->eventManager->dispatch(new CakeEvent('Crud.beforeSave', $this->getSubject()));
+			if ($this->model->saveAll($this->request->data, array('validate' => 'first', 'atomic' => true))) {
+				$this->eventManager->dispatch(new CakeEvent('Crud.afterSave', $this->getSubject(array('success' => true, 'id' => $this->model->id))));
+				$this->Session->setFlash(__d('common', 'Succesfully created %s', Inflector::humanize($this->modelName)), 'flash/success');
 				$this->redirect(array('action' => 'index'));
 			} else {
-				$this->eventManager->dispatch(new CakeEvent('Crud.afterSave', $this, array(false, null)));
-				$this->Session->setFlash(__d('common', 'Could not create %s', Inflector::humanize($this->modelClassName)), 'flash/error');
+				$this->eventManager->dispatch(new CakeEvent('Crud.afterSave', $this->getSubject(array('success' => false))));
+				$this->Session->setFlash(__d('common', 'Could not create %s', Inflector::humanize($this->modelName)), 'flash/error');
 				// Make sure to merge any changed data in the model into the post data
-				$this->request->data = Set::merge($this->request->data, $this->modelClass->data);
+				$this->request->data = Set::merge($this->request->data, $this->model->data);
 			}
 		}
 
-		$this->eventManager->dispatch(new CakeEvent('Crud.beforeRender', $this));
+		$this->eventManager->dispatch(new CakeEvent('Crud.beforeRender', $this->getSubject()));
 	}
 
 	/**
@@ -299,40 +317,39 @@ class CrudComponent extends Component {
 		if (empty($id)) {
 			$id = $this->getIdFromRequest();
 		}
-		$this->_validateId($id);
+		$this->validateId($id);
 
 		if ($this->request->is('put')) {
-			$this->eventManager->dispatch(new CakeEvent('Crud.beforeSave', $this, array($this->request)));
-			if ($this->modelClass->saveAll($this->request->data, array('validate' => 'first', 'atomic' => true))) {
-				$this->eventManager->dispatch(new CakeEvent('Crud.afterSave', $this, array(true, $this->modelClass->id)));
-				$this->Session->setFlash(__d('common', '%s was succesfully updated', ucfirst(Inflector::humanize($this->modelClassName))), 'flash/success');
+			$this->eventManager->dispatch(new CakeEvent('Crud.beforeSave', $this->getSubject(compact('id'))));
+			if ($this->model->saveAll($this->request->data, array('validate' => 'first', 'atomic' => true))) {
+				$this->eventManager->dispatch(new CakeEvent('Crud.afterSave', $this->getSubject(array('id' => $id, 'success' => true))));
+				$this->Session->setFlash(__d('common', '%s was succesfully updated', ucfirst(Inflector::humanize($this->modelName))), 'flash/success');
 				$this->redirect(array('action' => 'index'));
 			} else {
-				$this->eventManager->dispatch(new CakeEvent('Crud.afterSave', $this, array(false, null)));
-				$this->Session->setFlash(__d('common', 'Could not update %s', Inflector::humanize($this->modelClassName)), 'flash/error');
+				$this->eventManager->dispatch(new CakeEvent('Crud.afterSave', $this->getSubject(array('id' => $id, 'success' => false))));
+				$this->Session->setFlash(__d('common', 'Could not update %s', Inflector::humanize($this->modelName)), 'flash/error');
 			}
 		} else {
 			$query = array();
-			$query['conditions'] = array($this->modelClass->escapeField() => $id);
-			$this->eventManager->dispatch($event = new CakeEvent('Crud.beforeFind', $this, array($query)));
-			$query = $event->result;
+			$query['conditions'] = array($this->model->escapeField() => $id);
+			$this->eventManager->dispatch(new CakeEvent('Crud.beforeFind', $subject = $this->getSubject(compact('query'))));
+			$query = $subject->query;
 
-			$this->request->data = $this->modelClass->find('first', $query);
+			$this->request->data = $this->model->find('first', $query);
 			if (empty($this->request->data)) {
-				$this->eventManager->dispatch(new CakeEvent('Crud.recordNotFound', $this, array($id)));
-				$this->Session->setFlash(__d('common', 'Could not find %s', Inflector::humanize($this->modelClassName)), 'flash/error');
+				$this->eventManager->dispatch(new CakeEvent('Crud.recordNotFound', $this->getSubject(compact('id'))));
+				$this->Session->setFlash(__d('common', 'Could not find %s', Inflector::humanize($this->modelName)), 'flash/error');
 				$this->redirect(array('action' => 'index'));
 			}
 
-			$this->eventManager->dispatch($event = new CakeEvent('Crud.afterFind', $this, array($this->request->data)));
-			$this->request->data = $event->result;
+			$this->eventManager->dispatch(new CakeEvent('Crud.afterFind', $this->getSubject(compact('id'))));
 
 			// Make sure to merge any changed data in the model into the post data
-			$this->request->data = Set::merge($this->request->data, $this->modelClass->data);
+			$this->request->data = Set::merge($this->request->data, $this->model->data);
 		}
 
 		// Trigger a beforeRender
-		$this->eventManager->dispatch(new CakeEvent('Crud.beforeRender', $this));
+		$this->eventManager->dispatch(new CakeEvent('Crud.beforeRender', $this->getSubject()));
 	}
 
 	/**
@@ -350,38 +367,37 @@ class CrudComponent extends Component {
 	* @return void
 	*/
 	protected function viewAction($id = null) {
-
 		if (empty($id)) {
 			$id = $this->getIdFromRequest();
 		}
 
-		$this->_validateId($id);
+		$this->validateId($id);
 
 		// Build conditions
 		$query = array();
-		$query['conditions'] = array($this->modelClass->escapeField() => $id);
-		$this->eventManager->dispatch($event = new CakeEvent('Crud.beforeFind', $this, array($query)));
-		$query = $event->result;
+		$query['conditions'] = array($this->model->escapeField() => $id);
+		$this->eventManager->dispatch(new CakeEvent('Crud.beforeFind', $subject = $this->getSubject(compact('id', 'query'))));
+		$query = $subject->query;
 
 		// Try and find the database record
-		$item = $this->modelClass->find('first', $query);
+		$item = $this->model->find('first', $query);
 
 		// We could not find any record match the conditions in query
 		if (empty($item)) {
-			$this->eventManager->dispatch(new CakeEvent('Crud.recordNotFound', $this, array($id)));
-			$this->Session->setFlash(__d('common', 'Could not find %s', Inflector::humanize($this->modelClassName)), 'flash/error');
+			$this->eventManager->dispatch(new CakeEvent('Crud.recordNotFound', $this->getSubject(compact('id'))));
+			$this->Session->setFlash(__d('common', 'Could not find %s', Inflector::humanize($this->modelName)), 'flash/error');
 			$this->redirect(array('action' => 'index'));
 		}
 
 		// We found a record, trigger an afterFind
-		$this->eventManager->dispatch($event = new CakeEvent('Crud.afterFind', $this, array($item)));
-		$item = $event->result;
+		$this->eventManager->dispatch(new CakeEvent('Crud.afterFind', $subject = $this->getSubject(compact('id', 'item'))));
+		$item = $subject->item;
 
 		// Push it to the view
 		$this->controller->set(compact('item'));
 
 		// Trigger a beforeRender
-		$this->eventManager->dispatch(new CakeEvent('Crud.beforeRender', $this, array($query)));
+		$this->eventManager->dispatch(new CakeEvent('Crud.beforeRender', $this->getSubject(compact('id', 'item'))));
 	}
 
 	/**
@@ -402,44 +418,50 @@ class CrudComponent extends Component {
 			$id = $this->getIdFromRequest();
 		}
 
-		$this->_validateId($id);
+		$this->validateId($id);
 		$query = array();
-		$query['conditions'] = array($this->modelClass->escapeField() => $id);
-		$this->eventManager->dispatch($event = new CakeEvent('Crud.beforeFind', $this, array($query)));
-		$query = $event->result;
+		$query['conditions'] = array($this->model->escapeField() => $id);
+		$this->eventManager->dispatch(new CakeEvent('Crud.beforeFind', $subject = $this->getSubject(compact('id', 'query'))));
+		$query = $subject->query;
 
-		$count = $this->modelClass->find('count', $query);
+		$count = $this->model->find('count', $query);
 		if (empty($count)) {
-			$this->eventManager->dispatch(new CakeEvent('Crud.recordNotFound', $this, array($id)));
-			$this->Session->setFlash(__d('common', 'Could not find %s', Inflector::humanize($this->modelClassName)), 'flash/error');
+			$this->eventManager->dispatch(new CakeEvent('Crud.recordNotFound', $this->getSubject(compact('id'))));
+			$this->Session->setFlash(__d('common', 'Could not find %s', Inflector::humanize($this->modelName)), 'flash/error');
 			$this->redirect(array('action' => 'index'));
 		}
 
-		$this->eventManager->dispatch($event = new CakeEvent('Crud.beforeDelete', $this, array($id)));
+		$this->eventManager->dispatch($event = new CakeEvent('Crud.beforeDelete', $this->getSubject(compact('id'))));
 		if ($event->isStopped()) {
-			$this->Session->setFlash(__d('common', 'Could not delete %s', Inflector::humanize($this->modelClassName)), 'flash/error');
+			$this->Session->setFlash(__d('common', 'Could not delete %s', Inflector::humanize($this->modelName)), 'flash/error');
 			$this->redirect(array('action' => 'index'));
 			return;
 		}
 
 		if ($this->request->is('delete')) {
-			if ($this->modelClass->delete($id)) {
-				$this->Session->setFlash(__d('common', 'Successfully deleted %s', Inflector::humanize($this->modelClassName)), 'flash/success');
-				$this->eventManager->dispatch(new CakeEvent('Crud.afterDelete', $this, array($id, true)));
+			if ($this->model->delete($id)) {
+				$this->Session->setFlash(__d('common', 'Successfully deleted %s', Inflector::humanize($this->modelName)), 'flash/success');
+				$this->eventManager->dispatch(new CakeEvent('Crud.afterDelete', $this->getSubject(array('id' => $id, 'success' => true))));
 			} else {
-				$this->Session->setFlash(__d('common', 'Could not delete %s', Inflector::humanize($this->modelClassName)), 'flash/error');
-				$this->eventManager->dispatch(new CakeEvent('Crud.afterDelete', $this, array($id, false)));
+				$this->Session->setFlash(__d('common', 'Could not delete %s', Inflector::humanize($this->modelName)), 'flash/error');
+				$this->eventManager->dispatch(new CakeEvent('Crud.afterDelete', $this->getSubject(array('id' => $id, 'success' => false))));
 			}
 		} else {
-			$this->Session->setFlash(__d('common', 'Invalid HTTP request', Inflector::humanize($this->modelClassName)), 'flash/error');
+			$this->Session->setFlash(__d('common', 'Invalid HTTP request', Inflector::humanize($this->modelName)), 'flash/error');
 		}
 
 		$this->redirect(array('action' => 'index'));
 	}
 
+	/**
+	* Called for all redirects inside CRUD
+	*
+	* @param array|null $url
+	* @return void
+	*/
 	protected function redirect($url = null) {
-		$this->eventManager->dispatch($event = new CakeEvent('Crud.beforeRedirect', $this, array($url)));
-		$url = $event->result;
+		$this->eventManager->dispatch(new CakeEvent('Crud.beforeRedirect', $subject = $this->getSubject(compact('url'))));
+		$url = $subject->url;
 
 		$this->controller->redirect($url);
 	}
@@ -453,7 +475,7 @@ class CrudComponent extends Component {
 	*
 	* @return boolean
 	*/
-	protected function _validateId($id) {
+	protected function validateId($id) {
 		if (empty($this->settings['validateId']) || $this->settings['validateId'] === 'uuid') {
 			$valid = Validation::uuid($id);
 		} else {
@@ -461,7 +483,7 @@ class CrudComponent extends Component {
 		}
 
 		if (!$valid) {
-			$this->eventManager->dispatch(new CakeEvent('Crud.invalidId', $this, array($id)));
+			$this->eventManager->dispatch(new CakeEvent('Crud.invalidId', $this->getSubject(compact('id'))));
 			$this->redirect($this->controller->referer());
 		}
 	}
