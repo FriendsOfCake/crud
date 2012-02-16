@@ -187,7 +187,7 @@ class CrudComponent extends Component {
 
 		$pos = array_search($action, $this->controller->methods);
 		if (false !== $pos) {
-			unset($this->controller->methods[$post]);
+			unset($this->controller->methods[$pos]);
 		}
 	}
 
@@ -230,8 +230,8 @@ class CrudComponent extends Component {
 	* @return \Crud\Subject
 	*/
 	protected function getSubject($additional = array()) {
-		$subject = new Crud\Subject();
-		$subject->self			= $this;
+		$subject				= new Crud\Subject();
+		$subject->crud			= $this;
 		$subject->controller	= $this->controller;
 		$subject->model 		= $this->model;
 		$subject->action		= $this->action;
