@@ -74,6 +74,10 @@ class CrudComponent extends Component {
 	* @return void
 	*/
 	public function initialize(Controller $controller) {
+		if ($controller->name == 'CakeError') {
+			return true;
+		}
+
 		$controller->methods = array_keys(array_flip($controller->methods) + array_flip($this->settings['actions']));
 
 		// Create some easy accessible class properties
