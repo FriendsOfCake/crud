@@ -454,7 +454,7 @@ class CrudComponent extends Component {
 			$this->Session->setFlash(__d('common', 'Invalid HTTP request', Inflector::humanize($this->modelName)), 'flash/error');
 		}
 
-		$this->redirect(array('action' => 'index'));
+		$this->redirect($this->controller->referer(array('action' => 'index')));
 	}
 
 	/**
