@@ -16,11 +16,44 @@
 class CrudComponent extends Component {
 
 	/**
-	* Components used internally
+	* Reference to a Session component
 	*
+	* @cakephp
 	* @var array
 	*/
 	public $components = array('Session');
+
+	/**
+	* The current controller action
+	*
+	* @platform
+	* @var string
+	*/
+	protected $action;
+
+	/**
+	* Reference to the current controller
+	*
+	* @platform
+	* @var Controller
+	*/
+	protected $controller;
+
+	/**
+	* Reference to the current request
+	*
+	* @platform
+	* @var CakeRequest
+	*/
+	protected $request;
+
+	/**
+	* Reference to the current event manager
+	*
+	* @platform
+	* @var CakeEventManager
+	*/
+	protected $eventManager;
 
 	/**
 	* A map of the controller action and what CRUD action we should call
@@ -132,12 +165,12 @@ class CrudComponent extends Component {
 	public function executeAction($action = null, $args = array()) {
 		// Always attach the default callback object
 		$this->eventManager->attach(new Crud\Event\Base());
-		$this->eventManager->dispatch(new CakeEvent('Crud.init', $this, $this->getSubject()));
 
 		$this->modelName = $this->controller->modelClass;
 		$this->model 	 = $this->controller->{$this->modelName};
-
 		$action = $action ?: $this->action;
+
+		$this->eventManager->dispatch(new CakeEvent('Crud.init', $this->getSubject()));
 
 		// Execute the default action, inside this component
 		call_user_func_array(array($this, $this->actionMap[$this->action] . 'Action'), $args);
