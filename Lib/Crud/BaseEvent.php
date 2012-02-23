@@ -14,7 +14,7 @@ namespace Crud;
  * @copyright Nodes ApS, 2012
  * @abstract
  */
-abstract class BaseEvent implements \CakeEventListener {
+abstract class BaseEvent extends \Object implements \CakeEventListener {
 
 	/**
 	 * Returns a list of all events that will fire in the controller during it's lifecycle.

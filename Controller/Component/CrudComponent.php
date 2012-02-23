@@ -273,6 +273,7 @@ class CrudComponent extends Component {
 		$subject->model 		= $this->model;
 		$subject->action		= $this->action;
 		$subject->request		= $this->request;
+		$subject->response		= $this->controller->response;
 		$subject->set($additional);
 
 		return $subject;
