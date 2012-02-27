@@ -247,6 +247,10 @@ class CrudComponent extends Component {
 		$this->viewMap[$action] = $view;
 	}
 
+	public function mapAction($action, $type) {
+		$this->actionMap[$action] = $type;
+	}
+
 	/**
 	* Helper method to get the passed ID to an action
 	*
