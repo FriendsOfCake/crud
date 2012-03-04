@@ -166,9 +166,9 @@ class CrudComponent extends Component {
 		// Always attach the default callback object
 		$this->eventManager->attach(new Crud\Event\Base());
 
-		$this->modelName = $this->controller->modelClass;
-		$this->model 	 = $this->controller->{$this->modelName};
-		$action = $action ?: $this->action;
+		$this->modelName	= $this->controller->modelClass;
+		$this->model 		= $this->controller->{$this->modelName};
+		$action				= $action ?: $this->action;
 
 		$this->eventManager->dispatch(new CakeEvent('Crud.init', $this->getSubject()));
 
@@ -247,8 +247,11 @@ class CrudComponent extends Component {
 		$this->viewMap[$action] = $view;
 	}
 
-	public function mapAction($action, $type) {
+	public function mapAction($action, $type, $enable = true) {
 		$this->actionMap[$action] = $type;
+		if ($enable) {
+			$this->enableAction($action);
+		}
 	}
 
 	/**
