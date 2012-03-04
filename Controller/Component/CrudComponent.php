@@ -328,9 +328,9 @@ class CrudComponent extends Component {
 		if ($this->request->is('post')) {
 			$this->eventManager->dispatch(new CakeEvent('Crud.beforeSave', $this->getSubject()));
 			if ($this->model->saveAll($this->request->data, array('validate' => 'first', 'atomic' => true))) {
-				$this->eventManager->dispatch(new CakeEvent('Crud.afterSave', $this->getSubject(array('success' => true, 'id' => $this->model->id))));
+				$this->eventManager->dispatch(new CakeEvent('Crud.afterSave', $subject = $this->getSubject(array('success' => true, 'id' => $this->model->id))));
 				$this->Session->setFlash(__d('common', 'Succesfully created %s', Inflector::humanize($this->modelName)), 'success');
-				$this->redirect(array('action' => 'index'));
+				$this->redirect($subject, array('action' => 'index'));
 			} else {
 				$this->eventManager->dispatch(new CakeEvent('Crud.afterSave', $this->getSubject(array('success' => false))));
 				$this->Session->setFlash(__d('common', 'Could not create %s', Inflector::humanize($this->modelName)), 'error');
@@ -367,9 +367,9 @@ class CrudComponent extends Component {
 		if ($this->request->is('put')) {
 			$this->eventManager->dispatch(new CakeEvent('Crud.beforeSave', $this->getSubject(compact('id'))));
 			if ($this->model->saveAll($this->request->data, array('validate' => 'first', 'atomic' => true))) {
-				$this->eventManager->dispatch(new CakeEvent('Crud.afterSave', $this->getSubject(array('id' => $id, 'success' => true))));
+				$this->eventManager->dispatch(new CakeEvent('Crud.afterSave', $subject = $this->getSubject(array('id' => $id, 'success' => true))));
 				$this->Session->setFlash(__d('common', '%s was succesfully updated', ucfirst(Inflector::humanize($this->modelName))), 'success');
-				$this->redirect(array('action' => 'index'));
+				$this->redirect($subject, array('action' => 'index'));
 			} else {
 				$this->eventManager->dispatch(new CakeEvent('Crud.afterSave', $this->getSubject(array('id' => $id, 'success' => false))));
 				$this->Session->setFlash(__d('common', 'Could not update %s', Inflector::humanize($this->modelName)), 'error');
@@ -382,9 +382,9 @@ class CrudComponent extends Component {
 
 			$this->request->data = $this->model->find('first', $query);
 			if (empty($this->request->data)) {
-				$this->eventManager->dispatch(new CakeEvent('Crud.recordNotFound', $this->getSubject(compact('id'))));
+				$this->eventManager->dispatch(new CakeEvent('Crud.recordNotFound', $subject = $this->getSubject(compact('id'))));
 				$this->Session->setFlash(__d('common', 'Could not find %s', Inflector::humanize($this->modelName)), 'error');
-				$this->redirect(array('action' => 'index'));
+				$this->redirect($subject, array('action' => 'index'));
 			}
 
 			$this->eventManager->dispatch(new CakeEvent('Crud.afterFind', $this->getSubject(compact('id'))));
@@ -429,9 +429,9 @@ class CrudComponent extends Component {
 
 		// We could not find any record match the conditions in query
 		if (empty($item)) {
-			$this->eventManager->dispatch(new CakeEvent('Crud.recordNotFound', $this->getSubject(compact('id'))));
+			$this->eventManager->dispatch(new CakeEvent('Crud.recordNotFound', $subject = $this->getSubject(compact('id'))));
 			$this->Session->setFlash(__d('common', 'Could not find %s', Inflector::humanize($this->modelName)), 'error');
-			$this->redirect(array('action' => 'index'));
+			$this->redirect($subject, array('action' => 'index'));
 		}
 
 		// We found a record, trigger an afterFind
@@ -471,31 +471,30 @@ class CrudComponent extends Component {
 
 		$count = $this->model->find('count', $query);
 		if (empty($count)) {
-			$this->eventManager->dispatch(new CakeEvent('Crud.recordNotFound', $this->getSubject(compact('id'))));
+			$this->eventManager->dispatch(new CakeEvent('Crud.recordNotFound', $subject = $this->getSubject(compact('id'))));
 			$this->Session->setFlash(__d('common', 'Could not find %s', Inflector::humanize($this->modelName)), 'error');
-			$this->redirect(array('action' => 'index'));
+			$this->redirect($subject, array('action' => 'index'));
 		}
 
-		$this->eventManager->dispatch($event = new CakeEvent('Crud.beforeDelete', $this->getSubject(compact('id'))));
+		$this->eventManager->dispatch($event = new CakeEvent('Crud.beforeDelete', $subject = $this->getSubject(compact('id'))));
 		if ($event->isStopped()) {
 			$this->Session->setFlash(__d('common', 'Could not delete %s', Inflector::humanize($this->modelName)), 'error');
-			$this->redirect(array('action' => 'index'));
-			return;
+			$this->redirect($subject, array('action' => 'index'));
 		}
 
 		if ($this->request->is('delete')) {
 			if ($this->model->delete($id)) {
 				$this->Session->setFlash(__d('common', 'Successfully deleted %s', Inflector::humanize($this->modelName)), 'success');
-				$this->eventManager->dispatch(new CakeEvent('Crud.afterDelete', $this->getSubject(array('id' => $id, 'success' => true))));
+				$this->eventManager->dispatch(new CakeEvent('Crud.afterDelete', $subject = $this->getSubject(array('id' => $id, 'success' => true))));
 			} else {
 				$this->Session->setFlash(__d('common', 'Could not delete %s', Inflector::humanize($this->modelName)), 'error');
-				$this->eventManager->dispatch(new CakeEvent('Crud.afterDelete', $this->getSubject(array('id' => $id, 'success' => false))));
+				$this->eventManager->dispatch(new CakeEvent('Crud.afterDelete', $subject = $this->getSubject(array('id' => $id, 'success' => false))));
 			}
 		} else {
 			$this->Session->setFlash(__d('common', 'Invalid HTTP request', Inflector::humanize($this->modelName)), 'error');
 		}
 
-		$this->redirect($this->controller->referer(array('action' => 'index')));
+		$this->redirect($subject, $this->controller->referer(array('action' => 'index')));
 	}
 
 	/**
@@ -504,14 +503,15 @@ class CrudComponent extends Component {
 	* @param array|null $url
 	* @return void
 	*/
-	protected function redirect($url = null) {
+	protected function redirect($subject, $url = null) {
 		if (!empty($this->request->data['redirect_url'])) {
 			$url = $this->request->data['redirect_url'];
 		} elseif (!empty($this->request->query['redirect_url'])) {
 			$url = $this->request->query['redirect_url'];
 		}
 
-		$this->eventManager->dispatch(new CakeEvent('Crud.beforeRedirect', $subject = $this->getSubject(compact('url'))));
+		$subject->url = $url;
+		$this->eventManager->dispatch(new CakeEvent('Crud.beforeRedirect', $subject));
 		$url = $subject->url;
 
 		$this->controller->redirect($url);
@@ -534,8 +534,8 @@ class CrudComponent extends Component {
 		}
 
 		if (!$valid) {
-			$this->eventManager->dispatch(new CakeEvent('Crud.invalidId', $this->getSubject(compact('id'))));
-			$this->redirect($this->controller->referer());
+			$this->eventManager->dispatch(new CakeEvent('Crud.invalidId', $subject = $this->getSubject(compact('id'))));
+			$this->redirect($subject, $this->controller->referer());
 		}
 	}
 }
