@@ -505,6 +505,12 @@ class CrudComponent extends Component {
 	* @return void
 	*/
 	protected function redirect($url = null) {
+		if (!empty($this->request->data['redirect_url'])) {
+			$url = $this->request->data['redirect_url'];
+		} elseif (!empty($this->request->query['redirect_url'])) {
+			$url = $this->request->query['redirect_url'];
+		}
+
 		$this->eventManager->dispatch(new CakeEvent('Crud.beforeRedirect', $subject = $this->getSubject(compact('url'))));
 		$url = $subject->url;
 
