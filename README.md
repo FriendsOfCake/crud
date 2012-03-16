@@ -21,7 +21,9 @@ Make sure Cake loads the plugin by adding the following to your  app/Config/boot
 CakePlugin::load('Crud', array('bootstrap' => true));
 
 In your app controller make sure to load the Crud component
-<code><pre><?php
+
+```php
+<?php
 /**
  * Application wide controller
  *
@@ -43,22 +45,29 @@ abstract class AppController extends Controller {
     );
 }
 ?>
-</pre></code>
+```
 
 ## Configuration
 We only use routes without prefix, "admin_" is also supported by default 
 In the code example above, we pass in an actions array with all the controller actions we wish the Crud component to handle - you can easily omit some of the actions
-<code><pre>public $components = array(
+
+```php
+<?php
+public $components = array(
     // Enable CRUD actions
     'Crud.Crud' => array(
-        'actions' => array('index', 'add', 'edit', 'view') // All actions but delete() will be implemented
+         // All actions but delete() will be implemented
+        'actions' => array('index', 'add', 'edit', 'view') 
     )
 );
-</pre></code>
+```
+
 In the above example, if /delete is called on the controller, cake will raise it's normal error as if nothing has happend
 
 You can enable and disable Crud actions on the fly
-<code><pre><?php
+
+```php
+<?php
 /**
  * Application wide controller
  *
@@ -89,10 +98,11 @@ abstract class AppController extends Controller {
         parent::beforeFilter();
     }
 }
-</pre></code>
+```
+
 You can also change the default view used for a Crud action
 
-<code><pre>
+```php
 public function beforeFilter() {
     // Change the view for add crud action to be "public_add.ctp"
     $this->Crud->mapActionView('add',  'public_add');
@@ -105,102 +115,283 @@ public function beforeFilter() {
     
     parent::beforeFilter();
 }
-</pre></code>
-Convention
+```
+
+## Convention
+
 The Crud component always operates on the modelClass of your controller, that is the first model in your $uses array
 
 By default Crud component asumes your add and edit actions is identical, and will attempt to render the "form.ctp" file 
 
 There is no view for delete action, it will always just redirect
 
-Event system
+### Event system
 
 The CRUD plugin uses the new event system introduced in Cake 2.1
 
-Global accessible subject properties
+#### Global accessible subject properties
 The subject object can be accessed through $event->subject in all event callbacks
 
+<table>
+<thead>
+	<tr>
+	 	<th>Name</th>
+	 	<th>Value Type</th>
+		<th>Description</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>self</td>
+		<td>CrudComponent</td>
+		<td>A reference to the CRUD component</td>
+	</tr>
+	<tr>
+		<td>controller</td>
+		<td>AppController</td>
+		<td>A reference to the controller handling the current request</td>
+	</tr>
+	<tr>
+		<td>model</td>
+		<td>AppModel</td>
+		<td>A reference to the model Crud is working on</td>
+	</tr>
+	<tr>
+		<td>request</td>
+		<td>CakeRequest</td>
+		<td>A reference to the CakeRequest for the current request</td>
+	</tr>
+	<tr>	
+		<td>action</td>
+		<td>string</td>
+		<td>The current controller action being requested</td>
+	</tr>
+</tbody>
+</table>
 
-Name  Value Type	Description
-self	CrudComponent	A reference to the CRUD component
-controller	AppController	A reference to the controller handling the current request
-model	AppModel	A reference to the model Crud is working on
-request	CakeRequest	A reference to the CakeRequest for the current request
-action	string	The current controller action being requested
-Crud actions and their events
+### Crud actions and their events
 All Crud events always return void, any modifications should be done to the Crud\Subject object
 
-
 All Crud events take exactly one parameter, \CakeEvent $event
+
 The CRUD component emit the following events
 
-index()
-Event	Subject modifiers	Description
-Crud.init	
-Initialize method
-Crud.beforePaginate	$subject->controller->paginate	Modify any pagination settings
-Crud.afterPaginate	$subject->items	You can modify the pagination result if needed, passed as $items
-Crud.beforeRender	
-Invoked right before the view will be rendered
-add()
-Event	Subject modifiers	Description
-Crud.init	
-Initialize method
-Crud.beforeSave	
-Access and modify the data from the $request object
-Crud.afterSave	
-$id is only available if the save was successful
-Crud.beforeRender	
-Invoked right before the view will be rendered
-edit()
-Event	Subject modifiers	Description
-Crud.init	
-Initialize method
-Crud.beforeSave	
-Access and modify the data from the $request object
-Crud.afterSave	
-$id is only available if the save was successful
-Crud.beforeFind	$subject->query	Modify the $queryData array and return it
-Crud.recordNotFound	
-If beforeFind could not find a record
-Crud.afterFind	
-Modify the record found by find() and return it
-Crud.beforeRender	
-Invoked right before the view will be rendered
-view()
-Event	Subject modifiers	Description
-Crud.init	
-Initialize method
-Crud.beforeFind	$subject->query	Modify the $queryData array and return it
-Crud.recordNotFound	
-If beforeFind could not find a record
-Crud.afterFind	$subject->item	Modify the record found by find() and return it
-Crud.beforeRender	
-Invoked right before the view will be rendered
-delete()
-Event	Subject modifiers	Description
-Crud.init	
-Initialize method
-Crud.beforeFind	$subject->query	Modify the $queryData array and return it
-Crud.recordNotFound	
-If beforeFind could not find a record
-Crud.beforeDelete	
-Stop the delete by redirecting away from the action
-Crud.afterDelete	
+#### index()
 
-Crud.beforeRender	
-Invoked right before the view will be rendered
-Subscribing to an event
+<table>
+<thead>
+	<tr>
+	 	<th>Event</th>
+	 	<th>Subject modifiers</th>
+		<th>Description</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>Crud.init</td>
+		<td>N/A</td>
+		<td>Initialize method</td>
+	</tr>
+	<tr>
+		<td>Crud.beforePaginate</td>
+		<td>$subject->controller->paginate</td>
+		<td>Modify any pagination settings</td>
+	</tr>
+	<tr>
+		<td>Crud.afterPaginate</td>
+		<td>$subject->items</td>
+		<td>You can modify the pagination result if needed, passed as $items</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeRender</td>
+		<td>N/A</td>
+		<td>Invoked right before the view will be rendered</td>
+	</tr>
+</tbody>
+</table>
+
+#### add()
+
+<table>
+<thead>
+	<tr>
+	 	<th>Event</th>
+	 	<th>Subject modifiers</th>
+		<th>Description</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>Crud.init</td>
+		<td>N/A</td>
+		<td>Initialize method</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeSave</td>
+		<td>N/A</td>
+		<td>Access and modify the data from the $request object</td>
+	</tr>
+	<tr>
+		<td>Crud.afterSave</td>
+		<td>$subject->id</td>
+		<td>$id is only available if the save was successful</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeRender</td>
+		<td>N/A</td>
+		<td>Invoked right before the view will be rendered</td>
+	</tr>
+</tbody>
+</table>
+
+#### edit()
+
+<table>
+<thead>
+	<tr>
+	 	<th>Event</th>
+	 	<th>Subject modifiers</th>
+		<th>Description</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>Crud.init</td>
+		<td>N/A</td>
+		<td>Initialize method</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeSave</td>
+		<td>N/A</td>
+		<td>Access and modify the data from the $request object</td>
+	</tr>
+	<tr>
+		<td>Crud.afterSave</td>
+		<td>$subject->id</td>
+		<td>$id is only available if the save was successful</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeFind</td>
+		<td>$subject->query</td>
+		<td>Modify the $query array, same as $queryParams in behavior beforeFind()</td>
+	</tr>
+	<tr>
+		<td>Crud.recordNotFound</td>
+		<td>N/A</td>
+		<td>If beforeFind could not find a record</td>
+	</tr>
+	<tr>
+		<td>Crud.afterFind</td>
+		<td>N/A</td>
+		<td>Modify the record found by find() and return it</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeRender</td>
+		<td>N/A</td>
+		<td>Invoked right before the view will be rendered</td>
+	</tr>
+</tbody>
+</table>
+
+#### view()
+
+<table>
+<thead>
+	<tr>
+	 	<th>Event</th>
+	 	<th>Subject modifiers</th>
+		<th>Description</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>Crud.init</td>
+		<td>N/A</td>
+		<td>Initialize method</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeFind</td>
+		<td>$subject->query</td>
+		<td>Modify the $query array, same as $queryParams in behavior beforeFind()</td>
+	</tr>
+	<tr>
+		<td>Crud.recordNotFound</td>
+		<td>N/A</td>
+		<td>If beforeFind could not find a record</td>
+	</tr>
+	<tr>
+		<td>Crud.afterFind</td>
+		<td>N/A</td>
+		<td>Modify the record found by find() and return it</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeRender</td>
+		<td>N/A</td>
+		<td>Invoked right before the view will be rendered</td>
+	</tr>
+</tbody>
+</table>
+
+#### delete()
+
+<table>
+<thead>
+	<tr>
+	 	<th>Event</th>
+	 	<th>Subject modifiers</th>
+		<th>Description</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>Crud.init</td>
+		<td>N/A</td>
+		<td>Initialize method</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeFind</td>
+		<td>$subject->query</td>
+		<td>Modify the $query array, same as $queryParams in behavior beforeFind()</td>
+	</tr>
+	<tr>
+		<td>Crud.recordNotFound</td>
+		<td>N/A</td>
+		<td>If beforeFind could not find a record</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeDelete</td>
+		<td>N/A</td>
+		<td>Stop the delete by redirecting away from the action</td>
+	</tr>
+	<tr>
+		<td>Crud.afterDelete</td>
+		<td>N/A</td>
+		<td>Modify the record found by find() and return it</td>
+	</tr>
+</tbody>
+</table>
+
+### Subscribing to an event
+
 I would recommend using the Event class if you need to subscribe to more than one event
-Full event class
+
+#### Full event class
+
 The event class can be anywhere, but the default is inside app/Plugin/<plugin>/Lib/Crud/Event
 
 Make sure you have configured the class loader inside app/Plugin/<plugin>/Config/bootstrap.php 
 
+```php
+<?php
+// Can use any PSR-0 autoloader
 
-nodes\Autoload::addPath(App::pluginPath('Api') . 'Lib' . DS); // Replace Api with your plugin name
+// Replace Api with your plugin name
+Nodes\Autoload::addPath(App::pluginPath('Api') . 'Lib' . DS);
+```
+
 Your Event class should look like this:
 
+```php
 <?php
 namespace Crud\Event;
 
@@ -230,23 +421,38 @@ class Demo extends \Crud\BaseEvent {
 		}
 	}
 }
+``` 
 
+and the controller
 
+```php
+<?php
 public function beforeFilter() {
     parent::beforeFilter();
     $this->getEventManager()->attach(new Crud\Event\Demo());
 }
-A lamba method
-	public function beforeFilter() {
-		parent::beforeFilter();
-		$this->getEventManager()->attach(function(\CakeEvent $event) { debug($event->subject->query); }, 'Crud.beforePaginate');
-	}
-Method in your controller
-	public function beforeFilter() {
-		parent::beforeFilter();
-		$this->getEventManager()->attach(array($this, 'demoEvent'), 'Crud.beforePaginate');
-	}
+```
 
-	public function demoEvent(\CakeEvent $event) {
-		debug($event->subject->query);
-	}
+#### A lamba method
+
+```php
+<?php
+public function beforeFilter() {
+	parent::beforeFilter();
+	$this->getEventManager()->attach(function(\CakeEvent $event) { debug($event->subject->query); }, 'Crud.beforePaginate');
+}
+```
+
+#### Method in your controller
+
+```php
+<?php
+public function beforeFilter() {
+	parent::beforeFilter();
+	$this->getEventManager()->attach(array($this, 'demoEvent'), 'Crud.beforePaginate');
+}
+
+public function demoEvent(\CakeEvent $event) {
+	debug($event->subject->query);
+}
+```
