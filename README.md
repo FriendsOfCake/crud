@@ -1,24 +1,42 @@
 # Introduction
 
-The Crud plugin allow high reusability of the default Create, Retrieve, Update and Delete (CRUD) actions in our controllers
+The Crud plugin allow high reusability of the default Create, Retrieve, Update and Delete (CRUD) actions in your controllers
 
-Usually the forms is very simple, and always look the same - this plugin will add the actions to your controller so you don't have to reimplement them over and over
+Usually the code for CRUD is very simple, and always look the same - this plugin will add the actions to your controller so you don't have to reimplement them over and over
 
 It only works with CakePHP 2.1 - as it utilizes the new event system
 
 The plugin requires a PSR-0 autoloader, if you don't have one, please install https://github.com/nodesagency/Platform-Common-Plugin
 
-
 # Installation
+
 ## Requirements
-CakePHP 2.1
-PHP 5.3
-PSR-0 class loader
 
-## Loading the plugin
-Make sure Cake loads the plugin by adding the following to your  app/Config/bootstrap.php - make sure to include bootstrap inclucion
+* CakePHP 2.1
+* PHP 5.3
+* PSR-0 class loader
 
+## Installation and Loading the plugin
+
+### As a simple git clone
+
+```
+git clone git://github.com/nodesagency/Platform-Crud-Plugin.git app/Plugin/Crud
+```
+
+### As a git submodule
+
+```
+git submodule add git://github.com/nodesagency/Platform-Crud-Plugin.git app/Plugin/Crud
+```
+
+# Loading
+Make sure Cake loads the plugin by adding the following to your __app/Config/bootstrap.php__ - make sure to include bootstrap inclucion
+
+```php
+<?php
 CakePlugin::load('Crud', array('bootstrap' => true));
+```
 
 In your app controller make sure to load the Crud component
 
