@@ -121,6 +121,7 @@ abstract class AppController extends Controller {
 You can also change the default view used for a Crud action
 
 ```php
+<?php
 public function beforeFilter() {
     // Change the view for add crud action to be "public_add.ctp"
     $this->Crud->mapActionView('add',  'public_add');
