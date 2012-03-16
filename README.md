@@ -16,9 +16,9 @@ The plugin requires a PSR-0 autoloader, if you don't have one, please install ht
 * PHP 5.3
 * PSR-0 class loader
 
-## Installation and Loading the plugin
+## Cloning and loading
 
-### As a simple git clone
+### With a simple git clone
 
 ```
 git clone git://github.com/nodesagency/Platform-Crud-Plugin.git app/Plugin/Crud
@@ -31,14 +31,14 @@ git submodule add git://github.com/nodesagency/Platform-Crud-Plugin.git app/Plug
 ```
 
 # Loading
-Make sure Cake loads the plugin by adding the following to your __app/Config/bootstrap.php__ - make sure to include bootstrap inclucion
+Add the following to your __app/Config/bootstrap.php__ - make sure to include the __bootstrap__ key
 
 ```php
 <?php
 CakePlugin::load('Crud', array('bootstrap' => true));
 ```
 
-In your app controller make sure to load the Crud component
+In your (app) controller load the Crud component
 
 ```php
 <?php
@@ -66,7 +66,9 @@ abstract class AppController extends Controller {
 ```
 
 ## Configuration
-We only use routes without prefix, "admin_" is also supported by default 
+
+We only use routes without prefix in these examples, but the Crud component works with any prefixes you may have. It just requires some additional configuration.
+
 In the code example above, we pass in an actions array with all the controller actions we wish the Crud component to handle - you can easily omit some of the actions
 
 ```php
@@ -80,7 +82,7 @@ public $components = array(
 );
 ```
 
-In the above example, if /delete is called on the controller, cake will raise it's normal error as if nothing has happend
+In the above example, if /delete is called on the controller, cake will raise it's normal missing action error as if nothing has happend
 
 You can enable and disable Crud actions on the fly
 
@@ -140,15 +142,16 @@ public function beforeFilter() {
 
 The Crud component always operates on the modelClass of your controller, that is the first model in your $uses array
 
-By default Crud component asumes your add and edit actions is identical, and will attempt to render the "form.ctp" file 
+By default Crud component asumes your add and edit views is identical, and will render them both with a "form.ctp" file.
 
-There is no view for delete action, it will always just redirect
+There is no view for delete action, it will always redirect
 
 ### Event system
 
 The CRUD plugin uses the new event system introduced in Cake 2.1
 
 #### Global accessible subject properties
+
 The subject object can be accessed through $event->subject in all event callbacks
 
 <table>
@@ -189,6 +192,7 @@ The subject object can be accessed through $event->subject in all event callback
 </table>
 
 ### Crud actions and their events
+
 All Crud events always return void, any modifications should be done to the Crud\Subject object
 
 All Crud events take exactly one parameter, \CakeEvent $event
@@ -396,7 +400,7 @@ I would recommend using the Event class if you need to subscribe to more than on
 
 #### Full event class
 
-The event class can be anywhere, but the default is inside app/Plugin/<plugin>/Lib/Crud/Event
+The event class can be anywhere, but the default is inside app/Plugin/<plugin>/Lib/Crud/Event, if you use the PSR-0 autloader
 
 Make sure you have configured the class loader inside app/Plugin/<plugin>/Config/bootstrap.php 
 
@@ -425,7 +429,7 @@ class Demo extends \Crud\BaseEvent {
 	public function afterSave(\CakeEvent $event) {
 		if ($event->subject->controller->isAdminRequest()) {
 			// In this test, we want afterSave to do one thing, for admin_add and another for admin_edit
-			// If admin_add redirect to parent
+			// If admin_add redirect to index
 			if ($event->subject->shouldProcess('only', array('admin_add'))) {
 				if ($event->subject->success) {
 					$event->subject->controller->redirect(array('action' => 'index'));
@@ -452,7 +456,7 @@ public function beforeFilter() {
 }
 ```
 
-#### A lamba method
+#### A lamba / Closure
 
 ```php
 <?php
@@ -462,7 +466,7 @@ public function beforeFilter() {
 }
 ```
 
-#### Method in your controller
+#### A method in your controller
 
 ```php
 <?php
