@@ -544,7 +544,7 @@ class DemosController extends DemoAppController {
 // app/Plugin/Demo/Controller/Event/DemoEvent.php
 App::uses('CrudBaseEvent', 'Crud.Controller/Event');
 
-class DemoEvent extens CrudBaseEvent {
+class DemoEvent extends CrudBaseEvent {
 
 }
 
