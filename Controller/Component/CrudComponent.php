@@ -152,8 +152,6 @@ class CrudComponent extends Component {
 		if (!array_key_exists($this->action, $this->actionMap)) {
 			return;
 		}
-
-		$this->executeAction();
 	}
 
 	/**
@@ -180,13 +178,7 @@ class CrudComponent extends Component {
 		}
 
 		// Render the file based on action name
-		$content = $this->controller->render($view);
-
-		// Send the content to the browser
-		$content->send();
-
-		// Stop the request
-		$this->_stop();
+		return $this->controller->response = $this->controller->render($view);
 	}
 
 	/**
@@ -246,11 +238,23 @@ class CrudComponent extends Component {
 		$this->viewMap[$action] = $view;
 	}
 
+	/**
+	* Map action to a internal request type
+	*
+	* @param string $action The Controller action to fake
+	* @param string $type one of the CRUD events (index, add, edit, delete, view)
+	* @param boolean $enable Should the mapping be enabled right away?
+	* @return void
+	*/
 	public function mapAction($action, $type, $enable = true) {
 		$this->actionMap[$action] = $type;
 		if ($enable) {
 			$this->enableAction($action);
 		}
+	}
+
+	public function isActionMapped($action) {
+		return false !== array_search($action, $this->settings['actions']);
 	}
 
 	/**
