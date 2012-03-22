@@ -30,7 +30,7 @@ git submodule add git://github.com/nodesagency/Platform-Crud-Plugin.git app/Plug
 ```
 
 # Loading
-Add the following to your __app/Config/bootstrap.php__ - make sure to include the __bootstrap__ key
+Add the following to your __app/Config/bootstrap.php__
 
 ```php
 <?php
