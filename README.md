@@ -67,7 +67,7 @@ abstract class AppController extends Controller {
 
 ## Configuration
 
-We only use routes without prefix in these examples, but the Crud component works with any prefixes you may have. It just requires some additional configuration.
+We only use routes without prefix in these examples, but the Crud component works with __any__ prefixes you may have. It just requires some additional configuration.
 
 In the code example above, we pass in an actions array with all the controller actions we wish the Crud component to handle - you can easily omit some of the actions
 
@@ -85,7 +85,7 @@ class AppController extends Controller {
 ?>
 ```
 
-In the above example, if /delete is called on the controller, cake will raise it's normal missing action error as if nothing has happened
+In the above example, if /delete is called on __any__ controller, cake will raise it's normal missing action error as if nothing has happened
 
 You can enable and disable Crud actions on the fly
 
@@ -147,9 +147,9 @@ class DemoController extends AppController {
 
 ## Convention
 
-The Crud component always operates on the $modelClass of your controller, that is the first model in your $uses array
+The Crud component always operates on the __$modelClass__ of your controller, that's the first model in your $uses array
 
-By default Crud component assumes your add and edit views is identical, and will render them both with a "form.ctp" file.
+By default CrudComponent assumes your add and edit views is identical, and will render them both with a "form.ctp" file.
 
 There is no view for delete action, it will always redirect
 
@@ -159,7 +159,7 @@ The CRUD plugin uses the new event system introduced in Cake 2.1
 
 #### Global accessible subject properties
 
-The subject object can be accessed through $event->subject in all event callbacks
+The subject object can be accessed through __$event->subject__ in all event callbacks
 
 <table>
 <thead>
@@ -200,7 +200,7 @@ The subject object can be accessed through $event->subject in all event callback
 
 ### Crud actions and their events
 
-All Crud events always return void, any modifications should be done to the CrudEventSubject object
+All Crud events always return void, any modifications should be done to the CrudEventSubject object ($event->subject)
 
 All Crud events take exactly one parameter, CakeEvent $event
 
@@ -407,7 +407,7 @@ I would recommend using the Event class if you need to subscribe to more than on
 
 #### Full event class
 
-Crud events must be inside app/Controller/Event ( app/Plugin/<plugin>/Controller/Event for plugins)
+Crud events must be inside app/Controller/Event ( app/Plugin/$plugin/Controller/Event for plugins)
 
 Your Event class should look like this:
 
