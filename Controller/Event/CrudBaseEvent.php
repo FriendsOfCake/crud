@@ -1,6 +1,4 @@
 <?php
-namespace Crud;
-
 /**
  * The Base Form Decorator
  *
@@ -14,7 +12,7 @@ namespace Crud;
  * @copyright Nodes ApS, 2012
  * @abstract
  */
-abstract class BaseEvent extends \Object implements \CakeEventListener {
+abstract class CrudBaseEvent extends Object implements CakeEventListener {
 
 	/**
 	 * Returns a list of all events that will fire in the controller during it's lifecycle.
@@ -53,130 +51,130 @@ abstract class BaseEvent extends \Object implements \CakeEventListener {
 	*
 	* Just set the arguments as instance properties for easier access later
 	*
-	* @param \CakeEvent $event The CakePHP CakeEvent object.
+	* @param CakeEvent $event The CakePHP CakeEvent object.
 	* @return void
 	*/
-	public function init(\CakeEvent $event) {
+	public function init(CakeEvent $event) {
 
 	}
 
 	/**
 	* Called before a record is saved in add or edit actions
 	*
-	* @param \CakeEvent $event The CakePHP CakeEvent object.
+	* @param CakeEvent $event The CakePHP CakeEvent object.
 	* @return void
 	*/
-	public function beforeSave(\CakeEvent $event) {
+	public function beforeSave(CakeEvent $event) {
 
 	}
 
 	/**
 	* Called before any CRUD redirection
 	*
-	* @param \CakeEvent $event The CakePHP CakeEvent object.
+	* @param CakeEvent $event The CakePHP CakeEvent object.
 	* @return void
 	*/
-	public function beforeRedirect(\CakeEvent $event) {
+	public function beforeRedirect(CakeEvent $event) {
 
 	}
 
 	/**
 	* Called before any find() on the model
 	*
-	* @param \CakeEvent $event The CakePHP CakeEvent object.
+	* @param CakeEvent $event The CakePHP CakeEvent object.
 	* @return void
 	*/
-	public function beforeFind(\CakeEvent $event) {
+	public function beforeFind(CakeEvent $event) {
 
 	}
 
 	/**
 	* After find callback
 	*
-	* @param \CakeEvent $event The CakePHP CakeEvent object.
+	* @param CakeEvent $event The CakePHP CakeEvent object.
 	* @return void
 	*/
-	public function afterFind(\CakeEvent $event) {
+	public function afterFind(CakeEvent $event) {
 
 	}
 
 	/**
 	* Called after any save() method
 	*
-	* @param \CakeEvent $event The CakePHP CakeEvent object.
+	* @param CakeEvent $event The CakePHP CakeEvent object.
 	* @return void
 	*/
-	public function afterSave(\CakeEvent $event) {
+	public function afterSave(CakeEvent $event) {
 
 	}
 
 	/**
 	* Called before cake's own render()
 	*
-	* \CakeEvent $event The CakePHP CakeEvent object.
+	* CakeEvent $event The CakePHP CakeEvent object.
 	* @return void
 	*/
-	public function beforeRender(\CakeEvent $event) {
+	public function beforeRender(CakeEvent $event) {
 
 	}
 
 	/**
 	* Called before any delete() action
 	*
-	* @param \CakeEvent $event The CakePHP CakeEvent object.
+	* @param CakeEvent $event The CakePHP CakeEvent object.
 	* @return void
 	*/
-	public function beforeDelete(\CakeEvent $event) {
+	public function beforeDelete(CakeEvent $event) {
 
 	}
 
 	/**
 	* Called after any delete() action
 	*
-	* @param \CakeEvent $event The CakePHP CakeEvent object.
+	* @param CakeEvent $event The CakePHP CakeEvent object.
 	* @return void
 	*/
-	public function afterDelete(\CakeEvent $event) {
+	public function afterDelete(CakeEvent $event) {
 
 	}
 
 	/**
 	* Called if a find() did not return any records
 	*
-	* @param \CakeEvent $event The CakePHP CakeEvent object.
+	* @param CakeEvent $event The CakePHP CakeEvent object.
 	* @return void
 	*/
-	public function recordNotFound(\CakeEvent $event) {
+	public function recordNotFound(CakeEvent $event) {
 
 	}
 
 	/**
 	* Called right before any paginate() method
 	*
-	* @param \CakeEvent $event The CakePHP CakeEvent object.
+	* @param CakeEvent $event The CakePHP CakeEvent object.
 	* @return void
 	*/
-	public function beforePaginate(\CakeEvent $event) {
+	public function beforePaginate(CakeEvent $event) {
 
 	}
 
 	/**
 	* Called right after any paginate() method
 	*
-	* @param \CakeEvent $event The CakePHP CakeEvent object.
+	* @param CakeEvent $event The CakePHP CakeEvent object.
 	* @return void
 	*/
-	public function afterPaginate(\CakeEvent $event) {
+	public function afterPaginate(CakeEvent $event) {
 
 	}
 
 	/**
 	* Called if the ID format validation failed
 	*
-	* @param \CakeEvent $event The CakePHP CakeEvent object.
+	* @param CakeEvent $event The CakePHP CakeEvent object.
 	* @return void
 	*/
-	public function invalidId(\CakeEvent $event) {
+	public function invalidId(CakeEvent $event) {
 
 	}
 }

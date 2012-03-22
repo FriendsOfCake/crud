@@ -1,4 +1,6 @@
 <?php
+App::uses('CrudEventSubject', 'Crud.Controller/Event');
+
 /**
  * Crud component
  *
@@ -163,9 +165,6 @@ class CrudComponent extends Component {
 	* @return void
 	*/
 	public function executeAction($action = null, $args = array()) {
-		// Always attach the default callback object
-		$this->eventManager->attach(new Crud\Event\Base());
-
 		$this->modelName	= $this->controller->modelClass;
 		$this->model 		= $this->controller->{$this->modelName};
 		$action				= $action ?: $this->action;
@@ -274,7 +273,7 @@ class CrudComponent extends Component {
 	* @return \Crud\Subject
 	*/
 	protected function getSubject($additional = array()) {
-		$subject				= new Crud\Subject();
+		$subject				= new CrudEventSubject();
 		$subject->crud			= $this;
 		$subject->controller	= $this->controller;
 		$subject->model 		= $this->model;

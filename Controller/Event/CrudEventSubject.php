@@ -1,6 +1,4 @@
 <?php
-namespace Crud;
-
 /**
  * Crud Event subject
  *
@@ -13,7 +11,8 @@ namespace Crud;
  *
  * @copyright Nodes ApS, 2012
  */
-class Subject extends \stdClass {
+class CrudEventSubject extends stdClass {
+
 	/**
 	* Constructor
 	*
