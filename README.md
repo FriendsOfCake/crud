@@ -423,7 +423,7 @@ class DemoEvent extends CrudBaseEvent {
 		}
 	}
 
-	public function afterSave(\CakeEvent $event) {
+	public function afterSave(CakeEvent $event) {
 		// In this test, we want afterSave to do one thing, for admin_add and another for admin_edit
 		// If admin_add redirect to index
 		if ($event->subject->shouldProcess('only', array('admin_add'))) {
@@ -464,7 +464,7 @@ class DemoController extends AppController {
 class DemoController extends AppController {
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->getEventManager()->attach(function(\CakeEvent $event) { debug($event->subject->query); }, 'Crud.beforePaginate');
+		$this->getEventManager()->attach(function(CakeEvent $event) { debug($event->subject->query); }, 'Crud.beforePaginate');
 	}
 }
 ?>
@@ -480,7 +480,7 @@ class DemoController extends AppController {
 		$this->getEventManager()->attach(array($this, 'demoEvent'), 'Crud.beforePaginate');
 	}
 
-	public function demoEvent(\CakeEvent $event) {
+	public function demoEvent(CakeEvent $event) {
 		$event->subject->query['conditions']['is_active'] = true;
 	}
 }
