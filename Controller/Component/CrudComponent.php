@@ -270,7 +270,7 @@ class CrudComponent extends Component {
 	* Create a CakeEvent subject with the required properties
 	*
 	* @param array $additional Additional properties for the subject
-	* @return \Crud\Subject
+	* @return CrudEventSubject
 	*/
 	protected function getSubject($additional = array()) {
 		$subject				= new CrudEventSubject();
