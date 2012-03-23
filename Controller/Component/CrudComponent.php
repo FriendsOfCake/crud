@@ -253,7 +253,17 @@ class CrudComponent extends Component {
 		}
 	}
 
-	public function isActionMapped($action) {
+	/**
+	* Check if a CRUD action has been mapped (aka should be handled by CRUD component)
+	*
+	* @param string|null $action If null, use the current action
+	* @return boolean
+	*/
+	public function isActionMapped($action = null) {
+		if (empty($action)) {
+			$action = $this->action;
+		}
+
 		return false !== array_search($action, $this->settings['actions']);
 	}
 
