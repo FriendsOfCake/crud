@@ -120,6 +120,13 @@ class CrudComponent extends Component {
 		$this->controller	= $controller;
 		$this->request 		= $controller->request;
 		$this->eventManager = $controller->getEventManager();
+
+		if (!isset($controller->dispatchComponents)) {
+			$controller->dispatchComponents = array();
+		}
+
+		$name = str_replace('Component', '', get_class($this));
+		$controller->dispatchComponents[$name] = true;
 	}
 
 	/**
