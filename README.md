@@ -86,7 +86,7 @@ abstract class AppController extends Controller {
 					}
 
 					// Skip if isActionMapped isn't defined in the Component
-					if (!method_exists('isActionMapped', $this->{$component})) {
+					if (!method_exists($this->{$component}, 'isActionMapped')) {
 						continue;
 					}
 
@@ -96,7 +96,7 @@ abstract class AppController extends Controller {
 					}
 
 					// Skip if executeAction isn't defined in the Component
-					if (!method_exists('executeAction', $this->{$component})) {
+					if (!method_exists($this->{$component}, 'executeAction')) {
 						continue;
 					}
 
