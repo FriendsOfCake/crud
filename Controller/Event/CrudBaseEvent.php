@@ -12,6 +12,8 @@
  * @copyright Nodes ApS, 2012
  * @abstract
  */
+App::uses('CakeEventListener', 'Event');
+
 abstract class CrudBaseEvent extends Object implements CakeEventListener {
 
 	/**
