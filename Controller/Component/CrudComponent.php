@@ -130,38 +130,6 @@ class CrudComponent extends Component {
 	}
 
 	/**
-	* The startup method is called after the controllerÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂs beforeFilter method
-	* but before the controller executes the current action handler.
-	*
-	* We catch our CRUD actions here before Cake complains about them
-	* not existing in the Controller
-	*
-	* @cakephp
-	* @param Controller $controller
-	* @return void
-	*/
-	public function startup(Controller $controller) {
-		if ($controller->name == 'CakeError') {
-			return true;
-		}
-
-		// Don't do anything if the action is defined in the controller already
-		if (method_exists($controller, $this->action)) {
-			return;
-		}
-
-		// Don't do anything if the action haven't been marked as CRUD
-		if (!in_array($this->action, $this->settings['actions'])) {
-			return;
-		}
-
-		// Don't do anything if the action isn't mapped
-		if (!array_key_exists($this->action, $this->actionMap)) {
-			return;
-		}
-	}
-
-	/**
 	* Execute a Crud action
 	*
 	* @platform
@@ -172,7 +140,7 @@ class CrudComponent extends Component {
 	public function executeAction($action = null, $args = array()) {
 		$this->modelName	= $this->controller->modelClass;
 		$this->model 		= $this->controller->{$this->modelName};
-		$action				= $action ?: $this->action;
+		$action			= $action ?: $this->action;
 
 		$this->eventManager->dispatch(new CakeEvent('Crud.init', $this->getSubject()));
 
