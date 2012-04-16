@@ -130,7 +130,7 @@ class CrudComponent extends Component {
 	}
 
 	/**
-	* The startup method is called after the controller’s beforeFilter method
+	* The startup method is called after the controllerÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂs beforeFilter method
 	* but before the controller executes the current action handler.
 	*
 	* We catch our CRUD actions here before Cake complains about them
@@ -546,16 +546,29 @@ class CrudComponent extends Component {
 	*
 	* @return boolean
 	*/
-	protected function validateId($id) {
-		if (empty($this->settings['validateId']) || $this->settings['validateId'] === 'uuid') {
+	protected function validateId($id, $type = null) {
+        if (empty($type)) {
+            if (!empty($this->settings['validateId'])) {
+                $type = $this->settings['validateId'];
+            } else {
+                $type = 'uuid';
+            }
+        }
+		if ($type === 'uuid') {
 			$valid = Validation::uuid($id);
 		} else {
 			$valid = is_numeric($id);
+
 		}
 
-		if (!$valid) {
-			$this->eventManager->dispatch(new CakeEvent('Crud.invalidId', $subject = $this->getSubject(compact('id'))));
-			$this->redirect($subject, $this->controller->referer());
+		if ($valid) {
+            return true;
 		}
+
+        $subject = $this->getSubject(compact('id'));
+        $this->eventManager->dispatch(new CakeEvent('Crud.invalidId', $subject));
+		$this->redirect($subject, $this->controller->referer());
+
+        return false;
 	}
 }
