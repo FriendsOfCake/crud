@@ -169,7 +169,34 @@ class CrudTestCase extends CakeTestCase {
 	}
 
 	public function testGetIdFromRequest() {
-		// TODO
+		$this->request->params['pass'][0] = '1';
+		$id = $this->Crud->getIdFromRequest();
+		$this->assertSame('1', $id);
+
+		$this->request->params['pass'][0] = 1;
+		$id = $this->Crud->getIdFromRequest();
+		$this->assertSame(1, $id);
+
+		$this->request->params['pass'][0] = '12345678-1234-1234-1234-123456789012';
+		$id = $this->Crud->getIdFromRequest();
+		$this->assertSame('12345678-1234-1234-1234-123456789012', $id);
+	}
+
+	public function testGetIdFromRequestEmpty() {
+		$id = $this->Crud->getIdFromRequest();
+		$this->assertNull($id);
+
+		$this->request->params['pass'][0] = '';
+		$id = $this->Crud->getIdFromRequest();
+		$this->assertNull($id);
+
+		$this->request->params['pass'][0] = 0;
+		$id = $this->Crud->getIdFromRequest();
+		$this->assertNull($id);
+
+		$this->request->params['pass'][0] = '0';
+		$id = $this->Crud->getIdFromRequest();
+		$this->assertNull($id);
 	}
 
 	public function testAddActionGet() {
