@@ -178,7 +178,7 @@ class CrudTestCase extends CakeTestCase {
 	}
 
 	public function testDeleteActionExists() {
-		$this->Crud->controller
+		$this->controller
 			->expects($this->once())
 			->method('render')
 			->with('delete');
@@ -197,7 +197,7 @@ class CrudTestCase extends CakeTestCase {
 	}
 
 	public function testDeleteActionDoesNotExists() {
-		$this->Crud->controller
+		$this->controller
 			->expects($this->once())
 			->method('render')
 			->with('delete');
@@ -217,7 +217,7 @@ class CrudTestCase extends CakeTestCase {
 	}
 
 	public function testvalidateIdIntValid() {
-		$this->Crud->controller->expects($this->never())->method('redirect');
+		$this->controller->expects($this->never())->method('redirect');
 
 		$this->Crud->settings['validateId'] = 'notUuid';
 
@@ -227,7 +227,7 @@ class CrudTestCase extends CakeTestCase {
 	}
 
 	public function testvalidateIdIntInvalid() {
-		$this->Crud->controller->expects($this->once())->method('redirect');
+		$this->controller->expects($this->once())->method('redirect');
 
 		$this->Crud->settings['validateId'] = 'notUuid';
 
@@ -237,7 +237,7 @@ class CrudTestCase extends CakeTestCase {
 	}
 
 	public function testvalidateIdUUIDValid() {
-		$this->Crud->controller->expects($this->never())->method('redirect');
+		$this->controller->expects($this->never())->method('redirect');
 
 		$id = '12345678-1234-1234-1234-123456789012';
 		$return = $this->Crud->testValidateId($id);
@@ -245,7 +245,7 @@ class CrudTestCase extends CakeTestCase {
 	}
 
 	public function testvalidateIdUUIDInvalid() {
-		$this->Crud->controller->expects($this->once())->method('redirect');
+		$this->controller->expects($this->once())->method('redirect');
 
 		$id = 123;
 		$return = $this->Crud->testValidateId($id, 'int');
