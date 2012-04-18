@@ -73,16 +73,13 @@ class TestCrudComponent extends CrudComponent {
 
 /**
  * Crud Test Case
- *
  */
-class CrudTestCase extends CakeTestCase {
+class CrudComponentTestCase extends CakeTestCase {
 
 	public $fixtures = array('core.post');
 
 	/**
 	 * setUp method
-	 *
-	 * @return void
 	 */
 	public function setUp() {
 		parent::setUp();
@@ -136,24 +133,25 @@ class CrudTestCase extends CakeTestCase {
 
 	/**
 	 * tearDown method
-	 *
-	 * @return void
 	 */
 	public function tearDown() {
 		unset($this->Crud);
 		parent::tearDown();
 	}
 
-	public function testDefaultSettings() {
-		// TODO The SUT should throw an exception if actions is not defined
-	}
-
 	public function testEnableAction() {
-		// TODO
+		$this->Crud->mapAction('puppies', 'view', false);
+		$this->Crud->enableAction('puppies');
+
+		$result = $this->Crud->isActionMapped('puppies');
+		$this->assertTrue($result);
 	}
 
 	public function testDisableAction() {
-		// TODO
+		$this->Crud->disableAction('view');
+
+		$result = $this->Crud->isActionMapped('view');
+		$this->assertFalse($result);
 	}
 
 	public function testMapAction() {
