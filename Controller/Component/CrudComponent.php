@@ -138,18 +138,17 @@ class CrudComponent extends Component {
 	* @return void
 	*/
 	public function executeAction($action = null, $args = array()) {
-		$this->modelName	= $this->controller->modelClass;
-		$this->model 		= $this->controller->{$this->modelName};
-		$action			= $action ?: $this->action;
+		$this->modelName = $this->controller->modelClass;
+		$this->model = $this->controller->{$this->modelName};
+		$view = $action = $action ?: $this->action;
 
 		$this->eventManager->dispatch(new CakeEvent('Crud.init', $this->getSubject()));
 
 		// Execute the default action, inside this component
-		call_user_func_array(array($this, $this->actionMap[$this->action] . 'Action'), $args);
+		call_user_func_array(array($this, $this->actionMap[$action] . 'Action'), $args);
 
-		$view = $this->action;
-		if (array_key_exists($this->action, $this->viewMap)) {
-			$view = $this->viewMap[$this->action];
+		if (array_key_exists($action, $this->viewMap)) {
+			$view = $this->viewMap[$action];
 		}
 
 		// Render the file based on action name
