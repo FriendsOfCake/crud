@@ -172,7 +172,43 @@ class CrudTestCase extends CakeTestCase {
 		// TODO
 	}
 
-	public function testAddAction() {
+	public function testAddActionGet() {
+		$this->controller
+			->expects($this->once())
+			->method('render')
+			->with('form');
+
+		$this->Crud->settings['validateId'] = 'notUuid';
+		$id = 1;
+
+		$this->Crud->executeAction('add', array($id));
+	}
+
+	public function testAddActionPost() {
+		$this->controller
+			->expects($this->once())
+			->method('render')
+			->with('form');
+
+		$this->controller->request->addDetector('post', array(
+			'callback' => function() { return true; }
+		));
+
+		$this->controller->data = array(
+			'CrudExample' => array(
+				'title' => __METHOD__,
+				'description' => __METHOD__
+			)
+		);
+
+		$this->Crud->executeAction('add', array());
+
+		$this->assertNotSame(false, $this->model->id, "No row has been created");
+
+		$events = CakeEventManager::instance()->getLog();
+
+		$index = array_search('Crud.afterSave', $events);
+		$this->assertNotSame(false, $index, "There was no Crud.afterSave event triggered");
 	}
 
 	/**
