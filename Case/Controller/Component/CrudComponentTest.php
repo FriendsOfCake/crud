@@ -177,16 +177,26 @@ class CrudTestCase extends CakeTestCase {
 	public function testEditAction() {
 	}
 
+	/**
+	 * Add a dummy detector to the request object so it says it's a delete request
+	 */
 	public function testDeleteActionExists() {
 		$this->controller
 			->expects($this->once())
 			->method('render')
 			->with('delete');
 
+		$this->controller->request->addDetector('delete', array(
+			'callback' => function() { return true; }
+		));
+
 		$this->Crud->settings['validateId'] = 'notUuid';
 		$id = 1;
+
 		$this->Crud->executeAction('delete', array($id));
-		$db = ConnectionManager::getDataSource($this->model->useDbConfig);
+
+		$count = $this->model->find('count', array('conditions' => array('id' => $id)));
+		$this->assertSame(0, $count);
 
 		$events = CakeEventManager::instance()->getLog();
 		$index = array_search('Crud.beforeDelete', $events);
