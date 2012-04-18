@@ -156,12 +156,21 @@ class CrudTestCase extends CakeTestCase {
 		// TODO
 	}
 
-	public function testMapActionView() {
-		// TODO
+	public function testMapAction() {
+		$this->Crud->mapAction('puppies', 'view');
+
+		$result = $this->Crud->isActionMapped('puppies');
+		$this->assertTrue($result);
 	}
 
-	public function testMapAction() {
-		// TODO
+	public function testMapActionView() {
+		$this->controller
+			->expects($this->once())
+			->method('render')
+			->with('cupcakes');
+
+		$this->Crud->mapActionView('view', 'cupcakes');
+		$this->Crud->executeAction('view', array(1));
 	}
 
 	public function testIsActionMappedYes() {
