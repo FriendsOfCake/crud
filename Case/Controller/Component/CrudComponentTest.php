@@ -175,9 +175,6 @@ class CrudTestCase extends CakeTestCase {
 	public function testAddAction() {
 	}
 
-	public function testEditAction() {
-	}
-
 	/**
 	 * Add a dummy detector to the request object so it says it's a delete request
 	 */
@@ -213,6 +210,10 @@ class CrudTestCase extends CakeTestCase {
 			->method('render')
 			->with('delete');
 
+		$this->controller->request->addDetector('delete', array(
+			'callback' => function() { return true; }
+		));
+
 		$this->Crud->settings['validateId'] = 'notUuid';
 		$id = 42;
 		$this->Crud->executeAction('delete', array($id));
@@ -223,6 +224,62 @@ class CrudTestCase extends CakeTestCase {
 
 		$index = array_search('Crud.recordNotFound', $events);
 		$this->assertNotSame(false, $index, "A none-existent row did not trigger a Crud.recordNotFount event");
+	}
+
+	public function testEditActionGet() {
+		$this->controller
+			->expects($this->once())
+			->method('render')
+			->with('form');
+
+		$this->Crud->settings['validateId'] = 'notUuid';
+		$id = 1;
+
+		$this->Crud->executeAction('edit', array($id));
+	}
+
+	public function testEditActionPost() {
+		$this->controller
+			->expects($this->once())
+			->method('render')
+			->with('form');
+
+		$this->controller->request->addDetector('put', array(
+			'callback' => function() { return true; }
+		));
+
+		$this->controller->data = array(
+			'CrudExample' => array(
+				'id' => 1,
+				'title' => __METHOD__
+			)
+		);
+
+		$this->Crud->settings['validateId'] = 'notUuid';
+		$id = 1;
+
+		$this->Crud->executeAction('edit', array($id));
+
+		$this->model->id = $id;
+		$result = $this->model->field('title');
+		$this->assertSame(__METHOD__, $result);
+
+		$events = CakeEventManager::instance()->getLog();
+
+		$index = array_search('Crud.afterSave', $events);
+		$this->assertNotSame(false, $index, "There was no Crud.afterSave event triggered");
+	}
+
+	public function testViewAction() {
+		$this->controller
+			->expects($this->once())
+			->method('render')
+			->with('view');
+
+		$this->Crud->settings['validateId'] = 'notUuid';
+		$id = 1;
+
+		$this->Crud->executeAction('view', array($id));
 	}
 
 	public function testIndexAction() {
