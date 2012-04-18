@@ -164,8 +164,24 @@ class CrudTestCase extends CakeTestCase {
 		// TODO
 	}
 
-	public function testIsActionMapped() {
-		// TODO
+	public function testIsActionMappedYes() {
+		$result = $this->Crud->isActionMapped('index');
+		$this->assertTrue($result);
+
+		$this->controller->action = 'edit';
+		$this->Crud->initialize($this->controller);
+		$result = $this->Crud->isActionMapped();
+		$this->assertTrue($result);
+	}
+
+	public function testIsActionMappedNo() {
+		$result = $this->Crud->isActionMapped('puppies');
+		$this->assertFalse($result);
+
+		$this->controller->action = 'rainbows';
+		$this->Crud->initialize($this->controller);
+		$result = $this->Crud->isActionMapped();
+		$this->assertFalse($result);
 	}
 
 	public function testGetIdFromRequest() {
