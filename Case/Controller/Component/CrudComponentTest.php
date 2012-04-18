@@ -98,23 +98,6 @@ class CrudTestCase extends CakeTestCase {
 			'table' => 'posts'
 		));
 
-		$Collection = new ComponentCollection();
-		$settings = array(
-			'actions' => array(
-				'index',
-				'add',
-				'edit',
-				'view',
-				'delete'
-			)
-		);
-
-		$this->Crud = $this->getMock(
-			'TestCrudComponent',
-			null,
-			array($Collection, $settings)
-		);
-
 		$this->controller = $this->getMock(
 			'Controller',
 			array('header', 'redirect', 'render', '_stop'),
@@ -124,11 +107,29 @@ class CrudTestCase extends CakeTestCase {
 		);
 		$this->controller->name = 'CrudExamples';
 
-		$request = new CakeRequest();
+		$this->request = new CakeRequest();
 		$response = new CakeResponse();
-		$this->controller->__construct($request, $response);
-
+		$this->controller->__construct($this->request, $response);
 		$this->controller->methods = array();
+
+		$Collection = new ComponentCollection();
+		$Collection->init($this->controller);
+		$settings = array(
+			'actions' => array(
+				'index',
+				'add',
+				'edit',
+				'view',
+				'delete'
+			)
+		);
+		$this->controller->Components = $Collection;
+
+		$this->Crud = $this->getMock(
+			'TestCrudComponent',
+			null,
+			array($Collection, $settings)
+		);
 
 		$this->Crud->initialize($this->controller);
 	}
@@ -144,7 +145,7 @@ class CrudTestCase extends CakeTestCase {
 	}
 
 	public function testDefaultSettings() {
-		// TODO throw an exception if actions is not defined
+		// TODO The SUT should throw an exception if actions is not defined
 	}
 
 	public function testEnableAction() {
@@ -225,8 +226,20 @@ class CrudTestCase extends CakeTestCase {
 	}
 
 	public function testIndexAction() {
-	}
+		$this->controller
+			->expects($this->once())
+			->method('render')
+			->with('index');
 
+		$this->request->params['named']= array();
+
+		$this->Crud->executeAction('index');
+
+		$events = CakeEventManager::instance()->getLog();
+
+		$index = array_search('Crud.afterPaginate', $events);
+		$this->assertNotSame(false, $index, "There was no Crud.afterPaginate event triggered");
+	}
 
 	public function testRedirect() {
 		$subject = $this->Crud->testGetSubject();
