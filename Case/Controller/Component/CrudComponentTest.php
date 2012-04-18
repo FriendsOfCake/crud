@@ -215,6 +215,13 @@ class CrudTestCase extends CakeTestCase {
 		$this->Crud->settings['validateId'] = 'notUuid';
 		$id = 42;
 		$this->Crud->executeAction('delete', array($id));
+
+		$events = CakeEventManager::instance()->getLog();
+		$index = array_search('Crud.beforeDelete', $events);
+		$this->assertNotSame(false, $index, "There was no Crud.beforeDelete event triggered");
+
+		$index = array_search('Crud.recordNotFound', $events);
+		$this->assertNotSame(false, $index, "A none-existent row did not trigger a Crud.recordNotFount event");
 	}
 
 	public function testIndexAction() {
