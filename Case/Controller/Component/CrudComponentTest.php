@@ -14,6 +14,13 @@ App::uses('Model', 'Model');
 
 App::uses('Validation', 'Utility');
 
+/**
+ * TestCrudEventManager
+ *
+ * This manager class is used to replace the CakeEventManger instance.
+ * As such, it becomes a global listener and is used to keep a log of
+ * all events fired during the test
+ */
 class TestCrudEventManager extends CakeEventManager {
 
 	protected $log = array();
@@ -47,6 +54,11 @@ class TestCrudEventManager extends CakeEventManager {
 	}
 }
 
+/**
+ * TestCrudComponent
+ *
+ * Expost protected methods so we can test them in issolation
+ */
 class TestCrudComponent extends CrudComponent {
 
 	/**
@@ -72,14 +84,22 @@ class TestCrudComponent extends CrudComponent {
 }
 
 /**
- * Crud Test Case
+ * CrudComponentTestCase
  */
 class CrudComponentTestCase extends CakeTestCase {
 
+	/**
+	 * fixtures
+	 *
+	 * Use the core posts fixture to have something to work on.
+	 * What fixture is used is almost irrelevant, was chosen as it is simple
+	 */
 	public $fixtures = array('core.post');
 
 	/**
-	 * setUp method
+	 * setUp
+	 *
+	 * Setup the classes the crud component needs to be testable
 	 */
 	public function setUp() {
 		parent::setUp();
@@ -139,6 +159,9 @@ class CrudComponentTestCase extends CakeTestCase {
 		parent::tearDown();
 	}
 
+	/**
+	 * testEnableAction
+	 */
 	public function testEnableAction() {
 		$this->Crud->mapAction('puppies', 'view', false);
 		$this->Crud->enableAction('puppies');
@@ -147,6 +170,9 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertTrue($result);
 	}
 
+	/**
+	 * testDisableAction
+	 */
 	public function testDisableAction() {
 		$this->Crud->disableAction('view');
 
@@ -154,6 +180,9 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertFalse($result);
 	}
 
+	/**
+	 * testMapAction
+	 */
 	public function testMapAction() {
 		$this->Crud->mapAction('puppies', 'view');
 
@@ -161,6 +190,9 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertTrue($result);
 	}
 
+	/**
+	 * testMapActionView
+	 */
 	public function testMapActionView() {
 		$this->controller
 			->expects($this->once())
@@ -171,6 +203,9 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->Crud->executeAction('view', array(1));
 	}
 
+	/**
+	 * testIsActionMappedYes
+	 */
 	public function testIsActionMappedYes() {
 		$result = $this->Crud->isActionMapped('index');
 		$this->assertTrue($result);
@@ -181,6 +216,9 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertTrue($result);
 	}
 
+	/**
+	 * testIsActionMappedNo
+	 */
 	public function testIsActionMappedNo() {
 		$result = $this->Crud->isActionMapped('puppies');
 		$this->assertFalse($result);
@@ -191,6 +229,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertFalse($result);
 	}
 
+	/**
+	 * testGetIdFromRequest
+	 *
+	 * Check that numeric and uuids are returned
+	 */
 	public function testGetIdFromRequest() {
 		$this->request->params['pass'][0] = '1';
 		$id = $this->Crud->getIdFromRequest();
@@ -205,6 +248,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertSame('12345678-1234-1234-1234-123456789012', $id);
 	}
 
+	/**
+	 * testGetIdFromRequestEmpty
+	 *
+	 * None of these values should be returned
+	 */
 	public function testGetIdFromRequestEmpty() {
 		$id = $this->Crud->getIdFromRequest();
 		$this->assertNull($id);
@@ -222,6 +270,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertNull($id);
 	}
 
+	/**
+	 * testAddActionGet
+	 *
+	 * Add should render the form template
+	 */
 	public function testAddActionGet() {
 		$this->controller
 			->expects($this->once())
@@ -234,6 +287,13 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->Crud->executeAction('add', array($id));
 	}
 
+	/**
+	 * testAddActionPost
+	 *
+	 * Create a post, check that the created row looks about right.
+	 * Check that there are 4 rows after calling (3 fixtures and one
+	 * new row)
+	 */
 	public function testAddActionPost() {
 		$this->controller
 			->expects($this->once())
@@ -254,6 +314,10 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->Crud->executeAction('add', array());
 
 		$this->assertNotSame(false, $this->model->id, "No row has been created");
+		$this->assertSame(__METHOD__, $this->model->field('title'));
+
+		$count = $this->model->find('count');
+		$this->assertSame(4, $count);
 
 		$events = CakeEventManager::instance()->getLog();
 
@@ -262,7 +326,11 @@ class CrudComponentTestCase extends CakeTestCase {
 	}
 
 	/**
+	 * testDeleteActionExists
+	 *
 	 * Add a dummy detector to the request object so it says it's a delete request
+	 * Check the deleted row doens't exist after calling delete and that the
+	 * before + after delete events are triggered
 	 */
 	public function testDeleteActionExists() {
 		$this->controller
@@ -290,6 +358,12 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertNotSame(false, $index, "There was no Crud.afterDelete event triggered");
 	}
 
+	/**
+	 * testDeleteActionDoesNotExists
+	 *
+	 * If you try to delete something that doesn't exist - it should issue a recordNotFound event
+	 * TODO it should /not/ issue a beforeDelete event but it currently does
+	 */
 	public function testDeleteActionDoesNotExists() {
 		$this->controller
 			->expects($this->once())
@@ -304,6 +378,9 @@ class CrudComponentTestCase extends CakeTestCase {
 		$id = 42;
 		$this->Crud->executeAction('delete', array($id));
 
+		$count = $this->model->find('count');
+		$this->assertSame(3, $count);
+
 		$events = CakeEventManager::instance()->getLog();
 		$index = array_search('Crud.beforeDelete', $events);
 		$this->assertNotSame(false, $index, "There was no Crud.beforeDelete event triggered");
@@ -312,6 +389,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertNotSame(false, $index, "A none-existent row did not trigger a Crud.recordNotFount event");
 	}
 
+	/**
+	 * testEditActionGet
+	 *
+	 * Do we get a call to render the form template?
+	 */
 	public function testEditActionGet() {
 		$this->controller
 			->expects($this->once())
@@ -324,6 +406,12 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->Crud->executeAction('edit', array($id));
 	}
 
+	/**
+	 * testEditActionPost
+	 *
+	 * Simulating submitting a post form which just changes the title of the model
+	 * to the name of the method. Check the update is persisted to the db
+	 */
 	public function testEditActionPost() {
 		$this->controller
 			->expects($this->once())
@@ -356,6 +444,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertNotSame(false, $index, "There was no Crud.afterSave event triggered");
 	}
 
+	/**
+	 * testViewAction
+	 *
+	 * Make sure that there is a call to render the view template
+	 */
 	public function testViewAction() {
 		$this->controller
 			->expects($this->once())
@@ -368,6 +461,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->Crud->executeAction('view', array($id));
 	}
 
+	/**
+	 * testIndexAction
+	 *
+	 * Make sure that there is a call to render the index template
+	 */
 	public function testIndexAction() {
 		$this->controller
 			->expects($this->once())
@@ -384,11 +482,19 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertNotSame(false, $index, "There was no Crud.afterPaginate event triggered");
 	}
 
+	/**
+	 * testRedirect
+	 *
+	 * TODO this test isn't testing anything
+	 */
 	public function testRedirect() {
 		$subject = $this->Crud->testGetSubject();
 		$this->Crud->testRedirect($subject);
 	}
 
+	/**
+	 * testvalidateIdIntValid
+	 */
 	public function testvalidateIdIntValid() {
 		$this->controller->expects($this->never())->method('redirect');
 
@@ -399,6 +505,9 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertTrue($return, "Expected id $id to be accepted, it was rejected");
 	}
 
+	/**
+	 * testvalidateIdIntInvalid
+	 */
 	public function testvalidateIdIntInvalid() {
 		$this->controller->expects($this->once())->method('redirect');
 
@@ -409,6 +518,9 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertFalse($return, "Expected id $id to be rejected, it was accepted");
 	}
 
+	/**
+	 * testvalidateIdUUIDValid
+	 */
 	public function testvalidateIdUUIDValid() {
 		$this->controller->expects($this->never())->method('redirect');
 
@@ -417,6 +529,9 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertTrue($return, "Expected id $id to be accepted, it was rejected");
 	}
 
+	/**
+	 * testvalidateIdUUIDInvalid
+	 */
 	public function testvalidateIdUUIDInvalid() {
 		$this->controller->expects($this->once())->method('redirect');
 
