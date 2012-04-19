@@ -18,53 +18,53 @@ App::uses('CrudEventSubject', 'Crud.Controller/Event');
 class CrudComponent extends Component {
 
 	/**
-	* Reference to a Session component
-	*
-	* @cakephp
-	* @var array
-	*/
+	 * Reference to a Session component
+	 *
+	 * @cakephp
+	 * @var array
+	 */
 	public $components = array('Session');
 
 	/**
-	* The current controller action
-	*
-	* @platform
-	* @var string
-	*/
+	 * The current controller action
+	 *
+	 * @platform
+	 * @var string
+	 */
 	protected $action;
 
 	/**
-	* Reference to the current controller
-	*
-	* @platform
-	* @var Controller
-	*/
+	 * Reference to the current controller
+	 *
+	 * @platform
+	 * @var Controller
+	 */
 	protected $controller;
 
 	/**
-	* Reference to the current request
-	*
-	* @platform
-	* @var CakeRequest
-	*/
+	 * Reference to the current request
+	 *
+	 * @platform
+	 * @var CakeRequest
+	 */
 	protected $request;
 
 	/**
-	* Reference to the current event manager
-	*
-	* @platform
-	* @var CakeEventManager
-	*/
+	 * Reference to the current event manager
+	 *
+	 * @platform
+	 * @var CakeEventManager
+	 */
 	protected $eventManager;
 
 	/**
-	* A map of the controller action and what CRUD action we should call
-	*
-	* By default it supports non-prefix and admin_ prefixed routes
-	*
-	* @platform
-	* @var array
-	*/
+	 * A map of the controller action and what CRUD action we should call
+	 *
+	 * By default it supports non-prefix and admin_ prefixed routes
+	 *
+	 * @platform
+	 * @var array
+	 */
 	protected $actionMap = array(
 		'index'			=> 'index',
 		'add'			=> 'add',
@@ -80,13 +80,13 @@ class CrudComponent extends Component {
 	);
 
 	/**
-	* A map of the controller action and the view to render
-	*
-	* By default it supports non-prefix and admin_ prefixed routes
-	*
-	* @platform
-	* @var array
-	*/
+	 * A map of the controller action and the view to render
+	 *
+	 * By default it supports non-prefix and admin_ prefixed routes
+	 *
+	 * @platform
+	 * @var array
+	 */
 	protected $viewMap = array(
 		'index'			=> 'index',
 		'add'			=> 'form',
@@ -100,14 +100,14 @@ class CrudComponent extends Component {
 	);
 
 	/**
-	* Make sure to update the list of known controller methods before startup is called
-	*
-	* The reason for this is that if we don't, the Auth component won't execute any callbacks on the controller
-	* like isAuthorized
-	*
-	* @param Controller $controller
-	* @return void
-	*/
+	 * Make sure to update the list of known controller methods before startup is called
+	 *
+	 * The reason for this is that if we don't, the Auth component won't execute any callbacks on the controller
+	 * like isAuthorized
+	 *
+	 * @param Controller $controller
+	 * @return void
+	 */
 	public function initialize(Controller $controller) {
 		if ($controller->name == 'CakeError') {
 			return true;
@@ -130,58 +130,25 @@ class CrudComponent extends Component {
 	}
 
 	/**
-	* The startup method is called after the controller’s beforeFilter method
-	* but before the controller executes the current action handler.
-	*
-	* We catch our CRUD actions here before Cake complains about them
-	* not existing in the Controller
-	*
-	* @cakephp
-	* @param Controller $controller
-	* @return void
-	*/
-	public function startup(Controller $controller) {
-		if ($controller->name == 'CakeError') {
-			return true;
-		}
-
-		// Don't do anything if the action is defined in the controller already
-		if (method_exists($controller, $this->action)) {
-			return;
-		}
-
-		// Don't do anything if the action haven't been marked as CRUD
-		if (!in_array($this->action, $this->settings['actions'])) {
-			return;
-		}
-
-		// Don't do anything if the action isn't mapped
-		if (!array_key_exists($this->action, $this->actionMap)) {
-			return;
-		}
-	}
-
-	/**
-	* Execute a Crud action
-	*
-	* @platform
-	* @param string $action		The CRUD action
-	* @param array $arguments	List of arguments to pass to the CRUD action (Usually an ID to edit / delete)
-	* @return void
-	*/
+	 * Execute a Crud action
+	 *
+	 * @platform
+	 * @param string $action		The CRUD action
+	 * @param array $arguments	List of arguments to pass to the CRUD action (Usually an ID to edit / delete)
+	 * @return void
+	 */
 	public function executeAction($action = null, $args = array()) {
-		$this->modelName	= $this->controller->modelClass;
-		$this->model 		= $this->controller->{$this->modelName};
-		$action				= $action ?: $this->action;
+		$this->modelName = $this->controller->modelClass;
+		$this->model = $this->controller->{$this->modelName};
+		$view = $action = $action ?: $this->action;
 
 		$this->eventManager->dispatch(new CakeEvent('Crud.init', $this->getSubject()));
 
 		// Execute the default action, inside this component
-		call_user_func_array(array($this, $this->actionMap[$this->action] . 'Action'), $args);
+		call_user_func_array(array($this, $this->actionMap[$action] . 'Action'), $args);
 
-		$view = $this->action;
-		if (array_key_exists($this->action, $this->viewMap)) {
-			$view = $this->viewMap[$this->action];
+		if (array_key_exists($action, $this->viewMap)) {
+			$view = $this->viewMap[$action];
 		}
 
 		// Render the file based on action name
@@ -189,12 +156,12 @@ class CrudComponent extends Component {
 	}
 
 	/**
-	* Enable a CRUD action
-	*
-	* @platform
-	* @param string $action The action to enable
-	* @return void
-	*/
+	 * Enable a CRUD action
+	 *
+	 * @platform
+	 * @param string $action The action to enable
+	 * @return void
+	 */
 	public function enableAction($action) {
 		$pos = array_search($action, $this->settings['actions']);
 		if (false === $pos) {
@@ -208,12 +175,12 @@ class CrudComponent extends Component {
 	}
 
 	/**
-	* Disable a CRUD action
-	*
-	* @platform
-	* @param string $action The action to disable
-	* @return void
-	*/
+	 * Disable a CRUD action
+	 *
+	 * @platform
+	 * @param string $action The action to disable
+	 * @return void
+	 */
 	public function disableAction($action) {
 		$pos = array_search($action, $this->settings['actions']);
 		if (false !== $pos) {
@@ -227,15 +194,15 @@ class CrudComponent extends Component {
 	}
 
 	/**
-	* Map the view file to use for a controller action
-	*
-	* To map multiple action views in one go pass an array as first argument and no second argument
-	*
-	* @platform
-	* @param string|array $action
-	* @param string $view
-	* @return void
-	*/
+	 * Map the view file to use for a controller action
+	 *
+	 * To map multiple action views in one go pass an array as first argument and no second argument
+	 *
+	 * @platform
+	 * @param string|array $action
+	 * @param string $view
+	 * @return void
+	 */
 	public function mapActionView($action, $view = null) {
 		if (is_array($action)) {
 			$this->viewMap = $this->viewMap + $action;
@@ -246,13 +213,13 @@ class CrudComponent extends Component {
 	}
 
 	/**
-	* Map action to a internal request type
-	*
-	* @param string $action The Controller action to fake
-	* @param string $type one of the CRUD events (index, add, edit, delete, view)
-	* @param boolean $enable Should the mapping be enabled right away?
-	* @return void
-	*/
+	 * Map action to a internal request type
+	 *
+	 * @param string $action The Controller action to fake
+	 * @param string $type one of the CRUD events (index, add, edit, delete, view)
+	 * @param boolean $enable Should the mapping be enabled right away?
+	 * @return void
+	 */
 	public function mapAction($action, $type, $enable = true) {
 		$this->actionMap[$action] = $type;
 		if ($enable) {
@@ -261,11 +228,11 @@ class CrudComponent extends Component {
 	}
 
 	/**
-	* Check if a CRUD action has been mapped (aka should be handled by CRUD component)
-	*
-	* @param string|null $action If null, use the current action
-	* @return boolean
-	*/
+	 * Check if a CRUD action has been mapped (aka should be handled by CRUD component)
+	 *
+	 * @param string|null $action If null, use the current action
+	 * @return boolean
+	 */
 	public function isActionMapped($action = null) {
 		if (empty($action)) {
 			$action = $this->action;
@@ -275,11 +242,11 @@ class CrudComponent extends Component {
 	}
 
 	/**
-	* Helper method to get the passed ID to an action
-	*
-	* @platform
-	* @return string
-	*/
+	 * Helper method to get the passed ID to an action
+	 *
+	 * @platform
+	 * @return string
+	 */
 	public function getIdFromRequest() {
 		if (empty($this->request->params['pass'][0])) {
 			return null;
@@ -288,11 +255,11 @@ class CrudComponent extends Component {
 	}
 
 	/**
-	* Create a CakeEvent subject with the required properties
-	*
-	* @param array $additional Additional properties for the subject
-	* @return CrudEventSubject
-	*/
+	 * Create a CakeEvent subject with the required properties
+	 *
+	 * @param array $additional Additional properties for the subject
+	 * @return CrudEventSubject
+	 */
 	protected function getSubject($additional = array()) {
 		$subject				= new CrudEventSubject();
 		$subject->crud			= $this;
@@ -307,18 +274,18 @@ class CrudComponent extends Component {
 	}
 
 	/**
-	* Generic index action
-	*
-	* Triggers the following callbacks
-	*  - Crud.init
-	*  - Crud.beforePaginate
-	*  - Crud.afterPaginate
-	*  - Crud.beforeRender
-	*
-	* @platform
-	* @param string $id
-	* @return void
-	*/
+	 * Generic index action
+	 *
+	 * Triggers the following callbacks
+	 *  - Crud.init
+	 *  - Crud.beforePaginate
+	 *  - Crud.afterPaginate
+	 *  - Crud.beforeRender
+	 *
+	 * @platform
+	 * @param string $id
+	 * @return void
+	 */
 	protected function indexAction() {
 		$this->eventManager->dispatch(new CakeEvent('Crud.beforePaginate', $this->getSubject()));
 
@@ -332,18 +299,18 @@ class CrudComponent extends Component {
 	}
 
 	/**
-	* Generic add action
-	*
-	* Triggers the following callbacks
-	*  - Crud.init
-	*  - Crud.beforeSave
-	*  - Crud.afterSave
-	*  - Crud.beforeRender
-	*
-	* @platform
-	* @param string $id
-	* @return void
-	*/
+	 * Generic add action
+	 *
+	 * Triggers the following callbacks
+	 *  - Crud.init
+	 *  - Crud.beforeSave
+	 *  - Crud.afterSave
+	 *  - Crud.beforeRender
+	 *
+	 * @platform
+	 * @param string $id
+	 * @return void
+	 */
 	protected function addAction() {
 		if ($this->request->is('post')) {
 			$this->eventManager->dispatch(new CakeEvent('Crud.beforeSave', $this->getSubject()));
@@ -363,21 +330,21 @@ class CrudComponent extends Component {
 	}
 
 	/**
-	* Generic edit action
-	*
-	* Triggers the following callbacks
-	*  - Crud.init
-	*  - Crud.beforeSave
-	*  - Crud.afterSave
-	*  - Crud.beforeFind
-	*  - Crud.recordNotFound
-	*  - Crud.afterFind
-	*  - Crud.beforeRender
-	*
-	* @platform
-	* @param string $id
-	* @return void
-	*/
+	 * Generic edit action
+	 *
+	 * Triggers the following callbacks
+	 *  - Crud.init
+	 *  - Crud.beforeSave
+	 *  - Crud.afterSave
+	 *  - Crud.beforeFind
+	 *  - Crud.recordNotFound
+	 *  - Crud.afterFind
+	 *  - Crud.beforeRender
+	 *
+	 * @platform
+	 * @param string $id
+	 * @return void
+	 */
 	protected function editAction($id = null) {
 		if (empty($id)) {
 			$id = $this->getIdFromRequest();
@@ -418,19 +385,19 @@ class CrudComponent extends Component {
 	}
 
 	/**
-	* Generic view action
-	*
-	* Triggers the following callbacks
-	*  - Crud.init
-	*  - Crud.beforeFind
-	*  - Crud.recordNotFound
-	*  - Crud.afterFind
-	*  - Crud.beforeRender
-	*
-	* @platform
-	* @param string $id
-	* @return void
-	*/
+	 * Generic view action
+	 *
+	 * Triggers the following callbacks
+	 *  - Crud.init
+	 *  - Crud.beforeFind
+	 *  - Crud.recordNotFound
+	 *  - Crud.afterFind
+	 *  - Crud.beforeRender
+	 *
+	 * @platform
+	 * @param string $id
+	 * @return void
+	 */
 	protected function viewAction($id = null) {
 		if (empty($id)) {
 			$id = $this->getIdFromRequest();
@@ -466,18 +433,18 @@ class CrudComponent extends Component {
 	}
 
 	/**
-	* Generic delete action
-	*
-	* Triggers the following callbacks
-	*  - beforeFind
-	*  - recordNotFound
-	*  - beforeDelete
-	*  - afterDelete
-	*
-	* @platform
-	* @param string $id
-	* @return void
-	*/
+	 * Generic delete action
+	 *
+	 * Triggers the following callbacks
+	 *  - beforeFind
+	 *  - recordNotFound
+	 *  - beforeDelete
+	 *  - afterDelete
+	 *
+	 * @platform
+	 * @param string $id
+	 * @return void
+	 */
 	protected function deleteAction($id = null) {
 		if (empty($id)) {
 			$id = $this->getIdFromRequest();
@@ -518,11 +485,11 @@ class CrudComponent extends Component {
 	}
 
 	/**
-	* Called for all redirects inside CRUD
-	*
-	* @param array|null $url
-	* @return void
-	*/
+	 * Called for all redirects inside CRUD
+	 *
+	 * @param array|null $url
+	 * @return void
+	 */
 	protected function redirect($subject, $url = null) {
 		if (!empty($this->request->data['redirect_url'])) {
 			$url = $this->request->data['redirect_url'];
@@ -538,24 +505,37 @@ class CrudComponent extends Component {
 	}
 
 	/**
-	* Is the passed ID valid ?
-	*
-	* By default we asume you want to validate an UUID string
-	*
-	* Change the validateId settings key to "integer" for is_numeric check instead
-	*
-	* @return boolean
-	*/
-	protected function validateId($id) {
-		if (empty($this->settings['validateId']) || $this->settings['validateId'] === 'uuid') {
+	 * Is the passed ID valid ?
+	 *
+	 * By default we asume you want to validate an UUID string
+	 *
+	 * Change the validateId settings key to "integer" for is_numeric check instead
+	 *
+	 * @return boolean
+	 */
+	protected function validateId($id, $type = null) {
+        if (empty($type)) {
+            if (!empty($this->settings['validateId'])) {
+                $type = $this->settings['validateId'];
+            } else {
+                $type = 'uuid';
+            }
+        }
+		if ($type === 'uuid') {
 			$valid = Validation::uuid($id);
 		} else {
 			$valid = is_numeric($id);
+
 		}
 
-		if (!$valid) {
-			$this->eventManager->dispatch(new CakeEvent('Crud.invalidId', $subject = $this->getSubject(compact('id'))));
-			$this->redirect($subject, $this->controller->referer());
+		if ($valid) {
+            return true;
 		}
+
+        $subject = $this->getSubject(compact('id'));
+        $this->eventManager->dispatch(new CakeEvent('Crud.invalidId', $subject));
+		$this->redirect($subject, $this->controller->referer());
+
+        return false;
 	}
 }
