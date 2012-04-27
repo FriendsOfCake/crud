@@ -34,7 +34,7 @@ Add the following to your __app/Config/bootstrap.php__
 
 ```php
 <?php
-CakePlugin::load('Crud');
+CakePlugin::load('Crud', array('bootstrap' => true, 'routes' => true));
 ?>
 ```
 
