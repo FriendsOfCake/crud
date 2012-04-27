@@ -116,9 +116,9 @@ class CrudComponent extends Component {
 		$controller->methods = array_keys(array_flip($controller->methods) + array_flip($this->settings['actions']));
 
 		// Create some easy accessible class properties
-		$this->action 		= $controller->request->action;
+		$this->action		= $controller->request->action;
 		$this->controller	= $controller;
-		$this->request 		= $controller->request;
+		$this->request		= $controller->request;
 		$this->eventManager = $controller->getEventManager();
 
 		if (!isset($controller->dispatchComponents)) {
@@ -144,8 +144,10 @@ class CrudComponent extends Component {
 
 		$this->eventManager->dispatch(new CakeEvent('Crud.init', $this->getSubject()));
 
-		// Execute the default action, inside this component
-		call_user_func_array(array($this, $this->actionMap[$action] . 'Action'), $args);
+		$response = call_user_func_array(array($this, $this->actionMap[$this->action] . 'Action'), $args);
+		if ($response instanceof CakeResponse) {
+			return $response;
+		}
 
 		if (array_key_exists($action, $this->viewMap)) {
 			$view = $this->viewMap[$action];
@@ -264,7 +266,7 @@ class CrudComponent extends Component {
 		$subject				= new CrudEventSubject();
 		$subject->crud			= $this;
 		$subject->controller	= $this->controller;
-		$subject->model 		= $this->model;
+		$subject->model			= $this->model;
 		$subject->action		= $this->action;
 		$subject->request		= $this->request;
 		$subject->response		= $this->controller->response;
@@ -277,10 +279,10 @@ class CrudComponent extends Component {
 	 * Generic index action
 	 *
 	 * Triggers the following callbacks
-	 *  - Crud.init
-	 *  - Crud.beforePaginate
-	 *  - Crud.afterPaginate
-	 *  - Crud.beforeRender
+	 *	- Crud.init
+	 *	- Crud.beforePaginate
+	 *	- Crud.afterPaginate
+	 *	- Crud.beforeRender
 	 *
 	 * @platform
 	 * @param string $id
@@ -302,10 +304,10 @@ class CrudComponent extends Component {
 	 * Generic add action
 	 *
 	 * Triggers the following callbacks
-	 *  - Crud.init
-	 *  - Crud.beforeSave
-	 *  - Crud.afterSave
-	 *  - Crud.beforeRender
+	 *	- Crud.init
+	 *	- Crud.beforeSave
+	 *	- Crud.afterSave
+	 *	- Crud.beforeRender
 	 *
 	 * @platform
 	 * @param string $id
@@ -333,13 +335,13 @@ class CrudComponent extends Component {
 	 * Generic edit action
 	 *
 	 * Triggers the following callbacks
-	 *  - Crud.init
-	 *  - Crud.beforeSave
-	 *  - Crud.afterSave
-	 *  - Crud.beforeFind
-	 *  - Crud.recordNotFound
-	 *  - Crud.afterFind
-	 *  - Crud.beforeRender
+	 *	- Crud.init
+	 *	- Crud.beforeSave
+	 *	- Crud.afterSave
+	 *	- Crud.beforeFind
+	 *	- Crud.recordNotFound
+	 *	- Crud.afterFind
+	 *	- Crud.beforeRender
 	 *
 	 * @platform
 	 * @param string $id
@@ -388,11 +390,11 @@ class CrudComponent extends Component {
 	 * Generic view action
 	 *
 	 * Triggers the following callbacks
-	 *  - Crud.init
-	 *  - Crud.beforeFind
-	 *  - Crud.recordNotFound
-	 *  - Crud.afterFind
-	 *  - Crud.beforeRender
+	 *	- Crud.init
+	 *	- Crud.beforeFind
+	 *	- Crud.recordNotFound
+	 *	- Crud.afterFind
+	 *	- Crud.beforeRender
 	 *
 	 * @platform
 	 * @param string $id
@@ -436,10 +438,10 @@ class CrudComponent extends Component {
 	 * Generic delete action
 	 *
 	 * Triggers the following callbacks
-	 *  - beforeFind
-	 *  - recordNotFound
-	 *  - beforeDelete
-	 *  - afterDelete
+	 *	- beforeFind
+	 *	- recordNotFound
+	 *	- beforeDelete
+	 *	- afterDelete
 	 *
 	 * @platform
 	 * @param string $id
@@ -514,13 +516,13 @@ class CrudComponent extends Component {
 	 * @return boolean
 	 */
 	protected function validateId($id, $type = null) {
-        if (empty($type)) {
-            if (!empty($this->settings['validateId'])) {
-                $type = $this->settings['validateId'];
-            } else {
-                $type = 'uuid';
-            }
-        }
+		if (empty($type)) {
+			if (!empty($this->settings['validateId'])) {
+				$type = $this->settings['validateId'];
+			} else {
+				$type = 'uuid';
+			}
+		}
 		if ($type === 'uuid') {
 			$valid = Validation::uuid($id);
 		} else {
@@ -529,13 +531,13 @@ class CrudComponent extends Component {
 		}
 
 		if ($valid) {
-            return true;
+			return true;
 		}
 
-        $subject = $this->getSubject(compact('id'));
-        $this->eventManager->dispatch(new CakeEvent('Crud.invalidId', $subject));
+		$subject = $this->getSubject(compact('id'));
+		$this->eventManager->dispatch(new CakeEvent('Crud.invalidId', $subject));
 		$this->redirect($subject, $this->controller->referer());
 
-        return false;
+		return false;
 	}
 }
