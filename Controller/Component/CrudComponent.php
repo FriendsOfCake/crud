@@ -144,6 +144,7 @@ class CrudComponent extends Component {
 
 		$this->eventManager->dispatch(new CakeEvent('Crud.init', $this->getSubject()));
 
+		// Execute the default action, inside this component
 		$response = call_user_func_array(array($this, $this->actionMap[$this->action] . 'Action'), $args);
 		if ($response instanceof CakeResponse) {
 			return $response;
