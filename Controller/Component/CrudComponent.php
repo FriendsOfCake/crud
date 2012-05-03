@@ -528,7 +528,6 @@ class CrudComponent extends Component {
 			$valid = Validation::uuid($id);
 		} else {
 			$valid = is_numeric($id);
-
 		}
 
 		if ($valid) {
@@ -537,6 +536,7 @@ class CrudComponent extends Component {
 
 		$subject = $this->getSubject(compact('id'));
 		$this->eventManager->dispatch(new CakeEvent('Crud.invalidId', $subject));
+		$this->Session->setFlash('Invalid id', 'error');
 		$this->redirect($subject, $this->controller->referer());
 
 		return false;
