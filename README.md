@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/nodesagency/Platform-Crud-Plugin.png?branch=master)](http://travis-ci.org/nodesagency/Platform-Crud-Plugin)
+
 # Introduction
 
 The Crud plugin allow high reusability of the default Create, Retrieve, Update and Delete (CRUD) actions in your controllers
