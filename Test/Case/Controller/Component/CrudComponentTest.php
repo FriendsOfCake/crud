@@ -307,7 +307,8 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->controller->data = array(
 			'CrudExample' => array(
 				'title' => __METHOD__,
-				'description' => __METHOD__
+				'description' => __METHOD__,
+				'author_id' => 0
 			)
 		);
 
