@@ -149,14 +149,16 @@ class CrudComponent extends Component {
 			throw new Exception(sprintf('Action "%s" has not been mapped', $action));
 		}
 
+		// Change the view file before executing the CRUD action (so mapActionView works)
+		if (array_key_exists($action, $this->viewMap)) {
+			$view = $this->viewMap[$action];
+			$this->controller->view = $view;
+		}
+
 		// Execute the default action, inside this component
 		$response = call_user_func_array(array($this, $this->actionMap[$action] . 'Action'), $args);
 		if ($response instanceof CakeResponse) {
 			return $response;
-		}
-
-		if (array_key_exists($action, $this->viewMap)) {
-			$view = $this->viewMap[$action];
 		}
 
 		// Render the file based on action name
