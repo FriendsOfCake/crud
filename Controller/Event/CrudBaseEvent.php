@@ -31,6 +31,7 @@ abstract class CrudBaseEvent extends Object implements CakeEventListener {
 
 			'Crud.recordNotFound'	=> array('callable' => 'recordNotFound'),
 			'Crud.invalidId'		=> array('callable' => 'invalidId'),
+			'Crud.setFlash'			=> array('callable' => 'setFlash'),
 
 			'Crud.beforeRender'		=> array('callable' => 'beforeRender'),
 			'Crud.beforeRedirect'	=> array('callable' => 'beforeRedirect'),
@@ -177,6 +178,22 @@ abstract class CrudBaseEvent extends Object implements CakeEventListener {
 	* @return void
 	*/
 	public function invalidId(CakeEvent $event) {
+
+	}
+
+	/**
+	* Called before any CakeSession::setFlash
+	*
+	* Subject contains the following keys you can modify:
+	* 	- message
+	* 	- element = 'default',
+	* 	- params = array()
+	* 	- key = 'flash'
+	*
+	* @param CakeEvent $event The CakePHP CakeEvent object.
+	* @return void
+	*/
+	public function setFlash(CakeEvent $event) {
 
 	}
 }
