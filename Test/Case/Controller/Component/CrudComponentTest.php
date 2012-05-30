@@ -65,21 +65,21 @@ class TestCrudComponent extends CrudComponent {
 	 * Test visibility wrapper
 	 */
 	public function testGetSubject($additional = array()) {
-		return $this->getSubject($additional);
+		return $this->_getSubject($additional);
 	}
 
 	/**
 	 * Test visibility wrapper
 	 */
 	public function testRedirect($subject, $url = null) {
-		return $this->redirect($subject, $url);
+		return $this->_redirect($subject, $url);
 	}
 
 	/**
 	 * Test visibility wrapper
 	 */
 	public function testValidateId($id) {
-		return $this->validateId($id);
+		return $this->_validateId($id);
 	}
 }
 
