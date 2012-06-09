@@ -72,10 +72,10 @@ abstract class AppController extends Controller {
 	* @throws PrivateActionException When actions are not public or prefixed by _
 	* @throws MissingActionException When actions are not defined and scaffolding and CRUD is not enabled.
 	*/
-	public function invokeAction(\CakeRequest $request) {
+	public function invokeAction(CakeRequest $request) {
 		try {
 			return parent::invokeAction($request);
-		} catch (\MissingActionException $e) {
+		} catch (MissingActionException $e) {
 			// Check for any dispatch components
 			if (!empty($this->dispatchComponents)) {
 				// Iterate dispatchComponents
