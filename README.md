@@ -6,9 +6,7 @@ The Crud plugin allow high reusability of the default Create, Retrieve, Update a
 
 Usually the code for CRUD is very simple, and always look the same - this plugin will add the actions to your controller so you don't have to reimplement them over and over
 
-It only works with CakePHP 2.1 - as it utilizes the new event system
-
-The plugin requires a PSR-0 autoloader, if you don't have one, please install https://github.com/nodesagency/Platform-Common-Plugin
+It only works with CakePHP > 2.1 - as it utilizes the new event system
 
 # Installation
 
@@ -74,10 +72,10 @@ abstract class AppController extends Controller {
 	* @throws PrivateActionException When actions are not public or prefixed by _
 	* @throws MissingActionException When actions are not defined and scaffolding and CRUD is not enabled.
 	*/
-	public function invokeAction(\CakeRequest $request) {
+	public function invokeAction(CakeRequest $request) {
 		try {
 			return parent::invokeAction($request);
-		} catch (\MissingActionException $e) {
+		} catch (MissingActionException $e) {
 			// Check for any dispatch components
 			if (!empty($this->dispatchComponents)) {
 				// Iterate dispatchComponents
