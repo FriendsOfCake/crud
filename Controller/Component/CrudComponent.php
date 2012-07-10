@@ -570,13 +570,15 @@ class CrudComponent extends Component {
 	 */
 	protected function _validateId($id, $type = null) {
 		if (empty($type)) {
-			if (!empty($this->settings['validateId'])) {
+			if (isset($this->settings['validateId'])) {
 				$type = $this->settings['validateId'];
 			} else {
 				$type = 'uuid';
 			}
 		}
-		if ($type === 'uuid') {
+		if (!$type) {
+			return true;
+		} elseif ($type === 'uuid') {
 			$valid = Validation::uuid($id);
 		} else {
 			$valid = is_numeric($id);
