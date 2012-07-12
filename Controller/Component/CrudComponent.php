@@ -185,8 +185,8 @@ class CrudComponent extends Component {
 				return $response;
 			}
 		} catch (Exception $e) {
-			if (!isset($exception->response)) {
-				return $exception->response;
+			if (isset($e->response)) {
+				return $e->response;
 			}
 			throw $e;
 		}
