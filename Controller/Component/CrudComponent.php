@@ -200,7 +200,18 @@ class CrudComponent extends Component {
 		$this->_model		= $this->_controller->{$this->_modelName};
 	}
 
-
+	/**
+	 * Triggers a Crud event by creating a new subject and filling it with $data
+	 * if $data is an instance of CrudEventSubject it will be reused as the subject
+	 * objec for this event.
+	 *
+	 * If Event listenrs return a CakeResponse object, the this methid will throw an
+	 * exeption and fill a 'response' property on it with a referente to the response
+	 * object.
+	 *
+	 * @throws Exception if any event listener return a CakeResponse object
+	 * @return CrudEventSubject
+	 **/
 	protected function _trigger($eventName, $data = array()) {
 		$subject = $data instanceof CrudEventSubject ? $data : $this->_getSubject($data);
 		$event = new CakeEvent($this->_eventPrefix . '.' . $eventName, $subject);
