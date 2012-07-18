@@ -222,9 +222,9 @@ class CrudComponent extends Component {
 			throw $exception;
 		}
 
-		$subject->stopped = true;
+		$subject->stopped = false;
 		if ($event->isStopped()) {
-			$subject->stopped = false;
+			$subject->stopped = true;
 		}
 		return $subject;
 	}
