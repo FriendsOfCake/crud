@@ -316,6 +316,20 @@ class CrudComponent extends Component {
 	}
 
 	/**
+	 * Attaches an event listener function to the controller for Crud Events
+	 *
+	 * @param string $event Name of the Crud Event you want to attach to controller
+	 * @param callback $callback callable method or closure to be executed on event
+	 * @return void
+	 **/
+	public function on($event, $callback) {
+		if (!strpos($event, '.')) {
+			$event = $this->_eventPrefix . '.' . $event;
+		}
+		$this->_controller->getEventManager()->attach($callback, $event);
+	}
+
+	/**
 	 * Helper method to get the passed ID to an action
 	 *
 	 * @platform
