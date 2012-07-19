@@ -94,7 +94,7 @@ class CrudComponentTestCase extends CakeTestCase {
 	 * Use the core posts fixture to have something to work on.
 	 * What fixture is used is almost irrelevant, was chosen as it is simple
 	 */
-	public $fixtures = array('core.post');
+	public $fixtures = array('core.post', 'core.author', 'core.tag', 'plugin.crud.posts_tag');
 
 	/**
 	 * setUp
@@ -614,4 +614,163 @@ class CrudComponentTestCase extends CakeTestCase {
 		$expected = array('Crud.beforePaginate called', 'Crud.beforeRender called');
 		$this->assertSame($expected, $result);
 	}
+
+	/**
+	 * Tests that by default Crud component will fetch related associations on add and edit actions
+	 *
+	 * @return void
+	 */
+	public function testFetchRelatedDefaults() {
+		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
+		$expectedTags = array(1 => '1', 2 => '2', 3 => '3');
+		$expectedAuthors = array(1 => '1', 2 => '2', 3 => '3', 4 => '4');
+
+		$this->Crud->executeAction('add');
+		$vars = $this->controller->viewVars;
+		$this->assertEquals($expectedTags, $vars['tags']);
+		$this->assertEquals($expectedAuthors, $vars['authors']);
+		$this->controller->viewVars = array();
+
+		$this->Crud->executeAction('edit', array('1'));
+		$vars = $this->controller->viewVars;
+		$this->assertEquals($expectedTags, $vars['tags']);
+		$this->assertEquals($expectedAuthors, $vars['authors']);
+		$this->controller->viewVars = array();
+
+		$this->Crud->executeAction('admin_add');
+		$vars = $this->controller->viewVars;
+		$this->assertEquals($expectedTags, $vars['tags']);
+		$this->assertEquals($expectedAuthors, $vars['authors']);
+		$this->controller->viewVars = array();
+
+		$this->Crud->executeAction('admin_edit', array(1));
+		$vars = $this->controller->viewVars;
+		$this->assertEquals($expectedTags, $vars['tags']);
+		$this->assertEquals($expectedAuthors, $vars['authors']);
+	}
+
+	/**
+	 * Tests that by default Crud can select some models for each action to fetch related lists
+	 *
+	 * @return void
+	 */
+	public function testFetchRelatedMapped() {
+		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
+		$this->Crud->settings['relatedLists'] = array(
+			'add' => array('Author')
+		);
+		$expectedAuthors = array(1 => '1', 2 => '2', 3 => '3', 4 => '4');
+
+		$this->Crud->executeAction('add');
+		$vars = $this->controller->viewVars;
+		$this->assertEquals($expectedAuthors, $vars['authors']);
+		$this->assertFalse(isset($vars['tags']));
+		$this->controller->viewVars = array();
+
+		$this->Crud->executeAction('admin_add');
+		$vars = $this->controller->viewVars;
+		$this->assertEquals($expectedAuthors, $vars['authors']);
+		$this->assertFalse(isset($vars['tags']));
+	}
+
+	/**
+	 * Tests that by default Crud can select some models for each action to fetch related lists
+	 * using mapRelatedList
+	 *
+	 * @return void
+	 */
+	public function testFetchRelatedMappedMethod() {
+		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
+		$this->Crud->mapRelatedList(array('Tag'), 'add');
+		$expectedTags = array(1 => '1', 2 => '2', 3 => '3');
+
+		$this->Crud->executeAction('add');
+		$vars = $this->controller->viewVars;
+		$this->assertEquals($expectedTags, $vars['tags']);
+		$this->assertFalse(isset($vars['authors']));
+		$this->controller->viewVars = array();
+
+		$this->Crud->executeAction('admin_add');
+		$vars = $this->controller->viewVars;
+		$this->assertEquals($expectedTags, $vars['tags']);
+		$this->assertFalse(isset($vars['authors']));
+	}
+
+	/**
+	 * Tests that by default Crud can select some models for each action to fetch related lists
+	 * using mapRelatedList with an 'all' default
+	 *
+	 * @return void
+	 */
+	public function testFetchRelatedMappedAll() {
+		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
+		$this->Crud->mapRelatedList(array('Tag'));
+		$expectedTags = array(1 => '1', 2 => '2', 3 => '3');
+
+		$this->Crud->executeAction('edit', array('1'));
+		$vars = $this->controller->viewVars;
+		$this->assertEquals($expectedTags, $vars['tags']);
+		$this->assertFalse(isset($vars['authors']));
+	}
+
+	/**
+	 * Tests that all default for mapped lists will not apply to not enabled actions
+	 *
+	 * @return void
+	 */
+	public function testFetchRelatedMappedAllNotEnabled() {
+		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
+		$this->Crud->mapRelatedList(array('Tag'));
+
+		$this->Crud->executeAction('delete', array('1'));
+		$vars = $this->controller->viewVars;
+		$this->assertFalse(isset($vars['tags']));
+		$this->assertFalse(isset($vars['authors']));
+	}
+
+	/**
+	 * Tests that mammpe actions are not used if you define specific related models
+	 * for the mapped controller action
+	 *
+	 * @return void
+	 */
+	public function testFetchRelatedSpecificActionMapped() {
+		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
+		$this->Crud->mapRelatedList(array('Tag'), 'admin_add');
+		$expectedTags = array(1 => '1', 2 => '2', 3 => '3');
+
+		$this->Crud->executeAction('admin_add', array('1'));
+		$vars = $this->controller->viewVars;
+		$this->assertEquals($expectedTags, $vars['tags']);
+		$this->assertFalse(isset($vars['authors']));
+	}
+
+	/**
+	 * Tests beforeListRelated and afterListRelated events
+	 *
+	 * @return void
+	 */
+	public function testFetchRelatedEvents() {
+		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
+		$this->Crud->mapRelatedList(array('Tag'));
+		$expectedTags = array(1 => '1', 2 => '2', 'foo' => 'bar');
+		$self = $this;
+
+		$this->controller->getEventManager()->attach(function($event) use($self) {
+			$self->assertEquals(200, $event->subject->query['limit']);
+			$event->subject->query['limit'] = 2;
+		}, 'Crud.beforeListRelated');
+
+		$this->controller->getEventManager()->attach(function($event) use($self) {
+			$self->assertEquals('tags', $event->subject->viewVar);
+			$event->subject->viewVar = 'labels';
+
+			$event->subject->items += array('foo' => 'bar');
+		}, 'Crud.afterListRelated');
+
+		$this->Crud->executeAction('add');
+		$vars = $this->controller->viewVars;
+		$this->assertEquals($expectedTags, $vars['labels']);
+	}
+
 }
