@@ -163,6 +163,26 @@ class CrudComponent extends Component {
 	}
 
 	/**
+	* The default find method for reading data
+	*
+	* Model->find($method)
+	*
+	* @platform
+	* @var array
+	*/
+	protected $_findMethodMap = array(
+		'index'			=> 'all',
+		'edit'			=> 'first',
+		'view'			=> 'first',
+		'delete'		=> 'count',
+
+		'admin_index'	=> 'all',
+		'admin_edit'	=> 'first',
+		'admin_view'	=> 'first',
+		'admin_delete'	=> 'count'
+	);
+
+	/**
 	 * Make sure to update the list of known controller methods before startup is called
 	 *
 	 * The reason for this is that if we don't, the Auth component won't execute any callbacks on the controller
@@ -204,11 +224,14 @@ class CrudComponent extends Component {
 		$view = $action = $action ?: $this->_action;
 		$this->_setModelProperties();
 
+		// Make sure to update internal action property
+		$this->_action = $action;
+
 		$this->trigger('init');
 
 		// Test if action is mapped
 		if (empty($this->_actionMap[$action])) {
-			throw new Exception(sprintf('Action "%s" has not been mapped', $action));
+			throw new RuntimeException(sprintf('Action "%s" has not been mapped', $action));
 		}
 
 		// Change the view file before executing the CRUD action (so mapActionView works)
@@ -326,7 +349,7 @@ class CrudComponent extends Component {
 	 */
 	public function mapActionView($action, $view = null) {
 		if (is_array($action)) {
-			$this->_viewMap = $this->_viewMap + $action;
+			$this->_viewMap = $action + $this->_viewMap;
 			return;
 		}
 
@@ -360,6 +383,18 @@ class CrudComponent extends Component {
 		}
 
 		return false !== array_search($action, $this->settings['actions']);
+	}
+
+	/**
+	* Map a controller action to a Model::find($method)
+	*
+	* @platform
+	* @param string $action
+	* @param strign $method
+	* @return void
+	*/
+	public function mapFindMethod($action, $method) {
+		$this->_findMethodMap[$action] = $method;
 	}
 
 	/**
@@ -412,6 +447,10 @@ class CrudComponent extends Component {
 	public function mapRelatedList($models, $action = null) {
 		if (empty($action)) {
 			$action = $this->_action;
+		}
+
+		if (is_string($models)) {
+			$models = array($models);
 		}
 
 		$this->settings['relatedLists'][$action] = $models;
@@ -505,6 +544,25 @@ class CrudComponent extends Component {
 	}
 
 	/**
+	* Get the model find method for a current controller action
+	*
+	* @param string|NULL $action The controller action
+	* @param string|NULL $default The default find method in case it haven't been mapped
+	* @return string The find method used in ->_model->find($method)
+	*/
+	protected function _getFindMethod($action = null, $default = null) {
+		if (empty($action)) {
+			$action = $this->_action;
+		}
+
+		if (!empty($this->_findMethodMap[$action])) {
+			return $this->_findMethodMap[$action];
+		}
+
+		return $default;
+	}
+
+	/**
 	 * Generic index action
 	 *
 	 * Triggers the following callbacks
@@ -518,7 +576,22 @@ class CrudComponent extends Component {
 	 * @return void
 	 */
 	protected function _indexAction() {
-		$this->trigger('beforePaginate');
+		$findMethod = $this->_getFindMethod(null, 'all');
+		$subject = $this->trigger('beforePaginate', compact('findMethod'));
+
+		$Paginator = $this->_Collection->load('Paginator');
+
+		if (empty($Paginator->settings)) {
+			$Paginator->settings = array();
+		}
+
+		if (!empty($Paginator->settings[$this->_modelName])) {
+			$Paginator->settings[$this->_modelName][0] = $subject->findMethod;
+			$Paginator->settings[$this->_modelName]['findType'] = $subject->findMethod;
+		} else {
+			$Paginator->settings[0] = $subject->findMethod;
+			$Paginator->settings['findType'] = $subject->findMethod;
+		}
 
 		$items = $this->_controller->paginate($this->_model);
 
@@ -549,6 +622,7 @@ class CrudComponent extends Component {
 				$this->_setFlash(sprintf('Succesfully created %s', Inflector::humanize($this->_modelName)), 'success');
 				$subject = $this->trigger('afterSave', array('success' => true, 'id' => $this->_model->id));
 				$this->_redirect($subject, array('action' => 'index'));
+				return false;
 			} else {
 				$this->_setFlash(sprintf('Could not create %s', Inflector::humanize($this->_modelName)), 'error');
 				$this->trigger('afterSave', array('success' => false));
@@ -588,6 +662,7 @@ class CrudComponent extends Component {
 				$this->_setFlash(sprintf('%s was succesfully updated', ucfirst(Inflector::humanize($this->_modelName))), 'success');
 				$subject = $this->trigger('afterSave', array('id' => $id, 'success' => true));
 				$this->_redirect($subject, array('action' => 'index'));
+				return false;
 			} else {
 				$this->_setFlash(sprintf('Could not update %s', Inflector::humanize($this->_modelName)), 'error');
 				$this->trigger('afterSave' ,array('id' => $id, 'success' => false));
@@ -595,14 +670,16 @@ class CrudComponent extends Component {
 		} else {
 			$query = array();
 			$query['conditions'] = array($this->_model->escapeField() => $id);
-			$subject = $this->trigger('beforeFind', compact('query'));
+			$findMethod = $this->_getFindMethod(null, 'first');
+			$subject = $this->trigger('beforeFind', compact('query', 'findMethod'));
 			$query = $subject->query;
 
-			$this->_request->data = $this->_model->find('first', $query);
+			$this->_request->data = $this->_model->find($subject->findMethod, $query);
 			if (empty($this->_request->data)) {
 				$subject = $this->trigger('recordNotFound', compact('id'));
 				$this->_setFlash(sprintf('Could not find %s', Inflector::humanize($this->_modelName)), 'error');
 				$this->_redirect($subject, array('action' => 'index'));
+				return false;
 			}
 
 			$this->trigger('afterFind', compact('id'));
@@ -639,17 +716,20 @@ class CrudComponent extends Component {
 		// Build conditions
 		$query = array();
 		$query['conditions'] = array($this->_model->escapeField() => $id);
-		$subject = $this->trigger('beforeFind', compact('id', 'query'));
+
+		$findMethod = $this->_getFindMethod(null, 'first');
+		$subject = $this->trigger('beforeFind', compact('id', 'query', 'findMethod'));
 		$query = $subject->query;
 
 		// Try and find the database record
-		$item = $this->_model->find('first', $query);
+		$item = $this->_model->find($subject->findMethod, $query);
 
 		// We could not find any record match the conditions in query
 		if (empty($item)) {
 			$subject = $this->trigger('recordNotFound', compact('id'));
 			$this->_setFlash(sprintf('Could not find %s', Inflector::humanize($this->_modelName)), 'error');
 			$this->_redirect($subject, array('action' => 'index'));
+			return false;
 		}
 
 		// We found a record, trigger an afterFind
@@ -684,20 +764,24 @@ class CrudComponent extends Component {
 		$this->_validateId($id);
 		$query = array();
 		$query['conditions'] = array($this->_model->escapeField() => $id);
-		$subject = $this->trigger('beforeFind', compact('id', 'query'));
+
+		$findMethod = $this->_getFindMethod(null, 'count');
+		$subject = $this->trigger('beforeFind', compact('id', 'query', 'findMethod'));
 		$query = $subject->query;
 
-		$count = $this->_model->find('count', $query);
+		$count = $this->_model->find($subject->findMethod, $query);
 		if (empty($count)) {
 			$subject = $this->trigger('recordNotFound', compact('id'));
 			$this->_setFlash(sprintf('Could not find %s', Inflector::humanize($this->_modelName)), 'error');
 			$this->_redirect($subject, array('action' => 'index'));
+			return false;
 		}
 
 		$subject = $this->trigger('beforeDelete', compact('id'));
 		if ($subject->stopped) {
 			$this->_setFlash(sprintf('Could not delete %s', Inflector::humanize($this->_modelName)), 'error');
 			$this->_redirect($subject, array('action' => 'index'));
+			return false;
 		}
 
 		if ($this->_request->is('delete')) {
@@ -713,6 +797,7 @@ class CrudComponent extends Component {
 		}
 
 		$this->_redirect($subject, $this->_controller->referer(array('action' => 'index')));
+		return false;
 	}
 
 	/**
