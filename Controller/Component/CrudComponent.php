@@ -125,16 +125,23 @@ class CrudComponent extends Component {
 
 
 	/**
-	 * A map of the controller action and the whether it should fetch associations lists
+	 * Components settings.
+	 *
+	 * `actions` key should contain an array of controller methods this component should offer
+	 * implementation for.
+	 * 
+	 * `relatedList` is a map of the controller action and the whether it should fetch associations lists
 	 * to be used in select boxes. An array as value means it is enabled and represent the list
 	 * of model associations to be fetched
 	 *
-	 * @platform
 	 * @var array
 	 */
-	protected $_relatedListsMap = array(
-		'add' => true,
-		'edit' => true
+	public $settings = array(
+		'actions' => array(),
+		'relatedLists' => array(
+			'add' => true,
+			'edit' => true
+		)
 	);
 
 	/**
@@ -144,6 +151,17 @@ class CrudComponent extends Component {
 	 * @var string
 	 */
 	protected $_relatedListEventClass = 'Crud.RelatedModelsListener';
+
+
+	/**
+	 * Constructor
+	 *
+	 * @param ComponentCollection $collection A ComponentCollection this component can use to lazy load its components
+	 * @param array $settings Array of configuration settings.
+	 */
+	public function __construct(ComponentCollection $collection, $settings = array()) {
+		parent::__construct($collection, $settings + $this->settings);
+	}
 
 	/**
 	 * Make sure to update the list of known controller methods before startup is called
@@ -375,8 +393,8 @@ class CrudComponent extends Component {
 			$actions = array($actions);
 		}
 		foreach ($actions as $action) {
-			if (empty($this->_relatedListsMap[$action])) {
-				$this->_relatedListsMap[$action] = true;
+			if (empty($this->settings['relatedLists'][$action])) {
+				$this->settings['relatedLists'][$action] = true;
 			}
 		}
 	}
@@ -384,16 +402,17 @@ class CrudComponent extends Component {
 	/**
 	 * Sets the list of model relationships to be fetched as lists for an action
 	 *
-	 * @param array $models list of model association names to be fetch on $action
+	 * @param array|boolean $models list of model association names to be fetch on $action
+	 *  if `true`, list of models will be constructud out of associated models of main controller's model
 	 * @param stirng $action name of the action to apply this rule to. If left null then
-	 * it will be used as a default for all other enabled actions.
+	 *  it will be used as a default for all other enabled actions.
 	 * @return void
 	 */
-	public function mapRelatedList(array $models, $action = null) {
+	public function mapRelatedList($models, $action = null) {
 		if ($action === null) {
 			$action = '$all$';
 		}
-		$this->_relatedListsMap = $models;
+		$this->settings['relatedLists'][$action] = $models;
 	}
 
 	/**
@@ -404,11 +423,13 @@ class CrudComponent extends Component {
 	 * @return array|false
 	 */
 	public function relatedModels($action) {
-		if (empty($this->_relatedListsMap[$action])) {
+		if (empty($this->settings['relatedLists'][$action])) {
 			return false;
 		}
-		if ($this->_relatedListsMap[$action] === true && !empty($this->_relatedListsMap['$all$'])) {
-			return $this->_relatedListsMap['$all$'];
+		if ($this->settings['relatedLists'][$action] === true && !empty($$this->settings['relatedLists']['$all$'])) {
+			if (is_array($this->settings['relatedLists']['$all$']); {
+				return $this->settings['relatedLists']['$all$'];
+			}
 		}
 		return array_keys($this->_controller->{$this->_controller->modelClass}->getAssociated());
 	}

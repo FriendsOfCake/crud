@@ -45,6 +45,8 @@ class RelatedModelsListener implements CakeEventListener {
 
 	/**
 	 * Fetches related models' list and sets them to a variable for the view
+	 * Lists are limited buy default to 200 items. Should you need more, attach
+	 * an event listener for `beforeListRelated` event to modify the query
 	 *
 	 * @param CakeEvent
 	 * @return void
@@ -54,7 +56,7 @@ class RelatedModelsListener implements CakeEventListener {
 		$controller = $vent->subject->controller;
 		foreach ($this->_models as $m) {
 			$model = $this->_getModelInstance($m, $controller);
-			$query = array();
+			$query = array('limit' => 200);
 
 			$subject = $component->trigger('beforeListRelated', compact('model', 'query'));
 			$query = $subject->query;
