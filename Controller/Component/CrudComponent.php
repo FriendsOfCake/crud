@@ -152,7 +152,6 @@ class CrudComponent extends Component {
 	 */
 	protected $_relatedListEventClass = 'Crud.RelatedModelsListener';
 
-
 	/**
 	 * Constructor
 	 *
