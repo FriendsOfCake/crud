@@ -409,7 +409,7 @@ class CrudComponent extends Component {
 	 * @return void
 	 */
 	public function mapRelatedList($models, $action = null) {
-		if ($action === null) {
+		if (empty($action)) {
 			$action = 'default';
 		}
 		$this->settings['relatedLists'][$action] = $models;
@@ -450,7 +450,7 @@ class CrudComponent extends Component {
 	 * @return string class name to be used as event listener
 	 */
 	public function relatedModelsListener($className = null) {
-		if ($className === null) {
+		if (empty($className)) {
 			return $this->_relatedListEventClass;
 		}
 		return $this->_relatedListEventClass = $className;
