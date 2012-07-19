@@ -220,10 +220,10 @@ class CrudComponent extends Component {
 
 		try {
 
-			if ($models = $this->relatedModels($this->_actionMap[$action])) {
+			if ($models = $this->relatedModels($action)) {
 				list($plugin, $class) = pluginSplit($this->_relatedListEventClass, true);
 				App::uses($class, $plugin . 'Controller/Event');
-				$this->controller->getEventManager()->attach(new $class($this->_eventPrefix, $models));
+				$this->_controller->getEventManager()->attach(new $class($this->_eventPrefix, $models));
 			}
 
 			// Execute the default action, inside this component
@@ -420,14 +420,22 @@ class CrudComponent extends Component {
 	 *
 	 * @param array $models list of model association names to be fetch on $action
 	 * @param stirng $action name of the action
-	 * @return array|false
+	 * @return array
 	 */
 	public function relatedModels($action) {
 		if (empty($this->settings['relatedLists'][$action])) {
-			return false;
+			$action = $this->_actionMap[$action];
+			if (empty($this->settings['relatedLists'][$action])) {
+				return false;
+			}
 		}
-		if ($this->settings['relatedLists'][$action] === true && !empty($$this->settings['relatedLists']['$all$'])) {
-			if (is_array($this->settings['relatedLists']['$all$']); {
+
+		if ($this->settings['relatedLists'][$action] !== true) {
+			return $this->settings['relatedLists'][$action];
+		}
+
+		if ($this->settings['relatedLists'][$action] === true && !empty($this->settings['relatedLists']['$all$'])) {
+			if (is_array($this->settings['relatedLists']['$all$'])) {
 				return $this->settings['relatedLists']['$all$'];
 			}
 		}

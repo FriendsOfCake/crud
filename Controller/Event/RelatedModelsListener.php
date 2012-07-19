@@ -31,6 +31,7 @@ class RelatedModelsListener implements CakeEventListener {
 	 * @return void
 	 */
 	public function __construct($prefix, $models) {
+		$this->_prefix = $prefix;
 		$this->_models = $models;
 	}
 
@@ -40,7 +41,7 @@ class RelatedModelsListener implements CakeEventListener {
 	 * @return array
 	 */
 	public function implementedEvents() {
-		return array($this->_prefix . 'beforeRender' => 'beforeRender');
+		return array($this->_prefix . '.beforeRender' => 'beforeRender');
 	}
 
 	/**
@@ -53,18 +54,18 @@ class RelatedModelsListener implements CakeEventListener {
 	 */
 	public function beforeRender($event) {
 		$component = $event->subject->crud;
-		$controller = $vent->subject->controller;
+		$controller = $event->subject->controller;
 		foreach ($this->_models as $m) {
 			$model = $this->_getModelInstance($m, $controller);
 			$query = array('limit' => 200);
 
 			$subject = $component->trigger('beforeListRelated', compact('model', 'query'));
 			$query = $subject->query;
-			$items = $intance->find('list', $query);
+			$items = $model->find('list', $query);
 
-			$viewVar = Inflector::variable($instance->alias);
+			$viewVar = Inflector::variable(Inflector::pluralize($model->alias));
 			$subject = $component->trigger('afterListRelated', compact('model', 'items', 'viewVar'));
-			$this->set($subject->viewVar, $subject->items);
+			$controller->set($subject->viewVar, $subject->items);
 		}
 	}
 
