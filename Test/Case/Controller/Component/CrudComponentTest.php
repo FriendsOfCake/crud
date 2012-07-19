@@ -548,7 +548,7 @@ class CrudComponentTestCase extends CakeTestCase {
 	 * @expectedExceptionMessage Crud.beforePaginate called
 	 * @return void
 	 **/
-	public function testOnBeforePaginate() {
+	public function testOnBeforePaginateString() {
 		$this->Crud->on('beforePaginate', function($event) {
 			throw new RuntimeException($event->name() . ' called');
 		});
@@ -562,7 +562,7 @@ class CrudComponentTestCase extends CakeTestCase {
 	 * @expectedExceptionMessage Crud.afterPaginate called
 	 * @return void
 	 **/
-	public function testOnAfterPaginate() {
+	public function testOnAfterPaginateString() {
 		$this->Crud->on('afterPaginate', function($event) {
 			throw new RuntimeException($event->name() . ' called');
 		});
@@ -576,10 +576,42 @@ class CrudComponentTestCase extends CakeTestCase {
 	 * @expectedExceptionMessage Crud.afterPaginate called
 	 * @return void
 	 **/
-	public function testOnAfterPaginateFullName() {
+	public function testOnAfterPaginateFullNameString() {
 		$this->Crud->on('Crud.afterPaginate', function($event) {
 			throw new RuntimeException($event->name() . ' called');
 		});
 		$this->Crud->executeAction('index');
+	}
+
+	/**
+	 * Test on method for on() with multiple events
+	 *
+	 * @return void
+	 **/
+	public function testOnOnWithArraySimple() {
+		$result = array();
+		$this->Crud->on(array('beforePaginate', 'beforeRender'), function($event) use (&$result) {
+			$result[] = $event->name() . ' called';
+		});
+		$this->Crud->executeAction('index');
+
+		$expected = array('Crud.beforePaginate called', 'Crud.beforeRender called');
+		$this->assertSame($expected, $result);
+	}
+
+	/**
+	 * Test on method for on() with multiple events
+	 *
+	 * @return void
+	 **/
+	public function testOnOnWithArrayComplex() {
+		$result = array();
+		$this->Crud->on(array('Crud.beforePaginate', 'beforeRender'), function($event) use (&$result) {
+			$result[] = $event->name() . ' called';
+		});
+		$this->Crud->executeAction('index');
+
+		$expected = array('Crud.beforePaginate called', 'Crud.beforeRender called');
+		$this->assertSame($expected, $result);
 	}
 }
