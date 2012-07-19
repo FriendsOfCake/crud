@@ -56,7 +56,7 @@ class RelatedModelsListener implements CakeEventListener {
 		$component = $event->subject->crud;
 		$controller = $event->subject->controller;
 		foreach ($this->_models as $m) {
-			$model = $this->_getModelInstance($m, $controller);
+			$model = $this->_getModelInstance($m, $event->subject->model, $controller);
 			$query = array('limit' => 200);
 
 			$subject = $component->trigger('beforeListRelated', compact('model', 'query'));
@@ -73,11 +73,11 @@ class RelatedModelsListener implements CakeEventListener {
 	 * Returns model instance based on its name
 	 *
 	 * @param string $model name of the model
+	 * @param Model $controllerModel default model instance for controller
 	 * @param Controller $controller instance to do a first look on it
 	 * @return Model
 	 */
-	protected function _getModelInstance($model, $controller) {
-		$controllerModel = $controller->{$controller->modelClass};
+	protected function _getModelInstance($model, $controllerModel, $controller) {
 		if (isset($controllerModel->{$model})) {
 			return $controllerModel->{$model};
 		}
