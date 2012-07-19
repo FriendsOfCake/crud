@@ -540,4 +540,46 @@ class CrudComponentTestCase extends CakeTestCase {
 		$return = $this->Crud->testValidateId($id, 'int');
 		$this->assertFalse($return, "Expected id $id to be rejected, it was accepted");
 	}
+
+	/**
+	 * Tests on method for beforePaginateEvent
+	 *
+	 * @expectedException RuntimeException
+	 * @expectedExceptionMessage Crud.beforePaginate called
+	 * @return void
+	 **/
+	public function testOnBeforePaginate() {
+		$this->Crud->on('beforePaginate', function($event) {
+			throw new RuntimeException($event->name() . ' called');
+		});
+		$this->Crud->executeAction('index');
+	}
+
+	/**
+	 * Tests on method for afterPaginate
+	 *
+	 * @expectedException RuntimeException
+	 * @expectedExceptionMessage Crud.afterPaginate called
+	 * @return void
+	 **/
+	public function testOnAfterPaginate() {
+		$this->Crud->on('afterPaginate', function($event) {
+			throw new RuntimeException($event->name() . ' called');
+		});
+		$this->Crud->executeAction('index');
+	}
+
+	/**
+	 * Tests on method for afterPaginate with full event name
+	 *
+	 * @expectedException RuntimeException
+	 * @expectedExceptionMessage Crud.afterPaginate called
+	 * @return void
+	 **/
+	public function testOnAfterPaginateFullName() {
+		$this->Crud->on('Crud.afterPaginate', function($event) {
+			throw new RuntimeException($event->name() . ' called');
+		});
+		$this->Crud->executeAction('index');
+	}
 }
