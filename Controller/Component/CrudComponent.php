@@ -123,6 +123,45 @@ class CrudComponent extends Component {
 		'admin_view'	=> 'admin_view'
 	);
 
+
+	/**
+	 * Components settings.
+	 *
+	 * `actions` key should contain an array of controller methods this component should offer
+	 * implementation for.
+	 * 
+	 * `relatedList` is a map of the controller action and the whether it should fetch associations lists
+	 * to be used in select boxes. An array as value means it is enabled and represent the list
+	 * of model associations to be fetched
+	 *
+	 * @var array
+	 */
+	public $settings = array(
+		'actions' => array(),
+		'relatedLists' => array(
+			'add' => true,
+			'edit' => true
+		)
+	);
+
+	/**
+	 * Name of the event listener class to be used for fetching related models list
+	 * Class will be lokked up in Controller/Event package
+	 *
+	 * @var string
+	 */
+	protected $_relatedListEventClass = 'Crud.RelatedModelsListener';
+
+	/**
+	 * Constructor
+	 *
+	 * @param ComponentCollection $collection A ComponentCollection this component can use to lazy load its components
+	 * @param array $settings Array of configuration settings.
+	 */
+	public function __construct(ComponentCollection $collection, $settings = array()) {
+		parent::__construct($collection, $settings + $this->settings);
+	}
+
 	/**
 	 * Make sure to update the list of known controller methods before startup is called
 	 *
@@ -165,7 +204,7 @@ class CrudComponent extends Component {
 		$view = $action = $action ?: $this->_action;
 		$this->_setModelProperties();
 
-		$this->_trigger('init');
+		$this->trigger('init');
 
 		// Test if action is mapped
 		if (empty($this->_actionMap[$action])) {
@@ -179,6 +218,13 @@ class CrudComponent extends Component {
 		}
 
 		try {
+
+			if ($models = $this->relatedModels($action)) {
+				list($plugin, $class) = pluginSplit($this->_relatedListEventClass, true);
+				App::uses($class, $plugin . 'Controller/Event');
+				$this->_controller->getEventManager()->attach(new $class($this->_eventPrefix, $models));
+			}
+
 			// Execute the default action, inside this component
 			$response = call_user_func_array(array($this, '_' . $this->_actionMap[$action] . 'Action'), $args);
 			if ($response instanceof CakeResponse) {
@@ -212,7 +258,7 @@ class CrudComponent extends Component {
 	 * @throws Exception if any event listener return a CakeResponse object
 	 * @return CrudEventSubject
 	 **/
-	protected function _trigger($eventName, $data = array()) {
+	public function trigger($eventName, $data = array()) {
 		$subject = $data instanceof CrudEventSubject ? $data : $this->_getSubject($data);
 		$event = new CakeEvent($this->_eventPrefix . '.' . $eventName, $subject);
 		$this->_eventManager->dispatch($event);
@@ -316,6 +362,100 @@ class CrudComponent extends Component {
 	}
 
 	/**
+	 * Attaches an event listener function to the controller for Crud Events
+	 *
+	 * @param string|array $events Name of the Crud Event you want to attach to controller
+	 * @param callback $callback callable method or closure to be executed on event
+	 * @return void
+	 **/
+	public function on($events, $callback) {
+		if (!is_array($events)) {
+			$events = array($events);
+		}
+
+		foreach ($events as $event) {
+			if (!strpos($event, '.')) {
+				$event = $this->_eventPrefix . '.' . $event;
+			}
+			$this->_controller->getEventManager()->attach($callback, $event);
+		}
+	}
+
+	/**
+	 * Enables association list fetching for specified actions.
+	 *
+	 * @param string|array $actions list of action names to enable
+	 * @return void
+	 */
+	public function enableRelatedList($actions) {
+		if (!is_array($actions)) {
+			$actions = array($actions);
+		}
+		foreach ($actions as $action) {
+			if (empty($this->settings['relatedLists'][$action])) {
+				$this->settings['relatedLists'][$action] = true;
+			}
+		}
+	}
+
+	/**
+	 * Sets the list of model relationships to be fetched as lists for an action
+	 *
+	 * @param array|boolean $models list of model association names to be fetch on $action
+	 *  if `true`, list of models will be constructud out of associated models of main controller's model
+	 * @param stirng $action name of the action to apply this rule to. If left null then
+	 *  it will be used as a default for all other enabled actions.
+	 * @return void
+	 */
+	public function mapRelatedList($models, $action = null) {
+		if (empty($action)) {
+			$action = 'default';
+		}
+		$this->settings['relatedLists'][$action] = $models;
+	}
+
+	/**
+	 * Gets the list of associated model lists to be fetched for an action
+	 *
+	 * @param array $models list of model association names to be fetch on $action
+	 * @param stirng $action name of the action
+	 * @return array
+	 */
+	public function relatedModels($action) {
+		if (empty($this->settings['relatedLists'][$action])) {
+			$action = $this->_actionMap[$action];
+			if (empty($this->settings['relatedLists'][$action])) {
+				return false;
+			}
+		}
+
+		if ($this->settings['relatedLists'][$action] !== true) {
+			return $this->settings['relatedLists'][$action];
+		}
+
+		if ($this->settings['relatedLists'][$action] === true && !empty($this->settings['relatedLists']['default'])) {
+			if (is_array($this->settings['relatedLists']['default'])) {
+				return $this->settings['relatedLists']['default'];
+			}
+		}
+		return array_keys($this->_controller->{$this->_controller->modelClass}->getAssociated());
+	}
+
+	/**
+	 * Sets the class name to be used as an event listener for generating related models' lists
+	 * If called with no arguments it will return currently set up class
+	 *
+	 * @param string $className
+	 * @return string class name to be used as event listener
+	 */
+	public function relatedModelsListener($className = null) {
+		if (empty($className)) {
+			return $this->_relatedListEventClass;
+		}
+		return $this->_relatedListEventClass = $className;
+	}
+
+	/**
 	 * Helper method to get the passed ID to an action
 	 *
 	 * @platform
@@ -362,15 +502,15 @@ class CrudComponent extends Component {
 	 * @return void
 	 */
 	protected function _indexAction() {
-		$this->_trigger('beforePaginate');
+		$this->trigger('beforePaginate');
 
 		$items = $this->_controller->paginate($this->_model);
 
-		$subject = $this->_trigger('afterPaginate', compact('items'));
+		$subject = $this->trigger('afterPaginate', compact('items'));
 		$items = $subject->items;
 
 		$this->_controller->set(compact('items'));
-		$this->_trigger('beforeRender');
+		$this->trigger('beforeRender');
 	}
 
 	/**
@@ -388,20 +528,20 @@ class CrudComponent extends Component {
 	 */
 	protected function _addAction() {
 		if ($this->_request->is('post')) {
-			$this->_trigger('beforeSave');
+			$this->trigger('beforeSave');
 			if ($this->_model->saveAll($this->_request->data, array('validate' => 'first', 'atomic' => true))) {
 				$this->_setFlash(sprintf('Succesfully created %s', Inflector::humanize($this->_modelName)), 'success');
-				$subject = $this->_trigger('afterSave', array('success' => true, 'id' => $this->_model->id));
+				$subject = $this->trigger('afterSave', array('success' => true, 'id' => $this->_model->id));
 				$this->_redirect($subject, array('action' => 'index'));
 			} else {
 				$this->_setFlash(sprintf('Could not create %s', Inflector::humanize($this->_modelName)), 'error');
-				$this->_trigger('afterSave', array('success' => false));
+				$this->trigger('afterSave', array('success' => false));
 				// Make sure to merge any changed data in the model into the post data
 				$this->_request->data = Set::merge($this->_request->data, $this->_model->data);
 			}
 		}
 
-		$this->_trigger('beforeRender', array('success' => false));
+		$this->trigger('beforeRender', array('success' => false));
 	}
 
 	/**
@@ -427,36 +567,36 @@ class CrudComponent extends Component {
 		$this->_validateId($id);
 
 		if ($this->_request->is('put')) {
-			$this->_trigger('beforeSave', compact('id'));
+			$this->trigger('beforeSave', compact('id'));
 			if ($this->_model->saveAll($this->_request->data, array('validate' => 'first', 'atomic' => true))) {
 				$this->_setFlash(sprintf('%s was succesfully updated', ucfirst(Inflector::humanize($this->_modelName))), 'success');
-				$subject = $this->_trigger('afterSave', array('id' => $id, 'success' => true));
+				$subject = $this->trigger('afterSave', array('id' => $id, 'success' => true));
 				$this->_redirect($subject, array('action' => 'index'));
 			} else {
 				$this->_setFlash(sprintf('Could not update %s', Inflector::humanize($this->_modelName)), 'error');
-				$this->_trigger('afterSave' ,array('id' => $id, 'success' => false));
+				$this->trigger('afterSave' ,array('id' => $id, 'success' => false));
 			}
 		} else {
 			$query = array();
 			$query['conditions'] = array($this->_model->escapeField() => $id);
-			$subject = $this->_trigger('beforeFind', compact('query'));
+			$subject = $this->trigger('beforeFind', compact('query'));
 			$query = $subject->query;
 
 			$this->_request->data = $this->_model->find('first', $query);
 			if (empty($this->_request->data)) {
-				$subject = $this->_trigger('recordNotFound', compact('id'));
+				$subject = $this->trigger('recordNotFound', compact('id'));
 				$this->_setFlash(sprintf('Could not find %s', Inflector::humanize($this->_modelName)), 'error');
 				$this->_redirect($subject, array('action' => 'index'));
 			}
 
-			$this->_trigger('afterFind', compact('id'));
+			$this->trigger('afterFind', compact('id'));
 
 			// Make sure to merge any changed data in the model into the post data
 			$this->_request->data = Set::merge($this->_request->data, $this->_model->data);
 		}
 
 		// Trigger a beforeRender
-		$this->_trigger('beforeRender');
+		$this->trigger('beforeRender');
 	}
 
 	/**
@@ -483,7 +623,7 @@ class CrudComponent extends Component {
 		// Build conditions
 		$query = array();
 		$query['conditions'] = array($this->_model->escapeField() => $id);
-		$subject = $this->_trigger('beforeFind', compact('id', 'query'));
+		$subject = $this->trigger('beforeFind', compact('id', 'query'));
 		$query = $subject->query;
 
 		// Try and find the database record
@@ -491,20 +631,20 @@ class CrudComponent extends Component {
 
 		// We could not find any record match the conditions in query
 		if (empty($item)) {
-			$subject = $this->_trigger('recordNotFound', compact('id'));
+			$subject = $this->trigger('recordNotFound', compact('id'));
 			$this->_setFlash(sprintf('Could not find %s', Inflector::humanize($this->_modelName)), 'error');
 			$this->_redirect($subject, array('action' => 'index'));
 		}
 
 		// We found a record, trigger an afterFind
-		$subject = $this->_trigger('afterFind', compact('id', 'item'));
+		$subject = $this->trigger('afterFind', compact('id', 'item'));
 		$item = $subject->item;
 
 		// Push it to the view
 		$this->_controller->set(compact('item'));
 
 		// Trigger a beforeRender
-		$this->_trigger('beforeRender', compact('id', 'item'));
+		$this->trigger('beforeRender', compact('id', 'item'));
 	}
 
 	/**
@@ -528,17 +668,17 @@ class CrudComponent extends Component {
 		$this->_validateId($id);
 		$query = array();
 		$query['conditions'] = array($this->_model->escapeField() => $id);
-		$subject = $this->_trigger('beforeFind', compact('id', 'query'));
+		$subject = $this->trigger('beforeFind', compact('id', 'query'));
 		$query = $subject->query;
 
 		$count = $this->_model->find('count', $query);
 		if (empty($count)) {
-			$subject = $this->_trigger('recordNotFound', compact('id'));
+			$subject = $this->trigger('recordNotFound', compact('id'));
 			$this->_setFlash(sprintf('Could not find %s', Inflector::humanize($this->_modelName)), 'error');
 			$this->_redirect($subject, array('action' => 'index'));
 		}
 
-		$subject = $this->_trigger('beforeDelete', compact('id'));
+		$subject = $this->trigger('beforeDelete', compact('id'));
 		if ($subject->stopped) {
 			$this->_setFlash(sprintf('Could not delete %s', Inflector::humanize($this->_modelName)), 'error');
 			$this->_redirect($subject, array('action' => 'index'));
@@ -547,10 +687,10 @@ class CrudComponent extends Component {
 		if ($this->_request->is('delete')) {
 			if ($this->_model->delete($id)) {
 				$this->_setFlash(sprintf('Successfully deleted %s', Inflector::humanize($this->_modelName)), 'success');
-				$subject = $this->_trigger('afterDelete', array('id' => $id, 'success' => true));
+				$subject = $this->trigger('afterDelete', array('id' => $id, 'success' => true));
 			} else {
 				$this->_setFlash(sprintf('Could not delete %s', Inflector::humanize($this->_modelName)), 'error');
-				$subject = $this->_trigger('afterDelete', array('id' => $id, 'success' => false));
+				$subject = $this->trigger('afterDelete', array('id' => $id, 'success' => false));
 			}
 		} else {
 			$this->_setFlash(sprintf('Invalid HTTP request', Inflector::humanize($this->_modelName)), 'error');
@@ -573,7 +713,7 @@ class CrudComponent extends Component {
 		}
 
 		$subject->url = $url;
-		$subject = $this->_trigger('beforeRedirect', $subject);
+		$subject = $this->trigger('beforeRedirect', $subject);
 		$url = $subject->url;
 
 		$this->_controller->redirect($url);
@@ -591,7 +731,7 @@ class CrudComponent extends Component {
 	* @return void
 	*/
 	protected function _setFlash($message, $element = 'default', $params = array(), $key = 'flash') {
-		$subject = $this->_trigger('setFlash', compact('message', 'element', 'params', 'key'));
+		$subject = $this->trigger('setFlash', compact('message', 'element', 'params', 'key'));
 		$this->Session->setFlash($subject->message, $subject->element, $subject->params, $subject->key);
 	}
 
@@ -624,7 +764,7 @@ class CrudComponent extends Component {
 			return true;
 		}
 
-		$subject = $this->_trigger('invalidId', compact('id'));
+		$subject = $this->trigger('invalidId', compact('id'));
 		$this->_setFlash('Invalid id', 'error');
 		$this->_redirect($subject, $this->_controller->referer());
 
