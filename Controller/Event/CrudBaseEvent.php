@@ -44,6 +44,9 @@ abstract class CrudBaseEvent extends Object implements CakeEventListener {
 
 			'Crud.beforeDelete'		=> array('callable' => 'beforeDelete'),
 			'Crud.afterDelete'		=> array('callable' => 'afterDelete'),
+
+			'Crud.beforeListRelated' => array('callable' => 'beforeListRelated'),
+			'Crud.afterListRelated'	=> array('callable' => 'afterListRelated'),
 		);
 	}
 
@@ -138,6 +141,35 @@ abstract class CrudBaseEvent extends Object implements CakeEventListener {
 	* @return void
 	*/
 	public function afterDelete(CakeEvent $event) {
+
+	}
+
+	/**
+	* Called before related records list for a model is fetched.
+	* `$event->subject` will contain the following properties that can be modified:
+	*
+	* - query: An array with options for find('list')
+	* - model: Model instance, the model to be used for fiding the list or records
+	*
+	* @param CakeEvent $event The CakePHP CakeEvent object.
+	* @return void
+	*/
+	public function beforeListRelated(CakeEvent $event) {
+
+	}
+
+	/**
+	* Called after related records list for a model is fetched
+	* `$event->subject` will contain the following properties that can be modified:
+	*
+	* - items: result from calling find('list')
+	* - viewVar: Variable name to be set on the view with items as value
+	* - model: Model instance, the model to be used for fiding the list or records
+	*
+	* @param CakeEvent $event The CakePHP CakeEvent object.
+	* @return void
+	*/
+	public function afterListRelated(CakeEvent $event) {
 
 	}
 
