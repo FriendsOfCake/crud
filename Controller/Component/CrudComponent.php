@@ -410,7 +410,7 @@ class CrudComponent extends Component {
 	 */
 	public function mapRelatedList($models, $action = null) {
 		if ($action === null) {
-			$action = '$all$';
+			$action = 'default';
 		}
 		$this->settings['relatedLists'][$action] = $models;
 	}
@@ -434,9 +434,9 @@ class CrudComponent extends Component {
 			return $this->settings['relatedLists'][$action];
 		}
 
-		if ($this->settings['relatedLists'][$action] === true && !empty($this->settings['relatedLists']['$all$'])) {
-			if (is_array($this->settings['relatedLists']['$all$'])) {
-				return $this->settings['relatedLists']['$all$'];
+		if ($this->settings['relatedLists'][$action] === true && !empty($this->settings['relatedLists']['default'])) {
+			if (is_array($this->settings['relatedLists']['default'])) {
+				return $this->settings['relatedLists']['default'];
 			}
 		}
 		return array_keys($this->_controller->{$this->_controller->modelClass}->getAssociated());
