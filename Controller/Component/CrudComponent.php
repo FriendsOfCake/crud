@@ -581,18 +581,26 @@ class CrudComponent extends Component {
 
 		$Paginator = $this->_Collection->load('Paginator');
 
-		if (empty($Paginator->settings)) {
-			$Paginator->settings = array();
+		// Copy pagination settings from the controller
+		if (!empty($this->_controller->paginate)) {
+			$Paginator->settings = $this->_controller->paginate;
 		}
 
+		// If pagination settings is using ModelAlias modify that
 		if (!empty($Paginator->settings[$this->_modelName])) {
 			$Paginator->settings[$this->_modelName][0] = $subject->findMethod;
 			$Paginator->settings[$this->_modelName]['findType'] = $subject->findMethod;
-		} else {
+		}
+		// Or just work directly on the root key
+		else {
 			$Paginator->settings[0] = $subject->findMethod;
 			$Paginator->settings['findType'] = $subject->findMethod;
 		}
 
+		// Push the paginator settings back to Controller
+		$this->_controller->paginate = $Paginator->settings;
+
+		// Do the pagination
 		$items = $this->_controller->paginate($this->_model);
 
 		$subject = $this->trigger('afterPaginate', compact('items'));
