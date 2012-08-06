@@ -90,6 +90,14 @@ class TestCrudComponent extends CrudComponent {
 	}
 }
 
+class CrudController extends Controller {
+
+	public $paginate = array(
+		'limit' => 1000
+	);
+
+}
+
 /**
  * CrudComponentTestCase
  */
@@ -120,7 +128,7 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->model = new CrudExample();
 
 		$this->controller = $this->getMock(
-			'Controller',
+			'CrudController',
 			array('header', 'redirect', 'render', '_stop'),
 			array(),
 			'',
@@ -145,7 +153,6 @@ class CrudComponentTestCase extends CakeTestCase {
 			)
 		);
 		$this->controller->Components = $Collection;
-		$this->controller->paginate = array();
 
 		$this->Crud = $this->getMock(
 			'TestCrudComponent',
@@ -906,6 +913,7 @@ class CrudComponentTestCase extends CakeTestCase {
 	*/
 	public function testCustomFindPaginationDefaultNoAlias() {
 		$this->Crud->executeAction('index');
+
 		$this->assertEquals('all', $this->controller->paginate[0]);
 		$this->assertEquals('all', $this->controller->paginate['findType']);
 	}
@@ -1174,5 +1182,27 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertSame(3, sizeof($this->controller->viewVars['tags']));
 		$this->assertSame(3, sizeof($this->controller->viewVars['items']));
 		$this->assertSame(4, sizeof($this->controller->viewVars['authors']));
+	}
+
+	public function testIndexActionPaginationSettingsNotLost() {
+		$this->Crud->executeAction('index');
+
+		$paging = $this->controller->request['paging'];
+
+		$this->assertSame(1, $paging['CrudExample']['page']);
+		$this->assertSame(3, $paging['CrudExample']['current']);
+		$this->assertSame(100, $paging['CrudExample']['limit']);
+	}
+
+	public function testIndexActionPaginationSettingsCanBeOverwritten() {
+		$this->controller->paginate = array('limit' => 10);
+
+		$this->Crud->executeAction('index');
+
+		$paging = $this->controller->request['paging'];
+
+		$this->assertSame(1, $paging['CrudExample']['page']);
+		$this->assertSame(3, $paging['CrudExample']['current']);
+		$this->assertSame(10, $paging['CrudExample']['limit']);
 	}
 }
