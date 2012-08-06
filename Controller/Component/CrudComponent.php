@@ -129,7 +129,7 @@ class CrudComponent extends Component {
 	 *
 	 * `actions` key should contain an array of controller methods this component should offer
 	 * implementation for.
-	 * 
+	 *
 	 * `relatedList` is a map of the controller action and the whether it should fetch associations lists
 	 * to be used in select boxes. An array as value means it is enabled and represent the list
 	 * of model associations to be fetched
@@ -218,7 +218,6 @@ class CrudComponent extends Component {
 		}
 
 		try {
-
 			if ($models = $this->relatedModels($action)) {
 				list($plugin, $class) = pluginSplit($this->_relatedListEventClass, true);
 				App::uses($class, $plugin . 'Controller/Event');
@@ -262,6 +261,7 @@ class CrudComponent extends Component {
 		$subject = $data instanceof CrudEventSubject ? $data : $this->_getSubject($data);
 		$event = new CakeEvent($this->_eventPrefix . '.' . $eventName, $subject);
 		$this->_eventManager->dispatch($event);
+
 		if ($event->result instanceof CakeResponse) {
 			$exception = new Exception();
 			$exception->response = $event->result;
@@ -272,6 +272,7 @@ class CrudComponent extends Component {
 		if ($event->isStopped()) {
 			$subject->stopped = true;
 		}
+
 		return $subject;
 	}
 
@@ -391,6 +392,7 @@ class CrudComponent extends Component {
 		if (!is_array($actions)) {
 			$actions = array($actions);
 		}
+
 		foreach ($actions as $action) {
 			if (empty($this->settings['relatedLists'][$action])) {
 				$this->settings['relatedLists'][$action] = true;
@@ -404,13 +406,14 @@ class CrudComponent extends Component {
 	 * @param array|boolean $models list of model association names to be fetch on $action
 	 *  if `true`, list of models will be constructud out of associated models of main controller's model
 	 * @param stirng $action name of the action to apply this rule to. If left null then
-	 *  it will be used as a default for all other enabled actions.
+	 *  it will use the current controller action
 	 * @return void
 	 */
 	public function mapRelatedList($models, $action = null) {
 		if (empty($action)) {
-			$action = 'default';
+			$action = $this->_action;
 		}
+
 		$this->settings['relatedLists'][$action] = $models;
 	}
 
@@ -422,22 +425,35 @@ class CrudComponent extends Component {
 	 * @return array
 	 */
 	public function relatedModels($action) {
-		if (empty($this->settings['relatedLists'][$action])) {
+		// If we don't have any related configuration, look up its alias in _actionMap
+		if (empty($this->settings['relatedLists'][$action]) && $this->isActionMapped($action)) {
 			$action = $this->_actionMap[$action];
-			if (empty($this->settings['relatedLists'][$action])) {
-				return false;
+		}
+
+		// If current action isn't configured
+		if (!isset($this->settings['relatedLists'][$action])) {
+			return array();
+		}
+
+		// If the action value is true and we got a configured default, inspect it
+		if ($this->settings['relatedLists'][$action] === true && isset($this->settings['relatedLists']['default'])) {
+			// If default is false, don't fetch any related records
+			if (false === $this->settings['relatedLists']['default']) {
+				return array();
 			}
-		}
 
-		if ($this->settings['relatedLists'][$action] !== true) {
-			return $this->settings['relatedLists'][$action];
-		}
-
-		if ($this->settings['relatedLists'][$action] === true && !empty($this->settings['relatedLists']['default'])) {
+			// If it's an array, return it
 			if (is_array($this->settings['relatedLists']['default'])) {
 				return $this->settings['relatedLists']['default'];
 			}
 		}
+
+		// Use whatever value there may have been set by the user
+		if ($this->settings['relatedLists'][$action] !== true) {
+			return $this->settings['relatedLists'][$action];
+		}
+
+		// Default to everything associated to the current model
 		return array_keys($this->_controller->{$this->_controller->modelClass}->getAssociated());
 	}
 
