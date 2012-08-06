@@ -549,7 +549,8 @@ Should you need more fine grain control over the lists fetched, you can configur
 
 ```php
 <?php
-/**
+class DemoController extends AppController {
+   /**
 	* List of global controller components
 	*
 	* @cakephp
@@ -566,6 +567,7 @@ Should you need more fine grain control over the lists fetched, you can configur
 			)
 		)
 	);
+}
 ?>
 ```
 
@@ -573,7 +575,8 @@ You can also configure default to not repeat yourself too much:
 
 ```php
 <?php
-/**
+class DemoController extends AppController {
+   /**
 	* List of global controller components
 	*
 	* @cakephp
@@ -592,10 +595,11 @@ You can also configure default to not repeat yourself too much:
 			)
 		)
 	);
+}
 ?>
 ```
 
-If configuring statically is not your thing, or you want to dynamicaly fetch related models based on some conditions, then you can
+If configuring statically is not your thing, or you want to dynamically fetch related models based on some conditions, then you can
 call `mapRelatedList` and `enableRelatedList` function in CrudComponent:
 
 
@@ -605,12 +609,12 @@ class DemoController extends AppController {
 	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->Crud->enableRelatedList(array('index', 'delete'));
-		$this->mapRelatedList(array('Author', 'Cms.Page')); // By default all enabled actions should fetch Author and Page
+		$this->mapRelatedList(array('Author', 'Cms.Page'), 'default'); // By default all enabled actions should fetch Author and Page
 	}
 
 
 	public function delete() {
-		$this->mapRelatedList(array('Author')); // Only fetch authors list
+		$this->mapRelatedList(array('Author'), 'default'); // Only fetch authors list
 		$this->Crud->executeAction('delete');
 	}
 

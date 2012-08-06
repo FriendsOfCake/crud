@@ -704,7 +704,7 @@ class CrudComponentTestCase extends CakeTestCase {
 	 */
 	public function testFetchRelatedMappedAll() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
-		$this->Crud->mapRelatedList(array('Tag'));
+		$this->Crud->mapRelatedList(array('Tag'), 'default');
 		$expectedTags = array(1 => '1', 2 => '2', 3 => '3');
 
 		$this->Crud->executeAction('edit', array('1'));
@@ -752,7 +752,7 @@ class CrudComponentTestCase extends CakeTestCase {
 	 */
 	public function testFetchRelatedEvents() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
-		$this->Crud->mapRelatedList(array('Tag'));
+		$this->Crud->mapRelatedList(array('Tag'), 'default');
 		$expectedTags = array(1 => '1', 2 => '2', 'foo' => 'bar');
 		$self = $this;
 
@@ -773,4 +773,90 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertEquals($expectedTags, $vars['labels']);
 	}
 
+	/**
+	 * Test mapRelatedList with default config to 'false' for the add action
+	 *
+	 * @return void
+	 */
+	public function testRelatedModelsDefaultFalseAdd() {
+		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
+
+		$this->Crud->mapRelatedList(false, 'default');
+		$this->assertEquals(array(), $this->Crud->relatedModels('add'));
+
+		$this->Crud->executeAction('add');
+		$vars = $this->controller->viewVars;
+		$this->assertTrue(empty($vars['tags']));
+		$this->assertTrue(empty($vars['authors']));
+	}
+
+	/**
+	 * Test mapRelatedList with default config to 'false' for the edit action
+	 *
+	 * @return void
+	 */
+	public function testRelatedModelsDefaultFalseEdit() {
+		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
+
+		$this->Crud->mapRelatedList(false, 'default');
+		$this->assertEquals(array(), $this->Crud->relatedModels('edit'));
+
+		$this->Crud->executeAction('edit');
+		$vars = $this->controller->viewVars;
+		$this->assertTrue(empty($vars['tags']));
+		$this->assertTrue(empty($vars['authors']));
+	}
+
+	/**
+	* Test mapRelatedList with default config to 'true' for the add action
+	*
+	* @return void
+	*/
+	public function testRelatedModelsDefaultTrueAdd() {
+		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
+
+		$this->Crud->mapRelatedList(true, 'default');
+		$this->assertEquals(array('Author', 'Tag'), $this->Crud->relatedModels('add'));
+
+		$this->Crud->executeAction('add');
+		$vars = $this->controller->viewVars;
+		$expectedVars = array('tags' => array(1 => '1', 2 => '2', '3' => '3'), 'authors' => array(1 => '1', 2 => '2', '3' => '3', '4' => '4'));
+		$this->assertEquals($expectedVars, $vars);
+	}
+
+	/**
+	* Test mapRelatedList with default config to 'true' for the edit action
+	*
+	* @return void
+	*/
+	public function testRelatedModelsDefaultTrueEdit() {
+		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
+
+		$this->Crud->mapRelatedList(true, 'default');
+		$this->assertEquals(array('Author', 'Tag'), $this->Crud->relatedModels('edit'));
+
+		$this->Crud->executeAction('edit');
+		$vars = $this->controller->viewVars;
+		$expectedVars = array('tags' => array(1 => '1', 2 => '2', '3' => '3'), 'authors' => array(1 => '1', 2 => '2', '3' => '3', '4' => '4'));
+		$this->assertEquals($expectedVars, $vars);
+	}
+
+	/**
+	* Test mapRelatedList with an action mapped using mapAction
+	*
+	* @return void
+	*/
+	public function testRelatedModelsWithAliasMappedLookup() {
+		$this->model->bindModel(array('belongsTo' => array('Author')));
+
+		$this->Crud->mapAction('modify_action', 'edit');
+		$this->Crud->mapRelatedList(true);
+		$this->assertEquals(array('Author'), $this->Crud->relatedModels('modify_action'));
+
+		$this->Crud->executeAction('modify_action');
+		$vars = $this->controller->viewVars;
+
+		$expectedVars = array('authors' => array(1 => '1', 2 => '2', '3' => '3', '4' => '4'));
+		$this->assertEquals($expectedVars, $vars);
+	}
 }
