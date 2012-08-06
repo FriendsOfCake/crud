@@ -55,6 +55,7 @@ class RelatedModelsListener implements CakeEventListener {
 	public function beforeRender($event) {
 		$component = $event->subject->crud;
 		$controller = $event->subject->controller;
+
 		foreach ($this->_models as $m) {
 			$model = $this->_getModelInstance($m, $event->subject->model, $controller);
 			$query = array('limit' => 200);

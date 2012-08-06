@@ -81,6 +81,13 @@ class TestCrudComponent extends CrudComponent {
 	public function testValidateId($id) {
 		return $this->_validateId($id);
 	}
+
+	/**
+	* test visibility wrapper
+	*/
+	public function testGetFindMethod($action = null, $default = null) {
+		return parent::_getFindMethod($action, $default);
+	}
 }
 
 /**
@@ -102,18 +109,15 @@ class CrudComponentTestCase extends CakeTestCase {
 	 * Setup the classes the crud component needs to be testable
 	 */
 	public function setUp() {
+		require_once('models.php');
+
 		parent::setUp();
 
 		CakeEventManager::instance(new TestCrudEventManager());
 
 		ConnectionManager::getDataSource('test')->getLog();
 
-		$this->model = ClassRegistry::init(array(
-			'class' => 'Model',
-			'alias' => 'CrudExample',
-			'type' => 'Model',
-			'table' => 'posts'
-		));
+		$this->model = new CrudExample();
 
 		$this->controller = $this->getMock(
 			'Controller',
@@ -141,6 +145,7 @@ class CrudComponentTestCase extends CakeTestCase {
 			)
 		);
 		$this->controller->Components = $Collection;
+		$this->controller->paginate = array();
 
 		$this->Crud = $this->getMock(
 			'TestCrudComponent',
@@ -383,8 +388,9 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertSame(3, $count);
 
 		$events = CakeEventManager::instance()->getLog();
+
 		$index = array_search('Crud.beforeDelete', $events);
-		$this->assertNotSame(false, $index, "There was no Crud.beforeDelete event triggered");
+		$this->assertSame(false, $index, "Crud.beforeDelete event triggered");
 
 		$index = array_search('Crud.recordNotFound', $events);
 		$this->assertNotSame(false, $index, "A none-existent row did not trigger a Crud.recordNotFount event");
@@ -704,7 +710,7 @@ class CrudComponentTestCase extends CakeTestCase {
 	 */
 	public function testFetchRelatedMappedAll() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
-		$this->Crud->mapRelatedList(array('Tag'));
+		$this->Crud->mapRelatedList(array('Tag'), 'default');
 		$expectedTags = array(1 => '1', 2 => '2', 3 => '3');
 
 		$this->Crud->executeAction('edit', array('1'));
@@ -752,7 +758,7 @@ class CrudComponentTestCase extends CakeTestCase {
 	 */
 	public function testFetchRelatedEvents() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
-		$this->Crud->mapRelatedList(array('Tag'));
+		$this->Crud->mapRelatedList(array('Tag'), 'default');
 		$expectedTags = array(1 => '1', 2 => '2', 'foo' => 'bar');
 		$self = $this;
 
@@ -773,4 +779,400 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertEquals($expectedTags, $vars['labels']);
 	}
 
+	/**
+	 * Test mapRelatedList with default config to 'false' for the add action
+	 *
+	 * @return void
+	 */
+	public function testRelatedModelsDefaultFalseAdd() {
+		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
+
+		$this->Crud->mapRelatedList(false, 'default');
+		$this->assertEquals(array(), $this->Crud->relatedModels('add'));
+
+		$this->Crud->executeAction('add');
+		$vars = $this->controller->viewVars;
+		$this->assertTrue(empty($vars['tags']));
+		$this->assertTrue(empty($vars['authors']));
+	}
+
+	/**
+	 * Test mapRelatedList with default config to 'false' for the edit action
+	 *
+	 * @return void
+	 */
+	public function testRelatedModelsDefaultFalseEdit() {
+		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
+
+		$this->Crud->mapRelatedList(false, 'default');
+		$this->assertEquals(array(), $this->Crud->relatedModels('edit'));
+
+		$this->Crud->executeAction('edit');
+		$vars = $this->controller->viewVars;
+		$this->assertTrue(empty($vars['tags']));
+		$this->assertTrue(empty($vars['authors']));
+	}
+
+	/**
+	* Test mapRelatedList with default config to 'true' for the add action
+	*
+	* @return void
+	*/
+	public function testRelatedModelsDefaultTrueAdd() {
+		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
+
+		$this->Crud->mapRelatedList(true, 'default');
+		$this->assertEquals(array('Author', 'Tag'), $this->Crud->relatedModels('add'));
+
+		$this->Crud->executeAction('add');
+		$vars = $this->controller->viewVars;
+		$expectedVars = array('tags' => array(1 => '1', 2 => '2', '3' => '3'), 'authors' => array(1 => '1', 2 => '2', '3' => '3', '4' => '4'));
+		$this->assertEquals($expectedVars, $vars);
+	}
+
+	/**
+	* Test mapRelatedList with default config to 'true' for the edit action
+	*
+	* @return void
+	*/
+	public function testRelatedModelsDefaultTrueEdit() {
+		$this->Crud->settings['validateId'] = 'integer';
+		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')), true);
+
+		$this->Crud->mapRelatedList(true, 'default');
+		$this->assertEquals(array('Author', 'Tag'), $this->Crud->relatedModels('edit'));
+
+		$this->Crud->executeAction('edit', array(3));
+
+		$vars = $this->controller->viewVars;
+		$expectedVars = array('tags' => array(1 => '1', 2 => '2', '3' => '3'), 'authors' => array(1 => '1', 2 => '2', '3' => '3', '4' => '4'));
+		$this->assertEquals($expectedVars, $vars);
+	}
+
+	/**
+	* Test mapRelatedList with an action mapped using mapAction
+	*
+	* @return void
+	*/
+	public function testRelatedModelsWithAliasMappedLookup() {
+		$this->Crud->settings['validateId'] = 'integer';
+		$this->model->bindModel(array('belongsTo' => array('Author')));
+
+		$this->Crud->mapAction('modify_action', 'edit');
+		$this->Crud->mapRelatedList(true);
+		$this->assertEquals(array('Author'), $this->Crud->relatedModels('modify_action'));
+
+		$this->Crud->executeAction('modify_action', array(1));
+
+		$vars = $this->controller->viewVars;
+		$expectedVars = array('authors' => array(1 => '1', 2 => '2', '3' => '3', '4' => '4'));
+		$this->assertEquals($expectedVars, $vars);
+	}
+
+	/**
+	* Test the default settings match the expected
+	*
+	* @return void
+	*/
+	public function testCustomFindDefaults() {
+		$this->assertEquals('all', $this->Crud->testGetFindMethod('index'));
+		$this->assertEquals(null, $this->Crud->testGetFindMethod('add'));
+		$this->assertEquals('first', $this->Crud->testGetFindMethod('edit'));
+		$this->assertEquals('count', $this->Crud->testGetFindMethod('delete'));
+
+		$this->assertEquals('all', $this->Crud->testGetFindMethod('admin_index'));
+		$this->assertEquals(null, $this->Crud->testGetFindMethod('admin_add'));
+		$this->assertEquals('first', $this->Crud->testGetFindMethod('admin_edit'));
+		$this->assertEquals('count', $this->Crud->testGetFindMethod('admin_delete'));
+	}
+
+	/**
+	* Test if custom finds are changed when re-mapped
+	*
+	* @return void
+	*/
+	public function testCustomFindChanged() {
+		$this->Crud->mapFindMethod('index', 'custom_find');
+		$this->assertEquals('custom_find', $this->Crud->testGetFindMethod('index'));
+
+		$this->Crud->mapFindMethod('index', 'all');
+		$this->assertEquals('all', $this->Crud->testGetFindMethod('index'));
+	}
+
+	/**
+	* Test that the default pagination settings match, bot for 2.3 and < 2.2
+	*
+	* @return void
+	*/
+	public function testCustomFindPaginationDefaultNoAlias() {
+		$this->Crud->executeAction('index');
+		$this->assertEquals('all', $this->controller->paginate[0]);
+		$this->assertEquals('all', $this->controller->paginate['findType']);
+	}
+
+	/**
+	* Test that the default pagination settings match, bot for 2.3 and < 2.2
+	*
+	* @return void
+	*/
+	public function testCustomFindPaginationDefaultWithAlias() {
+		$this->controller->paginate = array(
+			'CrudExample' => array(
+				'order' => array('name' => 'desc')
+			),
+			'demo' => true
+		);
+
+		$this->Crud->executeAction('index');
+
+		$this->assertTrue(empty($this->controller->paginate[0]));
+		$this->assertTrue(empty($this->controller->paginate['findType']));
+		$this->assertFalse(empty($this->controller->paginate['CrudExample']));
+		$this->assertFalse(empty($this->controller->paginate['CrudExample'][0]));
+		$this->assertFalse(empty($this->controller->paginate['CrudExample']['findType']));
+		$this->assertEquals(array('order' => array('name' => 'desc'), 0 => 'all', 'findType' => 'all'), $this->controller->paginate['CrudExample']);
+	}
+
+	/**
+	* Test if custom pagination works - for published posts
+	*
+	* @return void
+	*/
+	public function testCustomFindPaginationCustomPublished() {
+		$this->Crud->mapFindMethod('index', 'published');
+		$this->Crud->executeAction('index');
+		$this->assertEquals('published', $this->controller->paginate[0]);
+		$this->assertEquals('published', $this->controller->paginate['findType']);
+		$this->assertEquals(3, sizeof($this->controller->viewVars['items']));
+	}
+
+	/**
+	* Test if custom pagination works - for unpublished posts
+	*
+	* @return void
+	*/
+	public function testCustomFindPaginationCustomUnpublished() {
+		$this->Crud->mapFindMethod('index', 'unpublished');
+		$this->Crud->executeAction('index');
+		$this->assertEquals('unpublished', $this->controller->paginate[0]);
+		$this->assertEquals('unpublished', $this->controller->paginate['findType']);
+		$this->assertEquals(0, sizeof($this->controller->viewVars['items']));
+	}
+
+	/**
+	* Test if custom finders work in edit
+	*
+	* @return void
+	*/
+	public function testCustomFindEditPublished() {
+		$this->Crud->settings['validateId'] = 'integer';
+		$this->Crud->mapFindMethod('edit', 'firstPublished');
+		$this->Crud->executeAction('edit', array(2));
+
+		$this->assertNotEmpty($this->request->data);
+		$this->assertNotEmpty($this->request->data['CrudExample']);
+		$this->assertSame('2', $this->request->data['CrudExample']['id']);
+	}
+
+	/**
+	* Test if custom finders work in edit - part two
+	*
+	* @return void
+	*/
+	public function testCustomFindEditUnpublished() {
+		$this->controller->expects($this->once())->method('redirect');
+
+		$this->Crud->settings['validateId'] = 'integer';
+		$this->Crud->mapFindMethod('edit', 'firstUnpublished');
+		$this->Crud->executeAction('edit', array(2));
+
+		$this->assertTrue(empty($this->request->data));
+
+		$events = CakeEventManager::instance()->getLog();
+		$index = array_search('Crud.recordNotFound', $events);
+		$this->assertNotSame(false, $index, "There was no Crud.recordNotFound event triggered");
+	}
+
+	/**
+	* Test if custom finders work in delete
+	*
+	* @return void
+	*/
+	public function testCustomFindDeletePublished() {
+		$this->controller->request->addDetector('delete', array(
+			'callback' => function() { return true; }
+		));
+
+		$this->Crud->settings['validateId'] = 'integer';
+		$this->Crud->mapFindMethod('delete', 'firstPublished');
+		$this->Crud->executeAction('delete', array(2));
+
+		$events = CakeEventManager::instance()->getLog();
+
+		$index = array_search('Crud.recordNotFound', $events);
+		$this->assertSame(false, $index, "Crud.recordNotFound event triggered");
+
+		$index = array_search('Crud.beforeDelete', $events);
+		$this->assertNotSame(false, $index, "There was no Crud.beforeDelete event triggered");
+
+		$index = array_search('Crud.afterDelete', $events);
+		$this->assertNotSame(false, $index, "There was no Crud.afterDelete event triggered");
+
+		$count = $this->model->find('count');
+		$this->assertEquals(2, $count);
+	}
+
+	/**
+	* Test if custom finders work in delete - part 2
+	*
+	* @return void
+	*/
+	public function testCustomFindDeleteUnpublished() {
+		$this->controller->request->addDetector('delete', array(
+			'callback' => function() { return true; }
+		));
+
+		$this->Crud->settings['validateId'] = 'integer';
+		$this->Crud->mapFindMethod('delete', 'firstUnpublished');
+		$this->Crud->executeAction('delete', array(2));
+
+		$events = CakeEventManager::instance()->getLog();
+
+		$index = array_search('Crud.recordNotFound', $events);
+		$this->assertNotSame(false, $index, "Crud.recordNotFound event triggered");
+
+		$index = array_search('Crud.beforeDelete', $events);
+		$this->assertSame(false, $index, "Crud.beforeDelete event triggered");
+
+		$index = array_search('Crud.afterDelete', $events);
+		$this->assertSame(false, $index, "Crud.afterDelete event triggered");
+
+		$count = $this->model->find('count');
+		$this->assertEquals(3, $count);
+	}
+
+	/**
+	* Test if custom finders work in view
+	*
+	* @return void
+	*/
+	public function testCustomFindViewPublished() {
+		$this->Crud->settings['validateId'] = 'integer';
+		$this->Crud->mapFindMethod('view', 'firstPublished');
+		$this->Crud->executeAction('view', array(2));
+
+		$events = CakeEventManager::instance()->getLog();
+
+		$index = array_search('Crud.recordNotFound', $events);
+		$this->assertSame(false, $index, "Crud.recordNotFound event triggered");
+
+		$index = array_search('Crud.beforeFind', $events);
+		$this->assertNotSame(false, $index, "There was no Crud.beforeDelete event triggered");
+
+		$index = array_search('Crud.afterFind', $events);
+		$this->assertNotSame(false, $index, "There was no Crud.afterDelete event triggered");
+	}
+
+	/**
+	* Test if custom finders work in view - part 2
+	*
+	* @return void
+	*/
+	public function testCustomFindViewUnpublished() {
+		$this->Crud->settings['validateId'] = 'integer';
+		$this->Crud->mapFindMethod('view', 'firstUnpublished');
+		$this->Crud->executeAction('view', array(2));
+
+		$events = CakeEventManager::instance()->getLog();
+
+		$index = array_search('Crud.recordNotFound', $events);
+		$this->assertNotSame(false, $index, "There was no Crud.recordNotFound event triggered");
+	}
+
+	/**
+	* Test if crud complains about unmapped actions
+	*
+	* @expectedException RuntimeException
+	* @return void
+	*/
+	public function testCrudWillComplainAboutUnmappedAction() {
+		$this->Crud->executeAction('show_all');
+	}
+
+	/**
+	* Test if mapActionView with array yields the expected result
+	*
+	* @return void
+	*/
+	public function testMapActionViewWithArrayNewAction() {
+		$this->controller
+			->expects($this->once())
+			->method('render')
+			->with('index');
+
+		$this->Crud->mapAction('show_all', 'index');
+		$this->Crud->mapActionView(array('show_all' => 'index', 'index' => 'overview'));
+
+		$this->Crud->executeAction('show_all');
+	}
+
+	/**
+	* Test if mapActionView with array yields the expected result
+	*
+	* @return void
+	*/
+	public function testMapActionViewWithArrayIndexAction() {
+		$this->controller
+			->expects($this->once())
+			->method('render')
+			->with('overview');
+
+		$this->Crud->mapActionView(array('show_all' => 'index', 'index' => 'overview'));
+
+		$this->Crud->executeAction('index');
+	}
+
+	/**
+	* Test if enableRelatedList works with a normal Crud action
+	*
+	* @return void
+	*/
+	public function testEnableRelatedListStringForIndexAction() {
+		$this->Crud->mapRelatedList('Tag', 'default');
+		$this->Crud->enableRelatedList('index');
+
+		$expected = array('Tag');
+		$value = $this->Crud->relatedModels('index');
+		$this->assertSame($expected, $value);
+
+		$this->Crud->executeAction('index');
+
+		$this->assertTrue(!empty($this->controller->viewVars['tags']));
+		$this->assertTrue(!empty($this->controller->viewVars['items']));
+
+		$this->assertSame(3, sizeof($this->controller->viewVars['tags']));
+		$this->assertSame(3, sizeof($this->controller->viewVars['items']));
+	}
+
+	/**
+	* Test if enableRelatedList works with a normal Crud action
+	*
+	* @return void
+	*/
+	public function testEnableRelatedListArrayForIndexAction() {
+		$this->Crud->mapRelatedList(array('Tag', 'Author'), 'default');
+		$this->Crud->enableRelatedList(array('index'));
+
+		$this->assertSame(array('Tag', 'Author'), $this->Crud->relatedModels('index'));
+
+		$this->Crud->executeAction('index');
+
+		$this->assertTrue(!empty($this->controller->viewVars['tags']));
+		$this->assertTrue(!empty($this->controller->viewVars['items']));
+		$this->assertTrue(!empty($this->controller->viewVars['authors']));
+
+		$this->assertSame(3, sizeof($this->controller->viewVars['tags']));
+		$this->assertSame(3, sizeof($this->controller->viewVars['items']));
+		$this->assertSame(4, sizeof($this->controller->viewVars['authors']));
+	}
 }
