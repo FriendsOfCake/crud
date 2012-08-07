@@ -583,7 +583,7 @@ class CrudComponent extends Component {
 
 		// Copy pagination settings from the controller
 		if (!empty($this->_controller->paginate)) {
-			$Paginator->settings = $this->_controller->paginate;
+			$Paginator->settings = array_merge($Paginator->settings, $this->_controller->paginate);
 		}
 
 		// If pagination settings is using ModelAlias modify that
