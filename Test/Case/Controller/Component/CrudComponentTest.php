@@ -1205,4 +1205,20 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertSame(3, $paging['CrudExample']['current']);
 		$this->assertSame(10, $paging['CrudExample']['limit']);
 	}
+
+	public function testPersistDirectPaginatorSettingsWillNotBeCopied() {
+		$Paginator = $this->controller->Components->load('Paginator');
+
+		$Paginator->settings = array(
+			'limit' => 23
+		);
+
+		$this->Crud->executeAction('index');
+
+		$paging = $this->controller->request['paging'];
+
+		$this->assertSame(1, $paging['CrudExample']['page']);
+		$this->assertSame(3, $paging['CrudExample']['current']);
+		$this->assertSame(100, $paging['CrudExample']['limit']);
+	}
 }
