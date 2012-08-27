@@ -208,8 +208,7 @@ class CrudComponentTestCase extends CakeTestCase {
 	public function testMapActionView() {
 		$this->controller
 			->expects($this->once())
-			->method('render')
-			->with('cupcakes');
+			->method('render');
 
 		$this->Crud->mapActionView('view', 'cupcakes');
 		$this->Crud->executeAction('view', array(1));
@@ -308,9 +307,8 @@ class CrudComponentTestCase extends CakeTestCase {
 	 */
 	public function testAddActionPost() {
 		$this->controller
-			->expects($this->once())
-			->method('render')
-			->with('form');
+			->expects($this->never())
+			->method('render');
 
 		$this->controller->request->addDetector('post', array(
 			'callback' => function() { return true; }
@@ -347,9 +345,8 @@ class CrudComponentTestCase extends CakeTestCase {
 	 */
 	public function testDeleteActionExists() {
 		$this->controller
-			->expects($this->once())
-			->method('render')
-			->with('delete');
+			->expects($this->never())
+			->method('render');
 
 		$this->controller->request->addDetector('delete', array(
 			'callback' => function() { return true; }
@@ -379,9 +376,8 @@ class CrudComponentTestCase extends CakeTestCase {
 	 */
 	public function testDeleteActionDoesNotExists() {
 		$this->controller
-			->expects($this->once())
-			->method('render')
-			->with('delete');
+			->expects($this->never())
+			->method('render');
 
 		$this->controller->request->addDetector('delete', array(
 			'callback' => function() { return true; }
@@ -428,9 +424,8 @@ class CrudComponentTestCase extends CakeTestCase {
 	 */
 	public function testEditActionPost() {
 		$this->controller
-			->expects($this->once())
-			->method('render')
-			->with('form');
+			->expects($this->never())
+			->method('render');
 
 		$this->controller->request->addDetector('put', array(
 			'callback' => function() { return true; }
@@ -529,7 +524,7 @@ class CrudComponentTestCase extends CakeTestCase {
 
 		$id = 'abc';
 		$return = $this->Crud->testValidateId($id, 'int');
-		$this->assertFalse($return, "Expected id $id to be rejected, it was accepted");
+		$this->assertSame(get_class($return), 'CakeResponse');
 	}
 
 	/**
@@ -551,7 +546,7 @@ class CrudComponentTestCase extends CakeTestCase {
 
 		$id = 123;
 		$return = $this->Crud->testValidateId($id, 'int');
-		$this->assertFalse($return, "Expected id $id to be rejected, it was accepted");
+		$this->assertSame(get_class($return), 'CakeResponse');
 	}
 
 	/**
