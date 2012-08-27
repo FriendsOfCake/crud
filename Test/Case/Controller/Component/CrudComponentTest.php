@@ -963,6 +963,20 @@ class CrudComponentTestCase extends CakeTestCase {
 	}
 
 	/**
+	* Test if custom pagination works when findType is changed from Controller
+	* paginate property
+	*
+	* @return void
+	*/
+	public function testCustomFindPaginationWithControllerFindMethod() {
+		$this->controller->paginate = array('findType' => 'unpublished');
+		$this->Crud->executeAction('index');
+		$this->assertEquals('unpublished', $this->controller->paginate[0]);
+		$this->assertEquals('unpublished', $this->controller->paginate['findType']);
+		$this->assertEquals(0, sizeof($this->controller->viewVars['items']));
+	}
+
+	/**
 	* Test if custom finders work in edit
 	*
 	* @return void
