@@ -123,6 +123,25 @@ class CrudComponent extends Component {
 		'admin_view'	=> 'admin_view'
 	);
 
+	/**
+	* The default find method for reading data
+	*
+	* Model->find($method)
+	*
+	* @platform
+	* @var array
+	*/
+	protected $_findMethodMap = array(
+		'index'			=> 'all',
+		'edit'			=> 'first',
+		'view'			=> 'first',
+		'delete'		=> 'count',
+
+		'admin_index'	=> 'all',
+		'admin_edit'	=> 'first',
+		'admin_view'	=> 'first',
+		'admin_delete'	=> 'count'
+	);
 
 	/**
 	 * Components settings.
@@ -161,26 +180,6 @@ class CrudComponent extends Component {
 	public function __construct(ComponentCollection $collection, $settings = array()) {
 		parent::__construct($collection, $settings + $this->settings);
 	}
-
-	/**
-	* The default find method for reading data
-	*
-	* Model->find($method)
-	*
-	* @platform
-	* @var array
-	*/
-	protected $_findMethodMap = array(
-		'index'			=> 'all',
-		'edit'			=> 'first',
-		'view'			=> 'first',
-		'delete'		=> 'count',
-
-		'admin_index'	=> 'all',
-		'admin_edit'	=> 'first',
-		'admin_view'	=> 'first',
-		'admin_delete'	=> 'count'
-	);
 
 	/**
 	 * Make sure to update the list of known controller methods before startup is called
@@ -576,15 +575,22 @@ class CrudComponent extends Component {
 	 * @return void
 	 */
 	protected function _indexAction() {
-		$findMethod = $this->_getFindMethod(null, 'all');
-		$subject = $this->trigger('beforePaginate', compact('findMethod'));
-
 		$Paginator = $this->_Collection->load('Paginator');
 
 		// Copy pagination settings from the controller
 		if (!empty($this->_controller->paginate)) {
 			$Paginator->settings = array_merge($Paginator->settings, $this->_controller->paginate);
 		}
+
+		if (!empty($Paginator->settings[$this->_modelName]['findType'])) {
+			$findMethod = $Paginator->settings[$this->_modelName]['findType'];
+		} elseif (!empty($Paginator->settings['findType'])) {
+			$findMethod = $Paginator->settings['findType'];
+		} else {
+			$findMethod = $this->_getFindMethod(null, 'all');
+		}
+
+		$subject = $this->trigger('beforePaginate', compact('findMethod'));
 
 		// If pagination settings is using ModelAlias modify that
 		if (!empty($Paginator->settings[$this->_modelName])) {
