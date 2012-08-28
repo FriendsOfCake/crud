@@ -340,7 +340,7 @@ class CrudComponentTestCase extends CakeTestCase {
 	 * testDeleteActionExists
 	 *
 	 * Add a dummy detector to the request object so it says it's a delete request
-	 * Check the deleted row doens't exist after calling delete and that the
+	 * Check the deleted row doesn't exist after calling delete and that the
 	 * before + after delete events are triggered
 	 */
 	public function testDeleteActionExists() {
@@ -1204,7 +1204,7 @@ class CrudComponentTestCase extends CakeTestCase {
 	}
 
 	public function testIndexActionPaginationSettingsCanBeOverwritten() {
-		$this->controller->paginate = array('limit' => 10);
+		$this->controller->paginate = array('limit' => 11);
 
 		$this->Crud->executeAction('index');
 
@@ -1212,15 +1212,15 @@ class CrudComponentTestCase extends CakeTestCase {
 
 		$this->assertSame(1, $paging['CrudExample']['page']);
 		$this->assertSame(3, $paging['CrudExample']['current']);
-		$this->assertSame(10, $paging['CrudExample']['limit']);
+		$this->assertSame(11, $paging['CrudExample']['limit']);
+
+		$this->assertSame(11, $this->controller->Components->load('Paginator')->settings['limit']);
 	}
 
 	public function testPersistDirectPaginatorSettingsWillNotBeCopied() {
 		$Paginator = $this->controller->Components->load('Paginator');
 
-		$Paginator->settings = array(
-			'limit' => 23
-		);
+		$Paginator->settings = array('limit' => 23);
 
 		$this->Crud->executeAction('index');
 
@@ -1229,16 +1229,47 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertSame(1, $paging['CrudExample']['page']);
 		$this->assertSame(3, $paging['CrudExample']['current']);
 		$this->assertSame(100, $paging['CrudExample']['limit']);
+		$this->assertNotSame(23, $Paginator->settings['limit']);
 	}
 
-	/**
-	 *	test beforePaginate event to add an extra condtion to paginate - query
-	 */
-	public function testOnBeforePaginateWithPaginatConditions() {
+	public function testOnBeforePaginateWithPaginatConditionsFromBeforePaginateCallback() {
+		$Paginator = $this->controller->Components->load('Paginator');
 		$this->Crud->on('beforePaginate', function($event) {
-			$event->subject->controller->paginate['conditions'] = array('answer_id' => 1);
+			$event->subject->controller->paginate['conditions'] = array('author_id' => 1);
 		});
+
 		$this->Crud->executeAction('index');
-		$this->assertSame(2, count($this->controller->viewVars['items']), 'beforePaginate needs to have an effect on the pagination');
+
+		$items = $this->controller->viewVars['items'];
+		$this->assertSame(2, sizeof($items), 'beforePaginate needs to have an effect on the pagination');
+		$this->assertEquals(array('author_id' => 1), $Paginator->settings['conditions']);
+	}
+
+	public function testOnBeforePaginateWithPaginatLimitFromBeforePaginateCallback() {
+		$Paginator = $this->controller->Components->load('Paginator');
+		$this->Crud->on('beforePaginate', function($event) {
+			$event->subject->controller->paginate['limit'] = 99;
+		});
+
+		$this->Crud->executeAction('index');
+
+		$this->assertEquals(99, $Paginator->settings['limit']);
+	}
+
+	public function testIfConditionsPersistetInIndexAction() {
+		$Paginator = $this->controller->Components->load('Paginator');
+
+		$this->controller->paginate = array('conditions' => array(1 => 2));
+		$this->Crud->executeAction('index');
+		$this->assertSame(array(1 => 2), $Paginator->settings['conditions']);
+
+		$Paginator->settings = array('conditions' => array(2 => 3));
+		$this->Crud->executeAction('index');
+		$this->assertSame(array(1 => 2), $Paginator->settings['conditions'], "Pagination settings from controller should always trump Paginator->settings");
+
+		$Paginator->settings = array('conditions' => array(2 => 3));
+		$this->controller->paginate = array();
+		$this->Crud->executeAction('index');
+		$this->assertSame(array(2 => 3), $Paginator->settings['conditions']);
 	}
 }
