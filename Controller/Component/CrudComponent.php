@@ -592,6 +592,11 @@ class CrudComponent extends Component {
 
 		$subject = $this->trigger('beforePaginate', compact('findMethod'));
 
+		// Copy pagination settings from the controller
+		if (!empty($this->_controller->paginate)) {
+			$Paginator->settings = array_merge($Paginator->settings, $this->_controller->paginate);
+		}
+
 		// If pagination settings is using ModelAlias modify that
 		if (!empty($Paginator->settings[$this->_modelName])) {
 			$Paginator->settings[$this->_modelName][0] = $subject->findMethod;
