@@ -1230,4 +1230,15 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertSame(3, $paging['CrudExample']['current']);
 		$this->assertSame(100, $paging['CrudExample']['limit']);
 	}
+
+	/**
+	 *	test beforePaginate event to add an extra condtion to paginate - query
+	 */
+	public function testOnBeforePaginateWithPaginatConditions() {
+		$this->Crud->on('beforePaginate', function($event) {
+			$event->subject->controller->paginate['conditions'] = array('answer_id' => 1);
+		});
+		$this->Crud->executeAction('index');
+		$this->assertSame(2, count($this->controller->viewVars['items']), 'beforePaginate needs to have an effect on the pagination');
+	}
 }
