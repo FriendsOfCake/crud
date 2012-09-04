@@ -1272,4 +1272,21 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->Crud->executeAction('index');
 		$this->assertSame(array(2 => 3), $Paginator->settings['conditions']);
 	}
+
+	public function testPaginationWithIterator() {
+		$this->controller->paginate = array('limit' => 10);
+
+		$this->Crud->on('afterPaginate', function(CakeEvent $e) {
+			$e->subject->items = new ArrayIterator($e->subject->items);
+		});
+
+		$this->Crud->executeAction('index');
+
+		$this->assertNotEmpty($this->controller->viewVars);
+		$this->assertNotEmpty($this->controller->viewVars['items']);
+		$this->assertSame(3, sizeof($this->controller->viewVars['items']));
+
+		$ids = Hash::extract($this->controller->viewVars['items'], '{n}.CrudExample.id');
+		$this->assertEquals(array(1,2,3), $ids);
+	}
 }

@@ -617,6 +617,11 @@ class CrudComponent extends Component {
 		$subject = $this->trigger('afterPaginate', compact('items'));
 		$items = $subject->items;
 
+		// Make sure to cast any iterators to array
+		if ($items instanceof Iterator) {
+			$items = iterator_to_array($items);
+		}
+
 		$this->_controller->set(compact('items'));
 		$this->trigger('beforeRender');
 	}
