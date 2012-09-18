@@ -217,7 +217,7 @@ class CrudComponent extends Component {
 	* @platform
 	* @param string $action		The CRUD action
 	* @param array $arguments	List of arguments to pass to the CRUD action (Usually an ID to edit / delete)
-	* @return void
+	* @return mixed void, or a CakeResponse object
 	*/
 	public function executeAction($action = null, $args = array()) {
 		$view = $action = $action ?: $this->_action;
