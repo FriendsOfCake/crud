@@ -248,7 +248,7 @@ class CrudComponent extends Component {
 
 			// Execute the default action, inside this component
 			$response = call_user_func_array(array($this, '_' . $this->_actionMap[$action] . 'Action'), $args);
-			if ($response instanceof CakeResponse) {
+			if ($response instanceof CakeResponse || !empty($this->_request->params['requested'])) {
 				return $response;
 			}
 		} catch (Exception $e) {
@@ -617,6 +617,11 @@ class CrudComponent extends Component {
 		$subject = $this->trigger('afterPaginate', compact('items'));
 		$items = $subject->items;
 
+		// Return requested items
+		if (!empty($this->_request->params['requested'])) {
+			return $items;
+		}
+
 		// Make sure to cast any iterators to array
 		if ($items instanceof Iterator) {
 			$items = iterator_to_array($items);
@@ -645,12 +650,15 @@ class CrudComponent extends Component {
 			if ($this->_model->saveAll($this->_request->data, array('validate' => 'first', 'atomic' => true))) {
 				$this->_setFlash(sprintf('Succesfully created %s', Inflector::humanize($this->_modelName)), 'success');
 				$subject = $this->trigger('afterSave', array('success' => true, 'id' => $this->_model->id));
-				return $this->_redirect($subject, array('action' => 'index'));
+				return !empty($this->_request->params['requested']) ? $this->_model->id : $this->_redirect($subject, array('action' => 'index'));
 			} else {
 				$this->_setFlash(sprintf('Could not create %s', Inflector::humanize($this->_modelName)), 'error');
 				$this->trigger('afterSave', array('success' => false));
 				// Make sure to merge any changed data in the model into the post data
 				$this->_request->data = Set::merge($this->_request->data, $this->_model->data);
+				if (!empty($this->_request->params['requested'])) {
+					return false;
+				}
 			}
 		}
 
@@ -684,10 +692,13 @@ class CrudComponent extends Component {
 			if ($this->_model->saveAll($this->_request->data, array('validate' => 'first', 'atomic' => true))) {
 				$this->_setFlash(sprintf('%s was succesfully updated', ucfirst(Inflector::humanize($this->_modelName))), 'success');
 				$subject = $this->trigger('afterSave', array('id' => $id, 'success' => true));
-				return $this->_redirect($subject, array('action' => 'index'));
+				return !empty($this->_request->params['requested']) ? $this->_model->id : $this->_redirect($subject, array('action' => 'index'));
 			} else {
 				$this->_setFlash(sprintf('Could not update %s', Inflector::humanize($this->_modelName)), 'error');
 				$this->trigger('afterSave' ,array('id' => $id, 'success' => false));
+				if (!empty($this->_request->params['requested'])) {
+					return false;
+				}
 			}
 		} else {
 			$query = array();
@@ -700,13 +711,16 @@ class CrudComponent extends Component {
 			if (empty($this->_request->data)) {
 				$subject = $this->trigger('recordNotFound', compact('id'));
 				$this->_setFlash(sprintf('Could not find %s', Inflector::humanize($this->_modelName)), 'error');
-				return $this->_redirect($subject, array('action' => 'index'));
+				return !empty($this->_request->params['requested']) ? false : $this->_redirect($subject, array('action' => 'index'));
 			}
 
 			$this->trigger('afterFind', compact('id'));
 
 			// Make sure to merge any changed data in the model into the post data
 			$this->_request->data = Set::merge($this->_request->data, $this->_model->data);
+			if (!empty($this->_request->params['requested'])) {
+				return $this->_request->data;
+			}
 		}
 
 		// Trigger a beforeRender
@@ -749,12 +763,17 @@ class CrudComponent extends Component {
 		if (empty($item)) {
 			$subject = $this->trigger('recordNotFound', compact('id'));
 			$this->_setFlash(sprintf('Could not find %s', Inflector::humanize($this->_modelName)), 'error');
-			return $this->_redirect($subject, array('action' => 'index'));
+			return !empty($this->_request->params['requested']) ? false : $this->_redirect($subject, array('action' => 'index'));
 		}
 
 		// We found a record, trigger an afterFind
 		$subject = $this->trigger('afterFind', compact('id', 'item'));
 		$item = $subject->item;
+
+		// Return the requested item
+		if (!empty($this->_request->params['requested'])) {
+			return $item;
+		}
 
 		// Push it to the view
 		$this->_controller->set(compact('item'));
@@ -793,13 +812,13 @@ class CrudComponent extends Component {
 		if (empty($count)) {
 			$subject = $this->trigger('recordNotFound', compact('id'));
 			$this->_setFlash(sprintf('Could not find %s', Inflector::humanize($this->_modelName)), 'error');
-			return $this->_redirect($subject, array('action' => 'index'));
+			return !empty($this->_request->params['requested']) ? false : $this->_redirect($subject, array('action' => 'index'));
 		}
 
 		$subject = $this->trigger('beforeDelete', compact('id'));
 		if ($subject->stopped) {
 			$this->_setFlash(sprintf('Could not delete %s', Inflector::humanize($this->_modelName)), 'error');
-			return $this->_redirect($subject, array('action' => 'index'));
+			return !empty($this->_request->params['requested']) ? false : $this->_redirect($subject, array('action' => 'index'));
 		}
 
 		if ($this->_request->is('delete')) {
@@ -812,6 +831,10 @@ class CrudComponent extends Component {
 			}
 		} else {
 			$this->_setFlash(sprintf('Invalid HTTP request', Inflector::humanize($this->_modelName)), 'error');
+		}
+
+		if (!empty($this->_request->params['requested'])) {
+			return true;
 		}
 
 		return $this->_redirect($subject, $this->_controller->referer(array('action' => 'index')));
