@@ -1,17 +1,18 @@
 <?php
+
 App::uses('CrudEventSubject', 'Crud.Controller/Event');
+App::uses('TranslationsEvent', 'Crud.Controller/Event');
 
 /**
  * Crud component
  *
- * Handles the automatic transformation of HTTP requests to API responses
+ * Scaffolding on steroids! :)
  *
  * Copyright 2010-2012, Nodes ApS. (http://www.nodesagency.com/)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @see https://wiki.ournodes.com/display/platform/Api+Plugin
  * @see http://book.cakephp.org/2.0/en/controllers/components.html#Component
  * @copyright Nodes ApS, 2012
  */
@@ -80,6 +81,23 @@ class CrudComponent extends Component {
 	* @var string
 	*/
 	protected $_eventPrefix = 'Crud';
+
+/**
+ * List of event objects attached to Crud
+ *
+ * @var array
+ */
+	protected $_events = array();
+
+/**
+ * List of classes to be used internally in Crud
+ *
+ * @var array
+ */
+	protected $_classes = array(
+		'translations' => 'Crud.TranslationsEvent',
+		'relatedModels' => 'Crud.RelatedModelsListener'
+	);
 
 	/**
 	 * A map of the controller action and what CRUD action we should call
@@ -160,7 +178,8 @@ class CrudComponent extends Component {
 		'relatedLists' => array(
 			'add' => true,
 			'edit' => true
-		)
+		),
+		'name' => null
 	);
 
 	/**
@@ -241,9 +260,10 @@ class CrudComponent extends Component {
 
 		try {
 			if ($models = $this->relatedModels($action)) {
-				list($plugin, $class) = pluginSplit($this->_relatedListEventClass, true);
+				list($plugin, $class) = pluginSplit($this->_classes['relatedModels'], true);
 				App::uses($class, $plugin . 'Controller/Event');
-				$this->_controller->getEventManager()->attach(new $class($this->_eventPrefix, $models));
+				$this->_events['relatedModels'] = new $class($this->_eventPrefix, $models);
+				$this->_controller->getEventManager()->attach($this->_events['relatedModels']);
 			}
 
 			// Execute the default action, inside this component
@@ -455,6 +475,40 @@ class CrudComponent extends Component {
 		$this->settings['relatedLists'][$action] = $models;
 	}
 
+/**
+ * Generic config method
+ *
+ * If $key is an array and $value is empty,
+ * $key will be merged directly with $this->_config
+ *
+ * If $key is a string it will be passed into Hash::insert
+ *
+ * @param mixed $key
+ * @param mixed $value
+ * @return TranslationsEvent
+ */
+	public function config($key = null, $value = null) {
+		if (is_null($key) && is_null($value)) {
+			return $this->settings;
+		}
+
+		if (empty($value)) {
+			if (is_array($key)) {
+				$this->settings = $this->settings + $key;
+				return $this;
+			}
+
+			return Hash::get($this->settings, $key);
+		}
+
+		if (is_array($value)) {
+			$value = $value + Hash::get($this->settings, $key);
+		}
+
+		$this->settings = Hash::insert($this->settings, $key, $value);
+		return $this;
+	}
+
 	/**
 	 * Gets the list of associated model lists to be fetched for an action
 	 *
@@ -643,11 +697,11 @@ class CrudComponent extends Component {
 		if ($this->_request->is('post')) {
 			$this->trigger('beforeSave');
 			if ($this->_model->saveAll($this->_request->data, array('validate' => 'first', 'atomic' => true))) {
-				$this->_setFlash(sprintf('Succesfully created %s', Inflector::humanize($this->_modelName)), 'success');
+				$this->_setFlash('create.success');
 				$subject = $this->trigger('afterSave', array('success' => true, 'id' => $this->_model->id));
 				return $this->_redirect($subject, array('action' => 'index'));
 			} else {
-				$this->_setFlash(sprintf('Could not create %s', Inflector::humanize($this->_modelName)), 'error');
+				$this->_setFlash('create.error');
 				$this->trigger('afterSave', array('success' => false));
 				// Make sure to merge any changed data in the model into the post data
 				$this->_request->data = Set::merge($this->_request->data, $this->_model->data);
@@ -682,11 +736,11 @@ class CrudComponent extends Component {
 		if ($this->_request->is('put')) {
 			$this->trigger('beforeSave', compact('id'));
 			if ($this->_model->saveAll($this->_request->data, array('validate' => 'first', 'atomic' => true))) {
-				$this->_setFlash(sprintf('%s was succesfully updated', ucfirst(Inflector::humanize($this->_modelName))), 'success');
+				$this->_setFlash('update.success');
 				$subject = $this->trigger('afterSave', array('id' => $id, 'success' => true));
 				return $this->_redirect($subject, array('action' => 'index'));
 			} else {
-				$this->_setFlash(sprintf('Could not update %s', Inflector::humanize($this->_modelName)), 'error');
+				$this->_setFlash('update.error');
 				$this->trigger('afterSave', array('id' => $id, 'success' => false));
 			}
 		} else {
@@ -699,7 +753,7 @@ class CrudComponent extends Component {
 			$this->_request->data = $this->_model->find($subject->findMethod, $query);
 			if (empty($this->_request->data)) {
 				$subject = $this->trigger('recordNotFound', compact('id'));
-				$this->_setFlash(sprintf('Could not find %s', Inflector::humanize($this->_modelName)), 'error');
+				$this->_setFlash('find.error');
 				return $this->_redirect($subject, array('action' => 'index'));
 			}
 
@@ -748,7 +802,7 @@ class CrudComponent extends Component {
 		// We could not find any record match the conditions in query
 		if (empty($item)) {
 			$subject = $this->trigger('recordNotFound', compact('id'));
-			$this->_setFlash(sprintf('Could not find %s', Inflector::humanize($this->_modelName)), 'error');
+			$this->_setFlash('find.error');
 			return $this->_redirect($subject, array('action' => 'index'));
 		}
 
@@ -792,26 +846,26 @@ class CrudComponent extends Component {
 		$count = $this->_model->find($subject->findMethod, $query);
 		if (empty($count)) {
 			$subject = $this->trigger('recordNotFound', compact('id'));
-			$this->_setFlash(sprintf('Could not find %s', Inflector::humanize($this->_modelName)), 'error');
+			$this->_setFlash('find.error');
 			return $this->_redirect($subject, array('action' => 'index'));
 		}
 
 		$subject = $this->trigger('beforeDelete', compact('id'));
 		if ($subject->stopped) {
-			$this->_setFlash(sprintf('Could not delete %s', Inflector::humanize($this->_modelName)), 'error');
+			$this->_setFlash('delete.error');
 			return $this->_redirect($subject, array('action' => 'index'));
 		}
 
 		if ($this->_request->is('delete')) {
 			if ($this->_model->delete($id)) {
-				$this->_setFlash(sprintf('Successfully deleted %s', Inflector::humanize($this->_modelName)), 'success');
+				$this->_setFlash('delete.success');
 				$subject = $this->trigger('afterDelete', array('id' => $id, 'success' => true));
 			} else {
-				$this->_setFlash(sprintf('Could not delete %s', Inflector::humanize($this->_modelName)), 'error');
+				$this->_setFlash('delete.error');
 				$subject = $this->trigger('afterDelete', array('id' => $id, 'success' => false));
 			}
 		} else {
-			$this->_setFlash(sprintf('Invalid HTTP request', Inflector::humanize($this->_modelName)), 'error');
+			$this->_setFlash('error.invalid_http_request');
 		}
 
 		return $this->_redirect($subject, $this->_controller->referer(array('action' => 'index')));
@@ -843,17 +897,45 @@ class CrudComponent extends Component {
 	/**
 	* Wrapper for Session::setFlash
 	*
-	* Each param can be modified in setFlash $subject->{$property}
-	*
 	* @param string $message Message to be flashed
-	* @param string $element Element to wrap flash message in.
-	* @param array $params Parameters to be sent to layout as view variables
-	* @param string $key Message key, default is 'flash'
 	* @return void
 	*/
-	protected function _setFlash($message, $element = 'default', $params = array(), $key = 'flash') {
-		$subject = $this->trigger('setFlash', compact('message', 'element', 'params', 'key'));
+	protected function _setFlash($type) {
+		$name = $this->_getResourceName();
+		$this->_ensureTranslationsEvent();
+
+		$subject = $this->trigger('setFlash', compact('type', 'name'));
 		$this->Session->setFlash($subject->message, $subject->element, $subject->params, $subject->key);
+	}
+
+/**
+ * Return the human name of the model
+ *
+ * By default it uses Inflector::humanize, but can be changed
+ * using the "name" configuration property
+ *
+ * @return string
+ */
+	protected function _getResourceName() {
+		if (empty($this->settings['name'])) {
+			$this->settings['name']	= Inflector::humanize($this->_modelName);
+		}
+
+		return $this->settings['name'];
+	}
+
+/**
+ * Ensure a translations event is attached
+ *
+ * @return void
+ */
+	protected function _ensureTranslationsEvent() {
+		if (!empty($this->_events['translations'])) {
+			return true;
+		}
+
+		$this->_events['translations'] = new TranslationsEvent();
+		$this->_eventManager->attach($this->_events['translations']);
 	}
 
 	/**
@@ -886,7 +968,7 @@ class CrudComponent extends Component {
 		}
 
 		$subject = $this->trigger('invalidId', compact('id'));
-		$this->_setFlash('Invalid id', 'error');
+		$this->_setFlash('error.invalid_id');
 		return $this->_redirect($subject, $this->_controller->referer());
 	}
 }
