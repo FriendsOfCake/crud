@@ -52,8 +52,27 @@ class TranslationsShell extends AppShell {
 			}
 		}
 
-		$models = $this->args;
+		$objectType = 'Model';
+		$this->_path = null;
+		$models = array();
+
+		if ($this->args) {
+			foreach ($this->args as $arg) {
+				preg_match('@Plugin/([^/]*)/?(?:Model/([^/]*))?@', $arg, $match);
+
+				if (!empty($match[2])) {
+					$models[] = str_replace('.php', '', $match[2]);
+				} elseif (!empty($match[1])) {
+					$plugin = $match[1];
+					$models = array_merge($models, App::objects("$plugin.Model"));
+				}
+			}
+		} else {
+			$models = App::objects('Model');
+		}
+
 		if (!$models) {
+			return;
 		}
 
 		$this->hr();
@@ -75,22 +94,50 @@ class TranslationsShell extends AppShell {
  * @return void
  */
 	protected function _generateTranslations($modelName) {
-		$this->_strings[] = '';
-		$this->_strings[] = '/**';
-		if ($modelName) {
-			$this->_strings[] = " * $modelName CRUD Component translations";
+		$this->_path = APP . 'Config/i18n_crud.php';
+
+		if (file_exists($this->_path)) {
+			$this->_strings = array_map('rtrim', file($this->_path));
 		} else {
-			$this->_strings[] = " * Common CRUD Component translations";
+			$this->_strings[] = '<?php';
 		}
-		$this->_strings[] = ' */';
+
+		if ($modelName) {
+			$message = "$modelName CRUD Component translations";
+		} else {
+			$message = "Common CRUD Component translations";
+		}
+
+		$this->_addDocBlock($message);
 		foreach ($this->_messages as $message) {
 			$type = strpos($message, '}') ? 'model' : 'common';
 
 			if ($type === 'model' && $modelName || $type === 'common' && !$modelName) {
 				$message = String::insert($message, array('name' => $modelName), array('before' => '{', 'after' => '}'));
-				$this->_strings[] = "__d('crud', '$message');";
+				$string = "__d('crud', '$message');";
+
+				if (in_array($string, $this->_strings)) {
+					$this->out('<info>Skipping:</info> ' . $message, 1, Shell::VERBOSE);
+				} else {
+					$this->out('<success>Adding:</success> ' . $message);
+					$this->_strings[] = $string;
+				}
 			}
 		}
+	}
+
+	protected function _addDocBlock($message) {
+		$message = " * $message";
+
+		if (in_array($message, $this->_strings)) {
+			return false;
+		}
+
+		$this->_strings[] = '';
+		$this->_strings[] = '/**';
+		$this->_strings[] = $message;
+		$this->_strings[] = ' */';
+		return true;
 	}
 
 /**
@@ -99,17 +146,11 @@ class TranslationsShell extends AppShell {
  * @return void
  */
 	protected function _writeFile() {
-		$path = APP . 'Config/i18n_crud.php';
-
-		if (!file_exists($path)) {
-			array_unshift($this->_strings, '<?php');
-		}
-
 		$lines = implode($this->_strings, "\n") . "\n";
-		$file = new File($path, true, 0644);
-		$file->append($lines);
+		$file = new File($this->_path, true, 0644);
+		$file->write($lines);
 
-		$this->out(str_replace('APP', '', $path) . ' updated');
+		$this->out(str_replace('APP', '', $this->_path) . ' updated');
 		$this->hr();
 	}
 }
