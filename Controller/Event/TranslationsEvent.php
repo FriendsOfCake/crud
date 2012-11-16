@@ -24,6 +24,55 @@ class TranslationsEvent extends CrudBaseEvent {
  */
 	protected $_config = array();
 
+	protected $_defaults = array(
+		'create' => array(
+			'success' => array(
+				'message' => 'Successfully created {name}',
+				'element' => 'success'
+			),
+			'error' => array(
+				'message' => 'Could not create {name}',
+				'element' => 'error'
+			)
+		),
+		'update' => array(
+			'success' => array(
+				'message' => '{name} was successfully updated',
+				'element' => 'success'
+			),
+			'error' => array(
+				'message' => 'Could not update {name}',
+				'element' => 'error'
+			)
+		),
+		'delete' => array(
+			'success' => array(
+				'message' => 'Successfully deleted {name}',
+				'element' => 'success'
+			),
+			'error' => array(
+				'message' => 'Could not delete {name}',
+				'element' => 'error'
+			)
+		),
+		'find' => array(
+			'error' => array(
+				'message' => 'Could not find {name}',
+				'element' => 'error'
+			)
+		),
+		'error' => array(
+			'invalid_http_request' => array(
+				'message' => 'Invalid HTTP request',
+				'element' => 'error'
+			),
+			'invalid_id' => array(
+				'message' => 'Invalid id',
+				'element' => 'error'
+			)
+		)
+	);
+
 /**
  * Constructor
  *
@@ -34,60 +83,7 @@ class TranslationsEvent extends CrudBaseEvent {
  * @return void
  */
 	public function __construct($config = array()) {
-		$defaults = array(
-			'create' => array(
-				'success' => array(
-					'message' => __d('crud', 'Successfully created {name}'),
-					'element' => 'success'
-				),
-				'error' => array(
-					'message' => __d('crud', 'Could not create {name}'),
-					'element' => 'error'
-				)
-			),
-
-			'update' => array(
-				'success' => array(
-					'message' => __d('crud', '{name} was successfully updated'),
-					'element' => 'success'
-				),
-				'error' => array(
-					'message' => __d('crud', 'Could not update {name}'),
-					'element' => 'error'
-				)
-			),
-
-			'delete' => array(
-				'success' => array(
-					'message' => __d('crud', 'Successfully deleted {name}'),
-					'element' => 'success'
-				),
-				'error' => array(
-					'message' => __d('crud', 'Could not delete {name}'),
-					'element' => 'error'
-				)
-			),
-
-			'find' => array(
-				'error' => array(
-					'message' => __d('crud', 'Could not find {name}'),
-					'element' => 'error'
-				)
-			),
-
-			'error' => array(
-				'invalid_http_request' => array(
-					'message' => __d('crud', 'Invalid HTTP request'),
-					'element' => 'error'
-				),
-				'invalid_id' => array(
-					'message' => __d('crud', 'Invalid id'),
-					'element' => 'error'
-				)
-			)
-		);
-
-		$this->_config = $defaults + $config;
+		$this->_config = $this->_defaults + $config;
 	}
 
 /**
@@ -124,27 +120,33 @@ class TranslationsEvent extends CrudBaseEvent {
 		return $this;
 	}
 
+	public function getDefaults() {
+		return $this->_defaults;
+	}
+
 /**
  * SetFlash Crud Event callback
  *
+ * @throws CakeException if called with invalid args
  * @param CakeEvent $e
  * @return void
  */
 	public function setFlash(CakeEvent $event) {
 		if (empty($event->subject->type)) {
-			throw new CakeException(__d('crud', 'Missing flash type'));
+			throw new CakeException('Missing flash type');
 		}
 
 		$type = $event->subject->type;
 
 		$config = Hash::get($this->_config, $type);
 		if (empty($config)) {
-			throw new CakeException(__d('crud', 'Invalid flash type'));
+			throw new CakeException('Invalid flash type');
 		}
 
 		$config = $config + array('message' => null, 'element' => null, 'params' => array(), 'key' => 'flash');
+		$message = String::insert($config['message'], array('name' => $event->subject->name), array('before' => '{', 'after' => '}'));
 
-		$event->subject->message = String::insert($config['message'], array('name' => $event->subject->name), array('before' => '{', 'after' => '}'));
+		$event->subject->message = __d('crud', $message);
 		$event->subject->element = $config['element'];
 		$event->subject->params = $config['params'];
 		$event->subject->key = $config['key'];
