@@ -79,6 +79,14 @@ class TranslationsShell extends AppShell {
 		$this->out(sprintf('Generating translation strings for models: %s.', implode($models, ', ')));
 		$this->out('');
 
+		$this->_path = APP . 'Config/i18n_crud.php';
+
+		if (file_exists($this->_path)) {
+			$this->_strings = array_map('rtrim', file($this->_path));
+		} else {
+			$this->_strings[] = '<?php';
+		}
+
 		$this->_generateTranslations(false);
 		foreach ($models as $model) {
 			$this->_generateTranslations($model);
@@ -94,14 +102,6 @@ class TranslationsShell extends AppShell {
  * @return void
  */
 	protected function _generateTranslations($modelName) {
-		$this->_path = APP . 'Config/i18n_crud.php';
-
-		if (file_exists($this->_path)) {
-			$this->_strings = array_map('rtrim', file($this->_path));
-		} else {
-			$this->_strings[] = '<?php';
-		}
-
 		if ($modelName) {
 			$message = "$modelName CRUD Component translations";
 		} else {
