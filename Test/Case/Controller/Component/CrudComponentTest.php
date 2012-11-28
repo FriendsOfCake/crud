@@ -109,7 +109,7 @@ class CrudComponentTestCase extends CakeTestCase {
 	 * Use the core posts fixture to have something to work on.
 	 * What fixture is used is almost irrelevant, was chosen as it is simple
 	 */
-	public $fixtures = array('core.post', 'core.author', 'core.tag', 'plugin.crud.posts_tag');
+	public $fixtures = array('core.post', 'core.author', 'core.tag');
 
 	/**
 	 * setUp

@@ -109,5 +109,5 @@ before_script:
     }" > app/Config/database.php
 
 script:
-  - ./lib/Cake/Console/cake test Crud Controller/Component/CrudComponent --stderr
+  - ./lib/Cake/Console/cake test Crud AllCrud --stderr
 
