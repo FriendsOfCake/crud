@@ -217,7 +217,7 @@ class CrudComponent extends Component {
 	* @platform
 	* @param string $action		The CRUD action
 	* @param array $arguments	List of arguments to pass to the CRUD action (Usually an ID to edit / delete)
-	* @return void
+	* @return mixed void, or a CakeResponse object
 	*/
 	public function executeAction($action = null, $args = array()) {
 		$view = $action = $action ?: $this->_action;
@@ -687,7 +687,7 @@ class CrudComponent extends Component {
 				return $this->_redirect($subject, array('action' => 'index'));
 			} else {
 				$this->_setFlash(sprintf('Could not update %s', Inflector::humanize($this->_modelName)), 'error');
-				$this->trigger('afterSave' ,array('id' => $id, 'success' => false));
+				$this->trigger('afterSave', array('id' => $id, 'success' => false));
 			}
 		} else {
 			$query = array();
