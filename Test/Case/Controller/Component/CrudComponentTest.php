@@ -1289,4 +1289,40 @@ class CrudComponentTestCase extends CakeTestCase {
 		$ids = Hash::extract($this->controller->viewVars['items'], '{n}.CrudExample.id');
 		$this->assertEquals(array(1,2,3), $ids);
 	}
+
+/**
+ * Change findType in beforePaginate
+ *  - but not like Cake doing it
+ *
+ * @return void
+ */
+	public function testPaginationFindTypeBeforePaginateCallback() {
+		$Paginator = $this->controller->Components->load('Paginator');
+
+		$this->Crud->on('beforePaginate', function(CakeEvent $e) {
+			$e->subject->findMethod = 'published';
+		});
+
+		$this->Crud->executeAction('index');
+
+		$this->assertSame('published', $this->controller->paginate['findType']);
+	}
+
+/**
+ * Change findType in beforePaginate - the Cake way
+ *
+ * @return void
+ */
+	public function testPaginationFindTypeBeforePaginateCallbackCakeWay() {
+		$Paginator = $this->controller->Components->load('Paginator');
+
+		$this->Crud->on('beforePaginate', function(CakeEvent $e) {
+			$e->subject->controller->paginate['findType'] = 'published';
+		});
+
+		$this->Crud->executeAction('index');
+
+		$this->assertSame('published', $this->controller->paginate['findType']);
+	}
+
 }
