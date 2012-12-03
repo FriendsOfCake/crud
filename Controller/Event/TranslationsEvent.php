@@ -105,8 +105,8 @@ class TranslationsEvent extends CrudBaseEvent {
 
 		if (empty($value)) {
 			if (is_array($key)) {
-				$this->_config = $this->_config + $key;
-				return $this;
+				$this->_config = $key + $this->_config;
+				return $this->_config;
 			}
 
 			return Hash::get($this->_config, $key);
