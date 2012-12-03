@@ -49,6 +49,39 @@ class TranslationsEventTest extends CakeTestCase {
 		$this->assertEquals($expected, $config);
 	}
 
+	public function testCanOverrideConfig() {
+		$override = array(
+			'create' => array(
+				'success' => array('message' => 'Success!', 'element' => 'success'),
+				'error' => array('message' => 'Denied!', 'element' => 'error')
+			)
+		);
+		$config = $this->Translations->config($override);
+
+		$expected = array(
+			'create' => array(
+				'success' => array('message' => 'Success!', 'element' => 'success'),
+				'error' => array('message' => 'Denied!', 'element' => 'error')
+			),
+			'update' => array(
+				'success' => array('message' => '{name} was successfully updated', 'element' => 'success'),
+				'error' => array('message' => 'Could not update {name}', 'element' => 'error')
+			),
+			'delete' => array(
+				'success' => array('message' => 'Successfully deleted {name}', 'element' => 'success'),
+				'error' => array('message' => 'Could not delete {name}', 'element' => 'error')
+			),
+			'find' => array(
+				'error' => array('message' => 'Could not find {name}', 'element' => 'error')
+			),
+			'error' => array(
+				'invalid_http_request' => array('message' => 'Invalid HTTP request', 'element' => 'error'),
+				'invalid_id' => array('message' => 'Invalid id', 'element' => 'error')
+			)
+		);
+		$this->assertEquals($expected, $config);
+	}
+
 /**
  * Test updating config with key + string value works
  *
