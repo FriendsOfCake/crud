@@ -25,6 +25,8 @@ class TranslationsEventTest extends CakeTestCase {
 	public function testDefaultConfig() {
 		$config = $this->Translations->config();
 		$expected = array(
+			'domain' => 'crud',
+			'name' => null,
 			'create' => array(
 				'success' => array('message' => 'Successfully created {name}', 'element' => 'success'),
 				'error' => array('message' => 'Could not create {name}', 'element' => 'error')
@@ -59,6 +61,8 @@ class TranslationsEventTest extends CakeTestCase {
 		$config = $this->Translations->config($override);
 
 		$expected = array(
+			'domain' => 'crud',
+			'name' => null,
 			'create' => array(
 				'success' => array('message' => 'Success!', 'element' => 'success'),
 				'error' => array('message' => 'Denied!', 'element' => 'error')

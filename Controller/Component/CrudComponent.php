@@ -179,6 +179,8 @@ class CrudComponent extends Component {
 			'add' => true,
 			'edit' => true
 		),
+		'translations' => array(
+		),
 		'name' => null
 	);
 
@@ -934,7 +936,7 @@ class CrudComponent extends Component {
 			return true;
 		}
 
-		$this->_events['translations'] = new TranslationsEvent();
+		$this->_events['translations'] = new TranslationsEvent($this->settings['translations']);
 		$this->_eventManager->attach($this->_events['translations']);
 	}
 

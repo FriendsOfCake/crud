@@ -25,6 +25,8 @@ class TranslationsEvent extends CrudBaseEvent {
 	protected $_config = array();
 
 	protected $_defaults = array(
+		'domain' => 'crud',
+		'name' => null,
 		'create' => array(
 			'success' => array(
 				'message' => 'Successfully created {name}',
@@ -105,7 +107,7 @@ class TranslationsEvent extends CrudBaseEvent {
 
 		if (empty($value)) {
 			if (is_array($key)) {
-				$this->_config = $key + $this->_config;
+				$this->_config = Hash::merge($this->_config, $key);
 				return $this->_config;
 			}
 
@@ -113,7 +115,10 @@ class TranslationsEvent extends CrudBaseEvent {
 		}
 
 		if (is_array($value)) {
-			$value += Hash::get($this->_config, $key);
+			$merge = Hash::get($this->_config, $key);
+			if ($merge) {
+				$value += $merge;
+			}
 		}
 
 		$this->_config = Hash::insert($this->_config, $key, $value);
@@ -143,10 +148,11 @@ class TranslationsEvent extends CrudBaseEvent {
 			throw new CakeException('Invalid flash type');
 		}
 
+		$name = $this->_config['name'] ?: $event->subject->name;
 		$config += array('message' => null, 'element' => null, 'params' => array(), 'key' => 'flash');
-		$message = String::insert($config['message'], array('name' => $event->subject->name), array('before' => '{', 'after' => '}'));
+		$message = String::insert($config['message'], array('name' => $name), array('before' => '{', 'after' => '}'));
 
-		$event->subject->message = __d('crud', $message);
+		$event->subject->message = __d($this->_config['domain'], $message);
 		$event->subject->element = $config['element'];
 		$event->subject->params = $config['params'];
 		$event->subject->key = $config['key'];
