@@ -43,33 +43,10 @@ class TranslationsShell extends AppShell {
  */
 	public function generate() {
 		if (!$this->_messages) {
-			$event = new TranslationsEvent();
-			$defaults = $event->getDefaults();
-			foreach ($defaults as $key => $array) {
-				foreach ($array as $subkey => $row) {
-					$this->_messages["$key.$subkey"] = $row['message'];
-				}
-			}
+			$this->_initializeMessages();
 		}
 
-		$objectType = 'Model';
-		$this->_path = null;
-		$models = array();
-
-		if ($this->args) {
-			foreach ($this->args as $arg) {
-				preg_match('@Plugin/([^/]*)/?(?:Model/([^/]*))?@', $arg, $match);
-
-				if (!empty($match[2])) {
-					$models[] = str_replace('.php', '', $match[2]);
-				} elseif (!empty($match[1])) {
-					$plugin = $match[1];
-					$models = array_merge($models, App::objects("$plugin.Model"));
-				}
-			}
-		} else {
-			$models = App::objects('Model');
-		}
+		$models = $this->_getModels();
 
 		if (!$models) {
 			return;
@@ -126,6 +103,12 @@ class TranslationsShell extends AppShell {
 		}
 	}
 
+/**
+ * _addDocBlock
+ *
+ * @param mixed $message
+ * @return void
+ */
 	protected function _addDocBlock($message) {
 		$message = " * $message";
 
@@ -138,6 +121,55 @@ class TranslationsShell extends AppShell {
 		$this->_strings[] = $message;
 		$this->_strings[] = ' */';
 		return true;
+	}
+
+/**
+ * _getModels
+ *
+ * @return void
+ */
+	protected function _getModels() {
+		$objectType = 'Model';
+		$this->_path = null;
+		$models = array();
+
+		if ($this->args) {
+			foreach ($this->args as $arg) {
+				preg_match('@Plugin/([^/]*)/?(?:Model/([^/]*))?@', $arg, $match);
+
+				if (!empty($match[2])) {
+					$models[] = str_replace('.php', '', $match[2]);
+				} elseif (!empty($match[1])) {
+					$plugin = $match[1];
+					$models = array_merge($models, App::objects("$plugin.Model"));
+				}
+			}
+		} else {
+			$models = App::objects('Model');
+		}
+
+		return $models;
+	}
+
+/**
+ * _initializeMessages
+ *
+ * @return void
+ */
+	protected function _initializeMessages() {
+		$event = new TranslationsEvent();
+		$defaults = $event->getDefaults();
+		foreach ($defaults as $key => $array) {
+			if (!is_array($array)) {
+				continue;
+			}
+			foreach ($array as $subkey => $row) {
+				if (!is_array($row) || !isset($row['message'])) {
+					continue;
+				}
+				$this->_messages["$key.$subkey"] = $row['message'];
+			}
+		}
 	}
 
 /**
