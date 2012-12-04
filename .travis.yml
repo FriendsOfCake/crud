@@ -6,7 +6,6 @@ php:
 
 env:
   - DB=mysql
-  - DB=pgsql
   - DB=sqlite
 
 before_script:
