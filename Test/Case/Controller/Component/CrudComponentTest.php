@@ -54,6 +54,33 @@ class TestCrudEventManager extends CakeEventManager {
 	}
 }
 
+class CrudExamplesController extends Controller {
+
+	public $components = array(
+		'Session',
+		'Crud.Crud' => array(
+			'actions' => array(
+				'index',
+				'add',
+				'edit',
+				'delete',
+				'view'
+			)
+		)
+	);
+
+/**
+ * add
+ *
+ * Used in the translations test
+ *
+ * @return void
+ */
+	public function add() {
+		$this->Crud->executeAction();
+	}
+}
+
 /**
  * TestCrudComponent
  *
@@ -101,7 +128,7 @@ class CrudController extends Controller {
 /**
  * CrudComponentTestCase
  */
-class CrudComponentTestCase extends CakeTestCase {
+class CrudComponentTestCase extends ControllerTestCase {
 
 /**
  * fixtures
@@ -1288,5 +1315,156 @@ class CrudComponentTestCase extends CakeTestCase {
 
 		$ids = Hash::extract($this->controller->viewVars['items'], '{n}.CrudExample.id');
 		$this->assertEquals(array(1,2,3), $ids);
+	}
+
+/**
+ * testAddActionTranslatedBaseline
+ *
+ * @return void
+ */
+	public function testAddActionTranslatedBaseline() {
+		Router::connect("/:action", array('controller' => 'crud_examples'));
+
+		$this->Controller = $this->generate(
+			'CrudExamples',
+			array(
+				'methods' => array('header', 'redirect', 'render'),
+				'components' => array('Session'),
+			)
+		);
+
+		$this->Controller
+			->expects($this->never())
+			->method('render');
+
+		$this->Controller->Session
+			->expects($this->once())
+			->method('setFlash')
+			->with('Successfully created CrudExample');
+
+		$this->testAction('/add', array(
+			'data' => array(
+				'CrudExample' => array(
+					'title' => __METHOD__,
+					'description' => __METHOD__,
+					'author_id' => 0
+				)
+			)
+		));
+	}
+
+/**
+ * testAddActionTranslatedChangedName
+ *
+ * @return void
+ */
+	public function testAddActionTranslatedChangedName() {
+		Router::connect("/:action", array('controller' => 'crud_examples'));
+
+		$this->Controller = $this->generate(
+			'CrudExamples',
+			array(
+				'methods' => array('header', 'redirect', 'render'),
+				'components' => array('Session'),
+			)
+		);
+		$this->Controller->Crud->settings['translations']['name'] = 'Thingy';
+
+		$this->Controller
+			->expects($this->never())
+			->method('render');
+
+		$this->Controller->Session
+			->expects($this->once())
+			->method('setFlash')
+			->with('Successfully created Thingy');
+
+		$this->testAction('/add', array(
+			'data' => array(
+				'CrudExample' => array(
+					'title' => __METHOD__,
+					'description' => __METHOD__,
+					'author_id' => 0
+				)
+			)
+		));
+	}
+
+/**
+ * testAddActionTranslatedChangedName
+ *
+ * @return void
+ */
+	public function testAddActionTranslatedChangedMessage() {
+		Router::connect("/:action", array('controller' => 'crud_examples'));
+
+		$this->Controller = $this->generate(
+			'CrudExamples',
+			array(
+				'methods' => array('header', 'redirect', 'render'),
+				'components' => array('Session'),
+			)
+		);
+		$this->Controller->Crud->settings['translations']['create']['success']['message'] = "Yay!";
+
+		$this->Controller
+			->expects($this->never())
+			->method('render');
+
+		$this->Controller->Session
+			->expects($this->once())
+			->method('setFlash')
+			->with('Yay!');
+
+		$this->testAction('/add', array(
+			'data' => array(
+				'CrudExample' => array(
+					'title' => __METHOD__,
+					'description' => __METHOD__,
+					'author_id' => 0
+				)
+			)
+		));
+	}
+
+/**
+ * testAddActionTranslated
+ *
+ * @return void
+ */
+	public function testAddActionTranslated() {
+		$this->skipIf(!class_exists('Translation'), 'Test depends on the Translations plugin');
+
+		$translatedMessage = 'El ejemplo ha sido creado con exito';
+		Translation::update('Successfully created CrudExample', $translatedMessage, array('domain' => 'crud'));
+		$this->assertSame($translatedMessage, __d('crud', 'Successfully created CrudExample'));
+
+		Router::connect("/:action", array('controller' => 'crud_examples'));
+
+		$this->Controller = $this->generate(
+			'CrudExamples',
+			array(
+				'methods' => array('header', 'redirect', 'render'),
+				'components' => array('Session'),
+			)
+		);
+		$this->Controller
+			->expects($this->never())
+			->method('render');
+
+		$this->Controller->Session
+			->expects($this->once())
+			->method('setFlash')
+			->with($translatedMessage);
+
+		$this->testAction('/add', array(
+			'data' => array(
+				'CrudExample' => array(
+					'title' => __METHOD__,
+					'description' => __METHOD__,
+					'author_id' => 0
+				)
+			)
+		));
 	}
 }
