@@ -15,6 +15,13 @@ class TranslationsShell extends AppShell {
 	protected $_messages = array();
 
 /**
+ * _path
+ *
+ * @var string
+ */
+	protected $_path = '';
+
+/**
  * _strings
  *
  * @var array
@@ -56,10 +63,10 @@ class TranslationsShell extends AppShell {
 		$this->out(sprintf('Generating translation strings for models: %s.', implode($models, ', ')));
 		$this->out('');
 
-		$this->_path = APP . 'Config/i18n_crud.php';
+		$path = $this->path();
 
-		if (file_exists($this->_path)) {
-			$this->_strings = array_map('rtrim', file($this->_path));
+		if (file_exists($path)) {
+			$this->_strings = array_map('rtrim', file($path));
 		} else {
 			$this->_strings[] = '<?php';
 		}
@@ -69,7 +76,7 @@ class TranslationsShell extends AppShell {
 			$this->_generateTranslations($model);
 		}
 
-		$this->_writeFile();
+		return $this->_writeFile();
 	}
 
 /**
@@ -130,7 +137,6 @@ class TranslationsShell extends AppShell {
  */
 	protected function _getModels() {
 		$objectType = 'Model';
-		$this->_path = null;
 		$models = array();
 
 		if ($this->args) {
@@ -149,6 +155,21 @@ class TranslationsShell extends AppShell {
 		}
 
 		return $models;
+	}
+
+/**
+ * path
+ *
+ * @param mixed $path
+ * @return string
+ */
+	public function path($path = null) {
+		if ($path) {
+			$this->_path = $path;
+		} elseif (!$this->_path) {
+			$this->_path = APP . 'Config/i18n_crud.php';
+		}
+		return $this->_path;
 	}
 
 /**
@@ -178,11 +199,15 @@ class TranslationsShell extends AppShell {
  * @return void
  */
 	protected function _writeFile() {
+		$path = $this->path();
+
 		$lines = implode($this->_strings, "\n") . "\n";
-		$file = new File($this->_path, true, 0644);
+		$file = new File($path, true, 0644);
 		$file->write($lines);
 
-		$this->out(str_replace('APP', '', $this->_path) . ' updated');
+		$this->out(str_replace('APP', '', $path) . ' updated');
 		$this->hr();
+
+		return $path;
 	}
 }
