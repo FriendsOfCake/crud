@@ -9,6 +9,7 @@
 - [Loading and installation](#loading-and-installation)
 	- [Configuration](#configuration)
 	- [Convention](#convention)
+	- [Language](#language)
 	- [Additional usage information](#additional-usage-information)
 	- [Error and Success elements](#error-and-success-elements)
 - [Event system](#event-system)
@@ -341,6 +342,169 @@ The subject object can be accessed through __$event->subject__ in all event call
 	</tr>
 </tbody>
 </table>
+
+## Language
+
+All of the messages used in the crud component can be overridden in one of two ways: by explicitly defining the messages
+to use in the controller's components array, or by using the standard translations functions of CakePHP.
+
+### Overriding individual messages
+
+The below components array is populated with all of the messages used:
+
+```php
+<?php
+class DemoController extends AppController {
+
+/**
+ * List of global controller components
+ *
+ * @cakephp
+ * @var array
+ */
+	public $components = array(
+		// Enable CRUD actions
+		'Crud.Crud' => array(
+			'actions' => array('index', 'add', 'edit', 'view', 'delete'),
+			'translations' => array(
+				'domain' => 'crud',
+				'name' => null,
+				'create' => array(
+					'success' => array(
+						'message' => 'Successfully created {name}',
+						'element' => 'success'
+					),
+					'error' => array(
+						'message' => 'Could not create {name}',
+						'element' => 'error'
+					)
+				),
+				'update' => array(
+					'success' => array(
+						'message' => '{name} was successfully updated',
+						'element' => 'success'
+					),
+					'error' => array(
+						'message' => 'Could not update {name}',
+						'element' => 'error'
+					)
+				),
+				'delete' => array(
+					'success' => array(
+						'message' => 'Successfully deleted {name}',
+						'element' => 'success'
+					),
+					'error' => array(
+						'message' => 'Could not delete {name}',
+						'element' => 'error'
+					)
+				),
+				'find' => array(
+					'error' => array(
+						'message' => 'Could not find {name}',
+						'element' => 'error'
+					)
+				),
+				'error' => array(
+					'invalid_http_request' => array(
+						'message' => 'Invalid HTTP request',
+						'element' => 'error'
+					),
+					'invalid_id' => array(
+						'message' => 'Invalid id',
+						'element' => 'error'
+					)
+				)
+			)
+		)
+	);
+}
+```
+
+The `Crud.Crud.translations.name` key, if defined, overrides the model's name property, and is
+used to replace the `{name}` placeholder in the messages for each CRUD action. If it is not set,
+the model's name property is used.
+
+### Using translations
+
+The strings indicated in the above code block are converted to complete sententces and then passed
+through Cake's translate functions](http://book.cakephp.org/2.0/en/core-libraries/internationalization-and-localization.html).
+By default, the translation domain `crud` is used in translations, this can be overriden by setting the domain to a different
+value in the components poperty.
+
+For convenience, a shell is provided to generate full-sentence translation calls to permit [Cake's I18n
+shell](http://book.cakephp.org/2.0/en/console-and-shells/i18n-shell.html)
+to extract them
+
+```sh
+$ Console/cake Crud.translations generate
+---------------------------------------------------------------
+Generating translation strings for models: Post
+
+Adding: Invalid HTTP request
+Adding: Invalid id
+Adding: Successfully created Post
+Adding: Could not create Post
+Adding: Post was successfully updated
+Adding: Could not update Post
+Adding: Successfully deleted Post
+Adding: Could not delete Post
+Adding: Could not find Post
+app/Config/i18n_crud.php updated
+---------------------------------------------------------------
+$
+```
+
+The contents of the file `app/Config/i18n_crud.php` is only calls to the translate function:
+
+```php
+<?php
+
+/**
+ * Common CRUD Component translations
+ */
+__d('crud', 'Invalid HTTP request');
+__d('crud', 'Invalid id');
+
+/**
+ * Post CRUD Component translations
+ */
+__d('crud', 'Successfully created Post');
+__d('crud', 'Could not create Post');
+__d('crud', 'Post was successfully updated');
+__d('crud', 'Could not update Post');
+__d('crud', 'Successfully deleted Post');
+__d('crud', 'Could not delete Post');
+__d('crud', 'Could not find Post');
+```
+
+This file provides static calls of all permutations of the messages that the component could use for the App's
+models. To generate the calls for a plugin's models - pass the path to the plugin as an argument:
+
+```sh
+$ Console/cake Crud.translations generate Plugin/Foo
+---------------------------------------------------------------
+Generating translation strings for models: Foo
+
+Adding: Invalid HTTP request
+Adding: Invalid id
+Adding: Successfully created Foo
+Adding: Could not create Foo
+Adding: Foo was successfully updated
+Adding: Could not update Foo
+Adding: Successfully deleted Foo
+Adding: Could not delete Foo
+Adding: Could not find Foo
+app/Config/i18n_crud.php updated
+---------------------------------------------------------------
+$
+```
+
+In the same way you can define/add the translations for an individual model.
+
+The config file generated by this shell is not loaded at run time, it's purpose is purely to provide fixed-string translations
+for the extract task to be able to identify the sentences used in the crud plugin. It's recommended to add this file to your
+application's code repository.
 
 ## Crud actions and their events
 

@@ -59,27 +59,27 @@ class CrudComponent extends Component {
 	protected $_eventManager;
 
 /**
-	* Cached property for Controller::modelClass
-	*
-	* @platform
-	* @var string
-	*/
+ * Cached property for Controller::modelClass
+ *
+ * @platform
+ * @var string
+ */
 	protected $_modelName;
 
 /**
-	* Cached propety for the current Controller::modelClass instance
-	*
-	* @platform
-	* @var Model
-	*/
+ * Cached propety for the current Controller::modelClass instance
+ *
+ * @platform
+ * @var Model
+ */
 	protected $_model;
 
 /**
-	* All emitted events will be prefixed with this property value
-	*
-	* @platform
-	* @var string
-	*/
+ * All emitted events will be prefixed with this property value
+ *
+ * @platform
+ * @var string
+ */
 	protected $_eventPrefix = 'Crud';
 
 /**
@@ -142,13 +142,13 @@ class CrudComponent extends Component {
 	);
 
 /**
-	* The default find method for reading data
-	*
-	* Model->find($method)
-	*
-	* @platform
-	* @var array
-	*/
+ * The default find method for reading data
+ *
+ * Model->find($method)
+ *
+ * @platform
+ * @var array
+ */
 	protected $_findMethodMap = array(
 		'index'			=> 'all',
 		'edit'			=> 'first',
@@ -233,13 +233,13 @@ class CrudComponent extends Component {
 	}
 
 /**
-	* Execute a Crud action
-	*
-	* @platform
-	* @param string $action		The CRUD action
-	* @param array $arguments	List of arguments to pass to the CRUD action (Usually an ID to edit / delete)
-	* @return mixed void, or a CakeResponse object
-	*/
+ * Execute a Crud action
+ *
+ * @platform
+ * @param string $action		The CRUD action
+ * @param array $arguments	List of arguments to pass to the CRUD action (Usually an ID to edit / delete)
+ * @return mixed void, or a CakeResponse object
+ */
 	public function executeAction($action = null, $args = array()) {
 		$view = $action = $action ?: $this->_action;
 		$this->_setModelProperties();
@@ -407,13 +407,13 @@ class CrudComponent extends Component {
 	}
 
 /**
-	* Map a controller action to a Model::find($method)
-	*
-	* @platform
-	* @param string $action
-	* @param strign $method
-	* @return void
-	*/
+ * Map a controller action to a Model::find($method)
+ *
+ * @platform
+ * @param string $action
+ * @param strign $method
+ * @return void
+ */
 	public function mapFindMethod($action, $method) {
 		$this->_findMethodMap[$action] = $method;
 	}
@@ -599,12 +599,12 @@ class CrudComponent extends Component {
 	}
 
 /**
-	* Get the model find method for a current controller action
-	*
-	* @param string|NULL $action The controller action
-	* @param string|NULL $default The default find method in case it haven't been mapped
-	* @return string The find method used in ->_model->find($method)
-	*/
+ * Get the model find method for a current controller action
+ *
+ * @param string|NULL $action The controller action
+ * @param string|NULL $default The default find method in case it haven't been mapped
+ * @return string The find method used in ->_model->find($method)
+ */
 	protected function _getFindMethod($action = null, $default = null) {
 		if (empty($action)) {
 			$action = $this->_action;
@@ -897,11 +897,11 @@ class CrudComponent extends Component {
 	}
 
 /**
-	* Wrapper for Session::setFlash
-	*
-	* @param string $message Message to be flashed
-	* @return void
-	*/
+ * Wrapper for Session::setFlash
+ *
+ * @param string $message Message to be flashed
+ * @return void
+ */
 	protected function _setFlash($type) {
 		$name = $this->_getResourceName();
 		$this->_ensureTranslationsEvent();
