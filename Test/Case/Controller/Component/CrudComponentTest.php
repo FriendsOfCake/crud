@@ -56,7 +56,7 @@ class TestCrudEventManager extends CakeEventManager {
 
 class CrudExamplesController extends Controller {
 
-	public $components = array(
+	public static $componentsArray = array(
 		'Session',
 		'Crud.Crud' => array(
 			'actions' => array(
@@ -68,6 +68,19 @@ class CrudExamplesController extends Controller {
 			)
 		)
 	);
+
+/**
+ * Make it possible to dynamically define the components array during tests
+ *
+ * @param mixed $request
+ * @param mixed $response
+ * @return void
+ */
+	public function __construct($request = null, $response = null) {
+		$this->components = self::$componentsArray;
+
+		return parent::__construct($request, $response);
+	}
 
 /**
  * add
@@ -1333,10 +1346,6 @@ class CrudComponentTestCase extends ControllerTestCase {
 			)
 		);
 
-		$this->Controller
-			->expects($this->never())
-			->method('render');
-
 		$this->Controller->Session
 			->expects($this->once())
 			->method('setFlash')
@@ -1370,10 +1379,6 @@ class CrudComponentTestCase extends ControllerTestCase {
 		);
 		$this->Controller->Crud->settings['translations']['name'] = 'Thingy';
 
-		$this->Controller
-			->expects($this->never())
-			->method('render');
-
 		$this->Controller->Session
 			->expects($this->once())
 			->method('setFlash')
@@ -1406,10 +1411,6 @@ class CrudComponentTestCase extends ControllerTestCase {
 			)
 		);
 		$this->Controller->Crud->settings['translations']['create']['success']['message'] = "Yay!";
-
-		$this->Controller
-			->expects($this->never())
-			->method('render');
 
 		$this->Controller->Session
 			->expects($this->once())
@@ -1448,9 +1449,48 @@ class CrudComponentTestCase extends ControllerTestCase {
 				'components' => array('Session'),
 			)
 		);
-		$this->Controller
-			->expects($this->never())
-			->method('render');
+
+		$this->Controller->Session
+			->expects($this->once())
+			->method('setFlash')
+			->with($translatedMessage);
+
+		$this->testAction('/add', array(
+			'data' => array(
+				'CrudExample' => array(
+					'title' => __METHOD__,
+					'description' => __METHOD__,
+					'author_id' => 0
+				)
+			)
+		));
+	}
+
+/**
+ * testAddActionTranslatedDefaultDomain
+ *
+ * Simulate the controller's components array having defined the default domain for crud messages
+ * Verify that that is the default domain is used for the crud translations
+ *
+ * @return void
+ */
+	public function testAddActionTranslatedDefaultDomain() {
+		$this->skipIf(!class_exists('Translation'), 'Test depends on the Translations plugin');
+
+		$translatedMessage = 'eksemplet blev oprettet med succes';
+		Translation::update('Successfully created CrudExample', $translatedMessage);
+		$this->assertSame($translatedMessage, __d('default', 'Successfully created CrudExample'));
+
+		Router::connect("/:action", array('controller' => 'crud_examples'));
+
+		CrudExamplesController::$componentsArray['Crud.Crud']['translations']['domain'] = 'default';
+		$this->Controller = $this->generate(
+			'CrudExamples',
+			array(
+				'methods' => array('header', 'redirect', 'render'),
+				'components' => array('Session'),
+			)
+		);
 
 		$this->Controller->Session
 			->expects($this->once())
