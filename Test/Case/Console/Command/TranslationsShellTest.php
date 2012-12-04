@@ -33,7 +33,7 @@ class TranslationsShellTest extends CakeTestCase {
 
 		$this->Shell = $this->getMock(
 			'TranslationsShell',
-			array('in', 'out', 'hr', 'err', '_stop', '_writeFile'),
+			array('in', 'out', 'hr', 'err', '_stop', '_getModels'),
 			array($this->out, $this->out, $this->in)
 		);
 
@@ -93,5 +93,44 @@ class TranslationsShellTest extends CakeTestCase {
 			"__d('crud', 'Could not find Example');"
 		);
 		$this->assertSame($expected, $this->Shell->_strings);
+	}
+
+	public function testGenerateFile() {
+		$this->Shell
+			->expects($this->once())
+			->method('_getModels')
+			->will($this->returnValue(array('Example')));
+
+		$path = TMP . 'crud_translations_shell_test.php';
+		$this->Shell->path($path);
+		$this->Shell->generate();
+
+		$this->assertFileExists($path);
+
+		$contents = file_get_contents($path);
+		$expected = <<<END
+<?php
+
+/**
+ * Common CRUD Component translations
+ */
+__d('crud', 'Invalid HTTP request');
+__d('crud', 'Invalid id');
+
+/**
+ * Example CRUD Component translations
+ */
+__d('crud', 'Successfully created Example');
+__d('crud', 'Could not create Example');
+__d('crud', 'Example was successfully updated');
+__d('crud', 'Could not update Example');
+__d('crud', 'Successfully deleted Example');
+__d('crud', 'Could not delete Example');
+__d('crud', 'Could not find Example');
+END;
+
+		$this->assertSame(trim($expected), trim($contents));
+
+		unlink($path);
 	}
 }
