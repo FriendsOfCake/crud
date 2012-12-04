@@ -85,7 +85,10 @@ class TranslationsEvent extends CrudBaseEvent {
  * @return void
  */
 	public function __construct($config = array()) {
-		$this->_config = $config + $this->_defaults;
+		$this->_config = $this->_defaults;
+		if ($config) {
+			$this->config($config);
+		}
 	}
 
 /**
