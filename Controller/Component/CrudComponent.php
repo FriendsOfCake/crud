@@ -170,6 +170,8 @@ class CrudComponent extends Component {
  * `relatedList` is a map of the controller action and the whether it should fetch associations lists
  * to be used in select boxes. An array as value means it is enabled and represent the list
  * of model associations to be fetched
+ * `translations` is the config for the translations Event, responsible for the text used in flash messages
+ * see TranslationsEvent::$_defaults the full list of options
  *
  * @var array
  */
@@ -180,8 +182,7 @@ class CrudComponent extends Component {
 			'edit' => true
 		),
 		'translations' => array(
-		),
-		'name' => null
+		)
 	);
 
 /**

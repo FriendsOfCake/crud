@@ -24,6 +24,16 @@ class TranslationsEvent extends CrudBaseEvent {
  */
 	protected $_config = array();
 
+/**
+ * _defaults
+ *
+ * `domain` the translation domain to be used
+ * `name` the name to use in flash messages - defaults to the model's name property
+ * `event-name` the remaining array keys are event-name indexed arrays with the flash-message
+ * settings for each event
+ *
+ * @var array
+ */
 	protected $_defaults = array(
 		'domain' => 'crud',
 		'name' => null,
