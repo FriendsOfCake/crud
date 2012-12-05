@@ -201,11 +201,80 @@ By default CrudComponent assumes your add and edit views is identical, and will 
 
 There is no view for delete action, it will always redirect
 
-### Event system
+## Additional usage information
+
+If you are generating views from Cake Bake.
+
+Add the following to `beforeFilter()` in AppController:
+
+```php
+// Normal views
+$this->Crud->mapActionView('add',  'add');
+$this->Crud->mapActionView('edit',  'edit');
+
+// Admin views
+$this->Crud->mapActionView('admin_add',  'admin_add');
+$this->Crud->mapActionView('admin_edit',  'admin_edit');
+```
+
+Default `$components` variable according to the documentation is like this:
+
+```php
+public $components=array(
+    // Enable CRUD actions
+    'Crud.Crud' => array(
+        'actions' => array('index', 'add', 'edit', 'view', 'delete')
+    )
+);
+```
+
+In this case, it will assume that all the IDs of your models are made with UUID.
+
+If they are `numerically indexed`, please add the following setting:
+
+```php
+public $components = array(
+    // Enable CRUD actions
+    'Crud.Crud' => array(
+        'actions' => array('index', 'add', 'edit', 'view', 'delete'),
+        'validateId' => 'integer'
+    )
+);
+```
+
+In the `Index` views:
+
+The paginated array is in $items. So if you have Baked an Index view, set in the beginning something like this:
+
+```php
+$users = $items;
+```
+
+The rest of the view will work. Otherwise you will get an error message about undefined variable $users.
+
+In the `View` views:
+
+Add the following at the beginning of the page.
+
+```php
+$user = $item;
+```
+
+### Error and Success elements:
+
+This plugin uses `error.ctp` and `success.ctp` to display Flash messages.
+
+So create the following:
+* `Views/Elements/error.ctp`
+* `Views/Elements/success.ctp`
+
+In each, the message passed is in the variable `$message` as usual.
+
+## Event system
 
 The CRUD plugin uses the new event system introduced in Cake 2.1
 
-#### Global accessible subject properties
+### Global accessible subject properties
 
 The subject object can be accessed through __$event->subject__ in all event callbacks
 
@@ -246,7 +315,7 @@ The subject object can be accessed through __$event->subject__ in all event call
 </tbody>
 </table>
 
-### Crud actions and their events
+## Crud actions and their events
 
 All Crud events always return void, any modifications should be done to the CrudEventSubject object ($event->subject)
 
@@ -254,7 +323,7 @@ All Crud events take exactly one parameter, CakeEvent $event
 
 The CRUD component emits the following events
 
-#### index()
+### index()
 
 <table>
 <thead>
@@ -288,7 +357,7 @@ The CRUD component emits the following events
 </tbody>
 </table>
 
-#### add()
+### add()
 
 <table>
 <thead>
@@ -322,7 +391,7 @@ The CRUD component emits the following events
 </tbody>
 </table>
 
-#### edit()
+### edit()
 
 <table>
 <thead>
@@ -371,7 +440,7 @@ The CRUD component emits the following events
 </tbody>
 </table>
 
-#### view()
+### view()
 
 <table>
 <thead>
@@ -410,7 +479,7 @@ The CRUD component emits the following events
 </tbody>
 </table>
 
-#### delete()
+### delete()
 
 <table>
 <thead>
@@ -449,11 +518,11 @@ The CRUD component emits the following events
 </tbody>
 </table>
 
-### Subscribing to an event
+## Subscribing to an event
 
 I would recommend using the Event class if you need to subscribe to more than one event
 
-#### Full event class
+### Full event class
 
 Crud events must be inside app/Controller/Event ( app/Plugin/$plugin/Controller/Event for plugins)
 
@@ -505,7 +574,7 @@ class DemoController extends AppController {
 ?>
 ```
 
-#### A lamba / Closure
+### A lamba / Closure
 
 ```php
 <?php
@@ -518,7 +587,7 @@ class DemoController extends AppController {
 ?>
 ```
 
-#### A method in your controller
+### A method in your controller
 
 ```php
 <?php
@@ -666,80 +735,6 @@ class DemoController extends AppController {
 		});
 	}
 
-}
-?>
-```
-
-# Migration from legacy PSR-0 autoloader to more Cake feel
-
-## Changes
-
-* Crud used to have a Config/bootstrap.php file, its no longer have, please make sure to remove the bootstrap => true from CakePlugin::load('Crud')
-* All event classes used to be in Lib/Crud/Event - they are now located in Controller/Event
-* The files used to have a namespace \Crud\Event - thats no longer the case
-* The classes used to extend from "Base" - they should now extend from CrudBaseEvent
-
-## New
-
-You must now load the classes on your own.
-
-* In all your Event class files that extends "CrudBaseEvent" must have "App::uses('CrudBaseEvent', 'Crud.Controller/Event');" before the class declaration
-* In all controllers where you attach the Crud Event to the event manager, you must load the Event class with "App::uses('DemoEvent', 'Controller/Event');" or "App::uses('DemoEvent', 'Plugin.Controller/Event');"
-
-## Step by step
-
-* Make sure that app/Config/bootstrap.php that loads Crud plugin doesn't load the bootstrap file
-* Move all Event classes from Lib/Crud/Event to Controller/Event (both for App and Plugin folders)
-* Remove all "namespace Crud\Event" from the classes
-* Load CrudBaseEvent in each Event class ( App::uses('CrudBaseEvent', 'Crud.Controller/Event'); )
-* Make sure all Event classes no longer extends from Base but from CrudBaseEvent
-* Find all places where you attach Crud Events to the your EventManger ($this->getEventManager()->attach(..))
- * Make sure you load your Event class before your Controller Class declaration ( App::uses('DemoEvent', 'Plugin.Controller/Event'); )
- * Make sure you don't use "new \Crud\Event\$className" but the normal Event class name now (new DemoEvent();)
-
-## Examples
-
-### Before
-
-```php
-<?php
-// app/Plugin/Demo/Lib/Crud/Event/Demo.php
-namespace Crud\Event;
-
-class Demo extends Base {
-
-}
-
-// app/Plugin/Demo/Controller/DemosController.php
-class DemosController extends DemoAppController {
-	public function beforeFilter() {
-		parent::beforeFilter();
-		$this->getEventManager()->attach(new Crud\Event\Demo());
-	}
-}
-?>
-```
-
-### After
-
-```php
-<?php
-// app/Plugin/Demo/Controller/Event/DemoEvent.php
-App::uses('CrudBaseEvent', 'Crud.Controller/Event');
-
-class DemoEvent extends CrudBaseEvent {
-
-}
-
-// app/Plugin/Demo/Controller/DemoAppController.php
-App::uses('DemoEvent', 'Demo.Controller/Event');
-
-class DemosController extends DemoAppController {
-
-	public function beforeFilter() {
-		parent::beforeFilter();
-		$this->getEventManager()->attach(new DemoEvent());
-	}
 }
 ?>
 ```
