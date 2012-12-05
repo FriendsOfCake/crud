@@ -258,7 +258,7 @@ Add the following at the beginning of the page.
 $user = $item;
 ```
 
-### Error and Success elements
+## Error and Success elements
 
 This plugin uses `error.ctp` and `success.ctp` to display Flash messages.
 
