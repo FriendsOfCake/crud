@@ -1,3 +1,32 @@
+**Table of Contents**
+
+- [Introduction](#introduction)
+- [Installation](#installation)
+	- [Requirements](#requirements)
+	- [Cloning and loading](#cloning-and-loading)
+		- [With a simple git clone](#with-a-simple-git-clone)
+		- [As a git submodule](#as-a-git-submodule)
+- [Loading and installation](#loading-and-installation)
+	- [Configuration](#configuration)
+	- [Convention](#convention)
+	- [Additional usage information](#additional-usage-information)
+	- [Error and Success elements](#error-and-success-elements)
+- [Event system](#event-system)
+	- [Global accessible subject properties](#global-accessible-subject-properties)
+	- [Crud actions and their events](#crud-actions-and-their-events)
+		- [index()](#index)
+		- [add()](#add)
+		- [edit()](#edit)
+		- [view()](#view)
+		- [delete()](#delete)
+	- [Subscribing to an event](#subscribing-to-an-event)
+		- [Full event class](#full-event-class)
+		- [A lamba / Closure](#a-lamba--closure)
+		- [A method in your controller](#a-method-in-your-controller)
+- [Filling Related Models select boxes](#filling-related-models-select-boxes)
+	- [Related models' list events](#related-models-list-events)
+	- [Example](#example)
+
 # Introduction
 
 The Crud plugin allow high reusability of the default Create, Retrieve, Update and Delete (CRUD) actions in your controllers
