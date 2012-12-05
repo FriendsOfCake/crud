@@ -15,21 +15,21 @@ App::uses('TranslationsEvent', 'Crud.Controller/Event');
 class TranslationsShell extends AppShell {
 
 /**
- * _messages
+ * The array of all messages used by the crud component
  *
  * @var array
  */
 	protected $_messages = array();
 
 /**
- * _path
+ * The path to write the output file to
  *
  * @var string
  */
 	protected $_path = '';
 
 /**
- * _strings
+ * The array of raw stings to be written to the output file
  *
  * @var array
  */
@@ -51,7 +51,7 @@ class TranslationsShell extends AppShell {
 	}
 
 /**
- * generate
+ * Create or update the file containing the translation strings for CRUD component usage
  *
  * @return void
  */
@@ -63,6 +63,7 @@ class TranslationsShell extends AppShell {
 		$models = $this->_getModels();
 
 		if (!$models) {
+			$this->out('<warning>No models found to be processed</warning>');
 			return;
 		}
 
@@ -89,7 +90,10 @@ class TranslationsShell extends AppShell {
 /**
  * _generateTranslations
  *
- * @param mixed $modelName
+ * For the given model name, generate translation strings and add them to the _strings property
+ * If the model name is false - the common messages are processed
+ *
+ * @param mixed $modelName name of a model or false for the general messages
  * @return void
  */
 	protected function _generateTranslations($modelName) {
@@ -120,8 +124,11 @@ class TranslationsShell extends AppShell {
 /**
  * _addDocBlock
  *
- * @param mixed $message
- * @return void
+ * Add a doc block to the _strings property with the passed message appropriately formatted
+ * If the doc block already exists - return false
+ *
+ * @param string $message
+ * @return bool success
  */
 	protected function _addDocBlock($message) {
 		$message = " * $message";
@@ -140,7 +147,10 @@ class TranslationsShell extends AppShell {
 /**
  * _getModels
  *
- * @return void
+ * If no arguments are passed to the cli call, return all App models
+ * Otherwise, assume the arguments are a list of file paths to plugin model dirs or an individual plugin model
+ *
+ * @return array
  */
 	protected function _getModels() {
 		$objectType = 'Model';
@@ -167,6 +177,9 @@ class TranslationsShell extends AppShell {
 /**
  * path
  *
+ * Set or retrieve the path to write the output file to
+ * Defaults to APP/Config/i18n_crud.php
+ *
  * @param mixed $path
  * @return string
  */
@@ -181,6 +194,8 @@ class TranslationsShell extends AppShell {
 
 /**
  * _initializeMessages
+ *
+ * Extract all the messages used by the crud componentn, and write to the _messages property
  *
  * @return void
  */
@@ -203,7 +218,10 @@ class TranslationsShell extends AppShell {
 /**
  * _writeFile
  *
- * @return void
+ * Take the _strings property, populated by the generate method - and write it
+ * out to the output file path
+ *
+ * @return string the file path written to
  */
 	protected function _writeFile() {
 		$path = $this->path();
