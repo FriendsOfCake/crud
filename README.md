@@ -1,4 +1,32 @@
-[![Build Status](https://secure.travis-ci.org/nodesagency/Platform-Crud-Plugin.png?branch=master)](http://travis-ci.org/nodesagency/Platform-Crud-Plugin)
+**Table of Contents**
+
+- [Introduction](#introduction)
+- [Installation](#installation)
+	- [Requirements](#requirements)
+	- [Cloning and loading](#cloning-and-loading)
+		- [With a simple git clone](#with-a-simple-git-clone)
+		- [As a git submodule](#as-a-git-submodule)
+- [Loading and installation](#loading-and-installation)
+	- [Configuration](#configuration)
+	- [Convention](#convention)
+	- [Language](#language)
+	- [Additional usage information](#additional-usage-information)
+	- [Error and Success elements](#error-and-success-elements)
+- [Event system](#event-system)
+	- [Global accessible subject properties](#global-accessible-subject-properties)
+	- [Crud actions and their events](#crud-actions-and-their-events)
+		- [index()](#index)
+		- [add()](#add)
+		- [edit()](#edit)
+		- [view()](#view)
+		- [delete()](#delete)
+	- [Subscribing to an event](#subscribing-to-an-event)
+		- [Full event class](#full-event-class)
+		- [A lamba / Closure](#a-lamba--closure)
+		- [A method in your controller](#a-method-in-your-controller)
+- [Filling Related Models select boxes](#filling-related-models-select-boxes)
+	- [Related models' list events](#related-models-list-events)
+	- [Example](#example)
 
 # Introduction
 
@@ -201,11 +229,80 @@ By default CrudComponent assumes your add and edit views is identical, and will 
 
 There is no view for delete action, it will always redirect
 
-### Event system
+## Additional usage information
+
+If you are generating views from Cake Bake.
+
+Add the following to `beforeFilter()` in AppController:
+
+```php
+// Normal views
+$this->Crud->mapActionView('add',  'add');
+$this->Crud->mapActionView('edit',  'edit');
+
+// Admin views
+$this->Crud->mapActionView('admin_add',  'admin_add');
+$this->Crud->mapActionView('admin_edit',  'admin_edit');
+```
+
+Default `$components` variable according to the documentation is like this:
+
+```php
+public $components=array(
+    // Enable CRUD actions
+    'Crud.Crud' => array(
+        'actions' => array('index', 'add', 'edit', 'view', 'delete')
+    )
+);
+```
+
+In this case, it will assume that all the IDs of your models are made with UUID.
+
+If they are `numerically indexed`, please add the following setting:
+
+```php
+public $components = array(
+    // Enable CRUD actions
+    'Crud.Crud' => array(
+        'actions' => array('index', 'add', 'edit', 'view', 'delete'),
+        'validateId' => 'integer'
+    )
+);
+```
+
+In the `Index` views:
+
+The paginated array is in $items. So if you have Baked an Index view, set in the beginning something like this:
+
+```php
+$users = $items;
+```
+
+The rest of the view will work. Otherwise you will get an error message about undefined variable $users.
+
+In the `View` views:
+
+Add the following at the beginning of the page.
+
+```php
+$user = $item;
+```
+
+## Error and Success elements
+
+This plugin uses `error.ctp` and `success.ctp` to display Flash messages.
+
+So create the following:
+* `Views/Elements/error.ctp`
+* `Views/Elements/success.ctp`
+
+In each, the message passed is in the variable `$message` as usual.
+
+# Event system
 
 The CRUD plugin uses the new event system introduced in Cake 2.1
 
-#### Global accessible subject properties
+## Global accessible subject properties
 
 The subject object can be accessed through __$event->subject__ in all event callbacks
 
@@ -246,7 +343,170 @@ The subject object can be accessed through __$event->subject__ in all event call
 </tbody>
 </table>
 
-### Crud actions and their events
+## Language
+
+All of the messages used in the crud component can be overridden in one of two ways: by explicitly defining the messages
+to use in the controller's components array, or by using the standard translations functions of CakePHP.
+
+### Overriding individual messages
+
+The below components array is populated with all of the messages used:
+
+```php
+<?php
+class DemoController extends AppController {
+
+/**
+ * List of global controller components
+ *
+ * @cakephp
+ * @var array
+ */
+	public $components = array(
+		// Enable CRUD actions
+		'Crud.Crud' => array(
+			'actions' => array('index', 'add', 'edit', 'view', 'delete'),
+			'translations' => array(
+				'domain' => 'crud',
+				'name' => null,
+				'create' => array(
+					'success' => array(
+						'message' => 'Successfully created {name}',
+						'element' => 'success'
+					),
+					'error' => array(
+						'message' => 'Could not create {name}',
+						'element' => 'error'
+					)
+				),
+				'update' => array(
+					'success' => array(
+						'message' => '{name} was successfully updated',
+						'element' => 'success'
+					),
+					'error' => array(
+						'message' => 'Could not update {name}',
+						'element' => 'error'
+					)
+				),
+				'delete' => array(
+					'success' => array(
+						'message' => 'Successfully deleted {name}',
+						'element' => 'success'
+					),
+					'error' => array(
+						'message' => 'Could not delete {name}',
+						'element' => 'error'
+					)
+				),
+				'find' => array(
+					'error' => array(
+						'message' => 'Could not find {name}',
+						'element' => 'error'
+					)
+				),
+				'error' => array(
+					'invalid_http_request' => array(
+						'message' => 'Invalid HTTP request',
+						'element' => 'error'
+					),
+					'invalid_id' => array(
+						'message' => 'Invalid id',
+						'element' => 'error'
+					)
+				)
+			)
+		)
+	);
+}
+```
+
+The `Crud.Crud.translations.name` key, if defined, overrides the model's name property, and is
+used to replace the `{name}` placeholder in the messages for each CRUD action. If it is not set,
+the model's name property is used.
+
+### Using translations
+
+The strings indicated in the above code block are converted to complete sententces and then passed
+through Cake's translate functions](http://book.cakephp.org/2.0/en/core-libraries/internationalization-and-localization.html).
+By default, the translation domain `crud` is used in translations, this can be overriden by setting the domain to a different
+value in the components poperty.
+
+For convenience, a shell is provided to generate full-sentence translation calls to permit [Cake's I18n
+shell](http://book.cakephp.org/2.0/en/console-and-shells/i18n-shell.html)
+to extract them
+
+```sh
+$ Console/cake Crud.translations generate
+---------------------------------------------------------------
+Generating translation strings for models: Post
+
+Adding: Invalid HTTP request
+Adding: Invalid id
+Adding: Successfully created Post
+Adding: Could not create Post
+Adding: Post was successfully updated
+Adding: Could not update Post
+Adding: Successfully deleted Post
+Adding: Could not delete Post
+Adding: Could not find Post
+app/Config/i18n_crud.php updated
+---------------------------------------------------------------
+$
+```
+
+The contents of the file `app/Config/i18n_crud.php` is only calls to the translate function:
+
+```php
+<?php
+
+/**
+ * Common CRUD Component translations
+ */
+__d('crud', 'Invalid HTTP request');
+__d('crud', 'Invalid id');
+
+/**
+ * Post CRUD Component translations
+ */
+__d('crud', 'Successfully created Post');
+__d('crud', 'Could not create Post');
+__d('crud', 'Post was successfully updated');
+__d('crud', 'Could not update Post');
+__d('crud', 'Successfully deleted Post');
+__d('crud', 'Could not delete Post');
+__d('crud', 'Could not find Post');
+```
+
+This file provides static calls of all permutations of the messages that the component could use for the App's
+models. To generate the calls for a plugin's models - pass the path to the plugin as an argument:
+
+```sh
+$ Console/cake Crud.translations generate Plugin/Foo
+---------------------------------------------------------------
+Generating translation strings for models: Foo
+
+Adding: Invalid HTTP request
+Adding: Invalid id
+Adding: Successfully created Foo
+Adding: Could not create Foo
+Adding: Foo was successfully updated
+Adding: Could not update Foo
+Adding: Successfully deleted Foo
+Adding: Could not delete Foo
+Adding: Could not find Foo
+app/Config/i18n_crud.php updated
+---------------------------------------------------------------
+$
+```
+
+In the same way you can define/add the translations for an individual model.
+
+The config file generated by this shell is not loaded at run time, it's purpose is purely to provide fixed-string translations
+for the extract task to be able to identify the sentences used in the crud plugin. It's recommended to add this file to your
+application's code repository.
+
+## Crud actions and their events
 
 All Crud events always return void, any modifications should be done to the CrudEventSubject object ($event->subject)
 
@@ -254,7 +514,7 @@ All Crud events take exactly one parameter, CakeEvent $event
 
 The CRUD component emits the following events
 
-#### index()
+### index()
 
 <table>
 <thead>
@@ -288,7 +548,7 @@ The CRUD component emits the following events
 </tbody>
 </table>
 
-#### add()
+### add()
 
 <table>
 <thead>
@@ -322,7 +582,7 @@ The CRUD component emits the following events
 </tbody>
 </table>
 
-#### edit()
+### edit()
 
 <table>
 <thead>
@@ -371,7 +631,7 @@ The CRUD component emits the following events
 </tbody>
 </table>
 
-#### view()
+### view()
 
 <table>
 <thead>
@@ -410,7 +670,7 @@ The CRUD component emits the following events
 </tbody>
 </table>
 
-#### delete()
+### delete()
 
 <table>
 <thead>
@@ -449,11 +709,11 @@ The CRUD component emits the following events
 </tbody>
 </table>
 
-### Subscribing to an event
+## Subscribing to an event
 
 I would recommend using the Event class if you need to subscribe to more than one event
 
-#### Full event class
+### Full event class
 
 Crud events must be inside app/Controller/Event ( app/Plugin/$plugin/Controller/Event for plugins)
 
@@ -505,7 +765,7 @@ class DemoController extends AppController {
 ?>
 ```
 
-#### A lamba / Closure
+### A lamba / Closure
 
 ```php
 <?php
@@ -518,7 +778,7 @@ class DemoController extends AppController {
 ?>
 ```
 
-#### A method in your controller
+### A method in your controller
 
 ```php
 <?php
@@ -535,7 +795,7 @@ class DemoController extends AppController {
 ?>
 ```
 
-## Filling Related Models select boxes
+# Filling Related Models select boxes
 
 If you are used to bake or CakePHP scaffolding you might want to have some control over the data it is sent to the view for
 filling select boxes for associated models. Crud component can be configured to return the list of record for all related models
@@ -622,7 +882,7 @@ class DemoController extends AppController {
 ?>
 ```
 
-### Related models' list events
+## Related models' list events
 
 If for any reason you need to alter the query or final results generated by fetching related models lists, you can use `Crud.beforeListRelated` and
 `Crud.afterListRelated` events to inject your own logic.
@@ -640,7 +900,7 @@ If for any reason you need to alter the query or final results generated by fetc
 	* model: Model instance, the model to be used for fiding the list or records
 
 
-### Example
+## Example
 
 ```php
 <?php
@@ -666,80 +926,6 @@ class DemoController extends AppController {
 		});
 	}
 
-}
-?>
-```
-
-# Migration from legacy PSR-0 autoloader to more Cake feel
-
-## Changes
-
-* Crud used to have a Config/bootstrap.php file, its no longer have, please make sure to remove the bootstrap => true from CakePlugin::load('Crud')
-* All event classes used to be in Lib/Crud/Event - they are now located in Controller/Event
-* The files used to have a namespace \Crud\Event - thats no longer the case
-* The classes used to extend from "Base" - they should now extend from CrudBaseEvent
-
-## New
-
-You must now load the classes on your own.
-
-* In all your Event class files that extends "CrudBaseEvent" must have "App::uses('CrudBaseEvent', 'Crud.Controller/Event');" before the class declaration
-* In all controllers where you attach the Crud Event to the event manager, you must load the Event class with "App::uses('DemoEvent', 'Controller/Event');" or "App::uses('DemoEvent', 'Plugin.Controller/Event');"
-
-## Step by step
-
-* Make sure that app/Config/bootstrap.php that loads Crud plugin doesn't load the bootstrap file
-* Move all Event classes from Lib/Crud/Event to Controller/Event (both for App and Plugin folders)
-* Remove all "namespace Crud\Event" from the classes
-* Load CrudBaseEvent in each Event class ( App::uses('CrudBaseEvent', 'Crud.Controller/Event'); )
-* Make sure all Event classes no longer extends from Base but from CrudBaseEvent
-* Find all places where you attach Crud Events to the your EventManger ($this->getEventManager()->attach(..))
- * Make sure you load your Event class before your Controller Class declaration ( App::uses('DemoEvent', 'Plugin.Controller/Event'); )
- * Make sure you don't use "new \Crud\Event\$className" but the normal Event class name now (new DemoEvent();)
-
-## Examples
-
-### Before
-
-```php
-<?php
-// app/Plugin/Demo/Lib/Crud/Event/Demo.php
-namespace Crud\Event;
-
-class Demo extends Base {
-
-}
-
-// app/Plugin/Demo/Controller/DemosController.php
-class DemosController extends DemoAppController {
-	public function beforeFilter() {
-		parent::beforeFilter();
-		$this->getEventManager()->attach(new Crud\Event\Demo());
-	}
-}
-?>
-```
-
-### After
-
-```php
-<?php
-// app/Plugin/Demo/Controller/Event/DemoEvent.php
-App::uses('CrudBaseEvent', 'Crud.Controller/Event');
-
-class DemoEvent extends CrudBaseEvent {
-
-}
-
-// app/Plugin/Demo/Controller/DemoAppController.php
-App::uses('DemoEvent', 'Demo.Controller/Event');
-
-class DemosController extends DemoAppController {
-
-	public function beforeFilter() {
-		parent::beforeFilter();
-		$this->getEventManager()->attach(new DemoEvent());
-	}
 }
 ?>
 ```

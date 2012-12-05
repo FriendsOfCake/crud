@@ -55,9 +55,6 @@ class PostsTagFixture extends CakeTestFixture {
  * @var array
  */
 	public $records = array(
-		array('post_id' => 1, 'tag_id' => 'tag1'),
-		array('post_id' => 1, 'tag_id' => 'tag2'),
-		array('post_id' => 2, 'tag_id' => 'tag1'),
-		array('post_id' => 2, 'tag_id' => 'tag3')
+
 	);
 }
