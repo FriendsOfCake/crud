@@ -1,94 +1,112 @@
 <?php
+
 App::uses('CrudEventSubject', 'Crud.Controller/Event');
+App::uses('TranslationsEvent', 'Crud.Controller/Event');
 
 /**
  * Crud component
  *
- * Handles the automatic transformation of HTTP requests to API responses
+ * Scaffolding on steroids! :)
  *
  * Copyright 2010-2012, Nodes ApS. (http://www.nodesagency.com/)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @see https://wiki.ournodes.com/display/platform/Api+Plugin
  * @see http://book.cakephp.org/2.0/en/controllers/components.html#Component
  * @copyright Nodes ApS, 2012
  */
 class CrudComponent extends Component {
 
-	/**
-	 * Reference to a Session component
-	 *
-	 * @cakephp
-	 * @var array
-	 */
+/**
+ * Reference to a Session component
+ *
+ * @cakephp
+ * @var array
+ */
 	public $components = array('Session');
 
-	/**
-	 * The current controller action
-	 *
-	 * @platform
-	 * @var string
-	 */
+/**
+ * The current controller action
+ *
+ * @platform
+ * @var string
+ */
 	protected $_action;
 
-	/**
-	 * Reference to the current controller
-	 *
-	 * @platform
-	 * @var Controller
-	 */
+/**
+ * Reference to the current controller
+ *
+ * @platform
+ * @var Controller
+ */
 	protected $_controller;
 
-	/**
-	 * Reference to the current request
-	 *
-	 * @platform
-	 * @var CakeRequest
-	 */
+/**
+ * Reference to the current request
+ *
+ * @platform
+ * @var CakeRequest
+ */
 	protected $_request;
 
-	/**
-	 * Reference to the current event manager
-	 *
-	 * @platform
-	 * @var CakeEventManager
-	 */
+/**
+ * Reference to the current event manager
+ *
+ * @platform
+ * @var CakeEventManager
+ */
 	protected $_eventManager;
 
-	/**
-	* Cached property for Controller::modelClass
-	*
-	* @platform
-	* @var string
-	*/
+/**
+ * Cached property for Controller::modelClass
+ *
+ * @platform
+ * @var string
+ */
 	protected $_modelName;
 
-	/**
-	* Cached propety for the current Controller::modelClass instance
-	*
-	* @platform
-	* @var Model
-	*/
+/**
+ * Cached propety for the current Controller::modelClass instance
+ *
+ * @platform
+ * @var Model
+ */
 	protected $_model;
 
-	/**
-	* All emitted events will be prefixed with this property value
-	*
-	* @platform
-	* @var string
-	*/
+/**
+ * All emitted events will be prefixed with this property value
+ *
+ * @platform
+ * @var string
+ */
 	protected $_eventPrefix = 'Crud';
 
-	/**
-	 * A map of the controller action and what CRUD action we should call
-	 *
-	 * By default it supports non-prefix and admin_ prefixed routes
-	 *
-	 * @platform
-	 * @var array
-	 */
+/**
+ * List of event objects attached to Crud
+ *
+ * @var array
+ */
+	protected $_events = array();
+
+/**
+ * List of classes to be used internally in Crud
+ *
+ * @var array
+ */
+	protected $_classes = array(
+		'translations' => 'Crud.TranslationsEvent',
+		'relatedModels' => 'Crud.RelatedModelsListener'
+	);
+
+/**
+ * A map of the controller action and what CRUD action we should call
+ *
+ * By default it supports non-prefix and admin_ prefixed routes
+ *
+ * @platform
+ * @var array
+ */
 	protected $_actionMap = array(
 		'index'			=> 'index',
 		'add'			=> 'add',
@@ -103,14 +121,14 @@ class CrudComponent extends Component {
 		'admin_delete'	=> 'delete'
 	);
 
-	/**
-	 * A map of the controller action and the view to render
-	 *
-	 * By default it supports non-prefix and admin_ prefixed routes
-	 *
-	 * @platform
-	 * @var array
-	 */
+/**
+ * A map of the controller action and the view to render
+ *
+ * By default it supports non-prefix and admin_ prefixed routes
+ *
+ * @platform
+ * @var array
+ */
 	protected $_viewMap = array(
 		'index'			=> 'index',
 		'add'			=> 'form',
@@ -123,14 +141,14 @@ class CrudComponent extends Component {
 		'admin_view'	=> 'admin_view'
 	);
 
-	/**
-	* The default find method for reading data
-	*
-	* Model->find($method)
-	*
-	* @platform
-	* @var array
-	*/
+/**
+ * The default find method for reading data
+ *
+ * Model->find($method)
+ *
+ * @platform
+ * @var array
+ */
 	protected $_findMethodMap = array(
 		'index'			=> 'all',
 		'edit'			=> 'first',
@@ -143,53 +161,57 @@ class CrudComponent extends Component {
 		'admin_delete'	=> 'count'
 	);
 
-	/**
-	 * Components settings.
-	 *
-	 * `actions` key should contain an array of controller methods this component should offer
-	 * implementation for.
-	 *
-	 * `relatedList` is a map of the controller action and the whether it should fetch associations lists
-	 * to be used in select boxes. An array as value means it is enabled and represent the list
-	 * of model associations to be fetched
-	 *
-	 * @var array
-	 */
+/**
+ * Components settings.
+ *
+ * `actions` key should contain an array of controller methods this component should offer
+ * implementation for.
+ *
+ * `relatedList` is a map of the controller action and the whether it should fetch associations lists
+ * to be used in select boxes. An array as value means it is enabled and represent the list
+ * of model associations to be fetched
+ * `translations` is the config for the translations Event, responsible for the text used in flash messages
+ * see TranslationsEvent::$_defaults the full list of options
+ *
+ * @var array
+ */
 	public $settings = array(
 		'actions' => array(),
 		'relatedLists' => array(
 			'add' => true,
 			'edit' => true
+		),
+		'translations' => array(
 		)
 	);
 
-	/**
-	 * Name of the event listener class to be used for fetching related models list
-	 * Class will be lokked up in Controller/Event package
-	 *
-	 * @var string
-	 */
+/**
+ * Name of the event listener class to be used for fetching related models list
+ * Class will be lokked up in Controller/Event package
+ *
+ * @var string
+ */
 	protected $_relatedListEventClass = 'Crud.RelatedModelsListener';
 
-	/**
-	 * Constructor
-	 *
-	 * @param ComponentCollection $collection A ComponentCollection this component can use to lazy load its components
-	 * @param array $settings Array of configuration settings.
-	 */
+/**
+ * Constructor
+ *
+ * @param ComponentCollection $collection A ComponentCollection this component can use to lazy load its components
+ * @param array $settings Array of configuration settings.
+ */
 	public function __construct(ComponentCollection $collection, $settings = array()) {
 		parent::__construct($collection, $settings + $this->settings);
 	}
 
-	/**
-	 * Make sure to update the list of known controller methods before startup is called
-	 *
-	 * The reason for this is that if we don't, the Auth component won't execute any callbacks on the controller
-	 * like isAuthorized
-	 *
-	 * @param Controller $controller
-	 * @return void
-	 */
+/**
+ * Make sure to update the list of known controller methods before startup is called
+ *
+ * The reason for this is that if we don't, the Auth component won't execute any callbacks on the controller
+ * like isAuthorized
+ *
+ * @param Controller $controller
+ * @return void
+ */
 	public function initialize(Controller $controller) {
 		if ($controller->name == 'CakeError') {
 			return true;
@@ -211,14 +233,14 @@ class CrudComponent extends Component {
 		$this->_controller->dispatchComponents[$name] = true;
 	}
 
-	/**
-	* Execute a Crud action
-	*
-	* @platform
-	* @param string $action		The CRUD action
-	* @param array $arguments	List of arguments to pass to the CRUD action (Usually an ID to edit / delete)
-	* @return mixed void, or a CakeResponse object
-	*/
+/**
+ * Execute a Crud action
+ *
+ * @platform
+ * @param string $action		The CRUD action
+ * @param array $arguments	List of arguments to pass to the CRUD action (Usually an ID to edit / delete)
+ * @return mixed void, or a CakeResponse object
+ */
 	public function executeAction($action = null, $args = array()) {
 		$view = $action = $action ?: $this->_action;
 		$this->_setModelProperties();
@@ -241,9 +263,10 @@ class CrudComponent extends Component {
 
 		try {
 			if ($models = $this->relatedModels($action)) {
-				list($plugin, $class) = pluginSplit($this->_relatedListEventClass, true);
+				list($plugin, $class) = pluginSplit($this->_classes['relatedModels'], true);
 				App::uses($class, $plugin . 'Controller/Event');
-				$this->_controller->getEventManager()->attach(new $class($this->_eventPrefix, $models));
+				$this->_events['relatedModels'] = new $class($this->_eventPrefix, $models);
+				$this->_controller->getEventManager()->attach($this->_events['relatedModels']);
 			}
 
 			// Execute the default action, inside this component
@@ -267,18 +290,18 @@ class CrudComponent extends Component {
 		$this->_model		= $this->_controller->{$this->_modelName};
 	}
 
-	/**
-	 * Triggers a Crud event by creating a new subject and filling it with $data
-	 * if $data is an instance of CrudEventSubject it will be reused as the subject
-	 * objec for this event.
-	 *
-	 * If Event listenrs return a CakeResponse object, the this methid will throw an
-	 * exeption and fill a 'response' property on it with a referente to the response
-	 * object.
-	 *
-	 * @throws Exception if any event listener return a CakeResponse object
-	 * @return CrudEventSubject
-	 **/
+/**
+ * Triggers a Crud event by creating a new subject and filling it with $data
+ * if $data is an instance of CrudEventSubject it will be reused as the subject
+ * objec for this event.
+ *
+ * If Event listenrs return a CakeResponse object, the this methid will throw an
+ * exeption and fill a 'response' property on it with a referente to the response
+ * object.
+ *
+ * @throws Exception if any event listener return a CakeResponse object
+ * @return CrudEventSubject
+ **/
 	public function trigger($eventName, $data = array()) {
 		$subject = $data instanceof CrudEventSubject ? $data : $this->_getSubject($data);
 		$event = new CakeEvent($this->_eventPrefix . '.' . $eventName, $subject);
@@ -298,13 +321,13 @@ class CrudComponent extends Component {
 		return $subject;
 	}
 
-	/**
-	 * Enable a CRUD action
-	 *
-	 * @platform
-	 * @param string $action The action to enable
-	 * @return void
-	 */
+/**
+ * Enable a CRUD action
+ *
+ * @platform
+ * @param string $action The action to enable
+ * @return void
+ */
 	public function enableAction($action) {
 		$pos = array_search($action, $this->settings['actions']);
 		if (false === $pos) {
@@ -317,13 +340,13 @@ class CrudComponent extends Component {
 		}
 	}
 
-	/**
-	 * Disable a CRUD action
-	 *
-	 * @platform
-	 * @param string $action The action to disable
-	 * @return void
-	 */
+/**
+ * Disable a CRUD action
+ *
+ * @platform
+ * @param string $action The action to disable
+ * @return void
+ */
 	public function disableAction($action) {
 		$pos = array_search($action, $this->settings['actions']);
 		if (false !== $pos) {
@@ -336,16 +359,16 @@ class CrudComponent extends Component {
 		}
 	}
 
-	/**
-	 * Map the view file to use for a controller action
-	 *
-	 * To map multiple action views in one go pass an array as first argument and no second argument
-	 *
-	 * @platform
-	 * @param string|array $action
-	 * @param string $view
-	 * @return void
-	 */
+/**
+ * Map the view file to use for a controller action
+ *
+ * To map multiple action views in one go pass an array as first argument and no second argument
+ *
+ * @platform
+ * @param string|array $action
+ * @param string $view
+ * @return void
+ */
 	public function mapActionView($action, $view = null) {
 		if (is_array($action)) {
 			$this->_viewMap = $action + $this->_viewMap;
@@ -355,14 +378,14 @@ class CrudComponent extends Component {
 		$this->_viewMap[$action] = $view;
 	}
 
-	/**
-	 * Map action to a internal request type
-	 *
-	 * @param string $action The Controller action to fake
-	 * @param string $type one of the CRUD events (index, add, edit, delete, view)
-	 * @param boolean $enable Should the mapping be enabled right away?
-	 * @return void
-	 */
+/**
+ * Map action to a internal request type
+ *
+ * @param string $action The Controller action to fake
+ * @param string $type one of the CRUD events (index, add, edit, delete, view)
+ * @param boolean $enable Should the mapping be enabled right away?
+ * @return void
+ */
 	public function mapAction($action, $type, $enable = true) {
 		$this->_actionMap[$action] = $type;
 		if ($enable) {
@@ -370,12 +393,12 @@ class CrudComponent extends Component {
 		}
 	}
 
-	/**
-	 * Check if a CRUD action has been mapped (aka should be handled by CRUD component)
-	 *
-	 * @param string|null $action If null, use the current action
-	 * @return boolean
-	 */
+/**
+ * Check if a CRUD action has been mapped (aka should be handled by CRUD component)
+ *
+ * @param string|null $action If null, use the current action
+ * @return boolean
+ */
 	public function isActionMapped($action = null) {
 		if (empty($action)) {
 			$action = $this->_action;
@@ -384,25 +407,25 @@ class CrudComponent extends Component {
 		return false !== array_search($action, $this->settings['actions']);
 	}
 
-	/**
-	* Map a controller action to a Model::find($method)
-	*
-	* @platform
-	* @param string $action
-	* @param strign $method
-	* @return void
-	*/
+/**
+ * Map a controller action to a Model::find($method)
+ *
+ * @platform
+ * @param string $action
+ * @param strign $method
+ * @return void
+ */
 	public function mapFindMethod($action, $method) {
 		$this->_findMethodMap[$action] = $method;
 	}
 
-	/**
-	 * Attaches an event listener function to the controller for Crud Events
-	 *
-	 * @param string|array $events Name of the Crud Event you want to attach to controller
-	 * @param callback $callback callable method or closure to be executed on event
-	 * @return void
-	 **/
+/**
+ * Attaches an event listener function to the controller for Crud Events
+ *
+ * @param string|array $events Name of the Crud Event you want to attach to controller
+ * @param callback $callback callable method or closure to be executed on event
+ * @return void
+ **/
 	public function on($events, $callback) {
 		if (!is_array($events)) {
 			$events = array($events);
@@ -416,12 +439,12 @@ class CrudComponent extends Component {
 		}
 	}
 
-	/**
-	 * Enables association list fetching for specified actions.
-	 *
-	 * @param string|array $actions list of action names to enable
-	 * @return void
-	 */
+/**
+ * Enables association list fetching for specified actions.
+ *
+ * @param string|array $actions list of action names to enable
+ * @return void
+ */
 	public function enableRelatedList($actions) {
 		if (!is_array($actions)) {
 			$actions = array($actions);
@@ -434,15 +457,15 @@ class CrudComponent extends Component {
 		}
 	}
 
-	/**
-	 * Sets the list of model relationships to be fetched as lists for an action
-	 *
-	 * @param array|boolean $models list of model association names to be fetch on $action
-	 *  if `true`, list of models will be constructud out of associated models of main controller's model
-	 * @param stirng $action name of the action to apply this rule to. If left null then
-	 *  it will use the current controller action
-	 * @return void
-	 */
+/**
+ * Sets the list of model relationships to be fetched as lists for an action
+ *
+ * @param array|boolean $models list of model association names to be fetch on $action
+ *  if `true`, list of models will be constructud out of associated models of main controller's model
+ * @param stirng $action name of the action to apply this rule to. If left null then
+ *  it will use the current controller action
+ * @return void
+ */
 	public function mapRelatedList($models, $action = null) {
 		if (empty($action)) {
 			$action = $this->_action;
@@ -455,13 +478,47 @@ class CrudComponent extends Component {
 		$this->settings['relatedLists'][$action] = $models;
 	}
 
-	/**
-	 * Gets the list of associated model lists to be fetched for an action
-	 *
-	 * @param array $models list of model association names to be fetch on $action
-	 * @param stirng $action name of the action
-	 * @return array
-	 */
+/**
+ * Generic config method
+ *
+ * If $key is an array and $value is empty,
+ * $key will be merged directly with $this->_config
+ *
+ * If $key is a string it will be passed into Hash::insert
+ *
+ * @param mixed $key
+ * @param mixed $value
+ * @return TranslationsEvent
+ */
+	public function config($key = null, $value = null) {
+		if (is_null($key) && is_null($value)) {
+			return $this->settings;
+		}
+
+		if (empty($value)) {
+			if (is_array($key)) {
+				$this->settings = $this->settings + $key;
+				return $this;
+			}
+
+			return Hash::get($this->settings, $key);
+		}
+
+		if (is_array($value)) {
+			$value = $value + Hash::get($this->settings, $key);
+		}
+
+		$this->settings = Hash::insert($this->settings, $key, $value);
+		return $this;
+	}
+
+/**
+ * Gets the list of associated model lists to be fetched for an action
+ *
+ * @param array $models list of model association names to be fetch on $action
+ * @param stirng $action name of the action
+ * @return array
+ */
 	public function relatedModels($action) {
 		// If we don't have any related configuration, look up its alias in _actionMap
 		if (empty($this->settings['relatedLists'][$action]) && $this->isActionMapped($action)) {
@@ -495,13 +552,13 @@ class CrudComponent extends Component {
 		return array_keys($this->_controller->{$this->_controller->modelClass}->getAssociated());
 	}
 
-	/**
-	 * Sets the class name to be used as an event listener for generating related models' lists
-	 * If called with no arguments it will return currently set up class
-	 *
-	 * @param string $className
-	 * @return string class name to be used as event listener
-	 */
+/**
+ * Sets the class name to be used as an event listener for generating related models' lists
+ * If called with no arguments it will return currently set up class
+ *
+ * @param string $className
+ * @return string class name to be used as event listener
+ */
 	public function relatedModelsListener($className = null) {
 		if (empty($className)) {
 			return $this->_relatedListEventClass;
@@ -509,12 +566,12 @@ class CrudComponent extends Component {
 		return $this->_relatedListEventClass = $className;
 	}
 
-	/**
-	 * Helper method to get the passed ID to an action
-	 *
-	 * @platform
-	 * @return string
-	 */
+/**
+ * Helper method to get the passed ID to an action
+ *
+ * @platform
+ * @return string
+ */
 	public function getIdFromRequest() {
 		if (empty($this->_request->params['pass'][0])) {
 			return null;
@@ -522,12 +579,12 @@ class CrudComponent extends Component {
 		return $this->_request->params['pass'][0];
 	}
 
-	/**
-	 * Create a CakeEvent subject with the required properties
-	 *
-	 * @param array $additional Additional properties for the subject
-	 * @return CrudEventSubject
-	 */
+/**
+ * Create a CakeEvent subject with the required properties
+ *
+ * @param array $additional Additional properties for the subject
+ * @return CrudEventSubject
+ */
 	protected function _getSubject($additional = array()) {
 		$subject				= new CrudEventSubject();
 		$subject->crud			= $this;
@@ -542,13 +599,13 @@ class CrudComponent extends Component {
 		return $subject;
 	}
 
-	/**
-	* Get the model find method for a current controller action
-	*
-	* @param string|NULL $action The controller action
-	* @param string|NULL $default The default find method in case it haven't been mapped
-	* @return string The find method used in ->_model->find($method)
-	*/
+/**
+ * Get the model find method for a current controller action
+ *
+ * @param string|NULL $action The controller action
+ * @param string|NULL $default The default find method in case it haven't been mapped
+ * @return string The find method used in ->_model->find($method)
+ */
 	protected function _getFindMethod($action = null, $default = null) {
 		if (empty($action)) {
 			$action = $this->_action;
@@ -561,19 +618,19 @@ class CrudComponent extends Component {
 		return $default;
 	}
 
-	/**
-	 * Generic index action
-	 *
-	 * Triggers the following callbacks
-	 *	- Crud.init
-	 *	- Crud.beforePaginate
-	 *	- Crud.afterPaginate
-	 *	- Crud.beforeRender
-	 *
-	 * @platform
-	 * @param string $id
-	 * @return void
-	 */
+/**
+ * Generic index action
+ *
+ * Triggers the following callbacks
+ *	- Crud.init
+ *	- Crud.beforePaginate
+ *	- Crud.afterPaginate
+ *	- Crud.beforeRender
+ *
+ * @platform
+ * @param string $id
+ * @return void
+ */
 	protected function _indexAction() {
 		$Paginator = $this->_Collection->load('Paginator');
 
@@ -626,28 +683,28 @@ class CrudComponent extends Component {
 		$this->trigger('beforeRender');
 	}
 
-	/**
-	 * Generic add action
-	 *
-	 * Triggers the following callbacks
-	 *	- Crud.init
-	 *	- Crud.beforeSave
-	 *	- Crud.afterSave
-	 *	- Crud.beforeRender
-	 *
-	 * @platform
-	 * @param string $id
-	 * @return void
-	 */
+/**
+ * Generic add action
+ *
+ * Triggers the following callbacks
+ *	- Crud.init
+ *	- Crud.beforeSave
+ *	- Crud.afterSave
+ *	- Crud.beforeRender
+ *
+ * @platform
+ * @param string $id
+ * @return void
+ */
 	protected function _addAction() {
 		if ($this->_request->is('post')) {
 			$this->trigger('beforeSave');
 			if ($this->_model->saveAll($this->_request->data, array('validate' => 'first', 'atomic' => true))) {
-				$this->_setFlash(sprintf('Succesfully created %s', Inflector::humanize($this->_modelName)), 'success');
+				$this->_setFlash('create.success');
 				$subject = $this->trigger('afterSave', array('success' => true, 'id' => $this->_model->id));
 				return $this->_redirect($subject, array('action' => 'index'));
 			} else {
-				$this->_setFlash(sprintf('Could not create %s', Inflector::humanize($this->_modelName)), 'error');
+				$this->_setFlash('create.error');
 				$this->trigger('afterSave', array('success' => false));
 				// Make sure to merge any changed data in the model into the post data
 				$this->_request->data = Set::merge($this->_request->data, $this->_model->data);
@@ -657,22 +714,22 @@ class CrudComponent extends Component {
 		$this->trigger('beforeRender', array('success' => false));
 	}
 
-	/**
-	 * Generic edit action
-	 *
-	 * Triggers the following callbacks
-	 *	- Crud.init
-	 *	- Crud.beforeSave
-	 *	- Crud.afterSave
-	 *	- Crud.beforeFind
-	 *	- Crud.recordNotFound
-	 *	- Crud.afterFind
-	 *	- Crud.beforeRender
-	 *
-	 * @platform
-	 * @param string $id
-	 * @return void
-	 */
+/**
+ * Generic edit action
+ *
+ * Triggers the following callbacks
+ *	- Crud.init
+ *	- Crud.beforeSave
+ *	- Crud.afterSave
+ *	- Crud.beforeFind
+ *	- Crud.recordNotFound
+ *	- Crud.afterFind
+ *	- Crud.beforeRender
+ *
+ * @platform
+ * @param string $id
+ * @return void
+ */
 	protected function _editAction($id = null) {
 		if (empty($id)) {
 			$id = $this->getIdFromRequest();
@@ -682,11 +739,11 @@ class CrudComponent extends Component {
 		if ($this->_request->is('put')) {
 			$this->trigger('beforeSave', compact('id'));
 			if ($this->_model->saveAll($this->_request->data, array('validate' => 'first', 'atomic' => true))) {
-				$this->_setFlash(sprintf('%s was succesfully updated', ucfirst(Inflector::humanize($this->_modelName))), 'success');
+				$this->_setFlash('update.success');
 				$subject = $this->trigger('afterSave', array('id' => $id, 'success' => true));
 				return $this->_redirect($subject, array('action' => 'index'));
 			} else {
-				$this->_setFlash(sprintf('Could not update %s', Inflector::humanize($this->_modelName)), 'error');
+				$this->_setFlash('update.error');
 				$this->trigger('afterSave', array('id' => $id, 'success' => false));
 			}
 		} else {
@@ -699,7 +756,7 @@ class CrudComponent extends Component {
 			$this->_request->data = $this->_model->find($subject->findMethod, $query);
 			if (empty($this->_request->data)) {
 				$subject = $this->trigger('recordNotFound', compact('id'));
-				$this->_setFlash(sprintf('Could not find %s', Inflector::humanize($this->_modelName)), 'error');
+				$this->_setFlash('find.error');
 				return $this->_redirect($subject, array('action' => 'index'));
 			}
 
@@ -713,20 +770,20 @@ class CrudComponent extends Component {
 		$this->trigger('beforeRender');
 	}
 
-	/**
-	 * Generic view action
-	 *
-	 * Triggers the following callbacks
-	 *	- Crud.init
-	 *	- Crud.beforeFind
-	 *	- Crud.recordNotFound
-	 *	- Crud.afterFind
-	 *	- Crud.beforeRender
-	 *
-	 * @platform
-	 * @param string $id
-	 * @return void
-	 */
+/**
+ * Generic view action
+ *
+ * Triggers the following callbacks
+ *	- Crud.init
+ *	- Crud.beforeFind
+ *	- Crud.recordNotFound
+ *	- Crud.afterFind
+ *	- Crud.beforeRender
+ *
+ * @platform
+ * @param string $id
+ * @return void
+ */
 	protected function _viewAction($id = null) {
 		if (empty($id)) {
 			$id = $this->getIdFromRequest();
@@ -748,7 +805,7 @@ class CrudComponent extends Component {
 		// We could not find any record match the conditions in query
 		if (empty($item)) {
 			$subject = $this->trigger('recordNotFound', compact('id'));
-			$this->_setFlash(sprintf('Could not find %s', Inflector::humanize($this->_modelName)), 'error');
+			$this->_setFlash('find.error');
 			return $this->_redirect($subject, array('action' => 'index'));
 		}
 
@@ -763,19 +820,19 @@ class CrudComponent extends Component {
 		$this->trigger('beforeRender', compact('id', 'item'));
 	}
 
-	/**
-	 * Generic delete action
-	 *
-	 * Triggers the following callbacks
-	 *	- beforeFind
-	 *	- recordNotFound
-	 *	- beforeDelete
-	 *	- afterDelete
-	 *
-	 * @platform
-	 * @param string $id
-	 * @return void
-	 */
+/**
+ * Generic delete action
+ *
+ * Triggers the following callbacks
+ *	- beforeFind
+ *	- recordNotFound
+ *	- beforeDelete
+ *	- afterDelete
+ *
+ * @platform
+ * @param string $id
+ * @return void
+ */
 	protected function _deleteAction($id = null) {
 		if (empty($id)) {
 			$id = $this->getIdFromRequest();
@@ -792,37 +849,37 @@ class CrudComponent extends Component {
 		$count = $this->_model->find($subject->findMethod, $query);
 		if (empty($count)) {
 			$subject = $this->trigger('recordNotFound', compact('id'));
-			$this->_setFlash(sprintf('Could not find %s', Inflector::humanize($this->_modelName)), 'error');
+			$this->_setFlash('find.error');
 			return $this->_redirect($subject, array('action' => 'index'));
 		}
 
 		$subject = $this->trigger('beforeDelete', compact('id'));
 		if ($subject->stopped) {
-			$this->_setFlash(sprintf('Could not delete %s', Inflector::humanize($this->_modelName)), 'error');
+			$this->_setFlash('delete.error');
 			return $this->_redirect($subject, array('action' => 'index'));
 		}
 
 		if ($this->_request->is('delete')) {
 			if ($this->_model->delete($id)) {
-				$this->_setFlash(sprintf('Successfully deleted %s', Inflector::humanize($this->_modelName)), 'success');
+				$this->_setFlash('delete.success');
 				$subject = $this->trigger('afterDelete', array('id' => $id, 'success' => true));
 			} else {
-				$this->_setFlash(sprintf('Could not delete %s', Inflector::humanize($this->_modelName)), 'error');
+				$this->_setFlash('delete.error');
 				$subject = $this->trigger('afterDelete', array('id' => $id, 'success' => false));
 			}
 		} else {
-			$this->_setFlash(sprintf('Invalid HTTP request', Inflector::humanize($this->_modelName)), 'error');
+			$this->_setFlash('error.invalid_http_request');
 		}
 
 		return $this->_redirect($subject, $this->_controller->referer(array('action' => 'index')));
 	}
 
-	/**
-	 * Called for all redirects inside CRUD
-	 *
-	 * @param array|null $url
-	 * @return void
-	 */
+/**
+ * Called for all redirects inside CRUD
+ *
+ * @param array|null $url
+ * @return void
+ */
 	protected function _redirect($subject, $url = null) {
 		if (!empty($this->_request->data['redirect_url'])) {
 			$url = $this->_request->data['redirect_url'];
@@ -840,31 +897,59 @@ class CrudComponent extends Component {
 		return $this->_controller->response;
 	}
 
-	/**
-	* Wrapper for Session::setFlash
-	*
-	* Each param can be modified in setFlash $subject->{$property}
-	*
-	* @param string $message Message to be flashed
-	* @param string $element Element to wrap flash message in.
-	* @param array $params Parameters to be sent to layout as view variables
-	* @param string $key Message key, default is 'flash'
-	* @return void
-	*/
-	protected function _setFlash($message, $element = 'default', $params = array(), $key = 'flash') {
-		$subject = $this->trigger('setFlash', compact('message', 'element', 'params', 'key'));
+/**
+ * Wrapper for Session::setFlash
+ *
+ * @param string $message Message to be flashed
+ * @return void
+ */
+	protected function _setFlash($type) {
+		$name = $this->_getResourceName();
+		$this->_ensureTranslationsEvent();
+
+		$subject = $this->trigger('setFlash', compact('type', 'name'));
 		$this->Session->setFlash($subject->message, $subject->element, $subject->params, $subject->key);
 	}
 
-	/**
-	 * Is the passed ID valid ?
-	 *
-	 * By default we asume you want to validate an UUID string
-	 *
-	 * Change the validateId settings key to "integer" for is_numeric check instead
-	 *
-	 * @return boolean
-	 */
+/**
+ * Return the human name of the model
+ *
+ * By default it uses Inflector::humanize, but can be changed
+ * using the "name" configuration property
+ *
+ * @return string
+ */
+	protected function _getResourceName() {
+		if (empty($this->settings['name'])) {
+			$this->settings['name']	= Inflector::humanize($this->_modelName);
+		}
+
+		return $this->settings['name'];
+	}
+
+/**
+ * Ensure a translations event is attached
+ *
+ * @return void
+ */
+	protected function _ensureTranslationsEvent() {
+		if (!empty($this->_events['translations'])) {
+			return true;
+		}
+
+		$this->_events['translations'] = new TranslationsEvent($this->settings['translations']);
+		$this->_eventManager->attach($this->_events['translations']);
+	}
+
+/**
+ * Is the passed ID valid ?
+ *
+ * By default we asume you want to validate an UUID string
+ *
+ * Change the validateId settings key to "integer" for is_numeric check instead
+ *
+ * @return boolean
+ */
 	protected function _validateId($id, $type = null) {
 		if (empty($type)) {
 			if (isset($this->settings['validateId'])) {
@@ -886,7 +971,7 @@ class CrudComponent extends Component {
 		}
 
 		$subject = $this->trigger('invalidId', compact('id'));
-		$this->_setFlash('Invalid id', 'error');
+		$this->_setFlash('error.invalid_id');
 		return $this->_redirect($subject, $this->_controller->referer());
 	}
 }

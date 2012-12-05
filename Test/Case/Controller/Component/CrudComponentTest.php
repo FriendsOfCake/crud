@@ -54,6 +54,46 @@ class TestCrudEventManager extends CakeEventManager {
 	}
 }
 
+class CrudExamplesController extends Controller {
+
+	public static $componentsArray = array(
+		'Session',
+		'Crud.Crud' => array(
+			'actions' => array(
+				'index',
+				'add',
+				'edit',
+				'delete',
+				'view'
+			)
+		)
+	);
+
+/**
+ * Make it possible to dynamically define the components array during tests
+ *
+ * @param mixed $request
+ * @param mixed $response
+ * @return void
+ */
+	public function __construct($request = null, $response = null) {
+		$this->components = self::$componentsArray;
+
+		return parent::__construct($request, $response);
+	}
+
+/**
+ * add
+ *
+ * Used in the translations test
+ *
+ * @return void
+ */
+	public function add() {
+		$this->Crud->executeAction();
+	}
+}
+
 /**
  * TestCrudComponent
  *
@@ -61,30 +101,30 @@ class TestCrudEventManager extends CakeEventManager {
  */
 class TestCrudComponent extends CrudComponent {
 
-	/**
-	 * Test visibility wrapper
-	 */
+/**
+ * Test visibility wrapper
+ */
 	public function testGetSubject($additional = array()) {
 		return $this->_getSubject($additional);
 	}
 
-	/**
-	 * Test visibility wrapper
-	 */
+/**
+ * Test visibility wrapper
+ */
 	public function testRedirect($subject, $url = null) {
 		return $this->_redirect($subject, $url);
 	}
 
-	/**
-	 * Test visibility wrapper
-	 */
+/**
+ * Test visibility wrapper
+ */
 	public function testValidateId($id) {
 		return $this->_validateId($id);
 	}
 
-	/**
-	* test visibility wrapper
-	*/
+/**
+ * test visibility wrapper
+ */
 	public function testGetFindMethod($action = null, $default = null) {
 		return parent::_getFindMethod($action, $default);
 	}
@@ -101,21 +141,21 @@ class CrudController extends Controller {
 /**
  * CrudComponentTestCase
  */
-class CrudComponentTestCase extends CakeTestCase {
+class CrudComponentTestCase extends ControllerTestCase {
 
-	/**
-	 * fixtures
-	 *
-	 * Use the core posts fixture to have something to work on.
-	 * What fixture is used is almost irrelevant, was chosen as it is simple
-	 */
+/**
+ * fixtures
+ *
+ * Use the core posts fixture to have something to work on.
+ * What fixture is used is almost irrelevant, was chosen as it is simple
+ */
 	public $fixtures = array('core.post', 'core.author', 'core.tag', 'plugin.crud.posts_tag');
 
-	/**
-	 * setUp
-	 *
-	 * Setup the classes the crud component needs to be testable
-	 */
+/**
+ * setUp
+ *
+ * Setup the classes the crud component needs to be testable
+ */
 	public function setUp() {
 		require_once('models.php');
 
@@ -163,17 +203,17 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->Crud->initialize($this->controller);
 	}
 
-	/**
-	 * tearDown method
-	 */
+/**
+ * tearDown method
+ */
 	public function tearDown() {
 		unset($this->Crud);
 		parent::tearDown();
 	}
 
-	/**
-	 * testEnableAction
-	 */
+/**
+ * testEnableAction
+ */
 	public function testEnableAction() {
 		$this->Crud->mapAction('puppies', 'view', false);
 		$this->Crud->enableAction('puppies');
@@ -182,9 +222,9 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertTrue($result);
 	}
 
-	/**
-	 * testDisableAction
-	 */
+/**
+ * testDisableAction
+ */
 	public function testDisableAction() {
 		$this->Crud->disableAction('view');
 
@@ -192,9 +232,9 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertFalse($result);
 	}
 
-	/**
-	 * testMapAction
-	 */
+/**
+ * testMapAction
+ */
 	public function testMapAction() {
 		$this->Crud->mapAction('puppies', 'view');
 
@@ -202,9 +242,9 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertTrue($result);
 	}
 
-	/**
-	 * testMapActionView
-	 */
+/**
+ * testMapActionView
+ */
 	public function testMapActionView() {
 		$this->controller
 			->expects($this->once())
@@ -214,9 +254,9 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->Crud->executeAction('view', array(1));
 	}
 
-	/**
-	 * testIsActionMappedYes
-	 */
+/**
+ * testIsActionMappedYes
+ */
 	public function testIsActionMappedYes() {
 		$result = $this->Crud->isActionMapped('index');
 		$this->assertTrue($result);
@@ -227,9 +267,9 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertTrue($result);
 	}
 
-	/**
-	 * testIsActionMappedNo
-	 */
+/**
+ * testIsActionMappedNo
+ */
 	public function testIsActionMappedNo() {
 		$result = $this->Crud->isActionMapped('puppies');
 		$this->assertFalse($result);
@@ -240,11 +280,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertFalse($result);
 	}
 
-	/**
-	 * testGetIdFromRequest
-	 *
-	 * Check that numeric and uuids are returned
-	 */
+/**
+ * testGetIdFromRequest
+ *
+ * Check that numeric and uuids are returned
+ */
 	public function testGetIdFromRequest() {
 		$this->request->params['pass'][0] = '1';
 		$id = $this->Crud->getIdFromRequest();
@@ -259,11 +299,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertSame('12345678-1234-1234-1234-123456789012', $id);
 	}
 
-	/**
-	 * testGetIdFromRequestEmpty
-	 *
-	 * None of these values should be returned
-	 */
+/**
+ * testGetIdFromRequestEmpty
+ *
+ * None of these values should be returned
+ */
 	public function testGetIdFromRequestEmpty() {
 		$id = $this->Crud->getIdFromRequest();
 		$this->assertNull($id);
@@ -281,11 +321,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertNull($id);
 	}
 
-	/**
-	 * testAddActionGet
-	 *
-	 * Add should render the form template
-	 */
+/**
+ * testAddActionGet
+ *
+ * Add should render the form template
+ */
 	public function testAddActionGet() {
 		$this->controller
 			->expects($this->once())
@@ -298,13 +338,13 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->Crud->executeAction('add', array($id));
 	}
 
-	/**
-	 * testAddActionPost
-	 *
-	 * Create a post, check that the created row looks about right.
-	 * Check that there are 4 rows after calling (3 fixtures and one
-	 * new row)
-	 */
+/**
+ * testAddActionPost
+ *
+ * Create a post, check that the created row looks about right.
+ * Check that there are 4 rows after calling (3 fixtures and one
+ * new row)
+ */
 	public function testAddActionPost() {
 		$this->controller
 			->expects($this->never())
@@ -336,13 +376,13 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertNotSame(false, $index, "There was no Crud.afterSave event triggered");
 	}
 
-	/**
-	 * testDeleteActionExists
-	 *
-	 * Add a dummy detector to the request object so it says it's a delete request
-	 * Check the deleted row doesn't exist after calling delete and that the
-	 * before + after delete events are triggered
-	 */
+/**
+ * testDeleteActionExists
+ *
+ * Add a dummy detector to the request object so it says it's a delete request
+ * Check the deleted row doesn't exist after calling delete and that the
+ * before + after delete events are triggered
+ */
 	public function testDeleteActionExists() {
 		$this->controller
 			->expects($this->never())
@@ -368,12 +408,12 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertNotSame(false, $index, "There was no Crud.afterDelete event triggered");
 	}
 
-	/**
-	 * testDeleteActionDoesNotExists
-	 *
-	 * If you try to delete something that doesn't exist - it should issue a recordNotFound event
-	 * TODO it should /not/ issue a beforeDelete event but it currently does
-	 */
+/**
+ * testDeleteActionDoesNotExists
+ *
+ * If you try to delete something that doesn't exist - it should issue a recordNotFound event
+ * TODO it should /not/ issue a beforeDelete event but it currently does
+ */
 	public function testDeleteActionDoesNotExists() {
 		$this->controller
 			->expects($this->never())
@@ -399,11 +439,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertNotSame(false, $index, "A none-existent row did not trigger a Crud.recordNotFount event");
 	}
 
-	/**
-	 * testEditActionGet
-	 *
-	 * Do we get a call to render the form template?
-	 */
+/**
+ * testEditActionGet
+ *
+ * Do we get a call to render the form template?
+ */
 	public function testEditActionGet() {
 		$this->controller
 			->expects($this->once())
@@ -416,12 +456,12 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->Crud->executeAction('edit', array($id));
 	}
 
-	/**
-	 * testEditActionPost
-	 *
-	 * Simulating submitting a post form which just changes the title of the model
-	 * to the name of the method. Check the update is persisted to the db
-	 */
+/**
+ * testEditActionPost
+ *
+ * Simulating submitting a post form which just changes the title of the model
+ * to the name of the method. Check the update is persisted to the db
+ */
 	public function testEditActionPost() {
 		$this->controller
 			->expects($this->never())
@@ -453,11 +493,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertNotSame(false, $index, "There was no Crud.afterSave event triggered");
 	}
 
-	/**
-	 * testViewAction
-	 *
-	 * Make sure that there is a call to render the view template
-	 */
+/**
+ * testViewAction
+ *
+ * Make sure that there is a call to render the view template
+ */
 	public function testViewAction() {
 		$this->controller
 			->expects($this->once())
@@ -470,11 +510,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->Crud->executeAction('view', array($id));
 	}
 
-	/**
-	 * testIndexAction
-	 *
-	 * Make sure that there is a call to render the index template
-	 */
+/**
+ * testIndexAction
+ *
+ * Make sure that there is a call to render the index template
+ */
 	public function testIndexAction() {
 		$this->controller
 			->expects($this->once())
@@ -491,19 +531,19 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertNotSame(false, $index, "There was no Crud.afterPaginate event triggered");
 	}
 
-	/**
-	 * testRedirect
-	 *
-	 * TODO this test isn't testing anything
-	 */
+/**
+ * testRedirect
+ *
+ * TODO this test isn't testing anything
+ */
 	public function testRedirect() {
 		$subject = $this->Crud->testGetSubject();
 		$this->Crud->testRedirect($subject);
 	}
 
-	/**
-	 * testvalidateIdIntValid
-	 */
+/**
+ * testvalidateIdIntValid
+ */
 	public function testvalidateIdIntValid() {
 		$this->controller->expects($this->never())->method('redirect');
 
@@ -514,9 +554,9 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertTrue($return, "Expected id $id to be accepted, it was rejected");
 	}
 
-	/**
-	 * testvalidateIdIntInvalid
-	 */
+/**
+ * testvalidateIdIntInvalid
+ */
 	public function testvalidateIdIntInvalid() {
 		$this->controller->expects($this->once())->method('redirect');
 
@@ -527,9 +567,9 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertSame(get_class($return), 'CakeResponse');
 	}
 
-	/**
-	 * testvalidateIdUUIDValid
-	 */
+/**
+ * testvalidateIdUUIDValid
+ */
 	public function testvalidateIdUUIDValid() {
 		$this->controller->expects($this->never())->method('redirect');
 
@@ -538,9 +578,9 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertTrue($return, "Expected id $id to be accepted, it was rejected");
 	}
 
-	/**
-	 * testvalidateIdUUIDInvalid
-	 */
+/**
+ * testvalidateIdUUIDInvalid
+ */
 	public function testvalidateIdUUIDInvalid() {
 		$this->controller->expects($this->once())->method('redirect');
 
@@ -549,13 +589,13 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertSame(get_class($return), 'CakeResponse');
 	}
 
-	/**
-	 * Tests on method for beforePaginateEvent
-	 *
-	 * @expectedException RuntimeException
-	 * @expectedExceptionMessage Crud.beforePaginate called
-	 * @return void
-	 **/
+/**
+ * Tests on method for beforePaginateEvent
+ *
+ * @expectedException RuntimeException
+ * @expectedExceptionMessage Crud.beforePaginate called
+ * @return void
+ **/
 	public function testOnBeforePaginateString() {
 		$this->Crud->on('beforePaginate', function($event) {
 			throw new RuntimeException($event->name() . ' called');
@@ -563,13 +603,13 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->Crud->executeAction('index');
 	}
 
-	/**
-	 * Tests on method for afterPaginate
-	 *
-	 * @expectedException RuntimeException
-	 * @expectedExceptionMessage Crud.afterPaginate called
-	 * @return void
-	 **/
+/**
+ * Tests on method for afterPaginate
+ *
+ * @expectedException RuntimeException
+ * @expectedExceptionMessage Crud.afterPaginate called
+ * @return void
+ **/
 	public function testOnAfterPaginateString() {
 		$this->Crud->on('afterPaginate', function($event) {
 			throw new RuntimeException($event->name() . ' called');
@@ -577,13 +617,13 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->Crud->executeAction('index');
 	}
 
-	/**
-	 * Tests on method for afterPaginate with full event name
-	 *
-	 * @expectedException RuntimeException
-	 * @expectedExceptionMessage Crud.afterPaginate called
-	 * @return void
-	 **/
+/**
+ * Tests on method for afterPaginate with full event name
+ *
+ * @expectedException RuntimeException
+ * @expectedExceptionMessage Crud.afterPaginate called
+ * @return void
+ **/
 	public function testOnAfterPaginateFullNameString() {
 		$this->Crud->on('Crud.afterPaginate', function($event) {
 			throw new RuntimeException($event->name() . ' called');
@@ -591,11 +631,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->Crud->executeAction('index');
 	}
 
-	/**
-	 * Test on method for on() with multiple events
-	 *
-	 * @return void
-	 **/
+/**
+ * Test on method for on() with multiple events
+ *
+ * @return void
+ **/
 	public function testOnOnWithArraySimple() {
 		$result = array();
 		$this->Crud->on(array('beforePaginate', 'beforeRender'), function($event) use (&$result) {
@@ -607,11 +647,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertSame($expected, $result);
 	}
 
-	/**
-	 * Test on method for on() with multiple events
-	 *
-	 * @return void
-	 **/
+/**
+ * Test on method for on() with multiple events
+ *
+ * @return void
+ **/
 	public function testOnOnWithArrayComplex() {
 		$result = array();
 		$this->Crud->on(array('Crud.beforePaginate', 'beforeRender'), function($event) use (&$result) {
@@ -623,11 +663,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertSame($expected, $result);
 	}
 
-	/**
-	 * Tests that by default Crud component will fetch related associations on add and edit actions
-	 *
-	 * @return void
-	 */
+/**
+ * Tests that by default Crud component will fetch related associations on add and edit actions
+ *
+ * @return void
+ */
 	public function testFetchRelatedDefaults() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
 		$expectedTags = array(1 => '1', 2 => '2', 3 => '3');
@@ -657,11 +697,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertEquals($expectedAuthors, $vars['authors']);
 	}
 
-	/**
-	 * Tests that by default Crud can select some models for each action to fetch related lists
-	 *
-	 * @return void
-	 */
+/**
+ * Tests that by default Crud can select some models for each action to fetch related lists
+ *
+ * @return void
+ */
 	public function testFetchRelatedMapped() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
 		$this->Crud->settings['relatedLists'] = array(
@@ -681,12 +721,12 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertFalse(isset($vars['tags']));
 	}
 
-	/**
-	 * Tests that by default Crud can select some models for each action to fetch related lists
-	 * using mapRelatedList
-	 *
-	 * @return void
-	 */
+/**
+ * Tests that by default Crud can select some models for each action to fetch related lists
+ * using mapRelatedList
+ *
+ * @return void
+ */
 	public function testFetchRelatedMappedMethod() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
 		$this->Crud->mapRelatedList(array('Tag'), 'add');
@@ -704,12 +744,12 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertFalse(isset($vars['authors']));
 	}
 
-	/**
-	 * Tests that by default Crud can select some models for each action to fetch related lists
-	 * using mapRelatedList with an 'all' default
-	 *
-	 * @return void
-	 */
+/**
+ * Tests that by default Crud can select some models for each action to fetch related lists
+ * using mapRelatedList with an 'all' default
+ *
+ * @return void
+ */
 	public function testFetchRelatedMappedAll() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
 		$this->Crud->mapRelatedList(array('Tag'), 'default');
@@ -721,11 +761,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertFalse(isset($vars['authors']));
 	}
 
-	/**
-	 * Tests that all default for mapped lists will not apply to not enabled actions
-	 *
-	 * @return void
-	 */
+/**
+ * Tests that all default for mapped lists will not apply to not enabled actions
+ *
+ * @return void
+ */
 	public function testFetchRelatedMappedAllNotEnabled() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
 		$this->Crud->mapRelatedList(array('Tag'));
@@ -736,12 +776,12 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertFalse(isset($vars['authors']));
 	}
 
-	/**
-	 * Tests that mammpe actions are not used if you define specific related models
-	 * for the mapped controller action
-	 *
-	 * @return void
-	 */
+/**
+ * Tests that mammpe actions are not used if you define specific related models
+ * for the mapped controller action
+ *
+ * @return void
+ */
 	public function testFetchRelatedSpecificActionMapped() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
 		$this->Crud->mapRelatedList(array('Tag'), 'admin_add');
@@ -753,11 +793,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertFalse(isset($vars['authors']));
 	}
 
-	/**
-	 * Tests beforeListRelated and afterListRelated events
-	 *
-	 * @return void
-	 */
+/**
+ * Tests beforeListRelated and afterListRelated events
+ *
+ * @return void
+ */
 	public function testFetchRelatedEvents() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
 		$this->Crud->mapRelatedList(array('Tag'), 'default');
@@ -781,11 +821,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertEquals($expectedTags, $vars['labels']);
 	}
 
-	/**
-	 * Test mapRelatedList with default config to 'false' for the add action
-	 *
-	 * @return void
-	 */
+/**
+ * Test mapRelatedList with default config to 'false' for the add action
+ *
+ * @return void
+ */
 	public function testRelatedModelsDefaultFalseAdd() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
 
@@ -798,11 +838,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertTrue(empty($vars['authors']));
 	}
 
-	/**
-	 * Test mapRelatedList with default config to 'false' for the edit action
-	 *
-	 * @return void
-	 */
+/**
+ * Test mapRelatedList with default config to 'false' for the edit action
+ *
+ * @return void
+ */
 	public function testRelatedModelsDefaultFalseEdit() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
 
@@ -815,11 +855,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertTrue(empty($vars['authors']));
 	}
 
-	/**
-	* Test mapRelatedList with default config to 'true' for the add action
-	*
-	* @return void
-	*/
+/**
+ * Test mapRelatedList with default config to 'true' for the add action
+ *
+ * @return void
+ */
 	public function testRelatedModelsDefaultTrueAdd() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
 
@@ -832,11 +872,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertEquals($expectedVars, $vars);
 	}
 
-	/**
-	* Test mapRelatedList with default config to 'true' for the edit action
-	*
-	* @return void
-	*/
+/**
+ * Test mapRelatedList with default config to 'true' for the edit action
+ *
+ * @return void
+ */
 	public function testRelatedModelsDefaultTrueEdit() {
 		$this->Crud->settings['validateId'] = 'integer';
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')), true);
@@ -851,11 +891,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertEquals($expectedVars, $vars);
 	}
 
-	/**
-	* Test mapRelatedList with an action mapped using mapAction
-	*
-	* @return void
-	*/
+/**
+ * Test mapRelatedList with an action mapped using mapAction
+ *
+ * @return void
+ */
 	public function testRelatedModelsWithAliasMappedLookup() {
 		$this->Crud->settings['validateId'] = 'integer';
 		$this->model->bindModel(array('belongsTo' => array('Author')));
@@ -871,11 +911,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertEquals($expectedVars, $vars);
 	}
 
-	/**
-	* Test the default settings match the expected
-	*
-	* @return void
-	*/
+/**
+ * Test the default settings match the expected
+ *
+ * @return void
+ */
 	public function testCustomFindDefaults() {
 		$this->assertEquals('all', $this->Crud->testGetFindMethod('index'));
 		$this->assertEquals(null, $this->Crud->testGetFindMethod('add'));
@@ -888,11 +928,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertEquals('count', $this->Crud->testGetFindMethod('admin_delete'));
 	}
 
-	/**
-	* Test if custom finds are changed when re-mapped
-	*
-	* @return void
-	*/
+/**
+ * Test if custom finds are changed when re-mapped
+ *
+ * @return void
+ */
 	public function testCustomFindChanged() {
 		$this->Crud->mapFindMethod('index', 'custom_find');
 		$this->assertEquals('custom_find', $this->Crud->testGetFindMethod('index'));
@@ -901,11 +941,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertEquals('all', $this->Crud->testGetFindMethod('index'));
 	}
 
-	/**
-	* Test that the default pagination settings match, bot for 2.3 and < 2.2
-	*
-	* @return void
-	*/
+/**
+ * Test that the default pagination settings match, bot for 2.3 and < 2.2
+ *
+ * @return void
+ */
 	public function testCustomFindPaginationDefaultNoAlias() {
 		$this->Crud->executeAction('index');
 
@@ -913,11 +953,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertEquals('all', $this->controller->paginate['findType']);
 	}
 
-	/**
-	* Test that the default pagination settings match, bot for 2.3 and < 2.2
-	*
-	* @return void
-	*/
+/**
+ * Test that the default pagination settings match, bot for 2.3 and < 2.2
+ *
+ * @return void
+ */
 	public function testCustomFindPaginationDefaultWithAlias() {
 		$this->controller->paginate = array(
 			'CrudExample' => array(
@@ -936,11 +976,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertEquals(array('order' => array('name' => 'desc'), 0 => 'all', 'findType' => 'all'), $this->controller->paginate['CrudExample']);
 	}
 
-	/**
-	* Test if custom pagination works - for published posts
-	*
-	* @return void
-	*/
+/**
+ * Test if custom pagination works - for published posts
+ *
+ * @return void
+ */
 	public function testCustomFindPaginationCustomPublished() {
 		$this->Crud->mapFindMethod('index', 'published');
 		$this->Crud->executeAction('index');
@@ -949,11 +989,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertEquals(3, sizeof($this->controller->viewVars['items']));
 	}
 
-	/**
-	* Test if custom pagination works - for unpublished posts
-	*
-	* @return void
-	*/
+/**
+ * Test if custom pagination works - for unpublished posts
+ *
+ * @return void
+ */
 	public function testCustomFindPaginationCustomUnpublished() {
 		$this->Crud->mapFindMethod('index', 'unpublished');
 		$this->Crud->executeAction('index');
@@ -962,12 +1002,12 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertEquals(0, sizeof($this->controller->viewVars['items']));
 	}
 
-	/**
-	* Test if custom pagination works when findType is changed from Controller
-	* paginate property
-	*
-	* @return void
-	*/
+/**
+ * Test if custom pagination works when findType is changed from Controller
+ * paginate property
+ *
+ * @return void
+ */
 	public function testCustomFindPaginationWithControllerFindMethod() {
 		$this->controller->paginate = array('findType' => 'unpublished');
 		$this->Crud->executeAction('index');
@@ -976,11 +1016,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertEquals(0, sizeof($this->controller->viewVars['items']));
 	}
 
-	/**
-	* Test if custom finders work in edit
-	*
-	* @return void
-	*/
+/**
+ * Test if custom finders work in edit
+ *
+ * @return void
+ */
 	public function testCustomFindEditPublished() {
 		$this->Crud->settings['validateId'] = 'integer';
 		$this->Crud->mapFindMethod('edit', 'firstPublished');
@@ -991,11 +1031,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertSame('2', $this->request->data['CrudExample']['id']);
 	}
 
-	/**
-	* Test if custom finders work in edit - part two
-	*
-	* @return void
-	*/
+/**
+ * Test if custom finders work in edit - part two
+ *
+ * @return void
+ */
 	public function testCustomFindEditUnpublished() {
 		$this->controller->expects($this->once())->method('redirect');
 
@@ -1010,11 +1050,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertNotSame(false, $index, "There was no Crud.recordNotFound event triggered");
 	}
 
-	/**
-	* Test if custom finders work in delete
-	*
-	* @return void
-	*/
+/**
+ * Test if custom finders work in delete
+ *
+ * @return void
+ */
 	public function testCustomFindDeletePublished() {
 		$this->controller->request->addDetector('delete', array(
 			'callback' => function() { return true; }
@@ -1039,11 +1079,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertEquals(2, $count);
 	}
 
-	/**
-	* Test if custom finders work in delete - part 2
-	*
-	* @return void
-	*/
+/**
+ * Test if custom finders work in delete - part 2
+ *
+ * @return void
+ */
 	public function testCustomFindDeleteUnpublished() {
 		$this->controller->request->addDetector('delete', array(
 			'callback' => function() { return true; }
@@ -1068,11 +1108,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertEquals(3, $count);
 	}
 
-	/**
-	* Test if custom finders work in view
-	*
-	* @return void
-	*/
+/**
+ * Test if custom finders work in view
+ *
+ * @return void
+ */
 	public function testCustomFindViewPublished() {
 		$this->Crud->settings['validateId'] = 'integer';
 		$this->Crud->mapFindMethod('view', 'firstPublished');
@@ -1090,11 +1130,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertNotSame(false, $index, "There was no Crud.afterDelete event triggered");
 	}
 
-	/**
-	* Test if custom finders work in view - part 2
-	*
-	* @return void
-	*/
+/**
+ * Test if custom finders work in view - part 2
+ *
+ * @return void
+ */
 	public function testCustomFindViewUnpublished() {
 		$this->Crud->settings['validateId'] = 'integer';
 		$this->Crud->mapFindMethod('view', 'firstUnpublished');
@@ -1106,21 +1146,21 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertNotSame(false, $index, "There was no Crud.recordNotFound event triggered");
 	}
 
-	/**
-	* Test if crud complains about unmapped actions
-	*
-	* @expectedException RuntimeException
-	* @return void
-	*/
+/**
+ * Test if crud complains about unmapped actions
+ *
+ * @expectedException RuntimeException
+ * @return void
+ */
 	public function testCrudWillComplainAboutUnmappedAction() {
 		$this->Crud->executeAction('show_all');
 	}
 
-	/**
-	* Test if mapActionView with array yields the expected result
-	*
-	* @return void
-	*/
+/**
+ * Test if mapActionView with array yields the expected result
+ *
+ * @return void
+ */
 	public function testMapActionViewWithArrayNewAction() {
 		$this->controller
 			->expects($this->once())
@@ -1133,11 +1173,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->Crud->executeAction('show_all');
 	}
 
-	/**
-	* Test if mapActionView with array yields the expected result
-	*
-	* @return void
-	*/
+/**
+ * Test if mapActionView with array yields the expected result
+ *
+ * @return void
+ */
 	public function testMapActionViewWithArrayIndexAction() {
 		$this->controller
 			->expects($this->once())
@@ -1149,11 +1189,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->Crud->executeAction('index');
 	}
 
-	/**
-	* Test if enableRelatedList works with a normal Crud action
-	*
-	* @return void
-	*/
+/**
+ * Test if enableRelatedList works with a normal Crud action
+ *
+ * @return void
+ */
 	public function testEnableRelatedListStringForIndexAction() {
 		$this->Crud->mapRelatedList('Tag', 'default');
 		$this->Crud->enableRelatedList('index');
@@ -1171,11 +1211,11 @@ class CrudComponentTestCase extends CakeTestCase {
 		$this->assertSame(3, sizeof($this->controller->viewVars['items']));
 	}
 
-	/**
-	* Test if enableRelatedList works with a normal Crud action
-	*
-	* @return void
-	*/
+/**
+ * Test if enableRelatedList works with a normal Crud action
+ *
+ * @return void
+ */
 	public function testEnableRelatedListArrayForIndexAction() {
 		$this->Crud->mapRelatedList(array('Tag', 'Author'), 'default');
 		$this->Crud->enableRelatedList(array('index'));
@@ -1288,5 +1328,183 @@ class CrudComponentTestCase extends CakeTestCase {
 
 		$ids = Hash::extract($this->controller->viewVars['items'], '{n}.CrudExample.id');
 		$this->assertEquals(array(1,2,3), $ids);
+	}
+
+/**
+ * testAddActionTranslatedBaseline
+ *
+ * @return void
+ */
+	public function testAddActionTranslatedBaseline() {
+		Router::connect("/:action", array('controller' => 'crud_examples'));
+
+		$this->Controller = $this->generate(
+			'CrudExamples',
+			array(
+				'methods' => array('header', 'redirect', 'render'),
+				'components' => array('Session'),
+			)
+		);
+
+		$this->Controller->Session
+			->expects($this->once())
+			->method('setFlash')
+			->with('Successfully created CrudExample');
+
+		$this->testAction('/add', array(
+			'data' => array(
+				'CrudExample' => array(
+					'title' => __METHOD__,
+					'description' => __METHOD__,
+					'author_id' => 0
+				)
+			)
+		));
+	}
+
+/**
+ * testAddActionTranslatedChangedName
+ *
+ * @return void
+ */
+	public function testAddActionTranslatedChangedName() {
+		Router::connect("/:action", array('controller' => 'crud_examples'));
+
+		$this->Controller = $this->generate(
+			'CrudExamples',
+			array(
+				'methods' => array('header', 'redirect', 'render'),
+				'components' => array('Session'),
+			)
+		);
+		$this->Controller->Crud->settings['translations']['name'] = 'Thingy';
+
+		$this->Controller->Session
+			->expects($this->once())
+			->method('setFlash')
+			->with('Successfully created Thingy');
+
+		$this->testAction('/add', array(
+			'data' => array(
+				'CrudExample' => array(
+					'title' => __METHOD__,
+					'description' => __METHOD__,
+					'author_id' => 0
+				)
+			)
+		));
+	}
+
+/**
+ * testAddActionTranslatedChangedName
+ *
+ * @return void
+ */
+	public function testAddActionTranslatedChangedMessage() {
+		Router::connect("/:action", array('controller' => 'crud_examples'));
+
+		$this->Controller = $this->generate(
+			'CrudExamples',
+			array(
+				'methods' => array('header', 'redirect', 'render'),
+				'components' => array('Session'),
+			)
+		);
+		$this->Controller->Crud->settings['translations']['create']['success']['message'] = "Yay!";
+
+		$this->Controller->Session
+			->expects($this->once())
+			->method('setFlash')
+			->with('Yay!');
+
+		$this->testAction('/add', array(
+			'data' => array(
+				'CrudExample' => array(
+					'title' => __METHOD__,
+					'description' => __METHOD__,
+					'author_id' => 0
+				)
+			)
+		));
+	}
+
+/**
+ * testAddActionTranslated
+ *
+ * @return void
+ */
+	public function testAddActionTranslated() {
+		$this->skipIf(!class_exists('Translation'), 'Test depends on the Translations plugin');
+
+		$translatedMessage = 'El ejemplo ha sido creado con exito';
+		Translation::update('Successfully created CrudExample', $translatedMessage, array('domain' => 'crud'));
+		$this->assertSame($translatedMessage, __d('crud', 'Successfully created CrudExample'));
+
+		Router::connect("/:action", array('controller' => 'crud_examples'));
+
+		$this->Controller = $this->generate(
+			'CrudExamples',
+			array(
+				'methods' => array('header', 'redirect', 'render'),
+				'components' => array('Session'),
+			)
+		);
+
+		$this->Controller->Session
+			->expects($this->once())
+			->method('setFlash')
+			->with($translatedMessage);
+
+		$this->testAction('/add', array(
+			'data' => array(
+				'CrudExample' => array(
+					'title' => __METHOD__,
+					'description' => __METHOD__,
+					'author_id' => 0
+				)
+			)
+		));
+	}
+
+/**
+ * testAddActionTranslatedDefaultDomain
+ *
+ * Simulate the controller's components array having defined the default domain for crud messages
+ * Verify that that is the default domain is used for the crud translations
+ *
+ * @return void
+ */
+	public function testAddActionTranslatedDefaultDomain() {
+		$this->skipIf(!class_exists('Translation'), 'Test depends on the Translations plugin');
+
+		$translatedMessage = 'eksemplet blev oprettet med succes';
+		Translation::update('Successfully created CrudExample', $translatedMessage);
+		$this->assertSame($translatedMessage, __d('default', 'Successfully created CrudExample'));
+
+		Router::connect("/:action", array('controller' => 'crud_examples'));
+
+		CrudExamplesController::$componentsArray['Crud.Crud']['translations']['domain'] = 'default';
+		$this->Controller = $this->generate(
+			'CrudExamples',
+			array(
+				'methods' => array('header', 'redirect', 'render'),
+				'components' => array('Session'),
+			)
+		);
+
+		$this->Controller->Session
+			->expects($this->once())
+			->method('setFlash')
+			->with($translatedMessage);
+
+		$this->testAction('/add', array(
+			'data' => array(
+				'CrudExample' => array(
+					'title' => __METHOD__,
+					'description' => __METHOD__,
+					'author_id' => 0
+				)
+			)
+		));
 	}
 }
