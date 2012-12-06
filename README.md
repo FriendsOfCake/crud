@@ -256,19 +256,9 @@ public $components=array(
 );
 ```
 
-In this case, it will assume that all the IDs of your models are made with UUID.
+Both `UUID` & `numerically indexed` are supported.
 
-If they are `numerically indexed`, please add the following setting:
-
-```php
-public $components = array(
-    // Enable CRUD actions
-    'Crud.Crud' => array(
-        'actions' => array('index', 'add', 'edit', 'view', 'delete'),
-        'validateId' => 'integer'
-    )
-);
-```
+Crud will read the schema, for the primaryKey and detect the type based on that.
 
 In the `Index` views:
 
