@@ -100,28 +100,6 @@ class CrudComponent extends Component {
 	);
 
 /**
- * A map of the controller action and what CRUD action we should call
- *
- * By default it supports non-prefix and admin_ prefixed routes
- *
- * @platform
- * @var array
- */
-	protected $_actionMap = array(
-		'index'			=> 'index',
-		'add'			=> 'add',
-		'edit'			=> 'edit',
-		'view'			=> 'view',
-		'delete'		=> 'delete',
-
-		'admin_index'	=> 'index',
-		'admin_add'		=> 'add',
-		'admin_edit'	=> 'edit',
-		'admin_view'	=> 'view',
-		'admin_delete'	=> 'delete'
-	);
-
-/**
  * A map of the controller action and the view to render
  *
  * By default it supports non-prefix and admin_ prefixed routes
@@ -166,7 +144,6 @@ class CrudComponent extends Component {
  *
  * `actions` key should contain an array of controller methods this component should offer
  * implementation for.
- *
  * `relatedList` is a map of the controller action and the whether it should fetch associations lists
  * to be used in select boxes. An array as value means it is enabled and represent the list
  * of model associations to be fetched
@@ -177,11 +154,23 @@ class CrudComponent extends Component {
  */
 	public $settings = array(
 		'actions' => array(),
+		'translations' => array(),
 		'relatedLists' => array(
 			'add' => true,
 			'edit' => true
 		),
-		'translations' => array(
+		'actionMap' => array(
+			'index'	=> 'index',
+			'add' => 'add',
+			'edit' => 'edit',
+			'view' => 'view',
+			'delete' => 'delete',
+
+			'admin_index' => 'index',
+			'admin_add' => 'add',
+			'admin_edit' => 'edit',
+			'admin_view' => 'view',
+			'admin_delete' => 'delete'
 		)
 	);
 
@@ -248,10 +237,12 @@ class CrudComponent extends Component {
 		// Make sure to update internal action property
 		$this->_action = $action;
 
+		// Trigger init functionality
 		$this->trigger('init');
 
 		// Test if action is mapped
-		if (empty($this->_actionMap[$action])) {
+		$key = sprintf('actionMap.%s', $action);
+		if (!$this->config($key)) {
 			throw new RuntimeException(sprintf('Action "%s" has not been mapped', $action));
 		}
 
@@ -269,8 +260,9 @@ class CrudComponent extends Component {
 				$this->_controller->getEventManager()->attach($this->_events['relatedModels']);
 			}
 
+			$actionToInvoke = $this->config($key);
 			// Execute the default action, inside this component
-			$response = call_user_func_array(array($this, '_' . $this->_actionMap[$action] . 'Action'), $args);
+			$response = call_user_func_array(array($this, '_' . $actionToInvoke . 'Action'), $args);
 			if ($response instanceof CakeResponse) {
 				return $response;
 			}
@@ -387,7 +379,7 @@ class CrudComponent extends Component {
  * @return void
  */
 	public function mapAction($action, $type, $enable = true) {
-		$this->_actionMap[$action] = $type;
+		$this->config(sprintf('actionMap.%s', $action), $type);
 		if ($enable) {
 			$this->enableAction($action);
 		}
@@ -520,9 +512,9 @@ class CrudComponent extends Component {
  * @return array
  */
 	public function relatedModels($action) {
-		// If we don't have any related configuration, look up its alias in _actionMap
+		// If we don't have any related configuration, look up its alias in the actionMap
 		if (empty($this->settings['relatedLists'][$action]) && $this->isActionMapped($action)) {
-			$action = $this->_actionMap[$action];
+			$action = $this->config(sprintf('actionMap.%s', $action));
 		}
 
 		// If current action isn't configured
