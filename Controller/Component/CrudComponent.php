@@ -203,9 +203,9 @@ class CrudComponent extends Component {
 		$this->_controller->methods = array_keys(array_flip($this->_controller->methods) + array_flip($this->settings['actions']));
 
 		// Create some easy accessible class properties
-		$this->_action		= $this->_controller->request->action;
-		$this->_request		= $this->_controller->request;
-		$this->_eventManager= $this->_controller->getEventManager();
+		$this->_action = $this->_controller->request->action;
+		$this->_request = $this->_controller->request;
+		$this->_eventManager = $this->_controller->getEventManager();
 
 		if (!isset($this->_controller->dispatchComponents)) {
 			$this->_controller->dispatchComponents = array();
