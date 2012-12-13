@@ -86,19 +86,39 @@ class TranslationsEvent extends CrudBaseEvent {
 	);
 
 /**
- * Constructor
+ * Crud Component reference
  *
- * Initializes default translations and merge them with
- * user supplied user configurations
- *
- * @param array $config
- * @return void
+ * @var CrudComponent
  */
-	public function __construct($config = array()) {
+	protected $_crud;
+
+/**
+ * Crud Event subject
+ *
+ * @var CrudEventSubject
+ */
+	protected $_subject;
+
+	/**
+	 * Class constructor
+	 *
+	 * @param string $prefix CRUD component events name prefix
+	 * @param array $models List of models to be fetched in beforeRenderEvent
+	 * @return void
+	 */
+	public function __construct(CrudEventSubject $subject) {
+		$this->_subject = $subject;
 		$this->_config = $this->_defaults;
-		if ($config) {
-			$this->config($config);
+
+		if (!isset($subject->crud)) {
+			return;
 		}
+
+		$this->_crud = $subject->crud;
+		if ($translations = $this->_crud->config('translations')) {
+			$this->config($translations);
+		}
+
 	}
 
 /**
