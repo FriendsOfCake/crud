@@ -102,8 +102,9 @@ class CrudComponent extends Component {
 /**
  * Components settings.
  *
- * `actions` key should contain an array of controller methods this component should offer
- * implementation for.
+ * `actions` contains an array of controller methods this component should offer implementation for.
+ * The actions is used for actionMap, viewMap and findMethodMap to change behavior of CrudComponent
+ * By default no actions are enabled
  *
  * `translations` is the config for the translations Event, responsible for the text used in flash messages
  * see TranslationsEvent::$_defaults the full list of options
