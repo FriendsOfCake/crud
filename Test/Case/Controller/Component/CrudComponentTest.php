@@ -598,7 +598,7 @@ class CrudComponentTestCase extends ControllerTestCase {
  * @expectedException RuntimeException
  * @expectedExceptionMessage Crud.beforePaginate called
  * @return void
- **/
+ */
 	public function testOnBeforePaginateString() {
 		$this->Crud->on('beforePaginate', function($event) {
 			throw new RuntimeException($event->name() . ' called');
@@ -612,7 +612,7 @@ class CrudComponentTestCase extends ControllerTestCase {
  * @expectedException RuntimeException
  * @expectedExceptionMessage Crud.afterPaginate called
  * @return void
- **/
+ */
 	public function testOnAfterPaginateString() {
 		$this->Crud->on('afterPaginate', function($event) {
 			throw new RuntimeException($event->name() . ' called');
@@ -626,7 +626,7 @@ class CrudComponentTestCase extends ControllerTestCase {
  * @expectedException RuntimeException
  * @expectedExceptionMessage Crud.afterPaginate called
  * @return void
- **/
+ */
 	public function testOnAfterPaginateFullNameString() {
 		$this->Crud->on('Crud.afterPaginate', function($event) {
 			throw new RuntimeException($event->name() . ' called');
@@ -638,7 +638,7 @@ class CrudComponentTestCase extends ControllerTestCase {
  * Test on method for on() with multiple events
  *
  * @return void
- **/
+ */
 	public function testOnOnWithArraySimple() {
 		$result = array();
 		$this->Crud->on(array('beforePaginate', 'beforeRender'), function($event) use (&$result) {
@@ -654,7 +654,7 @@ class CrudComponentTestCase extends ControllerTestCase {
  * Test on method for on() with multiple events
  *
  * @return void
- **/
+ */
 	public function testOnOnWithArrayComplex() {
 		$result = array();
 		$this->Crud->on(array('Crud.beforePaginate', 'beforeRender'), function($event) use (&$result) {

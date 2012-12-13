@@ -20,7 +20,6 @@ class CrudComponent extends Component {
 /**
  * Reference to a Session component
  *
- * @cakephp
  * @var array
  */
 	public $components = array('Session');
@@ -28,7 +27,6 @@ class CrudComponent extends Component {
 /**
  * The current controller action
  *
- * @platform
  * @var string
  */
 	protected $_action;
@@ -36,7 +34,6 @@ class CrudComponent extends Component {
 /**
  * Reference to the current controller
  *
- * @platform
  * @var Controller
  */
 	protected $_controller;
@@ -44,7 +41,6 @@ class CrudComponent extends Component {
 /**
  * Reference to the current request
  *
- * @platform
  * @var CakeRequest
  */
 	protected $_request;
@@ -52,7 +48,6 @@ class CrudComponent extends Component {
 /**
  * Reference to the current event manager
  *
- * @platform
  * @var CakeEventManager
  */
 	protected $_eventManager;
@@ -60,7 +55,6 @@ class CrudComponent extends Component {
 /**
  * Cached property for Controller::modelClass
  *
- * @platform
  * @var string
  */
 	protected $_modelName;
@@ -68,7 +62,6 @@ class CrudComponent extends Component {
 /**
  * Cached propety for the current Controller::modelClass instance
  *
- * @platform
  * @var Model
  */
 	protected $_model;
@@ -206,9 +199,8 @@ class CrudComponent extends Component {
 /**
  * Execute a Crud action
  *
- * @platform
- * @param string $action		The CRUD action
- * @param array $arguments	List of arguments to pass to the CRUD action (Usually an ID to edit / delete)
+ * @param string $action The CRUD action
+ * @param array $arguments List of arguments to pass to the CRUD action (Usually an ID to edit / delete)
  * @return mixed void, or a CakeResponse object
  */
 	public function executeAction($action = null, $args = array()) {
@@ -314,8 +306,8 @@ class CrudComponent extends Component {
  * @return void
  */
 	protected function _setModelProperties() {
-		$this->_modelName	= $this->_controller->modelClass;
-		$this->_model		= $this->_controller->{$this->_modelName};
+		$this->_modelName = $this->_controller->modelClass;
+		$this->_model = $this->_controller->{$this->_modelName};
 	}
 
 /**
@@ -329,7 +321,7 @@ class CrudComponent extends Component {
  *
  * @throws Exception if any event listener return a CakeResponse object
  * @return CrudEventSubject
- **/
+ */
 	public function trigger($eventName, $data = array()) {
 		$subject = $data instanceof CrudEventSubject ? $data : $this->_getSubject($data);
 		$event = new CakeEvent($this->config('eventPrefix') . '.' . $eventName, $subject);
@@ -352,7 +344,6 @@ class CrudComponent extends Component {
 /**
  * Enable a CRUD action
  *
- * @platform
  * @param string $action The action to enable
  * @return void
  */
@@ -371,7 +362,6 @@ class CrudComponent extends Component {
 /**
  * Disable a CRUD action
  *
- * @platform
  * @param string $action The action to disable
  * @return void
  */
@@ -392,7 +382,6 @@ class CrudComponent extends Component {
  *
  * To map multiple action views in one go pass an array as first argument and no second argument
  *
- * @platform
  * @param string|array $action
  * @param string $view
  * @return void
@@ -438,7 +427,6 @@ class CrudComponent extends Component {
 /**
  * Map a controller action to a Model::find($method)
  *
- * @platform
  * @param string $action
  * @param strign $method
  * @return void
@@ -453,7 +441,7 @@ class CrudComponent extends Component {
  * @param string|array $events Name of the Crud Event you want to attach to controller
  * @param callback $callback callable method or closure to be executed on event
  * @return void
- **/
+ */
 	public function on($events, $callback) {
 		if (!is_array($events)) {
 			$events = array($events);
@@ -504,7 +492,6 @@ class CrudComponent extends Component {
 /**
  * Helper method to get the passed ID to an action
  *
- * @platform
  * @return string
  */
 	public function getIdFromRequest() {
@@ -567,7 +554,6 @@ class CrudComponent extends Component {
  *	- Crud.afterPaginate
  *	- Crud.beforeRender
  *
- * @platform
  * @param string $id
  * @return void
  */
@@ -632,7 +618,6 @@ class CrudComponent extends Component {
  *	- Crud.afterSave
  *	- Crud.beforeRender
  *
- * @platform
  * @param string $id
  * @return void
  */
@@ -666,7 +651,6 @@ class CrudComponent extends Component {
  *	- Crud.afterFind
  *	- Crud.beforeRender
  *
- * @platform
  * @param string $id
  * @return void
  */
@@ -720,7 +704,6 @@ class CrudComponent extends Component {
  *	- Crud.afterFind
  *	- Crud.beforeRender
  *
- * @platform
  * @param string $id
  * @return void
  */
@@ -769,7 +752,6 @@ class CrudComponent extends Component {
  *	- beforeDelete
  *	- afterDelete
  *
- * @platform
  * @param string $id
  * @return void
  */
@@ -902,4 +884,5 @@ class CrudComponent extends Component {
 		$this->_setFlash('error.invalid_id');
 		return $this->_redirect($subject, $this->_controller->referer());
 	}
+
 }

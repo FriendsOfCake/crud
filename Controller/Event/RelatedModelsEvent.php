@@ -7,7 +7,7 @@ App::uses('CakeEventListener', 'Event');
  * Implements beforeRender event listener to set related models' lists to
  * the view
  *
- **/
+ */
 class RelatedModelsEvent implements CakeEventListener {
 
 /**
