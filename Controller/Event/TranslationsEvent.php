@@ -99,13 +99,13 @@ class TranslationsEvent extends CrudBaseEvent {
  */
 	protected $_subject;
 
-	/**
-	 * Class constructor
-	 *
-	 * @param string $prefix CRUD component events name prefix
-	 * @param array $models List of models to be fetched in beforeRenderEvent
-	 * @return void
-	 */
+/**
+ * Class constructor
+ *
+ * @param string $prefix CRUD component events name prefix
+ * @param array $models List of models to be fetched in beforeRenderEvent
+ * @return void
+ */
 	public function __construct(CrudEventSubject $subject) {
 		$this->_subject = $subject;
 		$this->_config = $this->_defaults;
