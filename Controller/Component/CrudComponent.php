@@ -195,7 +195,7 @@ class CrudComponent extends Component {
  * @return void
  */
 	public function initialize(Controller $controller) {
-		if ($controller->name == 'CakeError') {
+		if ($controller->name === 'CakeError') {
 			return true;
 		}
 
