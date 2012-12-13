@@ -7,7 +7,7 @@ App::uses('CakeEventListener', 'Event');
  * the view
  *
  **/
-class RelatedModelsListener implements CakeEventListener {
+class RelatedModelsEvent implements CakeEventListener {
 
 /**
  * Crud Component reference
@@ -119,23 +119,23 @@ class RelatedModelsListener implements CakeEventListener {
 		return array_keys($this->_subject->model->getAssociated());
 	}
 
-	/**
-	 * List of events implemented by this class
-	 *
-	 * @return array
-	 */
+/**
+ * List of events implemented by this class
+ *
+ * @return array
+ */
 	public function implementedEvents() {
 		return array($this->_crud->config('eventPrefix') . '.beforeRender' => 'beforeRender');
 	}
 
-	/**
-	 * Fetches related models' list and sets them to a variable for the view
-	 * Lists are limited buy default to 200 items. Should you need more, attach
-	 * an event listener for `beforeListRelated` event to modify the query
-	 *
-	 * @param CakeEvent
-	 * @return void
-	 */
+/**
+ * Fetches related models' list and sets them to a variable for the view
+ * Lists are limited buy default to 200 items. Should you need more, attach
+ * an event listener for `beforeListRelated` event to modify the query
+ *
+ * @param CakeEvent
+ * @return void
+ */
 	public function beforeRender($event) {
 		$component = $event->subject->crud;
 		$controller = $event->subject->controller;
@@ -154,14 +154,14 @@ class RelatedModelsListener implements CakeEventListener {
 		}
 	}
 
-	/**
-	 * Returns model instance based on its name
-	 *
-	 * @param string $model name of the model
-	 * @param Model $controllerModel default model instance for controller
-	 * @param Controller $controller instance to do a first look on it
-	 * @return Model
-	 */
+/**
+ * Returns model instance based on its name
+ *
+ * @param string $model name of the model
+ * @param Model $controllerModel default model instance for controller
+ * @param Controller $controller instance to do a first look on it
+ * @return Model
+ */
 	protected function _getModelInstance($model, $controllerModel, $controller) {
 		if (isset($controllerModel->{$model})) {
 			return $controllerModel->{$model};

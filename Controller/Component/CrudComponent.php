@@ -154,7 +154,7 @@ class CrudComponent extends Component {
 		),
 		'eventClassMap' => array(
 			'translations' => 'Crud.TranslationsEvent',
-			'related' => 'Crud.RelatedModelsListener'
+			'related' => 'Crud.RelatedModelsEvent'
 		)
 	);
 
