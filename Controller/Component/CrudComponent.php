@@ -1,7 +1,6 @@
 <?php
 
 App::uses('CrudEventSubject', 'Crud.Controller/Event');
-App::uses('TranslationsEvent', 'Crud.Controller/Event');
 
 /**
  * Crud component
@@ -82,16 +81,6 @@ class CrudComponent extends Component {
 	protected $_events = array();
 
 /**
- * List of classes to be used internally in Crud
- *
- * @var array
- */
-	protected $_classes = array(
-		'translations' => 'Crud.TranslationsEvent',
-		'relatedModels' => 'Crud.RelatedModelsListener'
-	);
-
-/**
  * Components settings.
  *
  * `eventPrefix` All emitted events will be prefixed with this property value
@@ -123,7 +112,10 @@ class CrudComponent extends Component {
 		'translations' => array(),
 		'relatedLists' => array(
 			'add' => true,
-			'edit' => true
+			'edit' => true,
+
+			'admin_add' => true,
+			'admin_edit' => true
 		),
 		'actionMap' => array(
 			'index'	=> 'index',
@@ -159,16 +151,12 @@ class CrudComponent extends Component {
 			'admin_edit' => 'first',
 			'admin_view' => 'first',
 			'admin_delete' => 'count'
+		),
+		'eventClassMap' => array(
+			'translations' => 'Crud.TranslationsEvent',
+			'related' => 'Crud.RelatedModelsListener'
 		)
 	);
-
-/**
- * Name of the event listener class to be used for fetching related models list
- * Class will be lokked up in Controller/Event package
- *
- * @var string
- */
-	protected $_relatedListEventClass = 'Crud.RelatedModelsListener';
 
 /**
  * Constructor
@@ -241,14 +229,9 @@ class CrudComponent extends Component {
 			$this->_controller->view = $view;
 		}
 
-		try {
-			if ($models = $this->relatedModels($action)) {
-				list($plugin, $class) = pluginSplit($this->_classes['relatedModels'], true);
-				App::uses($class, $plugin . 'Controller/Event');
-				$this->_events['relatedModels'] = new $class($this->config('eventPrefix'), $models);
-				$this->_controller->getEventManager()->attach($this->_events['relatedModels']);
-			}
+		$this->_loadEventClasses();
 
+		try {
 			$actionToInvoke = $this->config($actionMapKey);
 			// Execute the default action, inside this component
 			$response = call_user_func_array(array($this, '_' . $actionToInvoke . 'Action'), $args);
@@ -264,6 +247,53 @@ class CrudComponent extends Component {
 
 		// Render the file based on action name
 		return $this->_controller->response = $this->_controller->render($view);
+	}
+
+/**
+ * Load all event classes attached to Crud
+ *
+ * @return void
+ */
+	protected function _loadEventClasses() {
+		foreach (array_keys($this->config('eventClassMap')) as $name) {
+			$this->_loadEventClass($name);
+		}
+	}
+
+/**
+ * Load a single event class attached to Crud
+ *
+ * @param string $name
+ * @return void
+ */
+	protected function _loadEventClass($name) {
+		$subject = $this->_getSubject();
+
+		$config = $this->config(sprintf('eventClassMap.%s', $name));
+
+		list($plugin, $class) = pluginSplit($config, true);
+		App::uses($class, $plugin . 'Controller/Event');
+
+		// Make sure to cleanup duplicate events
+		if (isset($this->_events[$name])) {
+			$this->_eventManager->detach($this->_events[$name]);
+			unset($this->_events[$name]);
+		}
+
+		$this->_events[$name] = new $class($subject);
+		$this->_eventManager->attach($this->_events[$name]);
+	}
+
+	public function getEvent($name, $create = true) {
+		if (empty($this->_events[$name])) {
+			if (!$create) {
+				return false;
+			}
+
+			$this->_loadEventClass($name);
+		}
+
+		return $this->_events[$name];
 	}
 
 	protected function _setModelProperties() {
@@ -421,45 +451,6 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Enables association list fetching for specified actions.
- *
- * @param string|array $actions list of action names to enable
- * @return void
- */
-	public function enableRelatedList($actions) {
-		if (!is_array($actions)) {
-			$actions = array($actions);
-		}
-
-		foreach ($actions as $action) {
-			if (empty($this->settings['relatedLists'][$action])) {
-				$this->settings['relatedLists'][$action] = true;
-			}
-		}
-	}
-
-/**
- * Sets the list of model relationships to be fetched as lists for an action
- *
- * @param array|boolean $models list of model association names to be fetch on $action
- *  if `true`, list of models will be constructud out of associated models of main controller's model
- * @param stirng $action name of the action to apply this rule to. If left null then
- *  it will use the current controller action
- * @return void
- */
-	public function mapRelatedList($models, $action = null) {
-		if (empty($action)) {
-			$action = $this->_action;
-		}
-
-		if (is_string($models)) {
-			$models = array($models);
-		}
-
-		$this->settings['relatedLists'][$action] = $models;
-	}
-
-/**
  * Generic config method
  *
  * If $key is an array and $value is empty,
@@ -494,60 +485,6 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Gets the list of associated model lists to be fetched for an action
- *
- * @param array $models list of model association names to be fetch on $action
- * @param stirng $action name of the action
- * @return array
- */
-	public function relatedModels($action) {
-		// If we don't have any related configuration, look up its alias in the actionMap
-		if (empty($this->settings['relatedLists'][$action]) && $this->isActionMapped($action)) {
-			$action = $this->config(sprintf('actionMap.%s', $action));
-		}
-
-		// If current action isn't configured
-		if (!isset($this->settings['relatedLists'][$action])) {
-			return array();
-		}
-
-		// If the action value is true and we got a configured default, inspect it
-		if ($this->settings['relatedLists'][$action] === true && isset($this->settings['relatedLists']['default'])) {
-			// If default is false, don't fetch any related records
-			if (false === $this->settings['relatedLists']['default']) {
-				return array();
-			}
-
-			// If it's an array, return it
-			if (is_array($this->settings['relatedLists']['default'])) {
-				return $this->settings['relatedLists']['default'];
-			}
-		}
-
-		// Use whatever value there may have been set by the user
-		if ($this->settings['relatedLists'][$action] !== true) {
-			return $this->settings['relatedLists'][$action];
-		}
-
-		// Default to everything associated to the current model
-		return array_keys($this->_controller->{$this->_controller->modelClass}->getAssociated());
-	}
-
-/**
- * Sets the class name to be used as an event listener for generating related models' lists
- * If called with no arguments it will return currently set up class
- *
- * @param string $className
- * @return string class name to be used as event listener
- */
-	public function relatedModelsListener($className = null) {
-		if (empty($className)) {
-			return $this->_relatedListEventClass;
-		}
-		return $this->_relatedListEventClass = $className;
-	}
-
-/**
  * Helper method to get the passed ID to an action
  *
  * @platform
@@ -567,6 +504,10 @@ class CrudComponent extends Component {
  * @return CrudEventSubject
  */
 	protected function _getSubject($additional = array()) {
+		if (empty($this->_model) || empty($this->_modelName)) {
+			$this->_setModelProperties();
+		}
+
 		$subject				= new CrudEventSubject();
 		$subject->crud			= $this;
 		$subject->controller	= $this->_controller;
@@ -887,7 +828,7 @@ class CrudComponent extends Component {
  */
 	protected function _setFlash($type) {
 		$name = $this->_getResourceName();
-		$this->_ensureTranslationsEvent();
+		$this->getEvent('translations');
 
 		$subject = $this->trigger('setFlash', compact('type', 'name'));
 		$this->Session->setFlash($subject->message, $subject->element, $subject->params, $subject->key);
@@ -907,20 +848,6 @@ class CrudComponent extends Component {
 		}
 
 		return $this->settings['name'];
-	}
-
-/**
- * Ensure a translations event is attached
- *
- * @return void
- */
-	protected function _ensureTranslationsEvent() {
-		if (!empty($this->_events['translations'])) {
-			return true;
-		}
-
-		$this->_events['translations'] = new TranslationsEvent($this->settings['translations']);
-		$this->_eventManager->attach($this->_events['translations']);
 	}
 
 /**
