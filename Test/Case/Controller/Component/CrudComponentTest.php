@@ -330,7 +330,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$this->controller
 			->expects($this->once())
 			->method('render')
-			->with('form');
+			->with('add');
 
 		$this->Crud->settings['validateId'] = 'notUuid';
 		$id = 1;
@@ -448,7 +448,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$this->controller
 			->expects($this->once())
 			->method('render')
-			->with('form');
+			->with('edit');
 
 		$this->Crud->settings['validateId'] = 'notUuid';
 		$id = 1;

@@ -137,13 +137,13 @@ class CrudComponent extends Component {
 		),
 		'viewMap' => array(
 			'index' => 'index',
-			'add' => 'form',
-			'edit'=> 'form',
+			'add' => 'add',
+			'edit'=> 'edit',
 			'view' => 'view',
 
 			'admin_index' => 'admin_index',
-			'admin_add' => 'admin_form',
-			'admin_edit' => 'admin_form',
+			'admin_add' => 'admin_add',
+			'admin_edit' => 'admin_edit',
 			'admin_view' => 'admin_view'
 		),
 		'findMethodMap' => array(
