@@ -104,11 +104,21 @@ class CrudComponent extends Component {
  *
  * `actions` key should contain an array of controller methods this component should offer
  * implementation for.
+ *
+ * `translations` is the config for the translations Event, responsible for the text used in flash messages
+ * see TranslationsEvent::$_defaults the full list of options
+ *
  * `relatedList` is a map of the controller action and the whether it should fetch associations lists
  * to be used in select boxes. An array as value means it is enabled and represent the list
  * of model associations to be fetched
- * `translations` is the config for the translations Event, responsible for the text used in flash messages
- * see TranslationsEvent::$_defaults the full list of options
+ *
+ * `actionMap` A map of the controller action and what CRUD action we should call.
+ * By default it supports non-prefix and admin_ prefixed routes
+ *
+ * `viewMap` A map of the controller action and the view to render
+ * By default it supports non-prefix and admin_ prefixed routes
+ *
+ * `findMethodMap` The default find method for reading data
  *
  * @var array
  */
