@@ -75,14 +75,6 @@ class CrudComponent extends Component {
 	protected $_model;
 
 /**
- * All emitted events will be prefixed with this property value
- *
- * @platform
- * @var string
- */
-	protected $_eventPrefix = 'Crud';
-
-/**
  * List of event objects attached to Crud
  *
  * @var array
@@ -101,6 +93,8 @@ class CrudComponent extends Component {
 
 /**
  * Components settings.
+ *
+ * `eventPrefix` All emitted events will be prefixed with this property value
  *
  * `actions` contains an array of controller methods this component should offer implementation for.
  * The actions is used for actionMap, viewMap and findMethodMap to change behavior of CrudComponent
@@ -124,6 +118,7 @@ class CrudComponent extends Component {
  * @var array
  */
 	public $settings = array(
+		'eventPrefix' => 'Crud',
 		'actions' => array(),
 		'translations' => array(),
 		'relatedLists' => array(
@@ -250,7 +245,7 @@ class CrudComponent extends Component {
 			if ($models = $this->relatedModels($action)) {
 				list($plugin, $class) = pluginSplit($this->_classes['relatedModels'], true);
 				App::uses($class, $plugin . 'Controller/Event');
-				$this->_events['relatedModels'] = new $class($this->_eventPrefix, $models);
+				$this->_events['relatedModels'] = new $class($this->config('eventPrefix'), $models);
 				$this->_controller->getEventManager()->attach($this->_events['relatedModels']);
 			}
 
@@ -290,7 +285,7 @@ class CrudComponent extends Component {
  **/
 	public function trigger($eventName, $data = array()) {
 		$subject = $data instanceof CrudEventSubject ? $data : $this->_getSubject($data);
-		$event = new CakeEvent($this->_eventPrefix . '.' . $eventName, $subject);
+		$event = new CakeEvent($this->config('eventPrefix') . '.' . $eventName, $subject);
 		$this->_eventManager->dispatch($event);
 
 		if ($event->result instanceof CakeResponse) {
@@ -419,7 +414,7 @@ class CrudComponent extends Component {
 
 		foreach ($events as $event) {
 			if (!strpos($event, '.')) {
-				$event = $this->_eventPrefix . '.' . $event;
+				$event = $this->config('eventPrefix') . '.' . $event;
 			}
 			$this->_controller->getEventManager()->attach($callback, $event);
 		}
