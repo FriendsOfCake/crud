@@ -100,26 +100,6 @@ class CrudComponent extends Component {
 	);
 
 /**
- * The default find method for reading data
- *
- * Model->find($method)
- *
- * @platform
- * @var array
- */
-	protected $_findMethodMap = array(
-		'index'			=> 'all',
-		'edit'			=> 'first',
-		'view'			=> 'first',
-		'delete'		=> 'count',
-
-		'admin_index'	=> 'all',
-		'admin_edit'	=> 'first',
-		'admin_view'	=> 'first',
-		'admin_delete'	=> 'count'
-	);
-
-/**
  * Components settings.
  *
  * `actions` key should contain an array of controller methods this component should offer
@@ -162,6 +142,17 @@ class CrudComponent extends Component {
 			'admin_add' => 'admin_form',
 			'admin_edit' => 'admin_form',
 			'admin_view' => 'admin_view'
+		),
+		'findMethodMap' => array(
+			'index'	=> 'all',
+			'edit' => 'first',
+			'view' => 'first',
+			'delete' => 'count',
+
+			'admin_index' => 'all',
+			'admin_edit' => 'first',
+			'admin_view' => 'first',
+			'admin_delete' => 'count'
 		)
 	);
 
@@ -400,7 +391,7 @@ class CrudComponent extends Component {
  * @return void
  */
 	public function mapFindMethod($action, $method) {
-		$this->_findMethodMap[$action] = $method;
+		$this->config(sprintf('findMethodMap.%s', $action), $method);
 	}
 
 /**
@@ -595,8 +586,9 @@ class CrudComponent extends Component {
 			$action = $this->_action;
 		}
 
-		if (!empty($this->_findMethodMap[$action])) {
-			return $this->_findMethodMap[$action];
+		$findMethod = $this->config(sprintf('findMethodMap.%s', $action));
+		if (!empty($findMethod)) {
+			return $findMethod;
 		}
 
 		return $default;
