@@ -732,8 +732,8 @@ class CrudComponentTestCase extends ControllerTestCase {
  */
 	public function testFetchRelatedMappedMethod() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
-		$this->Crud->getEvent('related')->map(array('Tag'), 'add');
-		$this->Crud->getEvent('related')->map(array('Tag'), 'admin_add');
+		$this->Crud->getListener('related')->map(array('Tag'), 'add');
+		$this->Crud->getListener('related')->map(array('Tag'), 'admin_add');
 		$expectedTags = array(1 => '1', 2 => '2', 3 => '3');
 
 		$this->Crud->executeAction('add');
@@ -756,7 +756,7 @@ class CrudComponentTestCase extends ControllerTestCase {
  */
 	public function testFetchRelatedMappedAll() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
-		$this->Crud->getEvent('related')->map(array('Tag'), 'default');
+		$this->Crud->getListener('related')->map(array('Tag'), 'default');
 		$expectedTags = array(1 => '1', 2 => '2', 3 => '3');
 
 		$this->Crud->executeAction('edit', array('1'));
@@ -772,7 +772,7 @@ class CrudComponentTestCase extends ControllerTestCase {
  */
 	public function testFetchRelatedMappedAllNotEnabled() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
-		$this->Crud->getEvent('related')->map(array('Tag'));
+		$this->Crud->getListener('related')->map(array('Tag'));
 
 		$this->Crud->executeAction('delete', array('1'));
 		$vars = $this->controller->viewVars;
@@ -788,7 +788,7 @@ class CrudComponentTestCase extends ControllerTestCase {
  */
 	public function testFetchRelatedSpecificActionMapped() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
-		$this->Crud->getEvent('related')->map(array('Tag'), 'admin_add');
+		$this->Crud->getListener('related')->map(array('Tag'), 'admin_add');
 		$expectedTags = array(1 => '1', 2 => '2', 3 => '3');
 
 		$this->Crud->executeAction('admin_add', array('1'));
@@ -804,7 +804,7 @@ class CrudComponentTestCase extends ControllerTestCase {
  */
 	public function testFetchRelatedEvents() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
-		$this->Crud->getEvent('related')->map(array('Tag'), 'default');
+		$this->Crud->getListener('related')->map(array('Tag'), 'default');
 		$expectedTags = array(1 => '1', 2 => '2', 'foo' => 'bar');
 		$self = $this;
 
@@ -833,8 +833,8 @@ class CrudComponentTestCase extends ControllerTestCase {
 	public function testRelatedModelsDefaultFalseAdd() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
 
-		$this->Crud->getEvent('related')->map(false, 'default');
-		$this->assertEquals(array(), $this->Crud->getEvent('related')->models('add'));
+		$this->Crud->getListener('related')->map(false, 'default');
+		$this->assertEquals(array(), $this->Crud->getListener('related')->models('add'));
 
 		$this->Crud->executeAction('add');
 		$vars = $this->controller->viewVars;
@@ -850,8 +850,8 @@ class CrudComponentTestCase extends ControllerTestCase {
 	public function testRelatedModelsDefaultFalseEdit() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
 
-		$this->Crud->getEvent('related')->map(false, 'default');
-		$this->assertEquals(array(), $this->Crud->getEvent('related')->models('edit'));
+		$this->Crud->getListener('related')->map(false, 'default');
+		$this->assertEquals(array(), $this->Crud->getListener('related')->models('edit'));
 
 		$this->Crud->executeAction('edit');
 		$vars = $this->controller->viewVars;
@@ -867,8 +867,8 @@ class CrudComponentTestCase extends ControllerTestCase {
 	public function testRelatedModelsDefaultTrueAdd() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
 
-		$this->Crud->getEvent('related')->map(true, 'default');
-		$this->assertEquals(array('Author', 'Tag'), $this->Crud->getEvent('related')->models('add'));
+		$this->Crud->getListener('related')->map(true, 'default');
+		$this->assertEquals(array('Author', 'Tag'), $this->Crud->getListener('related')->models('add'));
 
 		$this->Crud->executeAction('add');
 		$vars = $this->controller->viewVars;
@@ -885,8 +885,8 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$this->Crud->settings['validateId'] = 'integer';
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')), false);
 
-		$this->Crud->getEvent('related')->map(true, 'default');
-		$this->assertEquals(array('Author', 'Tag'), $this->Crud->getEvent('related')->models('edit'));
+		$this->Crud->getListener('related')->map(true, 'default');
+		$this->assertEquals(array('Author', 'Tag'), $this->Crud->getListener('related')->models('edit'));
 
 		$this->Crud->executeAction('edit', array(3));
 
@@ -905,8 +905,8 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$this->model->bindModel(array('belongsTo' => array('Author')), false);
 
 		$this->Crud->mapAction('modify_action', 'edit');
-		$this->Crud->getEvent('related')->map(true);
-		$this->assertEquals(array('Author'), $this->Crud->getEvent('related')->models('modify_action'));
+		$this->Crud->getListener('related')->map(true);
+		$this->assertEquals(array('Author'), $this->Crud->getListener('related')->models('modify_action'));
 
 		$this->Crud->executeAction('modify_action', array(1));
 
@@ -1199,11 +1199,11 @@ class CrudComponentTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testEnableRelatedListStringForIndexAction() {
-		$this->Crud->getEvent('related')->map('Tag', 'default');
-		$this->Crud->getEvent('related')->enable('index');
+		$this->Crud->getListener('related')->map('Tag', 'default');
+		$this->Crud->getListener('related')->enable('index');
 
 		$expected = array('Tag');
-		$value = $this->Crud->getEvent('related')->models('index');
+		$value = $this->Crud->getListener('related')->models('index');
 		$this->assertSame($expected, $value);
 
 		$this->Crud->executeAction('index');
@@ -1221,10 +1221,10 @@ class CrudComponentTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testEnableRelatedListArrayForIndexAction() {
-		$this->Crud->getEvent('related')->map(array('Tag', 'Author'), 'default');
-		$this->Crud->getEvent('related')->enable(array('index'));
+		$this->Crud->getListener('related')->map(array('Tag', 'Author'), 'default');
+		$this->Crud->getListener('related')->enable(array('index'));
 
-		$this->assertSame(array('Tag', 'Author'), $this->Crud->getEvent('related')->models('index'));
+		$this->assertSame(array('Tag', 'Author'), $this->Crud->getListener('related')->models('index'));
 
 		$this->Crud->executeAction('index');
 

@@ -67,11 +67,11 @@ class CrudComponent extends Component {
 	protected $_model;
 
 /**
- * List of event objects attached to Crud
+ * List of listener objects attached to Crud
  *
  * @var array
  */
-	protected $_events = array();
+	protected $_listeners = array();
 
 /**
  * Components settings.
@@ -226,7 +226,7 @@ class CrudComponent extends Component {
 			$this->_controller->view = $view;
 		}
 
-		$this->_loadEventClasses();
+		$this->_loadListeners();
 
 		try {
 			$actionToInvoke = $this->config($actionMapKey);
@@ -251,9 +251,9 @@ class CrudComponent extends Component {
  *
  * @return void
  */
-	protected function _loadEventClasses() {
+	protected function _loadListeners() {
 		foreach (array_keys($this->config('eventClassMap')) as $name) {
-			$this->_loadEventClass($name);
+			$this->_loadListener($name);
 		}
 	}
 
@@ -263,7 +263,7 @@ class CrudComponent extends Component {
  * @param string $name
  * @return void
  */
-	protected function _loadEventClass($name) {
+	protected function _loadListener($name) {
 		$subject = $this->_getSubject();
 
 		$config = $this->config(sprintf('eventClassMap.%s', $name));
@@ -272,13 +272,13 @@ class CrudComponent extends Component {
 		App::uses($class, $plugin . 'Controller/Event');
 
 		// Make sure to cleanup duplicate events
-		if (isset($this->_events[$name])) {
-			$this->_eventManager->detach($this->_events[$name]);
-			unset($this->_events[$name]);
+		if (isset($this->_listeners[$name])) {
+			$this->_eventManager->detach($this->_listeners[$name]);
+			unset($this->_listeners[$name]);
 		}
 
-		$this->_events[$name] = new $class($subject);
-		$this->_eventManager->attach($this->_events[$name]);
+		$this->_listeners[$name] = new $class($subject);
+		$this->_eventManager->attach($this->_listeners[$name]);
 	}
 
 /**
@@ -288,16 +288,16 @@ class CrudComponent extends Component {
  * @param boolean $created create if it doesn't exist
  * @return CrudBaseEvent
  */
-	public function getEvent($name, $create = true) {
-		if (empty($this->_events[$name])) {
+	public function getListener($name, $create = true) {
+		if (empty($this->_listeners[$name])) {
 			if (!$create) {
 				return false;
 			}
 
-			$this->_loadEventClass($name);
+			$this->_loadListener($name);
 		}
 
-		return $this->_events[$name];
+		return $this->_listeners[$name];
 	}
 
 /**
@@ -827,7 +827,7 @@ class CrudComponent extends Component {
  */
 	protected function _setFlash($type) {
 		$name = $this->_getResourceName();
-		$this->getEvent('translations');
+		$this->getListener('translations');
 
 		$subject = $this->trigger('setFlash', compact('type', 'name'));
 		$this->Session->setFlash($subject->message, $subject->element, $subject->params, $subject->key);
