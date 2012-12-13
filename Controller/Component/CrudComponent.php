@@ -289,6 +289,13 @@ class CrudComponent extends Component {
 		$this->_eventManager->attach($this->_events[$name]);
 	}
 
+/**
+ * Get a single event class
+ *
+ * @param string $name
+ * @param boolean $created create if it doesn't exist
+ * @return CrudBaseEvent
+ */
 	public function getEvent($name, $create = true) {
 		if (empty($this->_events[$name])) {
 			if (!$create) {
@@ -301,6 +308,11 @@ class CrudComponent extends Component {
 		return $this->_events[$name];
 	}
 
+/**
+ * Set internal model properties from the controller
+ *
+ * @return void
+ */
 	protected function _setModelProperties() {
 		$this->_modelName	= $this->_controller->modelClass;
 		$this->_model		= $this->_controller->{$this->_modelName};
