@@ -17,7 +17,7 @@ App::uses('CakeEventListener', 'Event');
 abstract class CrudBaseEvent extends Object implements CakeEventListener {
 
 	/**
-	 * Returns a list of all events that will fire in the controller during it's lifecycle.
+	 * Returns a list of all events that will fire in the controller during it's life cycle.
 	 * You can override this function to add you own listener callbacks
 	 *
 	 * @return array

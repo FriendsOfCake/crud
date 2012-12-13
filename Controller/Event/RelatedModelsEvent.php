@@ -1,5 +1,6 @@
 <?php
 
+App::uses('CrudEventSubject', 'Crud.Controller/Event');
 App::uses('CakeEventListener', 'Event');
 
 /**
@@ -57,8 +58,8 @@ class RelatedModelsEvent implements CakeEventListener {
  * Sets the list of model relationships to be fetched as lists for an action
  *
  * @param array|boolean $models list of model association names to be fetch on $action
- *  if `true`, list of models will be constructud out of associated models of main controller's model
- * @param stirng $action name of the action to apply this rule to. If left null then
+ *  if `true`, list of models will be constructed out of associated models of main controller's model
+ * @param string $action name of the action to apply this rule to. If left null then
  *  it will use the current controller action
  * @return void
  */
@@ -77,7 +78,7 @@ class RelatedModelsEvent implements CakeEventListener {
 /**
  * Gets the list of associated model lists to be fetched for an action
  *
- * @param stirng $action name of the action
+ * @param string $action name of the action
  * @return array
  */
 	public function models($action = null) {

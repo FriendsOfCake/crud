@@ -1,5 +1,6 @@
 <?php
 
+App::uses('CrudEventSubject', 'Crud.Controller/Event');
 App::uses('CrudBaseEvent', 'Crud.Controller/Event');
 
 /**
