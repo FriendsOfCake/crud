@@ -200,7 +200,7 @@ class TranslationsShell extends AppShell {
  * @return void
  */
 	protected function _initializeMessages() {
-		$event = new TranslationsEvent();
+		$event = new TranslationsEvent(new CrudEventSubject());
 		$defaults = $event->getDefaults();
 		foreach ($defaults as $key => $array) {
 			if (!is_array($array)) {
