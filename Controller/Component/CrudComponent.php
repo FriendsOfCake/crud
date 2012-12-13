@@ -83,6 +83,10 @@ class CrudComponent extends Component {
 /**
  * Components settings.
  *
+ * `validateId` Argument validation - by default only integers is allowed in add()
+ * edit() and delete() actions. Can be disabled by setting it to "false". Also supports
+ * "uuid" format
+ *
  * `eventPrefix` All emitted events will be prefixed with this property value
  *
  * `actions` contains an array of controller methods this component should offer implementation for.
@@ -107,6 +111,7 @@ class CrudComponent extends Component {
  * @var array
  */
 	public $settings = array(
+		'validateId' => 'integer',
 		'eventPrefix' => 'Crud',
 		'actions' => array(),
 		'translations' => array(),
@@ -853,9 +858,10 @@ class CrudComponent extends Component {
 /**
  * Is the passed ID valid ?
  *
- * By default we asume you want to validate an UUID string
+ * By default we assume you want to validate an numeric string
+ * like a normal incremental ids from MySQL
  *
- * Change the validateId settings key to "integer" for is_numeric check instead
+ * Change the validateId settings key to "uuid" for UUID check instead
  *
  * @return boolean
  */
@@ -864,9 +870,10 @@ class CrudComponent extends Component {
 			if (isset($this->settings['validateId'])) {
 				$type = $this->settings['validateId'];
 			} else {
-				$type = 'uuid';
+				$type = 'integer';
 			}
 		}
+
 		if (!$type) {
 			return true;
 		} elseif ($type === 'uuid') {

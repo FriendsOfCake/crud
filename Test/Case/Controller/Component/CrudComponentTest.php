@@ -573,6 +573,8 @@ class CrudComponentTestCase extends ControllerTestCase {
 	public function testvalidateIdUUIDValid() {
 		$this->controller->expects($this->never())->method('redirect');
 
+		$this->Crud->settings['validateId'] = 'uuid';
+
 		$id = '12345678-1234-1234-1234-123456789012';
 		$return = $this->Crud->testValidateId($id);
 		$this->assertTrue($return, "Expected id $id to be accepted, it was rejected");
@@ -582,6 +584,7 @@ class CrudComponentTestCase extends ControllerTestCase {
  * testvalidateIdUUIDInvalid
  */
 	public function testvalidateIdUUIDInvalid() {
+		$this->Crud->settings['validateId'] = 'uuid';
 		$this->controller->expects($this->once())->method('redirect');
 
 		$id = 123;
