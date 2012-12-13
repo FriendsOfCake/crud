@@ -100,26 +100,6 @@ class CrudComponent extends Component {
 	);
 
 /**
- * A map of the controller action and the view to render
- *
- * By default it supports non-prefix and admin_ prefixed routes
- *
- * @platform
- * @var array
- */
-	protected $_viewMap = array(
-		'index'			=> 'index',
-		'add'			=> 'form',
-		'edit'			=> 'form',
-		'view'			=> 'view',
-
-		'admin_index'	=> 'admin_index',
-		'admin_add'		=> 'admin_form',
-		'admin_edit'	=> 'admin_form',
-		'admin_view'	=> 'admin_view'
-	);
-
-/**
  * The default find method for reading data
  *
  * Model->find($method)
@@ -171,6 +151,17 @@ class CrudComponent extends Component {
 			'admin_edit' => 'edit',
 			'admin_view' => 'view',
 			'admin_delete' => 'delete'
+		),
+		'viewMap' => array(
+			'index' => 'index',
+			'add' => 'form',
+			'edit'=> 'form',
+			'view' => 'view',
+
+			'admin_index' => 'admin_index',
+			'admin_add' => 'admin_form',
+			'admin_edit' => 'admin_form',
+			'admin_view' => 'admin_view'
 		)
 	);
 
@@ -241,14 +232,15 @@ class CrudComponent extends Component {
 		$this->trigger('init');
 
 		// Test if action is mapped
-		$key = sprintf('actionMap.%s', $action);
-		if (!$this->config($key)) {
+		$actionMapKey = sprintf('actionMap.%s', $action);
+		if (!$this->config($actionMapKey)) {
 			throw new RuntimeException(sprintf('Action "%s" has not been mapped', $action));
 		}
 
 		// Change the view file before executing the CRUD action (so mapActionView works)
-		if (array_key_exists($action, $this->_viewMap)) {
-			$view = $this->_viewMap[$action];
+		$viewMapKey = sprintf('viewMap.%s', $action);
+		$view = $this->config($viewMapKey);
+		if (!empty($view)) {
 			$this->_controller->view = $view;
 		}
 
@@ -260,7 +252,7 @@ class CrudComponent extends Component {
 				$this->_controller->getEventManager()->attach($this->_events['relatedModels']);
 			}
 
-			$actionToInvoke = $this->config($key);
+			$actionToInvoke = $this->config($actionMapKey);
 			// Execute the default action, inside this component
 			$response = call_user_func_array(array($this, '_' . $actionToInvoke . 'Action'), $args);
 			if ($response instanceof CakeResponse) {
@@ -363,11 +355,11 @@ class CrudComponent extends Component {
  */
 	public function mapActionView($action, $view = null) {
 		if (is_array($action)) {
-			$this->_viewMap = $action + $this->_viewMap;
+			$this->config('viewMap', $action);
 			return;
 		}
 
-		$this->_viewMap[$action] = $view;
+		$this->config(sprintf('viewMap.%s', $action), $view);
 	}
 
 /**
