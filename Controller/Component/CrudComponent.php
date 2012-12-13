@@ -150,7 +150,7 @@ class CrudComponent extends Component {
 			'admin_view' => 'first',
 			'admin_delete' => 'count'
 		),
-		'eventClassMap' => array(
+		'listenerClassMap' => array(
 			'translations' => 'Crud.TranslationsEvent',
 			'related' => 'Crud.RelatedModelsEvent'
 		)
@@ -252,7 +252,7 @@ class CrudComponent extends Component {
  * @return void
  */
 	protected function _loadListeners() {
-		foreach (array_keys($this->config('eventClassMap')) as $name) {
+		foreach (array_keys($this->config('listenerClassMap')) as $name) {
 			$this->_loadListener($name);
 		}
 	}
@@ -266,7 +266,7 @@ class CrudComponent extends Component {
 	protected function _loadListener($name) {
 		$subject = $this->_getSubject();
 
-		$config = $this->config(sprintf('eventClassMap.%s', $name));
+		$config = $this->config(sprintf('listenerClassMap.%s', $name));
 
 		list($plugin, $class) = pluginSplit($config, true);
 		App::uses($class, $plugin . 'Controller/Event');
