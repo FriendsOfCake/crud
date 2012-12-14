@@ -1,7 +1,7 @@
 <?php
 
 App::uses('CrudSubject', 'Crud.Controller/Listener');
-App::uses('CrudListener', 'Crud.Controller/Listener');
+App::uses('CakeEventListener', 'Event');
 
 /**
  * TranslationsEvent for Crud
@@ -16,7 +16,7 @@ App::uses('CrudListener', 'Crud.Controller/Listener');
  * @see http://book.cakephp.org/2.0/en/controllers/components.html#Component
  * @copyright Nodes ApS, 2012
  */
-class TranslationsListener extends CrudListener {
+class TranslationsListener implements CakeEventListener {
 
 /**
  * Configurations for TranslationsEvent
