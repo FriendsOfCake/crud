@@ -1,6 +1,9 @@
 <?php
+
+App::uses('CakeEventListener', 'Event');
+
 /**
- * The Base Form Decorator
+ * The Base Crud Listener
  *
  * All callbacks are defined here for good measure
  *
@@ -12,8 +15,6 @@
  * @copyright Nodes ApS, 2012
  * @abstract
  */
-App::uses('CakeEventListener', 'Event');
-
 abstract class CrudListener extends Object implements CakeEventListener {
 
 /**

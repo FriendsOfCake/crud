@@ -1,6 +1,6 @@
 <?php
 /**
- * Crud Event subject
+ * Crud subject
  *
  * All Crud.* events passes this object as subject
  *
