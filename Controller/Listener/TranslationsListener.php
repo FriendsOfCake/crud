@@ -1,6 +1,6 @@
 <?php
 
-App::uses('CrudSubject', 'Crud.Controller/Listener');
+App::uses('CrudSubject', 'Crud.Controller/Event');
 App::uses('CakeEventListener', 'Event');
 
 /**
