@@ -140,8 +140,13 @@ class RelatedModelsEvent implements CakeEventListener {
 	public function beforeRender($event) {
 		$component = $event->subject->crud;
 		$controller = $event->subject->controller;
+		$models = $this->models();
 
-		foreach ($this->models() as $m) {
+		if (empty($models)) {
+			return;
+		}
+
+		foreach ($models as $m) {
 			$model = $this->_getModelInstance($m, $event->subject->model, $controller);
 			$query = array('limit' => 200);
 
