@@ -76,9 +76,10 @@ class CrudComponent extends Component {
 /**
  * Components settings.
  *
- * `validateId` Argument validation - by default only integers is allowed in add()
- * edit() and delete() actions. Can be disabled by setting it to "false". Also supports
- * "uuid" format
+ * `validateId` ID Argument validation - by default it will inspect your model's primary key
+ * and based on it's datatype either use integer or uuid validation.
+ * Can be disabled by setting it to "false". Supports "integer" and "uuid" configuration
+ * By default it's configuration is NULL, which means "auto detect"
  *
  * `eventPrefix` All emitted events will be prefixed with this property value
  *
@@ -111,7 +112,7 @@ class CrudComponent extends Component {
  * @var array
  */
 	public $settings = array(
-		'validateId' => 'integer',
+		'validateId' => null,
 		'secureDelete' => true,
 		'eventPrefix' => 'Crud',
 		'actions' => array(),
@@ -868,15 +869,14 @@ class CrudComponent extends Component {
  *
  * Change the validateId settings key to "uuid" for UUID check instead
  *
+ * @param mixed $id
  * @return boolean
  */
-	protected function _validateId($id, $type = null) {
-		if (empty($type)) {
-			if (isset($this->settings['validateId'])) {
-				$type = $this->settings['validateId'];
-			} else {
-				$type = 'integer';
-			}
+	protected function _validateId($id) {
+		if (isset($this->settings['validateId'])) {
+			$type = $this->settings['validateId'];
+		} else {
+			$type = $this->_detectPrimaryKeyFieldType();
 		}
 
 		if (!$type) {
@@ -894,6 +894,37 @@ class CrudComponent extends Component {
 		$subject = $this->trigger('invalidId', compact('id'));
 		$this->_setFlash('error.invalid_id');
 		return $this->_redirect($subject, $this->_controller->referer());
+	}
+
+/**
+ * Automatically detect primary key data type for `_validateId()`
+ *
+ * Binary or string with length of 36 chars will be detected as UUID
+ * If the primary key is a number, integer validation will be used
+ *
+ * If no reliable detection can be made, no validation will be made
+ *
+ * @return string
+ */
+	protected function _detectPrimaryKeyFieldType() {
+		if (empty($this->_model) || empty($this->_modelName)) {
+			$this->_setModelProperties();
+		}
+
+		$fInfo = $this->_model->schema($this->_model->primaryKey);
+		if (empty($fInfo)) {
+			return false;
+		}
+
+		if ($fInfo['length'] == 36 && ($fInfo['type'] === 'string' || $fInfo['type'] === 'binary')) {
+			return 'uuid';
+		}
+
+		if ($fInfo['type'] === 'integer') {
+			return 'integer';
+		}
+
+		return false;
 	}
 
 }

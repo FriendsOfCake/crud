@@ -128,6 +128,10 @@ class TestCrudComponent extends CrudComponent {
 	public function testGetFindMethod($action = null, $default = null) {
 		return parent::_getFindMethod($action, $default);
 	}
+
+	public function detectPrimaryKeyFieldType() {
+		return parent::_detectPrimaryKeyFieldType();
+	}
 }
 
 class CrudController extends Controller {
@@ -1624,4 +1628,45 @@ class CrudComponentTestCase extends ControllerTestCase {
 			)
 		));
 	}
+
+/**
+ * Test that detecting the correct validation strategy for validateId
+ * works as expected
+ *
+ * @return void
+ */
+	public function testDetectPrimaryKeyFieldType() {
+		$this->model = $this->getMock('CrudExample', array('schema'));
+		$this->controller->CrudExample = $this->model;
+
+		$this->model
+			->expects($this->at(0))
+			->method('schema')
+			->with('id')
+			->will($this->returnValue(false));
+
+		$this->model
+			->expects($this->at(1))
+			->method('schema')
+			->with('id')
+			->will($this->returnValue(array('length' => 36, 'type' => 'string')));
+
+		$this->model
+			->expects($this->at(2))
+			->method('schema')
+			->with('id')
+			->will($this->returnValue(array('length' => 10, 'type' => 'integer')));
+
+		$this->model
+			->expects($this->at(3))
+			->method('schema')
+			->with('id')
+			->will($this->returnValue(array('length' => 10, 'type' => 'string')));
+
+		$this->assertFalse($this->Crud->detectPrimaryKeyFieldType());
+		$this->assertSame('uuid', $this->Crud->detectPrimaryKeyFieldType());
+		$this->assertSame('integer', $this->Crud->detectPrimaryKeyFieldType());
+		$this->assertFalse($this->Crud->detectPrimaryKeyFieldType());
+	}
+
 }
