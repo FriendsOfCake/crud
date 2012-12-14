@@ -111,7 +111,7 @@ class CrudComponent extends Component {
  *
  * `listenerClassMap` List of internal-name => ${plugin}.${class} listeners
  * that will be bound automatically in Crud. By default translations and related model events
- * are bound. Events will always assume to be in the Controller/Listener folder
+ * are bound. Events will always assume to be in the Controller/Event folder
  *
  * @var array
  */
@@ -289,7 +289,7 @@ class CrudComponent extends Component {
 		$config = $this->config(sprintf('listenerClassMap.%s', $name));
 
 		list($plugin, $class) = pluginSplit($config, true);
-		App::uses($class, $plugin . 'Controller/Listener');
+		App::uses($class, $plugin . 'Controller/Event');
 
 		// Make sure to cleanup duplicate events
 		if (isset($this->_listeners[$name])) {
