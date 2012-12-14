@@ -129,8 +129,18 @@ class TestCrudComponent extends CrudComponent {
 		return parent::_getFindMethod($action, $default);
 	}
 
+/**
+ * test visibility wrapper
+ */
 	public function detectPrimaryKeyFieldType() {
 		return parent::_detectPrimaryKeyFieldType();
+	}
+
+/**
+ * test visibility wrapper
+ */
+	public function getSaveAllOptions($action = null) {
+		return parent::_getSaveAllOptions($action);
 	}
 }
 
@@ -1667,6 +1677,49 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$this->assertSame('uuid', $this->Crud->detectPrimaryKeyFieldType());
 		$this->assertSame('integer', $this->Crud->detectPrimaryKeyFieldType());
 		$this->assertFalse($this->Crud->detectPrimaryKeyFieldType());
+	}
+
+/**
+ * Test default saveAll options works when modified
+ *
+ * @return void
+ */
+	public function testGetSaveAllOptionsDefaults() {
+		$expected = array('validate' => 'first', 'atomic' => true);
+		$value = $this->Crud->getSaveAllOptions();
+		$this->assertEqual($value, $expected);
+
+		$this->Crud->config('saveAllOptions.default', array('atomic' => false));
+		$expected = array('validate' => 'first', 'atomic' => false);
+		$value = $this->Crud->getSaveAllOptions();
+		$this->assertEqual($value, $expected);
+
+		$this->Crud->config('saveAllOptions.default.atomic', true);
+		$expected = array('validate' => 'first', 'atomic' => true);
+		$value = $this->Crud->getSaveAllOptions();
+		$this->assertEqual($value, $expected);
+
+		$this->Crud->config('saveAllOptions.default', array('fieldList' => array('hello')));
+		$expected = array('validate' => 'first', 'atomic' => true, 'fieldList' => array('hello'));
+		$value = $this->Crud->getSaveAllOptions();
+		$this->assertEqual($value, $expected);
+	}
+
+/**
+ * Test that defining specific action configuration for saveAll takes
+ * precedence over default configurations
+ *
+ * @return void
+ */
+	public function testGetSaveAllOptionsCustomAction() {
+		$expected = array('validate' => 'first', 'atomic' => true);
+		$value = $this->Crud->getSaveAllOptions('add');
+		$this->assertEqual($value, $expected);
+
+		$this->Crud->config('saveAllOptions.add', array('atomic' => false));
+		$expected = array('validate' => 'first', 'atomic' => false);
+		$value = $this->Crud->getSaveAllOptions('add');
+		$this->assertEqual($value, $expected);
 	}
 
 }

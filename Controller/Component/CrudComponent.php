@@ -97,6 +97,10 @@ class CrudComponent extends Component {
  * to be used in select boxes. An array as value means it is enabled and represent the list
  * of model associations to be fetched
  *
+ * `saveAllOptions` Raw array passed as 2nd argument to saveAll() in `add` and `edit` method
+ * If you configure a key with your action name, it will override the default settings.
+ * This is useful for adding fieldList to enhance security in saveAll.
+ *
  * `actionMap` A map of the controller action and what CRUD action we should call.
  * By default it supports non-prefix and admin_ prefixed routes
  *
@@ -123,6 +127,12 @@ class CrudComponent extends Component {
 
 			'admin_add' => true,
 			'admin_edit' => true
+		),
+		'saveAllOptions' => array(
+			'default' => array(
+				'validate' => 'first',
+				'atomic' => true
+			)
 		),
 		'actionMap' => array(
 			'index'	=> 'index',
@@ -491,7 +501,7 @@ class CrudComponent extends Component {
 		}
 
 		if (is_array($value)) {
-			$value = $value + Hash::get($this->settings, $key);
+			$value = $value + (array)Hash::get($this->settings, $key);
 		}
 
 		$this->settings = Hash::insert($this->settings, $key, $value);
@@ -633,7 +643,7 @@ class CrudComponent extends Component {
 	protected function _addAction() {
 		if ($this->_request->is('post')) {
 			$this->trigger('beforeSave');
-			if ($this->_model->saveAll($this->_request->data, array('validate' => 'first', 'atomic' => true))) {
+			if ($this->_model->saveAll($this->_request->data, $this->_getSaveAllOptions())) {
 				$this->_setFlash('create.success');
 				$subject = $this->trigger('afterSave', array('success' => true, 'id' => $this->_model->id));
 				return $this->_redirect($subject, array('action' => 'index'));
@@ -671,7 +681,7 @@ class CrudComponent extends Component {
 
 		if ($this->_request->is('put')) {
 			$this->trigger('beforeSave', compact('id'));
-			if ($this->_model->saveAll($this->_request->data, array('validate' => 'first', 'atomic' => true))) {
+			if ($this->_model->saveAll($this->_request->data, $this->_getSaveAllOptions())) {
 				$this->_setFlash('update.success');
 				$subject = $this->trigger('afterSave', array('id' => $id, 'success' => true));
 				return $this->_redirect($subject, array('action' => 'index'));
@@ -925,6 +935,19 @@ class CrudComponent extends Component {
 		}
 
 		return false;
+	}
+
+/**
+ * Build options for saveAll
+ *
+ * Merges defaults + any custom options for the specific action
+ *
+ * @param string|NULL $action
+ * @return array
+ */
+	protected function _getSaveAllOptions($action = null) {
+		$action = $action ?: $this->_action;
+		return (array)$this->config(sprintf('saveAllOptions.%s', $action)) + $this->config('saveAllOptions.default');
 	}
 
 }
