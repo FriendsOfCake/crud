@@ -82,6 +82,9 @@ class CrudComponent extends Component {
  *
  * `eventPrefix` All emitted events will be prefixed with this property value
  *
+ * `secureDelete` delete() can only be called with the HTTP DELETE verb, not POST when `true`.
+ * If set to `false` HTTP POST is also acceptable
+ *
  * `actions` contains an array of controller methods this component should offer implementation for.
  * The actions is used for actionMap, viewMap and findMethodMap to change behavior of CrudComponent
  * By default no actions are enabled
@@ -101,10 +104,15 @@ class CrudComponent extends Component {
  *
  * `findMethodMap` The default find method for reading data
  *
+ * `listenerClassMap` List of internal-name => ${plugin}.${class} listeners
+ * that will be bound automatically in Crud. By default translations and related model events
+ * are bound
+ *
  * @var array
  */
 	public $settings = array(
 		'validateId' => 'integer',
+		'secureDelete' => true,
 		'eventPrefix' => 'Crud',
 		'actions' => array(),
 		'translations' => array(),
@@ -472,7 +480,7 @@ class CrudComponent extends Component {
 			return $this->settings;
 		}
 
-		if (empty($value)) {
+		if (is_null($value)) {
 			if (is_array($key)) {
 				$this->settings = $this->settings + $key;
 				return $this;
@@ -781,7 +789,7 @@ class CrudComponent extends Component {
 			return $this->_redirect($subject, array('action' => 'index'));
 		}
 
-		if ($this->_request->is('delete')) {
+		if ($this->_request->is('delete') || ($this->_request->is('post') && false === $this->config('secureDelete'))) {
 			if ($this->_model->delete($id)) {
 				$this->_setFlash('delete.success');
 				$subject = $this->trigger('afterDelete', array('id' => $id, 'success' => true));

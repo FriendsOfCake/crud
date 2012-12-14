@@ -440,6 +440,119 @@ class CrudComponentTestCase extends ControllerTestCase {
 	}
 
 /**
+ * testDeleteWorksWhenDELETEandSecureDelete
+ *
+ * Add a dummy detector to the request object so it says it's a delete request
+ * Check the deleted row doesn't exist after calling delete and that the
+ * before + after delete events are triggered
+ */
+	public function testDeleteWorksWhenDELETEandSecureDelete() {
+		$this->controller
+			->expects($this->never())
+			->method('render');
+
+		$this->Crud->config('secureDelete', true);
+
+		$this->controller->request->addDetector('delete', array(
+			'callback' => function() { return true; }
+		));
+
+		$this->Crud->settings['validateId'] = 'integer';
+		$id = 1;
+
+		$this->Crud->executeAction('delete', array($id));
+
+		$count = $this->model->find('count', array('conditions' => array('id' => $id)));
+		$this->assertSame(0, $count);
+
+		$events = CakeEventManager::instance()->getLog();
+		$index = array_search('Crud.beforeDelete', $events);
+		$this->assertNotSame(false, $index, "There was no Crud.beforeDelete event triggered");
+
+		$index = array_search('Crud.afterDelete', $events);
+		$this->assertNotSame(false, $index, "There was no Crud.afterDelete event triggered");
+	}
+
+/**
+ * testDeleteFailsWithPostAndSecureDeleteActive
+ *
+ * Add a dummy detector to the request object so it says it's a delete request
+ * Check the deleted row doesn't exist after calling delete and that the
+ * before + after delete events are triggered
+ */
+	public function testDeleteFailsWithPostAndSecureDeleteActive() {
+		$this->controller
+			->expects($this->never())
+			->method('render');
+
+		$this->Crud->config('secureDelete', true);
+
+		$this->controller->request->addDetector('delete', array(
+			'callback' => function() { return false; }
+		));
+
+		$this->controller->request->addDetector('post', array(
+			'callback' => function() { return true; }
+		));
+
+		$this->Crud->settings['validateId'] = 'integer';
+		$id = 1;
+
+		$this->Crud->executeAction('delete', array($id));
+
+		$count = $this->model->find('count', array('conditions' => array('id' => $id)));
+		$this->assertSame(1, $count);
+
+		$events = CakeEventManager::instance()->getLog();
+		$index = array_search('Crud.beforeDelete', $events);
+		$this->assertNotSame(false, $index, "There was no Crud.beforeDelete event triggered");
+
+		$index = array_search('Crud.afterDelete', $events);
+		$this->assertNotSame(true, $index, "There was a Crud.beforeDelete event triggered");
+
+		$index = array_search('Crud.setFlash', $events);
+		$this->assertNotSame(false, $index, "There was no Crud.afterDelete event triggered");
+	}
+
+/**
+ * testDeleteWorksWithPostAndSecureDeleteDisabled
+ *
+ * Add a dummy detector to the request object so it says it's a delete request
+ * Check the deleted row doesn't exist after calling delete and that the
+ * before + after delete events are triggered
+ */
+	public function testDeleteWorksWithPostAndSecureDeleteActive() {
+		$this->controller
+			->expects($this->never())
+			->method('render');
+
+		$this->Crud->config('secureDelete', false);
+
+		$this->controller->request->addDetector('delete', array(
+			'callback' => function() { return false; }
+		));
+
+		$this->controller->request->addDetector('post', array(
+			'callback' => function() { return true; }
+		));
+
+		$this->Crud->settings['validateId'] = 'integer';
+		$id = 1;
+
+		$this->Crud->executeAction('delete', array($id));
+
+		$count = $this->model->find('count', array('conditions' => array('id' => $id)));
+		$this->assertSame(0, $count);
+
+		$events = CakeEventManager::instance()->getLog();
+		$index = array_search('Crud.beforeDelete', $events);
+		$this->assertNotSame(false, $index, "There was no Crud.beforeDelete event triggered");
+
+		$index = array_search('Crud.afterDelete', $events);
+		$this->assertNotSame(false, $index, "There was a Crud.beforeDelete event triggered");
+	}
+
+/**
  * testEditActionGet
  *
  * Do we get a call to render the form template?
