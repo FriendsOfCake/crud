@@ -769,6 +769,13 @@ class CrudComponent extends Component {
 		}
 
 		$this->_validateId($id);
+
+		if (!$this->_request->is('delete') && !($this->_request->is('post') && false === $this->config('secureDelete'))) {
+			$subject = $this->_getSubject(compact('id'));
+			$this->_setFlash('error.invalid_http_request');
+			return $this->_redirect($subject, $this->_controller->referer(array('action' => 'index')));
+		}
+
 		$query = array();
 		$query['conditions'] = array($this->_model->escapeField() => $id);
 
@@ -780,25 +787,21 @@ class CrudComponent extends Component {
 		if (empty($count)) {
 			$subject = $this->trigger('recordNotFound', compact('id'));
 			$this->_setFlash('find.error');
-			return $this->_redirect($subject, array('action' => 'index'));
+			return $this->_redirect($subject, $this->_controller->referer(array('action' => 'index')));
 		}
 
 		$subject = $this->trigger('beforeDelete', compact('id'));
 		if ($subject->stopped) {
 			$this->_setFlash('delete.error');
-			return $this->_redirect($subject, array('action' => 'index'));
+			return $this->_redirect($subject, $this->_controller->referer(array('action' => 'index')));
 		}
 
-		if ($this->_request->is('delete') || ($this->_request->is('post') && false === $this->config('secureDelete'))) {
-			if ($this->_model->delete($id)) {
-				$this->_setFlash('delete.success');
-				$subject = $this->trigger('afterDelete', array('id' => $id, 'success' => true));
-			} else {
-				$this->_setFlash('delete.error');
-				$subject = $this->trigger('afterDelete', array('id' => $id, 'success' => false));
-			}
+		if ($this->_model->delete($id)) {
+			$this->_setFlash('delete.success');
+			$subject = $this->trigger('afterDelete', array('id' => $id, 'success' => true));
 		} else {
-			$this->_setFlash('error.invalid_http_request');
+			$this->_setFlash('delete.error');
+			$subject = $this->trigger('afterDelete', array('id' => $id, 'success' => false));
 		}
 
 		return $this->_redirect($subject, $this->_controller->referer(array('action' => 'index')));

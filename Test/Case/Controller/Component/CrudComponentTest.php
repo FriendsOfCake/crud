@@ -505,10 +505,10 @@ class CrudComponentTestCase extends ControllerTestCase {
 
 		$events = CakeEventManager::instance()->getLog();
 		$index = array_search('Crud.beforeDelete', $events);
-		$this->assertNotSame(false, $index, "There was no Crud.beforeDelete event triggered");
+		$this->assertSame(false, $index, "There was a Crud.beforeDelete event triggered");
 
 		$index = array_search('Crud.afterDelete', $events);
-		$this->assertNotSame(true, $index, "There was a Crud.beforeDelete event triggered");
+		$this->assertSame(false, $index, "There was a Crud.beforeDelete event triggered");
 
 		$index = array_search('Crud.setFlash', $events);
 		$this->assertNotSame(false, $index, "There was no Crud.afterDelete event triggered");
