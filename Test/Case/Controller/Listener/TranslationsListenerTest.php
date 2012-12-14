@@ -8,7 +8,7 @@ class TranslationsListenerTest extends CakeTestCase {
 	public function setUp() {
 		parent::setUp();
 
-		$this->Translations = new TranslationsListener(new CrudEventSubject());
+		$this->Translations = new TranslationsListener(new CrudSubject());
 	}
 
 	public function tearDown() {

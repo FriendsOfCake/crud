@@ -11,7 +11,7 @@
  *
  * @copyright Nodes ApS, 2012
  */
-class CrudEventSubject extends stdClass {
+class CrudSubject extends stdClass {
 
 /**
  * Constructor

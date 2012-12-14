@@ -1,6 +1,6 @@
 <?php
 
-App::uses('CrudEventSubject', 'Crud.Controller/Listener');
+App::uses('CrudSubject', 'Crud.Controller/Event');
 
 /**
  * Crud component
@@ -332,7 +332,7 @@ class CrudComponent extends Component {
 
 /**
  * Triggers a Crud event by creating a new subject and filling it with $data
- * if $data is an instance of CrudEventSubject it will be reused as the subject
+ * if $data is an instance of CrudSubject it will be reused as the subject
  * objec for this event.
  *
  * If Event listenrs return a CakeResponse object, the this methid will throw an
@@ -340,10 +340,10 @@ class CrudComponent extends Component {
  * object.
  *
  * @throws Exception if any event listener return a CakeResponse object
- * @return CrudEventSubject
+ * @return CrudSubject
  */
 	public function trigger($eventName, $data = array()) {
-		$subject = $data instanceof CrudEventSubject ? $data : $this->_getSubject($data);
+		$subject = $data instanceof CrudSubject ? $data : $this->_getSubject($data);
 		$event = new CakeEvent($this->config('eventPrefix') . '.' . $eventName, $subject);
 		$this->_eventManager->dispatch($event);
 
@@ -525,14 +525,14 @@ class CrudComponent extends Component {
  * Create a CakeEvent subject with the required properties
  *
  * @param array $additional Additional properties for the subject
- * @return CrudEventSubject
+ * @return CrudSubject
  */
 	protected function _getSubject($additional = array()) {
 		if (empty($this->_model) || empty($this->_modelName)) {
 			$this->_setModelProperties();
 		}
 
-		$subject				= new CrudEventSubject();
+		$subject				= new CrudSubject();
 		$subject->crud			= $this;
 		$subject->controller	= $this->_controller;
 		$subject->model			= $this->_model;

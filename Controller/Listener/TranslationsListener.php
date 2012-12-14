@@ -1,6 +1,6 @@
 <?php
 
-App::uses('CrudEventSubject', 'Crud.Controller/Listener');
+App::uses('CrudSubject', 'Crud.Controller/Listener');
 App::uses('CrudListener', 'Crud.Controller/Listener');
 
 /**
@@ -96,7 +96,7 @@ class TranslationsListener extends CrudListener {
 /**
  * Crud Event subject
  *
- * @var CrudEventSubject
+ * @var CrudSubject
  */
 	protected $_subject;
 
@@ -107,7 +107,7 @@ class TranslationsListener extends CrudListener {
  * @param array $models List of models to be fetched in beforeRenderEvent
  * @return void
  */
-	public function __construct(CrudEventSubject $subject) {
+	public function __construct(CrudSubject $subject) {
 		$this->_subject = $subject;
 		$this->_config = $this->_defaults;
 
