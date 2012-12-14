@@ -123,6 +123,18 @@ class TranslationsListener extends CrudListener {
 	}
 
 /**
+ * Returns a list of all events that will fire in the controller during it's life cycle.
+ * You can override this function to add you own listener callbacks
+ *
+ * @return array
+ */
+	public function implementedEvents() {
+		return array(
+			'Crud.setFlash' => array('callable' => 'setFlash', 'priority' => 5)
+		);
+	}
+
+/**
  * Generic config method
  *
  * If $key is an array and $value is empty,

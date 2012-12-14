@@ -218,12 +218,12 @@ class CrudComponent extends Component {
 /**
  * Execute a Crud action
  *
- * @param string $action The CRUD action
+ * @param string $controllerAction Override the controller action to execute as
  * @param array $arguments List of arguments to pass to the CRUD action (Usually an ID to edit / delete)
  * @return mixed void, or a CakeResponse object
  */
-	public function executeAction($action = null, $args = array()) {
-		$view = $action = $action ?: $this->_action;
+	public function executeAction($controllerAction = null, $args = array()) {
+		$view = $action = $controllerAction ?: $this->_action;
 		$this->_setModelProperties();
 
 		// Make sure to update internal action property
@@ -240,9 +240,10 @@ class CrudComponent extends Component {
 
 		// Change the view file before executing the CRUD action (so mapActionView works)
 		$viewMapKey = sprintf('viewMap.%s', $action);
-		$view = $this->config($viewMapKey);
-		if (!empty($view)) {
-			$this->_controller->view = $view;
+		$viewFile = $this->config($viewMapKey);
+		if (!empty($viewFile)) {
+			$view = $viewFile;
+			$this->_controller->view = $viewFile;
 		}
 
 		$this->_loadListeners();
@@ -851,7 +852,11 @@ class CrudComponent extends Component {
 		$name = $this->_getResourceName();
 		$this->getListener('translations');
 
-		$subject = $this->trigger('setFlash', compact('type', 'name'));
+		// default values
+		$message = $element = $key = null;
+		$params = array();
+
+		$subject = $this->trigger('setFlash', compact('message', 'element', 'params', 'key', 'type', 'name'));
 		$this->Session->setFlash($subject->message, $subject->element, $subject->params, $subject->key);
 	}
 
