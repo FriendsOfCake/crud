@@ -1,6 +1,6 @@
 <?php
 App::uses('AppShell', 'Console/Command');
-App::uses('TranslationsEvent', 'Crud.Controller/Event');
+App::uses('TranslationsListener', 'Crud.Controller/Listener');
 
 /**
  * TranslationsShell
@@ -200,7 +200,7 @@ class TranslationsShell extends AppShell {
  * @return void
  */
 	protected function _initializeMessages() {
-		$event = new TranslationsEvent(new CrudEventSubject());
+		$event = new TranslationsListener(new CrudEventSubject());
 		$defaults = $event->getDefaults();
 		foreach ($defaults as $key => $array) {
 			if (!is_array($array)) {

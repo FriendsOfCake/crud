@@ -23,7 +23,7 @@ class CrudEventSubject extends stdClass {
 		$this->set($fields);
 	}
 
-/**
+/**sh
  * Set a list of key / values to the stdClass
  *
  * @param array $fields

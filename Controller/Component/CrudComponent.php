@@ -1,6 +1,6 @@
 <?php
 
-App::uses('CrudEventSubject', 'Crud.Controller/Event');
+App::uses('CrudEventSubject', 'Crud.Controller/Listener');
 
 /**
  * Crud component
@@ -111,7 +111,7 @@ class CrudComponent extends Component {
  *
  * `listenerClassMap` List of internal-name => ${plugin}.${class} listeners
  * that will be bound automatically in Crud. By default translations and related model events
- * are bound. Events will always assume to be in the Controller/Event folder
+ * are bound. Events will always assume to be in the Controller/Listener folder
  *
  * @var array
  */
@@ -170,8 +170,8 @@ class CrudComponent extends Component {
 			'admin_delete' => 'count'
 		),
 		'listenerClassMap' => array(
-			'translations' => 'Crud.TranslationsEvent',
-			'related' => 'Crud.RelatedModelsEvent'
+			'translations' => 'Crud.TranslationsListener',
+			'related' => 'Crud.RelatedModelsListener'
 		)
 	);
 
@@ -288,7 +288,7 @@ class CrudComponent extends Component {
 		$config = $this->config(sprintf('listenerClassMap.%s', $name));
 
 		list($plugin, $class) = pluginSplit($config, true);
-		App::uses($class, $plugin . 'Controller/Event');
+		App::uses($class, $plugin . 'Controller/Listener');
 
 		// Make sure to cleanup duplicate events
 		if (isset($this->_listeners[$name])) {

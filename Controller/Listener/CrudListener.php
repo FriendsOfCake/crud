@@ -14,7 +14,7 @@
  */
 App::uses('CakeEventListener', 'Event');
 
-abstract class CrudBaseEvent extends Object implements CakeEventListener {
+abstract class CrudListener extends Object implements CakeEventListener {
 
 /**
  * Returns a list of all events that will fire in the controller during it's life cycle.

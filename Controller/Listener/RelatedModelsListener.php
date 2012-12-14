@@ -1,6 +1,6 @@
 <?php
 
-App::uses('CrudEventSubject', 'Crud.Controller/Event');
+App::uses('CrudEventSubject', 'Crud.Controller/Listener');
 App::uses('CakeEventListener', 'Event');
 
 /**
@@ -8,7 +8,7 @@ App::uses('CakeEventListener', 'Event');
  * the view
  *
  */
-class RelatedModelsEvent implements CakeEventListener {
+class RelatedModelsListener implements CakeEventListener {
 
 /**
  * Crud Component reference
