@@ -229,6 +229,8 @@ class CrudComponent extends Component {
 		// Make sure to update internal action property
 		$this->_action = $action;
 
+		$this->_loadListeners();
+
 		// Trigger init callback
 		$this->trigger('init');
 
@@ -245,8 +247,6 @@ class CrudComponent extends Component {
 			$view = $viewFile;
 			$this->_controller->view = $viewFile;
 		}
-
-		$this->_loadListeners();
 
 		try {
 			$actionToInvoke = $this->config($actionMapKey);
