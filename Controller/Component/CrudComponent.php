@@ -60,7 +60,7 @@ class CrudComponent extends Component {
 	protected $_modelName;
 
 /**
- * Cached propety for the current Controller::modelClass instance
+ * Cached property for the current Controller::modelClass instance
  *
  * @var Model
  */
@@ -77,7 +77,7 @@ class CrudComponent extends Component {
  * Components settings.
  *
  * `validateId` ID Argument validation - by default it will inspect your model's primary key
- * and based on it's datatype either use integer or uuid validation.
+ * and based on it's data type either use integer or uuid validation.
  * Can be disabled by setting it to "false". Supports "integer" and "uuid" configuration
  * By default it's configuration is NULL, which means "auto detect"
  *
@@ -229,7 +229,7 @@ class CrudComponent extends Component {
 		// Make sure to update internal action property
 		$this->_action = $action;
 
-		// Trigger init functionality
+		// Trigger init callback
 		$this->trigger('init');
 
 		// Test if action is mapped
@@ -333,10 +333,10 @@ class CrudComponent extends Component {
 /**
  * Triggers a Crud event by creating a new subject and filling it with $data
  * if $data is an instance of CrudSubject it will be reused as the subject
- * objec for this event.
+ * object for this event.
  *
- * If Event listenrs return a CakeResponse object, the this methid will throw an
- * exeption and fill a 'response' property on it with a referente to the response
+ * If Event listeners return a CakeResponse object, the this method will throw an
+ * exception and fill a 'response' property on it with a reference to the response
  * object.
  *
  * @throws Exception if any event listener return a CakeResponse object
