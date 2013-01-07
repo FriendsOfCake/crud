@@ -1,6 +1,6 @@
 <?php
 /**
- * Crud Event subject
+ * Crud subject
  *
  * All Crud.* events passes this object as subject
  *
@@ -11,43 +11,43 @@
  *
  * @copyright Nodes ApS, 2012
  */
-class CrudEventSubject extends stdClass {
+class CrudSubject extends stdClass {
 
-	/**
-	* Constructor
-	*
-	* @param array $fields
-	* @return void
-	*/
+/**
+ * Constructor
+ *
+ * @param array $fields
+ * @return void
+ */
 	public function __construct($fields = array()) {
 		$this->set($fields);
 	}
 
-	/**
-	* Set a list of key / values to the stdClass
-	*
-	* @param array $fields
-	* @return void
-	*/
+/**sh
+ * Set a list of key / values to the stdClass
+ *
+ * @param array $fields
+ * @return void
+ */
 	public function set($fields) {
 		foreach ($fields as $k => $v) {
 			$this->{$k} = $v;
 		}
 	}
 
-	/**
-	 * Check about they called action, is whitelisted or blacklisted
-	 * Depening on the mode.
-	 *
-	 * Modes:
-	 * only => only if in array (whitelist)
-	 * not	=> only if NOT in array (blacklist)
-	 *
-	 * @param string $mode
-	 * @param mixed $actions
-	 *
-	 * @return boolean
-	 */
+/**
+ * Check about they called action, is white listed or blacklisted
+ * depending on the mode.
+ *
+ * Modes:
+ * only => only if in array (white list)
+ * not	=> only if NOT in array (blacklist)
+ *
+ * @param string $mode
+ * @param mixed $actions
+ *
+ * @return boolean
+ */
 	public function shouldProcess($mode, $actions = array()) {
 		if (is_string($actions)) {
 			$actions = array($actions);
@@ -66,4 +66,5 @@ class CrudEventSubject extends stdClass {
 				throw new \Exception('Invalid mode');
 		}
 	}
+
 }

@@ -1,14 +1,14 @@
 <?php
 
-App::uses('TranslationsEvent', 'Crud.Controller/Event');
+App::uses('TranslationsEvent', 'Crud.Controller/Listener');
 App::uses('CakeEvent', 'Event');
 
-class TranslationsEventTest extends CakeTestCase {
+class TranslationsListenerTest extends CakeTestCase {
 
 	public function setUp() {
 		parent::setUp();
 
-		$this->Translations = new TranslationsEvent();
+		$this->Translations = new TranslationsListener(new CrudSubject());
 	}
 
 	public function tearDown() {
