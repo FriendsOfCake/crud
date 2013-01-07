@@ -1,62 +1,152 @@
 <?php
 
 App::uses('CakeEventListener', 'Event');
+App::uses('CrudSubject', 'Crud.Controller/Event');
 
 /**
  * Implements beforeRender event listener to set related models' lists to
  * the view
  *
- **/
+ */
 class RelatedModelsListener implements CakeEventListener {
 
-	/**
-	 * CRUD component events name prefix
-	 *
-	 * @var string
-	 */
-	protected $_prefix;
+/**
+ * Crud Component reference
+ *
+ * @var CrudComponent
+ */
+	protected $_crud;
 
-	/**
-	 * List of models to be fetched in beforeRenderEvent
-	 *
-	 * @var array
-	 */
-	protected $_models = array();
+/**
+ * Crud Event subject
+ *
+ * @var CrudSubject
+ */
+	protected $_subject;
 
-	/**
-	 * Class constructor
-	 *
-	 * @param string $prefix CRUD component events name prefix
-	 * @param array $models List of models to be fetched in beforeRenderEvent
-	 * @return void
-	 */
-	public function __construct($prefix, $models) {
-		$this->_prefix = $prefix;
-		$this->_models = $models;
+/**
+ * Class constructor
+ *
+ * @param string $prefix CRUD component events name prefix
+ * @param array $models List of models to be fetched in beforeRenderEvent
+ * @return void
+ */
+	public function __construct(CrudSubject $subject) {
+		$this->_subject = $subject;
+		$this->_crud = $subject->crud;
 	}
 
-	/**
-	 * List of events implemented by this class
-	 *
-	 * @return array
-	 */
+/**
+ * Enables association list fetching for specified actions.
+ *
+ * @param string|array $actions list of action names to enable
+ * @return void
+ */
+	public function enable($actions) {
+		if (!is_array($actions)) {
+			$actions = array($actions);
+		}
+
+		foreach ($actions as $action) {
+			if (empty($this->_crud->settings['relatedLists'][$action])) {
+				$this->_crud->settings['relatedLists'][$action] = true;
+			}
+		}
+	}
+
+/**
+ * Sets the list of model relationships to be fetched as lists for an action
+ *
+ * @param array|boolean $models list of model association names to be fetch on $action
+ *  if `true`, list of models will be constructed out of associated models of main controller's model
+ * @param string $action name of the action to apply this rule to. If left null then
+ *  it will use the current controller action
+ * @return void
+ */
+	public function map($models, $action = null) {
+		if (empty($action)) {
+			$action = $this->_subject->action;
+		}
+
+		if (is_string($models)) {
+			$models = array($models);
+		}
+
+		$this->_crud->settings['relatedLists'][$action] = $models;
+	}
+
+/**
+ * Gets the list of associated model lists to be fetched for an action
+ *
+ * @param string $action name of the action
+ * @return array
+ */
+	public function models($action = null) {
+		if (empty($action)) {
+			$action = $this->_subject->action;
+		}
+
+		$settings = $this->_crud->config('relatedLists');
+
+		// If we don't have any related configuration, look up its alias in the actionMap
+		if (empty($settings[$action]) && $this->_crud->isActionMapped($action)) {
+			$action = $this->_crud->config(sprintf('actionMap.%s', $action));
+		}
+
+		// If current action isn't configured
+		if (!isset($settings[$action])) {
+			return array();
+		}
+
+		// If the action value is true and we got a configured default, inspect it
+		if ($settings[$action] === true && isset($settings['default'])) {
+			// If default is false, don't fetch any related records
+			if (false === $settings['default']) {
+				return array();
+			}
+
+			// If it's an array, return it
+			if (is_array($settings['default'])) {
+				return $settings['default'];
+			}
+		}
+
+		// Use whatever value there may have been set by the user
+		if ($settings[$action] !== true) {
+			return $settings[$action];
+		}
+
+		// Default to everything associated to the current model
+		return array_keys($this->_subject->model->getAssociated());
+	}
+
+/**
+ * List of events implemented by this class
+ *
+ * @return array
+ */
 	public function implementedEvents() {
-		return array($this->_prefix . '.beforeRender' => 'beforeRender');
+		return array($this->_crud->config('eventPrefix') . '.beforeRender' => 'beforeRender');
 	}
 
-	/**
-	 * Fetches related models' list and sets them to a variable for the view
-	 * Lists are limited buy default to 200 items. Should you need more, attach
-	 * an event listener for `beforeListRelated` event to modify the query
-	 *
-	 * @param CakeEvent
-	 * @return void
-	 */
+/**
+ * Fetches related models' list and sets them to a variable for the view
+ * Lists are limited buy default to 200 items. Should you need more, attach
+ * an event listener for `beforeListRelated` event to modify the query
+ *
+ * @param CakeEvent
+ * @return void
+ */
 	public function beforeRender($event) {
 		$component = $event->subject->crud;
 		$controller = $event->subject->controller;
+		$models = $this->models();
 
-		foreach ($this->_models as $m) {
+		if (empty($models)) {
+			return;
+		}
+
+		foreach ($models as $m) {
 			$model = $this->_getModelInstance($m, $event->subject->model, $controller);
 			$query = array('limit' => 200);
 
@@ -70,21 +160,23 @@ class RelatedModelsListener implements CakeEventListener {
 		}
 	}
 
-	/**
-	 * Returns model instance based on its name
-	 *
-	 * @param string $model name of the model
-	 * @param Model $controllerModel default model instance for controller
-	 * @param Controller $controller instance to do a first look on it
-	 * @return Model
-	 */
+/**
+ * Returns model instance based on its name
+ *
+ * @param string $model name of the model
+ * @param Model $controllerModel default model instance for controller
+ * @param Controller $controller instance to do a first look on it
+ * @return Model
+ */
 	protected function _getModelInstance($model, $controllerModel, $controller) {
 		if (isset($controllerModel->{$model})) {
 			return $controllerModel->{$model};
 		}
+
 		if (isset($controller->{$model}) && $controller->{$model} instanceOf Model) {
 			return $controller->{$model};
 		}
+
 		return ClassRegistry::init($model);
 	}
 

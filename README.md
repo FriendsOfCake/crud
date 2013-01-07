@@ -30,9 +30,9 @@
 
 # Introduction
 
-The Crud plugin allow high reusability of the default Create, Retrieve, Update and Delete (CRUD) actions in your controllers
+The Crud plugin allow high re-usability of the default Create, Retrieve, Update and Delete (CRUD) actions in your controllers
 
-Usually the code for CRUD is very simple, and always look the same - this plugin will add the actions to your controller so you don't have to reimplement them over and over
+Usually the code for CRUD is very simple, and always look the same - this plugin will add the actions to your controller so you don't have to re-implement them over and over
 
 It only works with CakePHP > 2.1 - as it utilizes the new event system
 
@@ -66,7 +66,7 @@ CakePlugin::load('Crud', array('bootstrap' => true, 'routes' => true));
 ?>
 ```
 
-In your (app) controller load the Crud component and add required method
+In your (App)Controller load the Crud component and add required method
 
 ```php
 <?php
@@ -77,12 +77,11 @@ In your (app) controller load the Crud component and add required method
  * @package App.Controller
  */
 abstract class AppController extends Controller {
-	/**
-	* List of global controller components
-	*
-	* @cakephp
-	* @var array
-	*/
+/**
+ * List of global controller components
+ *
+ * @var array
+ */
 	public $components = array(
 		// Enable CRUD actions
 		'Crud.Crud' => array(
@@ -90,16 +89,16 @@ abstract class AppController extends Controller {
 		)
 	);
 
-	/**
-	* Dispatches the controller action.	 Checks that the action exists and isn't private.
-	*
-	* If Cake raises MissingActionException we attempt to execute Crud
-	*
-	* @param CakeRequest $request
-	* @return mixed The resulting response.
-	* @throws PrivateActionException When actions are not public or prefixed by _
-	* @throws MissingActionException When actions are not defined and scaffolding and CRUD is not enabled.
-	*/
+/**
+ * Dispatches the controller action.	 Checks that the action exists and isn't private.
+ *
+ * If Cake raises MissingActionException we attempt to execute Crud
+ *
+ * @param CakeRequest $request
+ * @return mixed The resulting response.
+ * @throws PrivateActionException When actions are not public or prefixed by _
+ * @throws MissingActionException When actions are not defined and scaffolding and CRUD is not enabled.
+ */
 	public function invokeAction(CakeRequest $request) {
 		try {
 			return parent::invokeAction($request);
@@ -174,12 +173,11 @@ You can enable and disable Crud actions on the fly
  * @package App.Controller
  */
 abstract class AppController extends Controller {
-	/**
-	* List of global controller components
-	*
-	* @cakephp
-	* @var array
-	*/
+/**
+ * List of global controller components
+ *
+ * @var array
+ */
 	public $components = array(
 		// Enable CRUD actions
 		'Crud.Crud' => array(
@@ -225,30 +223,12 @@ class DemoController extends AppController {
 
 The Crud component always operates on the __$modelClass__ of your controller, that's the first model in your $uses array
 
-By default CrudComponent assumes your add and edit views is identical, and will render them both with a "form.ctp" file.
-
 There is no view for delete action, it will always redirect
-
-## Additional usage information
-
-If you are generating views from Cake Bake.
-
-Add the following to `beforeFilter()` in AppController:
-
-```php
-// Normal views
-$this->Crud->mapActionView('add',  'add');
-$this->Crud->mapActionView('edit',  'edit');
-
-// Admin views
-$this->Crud->mapActionView('admin_add',  'admin_add');
-$this->Crud->mapActionView('admin_edit',  'admin_edit');
-```
 
 Default `$components` variable according to the documentation is like this:
 
 ```php
-public $components=array(
+public $components = array(
     // Enable CRUD actions
     'Crud.Crud' => array(
         'actions' => array('index', 'add', 'edit', 'view', 'delete')
@@ -256,16 +236,16 @@ public $components=array(
 );
 ```
 
-In this case, it will assume that all the IDs of your models are made with UUID.
+In this case, it will assume that all the IDs of your models are made with integers.
 
-If they are `numerically indexed`, please add the following setting:
+If they are `UUID indexed`, please add the following setting:
 
 ```php
 public $components = array(
     // Enable CRUD actions
     'Crud.Crud' => array(
         'actions' => array('index', 'add', 'edit', 'view', 'delete'),
-        'validateId' => 'integer'
+        'validateId' => 'uuid'
     )
 );
 ```

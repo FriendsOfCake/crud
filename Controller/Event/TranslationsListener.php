@@ -1,6 +1,7 @@
 <?php
 
-App::uses('CrudBaseEvent', 'Crud.Controller/Event');
+App::uses('CakeEventListener', 'Event');
+App::uses('CrudSubject', 'Crud.Controller/Event');
 
 /**
  * TranslationsEvent for Crud
@@ -15,7 +16,7 @@ App::uses('CrudBaseEvent', 'Crud.Controller/Event');
  * @see http://book.cakephp.org/2.0/en/controllers/components.html#Component
  * @copyright Nodes ApS, 2012
  */
-class TranslationsEvent extends CrudBaseEvent {
+class TranslationsListener implements CakeEventListener {
 
 /**
  * Configurations for TranslationsEvent
@@ -86,19 +87,51 @@ class TranslationsEvent extends CrudBaseEvent {
 	);
 
 /**
- * Constructor
+ * Crud Component reference
  *
- * Initializes default translations and merge them with
- * user supplied user configurations
+ * @var CrudComponent
+ */
+	protected $_crud;
+
+/**
+ * Crud Event subject
  *
- * @param array $config
+ * @var CrudSubject
+ */
+	protected $_subject;
+
+/**
+ * Class constructor
+ *
+ * @param string $prefix CRUD component events name prefix
+ * @param array $models List of models to be fetched in beforeRenderEvent
  * @return void
  */
-	public function __construct($config = array()) {
+	public function __construct(CrudSubject $subject) {
+		$this->_subject = $subject;
 		$this->_config = $this->_defaults;
-		if ($config) {
-			$this->config($config);
+
+		if (!isset($subject->crud)) {
+			return;
 		}
+
+		$this->_crud = $subject->crud;
+		if ($translations = $this->_crud->config('translations')) {
+			$this->config($translations);
+		}
+
+	}
+
+/**
+ * Returns a list of all events that will fire in the controller during it's life cycle.
+ * You can override this function to add you own listener callbacks
+ *
+ * @return array
+ */
+	public function implementedEvents() {
+		return array(
+			'Crud.setFlash' => array('callable' => 'setFlash', 'priority' => 5)
+		);
 	}
 
 /**

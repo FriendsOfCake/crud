@@ -1,7 +1,6 @@
 <?php
 
-App::uses('CrudEventSubject', 'Crud.Controller/Event');
-App::uses('TranslationsEvent', 'Crud.Controller/Event');
+App::uses('CrudSubject', 'Crud.Controller/Event');
 
 /**
  * Crud component
@@ -21,7 +20,6 @@ class CrudComponent extends Component {
 /**
  * Reference to a Session component
  *
- * @cakephp
  * @var array
  */
 	public $components = array('Session');
@@ -29,7 +27,6 @@ class CrudComponent extends Component {
 /**
  * The current controller action
  *
- * @platform
  * @var string
  */
 	protected $_action;
@@ -37,7 +34,6 @@ class CrudComponent extends Component {
 /**
  * Reference to the current controller
  *
- * @platform
  * @var Controller
  */
 	protected $_controller;
@@ -45,7 +41,6 @@ class CrudComponent extends Component {
 /**
  * Reference to the current request
  *
- * @platform
  * @var CakeRequest
  */
 	protected $_request;
@@ -53,7 +48,6 @@ class CrudComponent extends Component {
 /**
  * Reference to the current event manager
  *
- * @platform
  * @var CakeEventManager
  */
 	protected $_eventManager;
@@ -61,137 +55,125 @@ class CrudComponent extends Component {
 /**
  * Cached property for Controller::modelClass
  *
- * @platform
  * @var string
  */
 	protected $_modelName;
 
 /**
- * Cached propety for the current Controller::modelClass instance
+ * Cached property for the current Controller::modelClass instance
  *
- * @platform
  * @var Model
  */
 	protected $_model;
 
 /**
- * All emitted events will be prefixed with this property value
- *
- * @platform
- * @var string
- */
-	protected $_eventPrefix = 'Crud';
-
-/**
- * List of event objects attached to Crud
+ * List of listener objects attached to Crud
  *
  * @var array
  */
-	protected $_events = array();
-
-/**
- * List of classes to be used internally in Crud
- *
- * @var array
- */
-	protected $_classes = array(
-		'translations' => 'Crud.TranslationsEvent',
-		'relatedModels' => 'Crud.RelatedModelsListener'
-	);
-
-/**
- * A map of the controller action and what CRUD action we should call
- *
- * By default it supports non-prefix and admin_ prefixed routes
- *
- * @platform
- * @var array
- */
-	protected $_actionMap = array(
-		'index'			=> 'index',
-		'add'			=> 'add',
-		'edit'			=> 'edit',
-		'view'			=> 'view',
-		'delete'		=> 'delete',
-
-		'admin_index'	=> 'index',
-		'admin_add'		=> 'add',
-		'admin_edit'	=> 'edit',
-		'admin_view'	=> 'view',
-		'admin_delete'	=> 'delete'
-	);
-
-/**
- * A map of the controller action and the view to render
- *
- * By default it supports non-prefix and admin_ prefixed routes
- *
- * @platform
- * @var array
- */
-	protected $_viewMap = array(
-		'index'			=> 'index',
-		'add'			=> 'form',
-		'edit'			=> 'form',
-		'view'			=> 'view',
-
-		'admin_index'	=> 'admin_index',
-		'admin_add'		=> 'admin_form',
-		'admin_edit'	=> 'admin_form',
-		'admin_view'	=> 'admin_view'
-	);
-
-/**
- * The default find method for reading data
- *
- * Model->find($method)
- *
- * @platform
- * @var array
- */
-	protected $_findMethodMap = array(
-		'index'			=> 'all',
-		'edit'			=> 'first',
-		'view'			=> 'first',
-		'delete'		=> 'count',
-
-		'admin_index'	=> 'all',
-		'admin_edit'	=> 'first',
-		'admin_view'	=> 'first',
-		'admin_delete'	=> 'count'
-	);
+	protected $_listeners = array();
 
 /**
  * Components settings.
  *
- * `actions` key should contain an array of controller methods this component should offer
- * implementation for.
+ * `validateId` ID Argument validation - by default it will inspect your model's primary key
+ * and based on it's data type either use integer or uuid validation.
+ * Can be disabled by setting it to "false". Supports "integer" and "uuid" configuration
+ * By default it's configuration is NULL, which means "auto detect"
+ *
+ * `eventPrefix` All emitted events will be prefixed with this property value
+ *
+ * `secureDelete` delete() can only be called with the HTTP DELETE verb, not POST when `true`.
+ * If set to `false` HTTP POST is also acceptable
+ *
+ * `actions` contains an array of controller methods this component should offer implementation for.
+ * The actions is used for actionMap, viewMap and findMethodMap to change behavior of CrudComponent
+ * By default no actions are enabled
+ *
+ * `translations` is the settings for the translations Event, responsible for the text used in flash messages
+ * see TranslationsEvent::$_defaults the full list of options
  *
  * `relatedList` is a map of the controller action and the whether it should fetch associations lists
  * to be used in select boxes. An array as value means it is enabled and represent the list
  * of model associations to be fetched
- * `translations` is the config for the translations Event, responsible for the text used in flash messages
- * see TranslationsEvent::$_defaults the full list of options
+ *
+ * `saveAllOptions` Raw array passed as 2nd argument to saveAll() in `add` and `edit` method
+ * If you configure a key with your action name, it will override the default settings.
+ * This is useful for adding fieldList to enhance security in saveAll.
+ *
+ * `actionMap` A map of the controller action and what CRUD action we should call.
+ * By default it supports non-prefix and admin_ prefixed routes
+ *
+ * `viewMap` A map of the controller action and the view to render
+ * By default it supports non-prefix and admin_ prefixed routes
+ *
+ * `findMethodMap` The default find method for reading data
+ *
+ * `listenerClassMap` List of internal-name => ${plugin}.${class} listeners
+ * that will be bound automatically in Crud. By default translations and related model events
+ * are bound. Events will always assume to be in the Controller/Event folder
  *
  * @var array
  */
 	public $settings = array(
+		'validateId' => null,
+		'secureDelete' => true,
+		'eventPrefix' => 'Crud',
 		'actions' => array(),
+		'translations' => array(),
 		'relatedLists' => array(
 			'add' => true,
-			'edit' => true
+			'edit' => true,
+
+			'admin_add' => true,
+			'admin_edit' => true
 		),
-		'translations' => array(
+		'saveAllOptions' => array(
+			'default' => array(
+				'validate' => 'first',
+				'atomic' => true
+			)
+		),
+		'actionMap' => array(
+			'index'	=> 'index',
+			'add' => 'add',
+			'edit' => 'edit',
+			'view' => 'view',
+			'delete' => 'delete',
+
+			'admin_index' => 'index',
+			'admin_add' => 'add',
+			'admin_edit' => 'edit',
+			'admin_view' => 'view',
+			'admin_delete' => 'delete'
+		),
+		'viewMap' => array(
+			'index' => 'index',
+			'add' => 'add',
+			'edit'=> 'edit',
+			'view' => 'view',
+
+			'admin_index' => 'admin_index',
+			'admin_add' => 'admin_add',
+			'admin_edit' => 'admin_edit',
+			'admin_view' => 'admin_view'
+		),
+		'findMethodMap' => array(
+			'index'	=> 'all',
+			'edit' => 'first',
+			'view' => 'first',
+			'delete' => 'count',
+
+			'admin_index' => 'all',
+			'admin_edit' => 'first',
+			'admin_view' => 'first',
+			'admin_delete' => 'count'
+		),
+		'listenerClassMap' => array(
+			'translations' => 'Crud.TranslationsListener',
+			'related' => 'Crud.RelatedModelsListener'
 		)
 	);
-
-/**
- * Name of the event listener class to be used for fetching related models list
- * Class will be lokked up in Controller/Event package
- *
- * @var string
- */
-	protected $_relatedListEventClass = 'Crud.RelatedModelsListener';
 
 /**
  * Constructor
@@ -213,7 +195,7 @@ class CrudComponent extends Component {
  * @return void
  */
 	public function initialize(Controller $controller) {
-		if ($controller->name == 'CakeError') {
+		if ($controller->name === 'CakeError') {
 			return true;
 		}
 
@@ -221,9 +203,9 @@ class CrudComponent extends Component {
 		$this->_controller->methods = array_keys(array_flip($this->_controller->methods) + array_flip($this->settings['actions']));
 
 		// Create some easy accessible class properties
-		$this->_action		= $this->_controller->request->action;
-		$this->_request		= $this->_controller->request;
-		$this->_eventManager= $this->_controller->getEventManager();
+		$this->_action = $this->_controller->request->action;
+		$this->_request = $this->_controller->request;
+		$this->_eventManager = $this->_controller->getEventManager();
 
 		if (!isset($this->_controller->dispatchComponents)) {
 			$this->_controller->dispatchComponents = array();
@@ -236,41 +218,40 @@ class CrudComponent extends Component {
 /**
  * Execute a Crud action
  *
- * @platform
- * @param string $action		The CRUD action
- * @param array $arguments	List of arguments to pass to the CRUD action (Usually an ID to edit / delete)
+ * @param string $controllerAction Override the controller action to execute as
+ * @param array $arguments List of arguments to pass to the CRUD action (Usually an ID to edit / delete)
  * @return mixed void, or a CakeResponse object
  */
-	public function executeAction($action = null, $args = array()) {
-		$view = $action = $action ?: $this->_action;
+	public function executeAction($controllerAction = null, $args = array()) {
+		$view = $action = $controllerAction ?: $this->_action;
 		$this->_setModelProperties();
 
 		// Make sure to update internal action property
 		$this->_action = $action;
 
+		$this->_loadListeners();
+
+		// Trigger init callback
 		$this->trigger('init');
 
 		// Test if action is mapped
-		if (empty($this->_actionMap[$action])) {
+		$actionMapKey = sprintf('actionMap.%s', $action);
+		if (!$this->config($actionMapKey)) {
 			throw new RuntimeException(sprintf('Action "%s" has not been mapped', $action));
 		}
 
 		// Change the view file before executing the CRUD action (so mapActionView works)
-		if (array_key_exists($action, $this->_viewMap)) {
-			$view = $this->_viewMap[$action];
-			$this->_controller->view = $view;
+		$viewMapKey = sprintf('viewMap.%s', $action);
+		$viewFile = $this->config($viewMapKey);
+		if (!empty($viewFile)) {
+			$view = $viewFile;
+			$this->_controller->view = $viewFile;
 		}
 
 		try {
-			if ($models = $this->relatedModels($action)) {
-				list($plugin, $class) = pluginSplit($this->_classes['relatedModels'], true);
-				App::uses($class, $plugin . 'Controller/Event');
-				$this->_events['relatedModels'] = new $class($this->_eventPrefix, $models);
-				$this->_controller->getEventManager()->attach($this->_events['relatedModels']);
-			}
-
+			$actionToInvoke = $this->config($actionMapKey);
 			// Execute the default action, inside this component
-			$response = call_user_func_array(array($this, '_' . $this->_actionMap[$action] . 'Action'), $args);
+			$response = call_user_func_array(array($this, '_' . $actionToInvoke . 'Action'), $args);
 			if ($response instanceof CakeResponse) {
 				return $response;
 			}
@@ -285,26 +266,85 @@ class CrudComponent extends Component {
 		return $this->_controller->response = $this->_controller->render($view);
 	}
 
+/**
+ * Load all event classes attached to Crud
+ *
+ * @return void
+ */
+	protected function _loadListeners() {
+		foreach (array_keys($this->config('listenerClassMap')) as $name) {
+			$this->_loadListener($name);
+		}
+	}
+
+/**
+ * Load a single event class attached to Crud
+ *
+ * @param string $name
+ * @return void
+ */
+	protected function _loadListener($name) {
+		$subject = $this->_getSubject();
+
+		$config = $this->config(sprintf('listenerClassMap.%s', $name));
+
+		list($plugin, $class) = pluginSplit($config, true);
+		App::uses($class, $plugin . 'Controller/Event');
+
+		// Make sure to cleanup duplicate events
+		if (isset($this->_listeners[$name])) {
+			$this->_eventManager->detach($this->_listeners[$name]);
+			unset($this->_listeners[$name]);
+		}
+
+		$this->_listeners[$name] = new $class($subject);
+		$this->_eventManager->attach($this->_listeners[$name]);
+	}
+
+/**
+ * Get a single event class
+ *
+ * @param string $name
+ * @param boolean $created create if it doesn't exist
+ * @return CrudBaseEvent
+ */
+	public function getListener($name, $create = true) {
+		if (empty($this->_listeners[$name])) {
+			if (!$create) {
+				return false;
+			}
+
+			$this->_loadListener($name);
+		}
+
+		return $this->_listeners[$name];
+	}
+
+/**
+ * Set internal model properties from the controller
+ *
+ * @return void
+ */
 	protected function _setModelProperties() {
-		$this->_modelName	= $this->_controller->modelClass;
-		$this->_model		= $this->_controller->{$this->_modelName};
+		$this->_modelName = $this->_controller->modelClass;
+		$this->_model = $this->_controller->{$this->_modelName};
 	}
 
 /**
  * Triggers a Crud event by creating a new subject and filling it with $data
- * if $data is an instance of CrudEventSubject it will be reused as the subject
- * objec for this event.
+ * if $data is an instance of CrudSubject it will be reused as the subject
+ * object for this event.
  *
- * If Event listenrs return a CakeResponse object, the this methid will throw an
- * exeption and fill a 'response' property on it with a referente to the response
+ * If Event listeners return a CakeResponse object, the this method will throw an
+ * exception and fill a 'response' property on it with a reference to the response
  * object.
  *
  * @throws Exception if any event listener return a CakeResponse object
- * @return CrudEventSubject
- **/
+ * @return CrudSubject
+ */
 	public function trigger($eventName, $data = array()) {
-		$subject = $data instanceof CrudEventSubject ? $data : $this->_getSubject($data);
-		$event = new CakeEvent($this->_eventPrefix . '.' . $eventName, $subject);
+		$subject = $data instanceof CrudSubject ? $data : $this->_getSubject($data);
+		$event = new CakeEvent($this->config('eventPrefix') . '.' . $eventName, $subject);
 		$this->_eventManager->dispatch($event);
 
 		if ($event->result instanceof CakeResponse) {
@@ -324,7 +364,6 @@ class CrudComponent extends Component {
 /**
  * Enable a CRUD action
  *
- * @platform
  * @param string $action The action to enable
  * @return void
  */
@@ -343,7 +382,6 @@ class CrudComponent extends Component {
 /**
  * Disable a CRUD action
  *
- * @platform
  * @param string $action The action to disable
  * @return void
  */
@@ -364,18 +402,17 @@ class CrudComponent extends Component {
  *
  * To map multiple action views in one go pass an array as first argument and no second argument
  *
- * @platform
  * @param string|array $action
  * @param string $view
  * @return void
  */
 	public function mapActionView($action, $view = null) {
 		if (is_array($action)) {
-			$this->_viewMap = $action + $this->_viewMap;
+			$this->config('viewMap', $action);
 			return;
 		}
 
-		$this->_viewMap[$action] = $view;
+		$this->config(sprintf('viewMap.%s', $action), $view);
 	}
 
 /**
@@ -387,7 +424,7 @@ class CrudComponent extends Component {
  * @return void
  */
 	public function mapAction($action, $type, $enable = true) {
-		$this->_actionMap[$action] = $type;
+		$this->config(sprintf('actionMap.%s', $action), $type);
 		if ($enable) {
 			$this->enableAction($action);
 		}
@@ -410,13 +447,12 @@ class CrudComponent extends Component {
 /**
  * Map a controller action to a Model::find($method)
  *
- * @platform
  * @param string $action
  * @param strign $method
  * @return void
  */
 	public function mapFindMethod($action, $method) {
-		$this->_findMethodMap[$action] = $method;
+		$this->config(sprintf('findMethodMap.%s', $action), $method);
 	}
 
 /**
@@ -425,7 +461,7 @@ class CrudComponent extends Component {
  * @param string|array $events Name of the Crud Event you want to attach to controller
  * @param callback $callback callable method or closure to be executed on event
  * @return void
- **/
+ */
 	public function on($events, $callback) {
 		if (!is_array($events)) {
 			$events = array($events);
@@ -433,49 +469,10 @@ class CrudComponent extends Component {
 
 		foreach ($events as $event) {
 			if (!strpos($event, '.')) {
-				$event = $this->_eventPrefix . '.' . $event;
+				$event = $this->config('eventPrefix') . '.' . $event;
 			}
 			$this->_controller->getEventManager()->attach($callback, $event);
 		}
-	}
-
-/**
- * Enables association list fetching for specified actions.
- *
- * @param string|array $actions list of action names to enable
- * @return void
- */
-	public function enableRelatedList($actions) {
-		if (!is_array($actions)) {
-			$actions = array($actions);
-		}
-
-		foreach ($actions as $action) {
-			if (empty($this->settings['relatedLists'][$action])) {
-				$this->settings['relatedLists'][$action] = true;
-			}
-		}
-	}
-
-/**
- * Sets the list of model relationships to be fetched as lists for an action
- *
- * @param array|boolean $models list of model association names to be fetch on $action
- *  if `true`, list of models will be constructud out of associated models of main controller's model
- * @param stirng $action name of the action to apply this rule to. If left null then
- *  it will use the current controller action
- * @return void
- */
-	public function mapRelatedList($models, $action = null) {
-		if (empty($action)) {
-			$action = $this->_action;
-		}
-
-		if (is_string($models)) {
-			$models = array($models);
-		}
-
-		$this->settings['relatedLists'][$action] = $models;
 	}
 
 /**
@@ -495,7 +492,7 @@ class CrudComponent extends Component {
 			return $this->settings;
 		}
 
-		if (empty($value)) {
+		if (is_null($value)) {
 			if (is_array($key)) {
 				$this->settings = $this->settings + $key;
 				return $this;
@@ -505,7 +502,7 @@ class CrudComponent extends Component {
 		}
 
 		if (is_array($value)) {
-			$value = $value + Hash::get($this->settings, $key);
+			$value = $value + (array)Hash::get($this->settings, $key);
 		}
 
 		$this->settings = Hash::insert($this->settings, $key, $value);
@@ -513,63 +510,8 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Gets the list of associated model lists to be fetched for an action
- *
- * @param array $models list of model association names to be fetch on $action
- * @param stirng $action name of the action
- * @return array
- */
-	public function relatedModels($action) {
-		// If we don't have any related configuration, look up its alias in _actionMap
-		if (empty($this->settings['relatedLists'][$action]) && $this->isActionMapped($action)) {
-			$action = $this->_actionMap[$action];
-		}
-
-		// If current action isn't configured
-		if (!isset($this->settings['relatedLists'][$action])) {
-			return array();
-		}
-
-		// If the action value is true and we got a configured default, inspect it
-		if ($this->settings['relatedLists'][$action] === true && isset($this->settings['relatedLists']['default'])) {
-			// If default is false, don't fetch any related records
-			if (false === $this->settings['relatedLists']['default']) {
-				return array();
-			}
-
-			// If it's an array, return it
-			if (is_array($this->settings['relatedLists']['default'])) {
-				return $this->settings['relatedLists']['default'];
-			}
-		}
-
-		// Use whatever value there may have been set by the user
-		if ($this->settings['relatedLists'][$action] !== true) {
-			return $this->settings['relatedLists'][$action];
-		}
-
-		// Default to everything associated to the current model
-		return array_keys($this->_controller->{$this->_controller->modelClass}->getAssociated());
-	}
-
-/**
- * Sets the class name to be used as an event listener for generating related models' lists
- * If called with no arguments it will return currently set up class
- *
- * @param string $className
- * @return string class name to be used as event listener
- */
-	public function relatedModelsListener($className = null) {
-		if (empty($className)) {
-			return $this->_relatedListEventClass;
-		}
-		return $this->_relatedListEventClass = $className;
-	}
-
-/**
  * Helper method to get the passed ID to an action
  *
- * @platform
  * @return string
  */
 	public function getIdFromRequest() {
@@ -583,10 +525,14 @@ class CrudComponent extends Component {
  * Create a CakeEvent subject with the required properties
  *
  * @param array $additional Additional properties for the subject
- * @return CrudEventSubject
+ * @return CrudSubject
  */
 	protected function _getSubject($additional = array()) {
-		$subject				= new CrudEventSubject();
+		if (empty($this->_model) || empty($this->_modelName)) {
+			$this->_setModelProperties();
+		}
+
+		$subject				= new CrudSubject();
 		$subject->crud			= $this;
 		$subject->controller	= $this->_controller;
 		$subject->model			= $this->_model;
@@ -611,8 +557,9 @@ class CrudComponent extends Component {
 			$action = $this->_action;
 		}
 
-		if (!empty($this->_findMethodMap[$action])) {
-			return $this->_findMethodMap[$action];
+		$findMethod = $this->config(sprintf('findMethodMap.%s', $action));
+		if (!empty($findMethod)) {
+			return $findMethod;
 		}
 
 		return $default;
@@ -627,7 +574,6 @@ class CrudComponent extends Component {
  *	- Crud.afterPaginate
  *	- Crud.beforeRender
  *
- * @platform
  * @param string $id
  * @return void
  */
@@ -692,14 +638,13 @@ class CrudComponent extends Component {
  *	- Crud.afterSave
  *	- Crud.beforeRender
  *
- * @platform
  * @param string $id
  * @return void
  */
 	protected function _addAction() {
 		if ($this->_request->is('post')) {
 			$this->trigger('beforeSave');
-			if ($this->_model->saveAll($this->_request->data, array('validate' => 'first', 'atomic' => true))) {
+			if ($this->_model->saveAll($this->_request->data, $this->_getSaveAllOptions())) {
 				$this->_setFlash('create.success');
 				$subject = $this->trigger('afterSave', array('success' => true, 'id' => $this->_model->id));
 				return $this->_redirect($subject, array('action' => 'index'));
@@ -726,7 +671,6 @@ class CrudComponent extends Component {
  *	- Crud.afterFind
  *	- Crud.beforeRender
  *
- * @platform
  * @param string $id
  * @return void
  */
@@ -738,7 +682,7 @@ class CrudComponent extends Component {
 
 		if ($this->_request->is('put')) {
 			$this->trigger('beforeSave', compact('id'));
-			if ($this->_model->saveAll($this->_request->data, array('validate' => 'first', 'atomic' => true))) {
+			if ($this->_model->saveAll($this->_request->data, $this->_getSaveAllOptions())) {
 				$this->_setFlash('update.success');
 				$subject = $this->trigger('afterSave', array('id' => $id, 'success' => true));
 				return $this->_redirect($subject, array('action' => 'index'));
@@ -780,7 +724,6 @@ class CrudComponent extends Component {
  *	- Crud.afterFind
  *	- Crud.beforeRender
  *
- * @platform
  * @param string $id
  * @return void
  */
@@ -829,7 +772,6 @@ class CrudComponent extends Component {
  *	- beforeDelete
  *	- afterDelete
  *
- * @platform
  * @param string $id
  * @return void
  */
@@ -839,6 +781,13 @@ class CrudComponent extends Component {
 		}
 
 		$this->_validateId($id);
+
+		if (!$this->_request->is('delete') && !($this->_request->is('post') && false === $this->config('secureDelete'))) {
+			$subject = $this->_getSubject(compact('id'));
+			$this->_setFlash('error.invalid_http_request');
+			return $this->_redirect($subject, $this->_controller->referer(array('action' => 'index')));
+		}
+
 		$query = array();
 		$query['conditions'] = array($this->_model->escapeField() => $id);
 
@@ -850,25 +799,21 @@ class CrudComponent extends Component {
 		if (empty($count)) {
 			$subject = $this->trigger('recordNotFound', compact('id'));
 			$this->_setFlash('find.error');
-			return $this->_redirect($subject, array('action' => 'index'));
+			return $this->_redirect($subject, $this->_controller->referer(array('action' => 'index')));
 		}
 
 		$subject = $this->trigger('beforeDelete', compact('id'));
 		if ($subject->stopped) {
 			$this->_setFlash('delete.error');
-			return $this->_redirect($subject, array('action' => 'index'));
+			return $this->_redirect($subject, $this->_controller->referer(array('action' => 'index')));
 		}
 
-		if ($this->_request->is('delete')) {
-			if ($this->_model->delete($id)) {
-				$this->_setFlash('delete.success');
-				$subject = $this->trigger('afterDelete', array('id' => $id, 'success' => true));
-			} else {
-				$this->_setFlash('delete.error');
-				$subject = $this->trigger('afterDelete', array('id' => $id, 'success' => false));
-			}
+		if ($this->_model->delete($id)) {
+			$this->_setFlash('delete.success');
+			$subject = $this->trigger('afterDelete', array('id' => $id, 'success' => true));
 		} else {
-			$this->_setFlash('error.invalid_http_request');
+			$this->_setFlash('delete.error');
+			$subject = $this->trigger('afterDelete', array('id' => $id, 'success' => false));
 		}
 
 		return $this->_redirect($subject, $this->_controller->referer(array('action' => 'index')));
@@ -905,9 +850,13 @@ class CrudComponent extends Component {
  */
 	protected function _setFlash($type) {
 		$name = $this->_getResourceName();
-		$this->_ensureTranslationsEvent();
+		$this->getListener('translations');
 
-		$subject = $this->trigger('setFlash', compact('type', 'name'));
+		// default values
+		$message = $element = $key = null;
+		$params = array();
+
+		$subject = $this->trigger('setFlash', compact('message', 'element', 'params', 'key', 'type', 'name'));
 		$this->Session->setFlash($subject->message, $subject->element, $subject->params, $subject->key);
 	}
 
@@ -928,36 +877,23 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Ensure a translations event is attached
- *
- * @return void
- */
-	protected function _ensureTranslationsEvent() {
-		if (!empty($this->_events['translations'])) {
-			return true;
-		}
-
-		$this->_events['translations'] = new TranslationsEvent($this->settings['translations']);
-		$this->_eventManager->attach($this->_events['translations']);
-	}
-
-/**
  * Is the passed ID valid ?
  *
- * By default we asume you want to validate an UUID string
+ * By default we assume you want to validate an numeric string
+ * like a normal incremental ids from MySQL
  *
- * Change the validateId settings key to "integer" for is_numeric check instead
+ * Change the validateId settings key to "uuid" for UUID check instead
  *
+ * @param mixed $id
  * @return boolean
  */
-	protected function _validateId($id, $type = null) {
-		if (empty($type)) {
-			if (isset($this->settings['validateId'])) {
-				$type = $this->settings['validateId'];
-			} else {
-				$type = 'uuid';
-			}
+	protected function _validateId($id) {
+		if (isset($this->settings['validateId'])) {
+			$type = $this->settings['validateId'];
+		} else {
+			$type = $this->_detectPrimaryKeyFieldType();
 		}
+
 		if (!$type) {
 			return true;
 		} elseif ($type === 'uuid') {
@@ -974,4 +910,49 @@ class CrudComponent extends Component {
 		$this->_setFlash('error.invalid_id');
 		return $this->_redirect($subject, $this->_controller->referer());
 	}
+
+/**
+ * Automatically detect primary key data type for `_validateId()`
+ *
+ * Binary or string with length of 36 chars will be detected as UUID
+ * If the primary key is a number, integer validation will be used
+ *
+ * If no reliable detection can be made, no validation will be made
+ *
+ * @return string
+ */
+	protected function _detectPrimaryKeyFieldType() {
+		if (empty($this->_model) || empty($this->_modelName)) {
+			$this->_setModelProperties();
+		}
+
+		$fInfo = $this->_model->schema($this->_model->primaryKey);
+		if (empty($fInfo)) {
+			return false;
+		}
+
+		if ($fInfo['length'] == 36 && ($fInfo['type'] === 'string' || $fInfo['type'] === 'binary')) {
+			return 'uuid';
+		}
+
+		if ($fInfo['type'] === 'integer') {
+			return 'integer';
+		}
+
+		return false;
+	}
+
+/**
+ * Build options for saveAll
+ *
+ * Merges defaults + any custom options for the specific action
+ *
+ * @param string|NULL $action
+ * @return array
+ */
+	protected function _getSaveAllOptions($action = null) {
+		$action = $action ?: $this->_action;
+		return (array)$this->config(sprintf('saveAllOptions.%s', $action)) + $this->config('saveAllOptions.default');
+	}
+
 }
