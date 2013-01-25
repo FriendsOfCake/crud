@@ -1371,7 +1371,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 
 		$this->assertSame(1, $paging['CrudExample']['page']);
 		$this->assertSame(3, $paging['CrudExample']['current']);
-		$this->assertSame(100, $paging['CrudExample']['limit']);
+		$this->assertSame(1000, $paging['CrudExample']['limit'], "Expected the limit from CrudController::paginate to be used");
 	}
 
 	public function testIndexActionPaginationSettingsCanBeOverwritten() {
@@ -1399,7 +1399,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 
 		$this->assertSame(1, $paging['CrudExample']['page']);
 		$this->assertSame(3, $paging['CrudExample']['current']);
-		$this->assertSame(100, $paging['CrudExample']['limit']);
+		$this->assertSame(1000, $paging['CrudExample']['limit'], "Expected the limit from CrudController::paginate to be used");
 		$this->assertNotSame(23, $Paginator->settings['limit']);
 	}
 
