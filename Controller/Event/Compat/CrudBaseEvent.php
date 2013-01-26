@@ -1,6 +1,6 @@
 <?php
 
-App::uses('CrudBaseEvent', 'Crud.Controller/Event');
+App::uses('CrudListener', 'Crud.Controller/Event');
 
 /**
  * Crud Base Event

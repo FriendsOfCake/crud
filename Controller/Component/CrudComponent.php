@@ -306,7 +306,7 @@ class CrudComponent extends Component {
  *
  * @param string $name
  * @param boolean $created create if it doesn't exist
- * @return CrudBaseEvent
+ * @return CrudListener
  */
 	public function getListener($name, $create = true) {
 		if (empty($this->_listeners[$name])) {
