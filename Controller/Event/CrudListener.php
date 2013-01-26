@@ -41,6 +41,15 @@ abstract class CrudListener extends Object implements CakeEventListener {
 	protected $_configKey;
 
 /**
+ * _defaultConfig
+ *
+ * The default array for this listener - overriden in subclasses
+ *
+ * @var array
+ */
+	protected $_defaultConfig = array();
+
+/**
  * __construct
  *
  * Store a reference to the subject and crud component - if it's not already
@@ -53,6 +62,11 @@ abstract class CrudListener extends Object implements CakeEventListener {
 		$this->_crud = $subject->crud;
 		if (!$this->_configKey) {
 			$this->_configKey = Inflector::variable(substr(get_class($this), 0, -8));
+		}
+
+		if ($this->_defaultConfig) {
+			$config = Hash::merge($this->_defaultConfig, $this->config());
+			$this->config($config);
 		}
 	}
 
@@ -76,6 +90,17 @@ abstract class CrudListener extends Object implements CakeEventListener {
 		}
 		$this->_crud->config($crudKey, $value);
 		return Hash::get($this->_crud->settings, $crudKey);
+	}
+
+/**
+ * defaultConfig
+ *
+ * Return the default config for this listener
+ *
+ * @return array
+ */
+	public function defaultConfig() {
+		return $this->_defaultConfig;
 	}
 
 /**

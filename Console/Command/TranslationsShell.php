@@ -3,6 +3,8 @@
 App::uses('AppShell', 'Console/Command');
 App::uses('CrudSubject', 'Crud.Controller/Event');
 App::uses('TranslationsListener', 'Crud.Controller/Event');
+App::uses('CrudComponent', 'Crud.Controller/Component');
+App::uses('ComponentCollection', 'Controller');
 
 /**
  * TranslationsShell
@@ -202,8 +204,11 @@ class TranslationsShell extends AppShell {
  * @return void
  */
 	protected function _initializeMessages() {
-		$event = new TranslationsListener(new CrudSubject());
-		$defaults = $event->getDefaults();
+		$subject = new CrudSubject();
+		$subject->crud = new CrudComponent(new ComponentCollection());
+		$listener = new TranslationsListener($subject);
+
+		$defaults = $listener->defaultConfig();
 		foreach ($defaults as $key => $array) {
 			if (!is_array($array)) {
 				continue;

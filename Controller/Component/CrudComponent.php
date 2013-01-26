@@ -92,7 +92,7 @@ class CrudComponent extends Component {
  * By default no actions are enabled
  *
  * `translations` is the settings for the translations Event, responsible for the text used in flash messages
- * see TranslationsEvent::$_defaults the full list of options
+ * see TranslationsEvent::$defaultConfig the full list of options
  *
  * `relatedList` is a map of the controller action and the whether it should fetch associations lists
  * to be used in select boxes. An array as value means it is enabled and represent the list

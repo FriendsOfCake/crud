@@ -5,7 +5,6 @@ App::uses('Controller', 'Controller');
 App::uses('CakeEvent', 'Event');
 App::uses('SearchListener', 'Crud.Controller/Event');
 App::uses('ControllerTestCase', 'TestSuite');
-App::uses('Icecream', 'Frisko.Model');
 App::uses('CrudSubject', 'Crud.Controller/Event');
 App::uses('CrudComponent', 'Crud.Controller/Component');
 App::uses('ComponentCollection', 'Controller');

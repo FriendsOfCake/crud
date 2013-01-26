@@ -1,20 +1,24 @@
 <?php
 
-App::uses('TranslationsEvent', 'Crud.Controller/Listener');
 App::uses('CakeEvent', 'Event');
+App::uses('TranslationsListener', 'Crud.Controller/Event');
+App::uses('CrudSubject', 'Crud.Controller/Event');
+App::uses('CrudComponent', 'Crud.Controller/Component');
+App::uses('ComponentCollection', 'Controller');
 
 class TranslationsListenerTest extends CakeTestCase {
 
 	public function setUp() {
-		parent::setUp();
+		$subject = new CrudSubject();
+		$subject->crud = new CrudComponent(new ComponentCollection());
+		$this->TranslationsListener = new TranslationsListener($subject);
 
-		$this->Translations = new TranslationsListener(new CrudSubject());
+		parent::setUp();
 	}
 
 	public function tearDown() {
+		unset($this->TranslationsListener);
 		parent::tearDown();
-
-		unset($this->Translations);
 	}
 
 /**
@@ -23,7 +27,7 @@ class TranslationsListenerTest extends CakeTestCase {
  * @return void
  */
 	public function testDefaultConfig() {
-		$config = $this->Translations->config();
+		$config = $this->TranslationsListener->config();
 		$expected = array(
 			'domain' => 'crud',
 			'name' => null,
@@ -58,7 +62,7 @@ class TranslationsListenerTest extends CakeTestCase {
 				'error' => array('message' => 'Denied!', 'element' => 'error')
 			)
 		);
-		$config = $this->Translations->config($override);
+		$config = $this->TranslationsListener->config($override);
 
 		$expected = array(
 			'domain' => 'crud',
@@ -93,8 +97,8 @@ class TranslationsListenerTest extends CakeTestCase {
  */
 	public function testConfigChangeSingleKey() {
 		$expected = 'hello world {name}';
-		$this->Translations->config('create.success.message', $expected);
-		$this->assertEquals($expected, $this->Translations->config('create.success.message'));
+		$this->TranslationsListener->config('create.success.message', $expected);
+		$this->assertEquals($expected, $this->TranslationsListener->config('create.success.message'));
 	}
 
 /**
@@ -104,8 +108,8 @@ class TranslationsListenerTest extends CakeTestCase {
  */
 	public function testConfigChangeArraySingleKey() {
 		$expected = array('message' => 'hello world {name}');
-		$this->Translations->config('create.success', $expected);
-		$this->assertEquals($expected + array('element' => 'success'), ($this->Translations->config('create.success') + array('element' => 'success')));
+		$this->TranslationsListener->config('create.success', $expected);
+		$this->assertEquals($expected + array('element' => 'success'), ($this->TranslationsListener->config('create.success') + array('element' => 'success')));
 	}
 
 /**
@@ -115,8 +119,8 @@ class TranslationsListenerTest extends CakeTestCase {
  */
 	public function testConfigChangeArrayMultiKey() {
 		$expected = array('message' => 'hello world {name}', 'element' => 'sample');
-		$this->Translations->config('create.success', $expected);
-		$this->assertEquals($expected, $this->Translations->config('create.success'));
+		$this->TranslationsListener->config('create.success', $expected);
+		$this->assertEquals($expected, $this->TranslationsListener->config('create.success'));
 	}
 
 /**
@@ -134,7 +138,7 @@ class TranslationsListenerTest extends CakeTestCase {
 		$Event = new CakeEvent('Crud.afterSave', $std);
 
 		// "trigger" our callback
-		$this->Translations->setFlash($Event);
+		$this->TranslationsListener->setFlash($Event);
 
 		// Compare
 		$this->assertSame('Successfully created Blog', $std->message);
@@ -143,13 +147,13 @@ class TranslationsListenerTest extends CakeTestCase {
 		$this->assertSame('flash', $std->key);
 
 		// Update configuration for create.success key
-		$this->Translations->config('create.success', array('key' => 'new_flash', 'params' => array('id' => 1)));
+		$this->TranslationsListener->config('create.success', array('key' => 'new_flash', 'params' => array('id' => 1)));
 
 		// Create new event
 		$Event = new CakeEvent('Crud.afterSave', $std);
 
 		// "trigger" our callback
-		$this->Translations->setFlash($Event);
+		$this->TranslationsListener->setFlash($Event);
 
 		// Check if our changed configurations gave the expected
 		$this->assertSame('Successfully created Blog', $std->message);
@@ -170,7 +174,7 @@ class TranslationsListenerTest extends CakeTestCase {
 		$std->name = 'Blog';
 
 		$Event = new CakeEvent('Crud.afterSave', $std);
-		$this->Translations->setFlash($Event);
+		$this->TranslationsListener->setFlash($Event);
 	}
 
 /**
@@ -184,6 +188,6 @@ class TranslationsListenerTest extends CakeTestCase {
 		$std->name = 'Blog';
 
 		$Event = new CakeEvent('Crud.afterSave', $std);
-		$this->Translations->setFlash($Event);
+		$this->TranslationsListener->setFlash($Event);
 	}
 }
