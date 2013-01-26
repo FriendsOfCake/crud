@@ -18,6 +18,67 @@ App::uses('CakeEventListener', 'Event');
 abstract class CrudListener extends Object implements CakeEventListener {
 
 /**
+ * Crud Component reference
+ *
+ * @var CrudComponent
+ */
+	protected $_crud;
+
+/**
+ * Crud Event subject
+ *
+ * @var CrudSubject
+ */
+	protected $_subject;
+
+/**
+ * _configKey
+ *
+ * The prefix used for retrieving config data stored on the crud instance
+ *
+ * @var string
+ */
+	protected $_configKey;
+
+/**
+ * __construct
+ *
+ * Store a reference to the subject and crud component - if it's not already
+ * set define the _configKey property based on the class name
+ *
+ * @param CrudSubject $subject
+ */
+	public function __construct(CrudSubject $subject) {
+		$this->_subject = $subject;
+		$this->_crud = $subject->crud;
+		if (!$this->_configKey) {
+			$this->_configKey = Inflector::variable(substr(get_class($this), 0, -8));
+		}
+	}
+
+/**
+ * config
+ *
+ * Retrieve or set config settings. Data is stored on the Crud component
+ *
+ * @param mixed $key
+ * @param mixed $value
+ * @return mixed
+ */
+	public function config($key = null, $value = null) {
+		$crudKey = $this->_configKey;
+		if ($key) {
+			if (is_string($key)) {
+				$crudKey .= '.' . $key;
+			} elseif (is_null($value)) {
+				$value = $key;
+			}
+		}
+		$this->_crud->config($crudKey, $value);
+		return Hash::get($this->_crud->settings, $crudKey);
+	}
+
+/**
  * Returns a list of all events that will fire in the controller during it's life cycle.
  * You can override this function to add you own listener callbacks
  *
