@@ -40,7 +40,7 @@ class TestCrudEventManager extends CakeEventManager {
 
 		if ($params['format'] === 'names') {
 			$return = array();
-			foreach($log as $entry) {
+			foreach ($log as $entry) {
 				$return[] = $entry['name'];
 			}
 			$log = $return;
