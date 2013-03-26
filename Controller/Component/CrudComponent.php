@@ -326,8 +326,15 @@ class CrudComponent extends Component {
  * @return void
  */
 	protected function _setModelProperties() {
-		$this->_modelName = $this->_controller->modelClass;
+		$configKey = 'modelMap.' . $this->_action;
+		if (!$this->_modelName = $this->config($configKey)) {
+			$this->_modelName = $this->_controller->modelClass;
+		}
+
 		$this->_model = $this->_controller->{$this->_modelName};
+		if (empty($this->_model)) {
+			throw new RuntimeException('No model loaded in the Controller by the name "' . $this->_modelName . '". Please add it to $uses.');
+		}
 	}
 
 /**
