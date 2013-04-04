@@ -150,11 +150,17 @@ class RelatedModelsListener implements CakeEventListener {
 			$model = $this->_getModelInstance($m, $event->subject->model, $controller);
 			$query = array('limit' => 200);
 
-			$subject = $component->trigger('beforeListRelated', compact('model', 'query'));
+			$viewVar = Inflector::variable(Inflector::pluralize($model->alias));
+			$subject = $component->trigger('beforeListRelated', compact('model', 'query', 'viewVar'));
+
+			// If the viewVar is already set, don't overwrite it
+			if (array_key_exists($subject->viewVar, $controller->viewVars)) {
+				continue;
+			}
+
 			$query = $subject->query;
 			$items = $model->find('list', $query);
 
-			$viewVar = Inflector::variable(Inflector::pluralize($model->alias));
 			$subject = $component->trigger('afterListRelated', compact('model', 'items', 'viewVar'));
 			$controller->set($subject->viewVar, $subject->items);
 		}
