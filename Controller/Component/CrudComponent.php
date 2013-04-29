@@ -893,8 +893,8 @@ class CrudComponent extends Component {
 		} else {
 			$type = $this->_detectPrimaryKeyFieldType();
 		}
-
 		if (!$type) {
+
 			return true;
 		} elseif ($type === 'uuid') {
 			$valid = Validation::uuid($id);

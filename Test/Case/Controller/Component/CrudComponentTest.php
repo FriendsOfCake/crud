@@ -702,7 +702,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 
 		$this->Crud->settings['validateId'] = 'uuid';
 
-		$id = '12345678-1234-1234-1234-123456789012';
+		$id = String::uuid();
 		$return = $this->Crud->testValidateId($id);
 		$this->assertTrue($return, "Expected id $id to be accepted, it was rejected");
 	}
@@ -1371,7 +1371,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 
 		$this->assertSame(1, $paging['CrudExample']['page']);
 		$this->assertSame(3, $paging['CrudExample']['current']);
-		$this->assertSame(100, $paging['CrudExample']['limit']);
+		$this->assertSame(1000, $paging['CrudExample']['limit']);
 	}
 
 	public function testIndexActionPaginationSettingsCanBeOverwritten() {
@@ -1399,7 +1399,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 
 		$this->assertSame(1, $paging['CrudExample']['page']);
 		$this->assertSame(3, $paging['CrudExample']['current']);
-		$this->assertSame(100, $paging['CrudExample']['limit']);
+		$this->assertSame(1000, $paging['CrudExample']['limit']);
 		$this->assertNotSame(23, $Paginator->settings['limit']);
 	}
 
