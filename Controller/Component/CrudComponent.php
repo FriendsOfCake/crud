@@ -340,6 +340,8 @@ class CrudComponent extends Component {
  * exception and fill a 'response' property on it with a reference to the response
  * object.
  *
+ * @param string $eventName
+ * @param array $data
  * @throws Exception if any event listener return a CakeResponse object
  * @return CrudSubject
  */
@@ -575,7 +577,6 @@ class CrudComponent extends Component {
  *	- Crud.afterPaginate
  *	- Crud.beforeRender
  *
- * @param string $id
  * @return void
  */
 	protected function _indexAction() {
@@ -637,7 +638,6 @@ class CrudComponent extends Component {
  *	- Crud.afterSave
  *	- Crud.beforeRender
  *
- * @param string $id
  * @return void
  */
 	protected function _addAction() {
@@ -821,6 +821,7 @@ class CrudComponent extends Component {
 /**
  * Called for all redirects inside CRUD
  *
+ * @param CrudSubject $subject
  * @param array|null $url
  * @return void
  */
