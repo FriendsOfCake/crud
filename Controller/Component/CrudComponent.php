@@ -290,7 +290,7 @@ class CrudComponent extends Component {
 		$config = $this->config(sprintf('listenerClassMap.%s', $name));
 
 		list($plugin, $class) = pluginSplit($config, true);
-		App::uses($class, $plugin . 'Controller/Crud');
+		App::uses($class, $plugin . 'Controller/Crud/Listener');
 
 		// Make sure to cleanup duplicate events
 		if (isset($this->_listeners[$name])) {

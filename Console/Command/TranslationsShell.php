@@ -2,7 +2,7 @@
 
 App::uses('AppShell', 'Console/Command');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
-App::uses('TranslationsListener', 'Crud.Controller/Crud');
+App::uses('TranslationsListener', 'Crud.Controller/Crud/Listener');
 
 /**
  * TranslationsShell
