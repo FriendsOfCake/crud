@@ -97,7 +97,7 @@ class CrudExamplesController extends Controller {
 /**
  * TestCrudComponent
  *
- * Expost protected methods so we can test them in issolation
+ * Expose protected methods so we can test them in isolation
  */
 class TestCrudComponent extends CrudComponent {
 
@@ -142,6 +142,28 @@ class TestCrudComponent extends CrudComponent {
 	public function getSaveAllOptions($action = null) {
 		return parent::_getSaveAllOptions($action);
 	}
+
+/**
+ * test visibility wrapper - access protected _modelName property
+ */
+	public function getModelName() {
+		return $this->_modelName;
+	}
+
+/**
+ * test visibility wrapper - call protected method _setModelProperties
+ */
+	public function setModelProperties() {
+		return parent::_setModelProperties();
+	}
+
+/**
+ * test visibility wrapper - allow on the fly change of action name
+ */
+	public function setAction($name) {
+		$this->_action = $name;
+	}
+
 }
 
 class CrudController extends Controller {
@@ -221,7 +243,13 @@ class CrudComponentTestCase extends ControllerTestCase {
  * tearDown method
  */
 	public function tearDown() {
-		unset($this->Crud);
+		unset(
+			$this->model,
+			$this->request,
+			$this->controller,
+			$this->Crud
+		);
+
 		parent::tearDown();
 	}
 
@@ -702,7 +730,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 
 		$this->Crud->settings['validateId'] = 'uuid';
 
-		$id = '12345678-1234-1234-1234-123456789012';
+		$id = String::uuid();
 		$return = $this->Crud->testValidateId($id);
 		$this->assertTrue($return, "Expected id $id to be accepted, it was rejected");
 	}
@@ -1371,7 +1399,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 
 		$this->assertSame(1, $paging['CrudExample']['page']);
 		$this->assertSame(3, $paging['CrudExample']['current']);
-		$this->assertSame(100, $paging['CrudExample']['limit']);
+		$this->assertSame(1000, $paging['CrudExample']['limit']);
 	}
 
 	public function testIndexActionPaginationSettingsCanBeOverwritten() {
@@ -1399,7 +1427,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 
 		$this->assertSame(1, $paging['CrudExample']['page']);
 		$this->assertSame(3, $paging['CrudExample']['current']);
-		$this->assertSame(100, $paging['CrudExample']['limit']);
+		$this->assertSame(1000, $paging['CrudExample']['limit']);
 		$this->assertNotSame(23, $Paginator->settings['limit']);
 	}
 
@@ -1720,6 +1748,49 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$expected = array('validate' => 'first', 'atomic' => false);
 		$value = $this->Crud->getSaveAllOptions('add');
 		$this->assertEqual($value, $expected);
+	}
+
+/**
+ * Test that having no mapped model for an action,
+ * just use the modelClass from the controller
+ *
+ * @return void
+ */
+	public function testSetModelPropertiesDefault() {
+		$this->Crud->setAction('index');
+		$this->Crud->setModelProperties();
+		$this->assertSame('CrudExample', $this->Crud->getModelName());
+	}
+
+/**
+ * Test that having mapped a custom model for an action,
+ * the modelName will be as configured
+ *
+ * @return void
+ */
+	public function testSetModelPropertiesChangeModelForAction() {
+		$this->controller->Donkey = new StdClass;
+
+		$this->Crud->setAction('index');
+		$this->Crud->config('modelMap.index', 'Donkey');
+		$this->Crud->setModelProperties();
+
+		$this->assertSame('Donkey', $this->Crud->getModelName());
+	}
+
+/**
+ * Test that having mapped a custom model for an action,
+ * but the custom model isn't loaded, will throw an exception
+ *
+ * @expectedException RuntimeException
+ * @expectedExceptionMessage No model loaded in the Controller by the name "Donkey". Please add it to $uses.
+ */
+	public function testSetModelPropertiesChangeModelForActionNotLoadedModel() {
+		$this->Crud->setAction('index');
+		$this->Crud->config('modelMap.index', 'Donkey');
+		$this->Crud->setModelProperties();
+
+		$this->assertSame('Donkey', $this->Crud->getModelName());
 	}
 
 }

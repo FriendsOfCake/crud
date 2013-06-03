@@ -701,9 +701,9 @@ Your Event class should look like this:
 
 ```php
 <?php
-App::uses('CrudBaseEvent', 'Crud.Controller/Event');
+App::uses('CrudListener', 'Crud.Controller/Event');
 
-class DemoEvent extends CrudBaseEvent {
+class DemoEvent extends CrudListener {
 	public function beforeRender(CakeEvent $event) {
 		// Check about this is admin, and about this function should be process for this action
 		if ($event->subject->shouldProcess('only', array('admin_add'))) {

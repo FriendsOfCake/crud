@@ -150,7 +150,7 @@ class CrudComponent extends Component {
 		'viewMap' => array(
 			'index' => 'index',
 			'add' => 'add',
-			'edit'=> 'edit',
+			'edit' => 'edit',
 			'view' => 'view',
 
 			'admin_index' => 'admin_index',
@@ -221,6 +221,7 @@ class CrudComponent extends Component {
  * @param string $controllerAction Override the controller action to execute as
  * @param array $arguments List of arguments to pass to the CRUD action (Usually an ID to edit / delete)
  * @return mixed void, or a CakeResponse object
+ * @throws RuntimeException If an action is not mapped
  */
 	public function executeAction($controllerAction = null, $args = array()) {
 		$view = $action = $controllerAction ?: $this->_action;
@@ -324,10 +325,18 @@ class CrudComponent extends Component {
  * Set internal model properties from the controller
  *
  * @return void
+ * @throws RuntimeException If unable to get model instance
  */
 	protected function _setModelProperties() {
-		$this->_modelName = $this->_controller->modelClass;
+		$configKey = 'modelMap.' . $this->_action;
+		if (!$this->_modelName = $this->config($configKey)) {
+			$this->_modelName = $this->_controller->modelClass;
+		}
+
 		$this->_model = $this->_controller->{$this->_modelName};
+		if (empty($this->_model)) {
+			throw new RuntimeException('No model loaded in the Controller by the name "' . $this->_modelName . '". Please add it to $uses.');
+		}
 	}
 
 /**
@@ -339,6 +348,8 @@ class CrudComponent extends Component {
  * exception and fill a 'response' property on it with a reference to the response
  * object.
  *
+ * @param string $eventName
+ * @param array $data
  * @throws Exception if any event listener return a CakeResponse object
  * @return CrudSubject
  */
@@ -532,14 +543,14 @@ class CrudComponent extends Component {
 			$this->_setModelProperties();
 		}
 
-		$subject				= new CrudSubject();
-		$subject->crud			= $this;
-		$subject->controller	= $this->_controller;
-		$subject->model			= $this->_model;
-		$subject->modelClass	= $this->_modelName;
-		$subject->action		= $this->_action;
-		$subject->request		= $this->_request;
-		$subject->response		= $this->_controller->response;
+		$subject = new CrudSubject();
+		$subject->crud = $this;
+		$subject->controller = $this->_controller;
+		$subject->model = $this->_model;
+		$subject->modelClass = $this->_modelName;
+		$subject->action = $this->_action;
+		$subject->request = $this->_request;
+		$subject->response = $this->_controller->response;
 		$subject->set($additional);
 
 		return $subject;
@@ -574,7 +585,6 @@ class CrudComponent extends Component {
  *	- Crud.afterPaginate
  *	- Crud.beforeRender
  *
- * @param string $id
  * @return void
  */
 	protected function _indexAction() {
@@ -604,9 +614,7 @@ class CrudComponent extends Component {
 		if (!empty($Paginator->settings[$this->_modelName])) {
 			$Paginator->settings[$this->_modelName][0] = $subject->findMethod;
 			$Paginator->settings[$this->_modelName]['findType'] = $subject->findMethod;
-		}
-		// Or just work directly on the root key
-		else {
+		} else { // Or just work directly on the root key
 			$Paginator->settings[0] = $subject->findMethod;
 			$Paginator->settings['findType'] = $subject->findMethod;
 		}
@@ -638,7 +646,6 @@ class CrudComponent extends Component {
  *	- Crud.afterSave
  *	- Crud.beforeRender
  *
- * @param string $id
  * @return void
  */
 	protected function _addAction() {
@@ -784,7 +791,7 @@ class CrudComponent extends Component {
 
 		if (!$this->_request->is('delete') && !($this->_request->is('post') && false === $this->config('secureDelete'))) {
 			$subject = $this->_getSubject(compact('id'));
-			$this->_setFlash('error.invalid_http_request');
+			$this->_setFlash('invalid_http_request.error');
 			return $this->_redirect($subject, $this->_controller->referer(array('action' => 'index')));
 		}
 
@@ -822,6 +829,7 @@ class CrudComponent extends Component {
 /**
  * Called for all redirects inside CRUD
  *
+ * @param CrudSubject $subject
  * @param array|null $url
  * @return void
  */
@@ -845,7 +853,7 @@ class CrudComponent extends Component {
 /**
  * Wrapper for Session::setFlash
  *
- * @param string $message Message to be flashed
+ * @param string $type Message type
  * @return void
  */
 	protected function _setFlash($type) {
@@ -893,8 +901,8 @@ class CrudComponent extends Component {
 		} else {
 			$type = $this->_detectPrimaryKeyFieldType();
 		}
-
 		if (!$type) {
+
 			return true;
 		} elseif ($type === 'uuid') {
 			$valid = Validation::uuid($id);
@@ -907,7 +915,7 @@ class CrudComponent extends Component {
 		}
 
 		$subject = $this->trigger('invalidId', compact('id'));
-		$this->_setFlash('error.invalid_id');
+		$this->_setFlash('invalid_id.error');
 		return $this->_redirect($subject, $this->_controller->referer());
 	}
 
