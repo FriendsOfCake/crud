@@ -1,8 +1,8 @@
 <?php
 
 App::uses('AppShell', 'Console/Command');
-App::uses('CrudSubject', 'Crud.Controller/Event');
-App::uses('TranslationsListener', 'Crud.Controller/Event');
+App::uses('CrudSubject', 'Crud.Controller/Crud');
+App::uses('TranslationsListener', 'Crud.Controller/Crud');
 
 /**
  * TranslationsShell

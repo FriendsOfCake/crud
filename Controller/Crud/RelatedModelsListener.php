@@ -1,7 +1,7 @@
 <?php
 
 App::uses('CakeEventListener', 'Event');
-App::uses('CrudSubject', 'Crud.Controller/Event');
+App::uses('CrudSubject', 'Crud.Controller/Crud');
 
 /**
  * Implements beforeRender event listener to set related models' lists to
