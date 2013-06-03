@@ -385,12 +385,14 @@ class DemoController extends AppController {
 						'element' => 'error'
 					)
 				),
-				'error' => array(
-					'invalid_http_request' => array(
+				'invalid_http_request' => array(
+					'error' => array(
 						'message' => 'Invalid HTTP request',
 						'element' => 'error'
 					),
-					'invalid_id' => array(
+				),
+				'invalid_id' => array(
+					'error' => array(
 						'message' => 'Invalid id',
 						'element' => 'error'
 					)

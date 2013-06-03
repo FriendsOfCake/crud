@@ -74,12 +74,14 @@ class TranslationsListener implements CakeEventListener {
 				'element' => 'error'
 			)
 		),
-		'error' => array(
-			'invalid_http_request' => array(
+		'invalid_http_request' => array(
+			'error' => array(
 				'message' => 'Invalid HTTP request',
 				'element' => 'error'
-			),
-			'invalid_id' => array(
+			)
+		),
+		'invalid_id' => array(
+			'error' => array(
 				'message' => 'Invalid id',
 				'element' => 'error'
 			)
@@ -119,7 +121,6 @@ class TranslationsListener implements CakeEventListener {
 		if ($translations = $this->_crud->config('translations')) {
 			$this->config($translations);
 		}
-
 	}
 
 /**
