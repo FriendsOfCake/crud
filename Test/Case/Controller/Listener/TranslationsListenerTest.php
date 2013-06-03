@@ -42,9 +42,11 @@ class TranslationsListenerTest extends CakeTestCase {
 			'find' => array(
 				'error' => array('message' => 'Could not find {name}', 'element' => 'error')
 			),
-			'error' => array(
-				'invalid_http_request' => array('message' => 'Invalid HTTP request', 'element' => 'error'),
-				'invalid_id' => array('message' => 'Invalid id', 'element' => 'error')
+			'invalid_http_request' => array(
+				'error' => array('message' => 'Invalid HTTP request', 'element' => 'error'),
+			),
+			'invalid_id' => array(
+				'error' => array('message' => 'Invalid id', 'element' => 'error')
 			)
 		);
 
@@ -78,9 +80,11 @@ class TranslationsListenerTest extends CakeTestCase {
 			'find' => array(
 				'error' => array('message' => 'Could not find {name}', 'element' => 'error')
 			),
-			'error' => array(
-				'invalid_http_request' => array('message' => 'Invalid HTTP request', 'element' => 'error'),
-				'invalid_id' => array('message' => 'Invalid id', 'element' => 'error')
+			'invalid_http_request' => array(
+				'error' => array('message' => 'Invalid HTTP request', 'element' => 'error'),
+			),
+			'invalid_id' => array(
+				'error' => array('message' => 'Invalid id', 'element' => 'error')
 			)
 		);
 		$this->assertEquals($expected, $config);
