@@ -74,6 +74,13 @@ class CrudComponent extends Component {
 	protected $_listeners = array();
 
 /**
+ * List of crud actions
+ *
+ * @var array
+ */
+	protected $_actions = array();
+
+/**
  * Components settings.
  *
  * `validateId` ID Argument validation - by default it will inspect your model's primary key
@@ -117,7 +124,7 @@ class CrudComponent extends Component {
  */
 	public $settings = array(
 		'validateId' => null,
-		'secureDelete' => true,
+		'secureDelete' => false,
 		'eventPrefix' => 'Crud',
 		'actions' => array(),
 		'translations' => array(),
@@ -172,6 +179,13 @@ class CrudComponent extends Component {
 		'listenerClassMap' => array(
 			'translations' => 'Crud.TranslationsListener',
 			'related' => 'Crud.RelatedModelsListener'
+		),
+		'actionClassMap' => array(
+			'index' => 'Crud.Index',
+			'add' => 'Crud.Add',
+			'edit' => 'Crud.Edit',
+			'view' => 'Crud.View',
+			'delete' => 'Crud.Delete'
 		)
 	);
 
@@ -230,6 +244,7 @@ class CrudComponent extends Component {
 		// Make sure to update internal action property
 		$this->_action = $action;
 
+		$this->_loadActions();
 		$this->_loadListeners();
 
 		// Trigger init callback
@@ -252,7 +267,7 @@ class CrudComponent extends Component {
 		try {
 			$actionToInvoke = $this->config($actionMapKey);
 			// Execute the default action, inside this component
-			$response = call_user_func_array(array($this, '_' . $actionToInvoke . 'Action'), $args);
+			$response = $this->trigger('handle', $this->getSubject(array('action' => $actionToInvoke)));
 			if ($response instanceof CakeResponse) {
 				return $response;
 			}
@@ -285,7 +300,7 @@ class CrudComponent extends Component {
  * @return void
  */
 	protected function _loadListener($name) {
-		$subject = $this->_getSubject();
+		$subject = $this->getSubject();
 
 		$config = $this->config(sprintf('listenerClassMap.%s', $name));
 
@@ -300,6 +315,32 @@ class CrudComponent extends Component {
 
 		$this->_listeners[$name] = new $class($subject);
 		$this->_eventManager->attach($this->_listeners[$name]);
+	}
+
+	protected function _loadActions() {
+		foreach (array_keys($this->config('actionClassMap')) as $name) {
+			$this->_loadAction($name);
+		}
+	}
+
+	protected function _loadAction($name) {
+		$subject = $this->getSubject();
+
+		$config = $this->config(sprintf('actionClassMap.%s', $name));
+
+		list($plugin, $class) = pluginSplit($config, true);
+		$class .= 'CrudAction';
+
+		App::uses($class, $plugin . 'Controller/Crud/Action');
+
+		// Make sure to cleanup duplicate events
+		if (isset($this->_actions[$name])) {
+			$this->_eventManager->detach($this->_actions[$name]);
+			unset($this->_actions[$name]);
+		}
+
+		$this->_actions[$name] = new $class($subject);
+		$this->_eventManager->attach($this->_actions[$name]);
 	}
 
 /**
@@ -354,7 +395,7 @@ class CrudComponent extends Component {
  * @return CrudSubject
  */
 	public function trigger($eventName, $data = array()) {
-		$subject = $data instanceof CrudSubject ? $data : $this->_getSubject($data);
+		$subject = $data instanceof CrudSubject ? $data : $this->getSubject($data);
 		$event = new CakeEvent($this->config('eventPrefix') . '.' . $eventName, $subject);
 		$this->_eventManager->dispatch($event);
 
@@ -521,24 +562,12 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Helper method to get the passed ID to an action
- *
- * @return string
- */
-	public function getIdFromRequest() {
-		if (empty($this->_request->params['pass'][0])) {
-			return null;
-		}
-		return $this->_request->params['pass'][0];
-	}
-
-/**
  * Create a CakeEvent subject with the required properties
  *
  * @param array $additional Additional properties for the subject
  * @return CrudSubject
  */
-	protected function _getSubject($additional = array()) {
+	public function getSubject($additional = array()) {
 		if (empty($this->_model) || empty($this->_modelName)) {
 			$this->_setModelProperties();
 		}
@@ -546,6 +575,7 @@ class CrudComponent extends Component {
 		$subject = new CrudSubject();
 		$subject->crud = $this;
 		$subject->controller = $this->_controller;
+		$subject->collection = $this->_Collection;
 		$subject->model = $this->_model;
 		$subject->modelClass = $this->_modelName;
 		$subject->action = $this->_action;
@@ -557,306 +587,12 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Get the model find method for a current controller action
- *
- * @param string|NULL $action The controller action
- * @param string|NULL $default The default find method in case it haven't been mapped
- * @return string The find method used in ->_model->find($method)
- */
-	protected function _getFindMethod($action = null, $default = null) {
-		if (empty($action)) {
-			$action = $this->_action;
-		}
-
-		$findMethod = $this->config(sprintf('findMethodMap.%s', $action));
-		if (!empty($findMethod)) {
-			return $findMethod;
-		}
-
-		return $default;
-	}
-
-/**
- * Generic index action
- *
- * Triggers the following callbacks
- *	- Crud.init
- *	- Crud.beforePaginate
- *	- Crud.afterPaginate
- *	- Crud.beforeRender
- *
- * @return void
- */
-	protected function _indexAction() {
-		$Paginator = $this->_Collection->load('Paginator');
-
-		// Copy pagination settings from the controller
-		if (!empty($this->_controller->paginate)) {
-			$Paginator->settings = array_merge($Paginator->settings, $this->_controller->paginate);
-		}
-
-		if (!empty($Paginator->settings[$this->_modelName]['findType'])) {
-			$findMethod = $Paginator->settings[$this->_modelName]['findType'];
-		} elseif (!empty($Paginator->settings['findType'])) {
-			$findMethod = $Paginator->settings['findType'];
-		} else {
-			$findMethod = $this->_getFindMethod(null, 'all');
-		}
-
-		$subject = $this->trigger('beforePaginate', compact('findMethod'));
-
-		// Copy pagination settings from the controller
-		if (!empty($this->_controller->paginate)) {
-			$Paginator->settings = array_merge($Paginator->settings, $this->_controller->paginate);
-		}
-
-		// If pagination settings is using ModelAlias modify that
-		if (!empty($Paginator->settings[$this->_modelName])) {
-			$Paginator->settings[$this->_modelName][0] = $subject->findMethod;
-			$Paginator->settings[$this->_modelName]['findType'] = $subject->findMethod;
-		} else { // Or just work directly on the root key
-			$Paginator->settings[0] = $subject->findMethod;
-			$Paginator->settings['findType'] = $subject->findMethod;
-		}
-
-		// Push the paginator settings back to Controller
-		$this->_controller->paginate = $Paginator->settings;
-
-		// Do the pagination
-		$items = $this->_controller->paginate($this->_model);
-
-		$subject = $this->trigger('afterPaginate', compact('items'));
-		$items = $subject->items;
-
-		// Make sure to cast any iterators to array
-		if ($items instanceof Iterator) {
-			$items = iterator_to_array($items);
-		}
-
-		$this->_controller->set(compact('items'));
-		$this->trigger('beforeRender');
-	}
-
-/**
- * Generic add action
- *
- * Triggers the following callbacks
- *	- Crud.init
- *	- Crud.beforeSave
- *	- Crud.afterSave
- *	- Crud.beforeRender
- *
- * @return void
- */
-	protected function _addAction() {
-		if ($this->_request->is('post')) {
-			$this->trigger('beforeSave');
-			if ($this->_model->saveAll($this->_request->data, $this->_getSaveAllOptions())) {
-				$this->_setFlash('create.success');
-				$subject = $this->trigger('afterSave', array('success' => true, 'id' => $this->_model->id));
-				return $this->_redirect($subject, array('action' => 'index'));
-			} else {
-				$this->_setFlash('create.error');
-				$this->trigger('afterSave', array('success' => false));
-				// Make sure to merge any changed data in the model into the post data
-				$this->_request->data = Set::merge($this->_request->data, $this->_model->data);
-			}
-		}
-
-		$this->trigger('beforeRender', array('success' => false));
-	}
-
-/**
- * Generic edit action
- *
- * Triggers the following callbacks
- *	- Crud.init
- *	- Crud.beforeSave
- *	- Crud.afterSave
- *	- Crud.beforeFind
- *	- Crud.recordNotFound
- *	- Crud.afterFind
- *	- Crud.beforeRender
- *
- * @param string $id
- * @return void
- */
-	protected function _editAction($id = null) {
-		if (empty($id)) {
-			$id = $this->getIdFromRequest();
-		}
-		$this->_validateId($id);
-
-		if ($this->_request->is('put')) {
-			$this->trigger('beforeSave', compact('id'));
-			if ($this->_model->saveAll($this->_request->data, $this->_getSaveAllOptions())) {
-				$this->_setFlash('update.success');
-				$subject = $this->trigger('afterSave', array('id' => $id, 'success' => true));
-				return $this->_redirect($subject, array('action' => 'index'));
-			} else {
-				$this->_setFlash('update.error');
-				$this->trigger('afterSave', array('id' => $id, 'success' => false));
-			}
-		} else {
-			$query = array();
-			$query['conditions'] = array($this->_model->escapeField() => $id);
-			$findMethod = $this->_getFindMethod(null, 'first');
-			$subject = $this->trigger('beforeFind', compact('query', 'findMethod'));
-			$query = $subject->query;
-
-			$this->_request->data = $this->_model->find($subject->findMethod, $query);
-			if (empty($this->_request->data)) {
-				$subject = $this->trigger('recordNotFound', compact('id'));
-				$this->_setFlash('find.error');
-				return $this->_redirect($subject, array('action' => 'index'));
-			}
-
-			$this->trigger('afterFind', compact('id'));
-
-			// Make sure to merge any changed data in the model into the post data
-			$this->_request->data = Set::merge($this->_request->data, $this->_model->data);
-		}
-
-		// Trigger a beforeRender
-		$this->trigger('beforeRender');
-	}
-
-/**
- * Generic view action
- *
- * Triggers the following callbacks
- *	- Crud.init
- *	- Crud.beforeFind
- *	- Crud.recordNotFound
- *	- Crud.afterFind
- *	- Crud.beforeRender
- *
- * @param string $id
- * @return void
- */
-	protected function _viewAction($id = null) {
-		if (empty($id)) {
-			$id = $this->getIdFromRequest();
-		}
-
-		$this->_validateId($id);
-
-		// Build conditions
-		$query = array();
-		$query['conditions'] = array($this->_model->escapeField() => $id);
-
-		$findMethod = $this->_getFindMethod(null, 'first');
-		$subject = $this->trigger('beforeFind', compact('id', 'query', 'findMethod'));
-		$query = $subject->query;
-
-		// Try and find the database record
-		$item = $this->_model->find($subject->findMethod, $query);
-
-		// We could not find any record match the conditions in query
-		if (empty($item)) {
-			$subject = $this->trigger('recordNotFound', compact('id'));
-			$this->_setFlash('find.error');
-			return $this->_redirect($subject, array('action' => 'index'));
-		}
-
-		// We found a record, trigger an afterFind
-		$subject = $this->trigger('afterFind', compact('id', 'item'));
-		$item = $subject->item;
-
-		// Push it to the view
-		$this->_controller->set(compact('item'));
-
-		// Trigger a beforeRender
-		$this->trigger('beforeRender', compact('id', 'item'));
-	}
-
-/**
- * Generic delete action
- *
- * Triggers the following callbacks
- *	- beforeFind
- *	- recordNotFound
- *	- beforeDelete
- *	- afterDelete
- *
- * @param string $id
- * @return void
- */
-	protected function _deleteAction($id = null) {
-		if (empty($id)) {
-			$id = $this->getIdFromRequest();
-		}
-
-		$this->_validateId($id);
-
-		if (!$this->_request->is('delete') && !($this->_request->is('post') && false === $this->config('secureDelete'))) {
-			$subject = $this->_getSubject(compact('id'));
-			$this->_setFlash('invalid_http_request.error');
-			return $this->_redirect($subject, $this->_controller->referer(array('action' => 'index')));
-		}
-
-		$query = array();
-		$query['conditions'] = array($this->_model->escapeField() => $id);
-
-		$findMethod = $this->_getFindMethod(null, 'count');
-		$subject = $this->trigger('beforeFind', compact('id', 'query', 'findMethod'));
-		$query = $subject->query;
-
-		$count = $this->_model->find($subject->findMethod, $query);
-		if (empty($count)) {
-			$subject = $this->trigger('recordNotFound', compact('id'));
-			$this->_setFlash('find.error');
-			return $this->_redirect($subject, $this->_controller->referer(array('action' => 'index')));
-		}
-
-		$subject = $this->trigger('beforeDelete', compact('id'));
-		if ($subject->stopped) {
-			$this->_setFlash('delete.error');
-			return $this->_redirect($subject, $this->_controller->referer(array('action' => 'index')));
-		}
-
-		if ($this->_model->delete($id)) {
-			$this->_setFlash('delete.success');
-			$subject = $this->trigger('afterDelete', array('id' => $id, 'success' => true));
-		} else {
-			$this->_setFlash('delete.error');
-			$subject = $this->trigger('afterDelete', array('id' => $id, 'success' => false));
-		}
-
-		return $this->_redirect($subject, $this->_controller->referer(array('action' => 'index')));
-	}
-
-/**
- * Called for all redirects inside CRUD
- *
- * @param CrudSubject $subject
- * @param array|null $url
- * @return void
- */
-	protected function _redirect($subject, $url = null) {
-		if (!empty($this->_request->data['redirect_url'])) {
-			$url = $this->_request->data['redirect_url'];
-		} elseif (!empty($this->_request->query['redirect_url'])) {
-			$url = $this->_request->query['redirect_url'];
-		} elseif (empty($url)) {
-			$url = array('action' => 'index');
-		}
-
-		$subject->url = $url;
-		$subject = $this->trigger('beforeRedirect', $subject);
-		$url = $subject->url;
-
-		$this->_controller->redirect($url);
-		return $this->_controller->response;
-	}
-
-/**
  * Wrapper for Session::setFlash
  *
  * @param string $type Message type
  * @return void
  */
-	protected function _setFlash($type) {
+	public function setFlash($type) {
 		$name = $this->_getResourceName();
 		$this->getListener('translations');
 
@@ -882,85 +618,6 @@ class CrudComponent extends Component {
 		}
 
 		return $this->settings['name'];
-	}
-
-/**
- * Is the passed ID valid ?
- *
- * By default we assume you want to validate an numeric string
- * like a normal incremental ids from MySQL
- *
- * Change the validateId settings key to "uuid" for UUID check instead
- *
- * @param mixed $id
- * @return boolean
- */
-	protected function _validateId($id) {
-		if (isset($this->settings['validateId'])) {
-			$type = $this->settings['validateId'];
-		} else {
-			$type = $this->_detectPrimaryKeyFieldType();
-		}
-		if (!$type) {
-
-			return true;
-		} elseif ($type === 'uuid') {
-			$valid = Validation::uuid($id);
-		} else {
-			$valid = is_numeric($id);
-		}
-
-		if ($valid) {
-			return true;
-		}
-
-		$subject = $this->trigger('invalidId', compact('id'));
-		$this->_setFlash('invalid_id.error');
-		return $this->_redirect($subject, $this->_controller->referer());
-	}
-
-/**
- * Automatically detect primary key data type for `_validateId()`
- *
- * Binary or string with length of 36 chars will be detected as UUID
- * If the primary key is a number, integer validation will be used
- *
- * If no reliable detection can be made, no validation will be made
- *
- * @return string
- */
-	protected function _detectPrimaryKeyFieldType() {
-		if (empty($this->_model) || empty($this->_modelName)) {
-			$this->_setModelProperties();
-		}
-
-		$fInfo = $this->_model->schema($this->_model->primaryKey);
-		if (empty($fInfo)) {
-			return false;
-		}
-
-		if ($fInfo['length'] == 36 && ($fInfo['type'] === 'string' || $fInfo['type'] === 'binary')) {
-			return 'uuid';
-		}
-
-		if ($fInfo['type'] === 'integer') {
-			return 'integer';
-		}
-
-		return false;
-	}
-
-/**
- * Build options for saveAll
- *
- * Merges defaults + any custom options for the specific action
- *
- * @param string|NULL $action
- * @return array
- */
-	protected function _getSaveAllOptions($action = null) {
-		$action = $action ?: $this->_action;
-		return (array)$this->config(sprintf('saveAllOptions.%s', $action)) + $this->config('saveAllOptions.default');
 	}
 
 }
