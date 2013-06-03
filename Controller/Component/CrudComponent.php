@@ -139,17 +139,47 @@ class CrudComponent extends Component {
 	);
 
 	protected $_actions = array(
+		'index' => array(
+			'enabled' => true,
+			'type' => 'index',
+			'findMethod' => 'all',
+			'view' => 'index',
+		),
 		'admin_index' => array(
 			'enabled' => true,
 			'type' => 'index',
 			'findMethod' => 'all',
 			'view' => 'admin_index',
 		),
+		'add' => array(
+			'enabled' => true,
+			'type' => 'add',
+			'findMethod' => 'first',
+			'view' => 'add',
+			'relatedLists' => true,
+			'validateId' => null,
+			'saveOptions' => array(
+				'validate' => 'first',
+				'atomic' => true
+			)
+		),
 		'admin_add' => array(
 			'enabled' => true,
 			'type' => 'add',
 			'findMethod' => 'first',
 			'view' => 'admin_add',
+			'relatedLists' => true,
+			'validateId' => null,
+			'saveOptions' => array(
+				'validate' => 'first',
+				'atomic' => true
+			)
+		),
+		'edit' => array(
+			'enabled' => true,
+			'type' => 'edit',
+			'findMethod' => 'first',
+			'view' => 'edit',
 			'relatedLists' => true,
 			'validateId' => null,
 			'saveOptions' => array(
@@ -169,18 +199,29 @@ class CrudComponent extends Component {
 				'atomic' => true
 			)
 		),
+		'view' => array(
+			'enabled' => true,
+			'type' => 'view',
+			'findMethod' => 'first',
+			'view' => 'view'
+		),
 		'admin_view' => array(
 			'enabled' => true,
 			'type' => 'view',
 			'findMethod' => 'first',
 			'view' => 'admin_view'
 		),
+		'delete' => array(
+			'enabled' => true,
+			'type' => 'delete',
+			'findMethod' => 'count',
+			'secureDelete' => true
+		),
 		'admin_delete' => array(
 			'enabled' => true,
 			'type' => 'delete',
 			'findMethod' => 'count',
-			'secureDelete' => false,
-			'view' => null
+			'secureDelete' => true
 		)
 	);
 
@@ -457,7 +498,7 @@ class CrudComponent extends Component {
 			return;
 		}
 
-		$this->config(sprintf('viewMap.%s', $action), $view);
+		$this->config('view', $view, $action);
 	}
 
 /**
@@ -469,7 +510,7 @@ class CrudComponent extends Component {
  * @return void
  */
 	public function mapAction($action, $type, $enable = true) {
-		$this->config(sprintf('actionMap.%s', $action), $type);
+		$this->config('type', $type, $action);
 		if ($enable) {
 			$this->enableAction($action);
 		}
@@ -486,7 +527,7 @@ class CrudComponent extends Component {
 			$action = $this->_action;
 		}
 
-		return false !== array_search($action, $this->settings['actions']);
+		return $this->config('enabled', null, $action);
 	}
 
 /**
@@ -497,7 +538,7 @@ class CrudComponent extends Component {
  * @return void
  */
 	public function mapFindMethod($action, $method) {
-		$this->config(sprintf('findMethodMap.%s', $action), $method);
+		$this->config('findMethod', $method, $action);
 	}
 
 /**
@@ -514,7 +555,7 @@ class CrudComponent extends Component {
 
 		foreach ($events as $event) {
 			if (!strpos($event, '.')) {
-				$event = $this->config('eventPrefix') . '.' . $event;
+				$event = $this->settings['eventPrefix'] . '.' . $event;
 			}
 			$this->_controller->getEventManager()->attach($callback, $event);
 		}

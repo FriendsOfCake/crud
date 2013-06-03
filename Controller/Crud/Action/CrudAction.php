@@ -33,7 +33,7 @@ class CrudAction implements CakeEventListener {
 			$action = $this->_action;
 		}
 
-		$findMethod = $this->_Crud->config(sprintf('findMethodMap.%s', $action));
+		$findMethod = $this->_Crud->config('findMethod', null, $action);
 		if (!empty($findMethod)) {
 			return $findMethod;
 		}

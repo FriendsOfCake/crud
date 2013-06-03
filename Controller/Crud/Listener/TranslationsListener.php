@@ -118,7 +118,7 @@ class TranslationsListener implements CakeEventListener {
 		}
 
 		$this->_crud = $subject->crud;
-		if ($translations = $this->_crud->config('translations')) {
+		if ($translations = $this->_crud->settings['translations']) {
 			$this->config($translations);
 		}
 	}
