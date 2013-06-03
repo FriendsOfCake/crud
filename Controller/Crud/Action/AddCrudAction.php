@@ -17,7 +17,7 @@ class AddCrudAction extends CrudAction {
  * @return void
  */
 	protected function _handle() {
-		if ($this->_action !== 'add') {
+		if ($this->_settings['type'] !== 'add') {
 			return;
 		}
 

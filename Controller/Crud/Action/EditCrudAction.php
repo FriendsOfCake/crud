@@ -21,7 +21,7 @@ class EditCrudAction extends CrudAction {
  * @return void
  */
 	protected function _handle() {
-		if ($this->_action !== 'edit') {
+		if ($this->_settings['type'] !== 'edit') {
 			return;
 		}
 

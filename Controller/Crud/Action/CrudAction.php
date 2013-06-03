@@ -16,6 +16,7 @@ class CrudAction implements CakeEventListener {
 		$this->_modelName  = $subject->modelClass;
 		$this->_model 		 = $subject->model;
 		$this->_request 	 = $subject->request;
+		$this->_settings	 = $subject->config;
 
 		return $this->_handle();
 	}
@@ -131,7 +132,7 @@ class CrudAction implements CakeEventListener {
  */
 	protected function _getSaveAllOptions($action = null) {
 		$action = $action ?: $this->_action;
-		return (array)$this->_Crud->config(sprintf('saveAllOptions.%s', $action)) + $this->_Crud->config('saveAllOptions.default');
+		return (array)$this->_Crud->config('saveOptions');
 	}
 
 

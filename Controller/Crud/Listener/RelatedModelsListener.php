@@ -48,8 +48,9 @@ class RelatedModelsListener implements CakeEventListener {
 		}
 
 		foreach ($actions as $action) {
-			if (empty($this->_crud->settings['relatedLists'][$action])) {
-				$this->_crud->settings['relatedLists'][$action] = true;
+			$config = $this->_crud->config('relatedLists');
+			if (empty($config)) {
+				$this->_crud->config('relatedLists', true);
 			}
 		}
 	}
@@ -72,7 +73,7 @@ class RelatedModelsListener implements CakeEventListener {
 			$models = array($models);
 		}
 
-		$this->_crud->settings['relatedLists'][$action] = $models;
+		$this->_crud->config('relatedLists', $models);
 	}
 
 /**
@@ -88,32 +89,14 @@ class RelatedModelsListener implements CakeEventListener {
 
 		$settings = $this->_crud->config('relatedLists');
 
-		// If we don't have any related configuration, look up its alias in the actionMap
-		if (empty($settings[$action]) && $this->_crud->isActionMapped($action)) {
-			$action = $this->_crud->config(sprintf('actionMap.%s', $action));
-		}
-
 		// If current action isn't configured
-		if (!isset($settings[$action])) {
+		if (empty($settings)) {
 			return array();
 		}
 
-		// If the action value is true and we got a configured default, inspect it
-		if ($settings[$action] === true && isset($settings['default'])) {
-			// If default is false, don't fetch any related records
-			if (false === $settings['default']) {
-				return array();
-			}
-
-			// If it's an array, return it
-			if (is_array($settings['default'])) {
-				return $settings['default'];
-			}
-		}
-
 		// Use whatever value there may have been set by the user
-		if ($settings[$action] !== true) {
-			return $settings[$action];
+		if ($settings !== true) {
+			return $settings;
 		}
 
 		// Default to everything associated to the current model
@@ -126,7 +109,7 @@ class RelatedModelsListener implements CakeEventListener {
  * @return array
  */
 	public function implementedEvents() {
-		return array($this->_crud->config('eventPrefix') . '.beforeRender' => 'beforeRender');
+		return array($this->_crud->settings['eventPrefix'] . '.beforeRender' => 'beforeRender');
 	}
 
 /**

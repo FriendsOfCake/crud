@@ -17,7 +17,7 @@ class IndexCrudAction extends CrudAction {
  * @return void
  */
 	protected function _handle() {
-		if ($this->_action !== 'index') {
+		if ($this->_settings['type'] !== 'index') {
 			return;
 		}
 

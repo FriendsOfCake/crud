@@ -71,14 +71,14 @@ class CrudComponent extends Component {
  *
  * @var array
  */
-	protected $_listeners = array();
+	protected $_listenerInstances = array();
 
 /**
  * List of crud actions
  *
  * @var array
  */
-	protected $_actions = array();
+	protected $_actionInstances = array();
 
 /**
  * Components settings.
@@ -123,69 +123,64 @@ class CrudComponent extends Component {
  * @var array
  */
 	public $settings = array(
-		'validateId' => null,
-		'secureDelete' => false,
 		'eventPrefix' => 'Crud',
-		'actions' => array(),
 		'translations' => array(),
-		'relatedLists' => array(
-			'add' => true,
-			'edit' => true,
-
-			'admin_add' => true,
-			'admin_edit' => true
-		),
-		'saveAllOptions' => array(
-			'default' => array(
-				'validate' => 'first',
-				'atomic' => true
-			)
-		),
-		'actionMap' => array(
-			'index'	=> 'index',
-			'add' => 'add',
-			'edit' => 'edit',
-			'view' => 'view',
-			'delete' => 'delete',
-
-			'admin_index' => 'index',
-			'admin_add' => 'add',
-			'admin_edit' => 'edit',
-			'admin_view' => 'view',
-			'admin_delete' => 'delete'
-		),
-		'viewMap' => array(
-			'index' => 'index',
-			'add' => 'add',
-			'edit' => 'edit',
-			'view' => 'view',
-
-			'admin_index' => 'admin_index',
-			'admin_add' => 'admin_add',
-			'admin_edit' => 'admin_edit',
-			'admin_view' => 'admin_view'
-		),
-		'findMethodMap' => array(
-			'index'	=> 'all',
-			'edit' => 'first',
-			'view' => 'first',
-			'delete' => 'count',
-
-			'admin_index' => 'all',
-			'admin_edit' => 'first',
-			'admin_view' => 'first',
-			'admin_delete' => 'count'
-		),
 		'listenerClassMap' => array(
 			'translations' => 'Crud.TranslationsListener',
 			'related' => 'Crud.RelatedModelsListener'
 		),
 		'actionClassMap' => array(
-			'index' => 'Crud.Index',
+			'admin_index' => 'Crud.Index',
 			'add' => 'Crud.Add',
 			'edit' => 'Crud.Edit',
 			'view' => 'Crud.View',
 			'delete' => 'Crud.Delete'
+		)
+	);
+
+	protected $_actions = array(
+		'admin_index' => array(
+			'enabled' => true,
+			'type' => 'index',
+			'findMethod' => 'all',
+			'view' => 'admin_index',
+		),
+		'admin_add' => array(
+			'enabled' => true,
+			'type' => 'add',
+			'findMethod' => 'first',
+			'view' => 'admin_add',
+			'relatedLists' => true,
+			'validateId' => null,
+			'saveOptions' => array(
+				'validate' => 'first',
+				'atomic' => true
+			)
+		),
+		'admin_edit' => array(
+			'enabled' => true,
+			'type' => 'edit',
+			'findMethod' => 'first',
+			'view' => 'admin_edit',
+			'relatedLists' => true,
+			'validateId' => null,
+			'saveOptions' => array(
+				'validate' => 'first',
+				'atomic' => true
+			)
+		),
+		'admin_view' => array(
+			'enabled' => true,
+			'type' => 'view',
+			'findMethod' => 'first',
+			'view' => 'admin_view'
+		),
+		'admin_delete' => array(
+			'enabled' => true,
+			'type' => 'delete',
+			'findMethod' => 'count',
+			'secureDelete' => false,
+			'view' => null
 		)
 	);
 
@@ -251,23 +246,21 @@ class CrudComponent extends Component {
 		$this->trigger('init');
 
 		// Test if action is mapped
-		$actionMapKey = sprintf('actionMap.%s', $action);
-		if (!$this->config($actionMapKey)) {
+		$actionConfig = Hash::get($this->_actions, $action);
+		if (empty($actionConfig)) {
 			throw new RuntimeException(sprintf('Action "%s" has not been mapped', $action));
 		}
 
 		// Change the view file before executing the CRUD action (so mapActionView works)
-		$viewMapKey = sprintf('viewMap.%s', $action);
-		$viewFile = $this->config($viewMapKey);
+		$viewFile = Hash::get($actionConfig, 'view');
 		if (!empty($viewFile)) {
 			$view = $viewFile;
 			$this->_controller->view = $viewFile;
 		}
 
 		try {
-			$actionToInvoke = $this->config($actionMapKey);
 			// Execute the default action, inside this component
-			$response = $this->trigger('handle', $this->getSubject(array('action' => $actionToInvoke)));
+			$response = $this->trigger('handle', $this->getSubject(array('config' => $actionConfig)));
 			if ($response instanceof CakeResponse) {
 				return $response;
 			}
@@ -288,7 +281,7 @@ class CrudComponent extends Component {
  * @return void
  */
 	protected function _loadListeners() {
-		foreach (array_keys($this->config('listenerClassMap')) as $name) {
+		foreach (array_keys($this->settings['listenerClassMap']) as $name) {
 			$this->_loadListener($name);
 		}
 	}
@@ -302,23 +295,23 @@ class CrudComponent extends Component {
 	protected function _loadListener($name) {
 		$subject = $this->getSubject();
 
-		$config = $this->config(sprintf('listenerClassMap.%s', $name));
+		$config = $this->settings['listenerClassMap'][$name];
 
 		list($plugin, $class) = pluginSplit($config, true);
 		App::uses($class, $plugin . 'Controller/Crud/Listener');
 
 		// Make sure to cleanup duplicate events
-		if (isset($this->_listeners[$name])) {
-			$this->_eventManager->detach($this->_listeners[$name]);
-			unset($this->_listeners[$name]);
+		if (isset($this->_listenerInstances[$name])) {
+			$this->_eventManager->detach($this->_listenerInstances[$name]);
+			unset($this->_listenerInstances[$name]);
 		}
 
-		$this->_listeners[$name] = new $class($subject);
-		$this->_eventManager->attach($this->_listeners[$name]);
+		$this->_listenerInstances[$name] = new $class($subject);
+		$this->_eventManager->attach($this->_listenerInstances[$name]);
 	}
 
 	protected function _loadActions() {
-		foreach (array_keys($this->config('actionClassMap')) as $name) {
+		foreach (array_keys($this->settings['actionClassMap']) as $name) {
 			$this->_loadAction($name);
 		}
 	}
@@ -326,7 +319,7 @@ class CrudComponent extends Component {
 	protected function _loadAction($name) {
 		$subject = $this->getSubject();
 
-		$config = $this->config(sprintf('actionClassMap.%s', $name));
+		$config = $this->settings['actionClassMap'][$name];
 
 		list($plugin, $class) = pluginSplit($config, true);
 		$class .= 'CrudAction';
@@ -334,13 +327,13 @@ class CrudComponent extends Component {
 		App::uses($class, $plugin . 'Controller/Crud/Action');
 
 		// Make sure to cleanup duplicate events
-		if (isset($this->_actions[$name])) {
-			$this->_eventManager->detach($this->_actions[$name]);
-			unset($this->_actions[$name]);
+		if (isset($this->_actionInstances[$name])) {
+			$this->_eventManager->detach($this->_actionInstances[$name]);
+			unset($this->_actionInstances[$name]);
 		}
 
-		$this->_actions[$name] = new $class($subject);
-		$this->_eventManager->attach($this->_actions[$name]);
+		$this->_actionInstances[$name] = new $class($subject);
+		$this->_eventManager->attach($this->_actionInstances[$name]);
 	}
 
 /**
@@ -351,7 +344,7 @@ class CrudComponent extends Component {
  * @return CrudBaseEvent
  */
 	public function getListener($name, $create = true) {
-		if (empty($this->_listeners[$name])) {
+		if (empty($this->_listenerInstances[$name])) {
 			if (!$create) {
 				return false;
 			}
@@ -359,7 +352,7 @@ class CrudComponent extends Component {
 			$this->_loadListener($name);
 		}
 
-		return $this->_listeners[$name];
+		return $this->_listenerInstances[$name];
 	}
 
 /**
@@ -396,7 +389,7 @@ class CrudComponent extends Component {
  */
 	public function trigger($eventName, $data = array()) {
 		$subject = $data instanceof CrudSubject ? $data : $this->getSubject($data);
-		$event = new CakeEvent($this->config('eventPrefix') . '.' . $eventName, $subject);
+		$event = new CakeEvent($this->settings['eventPrefix'] . '.' . $eventName, $subject);
 		$this->_eventManager->dispatch($event);
 
 		if ($event->result instanceof CakeResponse) {
@@ -537,27 +530,34 @@ class CrudComponent extends Component {
  *
  * @param mixed $key
  * @param mixed $value
+ * @param mixed $action
  * @return TranslationsEvent
  */
-	public function config($key = null, $value = null) {
+	public function config($key = null, $value = null, $action = null) {
+		// No action parameter = current action
+		if (is_null($action)) {
+			$action = $this->_action;
+		}
+
+		// Read out the action config
 		if (is_null($key) && is_null($value)) {
-			return $this->settings;
+			return Hash::get($this->_actions, $action);
 		}
 
 		if (is_null($value)) {
 			if (is_array($key)) {
-				$this->settings = $this->settings + $key;
+				$this->_actions[$action] = (array)Hash::get($this->_actions, $action) + (array)$key;
 				return $this;
 			}
 
-			return Hash::get($this->settings, $key);
+			return Hash::get($this->_actions, sprintf('%s.%s', $action, $key));
 		}
 
 		if (is_array($value)) {
-			$value = $value + (array)Hash::get($this->settings, $key);
+			$value = $value + (array)Hash::get($this->_actions, $action . '.' . $key);
 		}
 
-		$this->settings = Hash::insert($this->settings, $key, $value);
+		$this->_actions = Hash::insert($this->_actions, $action . '.' . $key, $value);
 		return $this;
 	}
 

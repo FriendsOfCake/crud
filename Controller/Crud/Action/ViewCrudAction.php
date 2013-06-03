@@ -19,7 +19,7 @@ class ViewCrudAction extends CrudAction {
  * @return void
  */
 	protected function _handle() {
-		if ($this->_action !== 'view') {
+		if ($this->_settings['type'] !== 'view') {
 			return;
 		}
 

@@ -18,7 +18,7 @@ class DeleteCrudAction extends CrudAction {
  * @return void
  */
 	protected function _handle() {
-		if ($this->_action !== 'delete') {
+		if ($this->_settings['type'] !== 'delete') {
 			return;
 		}
 
