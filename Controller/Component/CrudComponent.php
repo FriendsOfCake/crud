@@ -325,6 +325,7 @@ class CrudComponent extends Component {
  * Set internal model properties from the controller
  *
  * @return void
+ * @throws RuntimeException If unable to get model instance
  */
 	protected function _setModelProperties() {
 		$configKey = 'modelMap.' . $this->_action;
@@ -790,7 +791,7 @@ class CrudComponent extends Component {
 
 		if (!$this->_request->is('delete') && !($this->_request->is('post') && false === $this->config('secureDelete'))) {
 			$subject = $this->_getSubject(compact('id'));
-			$this->_setFlash('error.invalid_http_request');
+			$this->_setFlash('invalid_http_request.error');
 			return $this->_redirect($subject, $this->_controller->referer(array('action' => 'index')));
 		}
 
@@ -914,7 +915,7 @@ class CrudComponent extends Component {
 		}
 
 		$subject = $this->trigger('invalidId', compact('id'));
-		$this->_setFlash('error.invalid_id');
+		$this->_setFlash('invalid_id.error');
 		return $this->_redirect($subject, $this->_controller->referer());
 	}
 
