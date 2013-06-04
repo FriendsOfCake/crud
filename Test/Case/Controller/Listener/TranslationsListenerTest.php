@@ -1,7 +1,7 @@
 <?php
 
 App::uses('CakeEvent', 'Event');
-App::uses('TranslationsEvent', 'Crud.Controller/Crud/Listener');
+App::uses('TranslationsListener', 'Crud.Controller/Crud/Listener');
 
 class TranslationsListenerTest extends CakeTestCase {
 
