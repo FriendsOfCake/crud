@@ -5,45 +5,58 @@ class CrudAction implements CakeEventListener {
 
 	public function implementedEvents() {
 		return array(
-			'Crud.init'	=> array('callable' => 'init'),
 			'Crud.handle'	=> array('callable' => 'handle')
 		);
 	}
 
-	public function init(CakeEvent $event) {
-		$subject 					 = $event->subject;
-		$this->_Crud 			 = $subject->crud;
-		$this->_action		 = $subject->action;
+	public function __construct(CrudSubject $subject) {
+		$this->_Crud = $subject->crud;
+		$this->_Collection = $subject->collection;
+		$this->_request = $subject->request;
+
+		$this->config('handleAction', $subject->handleAction);
 	}
 
 	public function handle(CakeEvent $event) {
-		$subject 					 = $event->subject;
-
-		$this->_Crud 			 = $subject->crud;
-		$this->_action		 = $subject->action;
-		$this->_Collection = $subject->collection;
-		$this->_controller = $subject->controller;
-		$this->_modelName  = $subject->modelClass;
-		$this->_model 		 = $subject->model;
-		$this->_request 	 = $subject->request;
-
-		if (!array_key_exists($subject->action, $this->_settings)) {
+		if ($event->subject->action !== $this->config('handleAction')) {
 			return;
 		}
 
-		return $this->_handle();
+		$subject = $event->subject;
+		$this->_action = $subject->action;
+		$this->_controller = $subject->controller;
+		$this->_modelName = $subject->modelClass;
+		$this->_model = $subject->model;
+
+		return call_user_method_array('_handle', $this, $subject->args);
 	}
 
-	public function disable($action) {
-		return $this->config('enabled', false, $action);
+	public function disable() {
+		return $this->config('enabled', false);
 	}
 
-	public function enable($action) {
-		return $this->config('enabled', true, $action);
+	public function enable() {
+		return $this->config('enabled', true);
 	}
 
-	public function findMethod($action, $method) {
-		return $this->config('findMethod', $method, $action);
+	public function findMethod($method = null) {
+		if (empty($method)) {
+			return $this->config('findMethod');
+		}
+
+		return $this->config('findMethod', $method);
+	}
+
+	public function saveOptions($config = null) {
+		if (empty($config)) {
+			return $this->config('saveOptions');
+		}
+
+		return $this->config('saveOptions', $config);
+	}
+
+	public function view($view) {
+		return $this->config('view', $view);
 	}
 
 /**
@@ -53,12 +66,8 @@ class CrudAction implements CakeEventListener {
  * @param string|NULL $default The default find method in case it haven't been mapped
  * @return string The find method used in ->_model->find($method)
  */
-	protected function _getFindMethod($action = null, $default = null) {
-		if (empty($action)) {
-			$action = $this->_action;
-		}
-
-		$findMethod = $this->_Crud->config('findMethod', null, $action);
+	protected function _getFindMethod($default = null) {
+		$findMethod = $this->config('findMethod');
 		if (!empty($findMethod)) {
 			return $findMethod;
 		}
@@ -211,48 +220,29 @@ class CrudAction implements CakeEventListener {
  *
  * @param mixed $key
  * @param mixed $value
- * @param mixed $action
  * @return TranslationsEvent
  */
-	public function config($key = null, $value = null, $action = null) {
-		// No action parameter = current action
-		if (is_null($action)) {
-			$action = $this->_action;
-		}
-
-		debug($action);
-
+	public function config($key = null, $value = null) {
 		// Read out the action config
 		if (is_null($key) && is_null($value)) {
-			return $this->_settings[$action];
+			return $this->_settings;
 		}
 
 		// No value provided
 		if (is_null($value)) {
 			if (is_array($key)) {
-				$this->_settings[$action] = $this->_settings[$action] + (array)$key;
+				$this->_settings = $this->_settings + (array)$key;
 				return $this;
 			}
 
-			return Hash::get($this->_settings[$action], $key);
+			return Hash::get($this->_settings, $key);
 		}
 
-		debug($value);
 		if (is_array($value)) {
-			$value = $value + (array)Hash::get($this->_settings[$action], $key);
-		}
-		debug($value);
-
-		// Ensure action key exist
-		if (!array_key_exists($action, $this->_settings)) {
-			$this->_settings[$action] = array();
+			$value = $value + (array)Hash::get($this->_settings, $key);
 		}
 
-		$this->_settings[$action] = Hash::insert($this->_settings[$action], $key, $value);
-		debug(get_class($this));
-		debug($key);
-		debug($action);
-		debug($this->_settings);
+		$this->_settings = Hash::insert($this->_settings, $key, $value);
 		return $this;
 	}
 

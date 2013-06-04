@@ -6,27 +6,14 @@ App::uses('CrudSubject', 'Crud.Controller');
 class EditCrudAction extends CrudAction {
 
 	protected $_settings = array(
-		'edit' => array(
-			'enabled' => true,
-			'findMethod' => 'first',
-			'view' => 'edit',
-			'relatedLists' => true,
-			'validateId' => null,
-			'saveOptions' => array(
-				'validate' => 'first',
-				'atomic' => true
-			)
-		),
-		'admin_edit' => array(
-			'enabled' => true,
-			'findMethod' => 'first',
-			'view' => 'admin_edit',
-			'relatedLists' => true,
-			'validateId' => null,
-			'saveOptions' => array(
-				'validate' => 'first',
-				'atomic' => true
-			)
+		'enabled' => true,
+		'findMethod' => 'first',
+		'view' => 'edit',
+		'relatedLists' => true,
+		'validateId' => null,
+		'saveOptions' => array(
+			'validate' => 'first',
+			'atomic' => true
 		)
 	);
 
@@ -45,7 +32,7 @@ class EditCrudAction extends CrudAction {
  * @param string $id
  * @return void
  */
-	protected function _handle() {
+	protected function _handle($id = null) {
 		if (empty($id)) {
 			$id = $this->getIdFromRequest();
 		}
@@ -65,7 +52,7 @@ class EditCrudAction extends CrudAction {
 		} else {
 			$query = array();
 			$query['conditions'] = array($this->_model->escapeField() => $id);
-			$findMethod = $this->_getFindMethod(null, 'first');
+			$findMethod = $this->_getFindMethod('first');
 			$subject = $this->_Crud->trigger('beforeFind', compact('query', 'findMethod'));
 			$query = $subject->query;
 

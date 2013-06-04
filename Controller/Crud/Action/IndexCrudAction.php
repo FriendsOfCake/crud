@@ -6,16 +6,9 @@ App::uses('CrudSubject', 'Crud.Controller');
 class IndexCrudAction extends CrudAction {
 
 	protected $_settings = array(
-		'index' => array(
-			'enabled' => true,
-			'findMethod' => 'all',
-			'view' => 'index'
-		),
-		'admin_index' => array(
-			'enabled' => true,
-			'findMethod' => 'all',
-			'view' => 'admin_index'
-		)
+		'enabled' => true,
+		'findMethod' => 'all',
+		'view' => 'index'
 	);
 
 /**
@@ -42,7 +35,7 @@ class IndexCrudAction extends CrudAction {
 		} elseif (!empty($Paginator->settings['findType'])) {
 			$findMethod = $Paginator->settings['findType'];
 		} else {
-			$findMethod = $this->_getFindMethod(null, 'all');
+			$findMethod = $this->_getFindMethod('all');
 		}
 
 		$subject = $this->_Crud->trigger('beforePaginate', compact('findMethod'));

@@ -34,7 +34,6 @@ class RelatedModelsListener implements CakeEventListener {
 	public function __construct(CrudSubject $subject) {
 		$this->_subject = $subject;
 		$this->_crud = $subject->crud;
-		$this->_actionClass = $subject->crud->getAction();
 	}
 
 /**
@@ -49,9 +48,10 @@ class RelatedModelsListener implements CakeEventListener {
 		}
 
 		foreach ($actions as $action) {
-			$config = $this->_actionClass->config('relatedLists');
+			$actionClass = $this->_crud->getAction($action);
+			$config = $actionClass->config('relatedLists');
 			if (empty($config)) {
-				$this->_actionClass->config('relatedLists', true, $action);
+				$actionClass->config('relatedLists', true);
 			}
 		}
 	}
@@ -74,7 +74,7 @@ class RelatedModelsListener implements CakeEventListener {
 			$models = array($models);
 		}
 
-		$this->_crud->getAction($action)->config('relatedLists', $models, $action);
+		$this->_crud->getAction($action)->config('relatedLists', $models);
 	}
 
 /**
@@ -84,46 +84,31 @@ class RelatedModelsListener implements CakeEventListener {
  * @return array
  */
 	public function models($action = null) {
-		if (empty($action)) {
-			$action = $this->_subject->action;
-		}
+		$actionClass = $this->_crud->getAction($action);
 
-		var_dump($action);
-		$settings = $this->_actionClass->config('relatedLists', null, $action);
-		var_dump($settings);
+		$settings = $actionClass->config('relatedLists');
 		if ($settings === true) {
 			return array_keys($this->_subject->model->getAssociated());
 		}
 
-		// If we don't have any related configuration, look up its alias in the actionMap
-		if (empty($settings[$action]) && $this->_crud->isActionMapped($action)) {
-			$action = $this->_actionClass->config(sprintf('actionMap.%s', $action));
-		}
-
-		// If current action isn't configured
-		if (!isset($settings[$action])) {
+		if (empty($settings)) {
 			return array();
 		}
 
-		// If the action value is true and we got a configured default, inspect it
-		if ($settings[$action] === true && isset($settings['default'])) {
-			// If default is false, don't fetch any related records
+		if (isset($settings['default'])) {
 			if (false === $settings['default']) {
 				return array();
 			}
 
-			// If it's an array, return it
 			if (is_array($settings['default'])) {
 				return $settings['default'];
 			}
 		}
 
-		// Use whatever value there may have been set by the user
-		if ($settings[$action] !== true) {
-			return $settings[$action];
+		if ($settings !== true) {
+			return $settings;
 		}
 
-		// Default to everything associated to the current model
 		return array_keys($this->_subject->model->getAssociated());
 	}
 
@@ -134,8 +119,8 @@ class RelatedModelsListener implements CakeEventListener {
  */
 	public function implementedEvents() {
 		return array(
-			$this->_crud->settings['eventPrefix'] . '.init' => 'init',
-			$this->_crud->settings['eventPrefix'] . '.beforeRender' => 'beforeRender'
+			$this->_crud->config('eventPrefix') . '.init' => 'init',
+			$this->_crud->config('eventPrefix') . '.beforeRender' => 'beforeRender'
 		);
 	}
 

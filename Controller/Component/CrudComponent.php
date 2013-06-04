@@ -213,7 +213,7 @@ class CrudComponent extends Component {
 
 		try {
 			// Execute the default action, inside this component
-			$response = $this->trigger('handle', $this->getSubject());
+			$response = $this->trigger('handle', $this->getSubject(compact('args')));
 			if ($response instanceof CakeResponse) {
 				return $response;
 			}
@@ -225,6 +225,7 @@ class CrudComponent extends Component {
 			throw $e;
 		}
 
+		$view = $this->getAction($action)->config('view');
 		return $this->_controller->response = $this->_controller->render($view);
 	}
 
@@ -285,12 +286,12 @@ class CrudComponent extends Component {
 	protected function _loadAction($name) {
 		$actionType = $this->config('actions.' . $name);
 		if (empty($actionType)) {
-			throw new Exception(sprintf('Action "%s" has not been mapped to any action object', $name));
+			throw new RuntimeException(sprintf('Action "%s" has not been mapped to any action object', $name));
 		}
 
 		$actionClass = $this->config('actionClassMap.' . $actionType);
 		if (empty($actionClass)) {
-			throw new Exception(sprintf('Action type "%s" for action "%s" has not been mapped', $actionType, $name));
+			throw new RuntimeException(sprintf('Action type "%s" for action "%s" has not been mapped', $actionType, $name));
 		}
 
 		list($plugin, $class) = pluginSplit($actionClass, true);
@@ -299,13 +300,13 @@ class CrudComponent extends Component {
 		App::uses($class, $plugin . 'Controller/Crud/Action');
 
 		// Make sure to cleanup duplicate events
-		if (!isset($this->_actionInstances[$actionClass])) {
-			$subject = $this->getSubject();
-			$this->_actionInstances[$actionClass] = new $class($subject);
-			$this->_eventManager->attach($this->_actionInstances[$actionClass]);
+		if (!isset($this->_actionInstances[$name])) {
+			$subject = $this->getSubject(array('handleAction' => $name));
+			$this->_actionInstances[$name] = new $class($subject);
+			$this->_eventManager->attach($this->_actionInstances[$name]);
 		}
 
-		return $this->_actionInstances[$actionClass];
+		return $this->_actionInstances[$name];
 	}
 
 	public function getAction($name = null) {
@@ -397,7 +398,14 @@ class CrudComponent extends Component {
  * @return void
  */
 	public function mapActionView($action, $view = null) {
-		$this->getAction($action)->view($action, $view);
+		if (is_array($action)) {
+			foreach ($action as $realAction => $realView) {
+				$this->getAction($realAction)->view($realView);
+			}
+			return;
+		}
+
+		$this->getAction($action)->view($view);
 	}
 
 /**
@@ -441,8 +449,8 @@ class CrudComponent extends Component {
  * @param strign $method
  * @return void
  */
-	public function mapFindMethod($action, $method) {
-		$this->getAction($action)->findMethod($action, $method);
+	public function mapFindMethod($action, $method = null) {
+		$this->getAction($action)->findMethod($method);
 	}
 
 /**

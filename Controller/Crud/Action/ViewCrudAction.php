@@ -6,16 +6,9 @@ App::uses('CrudSubject', 'Crud.Controller');
 class ViewCrudAction extends CrudAction {
 
 	protected $_settings = array(
-		'view' => array(
-			'enabled' => true,
-			'findMethod' => 'first',
-			'view' => 'view'
-		),
-		'admin_view' => array(
-			'enabled' => true,
-			'findMethod' => 'first',
-			'view' => 'admin_view'
-		)
+		'enabled' => true,
+		'findMethod' => 'first',
+		'view' => 'view'
 	);
 
 /**
@@ -31,7 +24,7 @@ class ViewCrudAction extends CrudAction {
  * @param string $id
  * @return void
  */
-	protected function _handle() {
+	protected function _handle($id = null) {
 		if (empty($id)) {
 			$id = $this->getIdFromRequest();
 		}
@@ -42,7 +35,7 @@ class ViewCrudAction extends CrudAction {
 		$query = array();
 		$query['conditions'] = array($this->_model->escapeField() => $id);
 
-		$findMethod = $this->_getFindMethod(null, 'first');
+		$findMethod = $this->_getFindMethod('first');
 		$subject = $this->_Crud->trigger('beforeFind', compact('id', 'query', 'findMethod'));
 		$query = $subject->query;
 

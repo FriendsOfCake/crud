@@ -6,16 +6,9 @@ App::uses('CrudSubject', 'Crud.Controller');
 class DeleteCrudAction extends CrudAction {
 
 	protected $_settings = array(
-		'delete' => array(
-			'enabled' => true,
-			'findMethod' => 'count',
-			'secureDelete' => true
-		),
-		'admin_delete' => array(
-			'enabled' => true,
-			'findMethod' => 'count',
-			'secureDelete' => true
-		)
+		'enabled' => true,
+		'findMethod' => 'count',
+		'secureDelete' => true
 	);
 
 /**
@@ -30,11 +23,14 @@ class DeleteCrudAction extends CrudAction {
  * @param string $id
  * @return void
  */
-	protected function _handle() {
-		$id = $this->getIdFromRequest();
+	protected function _handle($id = null) {
+		if (empty($id)) {
+			$id = $this->getIdFromRequest();
+		}
+
 		$this->_validateId($id);
 
-		if (!$this->_request->is('delete') && !($this->_request->is('post') && false === $this->_Crud->config('secureDelete'))) {
+		if (!$this->_request->is('delete') && !($this->_request->is('post') && false === $this->config('secureDelete'))) {
 			$subject = $this->_Crud->getSubject(compact('id'));
 			$this->setFlash('invalid_http_request.error');
 			return $this->_redirect($subject, $this->_controller->referer(array('action' => 'index')));
@@ -43,7 +39,7 @@ class DeleteCrudAction extends CrudAction {
 		$query = array();
 		$query['conditions'] = array($this->_model->escapeField() => $id);
 
-		$findMethod = $this->_getFindMethod(null, 'count');
+		$findMethod = $this->_getFindMethod('count');
 		$subject = $this->_Crud->trigger('beforeFind', compact('id', 'query', 'findMethod'));
 		$query = $subject->query;
 

@@ -118,35 +118,28 @@ class TestCrudComponent extends CrudComponent {
  * Test visibility wrapper
  */
 	public function testRedirect($subject, $url = null) {
-		// return $this->_redirect($subject, $url);
+		return $this->_redirect($subject, $url);
 	}
 
 /**
  * Test visibility wrapper
  */
 	public function testValidateId($id) {
-		// return $this->_validateId($id);
+		return $this->_validateId($id);
 	}
 
 /**
  * test visibility wrapper
  */
 	public function testGetFindMethod($action = null, $default = null) {
-		// return parent::_getFindMethod($action, $default);
+		return parent::_getFindMethod($action, $default);
 	}
 
 /**
  * test visibility wrapper
  */
 	public function detectPrimaryKeyFieldType() {
-		// return parent::_detectPrimaryKeyFieldType();
-	}
-
-/**
- * test visibility wrapper
- */
-	public function getSaveAllOptions($action = null) {
-		// return parent::_getSaveAllOptions($action);
+		return parent::_detectPrimaryKeyFieldType();
 	}
 
 /**
@@ -303,7 +296,6 @@ class CrudComponentTestCase extends ControllerTestCase {
  * testMapActionView
  */
 	public function testMapActionView() {
-		return; // TODO: Fix
 		$this->controller
 			->expects($this->once())
 			->method('render');
@@ -442,7 +434,6 @@ class CrudComponentTestCase extends ControllerTestCase {
  * before + after delete events are triggered
  */
 	public function testDeleteActionExists() {
-		return; // TODO: Fix
 		$this->controller
 			->expects($this->never())
 			->method('render');
@@ -506,18 +497,18 @@ class CrudComponentTestCase extends ControllerTestCase {
  * before + after delete events are triggered
  */
 	public function testDeleteWorksWhenDELETEandSecureDelete() {
-		return; // TODO: Fix
 		$this->controller
 			->expects($this->never())
 			->method('render');
 
-		$this->Crud->config('secureDelete', true);
+		$CrudAction = $this->Crud->getAction('delete');
+		$CrudAction->config('secureDelete', true);
 
 		$this->controller->request->addDetector('delete', array(
 			'callback' => function() { return true; }
 		));
 
-		$this->Crud->settings['validateId'] = 'integer';
+		$CrudAction->config('validateId', 'integer');
 		$id = 1;
 
 		$this->Crud->executeAction('delete', array($id));
@@ -541,12 +532,12 @@ class CrudComponentTestCase extends ControllerTestCase {
  * before + after delete events are triggered
  */
 	public function testDeleteFailsWithPostAndSecureDeleteActive() {
-		return; // TODO: Fix
 		$this->controller
 			->expects($this->never())
 			->method('render');
 
-		$this->Crud->config('secureDelete', true);
+		$CrudAction = $this->Crud->getAction('delete');
+		$CrudAction->config('secureDelete', true);
 
 		$this->controller->request->addDetector('delete', array(
 			'callback' => function() { return false; }
@@ -556,7 +547,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 			'callback' => function() { return true; }
 		));
 
-		$this->Crud->settings['validateId'] = 'integer';
+		$CrudAction->config('validateId', 'integer');
 		$id = 1;
 
 		$this->Crud->executeAction('delete', array($id));
@@ -583,12 +574,12 @@ class CrudComponentTestCase extends ControllerTestCase {
  * before + after delete events are triggered
  */
 	public function testDeleteWorksWithPostAndSecureDeleteActive() {
-		return; // TODO: Fix
 		$this->controller
 			->expects($this->never())
 			->method('render');
 
-		$this->Crud->config('secureDelete', false);
+		$CrudAction = $this->Crud->getAction('delete');
+		$CrudAction->config('secureDelete', false);
 
 		$this->controller->request->addDetector('delete', array(
 			'callback' => function() { return false; }
@@ -598,7 +589,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 			'callback' => function() { return true; }
 		));
 
-		$this->Crud->settings['validateId'] = 'integer';
+		$CrudAction->config('validateId', 'integer');
 		$id = 1;
 
 		$this->Crud->executeAction('delete', array($id));
@@ -620,13 +611,12 @@ class CrudComponentTestCase extends ControllerTestCase {
  * Do we get a call to render the form template?
  */
 	public function testEditActionGet() {
-		return; // TODO: Fix
 		$this->controller
 			->expects($this->once())
 			->method('render')
 			->with('edit');
 
-		$this->Crud->settings['validateId'] = 'notUuid';
+		$this->Crud->getAction('edit')->config('validateId', 'notUuid');
 		$id = 1;
 
 		$this->Crud->executeAction('edit', array($id));
@@ -675,13 +665,12 @@ class CrudComponentTestCase extends ControllerTestCase {
  * Make sure that there is a call to render the view template
  */
 	public function testViewAction() {
-		return; // TODO: Fix
 		$this->controller
 			->expects($this->once())
 			->method('render')
 			->with('view');
 
-		$this->Crud->settings['validateId'] = 'notUuid';
+		$this->Crud->getAction('view')->config('validateId', 'notUuid');
 		$id = 1;
 
 		$this->Crud->executeAction('view', array($id));
@@ -714,6 +703,7 @@ class CrudComponentTestCase extends ControllerTestCase {
  * TODO this test isn't testing anything
  */
 	public function testRedirect() {
+		return; // REMOVE
 		$subject = $this->Crud->testGetSubject();
 		$this->Crud->testRedirect($subject);
 	}
@@ -798,6 +788,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$this->Crud->on('afterPaginate', function($event) {
 			throw new RuntimeException($event->name() . ' called');
 		});
+
 		$this->Crud->executeAction('index');
 	}
 
@@ -812,6 +803,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$this->Crud->on('Crud.afterPaginate', function($event) {
 			throw new RuntimeException($event->name() . ' called');
 		});
+
 		$this->Crud->executeAction('index');
 	}
 
@@ -853,7 +845,6 @@ class CrudComponentTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testFetchRelatedDefaults() {
-		return; // TODO: Fix
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')), false);
 		$expectedTags = array(1 => '1', 2 => '2', 3 => '3');
 		$expectedAuthors = array(1 => '1', 2 => '2', 3 => '3', 4 => '4');
@@ -889,8 +880,8 @@ class CrudComponentTestCase extends ControllerTestCase {
  */
 	public function testFetchRelatedMapped() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')), false);
-		$this->Crud->settings['relatedLists']['add'] = array('Author');
-		$this->Crud->settings['relatedLists']['admin_add'] = array('Author');
+		$this->Crud->getAction('add')->config('relatedLists', array('Author'));
+		$this->Crud->getAction('admin_add')->config('relatedLists', array('Author'));
 
 		$expectedAuthors = array(1 => '1', 2 => '2', 3 => '3', 4 => '4');
 
@@ -917,7 +908,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$this->Crud->getListener('related')->map(array('Tag'), 'add');
 		$this->Crud->getListener('related')->map(array('Tag'), 'admin_add');
 		$expectedTags = array(1 => '1', 2 => '2', 3 => '3');
-		die;
+
 		$this->Crud->executeAction('add');
 		$vars = $this->controller->viewVars;
 		$this->assertEquals($expectedTags, $vars['tags']);
@@ -937,9 +928,8 @@ class CrudComponentTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testFetchRelatedMappedAll() {
-		return; // TODO: Fix
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
-		$this->Crud->getListener('related')->map(array('Tag'), 'default');
+		$this->Crud->getListener('related')->map(array('Tag'), 'edit');
 		$expectedTags = array(1 => '1', 2 => '2', 3 => '3');
 
 		$this->Crud->executeAction('edit', array('1'));
@@ -987,7 +977,7 @@ class CrudComponentTestCase extends ControllerTestCase {
  */
 	public function testFetchRelatedEvents() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
-		$this->Crud->getListener('related')->map(array('Tag'), 'default');
+		$this->Crud->getListener('related')->map(array('Tag'), 'add');
 		$expectedTags = array(1 => '1', 2 => '2', 'foo' => 'bar');
 		$self = $this;
 
@@ -1014,10 +1004,9 @@ class CrudComponentTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testRelatedModelsDefaultFalseAdd() {
-		return; // TODO: Fix
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
 
-		$this->Crud->getListener('related')->map(false, 'default');
+		$this->Crud->getListener('related')->map(false, 'add');
 		$this->assertEquals(array(), $this->Crud->getListener('related')->models('add'));
 
 		$this->Crud->executeAction('add');
@@ -1032,10 +1021,9 @@ class CrudComponentTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testRelatedModelsDefaultFalseEdit() {
-		return; // TODO: Fix
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
 
-		$this->Crud->getListener('related')->map(false, 'default');
+		$this->Crud->getListener('related')->map(false, 'edit');
 		$this->assertEquals(array(), $this->Crud->getListener('related')->models('edit'));
 
 		$this->Crud->executeAction('edit');
@@ -1050,10 +1038,9 @@ class CrudComponentTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testRelatedModelsDefaultTrueAdd() {
-		return; // TODO: Fix
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
 
-		$this->Crud->getListener('related')->map(true, 'default');
+		$this->Crud->getListener('related')->map(true, 'add');
 		$this->assertEquals(array('Author', 'Tag'), $this->Crud->getListener('related')->models('add'));
 
 		$this->Crud->executeAction('add');
@@ -1068,11 +1055,10 @@ class CrudComponentTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testRelatedModelsDefaultTrueEdit() {
-		return; // TODO: Fix
 		$this->Crud->settings['validateId'] = 'integer';
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')), false);
 
-		$this->Crud->getListener('related')->map(true, 'default');
+		$this->Crud->getListener('related')->map(true, 'edit');
 		$this->assertEquals(array('Author', 'Tag'), $this->Crud->getListener('related')->models('edit'));
 
 		$this->Crud->executeAction('edit', array(3));
@@ -1088,12 +1074,11 @@ class CrudComponentTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testRelatedModelsWithAliasMappedLookup() {
-		return; // TODO: Fix
-		$this->Crud->settings['validateId'] = 'integer';
+		$this->Crud->getAction('edit')->config('validateId', 'integer');
 		$this->model->bindModel(array('belongsTo' => array('Author')), false);
 
 		$this->Crud->mapAction('modify_action', 'edit');
-		$this->Crud->getListener('related')->map(true);
+		$this->Crud->getListener('related')->map(true, 'modify_action');
 		$this->assertEquals(array('Author'), $this->Crud->getListener('related')->models('modify_action'));
 
 		$this->Crud->executeAction('modify_action', array(1));
@@ -1109,16 +1094,15 @@ class CrudComponentTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testCustomFindDefaults() {
-		return; // TODO: Fix
-		$this->assertEquals('all', $this->Crud->testGetFindMethod('index'));
-		$this->assertEquals(null, $this->Crud->testGetFindMethod('add'));
-		$this->assertEquals('first', $this->Crud->testGetFindMethod('edit'));
-		$this->assertEquals('count', $this->Crud->testGetFindMethod('delete'));
+		$this->assertEquals('all',   $this->Crud->getAction('index')->findMethod());
+		$this->assertEquals('first', $this->Crud->getAction('add')->findMethod());
+		$this->assertEquals('first', $this->Crud->getAction('edit')->findMethod());
+		$this->assertEquals('count', $this->Crud->getAction('delete')->findMethod());
 
-		$this->assertEquals('all', $this->Crud->testGetFindMethod('admin_index'));
-		$this->assertEquals(null, $this->Crud->testGetFindMethod('admin_add'));
-		$this->assertEquals('first', $this->Crud->testGetFindMethod('admin_edit'));
-		$this->assertEquals('count', $this->Crud->testGetFindMethod('admin_delete'));
+		$this->assertEquals('all', $this->Crud->getAction('admin_index')->findMethod());
+		$this->assertEquals('first', $this->Crud->getAction('admin_add')->findMethod());
+		$this->assertEquals('first', $this->Crud->getAction('admin_edit')->findMethod());
+		$this->assertEquals('count', $this->Crud->getAction('admin_delete')->findMethod());
 	}
 
 /**
@@ -1127,12 +1111,11 @@ class CrudComponentTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testCustomFindChanged() {
-		return; // TODO: Fix
 		$this->Crud->mapFindMethod('index', 'custom_find');
-		$this->assertEquals('custom_find', $this->Crud->testGetFindMethod('index'));
+		$this->assertEquals('custom_find', $this->Crud->getAction('index')->findMethod());
 
 		$this->Crud->mapFindMethod('index', 'all');
-		$this->assertEquals('all', $this->Crud->testGetFindMethod('index'));
+		$this->assertEquals('all', $this->Crud->getAction('index')->findMethod());
 	}
 
 /**
@@ -1216,8 +1199,7 @@ class CrudComponentTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testCustomFindEditPublished() {
-		return; // TODO: Fix
-		$this->Crud->settings['validateId'] = 'integer';
+		$this->Crud->getAction('edit')->config('validateId', 'integer');
 		$this->Crud->mapFindMethod('edit', 'firstPublished');
 		$this->Crud->executeAction('edit', array(2));
 
@@ -1232,7 +1214,6 @@ class CrudComponentTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testCustomFindEditUnpublished() {
-		return; // TODO: Fix
 		$this->controller->expects($this->once())->method('redirect');
 
 		$this->Crud->settings['validateId'] = 'integer';
@@ -1252,13 +1233,14 @@ class CrudComponentTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testCustomFindDeletePublished() {
-		return; // TODO: Fix
 		$this->controller->request->addDetector('delete', array(
 			'callback' => function() { return true; }
 		));
 
-		$this->Crud->settings['validateId'] = 'integer';
-		$this->Crud->mapFindMethod('delete', 'firstPublished');
+		$CrudAction = $this->Crud->getAction('delete');
+		$CrudAction->config('validateId', 'integer');
+		$CrudAction->findMethod('firstPublished');
+
 		$this->Crud->executeAction('delete', array(2));
 
 		$events = CakeEventManager::instance()->getLog();
@@ -1311,9 +1293,11 @@ class CrudComponentTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testCustomFindViewPublished() {
-		return; // TODO: Fix
-		$this->Crud->settings['validateId'] = 'integer';
-		$this->Crud->mapFindMethod('view', 'firstPublished');
+		$CrudAction = $this->Crud->getAction('view');
+
+		$CrudAction->config('validateId', 'integer');
+		$CrudAction->findmethod('firstPublished');
+
 		$this->Crud->executeAction('view', array(2));
 
 		$events = CakeEventManager::instance()->getLog();
@@ -1367,7 +1351,6 @@ class CrudComponentTestCase extends ControllerTestCase {
 
 		$this->Crud->mapAction('show_all', 'index');
 		$this->Crud->mapActionView(array('show_all' => 'index', 'index' => 'overview'));
-
 		$this->Crud->executeAction('show_all');
 	}
 
@@ -1382,8 +1365,8 @@ class CrudComponentTestCase extends ControllerTestCase {
 			->method('render')
 			->with('overview');
 
+		$this->Crud->mapAction('show_all', 'index');
 		$this->Crud->mapActionView(array('show_all' => 'index', 'index' => 'overview'));
-
 		$this->Crud->executeAction('index');
 	}
 
@@ -1393,7 +1376,7 @@ class CrudComponentTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testEnableRelatedListStringForIndexAction() {
-		$this->Crud->getListener('related')->map('Tag', 'default');
+		$this->Crud->getListener('related')->map('Tag');
 		$this->Crud->getListener('related')->enable('index');
 
 		$expected = array('Tag');
@@ -1415,7 +1398,7 @@ class CrudComponentTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testEnableRelatedListArrayForIndexAction() {
-		$this->Crud->getListener('related')->map(array('Tag', 'Author'), 'default');
+		$this->Crud->getListener('related')->map(array('Tag', 'Author'));
 		$this->Crud->getListener('related')->enable(array('index'));
 
 		$this->assertSame(array('Tag', 'Author'), $this->Crud->getListener('related')->models('index'));
@@ -1534,7 +1517,6 @@ class CrudComponentTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testAddActionTranslatedBaseline() {
-		return;
 		Router::connect("/:action", array('controller' => 'crud_examples'));
 
 		$this->Controller = $this->generate(
@@ -1754,24 +1736,20 @@ class CrudComponentTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testGetSaveAllOptionsDefaults() {
-		return; // TODO: Fix
+		$CrudAction = $this->Crud->getAction('add');
+
 		$expected = array('validate' => 'first', 'atomic' => true);
-		$value = $this->Crud->getSaveAllOptions();
+		$value = $CrudAction->config('saveOptions');
 		$this->assertEqual($value, $expected);
 
-		$this->Crud->config('saveAllOptions.default', array('atomic' => false));
-		$expected = array('validate' => 'first', 'atomic' => false);
-		$value = $this->Crud->getSaveAllOptions();
-		$this->assertEqual($value, $expected);
-
-		$this->Crud->config('saveAllOptions.default.atomic', true);
+		$CrudAction->config('saveOptions.atomic', true);
 		$expected = array('validate' => 'first', 'atomic' => true);
-		$value = $this->Crud->getSaveAllOptions();
+		$value = $CrudAction->config('saveOptions');
 		$this->assertEqual($value, $expected);
 
-		$this->Crud->config('saveAllOptions.default', array('fieldList' => array('hello')));
+		$CrudAction->config('saveOptions', array('fieldList' => array('hello')));
 		$expected = array('validate' => 'first', 'atomic' => true, 'fieldList' => array('hello'));
-		$value = $this->Crud->getSaveAllOptions();
+		$value = $CrudAction->config('saveOptions');
 		$this->assertEqual($value, $expected);
 	}
 
@@ -1782,14 +1760,13 @@ class CrudComponentTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testGetSaveAllOptionsCustomAction() {
-		return; // TODO: Fix
 		$expected = array('validate' => 'first', 'atomic' => true);
-		$value = $this->Crud->getSaveAllOptions('add');
+		$value = $this->Crud->getAction('add')->saveOptions();
 		$this->assertEqual($value, $expected);
 
-		$this->Crud->config('saveAllOptions.add', array('atomic' => false));
+		$this->Crud->getAction('add')->saveOptions(array('atomic' => false));
 		$expected = array('validate' => 'first', 'atomic' => false);
-		$value = $this->Crud->getSaveAllOptions('add');
+		$value = $this->Crud->getAction('add')->saveOptions();
 		$this->assertEqual($value, $expected);
 	}
 
