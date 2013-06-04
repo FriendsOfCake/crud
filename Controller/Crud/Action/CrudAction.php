@@ -1,44 +1,138 @@
 <?php
-class CrudAction implements CakeEventListener {
+/**
+ * Base Crud class
+ *
+ */
+abstract class CrudAction implements CakeEventListener {
 
+/**
+ * Action configuration
+ *
+ * @var array
+ */
 	protected $_settings = array();
 
-	public function implementedEvents() {
-		return array(
-			'Crud.handle'	=> array('callable' => 'handle')
-		);
-	}
+/**
+ * Reference to the Crud component
+ *
+ * @var CrudComponent
+ */
+	protected $_crud;
 
+/**
+ * Reference to the ComponentCollection
+ *
+ * @var ComponentCollection
+ */
+	protected $_collection;
+
+/**
+ * Reference to the CakeRequest
+ *
+ * @var CakeRequest
+ */
+	protected $_request;
+
+/**
+ * Reference to the controller
+ *
+ * @var Controller
+ */
+	protected $_controller;
+
+/**
+ * Reference to the model
+ *
+ * @var Model
+ */
+	protected $_model;
+
+/**
+ * The modelClass property from the Controller
+ *
+ * @var string
+ */
+	protected $_modelClass;
+
+/**
+ * Constructor
+ *
+ * @param CrudSubject $subject
+ * @return void
+ */
 	public function __construct(CrudSubject $subject) {
-		$this->_Crud = $subject->crud;
-		$this->_Collection = $subject->collection;
+		$this->_crud = $subject->crud;
 		$this->_request = $subject->request;
+		$this->_collection = $subject->collection;
+		$this->_controller = $subject->controller;
 
+		// Mark that we will only handle this specific action if asked
 		$this->config('handleAction', $subject->handleAction);
 	}
 
+/**
+ * List of implemented events
+ *
+ * @return array
+ */
+	public function implementedEvents() {
+		return array('Crud.handle'	=> array('callable' => 'handle'));
+	}
+
+/**
+ * Handle callback
+ *
+ * Based on the requested controller action,
+ * decide if we should handle the request or not.
+ *
+ * By returning null, we 'pass' on the handling request and
+ * allow other CrudActions to process it instead
+ *
+ * @param CakeEvent $event
+ * @return mixed
+ */
 	public function handle(CakeEvent $event) {
+		if (!$this->config('enabled')) {
+			return;
+		}
+
 		if ($event->subject->action !== $this->config('handleAction')) {
 			return;
 		}
 
-		$subject = $event->subject;
-		$this->_action = $subject->action;
-		$this->_controller = $subject->controller;
-		$this->_modelName = $subject->modelClass;
-		$this->_model = $subject->model;
+		$this->_model = $event->subject->model;
+		$this->_modelClass = $event->subject->modelClass;
 
-		return call_user_method_array('_handle', $this, $subject->args);
+		return call_user_method_array('_handle', $this, $event->subject->args);
 	}
 
+/**
+ * Disable the Crud action
+ *
+ * @return boolean
+ */
 	public function disable() {
 		return $this->config('enabled', false);
 	}
 
+/**
+ * Enable the Crud action
+ *
+ * @return boolean
+ */
 	public function enable() {
 		return $this->config('enabled', true);
 	}
 
+/**
+ * Change the find() method
+ *
+ * If `$method` is NULL the current value is returned
+ * else the `findMethod` is changed
+ *
+ * @param mixed $method
+ * @return mixed
+ */
 	public function findMethod($method = null) {
 		if (empty($method)) {
 			return $this->config('findMethod');
@@ -47,6 +141,17 @@ class CrudAction implements CakeEventListener {
 		return $this->config('findMethod', $method);
 	}
 
+/**
+ * Change the saveOptions configuration
+ *
+ * This is the 2nd argument passed to saveAll()
+ *
+ * if `$config` is NULL the current config is returned
+ * else the `saveOptions` is changed
+ *
+ * @param mixed $config
+ * @return mixed
+ */
 	public function saveOptions($config = null) {
 		if (empty($config)) {
 			return $this->config('saveOptions');
@@ -55,8 +160,55 @@ class CrudAction implements CakeEventListener {
 		return $this->config('saveOptions', $config);
 	}
 
-	public function view($view) {
+/**
+ * Change the view to be rendered
+ *
+ * If `$view` is NULL the current view is returned
+ * else the `$view` is changed
+ *
+ * @param mixed $view
+ * @return mixed
+ */
+	public function view($view = null) {
+		if (empty($view)) {
+			return $this->config('view') ?: $this->config('handleAction');
+		}
+
 		return $this->config('view', $view);
+	}
+
+/**
+ * Generic config method
+ *
+ * If $key is an array and $value is empty,
+ * $key will be merged directly with $this->_config
+ *
+ * If $key is a string it will be passed into Hash::insert
+ *
+ * @param mixed $key
+ * @param mixed $value
+ * @return TranslationsEvent
+ */
+	public function config($key = null, $value = null) {
+		if (is_null($key) && is_null($value)) {
+			return $this->_settings;
+		}
+
+		if (is_null($value)) {
+			if (is_array($key)) {
+				$this->_settings = $this->_settings + (array)$key;
+				return $this;
+			}
+
+			return Hash::get($this->_settings, $key);
+		}
+
+		if (is_array($value)) {
+			$value = $value + (array)Hash::get($this->_settings, $key);
+		}
+
+		$this->_settings = Hash::insert($this->_settings, $key, $value);
+		return $this;
 	}
 
 /**
@@ -67,7 +219,7 @@ class CrudAction implements CakeEventListener {
  * @return string The find method used in ->_model->find($method)
  */
 	protected function _getFindMethod($default = null) {
-		$findMethod = $this->config('findMethod');
+		$findMethod = $this->findMethod();
 		if (!empty($findMethod)) {
 			return $findMethod;
 		}
@@ -84,9 +236,9 @@ class CrudAction implements CakeEventListener {
 		if (empty($this->_request->params['pass'][0])) {
 			return null;
 		}
+
 		return $this->_request->params['pass'][0];
 	}
-
 
 /**
  * Is the passed ID valid ?
@@ -118,11 +270,10 @@ class CrudAction implements CakeEventListener {
 			return true;
 		}
 
-		$subject = $this->_Crud->trigger('invalidId', compact('id'));
+		$subject = $this->_crud->trigger('invalidId', compact('id'));
 		$this->setFlash('invalid_id.error');
 		return $this->_redirect($subject, $this->_controller->referer());
 	}
-
 
 /**
  * Automatically detect primary key data type for `_validateId()`
@@ -135,8 +286,8 @@ class CrudAction implements CakeEventListener {
  * @return string
  */
 	protected function _detectPrimaryKeyFieldType() {
-		if (empty($this->_model) || empty($this->_modelName)) {
-			$this->_setModelProperties();
+		if (empty($this->_model)) {
+			throw new RuntimeException('Missing model object, cant detect primary key field type');
 		}
 
 		$fInfo = $this->_model->schema($this->_model->primaryKey);
@@ -156,19 +307,6 @@ class CrudAction implements CakeEventListener {
 	}
 
 /**
- * Build options for saveAll
- *
- * Merges defaults + any custom options for the specific action
- *
- * @param string|NULL $action
- * @return array
- */
-	protected function _getSaveAllOptions($action = null) {
-		$action = $action ?: $this->_action;
-		return (array)$this->config('saveOptions');
-	}
-
-/**
  * Called for all redirects inside CRUD
  *
  * @param CrudSubject $subject
@@ -185,7 +323,7 @@ class CrudAction implements CakeEventListener {
 		}
 
 		$subject->url = $url;
-		$subject = $this->_Crud->trigger('beforeRedirect', $subject);
+		$subject = $this->_crud->trigger('beforeRedirect', $subject);
 		$url = $subject->url;
 
 		$this->_controller->redirect($url);
@@ -200,50 +338,14 @@ class CrudAction implements CakeEventListener {
  */
 	public function setFlash($type) {
 		$name = $this->_getResourceName();
-		$this->_Crud->getListener('translations');
+		$this->_crud->getListener('translations');
 
 		// default values
 		$message = $element = $key = null;
 		$params = array();
 
-		$subject = $this->_Crud->trigger('setFlash', compact('message', 'element', 'params', 'key', 'type', 'name'));
-		$this->_Crud->Session->setFlash($subject->message, $subject->element, $subject->params, $subject->key);
-	}
-
-/**
- * Generic config method
- *
- * If $key is an array and $value is empty,
- * $key will be merged directly with $this->_config
- *
- * If $key is a string it will be passed into Hash::insert
- *
- * @param mixed $key
- * @param mixed $value
- * @return TranslationsEvent
- */
-	public function config($key = null, $value = null) {
-		// Read out the action config
-		if (is_null($key) && is_null($value)) {
-			return $this->_settings;
-		}
-
-		// No value provided
-		if (is_null($value)) {
-			if (is_array($key)) {
-				$this->_settings = $this->_settings + (array)$key;
-				return $this;
-			}
-
-			return Hash::get($this->_settings, $key);
-		}
-
-		if (is_array($value)) {
-			$value = $value + (array)Hash::get($this->_settings, $key);
-		}
-
-		$this->_settings = Hash::insert($this->_settings, $key, $value);
-		return $this;
+		$subject = $this->_crud->trigger('setFlash', compact('message', 'element', 'params', 'key', 'type', 'name'));
+		$this->_crud->Session->setFlash($subject->message, $subject->element, $subject->params, $subject->key);
 	}
 
 /**
@@ -256,7 +358,7 @@ class CrudAction implements CakeEventListener {
  */
 	protected function _getResourceName() {
 		if (empty($this->settings['name'])) {
-			$this->settings['name']	= Inflector::humanize($this->_modelName);
+			$this->settings['name']	= Inflector::humanize($this->_modelClass);
 		}
 
 		return $this->settings['name'];

@@ -1,5 +1,6 @@
 <?php
 
+App::uses('Hash', 'Utility');
 App::uses('CakeEventListener', 'Event');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
 
@@ -118,7 +119,7 @@ class TranslationsListener implements CakeEventListener {
 		}
 
 		$this->_crud = $subject->crud;
-		if ($translations = $this->_crud->settings['translations']) {
+		if ($translations = $this->_crud->config('translations')) {
 			$this->config($translations);
 		}
 	}
@@ -130,9 +131,7 @@ class TranslationsListener implements CakeEventListener {
  * @return array
  */
 	public function implementedEvents() {
-		return array(
-			'Crud.setFlash' => array('callable' => 'setFlash', 'priority' => 5)
-		);
+		return array('Crud.setFlash' => array('callable' => 'setFlash', 'priority' => 5));
 	}
 
 /**
@@ -185,14 +184,14 @@ class TranslationsListener implements CakeEventListener {
  */
 	public function setFlash(CakeEvent $event) {
 		if (empty($event->subject->type)) {
-			throw new CakeException('Missing flash type');
+			throw new RuntimeException('Missing flash type');
 		}
 
 		$type = $event->subject->type;
 
 		$config = Hash::get($this->_config, $type);
 		if (empty($config)) {
-			throw new CakeException('Invalid flash type');
+			throw new RuntimeException('Invalid flash type');
 		}
 
 		$name = $this->_config['name'] ?: $event->subject->name;

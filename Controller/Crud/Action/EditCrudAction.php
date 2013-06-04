@@ -1,14 +1,23 @@
 <?php
 
+App::uses('Hash', 'Utility');
 App::uses('CrudAction', 'Crud.Controller/Crud/Action');
-App::uses('CrudSubject', 'Crud.Controller');
 
+/**
+ * Handles 'Edit' Crud actions
+ *
+ */
 class EditCrudAction extends CrudAction {
 
+/**
+ * Default settings for 'edit' actions
+ *
+ * @var array
+ */
 	protected $_settings = array(
 		'enabled' => true,
 		'findMethod' => 'first',
-		'view' => 'edit',
+		'view' => null,
 		'relatedLists' => true,
 		'validateId' => null,
 		'saveOptions' => array(
@@ -40,37 +49,37 @@ class EditCrudAction extends CrudAction {
 		$this->_validateId($id);
 
 		if ($this->_request->is('put')) {
-			$this->_Crud->trigger('beforeSave', compact('id'));
-			if ($this->_model->saveAll($this->_request->data, $this->_getSaveAllOptions())) {
+			$this->_crud->trigger('beforeSave', compact('id'));
+			if ($this->_model->saveAll($this->_request->data, $this->saveOptions())) {
 				$this->setFlash('update.success');
-				$subject = $this->_Crud->trigger('afterSave', array('id' => $id, 'success' => true));
+				$subject = $this->_crud->trigger('afterSave', array('id' => $id, 'success' => true));
 				return $this->_redirect($subject, array('action' => 'index'));
 			} else {
 				$this->setFlash('update.error');
-				$this->_Crud->trigger('afterSave', array('id' => $id, 'success' => false));
+				$this->_crud->trigger('afterSave', array('id' => $id, 'success' => false));
 			}
 		} else {
 			$query = array();
 			$query['conditions'] = array($this->_model->escapeField() => $id);
 			$findMethod = $this->_getFindMethod('first');
-			$subject = $this->_Crud->trigger('beforeFind', compact('query', 'findMethod'));
+			$subject = $this->_crud->trigger('beforeFind', compact('query', 'findMethod'));
 			$query = $subject->query;
 
 			$this->_request->data = $this->_model->find($subject->findMethod, $query);
 			if (empty($this->_request->data)) {
-				$subject = $this->_Crud->trigger('recordNotFound', compact('id'));
+				$subject = $this->_crud->trigger('recordNotFound', compact('id'));
 				$this->setFlash('find.error');
 				return $this->_redirect($subject, array('action' => 'index'));
 			}
 
-			$this->_Crud->trigger('afterFind', compact('id'));
+			$this->_crud->trigger('afterFind', compact('id'));
 
 			// Make sure to merge any changed data in the model into the post data
-			$this->_request->data = Set::merge($this->_request->data, $this->_model->data);
+			$this->_request->data = Hash::merge($this->_request->data, $this->_model->data);
 		}
 
 		// Trigger a beforeRender
-		$this->_Crud->trigger('beforeRender');
+		$this->_crud->trigger('beforeRender');
 	}
 
 }

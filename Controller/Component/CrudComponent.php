@@ -104,17 +104,8 @@ class CrudComponent extends Component {
  * to be used in select boxes. An array as value means it is enabled and represent the list
  * of model associations to be fetched
  *
- * `saveAllOptions` Raw array passed as 2nd argument to saveAll() in `add` and `edit` method
- * If you configure a key with your action name, it will override the default settings.
- * This is useful for adding fieldList to enhance security in saveAll.
- *
  * `actionMap` A map of the controller action and what CRUD action we should call.
  * By default it supports non-prefix and admin_ prefixed routes
- *
- * `viewMap` A map of the controller action and the view to render
- * By default it supports non-prefix and admin_ prefixed routes
- *
- * `findMethodMap` The default find method for reading data
  *
  * `listenerClassMap` List of internal-name => ${plugin}.${class} listeners
  * that will be bound automatically in Crud. By default translations and related model events
@@ -225,7 +216,7 @@ class CrudComponent extends Component {
 			throw $e;
 		}
 
-		$view = $this->getAction($action)->config('view');
+		$view = $this->getAction($action)->view();
 		return $this->_controller->response = $this->_controller->render($view);
 	}
 

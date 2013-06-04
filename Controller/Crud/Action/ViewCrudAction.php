@@ -3,12 +3,21 @@
 App::uses('CrudAction', 'Crud.Controller/Crud/Action');
 App::uses('CrudSubject', 'Crud.Controller');
 
+/**
+ * Handles 'View' Crud actions
+ *
+ */
 class ViewCrudAction extends CrudAction {
 
+/**
+ * Default settings for 'view' actions
+ *
+ * @var array
+ */
 	protected $_settings = array(
 		'enabled' => true,
 		'findMethod' => 'first',
-		'view' => 'view'
+		'view' => null
 	);
 
 /**
@@ -36,7 +45,7 @@ class ViewCrudAction extends CrudAction {
 		$query['conditions'] = array($this->_model->escapeField() => $id);
 
 		$findMethod = $this->_getFindMethod('first');
-		$subject = $this->_Crud->trigger('beforeFind', compact('id', 'query', 'findMethod'));
+		$subject = $this->_crud->trigger('beforeFind', compact('id', 'query', 'findMethod'));
 		$query = $subject->query;
 
 		// Try and find the database record
@@ -44,19 +53,20 @@ class ViewCrudAction extends CrudAction {
 
 		// We could not find any record match the conditions in query
 		if (empty($item)) {
-			$subject = $this->_Crud->trigger('recordNotFound', compact('id'));
+			$subject = $this->_crud->trigger('recordNotFound', compact('id'));
 			$this->setFlash('find.error');
 			return $this->_redirect($subject, array('action' => 'index'));
 		}
 
 		// We found a record, trigger an afterFind
-		$subject = $this->_Crud->trigger('afterFind', compact('id', 'item'));
+		$subject = $this->_crud->trigger('afterFind', compact('id', 'item'));
 		$item = $subject->item;
 
 		// Push it to the view
 		$this->_controller->set(compact('item'));
 
 		// Trigger a beforeRender
-		$this->_Crud->trigger('beforeRender', compact('id', 'item'));
+		$this->_crud->trigger('beforeRender', compact('id', 'item'));
 	}
+
 }
