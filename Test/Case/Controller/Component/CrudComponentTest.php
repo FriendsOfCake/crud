@@ -1480,18 +1480,18 @@ class CrudComponentTestCase extends ControllerTestCase {
 	public function testIfConditionsPersistetInIndexAction() {
 		$Paginator = $this->controller->Components->load('Paginator');
 
-		$this->controller->paginate = array('conditions' => array(1 => 2));
+		$this->controller->paginate = array('conditions' => array('1 = 2'));
 		$this->Crud->executeAction('index');
-		$this->assertSame(array(1 => 2), $Paginator->settings['conditions']);
+		$this->assertSame(array('1 = 2'), $Paginator->settings['conditions']);
 
-		$Paginator->settings = array('conditions' => array(2 => 3));
+		$Paginator->settings = array('conditions' => array('2 = 3'));
 		$this->Crud->executeAction('index');
-		$this->assertSame(array(1 => 2), $Paginator->settings['conditions'], "Pagination settings from controller should always trump Paginator->settings");
+		$this->assertSame(array('1 = 2'), $Paginator->settings['conditions'], "Pagination settings from controller should always trump Paginator->settings");
 
-		$Paginator->settings = array('conditions' => array(2 => 3));
+		$Paginator->settings = array('conditions' => array('2 = 3'));
 		$this->controller->paginate = array();
 		$this->Crud->executeAction('index');
-		$this->assertSame(array(2 => 3), $Paginator->settings['conditions']);
+		$this->assertSame(array('2 = 3'), $Paginator->settings['conditions']);
 	}
 
 	public function testPaginationWithIterator() {
