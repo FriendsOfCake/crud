@@ -60,17 +60,17 @@ class CrudExamplesController extends Controller {
 		'Session',
 		'Crud.Crud' => array(
 			'actions' => array(
-				'index' => 'index',
-				'add' => 'add',
-				'edit' => 'edit',
-				'delete' => 'delete',
-				'view' => 'view',
+				'index',
+				'add',
+				'edit',
+				'delete',
+				'view',
 
-				'admin_index' => 'index',
-				'admin_add' => 'add',
-				'admin_edit' => 'edit',
-				'admin_delete' => 'delete',
-				'admin_view' => 'view'
+				'admin_index',
+				'admin_add',
+				'admin_edit',
+				'admin_delete',
+				'admin_view'
 			)
 		)
 	);
@@ -223,17 +223,17 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$Collection->init($this->controller);
 		$settings = array(
 			'actions' => array(
-				'index' => 'index',
-				'add' => 'add',
-				'edit' => 'edit',
-				'view' => 'view',
-				'delete' => 'delete',
+				'index',
+				'add',
+				'edit',
+				'view',
+				'delete',
 
-				'admin_index' => 'index',
-				'admin_add' => 'add',
-				'admin_edit' => 'edit',
-				'admin_delete' => 'delete',
-				'admin_view' => 'view'
+				'admin_index',
+				'admin_add',
+				'admin_edit',
+				'admin_delete',
+				'admin_view'
 			)
 		);
 		$this->controller->Components = $Collection;

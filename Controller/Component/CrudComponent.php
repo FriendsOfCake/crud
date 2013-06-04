@@ -83,33 +83,19 @@ class CrudComponent extends Component {
 /**
  * Components settings.
  *
- * `validateId` ID Argument validation - by default it will inspect your model's primary key
- * and based on it's data type either use integer or uuid validation.
- * Can be disabled by setting it to "false". Supports "integer" and "uuid" configuration
- * By default it's configuration is NULL, which means "auto detect"
- *
  * `eventPrefix` All emitted events will be prefixed with this property value
- *
- * `secureDelete` delete() can only be called with the HTTP DELETE verb, not POST when `true`.
- * If set to `false` HTTP POST is also acceptable
- *
- * `actions` contains an array of controller methods this component should offer implementation for.
- * The actions is used for actionMap, viewMap and findMethodMap to change behavior of CrudComponent
- * By default no actions are enabled
  *
  * `translations` is the settings for the translations Event, responsible for the text used in flash messages
  * see TranslationsEvent::$_defaults the full list of options
  *
- * `relatedList` is a map of the controller action and the whether it should fetch associations lists
- * to be used in select boxes. An array as value means it is enabled and represent the list
- * of model associations to be fetched
- *
- * `actionMap` A map of the controller action and what CRUD action we should call.
- * By default it supports non-prefix and admin_ prefixed routes
- *
  * `listenerClassMap` List of internal-name => ${plugin}.${class} listeners
  * that will be bound automatically in Crud. By default translations and related model events
  * are bound. Events will always assume to be in the Controller/Event folder
+ *
+ * `actions` contains an array of controller methods this component should offer implementation for.
+ * Each action maps to a CrudAction class. `$controllerAction => $crudActionClass`.
+ * Example: `array('admin_index' => 'Crud.Index')`
+ * By default no actions are enabled
  *
  * @var array
  */
@@ -120,26 +106,7 @@ class CrudComponent extends Component {
 			'translations' => 'Crud.TranslationsListener',
 			'related' => 'Crud.RelatedModelsListener'
 		),
-		'actions' => array(
-			'index' => 'index',
-			'add' => 'add',
-			'edit' => 'edit',
-			'view' => 'view',
-			'delete' => 'delete',
-
-			'admin_index' => 'index',
-			'admin_add' => 'add',
-			'admin_edit' => 'edit',
-			'admin_view' => 'view',
-			'admin_delete' => 'delete'
-		),
-		'actionClassMap' => array(
-			'index' => 'Crud.Index',
-			'add' => 'Crud.Add',
-			'edit' => 'Crud.Edit',
-			'view' => 'Crud.View',
-			'delete' => 'Crud.Delete'
-		)
+		'actions' => array()
 	);
 
 /**
@@ -166,9 +133,10 @@ class CrudComponent extends Component {
 			return true;
 		}
 
+		$this->_normalizeActionConfiguration();
+
 		$this->_controller = $controller;
 		$this->_controller->methods = array_keys(array_flip($this->_controller->methods) + array_flip(array_keys($this->settings['actions'])));
-
 		$this->_action = $this->_controller->request->action;
 		$this->_request = $this->_controller->request;
 		$this->_eventManager = $this->_controller->getEventManager();
@@ -196,7 +164,6 @@ class CrudComponent extends Component {
 		// Make sure to update internal action property
 		$this->_action = $action;
 
-		$this->_loadActions();
 		$this->_loadListeners();
 
 		// Trigger init callback
@@ -218,6 +185,32 @@ class CrudComponent extends Component {
 
 		$view = $this->getAction($action)->view();
 		return $this->_controller->response = $this->_controller->render($view);
+	}
+
+/**
+ * Normalize action configuration
+ *
+ * If an action don't have a CrudClass specified (the value part of the array)
+ * try to compute it by exploding on action name on '_' and take the last chunk
+ * as CrudClass identifier
+ *
+ * @return void
+ */
+	protected function _normalizeActionConfiguration() {
+		$this->settings['actions'] = Hash::normalize($this->settings['actions']);
+		foreach ($this->settings['actions'] as $action => $class) {
+			if (!empty($class)) {
+				continue;
+			}
+
+			if (false !== strstr($action, '_')) {
+				list($prefix, $class) = explode('_', $action, 2);
+			} else {
+				$class = $action;
+			}
+
+			$this->settings['actions'][$action] = 'Crud.' . ucfirst($class);
+		}
 	}
 
 /**
@@ -268,25 +261,25 @@ class CrudComponent extends Component {
 		$this->_eventManager->attach($this->_listenerInstances[$name]);
 	}
 
-	protected function _loadActions() {
-		foreach (array_keys($this->config('actions')) as $name) {
-			$this->_loadAction($name);
-		}
-	}
-
+/**
+ * Load a CrudAction instance
+ *
+ * @param string $name The controller action name
+ * @return CrudAction
+ */
 	protected function _loadAction($name) {
-		$actionType = $this->config('actions.' . $name);
-		if (empty($actionType)) {
-			throw new RuntimeException(sprintf('Action "%s" has not been mapped to any action object', $name));
-		}
-
-		$actionClass = $this->config('actionClassMap.' . $actionType);
+		$actionClass = $this->config('actions.' . $name);
 		if (empty($actionClass)) {
-			throw new RuntimeException(sprintf('Action type "%s" for action "%s" has not been mapped', $actionType, $name));
+			throw new RuntimeException(sprintf('Action "%s" has not been mapped', $name));
 		}
 
 		list($plugin, $class) = pluginSplit($actionClass, true);
 		$class .= 'CrudAction';
+		$class = ucfirst($class);
+
+		if (empty($plugin)) {
+			$plugin = 'Crud.';
+		}
 
 		App::uses($class, $plugin . 'Controller/Crud/Action');
 
@@ -300,6 +293,12 @@ class CrudComponent extends Component {
 		return $this->_actionInstances[$name];
 	}
 
+/**
+ * Get an CrudAction object by action name
+ *
+ * @param string $name The controller action name
+ * @return CrudAction
+ */
 	public function getAction($name = null) {
 		if (empty($name)) {
 			$name = $this->_action;
