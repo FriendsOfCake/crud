@@ -5,6 +5,19 @@ App::uses('CrudSubject', 'Crud.Controller');
 
 class IndexCrudAction extends CrudAction {
 
+	protected $_settings = array(
+		'index' => array(
+			'enabled' => true,
+			'findMethod' => 'all',
+			'view' => 'index'
+		),
+		'admin_index' => array(
+			'enabled' => true,
+			'findMethod' => 'all',
+			'view' => 'admin_index'
+		)
+	);
+
 /**
  * Generic index action
  *
@@ -17,10 +30,6 @@ class IndexCrudAction extends CrudAction {
  * @return void
  */
 	protected function _handle() {
-		if ($this->_settings['type'] !== 'index') {
-			return;
-		}
-
 		$Paginator = $this->_Collection->load('Paginator');
 
 		// Copy pagination settings from the controller

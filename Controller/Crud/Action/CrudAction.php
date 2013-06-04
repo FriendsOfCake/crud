@@ -1,14 +1,24 @@
 <?php
 class CrudAction implements CakeEventListener {
 
+	protected $_settings = array();
+
 	public function implementedEvents() {
 		return array(
+			'Crud.init'	=> array('callable' => 'init'),
 			'Crud.handle'	=> array('callable' => 'handle')
 		);
 	}
 
+	public function init(CakeEvent $event) {
+		$subject 					 = $event->subject;
+		$this->_Crud 			 = $subject->crud;
+		$this->_action		 = $subject->action;
+	}
+
 	public function handle(CakeEvent $event) {
 		$subject 					 = $event->subject;
+
 		$this->_Crud 			 = $subject->crud;
 		$this->_action		 = $subject->action;
 		$this->_Collection = $subject->collection;
@@ -16,9 +26,24 @@ class CrudAction implements CakeEventListener {
 		$this->_modelName  = $subject->modelClass;
 		$this->_model 		 = $subject->model;
 		$this->_request 	 = $subject->request;
-		$this->_settings	 = $subject->config;
+
+		if (!array_key_exists($subject->action, $this->_settings)) {
+			return;
+		}
 
 		return $this->_handle();
+	}
+
+	public function disable($action) {
+		return $this->config('enabled', false, $action);
+	}
+
+	public function enable($action) {
+		return $this->config('enabled', true, $action);
+	}
+
+	public function findMethod($action, $method) {
+		return $this->config('findMethod', $method, $action);
 	}
 
 /**
@@ -66,7 +91,7 @@ class CrudAction implements CakeEventListener {
  * @return boolean
  */
 	protected function _validateId($id) {
-		$type = $this->_Crud->config('validateId');
+		$type = $this->config('validateId');
 
 		if (empty($type)) {
 			$type = $this->_detectPrimaryKeyFieldType();
@@ -85,7 +110,7 @@ class CrudAction implements CakeEventListener {
 		}
 
 		$subject = $this->_Crud->trigger('invalidId', compact('id'));
-		$this->_Crud->setFlash('invalid_id.error');
+		$this->setFlash('invalid_id.error');
 		return $this->_redirect($subject, $this->_controller->referer());
 	}
 
@@ -121,7 +146,6 @@ class CrudAction implements CakeEventListener {
 		return false;
 	}
 
-
 /**
  * Build options for saveAll
  *
@@ -132,9 +156,8 @@ class CrudAction implements CakeEventListener {
  */
 	protected function _getSaveAllOptions($action = null) {
 		$action = $action ?: $this->_action;
-		return (array)$this->_Crud->config('saveOptions');
+		return (array)$this->config('saveOptions');
 	}
-
 
 /**
  * Called for all redirects inside CRUD
@@ -159,4 +182,94 @@ class CrudAction implements CakeEventListener {
 		$this->_controller->redirect($url);
 		return $this->_controller->response;
 	}
+
+/**
+ * Wrapper for Session::setFlash
+ *
+ * @param string $type Message type
+ * @return void
+ */
+	public function setFlash($type) {
+		$name = $this->_getResourceName();
+		$this->_Crud->getListener('translations');
+
+		// default values
+		$message = $element = $key = null;
+		$params = array();
+
+		$subject = $this->_Crud->trigger('setFlash', compact('message', 'element', 'params', 'key', 'type', 'name'));
+		$this->_Crud->Session->setFlash($subject->message, $subject->element, $subject->params, $subject->key);
+	}
+
+/**
+ * Generic config method
+ *
+ * If $key is an array and $value is empty,
+ * $key will be merged directly with $this->_config
+ *
+ * If $key is a string it will be passed into Hash::insert
+ *
+ * @param mixed $key
+ * @param mixed $value
+ * @param mixed $action
+ * @return TranslationsEvent
+ */
+	public function config($key = null, $value = null, $action = null) {
+		// No action parameter = current action
+		if (is_null($action)) {
+			$action = $this->_action;
+		}
+
+		debug($action);
+
+		// Read out the action config
+		if (is_null($key) && is_null($value)) {
+			return $this->_settings[$action];
+		}
+
+		// No value provided
+		if (is_null($value)) {
+			if (is_array($key)) {
+				$this->_settings[$action] = $this->_settings[$action] + (array)$key;
+				return $this;
+			}
+
+			return Hash::get($this->_settings[$action], $key);
+		}
+
+		debug($value);
+		if (is_array($value)) {
+			$value = $value + (array)Hash::get($this->_settings[$action], $key);
+		}
+		debug($value);
+
+		// Ensure action key exist
+		if (!array_key_exists($action, $this->_settings)) {
+			$this->_settings[$action] = array();
+		}
+
+		$this->_settings[$action] = Hash::insert($this->_settings[$action], $key, $value);
+		debug(get_class($this));
+		debug($key);
+		debug($action);
+		debug($this->_settings);
+		return $this;
+	}
+
+/**
+ * Return the human name of the model
+ *
+ * By default it uses Inflector::humanize, but can be changed
+ * using the "name" configuration property
+ *
+ * @return string
+ */
+	protected function _getResourceName() {
+		if (empty($this->settings['name'])) {
+			$this->settings['name']	= Inflector::humanize($this->_modelName);
+		}
+
+		return $this->settings['name'];
+	}
+
 }

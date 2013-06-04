@@ -5,6 +5,19 @@ App::uses('CrudSubject', 'Crud.Controller');
 
 class ViewCrudAction extends CrudAction {
 
+	protected $_settings = array(
+		'view' => array(
+			'enabled' => true,
+			'findMethod' => 'first',
+			'view' => 'view'
+		),
+		'admin_view' => array(
+			'enabled' => true,
+			'findMethod' => 'first',
+			'view' => 'admin_view'
+		)
+	);
+
 /**
  * Generic view action
  *
@@ -19,10 +32,6 @@ class ViewCrudAction extends CrudAction {
  * @return void
  */
 	protected function _handle() {
-		if ($this->_settings['type'] !== 'view') {
-			return;
-		}
-
 		if (empty($id)) {
 			$id = $this->getIdFromRequest();
 		}
@@ -43,7 +52,7 @@ class ViewCrudAction extends CrudAction {
 		// We could not find any record match the conditions in query
 		if (empty($item)) {
 			$subject = $this->_Crud->trigger('recordNotFound', compact('id'));
-			$this->_Crud->setFlash('find.error');
+			$this->setFlash('find.error');
 			return $this->_redirect($subject, array('action' => 'index'));
 		}
 

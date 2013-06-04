@@ -5,6 +5,31 @@ App::uses('CrudSubject', 'Crud.Controller');
 
 class EditCrudAction extends CrudAction {
 
+	protected $_settings = array(
+		'edit' => array(
+			'enabled' => true,
+			'findMethod' => 'first',
+			'view' => 'edit',
+			'relatedLists' => true,
+			'validateId' => null,
+			'saveOptions' => array(
+				'validate' => 'first',
+				'atomic' => true
+			)
+		),
+		'admin_edit' => array(
+			'enabled' => true,
+			'findMethod' => 'first',
+			'view' => 'admin_edit',
+			'relatedLists' => true,
+			'validateId' => null,
+			'saveOptions' => array(
+				'validate' => 'first',
+				'atomic' => true
+			)
+		)
+	);
+
 /**
  * Generic edit action
  *
@@ -21,23 +46,20 @@ class EditCrudAction extends CrudAction {
  * @return void
  */
 	protected function _handle() {
-		if ($this->_settings['type'] !== 'edit') {
-			return;
-		}
-
 		if (empty($id)) {
 			$id = $this->getIdFromRequest();
 		}
+
 		$this->_validateId($id);
 
 		if ($this->_request->is('put')) {
 			$this->_Crud->trigger('beforeSave', compact('id'));
 			if ($this->_model->saveAll($this->_request->data, $this->_getSaveAllOptions())) {
-				$this->_Crud->setFlash('update.success');
+				$this->setFlash('update.success');
 				$subject = $this->_Crud->trigger('afterSave', array('id' => $id, 'success' => true));
 				return $this->_redirect($subject, array('action' => 'index'));
 			} else {
-				$this->_Crud->setFlash('update.error');
+				$this->setFlash('update.error');
 				$this->_Crud->trigger('afterSave', array('id' => $id, 'success' => false));
 			}
 		} else {
@@ -50,7 +72,7 @@ class EditCrudAction extends CrudAction {
 			$this->_request->data = $this->_model->find($subject->findMethod, $query);
 			if (empty($this->_request->data)) {
 				$subject = $this->_Crud->trigger('recordNotFound', compact('id'));
-				$this->_Crud->setFlash('find.error');
+				$this->setFlash('find.error');
 				return $this->_redirect($subject, array('action' => 'index'));
 			}
 

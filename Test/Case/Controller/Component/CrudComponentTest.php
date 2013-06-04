@@ -60,11 +60,17 @@ class CrudExamplesController extends Controller {
 		'Session',
 		'Crud.Crud' => array(
 			'actions' => array(
-				'index',
-				'add',
-				'edit',
-				'delete',
-				'view'
+				'index' => 'index',
+				'add' => 'add',
+				'edit' => 'edit',
+				'delete' => 'delete',
+				'view' => 'view',
+
+				'admin_index' => 'index',
+				'admin_add' => 'add',
+				'admin_edit' => 'edit',
+				'admin_delete' => 'delete',
+				'admin_view' => 'view'
 			)
 		)
 	);
@@ -212,7 +218,10 @@ class CrudComponentTestCase extends ControllerTestCase {
 		);
 		$this->controller->name = 'CrudExamples';
 
-		$this->request = new CakeRequest();
+		$this->request = new CakeRequest(null, false);
+		$this->request->params['controller'] = 'posts';
+		$this->request->params['action'] = 'index';
+
 		$response = new CakeResponse();
 		$this->controller->__construct($this->request, $response);
 		$this->controller->methods = array();
@@ -221,11 +230,17 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$Collection->init($this->controller);
 		$settings = array(
 			'actions' => array(
-				'index',
-				'add',
-				'edit',
-				'view',
-				'delete'
+				'index' => 'index',
+				'add' => 'add',
+				'edit' => 'edit',
+				'view' => 'view',
+				'delete' => 'delete',
+
+				'admin_index' => 'index',
+				'admin_add' => 'add',
+				'admin_edit' => 'edit',
+				'admin_delete' => 'delete',
+				'admin_view' => 'view'
 			)
 		);
 		$this->controller->Components = $Collection;
@@ -902,7 +917,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$this->Crud->getListener('related')->map(array('Tag'), 'add');
 		$this->Crud->getListener('related')->map(array('Tag'), 'admin_add');
 		$expectedTags = array(1 => '1', 2 => '2', 3 => '3');
-
+		die;
 		$this->Crud->executeAction('add');
 		$vars = $this->controller->viewVars;
 		$this->assertEquals($expectedTags, $vars['tags']);

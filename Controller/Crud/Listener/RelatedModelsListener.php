@@ -34,6 +34,7 @@ class RelatedModelsListener implements CakeEventListener {
 	public function __construct(CrudSubject $subject) {
 		$this->_subject = $subject;
 		$this->_crud = $subject->crud;
+		$this->_actionClass = $subject->crud->getAction();
 	}
 
 /**
@@ -48,9 +49,9 @@ class RelatedModelsListener implements CakeEventListener {
 		}
 
 		foreach ($actions as $action) {
-			$config = $this->_crud->config('relatedLists');
+			$config = $this->_actionClass->config('relatedLists');
 			if (empty($config)) {
-				$this->_crud->config('relatedLists', true);
+				$this->_actionClass->config('relatedLists', true, $action);
 			}
 		}
 	}
@@ -73,7 +74,7 @@ class RelatedModelsListener implements CakeEventListener {
 			$models = array($models);
 		}
 
-		$this->_crud->config('relatedLists', $models);
+		$this->_crud->getAction($action)->config('relatedLists', $models, $action);
 	}
 
 /**
@@ -87,16 +88,39 @@ class RelatedModelsListener implements CakeEventListener {
 			$action = $this->_subject->action;
 		}
 
-		$settings = $this->_crud->config('relatedLists');
+		var_dump($action);
+		$settings = $this->_actionClass->config('relatedLists', null, $action);
+		var_dump($settings);
+		if ($settings === true) {
+			return array_keys($this->_subject->model->getAssociated());
+		}
+
+		// If we don't have any related configuration, look up its alias in the actionMap
+		if (empty($settings[$action]) && $this->_crud->isActionMapped($action)) {
+			$action = $this->_actionClass->config(sprintf('actionMap.%s', $action));
+		}
 
 		// If current action isn't configured
-		if (empty($settings)) {
+		if (!isset($settings[$action])) {
 			return array();
 		}
 
+		// If the action value is true and we got a configured default, inspect it
+		if ($settings[$action] === true && isset($settings['default'])) {
+			// If default is false, don't fetch any related records
+			if (false === $settings['default']) {
+				return array();
+			}
+
+			// If it's an array, return it
+			if (is_array($settings['default'])) {
+				return $settings['default'];
+			}
+		}
+
 		// Use whatever value there may have been set by the user
-		if ($settings !== true) {
-			return $settings;
+		if ($settings[$action] !== true) {
+			return $settings[$action];
 		}
 
 		// Default to everything associated to the current model
@@ -109,7 +133,14 @@ class RelatedModelsListener implements CakeEventListener {
  * @return array
  */
 	public function implementedEvents() {
-		return array($this->_crud->settings['eventPrefix'] . '.beforeRender' => 'beforeRender');
+		return array(
+			$this->_crud->settings['eventPrefix'] . '.init' => 'init',
+			$this->_crud->settings['eventPrefix'] . '.beforeRender' => 'beforeRender'
+		);
+	}
+
+	public function init(CakeEvent $event) {
+		$this->_actionClass = $this->_crud->getAction();
 	}
 
 /**
