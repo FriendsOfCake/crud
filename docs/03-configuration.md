@@ -206,6 +206,11 @@ public function beforeFilter() {
 
 ## Disable a Crud action on the fly
 
+This can only be done in `beforeFilter` (or earlier in the request) since it's the last method called
+before the actual controller action is executed.
+
+Disabling a `CrudAction` automatically removes it from the Controller as if it was never defined in the `actions` array in the crud component configuration.
+
 ```php
 // This can only be done in the beforeFilter
 
