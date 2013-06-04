@@ -34,37 +34,11 @@ class IndexCrudAction extends CrudAction {
 	protected function _handle() {
 		$Paginator = $this->_collection->load('Paginator');
 
-		// Copy pagination settings from the controller
-		if (!empty($this->_controller->paginate)) {
-			$Paginator->settings = array_merge($Paginator->settings, $this->_controller->paginate);
-		}
+		// Compute the pagination settings
+		$settings = $this->_computePaginationConfig();
 
-		if (!empty($Paginator->settings[$this->_modelClass]['findType'])) {
-			$findMethod = $Paginator->settings[$this->_modelClass]['findType'];
-		} elseif (!empty($Paginator->settings['findType'])) {
-			$findMethod = $Paginator->settings['findType'];
-		} else {
-			$findMethod = $this->_getFindMethod('all');
-		}
-
-		$subject = $this->_crud->trigger('beforePaginate', compact('findMethod'));
-
-		// Copy pagination settings from the controller
-		if (!empty($this->_controller->paginate)) {
-			$Paginator->settings = array_merge($Paginator->settings, $this->_controller->paginate);
-		}
-
-		// If pagination settings is using ModelAlias modify that
-		if (!empty($Paginator->settings[$this->_modelClass])) {
-			$Paginator->settings[$this->_modelClass][0] = $subject->findMethod;
-			$Paginator->settings[$this->_modelClass]['findType'] = $subject->findMethod;
-		} else { // Or just work directly on the root key
-			$Paginator->settings[0] = $subject->findMethod;
-			$Paginator->settings['findType'] = $subject->findMethod;
-		}
-
-		// Push the paginator settings back to Controller
-		$this->_controller->paginate = $Paginator->settings;
+		$Paginator->settings = $settings;
+		$this->_controller->paginate = $settings;
 
 		// Do the pagination
 		$items = $this->_controller->paginate($this->_model);
@@ -79,6 +53,49 @@ class IndexCrudAction extends CrudAction {
 
 		$this->_controller->set(compact('items'));
 		$this->_crud->trigger('beforeRender');
+	}
+
+/**
+ * Compute pagination settings
+ *
+ * @return array
+ */
+	protected function _computePaginationConfig() {
+		// Ensure we have Paginator loaded
+		$Paginator = $this->_collection->load('Paginator');
+
+		$settings = $Paginator->settings;
+
+		// Copy pagination settings from the controller
+		if (!empty($this->_controller->paginate)) {
+			$settings = array_merge($settings, $this->_controller->paginate);
+		}
+
+		if (!empty($settings[$this->_modelClass]['findType'])) {
+			$findMethod = $settings[$this->_modelClass]['findType'];
+		} elseif (!empty($settings['findType'])) {
+			$findMethod = $settings['findType'];
+		} else {
+			$findMethod = $this->_getFindMethod('all');
+		}
+
+		$subject = $this->_crud->trigger('beforePaginate', compact('findMethod'));
+
+		// Copy pagination settings from the controller
+		if (!empty($this->_controller->paginate)) {
+			$settings = array_merge($settings, $Paginator->settings, $this->_controller->paginate);
+		}
+
+		// If pagination settings is using ModelAlias modify that
+		if (!empty($settings[$this->_modelClass])) {
+			$settings[$this->_modelClass][0] = $subject->findMethod;
+			$settings[$this->_modelClass]['findType'] = $subject->findMethod;
+		} else { // Or just work directly on the root key
+			$settings[0] = $subject->findMethod;
+			$settings['findType'] = $subject->findMethod;
+		}
+
+		return $settings;
 	}
 
 }
