@@ -1205,7 +1205,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 
 		$this->assertNotEmpty($this->request->data);
 		$this->assertNotEmpty($this->request->data['CrudExample']);
-		$this->assertSame('2', $this->request->data['CrudExample']['id']);
+		$this->assertSame('2', (string)$this->request->data['CrudExample']['id']);
 	}
 
 /**
