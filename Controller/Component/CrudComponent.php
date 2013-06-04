@@ -188,112 +188,6 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Normalize action configuration
- *
- * If an action don't have a CrudClass specified (the value part of the array)
- * try to compute it by exploding on action name on '_' and take the last chunk
- * as CrudClass identifier
- *
- * @return void
- */
-	protected function _normalizeActionConfiguration() {
-		$this->settings['actions'] = Hash::normalize($this->settings['actions']);
-		foreach ($this->settings['actions'] as $action => $class) {
-			if (!empty($class)) {
-				continue;
-			}
-
-			if (false !== strstr($action, '_')) {
-				list($prefix, $class) = explode('_', $action, 2);
-			} else {
-				$class = $action;
-			}
-
-			$this->settings['actions'][$action] = 'Crud.' . ucfirst($class);
-		}
-	}
-
-/**
- * Load all event classes attached to Crud
- *
- * @return void
- */
-	protected function _loadListeners() {
-		foreach (array_keys($this->config('listenerClassMap')) as $name) {
-			$this->_loadListener($name);
-		}
-	}
-
-/**
- * Get a single event class
- *
- * @param string $name
- * @return CrudBaseEvent
- */
-	public function getListener($name, $create = true) {
-		if (empty($this->_listenerInstances[$name])) {
-			$this->_loadListener($name);
-		}
-
-		return $this->_listenerInstances[$name];
-	}
-
-/**
- * Load a single event class attached to Crud
- *
- * @param string $name
- * @return void
- */
-	protected function _loadListener($name) {
-		$config = $this->config('listenerClassMap.' . $name);
-
-		list($plugin, $class) = pluginSplit($config, true);
-		App::uses($class, $plugin . 'Controller/Crud/Listener');
-
-		// Make sure to cleanup duplicate events
-		if (isset($this->_listenerInstances[$name])) {
-			$this->_eventManager->detach($this->_listenerInstances[$name]);
-			unset($this->_listenerInstances[$name]);
-		}
-
-		$subject = $this->getSubject();
-		$this->_listenerInstances[$name] = new $class($subject);
-		$this->_eventManager->attach($this->_listenerInstances[$name]);
-	}
-
-/**
- * Load a CrudAction instance
- *
- * @param string $name The controller action name
- * @return CrudAction
- */
-	protected function _loadAction($name) {
-		$actionClass = $this->config('actions.' . $name);
-		if (empty($actionClass)) {
-			throw new RuntimeException(sprintf('Action "%s" has not been mapped', $name));
-		}
-
-		list($plugin, $class) = pluginSplit($actionClass, true);
-		$class .= 'CrudAction';
-		$class = ucfirst($class);
-
-		if (empty($plugin)) {
-			$plugin = 'Crud.';
-		}
-
-		App::uses($class, $plugin . 'Controller/Crud/Action');
-
-		// Make sure to cleanup duplicate events
-		if (!isset($this->_actionInstances[$name])) {
-			$subject = $this->getSubject(array('handleAction' => $name));
-			$this->_actionInstances[$name] = new $class($subject);
-			$this->_eventManager->attach($this->_actionInstances[$name]);
-		}
-
-		return $this->_actionInstances[$name];
-	}
-
-/**
  * Get an CrudAction object by action name
  *
  * @param string $name The controller action name
@@ -305,57 +199,6 @@ class CrudComponent extends Component {
 		}
 
 		return $this->_loadAction($name);
-	}
-
-/**
- * Set internal model properties from the controller
- *
- * @return void
- * @throws RuntimeException If unable to get model instance
- */
-	protected function _setModelProperties() {
-		$configKey = 'modelMap.' . $this->_action;
-		if (!$this->_modelName = $this->config($configKey)) {
-			$this->_modelName = $this->_controller->modelClass;
-		}
-
-		$this->_model = $this->_controller->{$this->_modelName};
-		if (empty($this->_model)) {
-			throw new RuntimeException('No model loaded in the Controller by the name "' . $this->_modelName . '". Please add it to $uses.');
-		}
-	}
-
-/**
- * Triggers a Crud event by creating a new subject and filling it with $data
- * if $data is an instance of CrudSubject it will be reused as the subject
- * object for this event.
- *
- * If Event listeners return a CakeResponse object, the this method will throw an
- * exception and fill a 'response' property on it with a reference to the response
- * object.
- *
- * @param string $eventName
- * @param array $data
- * @throws Exception if any event listener return a CakeResponse object
- * @return CrudSubject
- */
-	public function trigger($eventName, $data = array()) {
-		$subject = $data instanceof CrudSubject ? $data : $this->getSubject($data);
-		$event = new CakeEvent($this->settings['eventPrefix'] . '.' . $eventName, $subject);
-		$this->_eventManager->dispatch($event);
-
-		if ($event->result instanceof CakeResponse) {
-			$exception = new Exception();
-			$exception->response = $event->result;
-			throw $exception;
-		}
-
-		$subject->stopped = false;
-		if ($event->isStopped()) {
-			$subject->stopped = true;
-		}
-
-		return $subject;
 	}
 
 /**
@@ -465,6 +308,53 @@ class CrudComponent extends Component {
 	}
 
 /**
+ * Get a single event class
+ *
+ * @param string $name
+ * @return CrudBaseEvent
+ */
+	public function getListener($name, $create = true) {
+		if (empty($this->_listenerInstances[$name])) {
+			$this->_loadListener($name);
+		}
+
+		return $this->_listenerInstances[$name];
+	}
+
+/**
+ * Triggers a Crud event by creating a new subject and filling it with $data
+ * if $data is an instance of CrudSubject it will be reused as the subject
+ * object for this event.
+ *
+ * If Event listeners return a CakeResponse object, the this method will throw an
+ * exception and fill a 'response' property on it with a reference to the response
+ * object.
+ *
+ * @param string $eventName
+ * @param array $data
+ * @throws Exception if any event listener return a CakeResponse object
+ * @return CrudSubject
+ */
+	public function trigger($eventName, $data = array()) {
+		$subject = $data instanceof CrudSubject ? $data : $this->getSubject($data);
+		$event = new CakeEvent($this->settings['eventPrefix'] . '.' . $eventName, $subject);
+		$this->_eventManager->dispatch($event);
+
+		if ($event->result instanceof CakeResponse) {
+			$exception = new Exception();
+			$exception->response = $event->result;
+			throw $exception;
+		}
+
+		$subject->stopped = false;
+		if ($event->isStopped()) {
+			$subject->stopped = true;
+		}
+
+		return $subject;
+	}
+
+/**
  * Generic config method
  *
  * If $key is an array and $value is empty,
@@ -521,6 +411,116 @@ class CrudComponent extends Component {
 		$subject->set($additional);
 
 		return $subject;
+	}
+
+/**
+ * Normalize action configuration
+ *
+ * If an action don't have a CrudClass specified (the value part of the array)
+ * try to compute it by exploding on action name on '_' and take the last chunk
+ * as CrudClass identifier
+ *
+ * @return void
+ */
+	protected function _normalizeActionConfiguration() {
+		$this->settings['actions'] = Hash::normalize($this->settings['actions']);
+		foreach ($this->settings['actions'] as $action => $class) {
+			if (!empty($class)) {
+				continue;
+			}
+
+			if (false !== strstr($action, '_')) {
+				list($prefix, $class) = explode('_', $action, 2);
+			} else {
+				$class = $action;
+			}
+
+			$this->settings['actions'][$action] = 'Crud.' . ucfirst($class);
+		}
+	}
+
+/**
+ * Load all event classes attached to Crud
+ *
+ * @return void
+ */
+	protected function _loadListeners() {
+		foreach (array_keys($this->config('listenerClassMap')) as $name) {
+			$this->_loadListener($name);
+		}
+	}
+
+/**
+ * Load a single event class attached to Crud
+ *
+ * @param string $name
+ * @return void
+ */
+	protected function _loadListener($name) {
+		$config = $this->config('listenerClassMap.' . $name);
+
+		list($plugin, $class) = pluginSplit($config, true);
+		App::uses($class, $plugin . 'Controller/Crud/Listener');
+
+		// Make sure to cleanup duplicate events
+		if (isset($this->_listenerInstances[$name])) {
+			$this->_eventManager->detach($this->_listenerInstances[$name]);
+			unset($this->_listenerInstances[$name]);
+		}
+
+		$subject = $this->getSubject();
+		$this->_listenerInstances[$name] = new $class($subject);
+		$this->_eventManager->attach($this->_listenerInstances[$name]);
+	}
+
+/**
+ * Load a CrudAction instance
+ *
+ * @param string $name The controller action name
+ * @return CrudAction
+ */
+	protected function _loadAction($name) {
+		$actionClass = $this->config('actions.' . $name);
+		if (empty($actionClass)) {
+			throw new RuntimeException(sprintf('Action "%s" has not been mapped', $name));
+		}
+
+		list($plugin, $class) = pluginSplit($actionClass, true);
+		$class .= 'CrudAction';
+		$class = ucfirst($class);
+
+		if (empty($plugin)) {
+			$plugin = 'Crud.';
+		}
+
+		App::uses($class, $plugin . 'Controller/Crud/Action');
+
+		// Make sure to cleanup duplicate events
+		if (!isset($this->_actionInstances[$name])) {
+			$subject = $this->getSubject(array('handleAction' => $name));
+			$this->_actionInstances[$name] = new $class($subject);
+			$this->_eventManager->attach($this->_actionInstances[$name]);
+		}
+
+		return $this->_actionInstances[$name];
+	}
+
+/**
+ * Set internal model properties from the controller
+ *
+ * @return void
+ * @throws RuntimeException If unable to get model instance
+ */
+	protected function _setModelProperties() {
+		$configKey = 'modelMap.' . $this->_action;
+		if (!$this->_modelName = $this->config($configKey)) {
+			$this->_modelName = $this->_controller->modelClass;
+		}
+
+		$this->_model = $this->_controller->{$this->_modelName};
+		if (empty($this->_model)) {
+			throw new RuntimeException('No model loaded in the Controller by the name "' . $this->_modelName . '". Please add it to $uses.');
+		}
 	}
 
 }

@@ -12,7 +12,16 @@ class AppController extends Controller {
 		// Enable CRUD actions
 		'Crud.Crud' => array(
 			 // All actions but delete() will be implemented
-			'actions' => array('index', 'add', 'edit', 'view')
+			'actions' => array(
+				// The controller action 'index' will map to the IndexCrudAction
+				'index' => 'Crud.Index',
+				// The controller action 'add' will map to the AddCrudAction
+				'add' 	=> 'Crud.Add',
+				// The controller action 'edit' will map to the EditCrudAction
+				'edit' 	=> 'Crud.edit',
+				// The controller action 'view' will map to the ViewCrudAction
+				'view' 	=> 'Crud.View'
+			)
 		)
 	);
 
@@ -78,6 +87,242 @@ class DemoController extends AppController {
 }
 ?>
 ```
+
+# Crud Actions
+
+A `CrudAction` is a class that handles a specific kind of crud action type (index, add, edit, view, delete) in isolation.
+
+Each CrudAction have it's own unique configuration and events it uses.
+
+If you don't like how a specific CurdAction behaves, you can very easily replace it with your own
+
+## Index CrudAction
+
+The `index` CrudAction paginates over the primary model in the controller.
+
+The source code can be found here: `Controller/Crud/Action/IndexCrudAction.php`
+
+### Events
+
+<table>
+<thead>
+	<tr>
+		<th>Event</th>
+		<th>Subject modifiers</th>
+		<th>Description</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>Crud.init</td>
+		<td>N/A</td>
+		<td>Initialize method</td>
+	</tr>
+	<tr>
+		<td>Crud.beforePaginate</td>
+		<td>$subject->controller->paginate</td>
+		<td>Executed before the pagination call is made. You can modify the pagination array like you normally would in your model inside this event</td>
+	</tr>
+	<tr>
+		<td>Crud.afterPaginate</td>
+		<td>$subject->items</td>
+		<td>Executed after the pagination call is made. You can modify the items from the database here.</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeRender</td>
+		<td>N/A</td>
+		<td>Invoked right before the view will be rendered. This is also before the controllers own beforeRender callback</td>
+	</tr>
+</tbody>
+</table>
+
+## Add CrudAction
+
+The `add` CrudAction will create a record if the request is `HTTP POST` and the data is valid.
+
+The source code can be found here: `Controller/Crud/Action/AddCrudAction.php`
+
+### Events
+
+<table>
+<thead>
+	<tr>
+		<th>Event</th>
+		<th>Subject modifiers</th>
+		<th>Description</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>Crud.init</td>
+		<td>N/A</td>
+		<td>Initialize method</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeSave</td>
+		<td>N/A</td>
+		<td>Access and modify the data from the $request object like you normally would in your own controller action</td>
+	</tr>
+	<tr>
+		<td>Crud.afterSave</td>
+		<td>$subject->id</td>
+		<td>`$id` is only available if the save was successful. You can test also test on the `$subject->success` property if the save worked.</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeRender</td>
+		<td>N/A</td>
+		<td>Invoked right before the view will be rendered. This is also before the controllers own beforeRender callback</td>
+	</tr>
+</tbody>
+</table>
+
+## Edit CrudAction
+
+The `edit` CrudAction will modify a record if the request is `HTTP PUT`, the data is valid and the ID that is part of the request exist in the database.
+
+The source code can be found here: `Controller/Crud/Action/EditCrudAction.php`
+
+### Events
+
+<table>
+<thead>
+	<tr>
+		<th>Event</th>
+		<th>Subject modifiers</th>
+		<th>Description</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>Crud.init</td>
+		<td>N/A</td>
+		<td>Initialize method</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeSave</td>
+		<td>N/A</td>
+		<td>Access and modify the data from the $request object like you normally would in your own controller action</td>
+	</tr>
+	<tr>
+		<td>Crud.afterSave</td>
+		<td>$subject->id</td>
+		<td>`$id` is only available if the save was successful. You can test also test on the `$subject->success` property if the save worked.</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeFind</td>
+		<td>$subject->query</td>
+		<td>Modify the $query array, same as the $queryParams in a behaviors beforeFind() or 2nd argument to any Model::find()</td>
+	</tr>
+	<tr>
+		<td>Crud.recordNotFound</td>
+		<td>N/A</td>
+		<td>If beforeFind could not find a record this event is emitted</td>
+	</tr>
+	<tr>
+		<td>Crud.afterFind</td>
+		<td>N/A</td>
+		<td>Modify the record found by find() and return it. The data is attached to the request->data object</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeRender</td>
+		<td>N/A</td>
+		<td>Invoked right before the view will be rendered. This is also before the controllers own beforeRender callback</td>
+	</tr>
+</tbody>
+</table>
+
+## View CrudAction
+
+The `view` CrudAction will read a record from the database based on the ID that is part of the request.
+
+The source code can be found here: `Controller/Crud/Action/ViewCrudAction.php`
+
+### Events
+
+<table>
+<thead>
+	<tr>
+		<th>Event</th>
+		<th>Subject modifiers</th>
+		<th>Description</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>Crud.init</td>
+		<td>N/A</td>
+		<td>Initialize method</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeFind</td>
+		<td>$subject->query</td>
+		<td>Modify the $query array, same as the $queryParams in a behaviors beforeFind() or 2nd argument to any Model::find()</td>
+	</tr>
+	<tr>
+		<td>Crud.recordNotFound</td>
+		<td>N/A</td>
+		<td>If beforeFind could not find a record this event is emitted</td>
+	</tr>
+	<tr>
+		<td>Crud.afterFind</td>
+		<td>
+			$subject->id
+			$subject->item
+		</td>
+		<td>Modify the $subject->item property if you need to do any afterFind() operations</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeRender</td>
+		<td>N/A</td>
+		<td>Invoked right before the view will be rendered. This is also before the controllers own beforeRender callback</td>
+	</tr>
+</tbody>
+</table>
+
+## Delete CrudAction
+
+The `delete` CrudAction will delete a record if the request is `HTTP DELETE` or `HTTP POST` and the ID that is part of the request exist in the database.
+
+The source code can be found here: `Controller/Crud/Action/DeleteCrudAction.php`
+
+### Events
+
+<table>
+<thead>
+	<tr>
+		<th>Event</th>
+		<th>Subject modifiers</th>
+		<th>Description</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>Crud.init</td>
+		<td>N/A</td>
+		<td>Initialize method</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeFind</td>
+		<td>$subject->query</td>
+		<td>Modify the $query array, same as the $queryParams in a behaviors beforeFind() or 2nd argument to any Model::find()</td>
+	</tr>
+	<tr>
+		<td>Crud.recordNotFound</td>
+		<td>N/A</td>
+		<td>If beforeFind could not find a record this event is emitted</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeDelete</td>
+		<td>N/A</td>
+		<td>Stop the delete by redirecting away from the action or calling $event->stopPropagation()</td>
+	</tr>
+	<tr>
+		<td>Crud.afterDelete</td>
+		<td>N/A</td>
+		<td>Executed after Model::delete() has called. You can check if the delete succeed or not in $subject->success</td>
+	</tr>
+</tbody>
+</table>
 
 # Examples
 
