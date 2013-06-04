@@ -12,6 +12,13 @@ class IndexCrudAction extends CrudAction {
 /**
  * Default settings for 'index' actions
  *
+ * `enabled` Is this crud action enabled or disabled
+ *
+ * `findMethod` The default `Model::find()` method for reading data
+ *
+ * `view` A map of the controller action and the view to render
+ * If `NULL` (the default) the controller action name will be used
+ *
  * @var array
  */
 	protected $_settings = array(

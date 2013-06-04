@@ -9,7 +9,14 @@ App::uses('CrudAction', 'Crud.Controller/Crud');
 class DeleteCrudAction extends CrudAction {
 
 /**
- * Default settings for 'delete' actions
+ * Default settings for 'add' actions
+ *
+ * `enabled` Is this crud action enabled or disabled
+ *
+ * `findMethod` The default `Model::find()` method for reading data
+ *
+ * `secureDelete` delete() can only be called with the HTTP DELETE verb, not POST when `true`.
+ * If set to `false` HTTP POST is also acceptable
  *
  * @var array
  */
