@@ -1,7 +1,7 @@
 <?php
 
 App::uses('Hash', 'Utility');
-App::uses('CrudAction', 'Crud.Controller/Crud/Action');
+App::uses('CrudAction', 'Crud.Controller/Crud');
 
 /**
  * Handles 'Edit' Crud actions

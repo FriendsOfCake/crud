@@ -1,6 +1,6 @@
 <?php
 
-App::uses('CrudAction', 'Crud.Controller/Crud/Action');
+App::uses('CrudAction', 'Crud.Controller/Crud');
 
 /**
  * Handles 'Delete' Crud actions
