@@ -168,7 +168,7 @@ class CrudComponent extends Component {
 
 		try {
 			// Execute the default action, inside this component
-			$response = $this->trigger('handle', $this->getSubject(compact('args')));
+			$response = $this->getAction($action)->handle($this->getSubject(compact('args')));
 			if ($response instanceof CakeResponse) {
 				return $response;
 			}
@@ -266,7 +266,7 @@ class CrudComponent extends Component {
 		}
 
 		try {
-			return $this->getAction($action)->config('enabled', null, $action);
+			return $this->getAction($action)->config('enabled');
 		} catch (Exception $e) {
 			return false;
 		}
