@@ -93,9 +93,9 @@ class DemoController extends AppController {
 
 Very much like the `Closure` example above, except the callback code is in a method of its own, that can be unit tested easier.
 
-The method must be public, since it's called from outside the scope of the controller.
+The method __must be public__, since it's called from outside the scope of the controller.
 
-__Pro tip__: Prefix your callbacks with `_` - then CakePHP will prevent the method to be called through the web.
+__Pro tip__: Prefix your callbacks with `_` and CakePHP will prevent the method to be called through the web.
 
 ```php
 <?php
@@ -112,13 +112,46 @@ class DemoController extends AppController {
 ?>
 ```
 
-## Lambda inside a specific controller action
+## Overriding implementedEvents() in the controller
+
+You can override the `implementedEvents` method inside the controller and provide a list of `event => callback` for Crud.
+
+The key is the Crud event name (Remember all events need the `Crud.` prefix) and the value is the name of the method in your controller that should be executed.
+
+The method __must be public__, since it's called from outside the scope of the controller.
+
+__Pro tip__: Prefix your callbacks with `_` and CakePHP will prevent the method to be called through the web.
+
+```php
+public function implementedEvents() {
+	return parent::implementedEvents() + array(
+		'Crud.beforeFind' => '_beforeFind',
+		'Crud.beforeSave' => '_beforeSave',
+	);
+}
+
+public function _beforeFind(CakeEvent $event) {
+
+}
+
+public function _beforeSave(CakeEvent $event) {
+
+}
+```
+
+## Lambda / Closure inside a specific controller action
+
+Very much like the other `Closure` examples above.
+
+When implementing callbacks inside the controller action, it's very important to call the `executeAction` in `Crud`.
+
+This will allow Crud to continue to do it's magic just as if the method didn't exist at all in the controller in the first place.
 
 ```php
 <?php
 class DemoController extends AppController {
 	public function view($id = null) {
-		$this->Crud->on('beforeFind', function(CakeEvent $event) {
+		$this->Crud->on('beforeFind', function(CakeEvent $event) use ($id) {
 			$event->subject->query['conditions']['is_active'] = true;
 		}
 
@@ -131,15 +164,19 @@ class DemoController extends AppController {
 
 # Listener classes
 
-Crud events must be inside app/Controller/Event ( app/Plugin/$plugin/Controller/Event for plugins)
+Crud listeners must be inside app/Controller/Crud/Listener ( app/Plugin/$plugin/Controller/Crud/Listener for plugins)
 
-Your Event class should look like this:
+The `CrudListener` class provides an implementation of all the available callbacks you can listen for in Crud.
+
+You can override the methods as needed inside your own Listener class.
+
+Below is an example of a `CrudListener`
 
 ```php
 <?php
-App::uses('CrudListener', 'Crud.Controller/Event');
+App::uses('CrudListener', 'Crud.Controller/Crud');
 
-class DemoEvent extends CrudListener {
+class DemoListener extends CrudListener {
 
 	public function beforeRender(CakeEvent $event) {
 		// Check about this is admin, and about this function should be process for this action
@@ -167,14 +204,19 @@ class DemoEvent extends CrudListener {
 ?>
 ```
 
+Attaching the above Listener to your Crud component is done as below.
+
+You simply attach it to the normal `CakeEventManager` inside your controller.
+
+`Crud` share the same event manager as the controller for maximum flexibility.
+
 ```php
 <?php
-App::uses('DemoEvent', 'Controller/Event');
+App::uses('DemoListener', 'Controller/Crud/Listener');
 
 class DemoController extends AppController {
 	public function beforeFilter() {
-		parent::beforeFilter();
-		$this->getEventManager()->attach(new DemoEvent());
+		$this->getEventManager()->attach(new DemoListener());
 	}
 }
 ?>
