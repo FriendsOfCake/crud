@@ -1,6 +1,7 @@
 <?php
 
 App::uses('CakeEventListener', 'Event');
+App::uses('CrudListener', 'Crud.Controller/Crud');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
 
 /**
@@ -12,7 +13,7 @@ App::uses('CrudSubject', 'Crud.Controller/Crud');
  *
  * @copyright Christian Winther, 2013
  */
-class RelatedModelsListener implements CakeEventListener {
+class RelatedModelsListener extends CrudListener implements CakeEventListener {
 
 /**
  * Crud Component reference
@@ -140,7 +141,7 @@ class RelatedModelsListener implements CakeEventListener {
  * @param CakeEvent
  * @return void
  */
-	public function beforeRender($event) {
+	public function beforeRender(CakeEvent $event) {
 		$component = $event->subject->crud;
 		$controller = $event->subject->controller;
 		$models = $this->models();

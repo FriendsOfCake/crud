@@ -85,7 +85,7 @@ class CrudComponent extends Component {
  * `translations` is the settings for the translations Event, responsible for the text used in flash messages
  * see TranslationsEvent::$_defaults the full list of options
  *
- * `listenerClassMap` List of internal-name => ${plugin}.${class} listeners
+ * `listeners` List of internal-name => ${plugin}.${class} listeners
  * that will be bound automatically in Crud. By default translations and related model events
  * are bound. Events will always assume to be in the Controller/Event folder
  *
@@ -98,12 +98,11 @@ class CrudComponent extends Component {
  */
 	public $settings = array(
 		'eventPrefix' => 'Crud',
-		'translations' => array(),
-		'listenerClassMap' => array(
+		'actions' => array(),
+		'listeners' => array(
 			'translations' => 'Crud.TranslationsListener',
 			'related' => 'Crud.RelatedModelsListener'
-		),
-		'actions' => array()
+		)
 	);
 
 /**
@@ -310,12 +309,8 @@ class CrudComponent extends Component {
  * @param string $name
  * @return CrudBaseEvent
  */
-	public function getListener($name, $create = true) {
-		if (empty($this->_listenerInstances[$name])) {
-			$this->_loadListener($name);
-		}
-
-		return $this->_listenerInstances[$name];
+	public function getListener($name) {
+		return $this->_loadListener($name);
 	}
 
 /**
@@ -386,6 +381,32 @@ class CrudComponent extends Component {
 	}
 
 /**
+ * Set or get defaults for listeners and actions
+ *
+ * @param string $type Can be anything, but 'listener' or 'action' is currently only used
+ * @param mixed $name The name of the $type - e.g. 'api', 'translations', 'related'
+ * 	or an array ('api', 'translations'). If $name is an array, the $config will be applied
+ * 	to each entry in the $name array.
+ * @param mixed $config If NULL, the defaults is returned, else the defaults are changed
+ * @return mixed
+ */
+	public function defaults($type, $name, $config = null) {
+		if (!is_null($config)) {
+			if (!is_array($name)) {
+				$name = array($name);
+			}
+
+			foreach ($name as $realName) {
+				$this->config(sprintf('defaults.%s.%s', $type, $realName), $config);
+			}
+
+			return;
+		}
+
+		return $this->config(sprintf('defaults.%s.%s', $type, $name));
+	}
+
+/**
  * Create a CakeEvent subject with the required properties
  *
  * @param array $additional Additional properties for the subject
@@ -442,7 +463,7 @@ class CrudComponent extends Component {
  * @return void
  */
 	protected function _loadListeners() {
-		foreach (array_keys($this->config('listenerClassMap')) as $name) {
+		foreach (array_keys($this->config('listeners')) as $name) {
 			$this->_loadListener($name);
 		}
 	}
@@ -454,20 +475,18 @@ class CrudComponent extends Component {
  * @return void
  */
 	protected function _loadListener($name) {
-		$config = $this->config('listenerClassMap.' . $name);
+		if (!isset($this->_listenerInstances[$name])) {
+			$config = $this->config('listeners.' . $name);
 
-		list($plugin, $class) = pluginSplit($config, true);
-		App::uses($class, $plugin . 'Controller/Crud/Listener');
+			list($plugin, $class) = pluginSplit($config, true);
+			App::uses($class, $plugin . 'Controller/Crud/Listener');
 
-		// Make sure to cleanup duplicate events
-		if (isset($this->_listenerInstances[$name])) {
-			$this->_eventManager->detach($this->_listenerInstances[$name]);
-			unset($this->_listenerInstances[$name]);
+			$subject = $this->getSubject();
+			$this->_listenerInstances[$name] = new $class($subject, $this->defaults('listener', $name));
+			$this->_eventManager->attach($this->_listenerInstances[$name]);
 		}
 
-		$subject = $this->getSubject();
-		$this->_listenerInstances[$name] = new $class($subject);
-		$this->_eventManager->attach($this->_listenerInstances[$name]);
+		return $this->_listenerInstances[$name];
 	}
 
 /**
@@ -482,20 +501,19 @@ class CrudComponent extends Component {
 			throw new RuntimeException(sprintf('Action "%s" has not been mapped', $name));
 		}
 
-		list($plugin, $class) = pluginSplit($actionClass, true);
-		$class .= 'CrudAction';
-		$class = ucfirst($class);
-
-		if (empty($plugin)) {
-			$plugin = 'Crud.';
-		}
-
-		App::uses($class, $plugin . 'Controller/Crud/Action');
-
-		// Make sure to cleanup duplicate events
 		if (!isset($this->_actionInstances[$name])) {
+			list($plugin, $class) = pluginSplit($actionClass, true);
+			$class .= 'CrudAction';
+			$class = ucfirst($class);
+
+			if (empty($plugin)) {
+				$plugin = 'Crud.';
+			}
+
+			App::uses($class, $plugin . 'Controller/Crud/Action');
+
 			$subject = $this->getSubject(array('handleAction' => $name));
-			$this->_actionInstances[$name] = new $class($subject);
+			$this->_actionInstances[$name] = new $class($subject, $this->defaults('action', $name));
 			$this->_eventManager->attach($this->_actionInstances[$name]);
 		}
 

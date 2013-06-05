@@ -1,6 +1,7 @@
 <?php
 
 App::uses('CakeEventListener', 'Event');
+App::uses('Hash', 'Utility');
 
 /**
  * The Base Crud Listener
@@ -14,6 +15,13 @@ App::uses('CakeEventListener', 'Event');
  * @copyright Christian Winther, 2013
  */
 abstract class CrudListener extends Object implements CakeEventListener {
+
+/**
+ * Listener configuration
+ *
+ * @var array
+ */
+	protected $_settings = array();
 
 /**
  * Returns a list of all events that will fire in the controller during it's life cycle.
@@ -226,6 +234,43 @@ abstract class CrudListener extends Object implements CakeEventListener {
  */
 	public function setFlash(CakeEvent $event) {
 
+	}
+
+/**
+ * Generic config method
+ *
+ * If $key is an array and $value is empty,
+ * $key will be merged directly with $this->_settings
+ *
+ * If $key is a string it will be passed into Hash::insert
+ *
+ * @param mixed $key
+ * @param mixed $value
+ * @return TranslationsEvent
+ */
+	public function config($key = null, $value = null) {
+		if (is_null($key) && is_null($value)) {
+			return $this->_settings;
+		}
+
+		if (empty($value)) {
+			if (is_array($key)) {
+				$this->_settings = Hash::merge($this->_settings, $key);
+				return $this->_settings;
+			}
+
+			return Hash::get($this->_settings, $key);
+		}
+
+		if (is_array($value)) {
+			$merge = Hash::get($this->_settings, $key);
+			if ($merge) {
+				$value += $merge;
+			}
+		}
+
+		$this->_settings = Hash::insert($this->_settings, $key, $value);
+		return $this;
 	}
 
 }
