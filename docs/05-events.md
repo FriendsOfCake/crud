@@ -8,7 +8,7 @@ For a list of emitted events, please see the `configuration` documentation
 
 ## Global accessible subject properties
 
-The subject object can be accessed through __$event->subject__ in all event callbacks
+The `$subject` object can be accessed through `$event->subject` in all event callbacks
 
 <table>
 <thead>
@@ -47,7 +47,7 @@ The subject object can be accessed through __$event->subject__ in all event call
 	<tr>
 		<td>action</td>
 		<td>string</td>
-		<td>The request action name</td>
+		<td>The request action name. This doesn't always match the request objects action property</td>
 	</tr>
 	<tr>
 		<td>request</td>
@@ -64,7 +64,17 @@ The subject object can be accessed through __$event->subject__ in all event call
 
 # Callbacks in the controller
 
-## Lambda in beforeFilter
+In all these examples there is no call to the `parent::` in `beforeFilter` - this is highly recommended to remember to include.
+
+The `Crud->on()` method accepts anything that `is_callable` evaluate to true.
+
+## Lambda / Closure in beforeFilter()
+
+This is convenient for for very simple callbacks, or for callbacks shared between multiple actions
+
+It's recommended to add your callbacks to controller action they need to be used in, as it makes the controller code much more coherent and easier to debug
+
+Don't put too many lines of logic in a closure callback as it quickly gets messy, and it's very hard to unit test the isolated behavior of the callback.
 
 ```php
 <?php
@@ -81,14 +91,20 @@ class DemoController extends AppController {
 
 ## Method inside the controller
 
+Very much like the `Closure` example above, except the callback code is in a method of its own, that can be unit tested easier.
+
+The method must be public, since it's called from outside the scope of the controller.
+
+__Pro tip__: Prefix your callbacks with `_` - then CakePHP will prevent the method to be called through the web.
+
 ```php
 <?php
 class DemoController extends AppController {
 	public function beforeFilter() {
-		$this->Crud->on('beforePaginate', array($this, 'demoEvent'));
+		$this->Crud->on('beforePaginate', array($this, '_demoCallback'));
 	}
 
-	public function demoEvent(CakeEvent $event) {
+	public function _demoCallback(CakeEvent $event) {
 		$event->subject->query['conditions']['is_active'] = true;
 		debug($event->subject->query);
 	}
