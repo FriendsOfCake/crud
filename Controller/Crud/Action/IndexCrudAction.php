@@ -28,7 +28,11 @@ class IndexCrudAction extends CrudAction {
 	protected $_settings = array(
 		'enabled' => true,
 		'findMethod' => 'all',
-		'view' => null
+		'view' => null,
+		'serialize' => array(
+			'success',
+			'items' => 'data'
+		)
 	);
 
 /**
@@ -62,7 +66,9 @@ class IndexCrudAction extends CrudAction {
 			$items = iterator_to_array($items);
 		}
 
-		$this->_controller->set(compact('items'));
+		$success = true;
+		$this->_controller->set(compact('items', 'success'));
+
 		$this->_crud->trigger('beforeRender');
 	}
 

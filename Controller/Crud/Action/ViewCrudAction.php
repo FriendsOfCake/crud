@@ -28,7 +28,11 @@ class ViewCrudAction extends CrudAction {
 	protected $_settings = array(
 		'enabled' => true,
 		'findMethod' => 'first',
-		'view' => null
+		'view' => null,
+		'serialize' => array(
+			'success',
+			'item' => 'data'
+		)
 	);
 
 /**
@@ -74,7 +78,8 @@ class ViewCrudAction extends CrudAction {
 		$item = $subject->item;
 
 		// Push it to the view
-		$this->_controller->set(compact('item'));
+		$success = true;
+		$this->_controller->set(compact('item', 'success'));
 
 		// Trigger a beforeRender
 		$this->_crud->trigger('beforeRender', compact('id', 'item'));

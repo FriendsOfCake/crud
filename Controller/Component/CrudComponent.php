@@ -153,13 +153,8 @@ class CrudComponent extends Component {
 	public function executeAction($controllerAction = null, $args = array()) {
 		$view = $action = $controllerAction ?: $this->_action;
 		$this->_setModelProperties();
-
-		// Make sure to update internal action property
 		$this->_action = $action;
-
 		$this->_loadListeners();
-
-		// Trigger init callback
 		$this->trigger('init');
 
 		try {
