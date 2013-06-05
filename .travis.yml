@@ -28,8 +28,8 @@ before_script:
   - cd cakephp-2.4; git checkout origin/2.4
   - cd ..
 
-  - cp -r crud cakephp-2.3/app/Plugin/Crud
-  - cp -r crud cakephp-2.4/app/Plugin/Crud
+  - cp -r cakephp-crud cakephp-2.3/app/Plugin/Crud
+  - cp -r cakephp-crud cakephp-2.4/app/Plugin/Crud
 
   - chmod -R 777 ./cakephp-2.3/app/tmp
   - chmod -R 777 ./cakephp-2.4/app/tmp
