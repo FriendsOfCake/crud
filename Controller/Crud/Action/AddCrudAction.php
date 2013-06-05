@@ -48,6 +48,10 @@ class AddCrudAction extends CrudAction {
 		'saveOptions' => array(
 			'validate' => 'first',
 			'atomic' => true
+		),
+		'serialize' => array(
+			'success',
+			'data'
 		)
 	);
 

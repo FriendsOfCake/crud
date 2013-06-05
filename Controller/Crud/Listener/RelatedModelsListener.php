@@ -16,32 +16,6 @@ App::uses('CrudSubject', 'Crud.Controller/Crud');
 class RelatedModelsListener extends CrudListener implements CakeEventListener {
 
 /**
- * Crud Component reference
- *
- * @var CrudComponent
- */
-	protected $_crud;
-
-/**
- * Crud Event subject
- *
- * @var CrudSubject
- */
-	protected $_subject;
-
-/**
- * Class constructor
- *
- * @param string $prefix CRUD component events name prefix
- * @param array $models List of models to be fetched in beforeRenderEvent
- * @return void
- */
-	public function __construct(CrudSubject $subject) {
-		$this->_subject = $subject;
-		$this->_crud = $subject->crud;
-	}
-
-/**
  * Enables association list fetching for specified actions.
  *
  * @param string|array $actions list of action names to enable
@@ -127,10 +101,6 @@ class RelatedModelsListener extends CrudListener implements CakeEventListener {
 			$this->_crud->config('eventPrefix') . '.init' => 'init',
 			$this->_crud->config('eventPrefix') . '.beforeRender' => 'beforeRender'
 		);
-	}
-
-	public function init(CakeEvent $event) {
-		$this->_actionClass = $this->_crud->getAction();
 	}
 
 /**

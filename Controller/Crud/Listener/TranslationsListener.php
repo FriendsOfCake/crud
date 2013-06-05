@@ -81,20 +81,6 @@ class TranslationsListener extends CrudListener implements CakeEventListener {
 	);
 
 /**
- * Crud Component reference
- *
- * @var CrudComponent
- */
-	protected $_crud;
-
-/**
- * Crud Event subject
- *
- * @var CrudSubject
- */
-	protected $_subject;
-
-/**
  * Class constructor
  *
  * @param string $prefix CRUD component events name prefix
@@ -102,18 +88,8 @@ class TranslationsListener extends CrudListener implements CakeEventListener {
  * @return void
  */
 	public function __construct(CrudSubject $subject, $defaults = array()) {
-		$this->_subject = $subject;
 		$this->_settings = $this->_defaults;
-
-		if (!empty($defaults)) {
-			$this->config($defaults);
-		}
-
-		if (!isset($subject->crud)) {
-			return;
-		}
-
-		$this->_crud = $subject->crud;
+		parent::__construct($subject, $defaults);
 	}
 
 /**

@@ -17,11 +17,55 @@ App::uses('Hash', 'Utility');
 abstract class CrudListener extends Object implements CakeEventListener {
 
 /**
+ * Reference to the CakeRequest
+ *
+ * @var CakeRequest
+ */
+	protected $_request;
+
+/**
+ * Reference to the Controller
+ *
+ * @var Controller
+ */
+	protected $_controller;
+
+/**
+ * Crud Component reference
+ *
+ * @var CrudComponent
+ */
+	protected $_crud;
+
+/**
+ * Crud Event subject
+ *
+ * @var CrudSubject
+ */
+	protected $_subject;
+
+/**
  * Listener configuration
  *
  * @var array
  */
 	protected $_settings = array();
+
+/**
+ * Class constructor
+ *
+ * @param string $prefix CRUD component events name prefix
+ * @param array $models List of models to be fetched in beforeRenderEvent
+ * @return void
+ */
+	public function __construct(CrudSubject $subject, $defaults = null) {
+		$this->_crud = $subject->crud;
+		$this->_subject = $subject;
+
+		if (!empty($defaults)) {
+			$this->config($defaults);
+		}
+	}
 
 /**
  * Returns a list of all events that will fire in the controller during it's life cycle.
