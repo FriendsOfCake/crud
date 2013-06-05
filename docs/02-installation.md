@@ -1,6 +1,6 @@
 # Requirements
 
-* CakePHP 2.1
+* CakePHP 2.2
 * PHP 5.3
 
 # Installing
@@ -13,11 +13,11 @@ The only installation method supported by this plugin is by using composer. Just
 {
 	"extra": {
 		"installer-paths": {
-			"app/Plugin/Crud": ["jippi/crud"]
+			"app/Plugin/Crud": ["Jippi/cakephp-crud"]
 		}
 	},
 	"require" : {
-		"jippi/crud": "master"
+		"Jippi/cakephp-crud": "master"
 	}
 }
 ```
