@@ -82,17 +82,14 @@ class CrudComponent extends Component {
  *
  * `eventPrefix` All emitted events will be prefixed with this property value
  *
- * `translations` is the settings for the translations Event, responsible for the text used in flash messages
- * see TranslationsEvent::$_defaults the full list of options
- *
- * `listeners` List of internal-name => ${plugin}.${class} listeners
- * that will be bound automatically in Crud. By default translations and related model events
- * are bound. Events will always assume to be in the Controller/Event folder
- *
  * `actions` contains an array of controller methods this component should offer implementation for.
  * Each action maps to a CrudAction class. `$controllerAction => $crudActionClass`.
  * Example: `array('admin_index' => 'Crud.Index')`
  * By default no actions are enabled
+ *
+ * `listeners` List of internal-name => ${plugin}.${class} listeners
+ * that will be bound automatically in Crud. By default translations and related model events
+ * are bound. Events will always assume to be in the Controller/Event folder
  *
  * @var array
  */
