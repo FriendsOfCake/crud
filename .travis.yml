@@ -21,11 +21,11 @@ before_script:
   - cd ..
 
   - git clone git://github.com/cakephp/cakephp.git cakephp-2.3
-  - cd cakephp-2.3; git checkout 2.3
+  - cd cakephp-2.3; git checkout 2.3.5
   - cd ..
 
   - cp -r cakephp-2.3 cakephp-2.4
-  - cd cakephp-2.4; git checkout 2.4
+  - cd cakephp-2.4; git checkout origin/2.4
   - cd ..
 
   - cp -r crud cakephp-2.3/app/Plugin/Crud
