@@ -115,7 +115,7 @@ before_script:
       }
     }
     }" > cakephp-2.3/app/Config/database.php
-  - cp cakephp-2.4/app/Config/database.php cakephp-2.4/app/Config/database.php
+  - cp cakephp-2.3/app/Config/database.php cakephp-2.4/app/Config/database.php
 
 script:
   - cd cakephp-2.3; ./lib/Cake/Console/cake test Crud AllCrud --stderr; cd ..
