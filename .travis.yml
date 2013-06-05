@@ -19,16 +19,23 @@ before_script:
   - sh -c "if [ '$DB' = 'pgsql' ]; then psql -c 'CREATE SCHEMA test3;' -U postgres -d cakephp_test; fi"
 
   - cd ..
-  - git clone git://github.com/cakephp/cakephp.git cakephp
-  - mv crud cakephp/app/Plugin/Crud
-  - cd cakephp
-  - chmod -R 777 ./app/tmp
-  - echo "var net = require('net');
-    var server = net.createServer();
-    server.listen(80, 'localhost');
-    console.log('TCP server listening on port 80 at localhost.');" > app/tmp/socket.js
-  - sudo node ./app/tmp/socket.js &
+
+  - git clone git://github.com/cakephp/cakephp.git cakephp-2.3
+  - cd cakephp-2.3; git checkout 2.3
+  - cd ..
+
+  - cp -r cakephp-2.3 cakephp-2.4
+  - cd cakephp-2.4; git checkout 2.4
+  - cd ..
+
+  - cp -r crud cakephp-2.3/app/Plugin/Crud
+  - cp -r crud cakephp-2.4/app/Plugin/Crud
+
+  - chmod -R 777 ./cakephp-2.3/app/tmp
+  - chmod -R 777 ./cakephp-2.4/app/tmp
+
   - set +H
+
   - echo "<?php
     class DATABASE_CONFIG {
     private \$identities = array(
@@ -107,8 +114,12 @@ before_script:
         \$this->{\$source} = \$config;
       }
     }
-    }" > app/Config/database.php
+    }" > cakephp-2.3/app/Config/database.php
+  - cp cakephp-2.4/app/Config/database.php cakephp-2.4/app/Config/database.php
 
 script:
-  - ./lib/Cake/Console/cake test Crud AllCrud --stderr
+	- cd cakephp-2.3; ./lib/Cake/Console/cake test Crud AllCrud --stderr; cd ..
+  - cd cakephp-2.4; ./lib/Cake/Console/cake test Crud allCrud --stderr; cd ..
 
+notifications:
+  email: false
