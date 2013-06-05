@@ -131,9 +131,9 @@ class ApiListener extends CrudListener {
 		$event->stopPropagation();
 
 		$this->_controller->set('success', $event->subject->success);
-		$this->controller->set('data', null);
+		$this->_controller->set('data', null);
 
-		return $event->subject->controller->render();
+		return $this->_controller->render();
 	}
 
 /**
