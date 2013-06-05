@@ -20,6 +20,11 @@ App::uses('Validation', 'Utility');
  * This manager class is used to replace the CakeEventManger instance.
  * As such, it becomes a global listener and is used to keep a log of
  * all events fired during the test
+ *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright Christian Winther, 2013
  */
 class TestCrudEventManager extends CakeEventManager {
 

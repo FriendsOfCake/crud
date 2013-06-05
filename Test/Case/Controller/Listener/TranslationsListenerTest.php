@@ -3,6 +3,13 @@
 App::uses('CakeEvent', 'Event');
 App::uses('TranslationsListener', 'Crud.Controller/Crud/Listener');
 
+/**
+ *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright Christian Winther, 2013
+ */
 class TranslationsListenerTest extends CakeTestCase {
 
 	public function setUp() {
