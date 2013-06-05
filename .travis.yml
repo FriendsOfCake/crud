@@ -118,7 +118,7 @@ before_script:
   - cp cakephp-2.4/app/Config/database.php cakephp-2.4/app/Config/database.php
 
 script:
-	- cd cakephp-2.3; ./lib/Cake/Console/cake test Crud AllCrud --stderr; cd ..
+  - cd cakephp-2.3; ./lib/Cake/Console/cake test Crud AllCrud --stderr; cd ..
   - cd cakephp-2.4; ./lib/Cake/Console/cake test Crud allCrud --stderr; cd ..
 
 notifications:
