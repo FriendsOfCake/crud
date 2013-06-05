@@ -25,13 +25,13 @@ The only installation method supported by this plugin is by using composer. Just
 ### git clone
 
 ```
-git clone git://github.com/nodesagency/Platform-Crud-Plugin.git app/Plugin/Crud
+git clone git://github.com/Jippi/cakephp-crud.git app/Plugin/Crud
 ```
 
 ### git submodule
 
 ```
-git submodule add git://github.com/nodesagency/Platform-Crud-Plugin.git app/Plugin/Crud
+git submodule add git://github.com/Jippi/cakephp-crud.git app/Plugin/Crud
 ```
 
 # Loading and installation
