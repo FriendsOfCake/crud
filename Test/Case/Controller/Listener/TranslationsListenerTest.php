@@ -67,7 +67,9 @@ class TranslationsListenerTest extends CakeTestCase {
 				'error' => array('message' => 'Denied!', 'element' => 'error')
 			)
 		);
-		$config = $this->Translations->config($override);
+
+		$this->Translations->config($override);
+		$config = $this->Translations->config();
 
 		$expected = array(
 			'domain' => 'crud',
@@ -94,6 +96,7 @@ class TranslationsListenerTest extends CakeTestCase {
 				'error' => array('message' => 'Invalid id', 'element' => 'error')
 			)
 		);
+
 		$this->assertEquals($expected, $config);
 	}
 

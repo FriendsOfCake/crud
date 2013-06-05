@@ -1563,8 +1563,8 @@ class CrudComponentTestCase extends ControllerTestCase {
 				'components' => array('Session'),
 			)
 		);
-		$this->Controller->Crud->settings['translations']['name'] = 'Thingy';
 
+		$this->Controller->Crud->defaults('listener', 'translations', array('name' => 'Thingy'));
 		$this->Controller->Session
 			->expects($this->once())
 			->method('setFlash')
@@ -1596,7 +1596,10 @@ class CrudComponentTestCase extends ControllerTestCase {
 				'components' => array('Session'),
 			)
 		);
-		$this->Controller->Crud->settings['translations']['create']['success']['message'] = "Yay!";
+
+		$this->Controller->Crud->defaults('listener', 'translations', array(
+			'create' => array('success' => array('message' => "Yay!"))
+		));
 
 		$this->Controller->Session
 			->expects($this->once())
