@@ -71,12 +71,12 @@ class AddCrudAction extends CrudAction {
 		$this->_crud->trigger('beforeSave');
 		if ($this->_model->saveAll($this->_request->data, $this->saveOptions())) {
 			$this->setFlash('create.success');
-			$subject = $this->_crud->trigger('afterSave', array('success' => true, 'id' => $this->_model->id));
+			$subject = $this->_crud->trigger('afterSave', array('success' => true, 'created' => true, 'id' => $this->_model->id));
 			return $this->_redirect($subject, array('action' => 'index'));
 		}
 
 		$this->setFlash('create.error');
-		$this->_crud->trigger('afterSave', array('success' => false));
+		$this->_crud->trigger('afterSave', array('success' => false, 'created' => false));
 		// Make sure to merge any changed data in the model into the post data
 		$this->_request->data = Hash::merge($this->_request->data, $this->_model->data);
 	}

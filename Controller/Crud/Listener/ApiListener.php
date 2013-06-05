@@ -2,16 +2,26 @@
 
 App::uses('CrudListener', 'Crud.Controller/Crud');
 
+/**
+ * Enabled Crud to respond in a computer readable format like JSON or XML
+ *
+ * It tries to enforce some REST principles and keep some string conventions in the output format
+ *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright Christian Winther, 2013
+ */
 class ApiListener extends CrudListener {
 
-	/**
-	 * Returns a list of all events that will fire in the controller during it's lifecycle.
-	 * You can override this function to add you own listener callbacks
-	 *
-	 * We attach at priority 10 so normal bound events can run before us
-	 *
-	 * @return array
-	 */
+/**
+ * Returns a list of all events that will fire in the controller during it's lifecycle.
+ * You can override this function to add you own listener callbacks
+ *
+ * We attach at priority 10 so normal bound events can run before us
+ *
+ * @return array
+ */
 	public function implementedEvents() {
 		return array(
 			'Crud.init'	=> array('callable' => 'init'),
@@ -36,56 +46,104 @@ class ApiListener extends CrudListener {
 		);
 	}
 
+/**
+ * Init
+ *
+ * Called when the listener is started
+ *
+ * @param CakeEvent $event
+ * @return void
+ */
 	public function init(CakeEvent $event) {
 		parent::init($event);
 
+		// Configure a few useful CakeRequest detectors
 		$this->_setupDetectors();
 
+		// Don't do anything if we aren't in an API request
+		if (!$this->_request->is('api')) {
+			return;
+		}
+
+		// Make sure that exceptions output in standard Crud format
 		App::uses('CrudExceptionRenderer', 'Crud.Error');
 		Configure::write('Exception.renderer', 'Crud.CrudExceptionRenderer');
 
-		if (!$this->_request->is('api')) {
-			return;
-		}
-
-		$this->_enforceRequestType($event->subject->action);
+		// Enforce a few REST rules before we do any heavy lifting
+		$this->_enforceRequestType($event->subject->action, $event->subject->request);
 	}
 
+/**
+ * afterSave callback
+ *
+ * @param CakeEvent $event
+ * @return void|CakeResponse
+ */
 	public function afterSave(CakeEvent $event) {
+		// Don't do anything if we aren't in an API request
 		if (!$this->_request->is('api')) {
 			return;
 		}
 
-		if ($event->subject->success) {
-			$model = $event->subject->model;
-			$controller = $event->subject->controller;
+		// Publish the success based on the CrudSubject's property
+		$this->_controller->set('success', $event->subject->success);
 
-			if (empty($controller->viewVars['data'])) {
-				$controller->set('data', array($model->alias => array($model->primaryKey => $event->subject->model->id)));
-			}
+		$model = $event->subject->model;
 
-			$response = $event->subject->controller->render();
-			$response->statusCode(201);
-			$response->header('Location', \Router::url(array('action' => 'view', $event->subject->id), true));
-		} else {
-			$response = $event->subject->controller->render();
-			$response->statusCode(400);
+		// If we had an error in our save
+		if (!$event->subject->success) {
+			$event->subject->response->statusCode(400);
+			// Set the data to be the validationErrors from the model
+			$this->_controller->set('data', $model->validationErrors);
+			return;
 		}
 
-		$event->stopPropagation();
+		// Push the model ID back as response body if it's not set already
+		if (empty($this->_controller->viewVars['data'])) {
+			$this->_controller->set('data', array($model->alias => array($model->primaryKey => $event->subject->model->id)));
+		}
+
+		// Render the view
+		$response = $this->_controller->render();
+
+		// REST says newly created objects should get a "201 Created" response code back
+		if ($event->subject->created) {
+			$response->statusCode(201);
+		}
+
+		// Send a redirect header for the 'view' action
+		$response->header('Location', Router::url(array('action' => 'view', $event->subject->id), true));
 		return $response;
 	}
 
+/**
+ * afterDelete
+ *
+ * @param CakeEvent $event
+ * @return void
+ */
 	public function afterDelete(CakeEvent $event) {
+		// Don't do anything if we aren't in an API request
 		if (!$this->_request->is('api')) {
 			return;
 		}
 
-		$event->subject->controller->set('success', $event->subject->success);
 		$event->stopPropagation();
+
+		$this->_controller->set('success', $event->subject->success);
+		$this->controller->set('data', null);
+
 		return $event->subject->controller->render();
 	}
 
+/**
+ * recordNotFound
+ *
+ * Always send a HTTP 404 response if something can't be found
+ *
+ * @param CakeEvent $event
+ * @return void
+ */
 	public function recordNotFound(CakeEvent $event) {
 		if (!$this->_request->is('api')) {
 			return;
@@ -94,34 +152,55 @@ class ApiListener extends CrudListener {
 		throw new NotFoundException();
 	}
 
+/**
+ * invalidId
+ *
+ * If the id is invalid, simply send a HTTP 400 response
+ *
+ * @param CakeEvent $event
+ * @return void
+ */
 	public function invalidId(CakeEvent $event) {
 		if (!$this->_request->is('api')) {
 			return;
 		}
 
-		throw new NotFoundException('Invalid id specified');
+		throw new BadRequestException('Invalid id');
 	}
 
+/**
+ * beforeRender
+ *
+ * @param CakeEvent $event
+ * @return void
+ */
 	public function beforeRender(CakeEvent $event) {
 		if (!$this->_request->is('api')) {
 			return;
 		}
 
+		// Copy the _serialize configuration from the CrudAction config
 		$this->_controller->set('_serialize', $event->subject->crud->getAction()->config('serialize'));
+
+		// Make sure to use Cruds own View renderer for json and xml
+		// @TODO: make the viewClassMap configurable
 		$this->_controller->RequestHandler->viewClassMap('json', 'Crud.CrudJson');
 		$this->_controller->RequestHandler->viewClassMap('xml', 'Crud.CrudXml');
 		$this->_controller->RequestHandler->renderAs($this->_controller, $this->_controller->RequestHandler->ext);
 	}
 
-	/**
-	* Is the current controller an Error controller?
-	*
-	* @return boolean
-	*/
-	public function hasError(Controller $controller) {
-		return get_class($controller) == 'CakeErrorController';
-	}
-
+/**
+ * Setup detectors for JSON and XML
+ *
+ * Both detects on two signals:
+ *  1) The extension in the request (e.g. /users/index.json)
+ *  2) The accepts header from the client
+ *
+ * There is a combined request detector for both 'json' and 'xml' called
+ * 'api'
+ *
+ * @return void
+ */
 	protected function _setupDetectors() {
 		$this->_request->addDetector('json', array('callback' => function(CakeRequest $request) {
 			if (isset($request->params['ext']) && $request->params['ext'] === 'json') {
@@ -145,30 +224,46 @@ class ApiListener extends CrudListener {
 
 	}
 
-	protected function _enforceRequestType($action) {
+/**
+ * Enforce REST HTTP request types
+ *
+ * "index" actions should only be accessible through HTTP GET
+ * "view" actions should only be accessible through HTTP GET
+ * "add" actions should only be accessible through HTTP POST
+ * "edit" actions should only be accessible through HTTP PUT
+ * "delete" actions should only be accessible through HTTP DELETE
+ *
+ * @TODO make this configurable on both HTTP verbs and actions
+ * @param string $action
+ * @param CakeRequest $request
+ * @return void
+ */
+	protected function _enforceRequestType($action, CakeRequest $request) {
 		switch ($action) {
 			case 'index':
 			case 'admin_index':
-				if (!$event->subject->request->is('get')) {
-					throw new \MethodNotAllowedException();
+			case 'view':
+			case 'admin_view':
+				if (!$request->is('get')) {
+					throw new MethodNotAllowedException();
 				}
 				break;
 			case 'add':
 			case 'admin_add':
-				if (!$event->subject->request->is('post')) {
-					throw new \MethodNotAllowedException();
+				if (!$request->is('post')) {
+					throw new MethodNotAllowedException();
 				}
 				break;
 			case 'edit':
 			case 'admin_edit':
-				if (!$event->subject->request->is('put')) {
-					throw new \MethodNotAllowedException();
+				if (!$request->is('put')) {
+					throw new MethodNotAllowedException();
 				}
 				break;
 			case 'delete':
 			case 'admin_delete':
-				if (!$event->subject->request->is('delete')) {
-					throw new \MethodNotAllowedException();
+				if (!$request->is('delete')) {
+					throw new MethodNotAllowedException();
 				}
 				break;
 		}

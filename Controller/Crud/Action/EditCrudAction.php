@@ -48,6 +48,10 @@ class EditCrudAction extends CrudAction {
 		'saveOptions' => array(
 			'validate' => 'first',
 			'atomic' => true
+		),
+		'serialize' => array(
+			'success',
+			'data'
 		)
 	);
 
@@ -72,16 +76,15 @@ class EditCrudAction extends CrudAction {
 		}
 
 		$this->_validateId($id);
-
 		if ($this->_request->is('put')) {
 			$this->_crud->trigger('beforeSave', compact('id'));
 			if ($this->_model->saveAll($this->_request->data, $this->saveOptions())) {
 				$this->setFlash('update.success');
-				$subject = $this->_crud->trigger('afterSave', array('id' => $id, 'success' => true));
+				$subject = $this->_crud->trigger('afterSave', array('id' => $id, 'success' => true, 'created' => false));
 				return $this->_redirect($subject, array('action' => 'index'));
 			} else {
 				$this->setFlash('update.error');
-				$this->_crud->trigger('afterSave', array('id' => $id, 'success' => false));
+				$this->_crud->trigger('afterSave', array('id' => $id, 'success' => false, 'created' => false));
 			}
 		} else {
 			$query = array();
