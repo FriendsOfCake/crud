@@ -40,7 +40,7 @@ trait CrudControllerTrait {
 					}
 
 					// Skip if the action isn't mapped
-					if (!$this->{$component}->isActionMapped($request->params['action'])) {
+					if (!$this->{$component}->isActionMapped($request->action)) {
 						continue;
 					}
 

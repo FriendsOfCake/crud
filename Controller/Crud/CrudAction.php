@@ -80,7 +80,7 @@ abstract class CrudAction implements CakeEventListener {
  * @return array
  */
 	public function implementedEvents() {
-		return array('Crud.handle'	=> array('callable' => 'handle'));
+		return array();
 	}
 
 /**
@@ -95,19 +95,19 @@ abstract class CrudAction implements CakeEventListener {
  * @param CakeEvent $event
  * @return mixed
  */
-	public function handle(CakeEvent $event) {
+	public function handle(CrudSubject $subject) {
 		if (!$this->config('enabled')) {
 			return;
 		}
 
-		if ($event->subject->action !== $this->config('handleAction')) {
+		if ($subject->action !== $this->config('handleAction')) {
 			return;
 		}
 
-		$this->_model = $event->subject->model;
-		$this->_modelClass = $event->subject->modelClass;
+		$this->_model = $subject->model;
+		$this->_modelClass = $subject->modelClass;
 
-		return call_user_method_array('_handle', $this, $event->subject->args);
+		return call_user_method_array('_handle', $this, $subject->args);
 	}
 
 /**
