@@ -24,25 +24,25 @@ class ApiListener extends CrudListener {
  */
 	public function implementedEvents() {
 		return array(
-			'Crud.init'	=> array('callable' => 'init'),
+			'Crud.init' => array('callable' => 'init'),
 
-			'Crud.beforePaginate'	=> array('callable' => 'beforePaginate', 'priority' => 100),
-			'Crud.afterPaginate'	=> array('callable' => 'afterPaginate', 'priority' => 100),
+			'Crud.beforePaginate' => array('callable' => 'beforePaginate', 'priority' => 100),
+			'Crud.afterPaginate' => array('callable' => 'afterPaginate', 'priority' => 100),
 
-			'Crud.recordNotFound'	=> array('callable' => 'recordNotFound', 'priority' => 100),
-			'Crud.invalidId'		=> array('callable' => 'invalidId', 'priority' => 100),
+			'Crud.recordNotFound' => array('callable' => 'recordNotFound', 'priority' => 100),
+			'Crud.invalidId' => array('callable' => 'invalidId', 'priority' => 100),
 
-			'Crud.beforeRender'		=> array('callable' => 'beforeRender', 'priority' => 100),
-			'Crud.beforeRedirect'	=> array('callable' => 'beforeRedirect', 'priority' => 100),
+			'Crud.beforeRender' => array('callable' => 'beforeRender', 'priority' => 100),
+			'Crud.beforeRedirect' => array('callable' => 'beforeRedirect', 'priority' => 100),
 
-			'Crud.beforeSave'		=> array('callable' => 'beforeSave', 'priority' => 100),
-			'Crud.afterSave'		=> array('callable' => 'afterSave', 'priority' => 100),
+			'Crud.beforeSave' => array('callable' => 'beforeSave', 'priority' => 100),
+			'Crud.afterSave' => array('callable' => 'afterSave', 'priority' => 100),
 
-			'Crud.beforeFind'		=> array('callable' => 'beforeFind', 'priority' => 100),
-			'Crud.afterFind'		=> array('callable' => 'afterFind', 'priority' => 100),
+			'Crud.beforeFind' => array('callable' => 'beforeFind', 'priority' => 100),
+			'Crud.afterFind' => array('callable' => 'afterFind', 'priority' => 100),
 
-			'Crud.beforeDelete'		=> array('callable' => 'beforeDelete', 'priority' => 100),
-			'Crud.afterDelete'		=> array('callable' => 'afterDelete', 'priority' => 100),
+			'Crud.beforeDelete' => array('callable' => 'beforeDelete', 'priority' => 100),
+			'Crud.afterDelete' => array('callable' => 'afterDelete', 'priority' => 100),
 		);
 	}
 
@@ -221,7 +221,6 @@ class ApiListener extends CrudListener {
 		$this->_request->addDetector('api', array('callback' => function(CakeRequest $request) {
 			return $request->is('json') || $request->is('xml');
 		}));
-
 	}
 
 /**
@@ -232,6 +231,8 @@ class ApiListener extends CrudListener {
  * "add" actions should only be accessible through HTTP POST
  * "edit" actions should only be accessible through HTTP PUT
  * "delete" actions should only be accessible through HTTP DELETE
+ *
+ * Unknown actions will be ignored
  *
  * @TODO make this configurable on both HTTP verbs and actions
  * @param string $action
@@ -248,18 +249,21 @@ class ApiListener extends CrudListener {
 					throw new MethodNotAllowedException();
 				}
 				break;
+
 			case 'add':
 			case 'admin_add':
 				if (!$request->is('post')) {
 					throw new MethodNotAllowedException();
 				}
 				break;
+
 			case 'edit':
 			case 'admin_edit':
 				if (!$request->is('put')) {
 					throw new MethodNotAllowedException();
 				}
 				break;
+
 			case 'delete':
 			case 'admin_delete':
 				if (!$request->is('delete')) {
