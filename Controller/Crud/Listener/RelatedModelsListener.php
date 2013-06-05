@@ -7,6 +7,10 @@ App::uses('CrudSubject', 'Crud.Controller/Crud');
  * Implements beforeRender event listener to set related models' lists to
  * the view
  *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright Christian Winther, 2013
  */
 class RelatedModelsListener implements CakeEventListener {
 

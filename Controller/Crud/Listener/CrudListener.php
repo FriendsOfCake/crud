@@ -7,13 +7,11 @@ App::uses('CakeEventListener', 'Event');
  *
  * All callbacks are defined here for good measure
  *
- * Copyright 2010-2012, Nodes ApS. (http://www.nodesagency.com/)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright Nodes ApS, 2012
- * @abstract
+ * @copyright Christian Winther, 2013
  */
 abstract class CrudListener extends Object implements CakeEventListener {
 

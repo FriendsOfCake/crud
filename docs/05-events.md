@@ -6,6 +6,62 @@ All Crud events take exactly one parameter, `CakeEvent $event`
 
 For a list of emitted events, please see the `configuration` documentation
 
+## Global accessible subject properties
+
+The subject object can be accessed through __$event->subject__ in all event callbacks
+
+<table>
+<thead>
+	<tr>
+		<th>Property name</th>
+		<th>Type</th>
+		<th>Description</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>crud</td>
+		<td>CrudComponent</td>
+		<td>A reference to the CRUD component</td>
+	</tr>
+	<tr>
+		<td>controller</td>
+		<td>AppController</td>
+		<td>A reference to the controller handling the current request</td>
+	</tr>
+	<tr>
+		<td>collection</td>
+		<td>ComponentCollection</td>
+		<td>The original ComponentCollection that was injected into CrudComponent</td>
+	</tr>
+	<tr>
+		<td>model</td>
+		<td>AppModel</td>
+		<td>A reference to the model Crud is working on</td>
+	</tr>
+	<tr>
+		<td>modelClass</td>
+		<td>string</td>
+		<td>The modelClass property from the controller - usually the same as the model alias</td>
+	</tr>
+	<tr>
+		<td>action</td>
+		<td>string</td>
+		<td>The request action name</td>
+	</tr>
+	<tr>
+		<td>request</td>
+		<td>CakeRequest</td>
+		<td>A reference to the CakeRequest for the current request</td>
+	</tr>
+	<tr>
+		<td>response</td>
+		<td>CakeResponse</td>
+		<td>The current CakeResponse object</td>
+	</tr>
+</tbody>
+</table>
+
 # Callbacks in the controller
 
 ## Lambda in beforeFilter

@@ -2,6 +2,10 @@
 /**
  * Base Crud class
  *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright Christian Winther, 2013
  */
 abstract class CrudAction implements CakeEventListener {
 

@@ -6,6 +6,10 @@ App::uses('CrudAction', 'Crud.Controller/Crud');
 /**
  * Handles 'Edit' Crud actions
  *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright Christian Winther, 2013
  */
 class EditCrudAction extends CrudAction {
 

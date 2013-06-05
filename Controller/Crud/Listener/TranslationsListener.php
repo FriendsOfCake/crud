@@ -9,13 +9,10 @@ App::uses('CrudSubject', 'Crud.Controller/Crud');
  *
  * Handles all translations inside Crud and friends
  *
- * Copyright 2010-2012, Nodes ApS. (http://www.nodesagency.com/)
- *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @see http://book.cakephp.org/2.0/en/controllers/components.html#Component
- * @copyright Nodes ApS, 2012
+ * @copyright Christian Winther, 2013
  */
 class TranslationsListener implements CakeEventListener {
 
