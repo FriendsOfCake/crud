@@ -104,11 +104,11 @@ abstract class CrudAction implements CakeEventListener {
  */
 	public function handle(CrudSubject $subject) {
 		if (!$this->config('enabled')) {
-			return;
+			return false;
 		}
 
 		if ($subject->action !== $this->config('handleAction')) {
-			return;
+			return false;
 		}
 
 		$this->_model = $subject->model;
