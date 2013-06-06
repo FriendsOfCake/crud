@@ -113,7 +113,7 @@ before_script:
     }" > app/Config/database.php
 
 script:
-  - ./lib/Cake/Console/cake test Crud AllCrud --stderr; cd ..
+  - ./lib/Cake/Console/cake test Crud AllCrud --stderr
 
 notifications:
   email: false
