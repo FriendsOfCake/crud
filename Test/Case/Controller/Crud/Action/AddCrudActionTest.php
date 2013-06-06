@@ -16,10 +16,10 @@ class AddCrudActionText extends CakeTestCase {
 	public function setUp() {
 		parent::setUp();
 
-		$this->Crud = $this->getMock('CrudComponent');
 		$this->Request = $this->getMock('CakeRequest');
 		$this->Collection = $this->getMock('ComponentCollection');
 		$this->Controller = $this->getMock('Controller');
+		$this->Crud = $this->getMock('CrudComponent', array(), array($this->Collection));
 		$this->handleAction = 'add';
 
 		$this->Subject = new CrudSubject(array(
