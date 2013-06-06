@@ -201,8 +201,152 @@ class CrudActionText extends CakeTestCase {
 		$this->ActionClass->enable();
 	}
 
+/**
+ * Test that getting the findMethod will execute config()
+ *
+ * @return void
+ */
 	public function testFindMethodGet() {
+		$this->ActionClass = $this->getMock('CrudAction', array('config'), array($this->Subject));
+		$this->ActionClass
+			->expects($this->once())
+			->method('config')
+			->with('findMethod');
 
+		$this->ActionClass->findMethod();
+	}
+
+/**
+ * Test that setting the findMethod will execute config()
+ *
+ * @return void
+ */
+	public function testFindMethodSet() {
+		$this->ActionClass = $this->getMock('CrudAction', array('config'), array($this->Subject));
+		$this->ActionClass
+			->expects($this->once())
+			->method('config')
+			->with('findMethod', 'my_first');
+
+		$this->ActionClass->findMethod('my_first');
+	}
+
+/**
+ * Test that getting the saveOptions will execute config()
+ *
+ * @return void
+ */
+	public function testSaveOptionsGet() {
+		$this->ActionClass = $this->getMock('CrudAction', array('config'), array($this->Subject));
+		$this->ActionClass
+			->expects($this->once())
+			->method('config')
+			->with('saveOptions');
+
+		$this->ActionClass->saveOptions();
+	}
+
+/**
+ * Test that setting the saveOptions will execute config()
+ *
+ * @return void
+ */
+	public function testSaveOptionsSet() {
+		$this->ActionClass = $this->getMock('CrudAction', array('config'), array($this->Subject));
+		$this->ActionClass
+			->expects($this->once())
+			->method('config')
+			->with('saveOptions', array('hello world'));
+
+		$this->ActionClass->saveOptions(array('hello world'));
+	}
+
+/**
+ * Test that getting the view will execute config()
+ *
+ * Since there is no view configured, it will call config('handleAction')
+ * and use the return value as the view name.
+ *
+ * @return void
+ */
+	public function testViewGetWithoutConfiguredView() {
+		$this->ActionClass = $this->getMock('CrudAction', array('config'), array($this->Subject));
+		$this->ActionClass
+			->expects($this->at(0))
+			->method('config')
+			->with('view');
+
+		$this->ActionClass
+			->expects($this->at(1))
+			->method('config')
+			->with('handleAction')
+			->will($this->returnValue('add'));
+
+		$expected = 'add';
+		$actual = $this->ActionClass->view();
+		$this->assertSame($expected, $actual);
+	}
+
+/**
+ * Test that getting the view will execute config()
+ *
+ * Since a view has been configured, the view value will be
+ * returned and it won't use handleAction
+ *
+ * @return void
+ */
+	public function testViewGetWithConfiguredView() {
+		$this->ActionClass = $this->getMock('CrudAction', array('config'), array($this->Subject));
+		$this->ActionClass
+			->expects($this->once())
+			->method('config')
+			->with('view')
+			->will($this->returnValue('add'));
+
+		$expected = 'add';
+		$actual = $this->ActionClass->view();
+		$this->assertSame($expected, $actual);
+	}
+
+/**
+ * Test that setting the saveOptions will execute config()
+ *
+ * @return void
+ */
+	public function testViewSet() {
+		$this->ActionClass = $this->getMock('CrudAction', array('config'), array($this->Subject));
+		$this->ActionClass
+			->expects($this->once())
+			->method('config')
+			->with('view', 'my_view');
+
+		$this->ActionClass->view('my_view');
+	}
+
+/**
+ * Test that getting the ID from request without any id in the request
+ * object will return null
+ *
+ * @return void
+ */
+	public function testGetIdFromRequestWithoutPassZeroIndex() {
+		$expected = null;
+		$actual = $this->ActionClass->getIdFromRequest();
+		$this->assertSame($expected, $actual);
+	}
+
+/**
+ * Test that getting the ID from request with an id in the request
+ * object will return the correct ID
+ *
+ * @return void
+ */
+	public function testGetIdFromRequestWithPassZeroIndex() {
+		$this->Request->params['pass'][0] = 1;
+
+		$expected = 1;
+		$actual = $this->ActionClass->getIdFromRequest();
+		$this->assertSame($expected, $actual);
 	}
 
 }
