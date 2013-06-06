@@ -2,6 +2,7 @@
 
 App::uses('CakeEvent', 'Event');
 App::uses('ComponentCollection', 'Controller');
+App::uses('SessionComponent', 'Controller/Component');
 App::uses('CrudAction', 'Crud.Controller/Crud');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
 App::uses('CrudComponent', 'Crud.Controller/Component');
@@ -347,6 +348,85 @@ class CrudActionText extends CakeTestCase {
 		$expected = 1;
 		$actual = $this->ActionClass->getIdFromRequest();
 		$this->assertSame($expected, $actual);
+	}
+
+/**
+ * Test that setFlash triggers the correct methods
+ *
+ * @return void
+ */
+	public function testSetFlash() {
+		$data = array(
+			'message' => null,
+			'element' => null,
+			'params' => array(),
+			'key' => null,
+			'type' => 'create.success',
+			'name' => null
+		);
+		$object = (object)$data;
+		$object->message = 'hello';
+		$object->element = 'default';
+		$object->key = 'flash';
+		$object->name = 'test';
+
+		$this->Subject->crud = $this->getMock('CrudComponent', array('trigger', 'getListener'), array($this->Collection));
+		$this->Subject->crud
+			->expects($this->once())
+			->method('getListener')
+			->with('translations');
+		$this->Subject->crud
+			->expects($this->once())
+			->method('trigger')
+			->with('setFlash', $data)
+			->will($this->returnValue($object));
+
+		$this->Subject->crud->Session = $this->getMock('SessionComponent', array('setFlash'), array($this->Collection));
+		$this->Subject->crud->Session
+			->expects($this->once())
+			->method('setFlash')
+			->with($object->message, $object->element, $object->params, $object->key);
+
+		$this->ActionClass = new $this->actionClassName($this->Subject);
+		$this->ActionClass->setFlash('create.success');
+	}
+
+/**
+ * Test that detecting the correct validation strategy for validateId
+ * works as expected
+ *
+ * @return void
+ */
+	public function testDetectPrimaryKeyFieldType() {
+		$Model = $this->getMock('Model', array('schema'));
+		$Model
+			->expects($this->at(0))
+			->method('schema')
+			->with('id')
+			->will($this->returnValue(false));
+
+		$Model
+			->expects($this->at(1))
+			->method('schema')
+			->with('id')
+			->will($this->returnValue(array('length' => 36, 'type' => 'string')));
+
+		$Model
+			->expects($this->at(2))
+			->method('schema')
+			->with('id')
+			->will($this->returnValue(array('length' => 10, 'type' => 'integer')));
+
+		$Model
+			->expects($this->at(3))
+			->method('schema')
+			->with('id')
+			->will($this->returnValue(array('length' => 10, 'type' => 'string')));
+
+		$this->assertFalse($this->ActionClass->detectPrimaryKeyFieldType($Model));
+		$this->assertSame('uuid', $this->ActionClass->detectPrimaryKeyFieldType($Model));
+		$this->assertSame('integer', $this->ActionClass->detectPrimaryKeyFieldType($Model));
+		$this->assertFalse($this->ActionClass->detectPrimaryKeyFieldType($Model));
 	}
 
 }

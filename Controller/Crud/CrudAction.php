@@ -252,6 +252,76 @@ abstract class CrudAction implements CakeEventListener {
 	}
 
 /**
+ * Wrapper for Session::setFlash
+ *
+ * @param string $type Message type
+ * @return void
+ */
+	public function setFlash($type) {
+		$name = $this->_getResourceName();
+		$this->_crud->getListener('translations');
+
+		// default values
+		$message = $element = $key = null;
+		$params = array();
+
+		$subject = $this->_crud->trigger('setFlash', compact('message', 'element', 'params', 'key', 'type', 'name'));
+		$this->_crud->Session->setFlash($subject->message, $subject->element, $subject->params, $subject->key);
+	}
+
+/**
+ * Automatically detect primary key data type for `_validateId()`
+ *
+ * Binary or string with length of 36 chars will be detected as UUID
+ * If the primary key is a number, integer validation will be used
+ *
+ * If no reliable detection can be made, no validation will be made
+ *
+ * @param NULL|Model $model
+ * @return string
+ */
+	public function detectPrimaryKeyFieldType($model = null) {
+		if (empty($model)) {
+			if (empty($this->_model)) {
+				throw new RuntimeException('Missing model object, cant detect primary key field type');
+			}
+
+			$model = $this->_model;
+		}
+
+		$fInfo = $model->schema($model->primaryKey);
+		if (empty($fInfo)) {
+			return false;
+		}
+
+		if ($fInfo['length'] == 36 && ($fInfo['type'] === 'string' || $fInfo['type'] === 'binary')) {
+			return 'uuid';
+		}
+
+		if ($fInfo['type'] === 'integer') {
+			return 'integer';
+		}
+
+		return false;
+	}
+
+/**
+ * Return the human name of the model
+ *
+ * By default it uses Inflector::humanize, but can be changed
+ * using the "name" configuration property
+ *
+ * @return string
+ */
+	protected function _getResourceName() {
+		if (empty($this->_settings['name'])) {
+			$this->_settings['name']	= Inflector::humanize($this->_modelClass);
+		}
+
+		return $this->_settings['name'];
+	}
+
+/**
  * Is the passed ID valid ?
  *
  * By default we assume you want to validate an numeric string
@@ -266,7 +336,7 @@ abstract class CrudAction implements CakeEventListener {
 		$type = $this->config('validateId');
 
 		if (empty($type)) {
-			$type = $this->_detectPrimaryKeyFieldType();
+			$type = $this->detectPrimaryKeyFieldType();
 		}
 
 		if (!$type) {
@@ -284,37 +354,6 @@ abstract class CrudAction implements CakeEventListener {
 		$subject = $this->_crud->trigger('invalidId', compact('id'));
 		$this->setFlash('invalid_id.error');
 		return $this->_redirect($subject, $this->_controller->referer());
-	}
-
-/**
- * Automatically detect primary key data type for `_validateId()`
- *
- * Binary or string with length of 36 chars will be detected as UUID
- * If the primary key is a number, integer validation will be used
- *
- * If no reliable detection can be made, no validation will be made
- *
- * @return string
- */
-	protected function _detectPrimaryKeyFieldType() {
-		if (empty($this->_model)) {
-			throw new RuntimeException('Missing model object, cant detect primary key field type');
-		}
-
-		$fInfo = $this->_model->schema($this->_model->primaryKey);
-		if (empty($fInfo)) {
-			return false;
-		}
-
-		if ($fInfo['length'] == 36 && ($fInfo['type'] === 'string' || $fInfo['type'] === 'binary')) {
-			return 'uuid';
-		}
-
-		if ($fInfo['type'] === 'integer') {
-			return 'integer';
-		}
-
-		return false;
 	}
 
 /**
@@ -339,40 +378,6 @@ abstract class CrudAction implements CakeEventListener {
 
 		$this->_controller->redirect($url);
 		return $this->_controller->response;
-	}
-
-/**
- * Wrapper for Session::setFlash
- *
- * @param string $type Message type
- * @return void
- */
-	public function setFlash($type) {
-		$name = $this->_getResourceName();
-		$this->_crud->getListener('translations');
-
-		// default values
-		$message = $element = $key = null;
-		$params = array();
-
-		$subject = $this->_crud->trigger('setFlash', compact('message', 'element', 'params', 'key', 'type', 'name'));
-		$this->_crud->Session->setFlash($subject->message, $subject->element, $subject->params, $subject->key);
-	}
-
-/**
- * Return the human name of the model
- *
- * By default it uses Inflector::humanize, but can be changed
- * using the "name" configuration property
- *
- * @return string
- */
-	protected function _getResourceName() {
-		if (empty($this->settings['name'])) {
-			$this->settings['name']	= Inflector::humanize($this->_modelClass);
-		}
-
-		return $this->settings['name'];
 	}
 
 }
