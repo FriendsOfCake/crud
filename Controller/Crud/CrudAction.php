@@ -1,4 +1,7 @@
 <?php
+
+App::uses('CakeEventListener', 'Event');
+
 /**
  * Base Crud class
  *
@@ -64,7 +67,7 @@ abstract class CrudAction implements CakeEventListener {
  * @param CrudSubject $subject
  * @return void
  */
-	public function __construct(CrudSubject $subject) {
+	public function __construct(CrudSubject $subject, $defaults = array()) {
 		$this->_crud = $subject->crud;
 		$this->_request = $subject->request;
 		$this->_collection = $subject->collection;
@@ -72,6 +75,10 @@ abstract class CrudAction implements CakeEventListener {
 
 		// Mark that we will only handle this specific action if asked
 		$this->config('handleAction', $subject->handleAction);
+
+		if (!empty($defaults)) {
+			$this->config($defaults);
+		}
 	}
 
 /**
@@ -200,7 +207,7 @@ abstract class CrudAction implements CakeEventListener {
 
 		if (is_null($value)) {
 			if (is_array($key)) {
-				$this->_settings = $this->_settings + (array)$key;
+				$this->_settings = $key + $this->_settings;
 				return $this;
 			}
 

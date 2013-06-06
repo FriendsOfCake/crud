@@ -42,7 +42,6 @@ class AddCrudAction extends CrudAction {
 		'enabled' => true,
 		'findMethod' => 'first',
 		'view' => null,
-		'apiView' => null,
 		'relatedLists' => true,
 		'validateId' => null,
 		'saveOptions' => array(
