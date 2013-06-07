@@ -94,6 +94,7 @@ class AddCrudActionTest extends CakeTestCase {
 			->will($this->returnValue(false));
 
 		$Crud = $this->CrudMock
+			->disableOriginalConstructor()
 			->setMethods(array('trigger'))
 			->getMock();
 		$Crud
@@ -159,6 +160,7 @@ class AddCrudActionTest extends CakeTestCase {
 		$Model->id = 1;
 
 		$Crud = $this->CrudMock
+			->disableOriginalConstructor()
 			->setMethods(array('trigger'))
 			->getMock();
 
@@ -238,6 +240,7 @@ class AddCrudActionTest extends CakeTestCase {
 		$Model->id = null;
 
 		$Crud = $this->CrudMock
+			->disableOriginalConstructor()
 			->setMethods(array('trigger'))
 			->getMock();
 
@@ -319,6 +322,7 @@ class AddCrudActionTest extends CakeTestCase {
 		$Model->data = array('model_data' => true);
 
 		$Crud = $this->CrudMock
+			->disableOriginalConstructor()
 			->setMethods(array('trigger'))
 			->getMock();
 
