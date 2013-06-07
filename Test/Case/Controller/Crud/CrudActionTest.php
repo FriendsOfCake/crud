@@ -22,13 +22,13 @@ class CrudActionTest extends CakeTestCase {
 		$this->Request = $this->getMock('CakeRequest');
 		$this->Collection = $this->getMock('ComponentCollection', null);
 		$this->Controller = $this->getMock('Controller');
+		$this->Controller->Components = $this->Collection;
 		$this->Crud = $this->getMock('CrudComponent', null, array($this->Collection));
 		$this->handleAction = 'add';
 
 		$this->Subject = new CrudSubject(array(
 			'request' => $this->Request,
 			'crud' => $this->Crud,
-			'collection' => $this->Collection,
 			'controller' => $this->Controller,
 			'handleAction' => $this->handleAction,
 			'action' => $this->handleAction,
@@ -208,7 +208,7 @@ class CrudActionTest extends CakeTestCase {
  * @return void
  */
 	public function testFindMethodGet() {
-		$this->ActionClass = $this->getMock('CrudAction', array('config'), array($this->Subject));
+		$this->ActionClass = $this->getMock('CrudAction', array('config', '_handle'), array($this->Subject));
 		$this->ActionClass
 			->expects($this->once())
 			->method('config')
@@ -223,7 +223,7 @@ class CrudActionTest extends CakeTestCase {
  * @return void
  */
 	public function testFindMethodSet() {
-		$this->ActionClass = $this->getMock('CrudAction', array('config'), array($this->Subject));
+		$this->ActionClass = $this->getMock('CrudAction', array('config', '_handle'), array($this->Subject));
 		$this->ActionClass
 			->expects($this->once())
 			->method('config')
@@ -238,7 +238,7 @@ class CrudActionTest extends CakeTestCase {
  * @return void
  */
 	public function testSaveOptionsGet() {
-		$this->ActionClass = $this->getMock('CrudAction', array('config'), array($this->Subject));
+		$this->ActionClass = $this->getMock('CrudAction', array('config', '_handle'), array($this->Subject));
 		$this->ActionClass
 			->expects($this->once())
 			->method('config')
@@ -253,7 +253,7 @@ class CrudActionTest extends CakeTestCase {
  * @return void
  */
 	public function testSaveOptionsSet() {
-		$this->ActionClass = $this->getMock('CrudAction', array('config'), array($this->Subject));
+		$this->ActionClass = $this->getMock('CrudAction', array('config', '_handle'), array($this->Subject));
 		$this->ActionClass
 			->expects($this->once())
 			->method('config')
@@ -271,7 +271,7 @@ class CrudActionTest extends CakeTestCase {
  * @return void
  */
 	public function testViewGetWithoutConfiguredView() {
-		$this->ActionClass = $this->getMock('CrudAction', array('config'), array($this->Subject));
+		$this->ActionClass = $this->getMock('CrudAction', array('config', '_handle'), array($this->Subject));
 		$this->ActionClass
 			->expects($this->at(0))
 			->method('config')
@@ -297,7 +297,7 @@ class CrudActionTest extends CakeTestCase {
  * @return void
  */
 	public function testViewGetWithConfiguredView() {
-		$this->ActionClass = $this->getMock('CrudAction', array('config'), array($this->Subject));
+		$this->ActionClass = $this->getMock('CrudAction', array('config', '_handle'), array($this->Subject));
 		$this->ActionClass
 			->expects($this->once())
 			->method('config')
@@ -315,7 +315,7 @@ class CrudActionTest extends CakeTestCase {
  * @return void
  */
 	public function testViewSet() {
-		$this->ActionClass = $this->getMock('CrudAction', array('config'), array($this->Subject));
+		$this->ActionClass = $this->getMock('CrudAction', array('config', '_handle'), array($this->Subject));
 		$this->ActionClass
 			->expects($this->once())
 			->method('config')

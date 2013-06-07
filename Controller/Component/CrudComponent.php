@@ -508,11 +508,14 @@ class CrudComponent extends Component {
 
 		if (!isset($this->_actionInstances[$name])) {
 			list($plugin, $class) = pluginSplit($actionClass, true);
-			$class .= 'CrudAction';
 			$class = ucfirst($class);
 
-			App::uses($class, $plugin . 'Controller/Crud/Action');
+			if (in_array($class, array('Index', 'View', 'Add', 'Edit', 'Delete'))) {
+				$plugin = 'Crud.';
+			}
 
+			$class .= 'CrudAction';
+			App::uses($class, $plugin . 'Controller/Crud/Action');
 			$subject = $this->getSubject(array('handleAction' => $name));
 			$this->_actionInstances[$name] = new $class($subject, $this->defaults('action', $name));
 			$this->_eventManager->attach($this->_actionInstances[$name]);
