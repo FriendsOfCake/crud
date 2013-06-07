@@ -12,7 +12,7 @@ App::uses('ApiListener', 'Crud.Controller/Crud/Listener');
  */
 class ApiListenerTest extends CakeTestCase {
 
-	public function testSkip() {
+	public function testMakeMeAUnitTest() {
 		$this->skipIf(true);
 	}
 

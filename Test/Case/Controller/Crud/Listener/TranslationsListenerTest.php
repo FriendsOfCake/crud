@@ -1,6 +1,7 @@
 <?php
 
 App::uses('CakeEvent', 'Event');
+App::uses('CrudSubject', 'Crud.Controller/Crud');
 App::uses('TranslationsListener', 'Crud.Controller/Crud/Listener');
 
 /**
@@ -10,10 +11,17 @@ App::uses('TranslationsListener', 'Crud.Controller/Crud/Listener');
  *
  * @copyright Christian Winther, 2013
  */
-class TranslationsListenerTest extends CakeTestCase {
+class TranslationsListenerTest extends ControllerTestCase {
+
+/**
+ * fixtures
+ *
+ * Use the core posts fixture to have something to work on.
+ * What fixture is used is almost irrelevant, was chosen as it is simple
+ */
+	public $fixtures = array('core.post', 'core.author', 'core.tag', 'plugin.crud.posts_tag');
 
 	public function setUp() {
-		$this->skipIf(true);
 		parent::setUp();
 		$this->Translations = new TranslationsListener(new CrudSubject(array('crud' => new StdClass)));
 	}
