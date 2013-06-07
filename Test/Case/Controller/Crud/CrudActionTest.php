@@ -14,7 +14,7 @@ App::uses('CrudComponent', 'Crud.Controller/Component');
  *
  * @copyright Christian Winther, 2013
  */
-class CrudActionText extends CakeTestCase {
+class CrudActionTest extends CakeTestCase {
 
 	public function setUp() {
 		parent::setUp();
@@ -427,6 +427,48 @@ class CrudActionText extends CakeTestCase {
 		$this->assertSame('uuid', $this->ActionClass->detectPrimaryKeyFieldType($Model));
 		$this->assertSame('integer', $this->ActionClass->detectPrimaryKeyFieldType($Model));
 		$this->assertFalse($this->ActionClass->detectPrimaryKeyFieldType($Model));
+	}
+
+
+/**
+ * Test default saveAll options works when modified
+ *
+ * @return void
+ */
+	public function testGetSaveAllOptionsDefaults() {
+		$CrudAction = $this->ActionClass;
+
+		$expected = array('validate' => 'first', 'atomic' => true);
+		$value = $CrudAction->config('saveOptions');
+		$this->assertEqual($value, $expected);
+
+		$CrudAction->config('saveOptions.atomic', true);
+		$expected = array('validate' => 'first', 'atomic' => true);
+		$value = $CrudAction->config('saveOptions');
+		$this->assertEqual($value, $expected);
+
+		$CrudAction->config('saveOptions', array('fieldList' => array('hello')));
+		$expected = array('validate' => 'first', 'atomic' => true, 'fieldList' => array('hello'));
+		$value = $CrudAction->config('saveOptions');
+		$this->assertEqual($value, $expected);
+	}
+
+
+/**
+ * Test that defining specific action configuration for saveAll takes
+ * precedence over default configurations
+ *
+ * @return void
+ */
+	public function testGetSaveAllOptionsCustomAction() {
+		$expected = array('validate' => 'first', 'atomic' => true);
+		$value = $this->ActionClass->saveOptions();
+		$this->assertEqual($value, $expected);
+
+		$this->ActionClass->saveOptions(array('atomic' => false));
+		$expected = array('validate' => 'first', 'atomic' => false);
+		$value = $this->ActionClass->saveOptions();
+		$this->assertEqual($value, $expected);
 	}
 
 }

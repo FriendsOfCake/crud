@@ -20,6 +20,24 @@ class ViewCrudActionTest extends CakeTestCase {
 		unset($this->Translations);
 	}
 
+
+/**
+ * testViewAction
+ *
+ * Make sure that there is a call to render the view template
+ */
+	public function testViewAction() {
+		$this->controller
+			->expects($this->once())
+			->method('render')
+			->with('view');
+
+		$this->Crud->getAction('view')->config('validateId', 'notUuid');
+		$id = 1;
+
+		$this->Crud->executeAction('view', array($id));
+	}
+
 /**
  * Test if custom finders work in view
  *

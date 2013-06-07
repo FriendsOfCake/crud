@@ -20,6 +20,62 @@ class EditCrudActionTest extends CakeTestCase {
 		unset($this->Translations);
 	}
 
+
+/**
+ * testEditActionGet
+ *
+ * Do we get a call to render the form template?
+ */
+	public function testEditActionGet() {
+		$this->controller
+			->expects($this->once())
+			->method('render')
+			->with('edit');
+
+		$this->Crud->getAction('edit')->config('validateId', 'notUuid');
+		$id = 1;
+
+		$this->Crud->executeAction('edit', array($id));
+	}
+
+/**
+ * testEditActionPost
+ *
+ * Simulating submitting a post form which just changes the title of the model
+ * to the name of the method. Check the update is persisted to the db
+ */
+	public function testEditActionPost() {
+		$this->controller
+			->expects($this->never())
+			->method('render');
+
+		$this->controller->request->addDetector('put', array(
+			'callback' => function() { return true; }
+		));
+
+		$this->controller->data = array(
+			'CrudExample' => array(
+				'id' => 1,
+				'title' => __METHOD__
+			)
+		);
+
+		$this->Crud->settings['validateId'] = 'notUuid';
+		$id = 1;
+
+		$this->Crud->executeAction('edit', array($id));
+
+		$this->model->id = $id;
+		$result = $this->model->field('title');
+		$this->assertSame(__METHOD__, $result);
+
+		$events = CakeEventManager::instance()->getLog();
+
+		$index = array_search('Crud.afterSave', $events);
+		$this->assertNotSame(false, $index, "There was no Crud.afterSave event triggered");
+	}
+
+
 /**
  * Test if custom finders work in edit
  *

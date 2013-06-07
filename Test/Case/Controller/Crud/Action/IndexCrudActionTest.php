@@ -21,6 +21,137 @@ class IndexCrudActionText extends CakeTestCase {
 	}
 
 /**
+ * testIndexAction
+ *
+ * Make sure that there is a call to render the index template
+ */
+	public function testIndexAction() {
+		$this->controller
+			->expects($this->once())
+			->method('render')
+			->with('index');
+
+		$this->request->params['named']= array();
+
+		$this->Crud->executeAction('index');
+
+		$events = CakeEventManager::instance()->getLog();
+
+		$index = array_search('Crud.afterPaginate', $events);
+		$this->assertNotSame(false, $index, "There was no Crud.afterPaginate event triggered");
+	}
+
+
+/**
+ * Tests on method for beforePaginateEvent
+ *
+ * @expectedException RuntimeException
+ * @expectedExceptionMessage Crud.beforePaginate called
+ * @return void
+ */
+	public function testOnBeforePaginateString() {
+		$this->Crud->on('beforePaginate', function($event) {
+			throw new RuntimeException($event->name() . ' called');
+		});
+		$this->Crud->executeAction('index');
+	}
+
+/**
+ * Tests on method for afterPaginate
+ *
+ * @expectedException RuntimeException
+ * @expectedExceptionMessage Crud.afterPaginate called
+ * @return void
+ */
+	public function testOnAfterPaginateString() {
+		$this->Crud->on('afterPaginate', function($event) {
+			throw new RuntimeException($event->name() . ' called');
+		});
+
+		$this->Crud->executeAction('index');
+	}
+
+/**
+ * Tests on method for afterPaginate with full event name
+ *
+ * @expectedException RuntimeException
+ * @expectedExceptionMessage Crud.afterPaginate called
+ * @return void
+ */
+	public function testOnAfterPaginateFullNameString() {
+		$this->Crud->on('Crud.afterPaginate', function($event) {
+			throw new RuntimeException($event->name() . ' called');
+		});
+
+		$this->Crud->executeAction('index');
+	}
+
+/**
+ * Test on method for on() with multiple events
+ *
+ * @return void
+ */
+	public function testOnOnWithArraySimple() {
+		$result = array();
+		$this->Crud->on(array('beforePaginate', 'beforeRender'), function($event) use (&$result) {
+			$result[] = $event->name() . ' called';
+		});
+		$this->Crud->executeAction('index');
+
+		$expected = array('Crud.beforePaginate called', 'Crud.beforeRender called');
+		$this->assertSame($expected, $result);
+	}
+
+/**
+ * Test on method for on() with multiple events
+ *
+ * @return void
+ */
+	public function testOnOnWithArrayComplex() {
+		$result = array();
+		$this->Crud->on(array('Crud.beforePaginate', 'beforeRender'), function($event) use (&$result) {
+			$result[] = $event->name() . ' called';
+		});
+		$this->Crud->executeAction('index');
+
+		$expected = array('Crud.beforePaginate called', 'Crud.beforeRender called');
+		$this->assertSame($expected, $result);
+	}
+
+
+/**
+ * Test if mapActionView with array yields the expected result
+ *
+ * @return void
+ */
+	public function testMapActionViewWithArrayNewAction() {
+		$this->controller
+			->expects($this->once())
+			->method('render')
+			->with('index');
+
+		$this->Crud->mapAction('show_all', 'index');
+		$this->Crud->mapActionView(array('show_all' => 'index', 'index' => 'overview'));
+		$this->Crud->executeAction('show_all');
+	}
+
+/**
+ * Test if mapActionView with array yields the expected result
+ *
+ * @return void
+ */
+	public function testMapActionViewWithArrayIndexAction() {
+		$this->controller
+			->expects($this->once())
+			->method('render')
+			->with('overview');
+
+		$this->Crud->mapAction('show_all', 'index');
+		$this->Crud->mapActionView(array('show_all' => 'index', 'index' => 'overview'));
+		$this->Crud->executeAction('index');
+	}
+
+/**
  * Test if custom finds are changed when re-mapped
  *
  * @return void
