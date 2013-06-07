@@ -1,6 +1,7 @@
 <?php
 
 App::uses('CakeEventListener', 'Event');
+App::uses('Validation', 'Utility');
 
 /**
  * Base Crud class
@@ -70,7 +71,7 @@ abstract class CrudAction implements CakeEventListener {
 	public function __construct(CrudSubject $subject, $defaults = array()) {
 		$this->_crud = $subject->crud;
 		$this->_request = $subject->request;
-		$this->_collection = $subject->collection;
+		$this->_collection = $subject->controller->Components;
 		$this->_controller = $subject->controller;
 
 		// Mark that we will only handle this specific action if asked
@@ -96,8 +97,8 @@ abstract class CrudAction implements CakeEventListener {
  * Based on the requested controller action,
  * decide if we should handle the request or not.
  *
- * By returning null, we 'pass' on the handling request and
- * allow other CrudActions to process it instead
+ * By returning false the handling is cancelled and the
+ * execution flow continues
  *
  * @param CakeEvent $event
  * @return mixed
@@ -189,16 +190,27 @@ abstract class CrudAction implements CakeEventListener {
 	}
 
 /**
- * Generic config method
+ * Sets a configuration variable into this action
  *
- * If $key is an array and $value is empty,
- * $key will be merged directly with $this->_settings
+ * If called with no arguments, all configuration values are
+ * returned.
  *
- * If $key is a string it will be passed into Hash::insert
+ * $key is interpreted with dot notation, like the one used for
+ * Configure::write()
+ *
+ * If $key is string and $value is not passed, it will return the
+ * value associated with such key.
+ *
+ * If $key is an array and $value is empty, then $key will
+ * be interpreted as key => value dictionary of settings and
+ * it will be merged directly with $this->settings
+ *
+ * If $key is a string, the value will be inserted in the specified
+ * slot as indicated using the dot notation
  *
  * @param mixed $key
  * @param mixed $value
- * @return TranslationsEvent
+ * @return mixed|CrudAction
  */
 	public function config($key = null, $value = null) {
 		if (is_null($key) && is_null($value)) {
@@ -379,5 +391,13 @@ abstract class CrudAction implements CakeEventListener {
 		$this->_controller->redirect($url);
 		return $this->_controller->response;
 	}
+
+/**
+ * Implements all the request handling and response serving logic
+ * for this action
+ *
+ * @return CakeResponse
+ */
+	protected abstract function _handle();
 
 }

@@ -169,7 +169,7 @@ class ApiListener extends CrudListener {
 	}
 
 /**
- * beforeRender
+ * Selects an specific Crud view class to render the output
  *
  * @param CakeEvent $event
  * @return void
