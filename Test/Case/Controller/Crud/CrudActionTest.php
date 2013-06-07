@@ -429,7 +429,6 @@ class CrudActionTest extends CakeTestCase {
 		$this->assertFalse($this->ActionClass->detectPrimaryKeyFieldType($Model));
 	}
 
-
 /**
  * Test default saveAll options works when modified
  *
@@ -438,21 +437,32 @@ class CrudActionTest extends CakeTestCase {
 	public function testGetSaveAllOptionsDefaults() {
 		$CrudAction = $this->ActionClass;
 
-		$expected = array('validate' => 'first', 'atomic' => true);
-		$value = $CrudAction->config('saveOptions');
-		$this->assertEqual($value, $expected);
+		$expected = array(
+			'validate' => 'first',
+			'atomic' => true
+		);
+		$actual = $CrudAction->config('saveOptions');
+		$this->assertEqual($expected, $actual);
 
 		$CrudAction->config('saveOptions.atomic', true);
-		$expected = array('validate' => 'first', 'atomic' => true);
-		$value = $CrudAction->config('saveOptions');
-		$this->assertEqual($value, $expected);
+		$expected = array(
+			'validate' => 'first',
+			'atomic' => true
+		);
+		$actual = $CrudAction->config('saveOptions');
+		$this->assertEqual($expected, $actual);
 
-		$CrudAction->config('saveOptions', array('fieldList' => array('hello')));
-		$expected = array('validate' => 'first', 'atomic' => true, 'fieldList' => array('hello'));
-		$value = $CrudAction->config('saveOptions');
-		$this->assertEqual($value, $expected);
+		$CrudAction->config('saveOptions', array(
+			'fieldList' => array('hello')
+		));
+		$expected = array(
+			'validate' => 'first',
+			'atomic' => true,
+			'fieldList' => array('hello')
+		);
+		$actual = $CrudAction->config('saveOptions');
+		$this->assertEqual($expected, $actual);
 	}
-
 
 /**
  * Test that defining specific action configuration for saveAll takes
@@ -462,13 +472,13 @@ class CrudActionTest extends CakeTestCase {
  */
 	public function testGetSaveAllOptionsCustomAction() {
 		$expected = array('validate' => 'first', 'atomic' => true);
-		$value = $this->ActionClass->saveOptions();
-		$this->assertEqual($value, $expected);
+		$actual = $this->ActionClass->saveOptions();
+		$this->assertEqual($expected, $actual);
 
 		$this->ActionClass->saveOptions(array('atomic' => false));
 		$expected = array('validate' => 'first', 'atomic' => false);
-		$value = $this->ActionClass->saveOptions();
-		$this->assertEqual($value, $expected);
+		$actual = $this->ActionClass->saveOptions();
+		$this->assertEqual($expected, $actual);
 	}
 
 }
