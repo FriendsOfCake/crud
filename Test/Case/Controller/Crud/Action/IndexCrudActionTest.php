@@ -70,13 +70,13 @@ class IndexCrudActionTest extends CakeTestCase {
 			->expects($this->at(1))
 			->method('config')
 			->with('handleAction')
-			->will($this->returnValue('add'));
+			->will($this->returnValue('index'));
 		$Action
 			->expects($this->once())
 			->method('_handle');
 
 		$CrudSubject = new CrudSubject(array(
-			'action' => 'add',
+			'action' => 'index',
 			'model' => new StdClass(),
 			'modelClass' => 'Blog',
 			'args' => array()
