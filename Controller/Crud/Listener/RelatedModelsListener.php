@@ -74,6 +74,10 @@ class RelatedModelsListener extends CrudListener implements CakeEventListener {
 			return array();
 		}
 
+		if (is_string($settings)) {
+			$settings = array($settings);
+		}
+
 		if (isset($settings['default'])) {
 			if (false === $settings['default']) {
 				return array();
