@@ -106,8 +106,8 @@ class AddCrudActionTest extends CakeTestCase {
 			'crud' => $Crud,
 			'request' => $Request,
 			'controller' => new Controller,
-			'handleAction' => 'index',
-			'action' => 'inde',
+			'handleAction' => 'add',
+			'action' => 'add',
 			'model' => null,
 			'modelClass' => null,
 			'args' => array()
