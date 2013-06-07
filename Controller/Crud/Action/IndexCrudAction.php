@@ -80,7 +80,6 @@ class IndexCrudAction extends CrudAction {
 	protected function _computePaginationConfig() {
 		// Ensure we have Paginator loaded
 		$Paginator = $this->_collection->load('Paginator');
-
 		$settings = $Paginator->settings;
 
 		// Copy pagination settings from the controller
@@ -105,10 +104,8 @@ class IndexCrudAction extends CrudAction {
 
 		// If pagination settings is using ModelAlias modify that
 		if (!empty($settings[$this->_modelClass])) {
-			$settings[$this->_modelClass][0] = $subject->findMethod;
 			$settings[$this->_modelClass]['findType'] = $subject->findMethod;
 		} else { // Or just work directly on the root key
-			$settings[0] = $subject->findMethod;
 			$settings['findType'] = $subject->findMethod;
 		}
 

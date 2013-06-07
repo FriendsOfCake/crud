@@ -1,5 +1,18 @@
 <?php
 
+App::uses('Model', 'Model');
+App::uses('CakeRequest', 'Network');
+App::uses('CrudSubject', 'Crud.Controller/Crud');
+App::uses('IndexCrudAction', 'Crud.Controller/Crud/Action');
+App::uses('CrudComponent', 'Crud.Controlller/Component');
+App::uses('ComponentCollection', 'Controller');
+App::uses('PaginatorComponent', 'Controller/Component');
+
+class TestController extends Controller {
+
+	public $paginate = array();
+}
+
 /**
  *
  * Licensed under The MIT License
@@ -7,333 +20,277 @@
  *
  * @copyright Christian Winther, 2013
  */
-class IndexCrudActionText extends CakeTestCase {
+class IndexCrudActionTest extends CakeTestCase {
+
+	protected $ModelMock;
+
+	protected $ActionMock;
+
+	protected $RequestMock;
+
+	protected $CrudMock;
 
 	public function setUp() {
-		$this->skipIf(true);
 		parent::setUp();
-		$this->Translations = new TranslationsListener(new CrudSubject(array('crud' => new StdClass)));
+
+		$this->ModelMock = $this->getMockBuilder('Model');
+		$this->ActionMock = $this->getMockBuilder('IndexCrudAction');
+		$this->RequestMock = $this->getMockBuilder('CakeRequest');
+		$this->CrudMock = $this->getMockBuilder('CrudComponent');
+		$this->CollectionMock = $this->getMockBuilder('ComponentCollection');
 	}
 
 	public function tearDown() {
 		parent::tearDown();
-		unset($this->Translations);
+
+		unset(
+			$this->ModelMock,
+			$this->ActionMock,
+			$this->RequestMock,
+			$this->CrudMock
+		);
 	}
 
 /**
- * testIndexAction
+ * Test that calling handle will invoke _handle
  *
- * Make sure that there is a call to render the index template
+ * @return void
+ */
+	public function testThatCrudActionWillHandle() {
+		$Action = $this->ActionMock
+			->disableOriginalConstructor()
+			->setMethods(array('config', '_handle'))
+			->getMock();
+		$Action
+			->expects($this->at(0))
+			->method('config')
+			->with('enabled')
+			->will($this->returnValue(true));
+		$Action
+			->expects($this->at(1))
+			->method('config')
+			->with('handleAction')
+			->will($this->returnValue('add'));
+		$Action
+			->expects($this->once())
+			->method('_handle');
+
+		$CrudSubject = new CrudSubject(array(
+			'action' => 'add',
+			'model' => new StdClass(),
+			'modelClass' => 'Blog',
+			'args' => array()
+		));
+
+		$Action->handle($CrudSubject);
+	}
+
+/**
+ * Returns a list of mocked classes that are related to the execution of the
+ * action
+ *
+ * @return void
+ */
+	protected function _mockClasses($controllerClass = 'Controller') {
+		$Request = $this->RequestMock->getMock();
+		$Crud = $this->CrudMock
+			->disableOriginalConstructor()
+			->setMethods(array('trigger'))
+			->getMock();
+
+		$Collection = $this->CollectionMock->getMock();
+		$Paginate = $this->getMock('PaginatorComponent', array('paginate'), array($Collection));
+
+		$Collection->expects($this->any())->method('load')
+			->with('Paginator')
+			->will($this->returnValue($Paginate));
+
+		$Controller = new $controllerClass($Request);
+		$Controller->Components = $Collection;
+		$Controller->Paginator = $Paginate;
+
+		$CrudSubject = new CrudSubject(array(
+			'crud' => $Crud,
+			'request' => $Request,
+			'controller' => $Controller,
+			'handleAction' => 'index',
+			'action' => 'index',
+			'model' => null,
+			'modelClass' => null,
+			'args' => array(),
+			'findMethod' => 'another'
+		));
+
+		$Crud
+			->expects($this->at(0))
+			->method('trigger')
+			->with('beforePaginate', array('findMethod' => 'all'))
+			->will($this->returnValue($CrudSubject));
+
+		$Action = $this->ActionMock
+			->setConstructorArgs(array($CrudSubject))
+			->setMethods(array('enabled', 'config'))
+			->getMock();
+		$Action
+			->expects($this->at(0))
+			->method('config')
+			->with('enabled')
+			->will($this->returnValue(true));
+		$Action
+			->expects($this->at(1))
+			->method('config')
+			->with('handleAction')
+			->will($this->returnValue('index'));
+
+		return compact('Request', 'Crud', 'Collection', 'Paginate', 'Controller', 'CrudSubject', 'Action');
+	}
+
+/**
+ * Tests that calling index action will paginate the main model
+ *
+ * @return void
  */
 	public function testIndexAction() {
-		$this->controller
-			->expects($this->once())
-			->method('render')
-			->with('index');
+		extract($this->_mockClasses());
 
-		$this->request->params['named']= array();
+		$Paginate->expects($this->once())->method('paginate')
+			->will($this->returnValue(array('foo', 'bar')));
 
-		$this->Crud->executeAction('index');
+		$CrudSubject->items = array('foo', 'bar');
+		$Crud
+			->expects($this->at(1))
+			->method('trigger')
+			->with('afterPaginate', array('items' => array('foo', 'bar')))
+			->will($this->returnValue($CrudSubject));
 
-		$events = CakeEventManager::instance()->getLog();
+		$Crud->expects($this->at(2))->method('trigger')->with('beforeRender');
 
-		$index = array_search('Crud.afterPaginate', $events);
-		$this->assertNotSame(false, $index, "There was no Crud.afterPaginate event triggered");
-	}
-
-
-/**
- * Tests on method for beforePaginateEvent
- *
- * @expectedException RuntimeException
- * @expectedExceptionMessage Crud.beforePaginate called
- * @return void
- */
-	public function testOnBeforePaginateString() {
-		$this->Crud->on('beforePaginate', function($event) {
-			throw new RuntimeException($event->name() . ' called');
-		});
-		$this->Crud->executeAction('index');
+		$Action->handle($CrudSubject);
+		$expected = array(
+			'page' => 1,
+			'limit' => 20,
+			'maxLimit' => 100,
+			'paramType' => 'named',
+			'findType' => 'another'
+		);
+		$this->assertEquals($expected, $Paginate->settings);
+		$Controller->viewVars['items'] = array('foo', 'bar');
+		$Controller->viewVars['success'] = true;
 	}
 
 /**
- * Tests on method for afterPaginate
+ * Tests that iterators are casted to arrays
  *
- * @expectedException RuntimeException
- * @expectedExceptionMessage Crud.afterPaginate called
  * @return void
  */
-	public function testOnAfterPaginateString() {
-		$this->Crud->on('afterPaginate', function($event) {
-			throw new RuntimeException($event->name() . ' called');
-		});
+	public function testPaginatorReturningIterator() {
+		extract($this->_mockClasses());
 
-		$this->Crud->executeAction('index');
+		$iterator = new ArrayIterator(array('foo', 'bar'));
+		$Paginate->expects($this->once())->method('paginate')
+			->will($this->returnValue($iterator));
+
+		$CrudSubject->items = $iterator;
+		$Crud
+			->expects($this->at(1))
+			->method('trigger')
+			->with('afterPaginate', array('items' => $iterator))
+			->will($this->returnValue($CrudSubject));
+
+		$Crud->expects($this->at(2))->method('trigger')->with('beforeRender');
+
+		$Action->handle($CrudSubject);
+		$expected = array(
+			'page' => 1,
+			'limit' => 20,
+			'maxLimit' => 100,
+			'paramType' => 'named',
+			'findType' => 'another'
+		);
+		$this->assertEquals($expected, $Paginate->settings);
+		$Controller->viewVars['items'] = array('foo', 'bar');
+		$Controller->viewVars['success'] = true;
 	}
 
 /**
- * Tests on method for afterPaginate with full event name
- *
- * @expectedException RuntimeException
- * @expectedExceptionMessage Crud.afterPaginate called
- * @return void
- */
-	public function testOnAfterPaginateFullNameString() {
-		$this->Crud->on('Crud.afterPaginate', function($event) {
-			throw new RuntimeException($event->name() . ' called');
-		});
-
-		$this->Crud->executeAction('index');
-	}
-
-/**
- * Test on method for on() with multiple events
+ * Tests that $controller->paginate is copied to Paginator->settings
  *
  * @return void
  */
-	public function testOnOnWithArraySimple() {
-		$result = array();
-		$this->Crud->on(array('beforePaginate', 'beforeRender'), function($event) use (&$result) {
-			$result[] = $event->name() . ' called';
-		});
-		$this->Crud->executeAction('index');
+	public function testPaginateSettingsAreMerged() {
+		extract($this->_mockClasses('TestController'));
 
-		$expected = array('Crud.beforePaginate called', 'Crud.beforeRender called');
-		$this->assertSame($expected, $result);
-	}
-
-/**
- * Test on method for on() with multiple events
- *
- * @return void
- */
-	public function testOnOnWithArrayComplex() {
-		$result = array();
-		$this->Crud->on(array('Crud.beforePaginate', 'beforeRender'), function($event) use (&$result) {
-			$result[] = $event->name() . ' called';
-		});
-		$this->Crud->executeAction('index');
-
-		$expected = array('Crud.beforePaginate called', 'Crud.beforeRender called');
-		$this->assertSame($expected, $result);
-	}
-
-
-/**
- * Test if mapActionView with array yields the expected result
- *
- * @return void
- */
-	public function testMapActionViewWithArrayNewAction() {
-		$this->controller
-			->expects($this->once())
-			->method('render')
-			->with('index');
-
-		$this->Crud->mapAction('show_all', 'index');
-		$this->Crud->mapActionView(array('show_all' => 'index', 'index' => 'overview'));
-		$this->Crud->executeAction('show_all');
-	}
-
-/**
- * Test if mapActionView with array yields the expected result
- *
- * @return void
- */
-	public function testMapActionViewWithArrayIndexAction() {
-		$this->controller
-			->expects($this->once())
-			->method('render')
-			->with('overview');
-
-		$this->Crud->mapAction('show_all', 'index');
-		$this->Crud->mapActionView(array('show_all' => 'index', 'index' => 'overview'));
-		$this->Crud->executeAction('index');
-	}
-
-/**
- * Test if custom finds are changed when re-mapped
- *
- * @return void
- */
-	public function testCustomFindChanged() {
-		$this->Crud->mapFindMethod('index', 'custom_find');
-		$this->assertEquals('custom_find', $this->Crud->getAction('index')->findMethod());
-
-		$this->Crud->mapFindMethod('index', 'all');
-		$this->assertEquals('all', $this->Crud->getAction('index')->findMethod());
-	}
-
-/**
- * Test that the default pagination settings match, bot for 2.3 and < 2.2
- *
- * @return void
- */
-	public function testCustomFindPaginationDefaultNoAlias() {
-		$this->Crud->executeAction('index');
-
-		$this->assertEquals('all', $this->controller->paginate[0]);
-		$this->assertEquals('all', $this->controller->paginate['findType']);
-	}
-
-/**
- * Test that the default pagination settings match, bot for 2.3 and < 2.2
- *
- * @return void
- */
-	public function testCustomFindPaginationDefaultWithAlias() {
-		$this->controller->paginate = array(
-			'CrudExample' => array(
-				'order' => array('name' => 'desc')
-			),
-			'demo' => true
+		$Controller->paginate = array(
+			'limit' => 50,
+			'paramType' => 'querystring'
 		);
 
-		$this->Crud->executeAction('index');
+		$Paginate->settings = array(
+			'maxLimit' => 70
+		);
 
-		$this->assertTrue(empty($this->controller->paginate[0]));
-		$this->assertTrue(empty($this->controller->paginate['findType']));
-		$this->assertFalse(empty($this->controller->paginate['CrudExample']));
-		$this->assertFalse(empty($this->controller->paginate['CrudExample'][0]));
-		$this->assertFalse(empty($this->controller->paginate['CrudExample']['findType']));
-		$this->assertEquals(array('order' => array('name' => 'desc'), 0 => 'all', 'findType' => 'all'), $this->controller->paginate['CrudExample']);
+		$Paginate->expects($this->once())->method('paginate')
+			->will($this->returnValue(array('foo', 'bar')));
+
+		$CrudSubject->items = array('foo', 'bar');
+		$Crud
+			->expects($this->at(1))
+			->method('trigger')
+			->with('afterPaginate', array('items' => array('foo', 'bar')))
+			->will($this->returnValue($CrudSubject));
+
+		$Crud->expects($this->at(2))->method('trigger')->with('beforeRender');
+
+		$Action->handle($CrudSubject);
+		$expected = array(
+			'limit' => 50,
+			'maxLimit' => 70,
+			'paramType' => 'querystring',
+			'findType' => 'another'
+		);
+		$this->assertEquals($expected, $Paginate->settings);
+		$Controller->viewVars['items'] = array('foo', 'bar');
+		$Controller->viewVars['success'] = true;
 	}
 
 /**
- * Test if custom pagination works - for published posts
+ * Tests that paginate settings are set in the correct sub key
  *
  * @return void
  */
-	public function testCustomFindPaginationCustomPublished() {
-		$this->Crud->mapFindMethod('index', 'published');
-		$this->Crud->executeAction('index');
-		$this->assertEquals('published', $this->controller->paginate[0]);
-		$this->assertEquals('published', $this->controller->paginate['findType']);
-		$this->assertEquals(3, sizeof($this->controller->viewVars['items']));
-	}
+	public function testPaginateSettingsAreMergedCorrectKey() {
+		extract($this->_mockClasses('TestController'));
 
-/**
- * Test if custom pagination works - for unpublished posts
- *
- * @return void
- */
-	public function testCustomFindPaginationCustomUnpublished() {
-		$this->Crud->mapFindMethod('index', 'unpublished');
-		$this->Crud->executeAction('index');
-		$this->assertEquals('unpublished', $this->controller->paginate[0]);
-		$this->assertEquals('unpublished', $this->controller->paginate['findType']);
-		$this->assertEquals(0, sizeof($this->controller->viewVars['items']));
-	}
+		$CrudSubject->modelClass = 'MyModel';
+		$Paginate->settings = array(
+			'MyModel' => array(
+				'limit' => 5
+			)
+		);
 
-/**
- * Test if custom pagination works when findType is changed from Controller
- * paginate property
- *
- * @return void
- */
-	public function testCustomFindPaginationWithControllerFindMethod() {
-		$this->controller->paginate = array('findType' => 'unpublished');
-		$this->Crud->executeAction('index');
-		$this->assertEquals('unpublished', $this->controller->paginate[0]);
-		$this->assertEquals('unpublished', $this->controller->paginate['findType']);
-		$this->assertEquals(0, sizeof($this->controller->viewVars['items']));
-	}
+		$Paginate->expects($this->once())->method('paginate')
+			->will($this->returnValue(array('foo', 'bar')));
 
-	public function testIndexActionPaginationSettingsNotLost() {
-		$this->Crud->executeAction('index');
+		$CrudSubject->items = array('foo', 'bar');
+		$Crud
+			->expects($this->at(1))
+			->method('trigger')
+			->with('afterPaginate', array('items' => array('foo', 'bar')))
+			->will($this->returnValue($CrudSubject));
 
-		$paging = $this->controller->request['paging'];
+		$Crud->expects($this->at(2))->method('trigger')->with('beforeRender');
 
-		$this->assertSame(1, $paging['CrudExample']['page']);
-		$this->assertSame(3, $paging['CrudExample']['current']);
-		$this->assertSame(1000, $paging['CrudExample']['limit']);
-	}
+		$Action->handle($CrudSubject);
+		$expected = array(
+			'MyModel' => array(
+				'limit' => 5,
+				'findType' => 'another'
+			)
+		);
 
-	public function testIndexActionPaginationSettingsCanBeOverwritten() {
-		$this->controller->paginate = array('limit' => 11);
-
-		$this->Crud->executeAction('index');
-
-		$paging = $this->controller->request['paging'];
-
-		$this->assertSame(1, $paging['CrudExample']['page']);
-		$this->assertSame(3, $paging['CrudExample']['current']);
-		$this->assertSame(11, $paging['CrudExample']['limit']);
-
-		$this->assertSame(11, $this->controller->Components->load('Paginator')->settings['limit']);
-	}
-
-	public function testPersistDirectPaginatorSettingsWillNotBeCopied() {
-		$Paginator = $this->controller->Components->load('Paginator');
-
-		$Paginator->settings = array('limit' => 23);
-
-		$this->Crud->executeAction('index');
-
-		$paging = $this->controller->request['paging'];
-
-		$this->assertSame(1, $paging['CrudExample']['page']);
-		$this->assertSame(3, $paging['CrudExample']['current']);
-		$this->assertSame(1000, $paging['CrudExample']['limit']);
-		$this->assertNotSame(23, $Paginator->settings['limit']);
-	}
-
-	public function testOnBeforePaginateWithPaginatConditionsFromBeforePaginateCallback() {
-		$Paginator = $this->controller->Components->load('Paginator');
-		$this->Crud->on('beforePaginate', function($event) {
-			$event->subject->controller->paginate['conditions'] = array('author_id' => 1);
-		});
-
-		$this->Crud->executeAction('index');
-
-		$items = $this->controller->viewVars['items'];
-		$this->assertSame(2, sizeof($items), 'beforePaginate needs to have an effect on the pagination');
-		$this->assertEquals(array('author_id' => 1), $Paginator->settings['conditions']);
-	}
-
-	public function testOnBeforePaginateWithPaginatLimitFromBeforePaginateCallback() {
-		$Paginator = $this->controller->Components->load('Paginator');
-		$this->Crud->on('beforePaginate', function($event) {
-			$event->subject->controller->paginate['limit'] = 99;
-		});
-
-		$this->Crud->executeAction('index');
-
-		$this->assertEquals(99, $Paginator->settings['limit']);
-	}
-
-	public function testIfConditionsPersistetInIndexAction() {
-		$Paginator = $this->controller->Components->load('Paginator');
-
-		$this->controller->paginate = array('conditions' => array('1 = 2'));
-		$this->Crud->executeAction('index');
-		$this->assertSame(array('1 = 2'), $Paginator->settings['conditions']);
-
-		$Paginator->settings = array('conditions' => array('2 = 3'));
-		$this->Crud->executeAction('index');
-		$this->assertSame(array('1 = 2'), $Paginator->settings['conditions'], "Pagination settings from controller should always trump Paginator->settings");
-
-		$Paginator->settings = array('conditions' => array('2 = 3'));
-		$this->controller->paginate = array();
-		$this->Crud->executeAction('index');
-		$this->assertSame(array('2 = 3'), $Paginator->settings['conditions']);
-	}
-
-	public function testPaginationWithIterator() {
-		$this->controller->paginate = array('limit' => 10);
-
-		$this->Crud->on('afterPaginate', function(CakeEvent $e) {
-			$e->subject->items = new ArrayIterator($e->subject->items);
-		});
-
-		$this->Crud->executeAction('index');
-
-		$this->assertNotEmpty($this->controller->viewVars);
-		$this->assertNotEmpty($this->controller->viewVars['items']);
-		$this->assertSame(3, sizeof($this->controller->viewVars['items']));
-
-		$ids = Hash::extract($this->controller->viewVars['items'], '{n}.CrudExample.id');
-		$this->assertEquals(array(1,2,3), $ids);
+		$this->assertEquals($expected, $Paginate->settings);
+		$Controller->viewVars['items'] = array('foo', 'bar');
+		$Controller->viewVars['success'] = true;
 	}
 
 }
