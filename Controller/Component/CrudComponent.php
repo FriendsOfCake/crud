@@ -501,12 +501,13 @@ class CrudComponent extends Component {
  * @return CrudAction
  */
 	protected function _loadAction($name) {
-		$actionClass = $this->config('actions.' . $name);
-		if (empty($actionClass)) {
-			throw new RuntimeException(sprintf('Action "%s" has not been mapped', $name));
-		}
-
 		if (!isset($this->_actionInstances[$name])) {
+			$actionClass = $this->config('actions.' . $name);
+
+			if (empty($actionClass)) {
+				throw new RuntimeException(sprintf('Action "%s" has not been mapped', $name));
+			}
+
 			list($plugin, $class) = pluginSplit($actionClass, true);
 			$class = ucfirst($class);
 
