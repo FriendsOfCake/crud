@@ -7,6 +7,7 @@ App::uses('IndexCrudAction', 'Crud.Controller/Crud/Action');
 App::uses('CrudComponent', 'Crud.Controlller/Component');
 App::uses('ComponentCollection', 'Controller');
 App::uses('PaginatorComponent', 'Controller/Component');
+App::uses('Controller', 'Controller');
 
 class TestController extends Controller {
 
