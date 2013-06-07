@@ -192,7 +192,7 @@ abstract class CrudAction implements CakeEventListener {
  * Generic config method
  *
  * If $key is an array and $value is empty,
- * $key will be merged directly with $this->_config
+ * $key will be merged directly with $this->_settings
  *
  * If $key is a string it will be passed into Hash::insert
  *

@@ -260,8 +260,10 @@ class CrudComponent extends Component {
 		try {
 			return $this->getAction($action)->config('enabled');
 		} catch (Exception $e) {
-			return false;
+
 		}
+
+		return false;
 	}
 
 /**
@@ -343,24 +345,23 @@ class CrudComponent extends Component {
  * Generic config method
  *
  * If $key is an array and $value is empty,
- * $key will be merged directly with $this->_config
+ * $key will be merged directly with $this->settings
  *
  * If $key is a string it will be passed into Hash::insert
  *
  * @param mixed $key
  * @param mixed $value
- * @return mixed
+ * @return CrudComponent
  */
 	public function config($key = null, $value = null) {
-		// Get all settings
 		if (is_null($key) && is_null($value)) {
 			return $this->settings;
 		}
 
 		if (is_null($value)) {
 			if (is_array($key)) {
-				$this->settings = $this->settings + (array)$key;
-				return;
+				$this->settings = $key + $this->settings;
+				return $this;
 			}
 
 			return Hash::get($this->settings, $key);
@@ -371,6 +372,7 @@ class CrudComponent extends Component {
 		}
 
 		$this->settings = Hash::insert($this->settings, $key, $value);
+		return $this;
 	}
 
 /**
