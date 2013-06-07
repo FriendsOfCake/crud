@@ -15,11 +15,13 @@ App::uses('CrudComponent', 'Crud.Controlller/Component');
  */
 class AddCrudActionTest extends CakeTestCase {
 
+	protected $ModelMock;
+
 	protected $ActionMock;
 
-	protected $CrudMock;
-
 	protected $RequestMock;
+
+	protected $CrudMock;
 
 	public function setUp() {
 		parent::setUp();
@@ -34,9 +36,10 @@ class AddCrudActionTest extends CakeTestCase {
 		parent::tearDown();
 
 		unset(
+			$this->ModelMock,
 			$this->ActionMock,
-			$this->CrudMock,
-			$this->RequestMock
+			$this->RequestMock,
+			$this->CrudMock
 		);
 	}
 
@@ -367,7 +370,7 @@ class AddCrudActionTest extends CakeTestCase {
 
 		$expects = array('request_data' => true, 'model_data' => true);
 		$actual = $Request->data;
-		$this->assertSame($expects, $actual);
+		$this->assertSame($expects, $actual, 'The request and model data was not merged');
 	}
 
 }
