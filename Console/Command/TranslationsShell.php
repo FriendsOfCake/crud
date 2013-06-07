@@ -195,7 +195,7 @@ class TranslationsShell extends AppShell {
 /**
  * _initializeMessages
  *
- * Extract all the messages used by the crud componentn, and write to the _messages property
+ * Extract all the messages used by the crud component, and write to the _messages property
  *
  * @return void
  */

@@ -9,7 +9,70 @@
  *
  * @copyright Christian Winther, 2013
  */
-class CrudSubject extends stdClass {
+class CrudSubject {
+
+/**
+ * Instance of the crud component
+ *
+ * @var CrudComponent
+ */
+	public $crud;
+
+/**
+ * Instance of the controller
+ *
+ * @var Controller
+ */
+	public $controller;
+
+/**
+ * Name of the default controller model class
+ *
+ * @var string
+ */
+	public $modelClass;
+
+/**
+ * The default action model instance
+ *
+ * @var Model
+ */
+	public $model;
+
+/**
+ * Name of the dispatched action
+ *
+ * @var string
+ */
+	public $action;
+
+/**
+ * Request object instance
+ *
+ * @return CakeRequest
+ */
+	public $request;
+
+/**
+ * Response object instance
+ *
+ * @var CakeResponse
+ */
+	public $response;
+
+/**
+ * The name of the action object associated with this dispatch
+ *
+ * @var string
+ */
+	public $handleAction;
+
+/**
+ * Optional arguments passed to the controller action
+ *
+ * @var array
+ */
+	public $args;
 
 /**
  * Constructor
@@ -21,8 +84,8 @@ class CrudSubject extends stdClass {
 		$this->set($fields);
 	}
 
-/**sh
- * Set a list of key / values to the stdClass
+/**
+ * Set a list of key / values for this object
  *
  * @param array $fields
  * @return void
