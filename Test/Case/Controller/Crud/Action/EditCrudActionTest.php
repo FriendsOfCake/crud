@@ -146,8 +146,7 @@ class EditCrudActionTest extends CakeTestCase {
 		$CrudSubject = new CrudSubject(array(
 			'crud' => $Crud,
 			'request' => $Request,
-			'collection' => null,
-			'controller' => null,
+			'controller' => (object)array('Components' => null),
 			'handleAction' => 'edit',
 			'action' => 'edit',
 			'model' => $Model,
@@ -245,8 +244,7 @@ class EditCrudActionTest extends CakeTestCase {
 		$CrudSubject->set(array(
 			'crud' => $Crud,
 			'request' => $Request,
-			'collection' => null,
-			'controller' => null,
+			'controller' => (object)array('Components' => null),
 			'handleAction' => 'edit',
 			'action' => 'edit',
 			'model' => $Model,
@@ -361,8 +359,7 @@ class EditCrudActionTest extends CakeTestCase {
 		$CrudSubject->set(array(
 			'crud' => $Crud,
 			'request' => $Request,
-			'collection' => null,
-			'controller' => null,
+			'controller' => (object)array('Components' => null),
 			'handleAction' => 'edit',
 			'action' => 'edit',
 			'model' => $Model,
@@ -415,8 +412,7 @@ class EditCrudActionTest extends CakeTestCase {
 		$CrudSubject = new CrudSubject(array(
 			'crud' => null,
 			'request' => null,
-			'collection' => null,
-			'controller' => null,
+			'controller' => (object)array('Components' => null),
 			'handleAction' => 'edit',
 			'action' => 'edit',
 			'model' => null,
@@ -473,8 +469,7 @@ class EditCrudActionTest extends CakeTestCase {
 		$CrudSubject = new CrudSubject(array(
 			'crud' => null,
 			'request' => null,
-			'collection' => null,
-			'controller' => null,
+			'controller' => (object)array('Components' => null),
 			'handleAction' => 'edit',
 			'action' => 'edit',
 			'model' => null,
@@ -578,8 +573,7 @@ class EditCrudActionTest extends CakeTestCase {
 		$CrudSubject->set(array(
 			'crud' => $Crud,
 			'request' => $Request,
-			'collection' => null,
-			'controller' => null,
+			'controller' => (object)array('Components' => null),
 			'handleAction' => 'edit',
 			'action' => 'edit',
 			'model' => $Model,
@@ -690,8 +684,7 @@ class EditCrudActionTest extends CakeTestCase {
 		$CrudSubject = new CrudSubject(array(
 			'crud' => $Crud,
 			'request' => $Request,
-			'collection' => null,
-			'controller' => null,
+			'controller' => (object)array('Components' => null),
 			'handleAction' => 'edit',
 			'action' => 'edit',
 			'model' => $Model,
