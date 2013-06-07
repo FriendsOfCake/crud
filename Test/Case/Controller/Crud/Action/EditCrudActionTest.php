@@ -1,6 +1,7 @@
 <?php
 
 App::uses('Model', 'Model');
+App::uses('Controller', 'Controller');
 App::uses('CakeRequest', 'Network');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
 App::uses('EditCrudAction', 'Crud.Controller/Crud/Action');
@@ -17,6 +18,8 @@ class EditCrudActionTest extends CakeTestCase {
 
 	protected $ModelMock;
 
+	protected $ControllerMock;
+
 	protected $ActionMock;
 
 	protected $RequestMock;
@@ -27,6 +30,7 @@ class EditCrudActionTest extends CakeTestCase {
 		parent::setUp();
 
 		$this->ModelMock = $this->getMockBuilder('Model');
+		$this->ControllerMock = $this->getMockBuilder('Controller');
 		$this->ActionMock = $this->getMockBuilder('EditCrudAction');
 		$this->RequestMock = $this->getMockBuilder('CakeRequest');
 		$this->CrudMock = $this->getMockBuilder('CrudComponent');
@@ -37,10 +41,66 @@ class EditCrudActionTest extends CakeTestCase {
 
 		unset(
 			$this->ModelMock,
+			$this->ControllerMock,
 			$this->ActionMock,
 			$this->RequestMock,
 			$this->CrudMock
 		);
+	}
+
+/**
+ * Returns a list of mocked classes that are related to the execution of the
+ * action
+ *
+ * @return void
+ */
+	protected function _mockClasses() {
+		$CrudSubject = new CrudSubject();
+
+		$Crud = $this->CrudMock
+			->disableOriginalConstructor()
+			->setMethods(array('trigger'))
+			->getMock();
+
+		$Model = $this->ModelMock
+			->disableOriginalConstructor()
+			->setMethods(array('escapeField', 'find', 'saveAll'))
+			->getMock();
+
+		$Controller = $this->ControllerMock
+			->disableOriginalConstructor()
+			->setMethods(array('set'))
+			->getMock();
+
+		$Request = $this->RequestMock
+			->setMethods(array('is'))
+			->getMock();
+
+		$CrudSubject->set(array(
+			'crud' => $Crud,
+			'request' => $Request,
+			'controller' => $Controller,
+			'handleAction' => 'edit',
+			'action' => 'edit',
+			'model' => $Model,
+			'modelClass' => $Model->name,
+			'args' => array(1)
+		));
+
+		$Action = $this->ActionMock
+			->setConstructorArgs(array($CrudSubject))
+			->setMethods(array(
+				'enabled',
+				'config',
+				'setFlash',
+				'getIdFromRequest',
+				'_getFindMethod',
+				'_redirect',
+				'_validateId'
+			))
+			->getMock();
+
+		return compact('Crud', 'Model', 'Controller', 'Request', 'CrudSubject', 'Action');
 	}
 
 /**
@@ -49,10 +109,13 @@ class EditCrudActionTest extends CakeTestCase {
  * @return void
  */
 	public function testThatCrudActionWillHandle() {
+		extract($this->_mockClasses());
+
 		$Action = $this->ActionMock
-			->disableOriginalConstructor()
-			->setMethods(array('config', '_handle'))
+			->setConstructorArgs(array($CrudSubject))
+			->setMethods(array('enabled', 'config', '_validateId', 'setFlash', '_redirect', '_handle'))
 			->getMock();
+
 		$Action
 			->expects($this->at(0))
 			->method('config')
@@ -67,13 +130,6 @@ class EditCrudActionTest extends CakeTestCase {
 			->expects($this->once())
 			->method('_handle');
 
-		$CrudSubject = new CrudSubject(array(
-			'action' => 'edit',
-			'model' => new StdClass(),
-			'modelClass' => 'Blog',
-			'args' => array()
-		));
-
 		$Action->handle($CrudSubject);
 	}
 
@@ -87,27 +143,17 @@ class EditCrudActionTest extends CakeTestCase {
  * @return void
  */
 	public function testActionGet() {
-		$query = array(
-			'conditions' => array(
-				'Model.id' => 1
-			)
-		);
+		extract($this->_mockClasses());
 
+		$query = array('conditions' => array('Model.id' => 1));
 		$data = array('Model' => array('id' => 1));
 
-		$Request = $this->RequestMock
-			->setMethods(array('is'))
-			->getMock();
 		$Request
 			->expects($this->once())
 			->method('is')
 			->with('put')
 			->will($this->returnValue(false));
 
-		$Crud = $this->CrudMock
-			->disableOriginalConstructor()
-			->setMethods(array('trigger'))
-			->getMock();
 		$Crud
 			->expects($this->at(0))
 			->method('trigger')
@@ -128,10 +174,6 @@ class EditCrudActionTest extends CakeTestCase {
 			->expects($this->exactly(3))
 			->method('trigger');
 
-		$Model = $this->ModelMock
-			->disableOriginalConstructor()
-			->setMethods(array('escapeField', 'find'))
-			->getMock();
 		$Model
 			->expects($this->once())
 			->method('escapeField')
@@ -143,21 +185,6 @@ class EditCrudActionTest extends CakeTestCase {
 			->with('first', $query)
 			->will($this->returnValue($data));
 
-		$CrudSubject = new CrudSubject(array(
-			'crud' => $Crud,
-			'request' => $Request,
-			'controller' => (object)array('Components' => null),
-			'handleAction' => 'edit',
-			'action' => 'edit',
-			'model' => $Model,
-			'modelClass' => $Model->name,
-			'args' => array(1)
-		));
-
-		$Action = $this->ActionMock
-			->setConstructorArgs(array($CrudSubject))
-			->setMethods(array('enabled', 'config', '_validateId'))
-			->getMock();
 		$Action
 			->expects($this->at(0))
 			->method('config')
@@ -173,6 +200,11 @@ class EditCrudActionTest extends CakeTestCase {
 			->method('_validateId')
 			->with(1)
 			->will($this->returnValue(true));
+		$Action
+			->expects($this->once())
+			->method('_getFindMethod')
+			->with('first')
+			->will($this->returnValue('first'));
 
 		$Action->handle($CrudSubject);
 	}
@@ -188,40 +220,22 @@ class EditCrudActionTest extends CakeTestCase {
  * @return void
  */
 	public function testActionPut() {
-		$CrudSubject = new CrudSubject();
+		extract($this->_mockClasses());
 
-		$query = array(
-			'conditions' => array(
-				'Model.id' => 1
-			)
-		);
+		$query = array('conditions' => array('Model.id' => 1));
+		$data = array('Model' => array('id' => 1));
 
-		$data = array(
-			'Model' => array(
-				'id' => 1
-			)
-		);
-
-		$Request = $this->RequestMock
-			->setMethods(array('is'))
-			->getMock();
+		$Request->data = $data;
 		$Request
 			->expects($this->once())
 			->method('is')
 			->with('put')
 			->will($this->returnValue(true));
-		$Request->data = $data;
 
-		$Crud = $this->CrudMock
-			->disableOriginalConstructor()
-			->setMethods(array('trigger'))
-			->getMock();
 		$Crud
 			->expects($this->at(0))
 			->method('trigger')
-			->with('beforeSave', array(
-				'id' => 1
-			));
+			->with('beforeSave', array('id' => 1));
 		$Crud
 			->expects($this->at(1))
 			->method('trigger')
@@ -231,10 +245,6 @@ class EditCrudActionTest extends CakeTestCase {
 			->expects($this->exactly(2))
 			->method('trigger');
 
-		$Model = $this->ModelMock
-			->disableOriginalConstructor()
-			->setMethods(array('saveAll'))
-			->getMock();
 		$Model
 			->expects($this->once())
 			->method('saveAll')
@@ -242,21 +252,9 @@ class EditCrudActionTest extends CakeTestCase {
 			->will($this->returnValue(true));
 
 		$CrudSubject->set(array(
-			'crud' => $Crud,
-			'request' => $Request,
-			'controller' => (object)array('Components' => null),
-			'handleAction' => 'edit',
-			'action' => 'edit',
-			'model' => $Model,
-			'modelClass' => $Model->name,
-			'args' => array(1),
 			'url' => '/'
 		));
 
-		$Action = $this->ActionMock
-			->setConstructorArgs(array($CrudSubject))
-			->setMethods(array('enabled', 'config', '_validateId', 'setFlash', '_redirect', 'saveOptions'))
-			->getMock();
 		$Action
 			->expects($this->at(0))
 			->method('config')
@@ -299,34 +297,18 @@ class EditCrudActionTest extends CakeTestCase {
  * @return void
  */
 	public function testActionPutSaveError() {
-		$CrudSubject = new CrudSubject();
+		extract($this->_mockClasses());
 
-		$query = array(
-			'conditions' => array(
-				'Model.id' => 1
-			)
-		);
+		$query = array('conditions' => array('Model.id' => 1));
+		$data = array('Model' => array('id' => 1));
 
-		$data = array(
-			'Model' => array(
-				'id' => 1
-			)
-		);
-
-		$Request = $this->RequestMock
-			->setMethods(array('is'))
-			->getMock();
+		$Request->data = $data;
 		$Request
 			->expects($this->once())
 			->method('is')
 			->with('put')
 			->will($this->returnValue(true));
-		$Request->data = $data;
 
-		$Crud = $this->CrudMock
-			->disableOriginalConstructor()
-			->setMethods(array('trigger'))
-			->getMock();
 		$Crud
 			->expects($this->at(0))
 			->method('trigger')
@@ -346,10 +328,6 @@ class EditCrudActionTest extends CakeTestCase {
 			->expects($this->exactly(3))
 			->method('trigger');
 
-		$Model = $this->ModelMock
-			->disableOriginalConstructor()
-			->setMethods(array('saveAll'))
-			->getMock();
 		$Model
 			->expects($this->once())
 			->method('saveAll')
@@ -357,21 +335,9 @@ class EditCrudActionTest extends CakeTestCase {
 			->will($this->returnValue(false));
 
 		$CrudSubject->set(array(
-			'crud' => $Crud,
-			'request' => $Request,
-			'controller' => (object)array('Components' => null),
-			'handleAction' => 'edit',
-			'action' => 'edit',
-			'model' => $Model,
-			'modelClass' => $Model->name,
-			'args' => array(1),
 			'url' => '/'
 		));
 
-		$Action = $this->ActionMock
-			->setConstructorArgs(array($CrudSubject))
-			->setMethods(array('enabled', 'config', '_validateId', 'setFlash', 'saveOptions'))
-			->getMock();
 		$Action
 			->expects($this->at(0))
 			->method('config')
@@ -409,21 +375,10 @@ class EditCrudActionTest extends CakeTestCase {
  * @return void
  */
 	public function testActionGetWithoutId() {
-		$CrudSubject = new CrudSubject(array(
-			'crud' => null,
-			'request' => null,
-			'controller' => (object)array('Components' => null),
-			'handleAction' => 'edit',
-			'action' => 'edit',
-			'model' => null,
-			'modelClass' => null,
-			'args' => array()
-		));
+		extract($this->_mockClasses());
 
-		$Action = $this->ActionMock
-			->setConstructorArgs(array($CrudSubject))
-			->setMethods(array('enabled', 'config', '_validateId', 'getIdFromRequest'))
-			->getMock();
+		$CrudSubject->args = array();
+
 		$Action
 			->expects($this->at(0))
 			->method('config')
@@ -466,21 +421,10 @@ class EditCrudActionTest extends CakeTestCase {
  * @return void
  */
 	public function testActionGetWithIdFromRequest() {
-		$CrudSubject = new CrudSubject(array(
-			'crud' => null,
-			'request' => null,
-			'controller' => (object)array('Components' => null),
-			'handleAction' => 'edit',
-			'action' => 'edit',
-			'model' => null,
-			'modelClass' => null,
-			'args' => array()
-		));
+		extract($this->_mockClasses());
 
-		$Action = $this->ActionMock
-			->setConstructorArgs(array($CrudSubject))
-			->setMethods(array('enabled', 'config', '_validateId', 'getIdFromRequest'))
-			->getMock();
+		$CrudSubject->args = array();
+
 		$Action
 			->expects($this->at(0))
 			->method('config')
@@ -517,34 +461,20 @@ class EditCrudActionTest extends CakeTestCase {
  * @return void
  */
 	public function testActionGetWithNonexistingId() {
-		$query = array(
-			'conditions' => array(
-				'Model.id' => 1
-			)
-		);
+		extract($this->_mockClasses());
 
-		$CrudSubject = new CrudSubject();
+		$query = array('conditions' => array('Model.id' => 1));
 
-		$Request = $this->RequestMock
-			->setMethods(array('is'))
-			->getMock();
 		$Request
 			->expects($this->once())
 			->method('is')
 			->with('put')
 			->will($this->returnValue(false));
 
-		$Crud = $this->CrudMock
-			->disableOriginalConstructor()
-			->setMethods(array('trigger'))
-			->getMock();
 		$Crud
 			->expects($this->at(0))
 			->method('trigger')
-			->with('beforeFind', array(
-				'findMethod' => 'first',
-				'query' => $query
-			))
+			->with('beforeFind', array('findMethod' => 'first', 'query' => $query))
 			->will($this->returnValue(new CrudSubject(array('query' => $query, 'findMethod' => 'first'))));
 		$Crud
 			->expects($this->at(1))
@@ -555,10 +485,6 @@ class EditCrudActionTest extends CakeTestCase {
 			->expects($this->exactly(2))
 			->method('trigger');
 
-		$Model = $this->ModelMock
-			->disableOriginalConstructor()
-			->setMethods(array('escapeField', 'find'))
-			->getMock();
 		$Model
 			->expects($this->once())
 			->method('escapeField')
@@ -570,21 +496,6 @@ class EditCrudActionTest extends CakeTestCase {
 			->with('first', $query)
 			->will($this->returnValue(array()));
 
-		$CrudSubject->set(array(
-			'crud' => $Crud,
-			'request' => $Request,
-			'controller' => (object)array('Components' => null),
-			'handleAction' => 'edit',
-			'action' => 'edit',
-			'model' => $Model,
-			'modelClass' => $Model->name,
-			'args' => array(1)
-		));
-
-		$Action = $this->ActionMock
-			->setConstructorArgs(array($CrudSubject))
-			->setMethods(array('enabled', 'config', '_validateId', 'setFlash', '_redirect'))
-			->getMock();
 		$Action
 			->expects($this->at(0))
 			->method('config')
@@ -608,6 +519,11 @@ class EditCrudActionTest extends CakeTestCase {
 			->expects($this->once())
 			->method('_redirect')
 			->with($CrudSubject, array('action' => 'index'));
+		$Action
+			->expects($this->once())
+			->method('_getFindMethod')
+			->with('first')
+			->will($this->returnValue('first'));
 
 		$Action->handle($CrudSubject);
 	}
@@ -625,34 +541,21 @@ class EditCrudActionTest extends CakeTestCase {
  * @return void
  */
 	public function testGetWithCustomFindMethod() {
-		$query = array(
-			'conditions' => array(
-				'Model.id' => 1
-			)
-		);
+		extract($this->_mockClasses());
 
+		$query = array('conditions' => array('Model.id' => 1));
 		$data = array('Model' => array('id' => 1));
 
-		$Request = $this->RequestMock
-			->setMethods(array('is'))
-			->getMock();
 		$Request
 			->expects($this->once())
 			->method('is')
 			->with('put')
 			->will($this->returnValue(false));
 
-		$Crud = $this->CrudMock
-			->disableOriginalConstructor()
-			->setMethods(array('trigger'))
-			->getMock();
 		$Crud
 			->expects($this->at(0))
 			->method('trigger')
-			->with('beforeFind', array(
-				'findMethod' => 'customFindMethod',
-				'query' => $query
-			))
+			->with('beforeFind', array('findMethod' => 'customFindMethod', 'query' => $query))
 			->will($this->returnValue(new CrudSubject(array('query' => $query, 'findMethod' => 'customFindMethod'))));
 		$Crud
 			->expects($this->at(1))
@@ -666,10 +569,6 @@ class EditCrudActionTest extends CakeTestCase {
 			->expects($this->exactly(3))
 			->method('trigger');
 
-		$Model = $this->ModelMock
-			->disableOriginalConstructor()
-			->setMethods(array('escapeField', 'find'))
-			->getMock();
 		$Model
 			->expects($this->once())
 			->method('escapeField')
@@ -681,21 +580,6 @@ class EditCrudActionTest extends CakeTestCase {
 			->with('customFindMethod', $query)
 			->will($this->returnValue($data));
 
-		$CrudSubject = new CrudSubject(array(
-			'crud' => $Crud,
-			'request' => $Request,
-			'controller' => (object)array('Components' => null),
-			'handleAction' => 'edit',
-			'action' => 'edit',
-			'model' => $Model,
-			'modelClass' => $Model->name,
-			'args' => array(1)
-		));
-
-		$Action = $this->ActionMock
-			->setConstructorArgs(array($CrudSubject))
-			->setMethods(array('enabled', 'config', '_validateId', '_getFindMethod'))
-			->getMock();
 		$Action
 			->expects($this->at(0))
 			->method('config')
