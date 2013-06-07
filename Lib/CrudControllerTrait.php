@@ -9,10 +9,16 @@
  */
 trait CrudControllerTrait {
 
+/**
+ * List of components that are capable of dispatching an action that is
+ * not already implement
+ *
+ * @var string
+ */
 	public $dispatchComponents = array();
 
 /**
- * Dispatches the controller action.	 Checks that the action exists and isn't private.
+ * Dispatches the controller action. Checks that the action exists and isn't private.
  *
  * If Cake raises MissingActionException we attempt to execute Crud
  *
@@ -25,11 +31,8 @@ trait CrudControllerTrait {
 		try {
 			return parent::invokeAction($request);
 		} catch (MissingActionException $e) {
-			// Check for any dispatch components
 			if (!empty($this->dispatchComponents)) {
-				// Iterate dispatchComponents
 				foreach ($this->dispatchComponents as $component => $enabled) {
-					// Skip them if they aren't enabled
 					if (empty($enabled)) {
 						continue;
 					}

@@ -233,7 +233,7 @@ class CrudComponent extends Component {
 /**
  * Map action to a internal request type
  *
- * @param string $action The Controller action to fake
+ * @param string $action The Controller action to provide an implementation for
  * @param string $type one of the CRUD events (index, add, edit, delete, view)
  * @param boolean $enable Should the mapping be enabled right away?
  * @return void
@@ -247,7 +247,7 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Check if a CRUD action has been mapped (aka should be handled by CRUD component)
+ * Check if a CRUD action has been mapped (whether it will be handled by CRUD component)
  *
  * @param string|null $action If null, use the current action
  * @return boolean
@@ -342,16 +342,27 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Generic config method
+ * Sets a configuration variable into this component
  *
- * If $key is an array and $value is empty,
- * $key will be merged directly with $this->settings
+ * If called with no arguments, all configuration values are
+ * returned.
  *
- * If $key is a string it will be passed into Hash::insert
+ * $key is interpreted with dot notation, like the one used for
+ * Configure::write()
+ *
+ * If $key is string and $value is not passed, it will return the
+ * value associated with such key.
+ *
+ * If $key is an array and $value is empty, then $key will
+ * be interpreted as key => value dictionary of settings and
+ * it will be merged directly with $this->settings
+ *
+ * If $key is a string, the value will be inserted in the specified
+ * slot as indicated using the dot notation
  *
  * @param mixed $key
  * @param mixed $value
- * @return CrudComponent
+ * @return mixed|CrudComponent
  */
 	public function config($key = null, $value = null) {
 		if (is_null($key) && is_null($value)) {
@@ -415,7 +426,6 @@ class CrudComponent extends Component {
 		$subject = new CrudSubject();
 		$subject->crud = $this;
 		$subject->controller = $this->_controller;
-		$subject->collection = $this->_Collection;
 		$subject->model = $this->_model;
 		$subject->modelClass = $this->_modelName;
 		$subject->action = $this->_action;
@@ -498,15 +508,14 @@ class CrudComponent extends Component {
 
 		if (!isset($this->_actionInstances[$name])) {
 			list($plugin, $class) = pluginSplit($actionClass, true);
-			$class .= 'CrudAction';
 			$class = ucfirst($class);
 
-			if (empty($plugin)) {
+			if (in_array($class, array('Index', 'View', 'Add', 'Edit', 'Delete'))) {
 				$plugin = 'Crud.';
 			}
 
+			$class .= 'CrudAction';
 			App::uses($class, $plugin . 'Controller/Crud/Action');
-
 			$subject = $this->getSubject(array('handleAction' => $name));
 			$this->_actionInstances[$name] = new $class($subject, $this->defaults('action', $name));
 			$this->_eventManager->attach($this->_actionInstances[$name]);

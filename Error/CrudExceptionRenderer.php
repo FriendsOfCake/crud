@@ -7,9 +7,9 @@ class CrudExceptionRenderer extends ExceptionRenderer {
 /**
  * Generate the response using the controller object.
  *
- * If there is no specific template for the error raised (normally there will
- * not be) swallow the missing view exception and just use the standard
- * error format. This prevents throwing a RandomException and seeing instead
+ * If there is no specific template for the raised error (normally there won't be one)
+ * swallow the missing view exception and just use the standard
+ * error format. This prevents throwing an unknown Exception and seeing instead
  * a MissingView exception
  *
  * @param string $template The template to render.
@@ -53,6 +53,11 @@ class CrudExceptionRenderer extends ExceptionRenderer {
 		$this->controller->response->send();
 	}
 
+/**
+ * Helper method used to generate  extra debugging data into the error template
+ *
+ * @return array debugging data
+ */
 	protected function _getErrorData() {
 		$data = array();
 

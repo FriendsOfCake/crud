@@ -105,8 +105,7 @@ class AddCrudActionTest extends CakeTestCase {
 		$CrudSubject = new CrudSubject(array(
 			'crud' => $Crud,
 			'request' => $Request,
-			'collection' => null,
-			'controller' => null,
+			'controller' => new Controller,
 			'handleAction' => 'add',
 			'action' => 'add',
 			'model' => null,
@@ -167,8 +166,7 @@ class AddCrudActionTest extends CakeTestCase {
 		$CrudSubject = new CrudSubject(array(
 			'crud' => $Crud,
 			'request' => $Request,
-			'collection' => null,
-			'controller' => null,
+			'controller' => new Controller,
 			'handleAction' => 'add',
 			'action' => 'add',
 			'model' => $Model,
@@ -247,8 +245,7 @@ class AddCrudActionTest extends CakeTestCase {
 		$CrudSubject = new CrudSubject(array(
 			'crud' => $Crud,
 			'request' => $Request,
-			'collection' => null,
-			'controller' => null,
+			'controller' => new Controller,
 			'handleAction' => 'add',
 			'action' => 'add',
 			'model' => $Model,
@@ -329,8 +326,7 @@ class AddCrudActionTest extends CakeTestCase {
 		$CrudSubject = new CrudSubject(array(
 			'crud' => $Crud,
 			'request' => $Request,
-			'collection' => null,
-			'controller' => null,
+			'controller' => new Controller,
 			'handleAction' => 'add',
 			'action' => 'add',
 			'model' => $Model,
