@@ -75,7 +75,10 @@ class EditCrudAction extends CrudAction {
 			$id = $this->getIdFromRequest();
 		}
 
-		$this->_validateId($id);
+		if (!$this->_validateId($id)) {
+			return false;
+		}
+
 		if ($this->_request->is('put')) {
 			$this->_crud->trigger('beforeSave', compact('id'));
 			if ($this->_model->saveAll($this->_request->data, $this->saveOptions())) {
@@ -101,12 +104,9 @@ class EditCrudAction extends CrudAction {
 			}
 
 			$this->_crud->trigger('afterFind', compact('id'));
-
-			// Make sure to merge any changed data in the model into the post data
 			$this->_request->data = Hash::merge($this->_request->data, $this->_model->data);
 		}
 
-		// Trigger a beforeRender
 		$this->_crud->trigger('beforeRender');
 	}
 

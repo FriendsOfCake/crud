@@ -353,7 +353,8 @@ abstract class CrudAction implements CakeEventListener {
 
 		$subject = $this->_crud->trigger('invalidId', compact('id'));
 		$this->setFlash('invalid_id.error');
-		return $this->_redirect($subject, $this->_controller->referer());
+		$this->_redirect($subject, $this->_controller->referer());
+		return false;
 	}
 
 /**
