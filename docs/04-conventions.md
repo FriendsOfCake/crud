@@ -60,4 +60,3 @@ In each, the message passed is in the variable `$message` as usual.
 # Event system
 
 The CRUD plugin uses the new event system introduced in Cake 2.1
-

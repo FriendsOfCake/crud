@@ -1428,4 +1428,80 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$this->assertSame('Donkey', $this->Crud->getModelName());
 	}
 
+/**
+ * Test that the build in action names can't be used
+ * within other plugins
+ *
+ * @expectedException CakeException
+ * @expectedExceptionMessage The build-in CrudActions (Index, View, Add, Edit and Delete) must be loaded from the Crud plugin
+ * @return void
+ */
+	public function testBuildInCrudActionsCantBeUsedInOtherPluginsIndex() {
+		$this->Crud->mapAction('test', 'Sample.Index');
+	}
+
+/**
+ * Test that the build in action names can't be used
+ * within other plugins
+ *
+ * @expectedException CakeException
+ * @expectedExceptionMessage The build-in CrudActions (Index, View, Add, Edit and Delete) must be loaded from the Crud plugin
+ * @return void
+ */
+	public function testBuildInCrudActionsCantBeUsedInOtherPluginsView() {
+		$this->Crud->mapAction('test', 'Sample.View');
+	}
+
+/**
+ * Test that the build in action names can't be used
+ * within other plugins
+ *
+ * @expectedException CakeException
+ * @expectedExceptionMessage The build-in CrudActions (Index, View, Add, Edit and Delete) must be loaded from the Crud plugin
+ * @return void
+ */
+	public function testBuildInCrudActionsCantBeUsedInOtherPluginsAdd() {
+		$this->Crud->mapAction('test', 'Sample.Add');
+	}
+
+/**
+ * Test that the build in action names can't be used
+ * within other plugins
+ *
+ * @expectedException CakeException
+ * @expectedExceptionMessage The build-in CrudActions (Index, View, Add, Edit and Delete) must be loaded from the Crud plugin
+ * @return void
+ */
+	public function testBuildInCrudActionsCantBeUsedInOtherPluginsEdit() {
+		$this->Crud->mapAction('test', 'Sample.Edit');
+	}
+
+/**
+ * Test that the build in action names can't be used
+ * within other plugins
+ *
+ * @expectedException CakeException
+ * @expectedExceptionMessage The build-in CrudActions (Index, View, Add, Edit and Delete) must be loaded from the Crud plugin
+ * @return void
+ */
+	public function testBuildInCrudActionsCantBeUsedInOtherPluginsDelete() {
+		$this->Crud->mapAction('test', 'Sample.Delete');
+	}
+
+/**
+ * Test that Providing a CrudAction name that isn't in the
+ * list of build-in once, will allow you to use it inside
+ * another plugin.
+ *
+ * It's expected that the plugin CrudSample doesn't exist,
+ * the App::uses() where the warning is raised is *after*
+ * the check for the above build-in class names
+ *
+ * @expectedException CakeException
+ * @expectedExceptionMessage Plugin CrudSample could not be found.
+ * @return void
+ */
+	public function testCustomCrudActionsCanBeUsedInPlugins() {
+		$this->Crud->mapAction('test', 'CrudSample.MyDelete');
+	}
 }

@@ -513,6 +513,10 @@ class CrudComponent extends Component {
 			$class = ucfirst($class);
 
 			if (in_array($class, array('Index', 'View', 'Add', 'Edit', 'Delete'))) {
+				if (!empty($plugin) && $plugin !== 'Crud.') {
+					throw new CakeException('The build-in CrudActions (Index, View, Add, Edit and Delete) must be loaded from the Crud plugin');
+				}
+
 				$plugin = 'Crud.';
 			}
 
