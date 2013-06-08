@@ -32,13 +32,14 @@ before_script:
   - chmod -R 777 app/tmp
   - mv ../cakephp-crud app/Plugin/Crud
   - mv app/Plugin/Crud/.resources/database.php app/Config/database.php
-  - mv app/Plugin/Crud/.resources/phpunit.xml.dist phpunit.xml.dist
+  - mv app/Plugin/Crud/.resources/phpunit.xml phpunit.xml
   - mv app/Plugin/Crud/.resources/composer.json composer.json
+  - mv app/Plugin/Crud/.resources/coveralls.yml .coveralls.yml
   - composer install --dev --no-interaction --prefer-source
   - mkdir -p build/logs
 
 script:
-  - ./lib/Cake/Console/cake test Crud AllCrud --stderr --coverage-clover build/logs/clover.xml --configuration phpunit.xml.dist
+  - ./lib/Cake/Console/cake test Crud AllCrud --stderr --coverage-clover build/logs/clover.xml --configuration phpunit.xml
 
 after_script:
   - php vendor/bin/coveralls -v
