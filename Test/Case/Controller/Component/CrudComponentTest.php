@@ -23,10 +23,10 @@ App::uses('Validation', 'Utility');
  */
 class TestCrudEventManager extends CakeEventManager {
 
-	protected $log = array();
+	protected $_log = array();
 
 	public function dispatch($event) {
-		$this->log[]= array(
+		$this->_log[] = array(
 			'name' => $event->name(),
 			'subject' => $event->subject()
 		);
@@ -36,7 +36,7 @@ class TestCrudEventManager extends CakeEventManager {
 	public function getLog($params = array()) {
 		$params += array('clear' => true, 'format' => 'names');
 
-		$log = $this->log;
+		$log = $this->_log;
 
 		if ($params['format'] === 'names') {
 			$return = array();
@@ -47,11 +47,12 @@ class TestCrudEventManager extends CakeEventManager {
 		}
 
 		if ($params['clear']) {
-			$this->log = array();
+			$this->_log = array();
 		}
 
 		return $log;
 	}
+
 }
 
 class CrudExamplesController extends Controller {
@@ -92,6 +93,7 @@ class CrudExamplesController extends Controller {
 	public function add() {
 		return $this->Crud->executeAction();
 	}
+
 }
 
 /**
@@ -151,7 +153,7 @@ class CrudComponentTestCase extends ControllerTestCase {
  * Setup the classes the crud component needs to be testable
  */
 	public function setUp() {
-		require_once('models.php');
+		require_once ('models.php');
 
 		parent::setUp();
 
@@ -593,7 +595,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 			->method('render')
 			->with('index');
 
-		$this->request->params['named']= array();
+		$this->request->params['named'] = array();
 
 		$this->Crud->executeAction('index');
 
@@ -606,13 +608,14 @@ class CrudComponentTestCase extends ControllerTestCase {
 /**
  * Tests on method for beforePaginateEvent
  *
- * @expectedException RuntimeException
+ * @expectedException CakeException
  * @expectedExceptionMessage Crud.beforePaginate called
  * @return void
+ * @throws CakeException
  */
 	public function testOnBeforePaginateString() {
 		$this->Crud->on('beforePaginate', function($event) {
-			throw new RuntimeException($event->name() . ' called');
+			throw new CakeException($event->name() . ' called');
 		});
 		$this->Crud->executeAction('index');
 	}
@@ -620,13 +623,14 @@ class CrudComponentTestCase extends ControllerTestCase {
 /**
  * Tests on method for afterPaginate
  *
- * @expectedException RuntimeException
+ * @expectedException CakeException
  * @expectedExceptionMessage Crud.afterPaginate called
  * @return void
+ * @throws CakeException
  */
 	public function testOnAfterPaginateString() {
 		$this->Crud->on('afterPaginate', function($event) {
-			throw new RuntimeException($event->name() . ' called');
+			throw new CakeException($event->name() . ' called');
 		});
 		$this->Crud->executeAction('index');
 	}
@@ -634,13 +638,14 @@ class CrudComponentTestCase extends ControllerTestCase {
 /**
  * Tests on method for afterPaginate with full event name
  *
- * @expectedException RuntimeException
+ * @expectedException CakeException
  * @expectedExceptionMessage Crud.afterPaginate called
  * @return void
+ * @throws CakeException
  */
 	public function testOnAfterPaginateFullNameString() {
 		$this->Crud->on('Crud.afterPaginate', function($event) {
-			throw new RuntimeException($event->name() . ' called');
+			throw new CakeException($event->name() . ' called');
 		});
 		$this->Crud->executeAction('index');
 	}
@@ -932,7 +937,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$this->Crud->mapFindMethod('index', 'published');
 		$this->Crud->executeAction('index');
 		$this->assertEquals('published', $this->controller->paginate['findType']);
-		$this->assertEquals(3, sizeof($this->controller->viewVars['items']));
+		$this->assertEquals(3, count($this->controller->viewVars['items']));
 	}
 
 /**
@@ -944,7 +949,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$this->Crud->mapFindMethod('index', 'unpublished');
 		$this->Crud->executeAction('index');
 		$this->assertEquals('unpublished', $this->controller->paginate['findType']);
-		$this->assertEquals(0, sizeof($this->controller->viewVars['items']));
+		$this->assertEquals(0, count($this->controller->viewVars['items']));
 	}
 
 /**
@@ -957,7 +962,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$this->controller->paginate = array('findType' => 'unpublished');
 		$this->Crud->executeAction('index');
 		$this->assertEquals('unpublished', $this->controller->paginate['findType']);
-		$this->assertEquals(0, sizeof($this->controller->viewVars['items']));
+		$this->assertEquals(0, count($this->controller->viewVars['items']));
 	}
 
 /**
@@ -1093,7 +1098,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 /**
  * Test if crud complains about unmapped actions
  *
- * @expectedException RuntimeException
+ * @expectedException CakeException
  * @return void
  */
 	public function testCrudWillComplainAboutUnmappedAction() {
@@ -1152,8 +1157,8 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$this->assertTrue(!empty($this->controller->viewVars['tags']));
 		$this->assertTrue(!empty($this->controller->viewVars['items']));
 
-		$this->assertSame(3, sizeof($this->controller->viewVars['tags']));
-		$this->assertSame(3, sizeof($this->controller->viewVars['items']));
+		$this->assertSame(3, count($this->controller->viewVars['tags']));
+		$this->assertSame(3, count($this->controller->viewVars['items']));
 	}
 
 /**
@@ -1173,9 +1178,9 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$this->assertTrue(!empty($this->controller->viewVars['items']));
 		$this->assertTrue(!empty($this->controller->viewVars['authors']));
 
-		$this->assertSame(3, sizeof($this->controller->viewVars['tags']));
-		$this->assertSame(3, sizeof($this->controller->viewVars['items']));
-		$this->assertSame(4, sizeof($this->controller->viewVars['authors']));
+		$this->assertSame(3, count($this->controller->viewVars['tags']));
+		$this->assertSame(3, count($this->controller->viewVars['items']));
+		$this->assertSame(4, count($this->controller->viewVars['authors']));
 	}
 
 	public function testIndexActionPaginationSettingsNotLost() {
@@ -1226,7 +1231,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$this->Crud->executeAction('index');
 
 		$items = $this->controller->viewVars['items'];
-		$this->assertSame(2, sizeof($items), 'beforePaginate needs to have an effect on the pagination');
+		$this->assertSame(2, count($items), 'beforePaginate needs to have an effect on the pagination');
 		$this->assertEquals(array('author_id' => 1), $Paginator->settings['conditions']);
 	}
 
@@ -1269,7 +1274,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 
 		$this->assertNotEmpty($this->controller->viewVars);
 		$this->assertNotEmpty($this->controller->viewVars['items']);
-		$this->assertSame(3, sizeof($this->controller->viewVars['items']));
+		$this->assertSame(3, count($this->controller->viewVars['items']));
 
 		$ids = Hash::extract($this->controller->viewVars['items'], '{n}.CrudExample.id');
 		$this->assertEquals(array(1,2,3), $ids);
@@ -1412,7 +1417,7 @@ class CrudComponentTestCase extends ControllerTestCase {
  * Test that having mapped a custom model for an action,
  * but the custom model isn't loaded, will throw an exception
  *
- * @expectedException RuntimeException
+ * @expectedException CakeException
  * @expectedExceptionMessage No model loaded in the Controller by the name "Donkey". Please add it to $uses.
  */
 	public function testSetModelPropertiesChangeModelForActionNotLoadedModel() {

@@ -181,7 +181,7 @@ class TranslationsListenerTest extends ControllerTestCase {
 
 /**
  *
- * @expectedException RuntimeException
+ * @expectedException CakeException
  * @expectedExceptionMessage Invalid flash type
  * @return void
  */
@@ -196,7 +196,7 @@ class TranslationsListenerTest extends ControllerTestCase {
 
 /**
  *
- * @expectedException RuntimeException
+ * @expectedException CakeException
  * @expectedExceptionMessage Missing flash type
  * @return void
  */

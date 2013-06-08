@@ -149,7 +149,7 @@ class CrudComponent extends Component {
  * @param string $controllerAction Override the controller action to execute as
  * @param array $arguments List of arguments to pass to the CRUD action (Usually an ID to edit / delete)
  * @return mixed void, or a CakeResponse object
- * @throws RuntimeException If an action is not mapped
+ * @throws CakeException If an action is not mapped
  */
 	public function executeAction($controllerAction = null, $args = array()) {
 		$view = $action = $controllerAction ?: $this->_action;
@@ -499,13 +499,14 @@ class CrudComponent extends Component {
  *
  * @param string $name The controller action name
  * @return CrudAction
+ * @throws CakeException If action is not mapped
  */
 	protected function _loadAction($name) {
 		if (!isset($this->_actionInstances[$name])) {
 			$actionClass = $this->config('actions.' . $name);
 
 			if (empty($actionClass)) {
-				throw new RuntimeException(sprintf('Action "%s" has not been mapped', $name));
+				throw new CakeException(sprintf('Action "%s" has not been mapped', $name));
 			}
 
 			list($plugin, $class) = pluginSplit($actionClass, true);
@@ -529,7 +530,7 @@ class CrudComponent extends Component {
  * Set internal model properties from the controller
  *
  * @return void
- * @throws RuntimeException If unable to get model instance
+ * @throws CakeException If unable to get model instance
  */
 	protected function _setModelProperties() {
 		$configKey = 'modelMap.' . $this->_action;
@@ -539,7 +540,7 @@ class CrudComponent extends Component {
 
 		$this->_model = $this->_controller->{$this->_modelName};
 		if (empty($this->_model)) {
-			throw new RuntimeException('No model loaded in the Controller by the name "' . $this->_modelName . '". Please add it to $uses.');
+			throw new CakeException('No model loaded in the Controller by the name "' . $this->_modelName . '". Please add it to $uses.');
 		}
 	}
 

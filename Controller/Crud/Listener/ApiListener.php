@@ -143,6 +143,7 @@ class ApiListener extends CrudListener {
  *
  * @param CakeEvent $event
  * @return void
+ * @throws NotFoundException If record not found
  */
 	public function recordNotFound(CakeEvent $event) {
 		if (!$this->_request->is('api')) {
@@ -159,6 +160,7 @@ class ApiListener extends CrudListener {
  *
  * @param CakeEvent $event
  * @return void
+ * @throws BadRequestException If invalid id provided
  */
 	public function invalidId(CakeEvent $event) {
 		if (!$this->_request->is('api')) {
@@ -238,6 +240,7 @@ class ApiListener extends CrudListener {
  * @param string $action
  * @param CakeRequest $request
  * @return void
+ * @throws MethodNotAllowedException If method not allowed
  */
 	protected function _enforceRequestType($action, CakeRequest $request) {
 		switch ($action) {
