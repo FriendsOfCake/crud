@@ -24,14 +24,14 @@ class CrudActionTest extends CakeTestCase {
 		$this->Controller = $this->getMock('Controller');
 		$this->Controller->Components = $this->Collection;
 		$this->Crud = $this->getMock('CrudComponent', null, array($this->Collection));
-		$this->handleAction = 'add';
+		$this->action = 'add';
 
 		$this->Subject = new CrudSubject(array(
 			'request' => $this->Request,
 			'crud' => $this->Crud,
 			'controller' => $this->Controller,
-			'handleAction' => $this->handleAction,
-			'action' => $this->handleAction,
+			'action' => $this->action,
+			'action' => $this->action,
 			'model' => null,
 			'modelClass' => null,
 			'args' => array()
@@ -49,7 +49,7 @@ class CrudActionTest extends CakeTestCase {
 			$this->Request,
 			$this->Collection,
 			$this->Controller,
-			$this->handleAction,
+			$this->action,
 			$this->Subject,
 			$this->ActionClass
 		);
@@ -94,12 +94,12 @@ class CrudActionTest extends CakeTestCase {
 				'yay',
 				'ney'
 			),
-			'handleAction' => 'add'
+			'action' => 'add'
 		);
 
 		$ActionClass = new $this->actionClassName($this->Subject, $expected);
 		// This is injected by the CrudAction, not technically a setting
-		$expected['handleAction'] = 'add';
+		$expected['action'] = 'add';
 		$actual = $ActionClass->config();
 		$this->assertEquals($expected, $actual, 'It was not possible to override all default settings.');
 	}
@@ -140,7 +140,7 @@ class CrudActionTest extends CakeTestCase {
  *
  * @return void
  */
-	public function testHandleReturnsFalseIfHandleActionDoesntMatchRequestAction() {
+	public function testHandleReturnsFalseIfactionDoesntMatchRequestAction() {
 		$this->ActionClass = $this->getMock('CrudAction', array('config', '_handle'), array($this->Subject));
 		$this->ActionClass
 			->expects($this->never())
@@ -152,11 +152,11 @@ class CrudActionTest extends CakeTestCase {
 			->will($this->returnValue(true));
 		$this->ActionClass
 			->expects($this->at(1))
-			->method('config', 'the action didn\'t ask for the handleAction property')
-			->with('handleAction')
+			->method('config', 'the action didn\'t ask for the action property')
+			->with('action')
 			->will($this->returnValue('admin'));
 
-		// Make sure the action in the request isn't the same as handleAction propety
+		// Make sure the action in the request isn't the same as action propety
 		$this->Subject->action = 'admin_add';
 
 		$expected = false;
@@ -173,7 +173,7 @@ class CrudActionTest extends CakeTestCase {
 	public function testDisableWorks() {
 		$this->Controller->methods[] = 'add';
 
-		$this->Subject->set(array('handleAction' => 'add'));
+		$this->Subject->set(array('action' => 'add'));
 		$this->ActionClass = $this->getMock('CrudAction', array('config', '_handle'), array($this->Subject));
 		$this->ActionClass
 			->expects($this->never())
@@ -196,7 +196,7 @@ class CrudActionTest extends CakeTestCase {
  * @return void
  */
 	public function testEnableWorks() {
-		$this->Subject->set(array('handleAction' => 'add'));
+		$this->Subject->set(array('action' => 'add'));
 		$this->ActionClass = $this->getMock('CrudAction', array('config', '_handle'), array($this->Subject));
 		$this->ActionClass
 			->expects($this->never())
@@ -275,7 +275,7 @@ class CrudActionTest extends CakeTestCase {
 /**
  * Test that getting the view will execute config()
  *
- * Since there is no view configured, it will call config('handleAction')
+ * Since there is no view configured, it will call config('action')
  * and use the return value as the view name.
  *
  * @return void
@@ -290,7 +290,7 @@ class CrudActionTest extends CakeTestCase {
 		$this->ActionClass
 			->expects($this->at(1))
 			->method('config')
-			->with('handleAction')
+			->with('action')
 			->will($this->returnValue('add'));
 
 		$expected = 'add';
@@ -302,7 +302,7 @@ class CrudActionTest extends CakeTestCase {
  * Test that getting the view will execute config()
  *
  * Since a view has been configured, the view value will be
- * returned and it won't use handleAction
+ * returned and it won't use action
  *
  * @return void
  */

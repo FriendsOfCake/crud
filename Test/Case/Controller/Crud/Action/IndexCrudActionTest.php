@@ -70,7 +70,7 @@ class IndexCrudActionTest extends CakeTestCase {
 		$Action
 			->expects($this->at(1))
 			->method('config')
-			->with('handleAction')
+			->with('action')
 			->will($this->returnValue('index'));
 		$Action
 			->expects($this->once())
@@ -114,7 +114,7 @@ class IndexCrudActionTest extends CakeTestCase {
 			'crud' => $Crud,
 			'request' => $Request,
 			'controller' => $Controller,
-			'handleAction' => 'index',
+			'action' => 'index',
 			'action' => 'index',
 			'model' => null,
 			'modelClass' => null,
@@ -140,7 +140,7 @@ class IndexCrudActionTest extends CakeTestCase {
 		$Action
 			->expects($this->at(1))
 			->method('config')
-			->with('handleAction')
+			->with('action')
 			->will($this->returnValue('index'));
 
 		return compact('Request', 'Crud', 'Collection', 'Paginate', 'Controller', 'CrudSubject', 'Action');

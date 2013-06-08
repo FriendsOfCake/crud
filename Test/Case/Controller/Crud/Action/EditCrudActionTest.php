@@ -80,7 +80,7 @@ class EditCrudActionTest extends CakeTestCase {
 			'crud' => $Crud,
 			'request' => $Request,
 			'controller' => $Controller,
-			'handleAction' => 'edit',
+			'action' => 'edit',
 			'action' => 'edit',
 			'model' => $Model,
 			'modelClass' => $Model->name,
@@ -124,7 +124,7 @@ class EditCrudActionTest extends CakeTestCase {
 		$Action
 			->expects($this->at(1))
 			->method('config')
-			->with('handleAction')
+			->with('action')
 			->will($this->returnValue('edit'));
 		$Action
 			->expects($this->once())
@@ -193,7 +193,7 @@ class EditCrudActionTest extends CakeTestCase {
 		$Action
 			->expects($this->at(1))
 			->method('config')
-			->with('handleAction')
+			->with('action')
 			->will($this->returnValue('edit'));
 		$Action
 			->expects($this->once())
@@ -263,7 +263,7 @@ class EditCrudActionTest extends CakeTestCase {
 		$Action
 			->expects($this->at(1))
 			->method('config')
-			->with('handleAction')
+			->with('action')
 			->will($this->returnValue('edit'));
 		$Action
 			->expects($this->at(2))
@@ -346,7 +346,7 @@ class EditCrudActionTest extends CakeTestCase {
 		$Action
 			->expects($this->at(1))
 			->method('config')
-			->with('handleAction')
+			->with('action')
 			->will($this->returnValue('edit'));
 		$Action
 			->expects($this->at(2))
@@ -387,7 +387,7 @@ class EditCrudActionTest extends CakeTestCase {
 		$Action
 			->expects($this->at(1))
 			->method('config')
-			->with('handleAction')
+			->with('action')
 			->will($this->returnValue('edit'));
 		$Action
 			->expects($this->once())
@@ -433,7 +433,7 @@ class EditCrudActionTest extends CakeTestCase {
 		$Action
 			->expects($this->at(1))
 			->method('config')
-			->with('handleAction')
+			->with('action')
 			->will($this->returnValue('edit'));
 		$Action
 			->expects($this->once())
@@ -504,7 +504,7 @@ class EditCrudActionTest extends CakeTestCase {
 		$Action
 			->expects($this->at(1))
 			->method('config')
-			->with('handleAction')
+			->with('action')
 			->will($this->returnValue('edit'));
 		$Action
 			->expects($this->once())
@@ -588,7 +588,7 @@ class EditCrudActionTest extends CakeTestCase {
 		$Action
 			->expects($this->at(1))
 			->method('config')
-			->with('handleAction')
+			->with('action')
 			->will($this->returnValue('edit'));
 		$Action
 			->expects($this->once())

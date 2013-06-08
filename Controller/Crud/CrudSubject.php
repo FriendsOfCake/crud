@@ -40,13 +40,6 @@ class CrudSubject {
 	public $model;
 
 /**
- * Name of the dispatched action
- *
- * @var string
- */
-	public $action;
-
-/**
  * Request object instance
  *
  * @return CakeRequest
@@ -65,7 +58,7 @@ class CrudSubject {
  *
  * @var string
  */
-	public $handleAction;
+	public $action;
 
 /**
  * Optional arguments passed to the controller action

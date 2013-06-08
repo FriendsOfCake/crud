@@ -66,7 +66,7 @@ class ViewCrudActionTest extends CakeTestCase {
 		$Action
 			->expects($this->at(1))
 			->method('config')
-			->with('handleAction')
+			->with('action')
 			->will($this->returnValue('view'));
 		$Action
 			->expects($this->once())
@@ -163,7 +163,7 @@ class ViewCrudActionTest extends CakeTestCase {
 			'crud' => $Crud,
 			'request' => null,
 			'controller' => $Controller,
-			'handleAction' => 'view',
+			'action' => 'view',
 			'action' => 'view',
 			'model' => $Model,
 			'modelClass' => $Model->name,
@@ -182,7 +182,7 @@ class ViewCrudActionTest extends CakeTestCase {
 		$Action
 			->expects($this->at(1))
 			->method('config')
-			->with('handleAction')
+			->with('action')
 			->will($this->returnValue('view'));
 		$Action
 			->expects($this->once())
@@ -263,7 +263,7 @@ class ViewCrudActionTest extends CakeTestCase {
 			'crud' => $Crud,
 			'request' => null,
 			'controller' => $Controller,
-			'handleAction' => 'view',
+			'action' => 'view',
 			'action' => 'view',
 			'model' => $Model,
 			'modelClass' => $Model->name,
@@ -282,7 +282,7 @@ class ViewCrudActionTest extends CakeTestCase {
 		$Action
 			->expects($this->at(1))
 			->method('config')
-			->with('handleAction')
+			->with('action')
 			->will($this->returnValue('view'));
 		$Action
 			->expects($this->once())
@@ -327,7 +327,7 @@ class ViewCrudActionTest extends CakeTestCase {
 			'crud' => $Crud,
 			'request' => null,
 			'controller' => $Controller,
-			'handleAction' => 'view',
+			'action' => 'view',
 			'action' => 'view',
 			'model' => null,
 			'modelClass' => null,
@@ -346,7 +346,7 @@ class ViewCrudActionTest extends CakeTestCase {
 		$Action
 			->expects($this->at(1))
 			->method('config')
-			->with('handleAction')
+			->with('action')
 			->will($this->returnValue('view'));
 		$Action
 			->expects($this->once())
@@ -378,7 +378,7 @@ class ViewCrudActionTest extends CakeTestCase {
 			'crud' => null,
 			'request' => $Request,
 			'controller' => (object)array('Components' => null),
-			'handleAction' => 'view',
+			'action' => 'view',
 			'action' => 'view',
 			'model' => null,
 			'modelClass' => null,
@@ -397,7 +397,7 @@ class ViewCrudActionTest extends CakeTestCase {
 		$Action
 			->expects($this->at(1))
 			->method('config')
-			->with('handleAction')
+			->with('action')
 			->will($this->returnValue('view'));
 		$Action
 			->expects($this->once())

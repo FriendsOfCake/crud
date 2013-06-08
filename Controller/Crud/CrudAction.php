@@ -75,20 +75,11 @@ abstract class CrudAction implements CakeEventListener {
 		$this->_controller = $subject->controller;
 
 		// Mark that we will only handle this specific action if asked
-		$this->_settings['handleAction'] = $subject->handleAction;
+		$this->_settings['action'] = $subject->action;
 
 		if (!empty($defaults)) {
 			$this->config($defaults);
 		}
-	}
-
-/**
- * List of implemented events
- *
- * @return array
- */
-	public function implementedEvents() {
-		return array();
 	}
 
 /**
@@ -108,7 +99,7 @@ abstract class CrudAction implements CakeEventListener {
 			return false;
 		}
 
-		if ($subject->action !== $this->config('handleAction')) {
+		if ($subject->action !== $this->config('action')) {
 			return false;
 		}
 
@@ -126,7 +117,7 @@ abstract class CrudAction implements CakeEventListener {
 	public function disable() {
 		$this->config('enabled', false);
 
-		$pos = array_search($this->_settings['handleAction'], $this->_controller->methods);
+		$pos = array_search($this->_settings['action'], $this->_controller->methods);
 		if (false !== $pos) {
 			unset($this->_controller->methods[$pos]);
 		}
@@ -140,9 +131,9 @@ abstract class CrudAction implements CakeEventListener {
 	public function enable() {
 		$this->config('enabled', true);
 
-		$pos = array_search($this->_settings['handleAction'], $this->_controller->methods);
+		$pos = array_search($this->_settings['action'], $this->_controller->methods);
 		if (false === $pos) {
-			$this->_controller->methods[] = $this->_settings['handleAction'];
+			$this->_controller->methods[] = $this->_settings['action'];
 		}
 	}
 
@@ -193,10 +184,19 @@ abstract class CrudAction implements CakeEventListener {
  */
 	public function view($view = null) {
 		if (empty($view)) {
-			return $this->config('view') ?: $this->config('handleAction');
+			return $this->config('view') ?: $this->config('action');
 		}
 
 		return $this->config('view', $view);
+	}
+
+/**
+ * List of implemented events
+ *
+ * @return array
+ */
+	public function implementedEvents() {
+		return array();
 	}
 
 /**

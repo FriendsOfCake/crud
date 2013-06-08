@@ -80,7 +80,7 @@ class AddCrudActionTest extends CakeTestCase {
 			'crud' => $Crud,
 			'request' => $Request,
 			'controller' => $Controller,
-			'handleAction' => 'add',
+			'action' => 'add',
 			'action' => 'add',
 			'model' => $Model,
 			'modelClass' => $Model->name,
@@ -116,7 +116,7 @@ class AddCrudActionTest extends CakeTestCase {
 		$Action
 			->expects($this->at(1))
 			->method('config')
-			->with('handleAction')
+			->with('action')
 			->will($this->returnValue('add'));
 		$Action
 			->expects($this->once())
@@ -142,7 +142,7 @@ class AddCrudActionTest extends CakeTestCase {
 		$Action
 			->expects($this->at(1))
 			->method('config')
-			->with('handleAction')
+			->with('action')
 			->will($this->returnValue('add'));
 
 		$Request
@@ -199,7 +199,7 @@ class AddCrudActionTest extends CakeTestCase {
 		$Action
 			->expects($this->at(1))
 			->method('config')
-			->with('handleAction')
+			->with('action')
 			->will($this->returnValue('add'));
 		$Action
 			->expects($this->once())
@@ -255,7 +255,7 @@ class AddCrudActionTest extends CakeTestCase {
 		$Action
 			->expects($this->at(1))
 			->method('config')
-			->with('handleAction')
+			->with('action')
 			->will($this->returnValue('add'));
 
 		$Action
@@ -313,7 +313,7 @@ class AddCrudActionTest extends CakeTestCase {
 		$Action
 			->expects($this->at(1))
 			->method('config')
-			->with('handleAction')
+			->with('action')
 			->will($this->returnValue('add'));
 		$Action
 			->expects($this->once())

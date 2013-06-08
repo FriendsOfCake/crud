@@ -75,7 +75,7 @@ class DeleteCrudActionText extends CakeTestCase {
 			'crud' => $Crud,
 			'request' => $Request,
 			'controller' => $Controller,
-			'handleAction' => 'view',
+			'action' => 'view',
 			'action' => 'view',
 			'model' => $Model,
 			'modelClass' => $Model->name,
@@ -103,7 +103,7 @@ class DeleteCrudActionText extends CakeTestCase {
 		$Action
 			->expects($this->at(1))
 			->method('config')
-			->with('handleAction')
+			->with('action')
 			->will($this->returnValue('delete'));
 		$Action
 			->expects($this->once())
