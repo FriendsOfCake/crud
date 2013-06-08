@@ -64,7 +64,7 @@ class AddCrudActionTest extends CakeTestCase {
 
 		$Model = $this->ModelMock
 			->disableOriginalConstructor()
-			->setMethods(array('escapeField', 'find', 'saveAll'))
+			->setMethods(array('create', 'escapeField', 'find', 'saveAll'))
 			->getMock();
 
 		$Controller = $this->ControllerMock
@@ -150,6 +150,10 @@ class AddCrudActionTest extends CakeTestCase {
 			->method('is')
 			->with('post')
 			->will($this->returnValue(false));
+
+		$Model
+			->expects($this->once())
+			->method('create');
 
 		$Crud
 			->expects($this->at(0))
