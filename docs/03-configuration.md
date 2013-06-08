@@ -433,6 +433,53 @@ public function admin_index() {
 }
 ```
 
+## Change the viewVar (variable name in the view)
+
+By default Crud follows the convention of `$items` in `index()` actions and `$item` in `view()` actions
+
+If you want to change these settings, simply call the `viewVar()` method on the action
+
+### Using beforeFilter
+
+```php
+public function beforeFilter() {
+	$this->Crud->action('index')->viewVar('data');
+
+	// Get the current configuration
+	$config = $this->Crud->action('index')->viewVar();
+
+	$this->Crud->action('admin_index')->viewVar('data');
+
+	// Get the current configuration
+	$config = $this->Crud->action('admin_index')->viewVar();
+}
+```
+
+### In the controller action
+
+```php
+// You don't have to provide the action name in 'action'
+// since the default is the current action
+
+public function index() {
+	$this->Crud->action()->viewVar('data');
+
+	// Get the current configuration
+	$config = $this->Crud->action()->viewVar();
+
+	return $this->Crud->executeAction();
+}
+
+public function admin_index() {
+	$this->Crud->action()->viewVar('data');
+
+	// Get the current configuration
+	$config = $this->Crud->action()->viewVar();
+
+	return $this->Crud->executeAction();
+}
+```
+
 ## Enable a Crud action on the fly
 
 This can only be done in `beforeFilter` (or earlier in the request) since it's the last method called
