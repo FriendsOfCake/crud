@@ -1,7 +1,7 @@
 <?php
 
 App::uses('CrudAction', 'Crud.Controller/Crud');
-App::uses('CrudSubject', 'Crud.Controller');
+App::uses('CrudSubject', 'Crud.Controller/Crud');
 
 /**
  * Handles 'Index' Crud actions
