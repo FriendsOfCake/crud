@@ -109,9 +109,9 @@ class TranslationsListener extends CrudListener implements CakeEventListener {
 /**
  * SetFlash Crud Event callback
  *
- * @throws CakeException if called with invalid args
  * @param CakeEvent $e
  * @return void
+ * @throws RuntimeException If called with invalid args
  */
 	public function setFlash(CakeEvent $event) {
 		if (empty($event->subject->type)) {
