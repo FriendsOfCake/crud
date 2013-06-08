@@ -91,7 +91,6 @@ abstract class AppController extends Controller {
  * @throws MissingActionException When actions are not defined and scaffolding and CRUD is not enabled.
  */
 	public function invokeAction(CakeRequest $request) {
-
 		try {
 			return parent::invokeAction($request);
 		} catch (MissingActionException $e) {

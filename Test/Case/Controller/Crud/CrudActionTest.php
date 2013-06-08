@@ -171,6 +171,9 @@ class CrudActionTest extends CakeTestCase {
  * @return void
  */
 	public function testDisableWorks() {
+		$this->Controller->methods[] = 'add';
+
+		$this->Subject->set(array('handleAction' => 'add'));
 		$this->ActionClass = $this->getMock('CrudAction', array('config', '_handle'), array($this->Subject));
 		$this->ActionClass
 			->expects($this->never())
@@ -181,6 +184,9 @@ class CrudActionTest extends CakeTestCase {
 			->with('enabled', false);
 
 		$this->ActionClass->disable();
+
+		$actual = array_search('add', $this->Controller->methods);
+		$this->assertFalse($actual, '"add" was not removed from the controller::$methods array');
 	}
 
 /**
@@ -190,6 +196,7 @@ class CrudActionTest extends CakeTestCase {
  * @return void
  */
 	public function testEnableWorks() {
+		$this->Subject->set(array('handleAction' => 'add'));
 		$this->ActionClass = $this->getMock('CrudAction', array('config', '_handle'), array($this->Subject));
 		$this->ActionClass
 			->expects($this->never())
@@ -200,6 +207,9 @@ class CrudActionTest extends CakeTestCase {
 			->with('enabled', true);
 
 		$this->ActionClass->enable();
+
+		$actual = array_search('add', $this->Controller->methods);
+		$this->assertNotEmpty($actual, '"add" was added to the controller::$methods array');
 	}
 
 /**

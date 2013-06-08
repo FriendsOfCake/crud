@@ -75,7 +75,7 @@ abstract class CrudAction implements CakeEventListener {
 		$this->_controller = $subject->controller;
 
 		// Mark that we will only handle this specific action if asked
-		$this->config('handleAction', $subject->handleAction);
+		$this->_settings['handleAction'] = $subject->handleAction;
 
 		if (!empty($defaults)) {
 			$this->config($defaults);
@@ -121,19 +121,29 @@ abstract class CrudAction implements CakeEventListener {
 /**
  * Disable the Crud action
  *
- * @return boolean
+ * @return void
  */
 	public function disable() {
-		return $this->config('enabled', false);
+		$this->config('enabled', false);
+
+		$pos = array_search($this->_settings['handleAction'], $this->_controller->methods);
+		if (false !== $pos) {
+			unset($this->_controller->methods[$pos]);
+		}
 	}
 
 /**
  * Enable the Crud action
  *
- * @return boolean
+ * @return void
  */
 	public function enable() {
-		return $this->config('enabled', true);
+		$this->config('enabled', true);
+
+		$pos = array_search($this->_settings['handleAction'], $this->_controller->methods);
+		if (false === $pos) {
+			$this->_controller->methods[] = $this->_settings['handleAction'];
+		}
 	}
 
 /**
