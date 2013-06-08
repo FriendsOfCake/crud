@@ -67,6 +67,8 @@ class AddCrudAction extends CrudAction {
  */
 	protected function _handle() {
 		if (!$this->_request->is('post')) {
+			$this->_model->create();
+			$this->_request->data = $this->_model->data;
 			$this->_crud->trigger('beforeRender', array('success' => false));
 			return;
 		}
@@ -74,7 +76,11 @@ class AddCrudAction extends CrudAction {
 		$this->_crud->trigger('beforeSave');
 		if ($this->_model->saveAll($this->_request->data, $this->saveOptions())) {
 			$this->setFlash('create.success');
-			$subject = $this->_crud->trigger('afterSave', array('success' => true, 'created' => true, 'id' => $this->_model->id));
+			$subject = $this->_crud->trigger('afterSave', array(
+				'success' => true,
+				'created' => true,
+				'id' => $this->_model->id
+			));
 			return $this->_redirect($subject, array('action' => 'index'));
 		}
 
