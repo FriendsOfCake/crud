@@ -13,11 +13,11 @@ The only installation method supported by this plugin is by using composer. Just
 {
 	"extra": {
 		"installer-paths": {
-			"app/Plugin/Crud": ["Jippi/cakephp-crud"]
+			"app/Plugin/Crud": ["jippi/cakephp-crud"]
 		}
 	},
 	"require" : {
-		"Jippi/cakephp-crud": "master"
+		"jippi/cakephp-crud": "master"
 	}
 }
 ```
@@ -25,13 +25,13 @@ The only installation method supported by this plugin is by using composer. Just
 ### git clone
 
 ```
-git clone git://github.com/Jippi/cakephp-crud.git app/Plugin/Crud
+git clone git://github.com/jippi/cakephp-crud.git app/Plugin/Crud
 ```
 
 ### git submodule
 
 ```
-git submodule add git://github.com/Jippi/cakephp-crud.git app/Plugin/Crud
+git submodule add git://github.com/jippi/cakephp-crud.git app/Plugin/Crud
 ```
 
 # Loading and installation
