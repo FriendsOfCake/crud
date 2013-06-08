@@ -75,7 +75,13 @@ class AppController extends Controller {
 abstract class AppController extends Controller {
 
 /**
- * Dispatches the controller action.	 Checks that the action exists and isn't private.
+ * List of components which can handle action invocation
+ * @var array
+ */
+	public $dispatchComponents = array();
+
+/**
+ * Dispatches the controller action. Checks that the action exists and isn't private.
  *
  * If Cake raises MissingActionException we attempt to execute Crud
  *
@@ -85,8 +91,6 @@ abstract class AppController extends Controller {
  * @throws MissingActionException When actions are not defined and scaffolding and CRUD is not enabled.
  */
 	public function invokeAction(CakeRequest $request) {
-
-		public $dispatchComponents = array();
 
 		try {
 			return parent::invokeAction($request);
@@ -115,7 +119,7 @@ abstract class AppController extends Controller {
 						continue;
 					}
 
-					// Execute the callback, should return CakeResponse object
+					// Execute the callback, can return CakeResponse object
 					return $this->{$component}->executeAction();
 				}
 			}
