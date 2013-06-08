@@ -123,7 +123,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function beforeSave(CakeEvent $event) {
-
 	}
 
 /**
@@ -133,7 +132,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function beforeRedirect(CakeEvent $event) {
-
 	}
 
 /**
@@ -143,7 +141,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function beforeFind(CakeEvent $event) {
-
 	}
 
 /**
@@ -153,7 +150,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function afterFind(CakeEvent $event) {
-
 	}
 
 /**
@@ -163,7 +159,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function afterSave(CakeEvent $event) {
-
 	}
 
 /**
@@ -173,7 +168,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function beforeRender(CakeEvent $event) {
-
 	}
 
 /**
@@ -183,7 +177,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function beforeDelete(CakeEvent $event) {
-
 	}
 
 /**
@@ -193,7 +186,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function afterDelete(CakeEvent $event) {
-
 	}
 
 /**
@@ -203,11 +195,10 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * - query: An array with options for find('list')
  * - model: Model instance, the model to be used for fiding the list or records
  *
- *  @param CakeEvent $event The CakePHP CakeEvent object.
+ * @param CakeEvent $event The CakePHP CakeEvent object.
  * @return void
  */
 	public function beforeListRelated(CakeEvent $event) {
-
 	}
 
 /**
@@ -222,7 +213,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function afterListRelated(CakeEvent $event) {
-
 	}
 
 /**
@@ -232,7 +222,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function recordNotFound(CakeEvent $event) {
-
 	}
 
 /**
@@ -242,7 +231,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function beforePaginate(CakeEvent $event) {
-
 	}
 
 /**
@@ -252,7 +240,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function afterPaginate(CakeEvent $event) {
-
 	}
 
 /**
@@ -262,7 +249,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function invalidId(CakeEvent $event) {
-
 	}
 
 /**
@@ -278,7 +264,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function setFlash(CakeEvent $event) {
-
 	}
 
 /**

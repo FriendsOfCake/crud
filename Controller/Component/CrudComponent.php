@@ -499,6 +499,7 @@ class CrudComponent extends Component {
  *
  * @param string $name The controller action name
  * @return CrudAction
+ * @throws RuntimeException If action is not mapped
  */
 	protected function _loadAction($name) {
 		if (!isset($this->_actionInstances[$name])) {

@@ -106,8 +106,8 @@ class CrudSubject {
  *
  * @param string $mode
  * @param mixed $actions
- *
  * @return boolean
+ * @throws Exception In case of invalid mode
  */
 	public function shouldProcess($mode, $actions = array()) {
 		if (is_string($actions)) {
@@ -117,14 +117,12 @@ class CrudSubject {
 		switch ($mode) {
 			case 'only':
 				return in_array($this->action, $actions);
-				break;
 
 			case 'not':
 				return !in_array($this->action, $actions);
-				break;
 
 			default:
-				throw new \Exception('Invalid mode');
+				throw new Exception('Invalid mode');
 		}
 	}
 
