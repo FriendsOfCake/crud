@@ -209,7 +209,7 @@ class CrudActionTest extends CakeTestCase {
 		$this->ActionClass->enable();
 
 		$actual = array_search('add', $this->Controller->methods);
-		$this->assertNotEmpty($actual, '"add" was added to the controller::$methods array');
+		$this->assertNotEmpty($actual, '"add" was not added to the controller::$methods array');
 	}
 
 /**
