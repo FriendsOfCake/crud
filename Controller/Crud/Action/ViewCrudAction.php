@@ -29,6 +29,7 @@ class ViewCrudAction extends CrudAction {
 		'enabled' => true,
 		'findMethod' => 'first',
 		'view' => null,
+		'viewVar' => 'item',
 		'serialize' => array(
 			'success',
 			'item' => 'data'
@@ -75,8 +76,7 @@ class ViewCrudAction extends CrudAction {
 		$subject = $this->_crud->trigger('afterFind', compact('id', 'item'));
 		$item = $subject->item;
 
-		$success = true;
-		$this->_controller->set(compact('item', 'success'));
+		$this->_controller->set(array('success' => true, $this->viewVar() => $item));
 		$this->_crud->trigger('beforeRender', compact('id', 'item'));
 	}
 

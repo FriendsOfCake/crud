@@ -29,6 +29,7 @@ class IndexCrudAction extends CrudAction {
 		'enabled' => true,
 		'findMethod' => 'all',
 		'view' => null,
+		'viewVar' => 'items',
 		'serialize' => array(
 			'success',
 			'items' => 'data'
@@ -66,9 +67,7 @@ class IndexCrudAction extends CrudAction {
 			$items = iterator_to_array($items);
 		}
 
-		$success = true;
-		$this->_controller->set(compact('items', 'success'));
-
+		$this->_controller->set(array('success' => true, $this->viewVar() => $items));
 		$this->_crud->trigger('beforeRender');
 	}
 
