@@ -111,18 +111,18 @@ class TranslationsListener extends CrudListener implements CakeEventListener {
  *
  * @param CakeEvent $e
  * @return void
- * @throws RuntimeException If called with invalid args
+ * @throws CakeException If called with invalid args
  */
 	public function setFlash(CakeEvent $event) {
 		if (empty($event->subject->type)) {
-			throw new RuntimeException('Missing flash type');
+			throw new CakeException('Missing flash type');
 		}
 
 		$type = $event->subject->type;
 
 		$config = Hash::get($this->_settings, $type);
 		if (empty($config)) {
-			throw new RuntimeException('Invalid flash type');
+			throw new CakeException('Invalid flash type');
 		}
 
 		$name = $this->config('name') ?: $event->subject->name;

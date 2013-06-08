@@ -291,12 +291,12 @@ abstract class CrudAction implements CakeEventListener {
  *
  * @param NULL|Model $model
  * @return string
- * @throws RuntimeException If unable to get model object
+ * @throws CakeException If unable to get model object
  */
 	public function detectPrimaryKeyFieldType($model = null) {
 		if (empty($model)) {
 			if (empty($this->_model)) {
-				throw new RuntimeException('Missing model object, cant detect primary key field type');
+				throw new CakeException('Missing model object, cant detect primary key field type');
 			}
 
 			$model = $this->_model;

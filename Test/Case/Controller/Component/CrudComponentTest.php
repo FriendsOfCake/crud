@@ -608,14 +608,14 @@ class CrudComponentTestCase extends ControllerTestCase {
 /**
  * Tests on method for beforePaginateEvent
  *
- * @expectedException RuntimeException
+ * @expectedException CakeException
  * @expectedExceptionMessage Crud.beforePaginate called
  * @return void
- * @throws RuntimeException
+ * @throws CakeException
  */
 	public function testOnBeforePaginateString() {
 		$this->Crud->on('beforePaginate', function($event) {
-			throw new RuntimeException($event->name() . ' called');
+			throw new CakeException($event->name() . ' called');
 		});
 		$this->Crud->executeAction('index');
 	}
@@ -623,14 +623,14 @@ class CrudComponentTestCase extends ControllerTestCase {
 /**
  * Tests on method for afterPaginate
  *
- * @expectedException RuntimeException
+ * @expectedException CakeException
  * @expectedExceptionMessage Crud.afterPaginate called
  * @return void
- * @throws RuntimeException
+ * @throws CakeException
  */
 	public function testOnAfterPaginateString() {
 		$this->Crud->on('afterPaginate', function($event) {
-			throw new RuntimeException($event->name() . ' called');
+			throw new CakeException($event->name() . ' called');
 		});
 		$this->Crud->executeAction('index');
 	}
@@ -638,14 +638,14 @@ class CrudComponentTestCase extends ControllerTestCase {
 /**
  * Tests on method for afterPaginate with full event name
  *
- * @expectedException RuntimeException
+ * @expectedException CakeException
  * @expectedExceptionMessage Crud.afterPaginate called
  * @return void
- * @throws RuntimeException
+ * @throws CakeException
  */
 	public function testOnAfterPaginateFullNameString() {
 		$this->Crud->on('Crud.afterPaginate', function($event) {
-			throw new RuntimeException($event->name() . ' called');
+			throw new CakeException($event->name() . ' called');
 		});
 		$this->Crud->executeAction('index');
 	}
@@ -1098,7 +1098,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 /**
  * Test if crud complains about unmapped actions
  *
- * @expectedException RuntimeException
+ * @expectedException CakeException
  * @return void
  */
 	public function testCrudWillComplainAboutUnmappedAction() {
@@ -1417,7 +1417,7 @@ class CrudComponentTestCase extends ControllerTestCase {
  * Test that having mapped a custom model for an action,
  * but the custom model isn't loaded, will throw an exception
  *
- * @expectedException RuntimeException
+ * @expectedException CakeException
  * @expectedExceptionMessage No model loaded in the Controller by the name "Donkey". Please add it to $uses.
  */
 	public function testSetModelPropertiesChangeModelForActionNotLoadedModel() {
