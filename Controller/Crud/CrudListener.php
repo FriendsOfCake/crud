@@ -287,27 +287,24 @@ abstract class CrudListener extends Object implements CakeEventListener {
  *
  * @param mixed $key
  * @param mixed $value
- * @return mixed|CrudListener
+ * @return mixed|CrudAction
  */
 	public function config($key = null, $value = null) {
 		if (is_null($key) && is_null($value)) {
 			return $this->_settings;
 		}
 
-		if (empty($value)) {
+		if (is_null($value)) {
 			if (is_array($key)) {
-				$this->_settings = Hash::merge($this->_settings, $key);
-				return $this->_settings;
+				$this->_settings = $key + $this->_settings;
+				return $this;
 			}
 
 			return Hash::get($this->_settings, $key);
 		}
 
 		if (is_array($value)) {
-			$merge = Hash::get($this->_settings, $key);
-			if ($merge) {
-				$value += $merge;
-			}
+			$value = $value + (array)Hash::get($this->_settings, $key);
 		}
 
 		$this->_settings = Hash::insert($this->_settings, $key, $value);
