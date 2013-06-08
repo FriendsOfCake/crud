@@ -27,7 +27,7 @@ class RelatedModelsListener extends CrudListener implements CakeEventListener {
 		}
 
 		foreach ($actions as $action) {
-			$actionClass = $this->_crud->getAction($action);
+			$actionClass = $this->_crud->action($action);
 			$config = $actionClass->config('relatedLists');
 			if (empty($config)) {
 				$actionClass->config('relatedLists', true);
@@ -53,7 +53,7 @@ class RelatedModelsListener extends CrudListener implements CakeEventListener {
 			$models = array($models);
 		}
 
-		$this->_crud->getAction($action)->config('relatedLists', $models);
+		$this->_crud->action($action)->config('relatedLists', $models);
 	}
 
 /**
@@ -63,7 +63,7 @@ class RelatedModelsListener extends CrudListener implements CakeEventListener {
  * @return array
  */
 	public function models($action = null) {
-		$actionClass = $this->_crud->getAction($action);
+		$actionClass = $this->_crud->action($action);
 
 		$settings = $actionClass->config('relatedLists');
 		if ($settings === true) {

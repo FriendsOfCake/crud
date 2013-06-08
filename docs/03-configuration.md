@@ -349,38 +349,38 @@ By default `delete` uses `find('count')`
 ```php
 public function beforeFilter() {
 	// The index() function will call find('published') on your model
-	$this->Crud->getAction('index')->findMethod('published');
+	$this->Crud->action('index')->findMethod('published');
 
 	// Get the current configuration
-	$config = $this->Crud->getAction('index')->findMethod();
+	$config = $this->Crud->action('index')->findMethod();
 
 	// The admin_index() function will call find('unpublished') on your model
-	$this->Crud->getAction('admin_unpublished')->findMethod('unpublished');
+	$this->Crud->action('admin_unpublished')->findMethod('unpublished');
 
 	// Get the current configuration
-	$config = $this->Crud->getAction('admin_index')->findMethod();
+	$config = $this->Crud->action('admin_index')->findMethod();
 }
 ```
 
 ### In the controller action
 
 ```php
-// You don't have to provide the action name in 'getAction'
+// You don't have to provide the action name in 'action'
 // since the default is the current action
 public function index() {
-	$this->Crud->getAction()->findMethod('published');
+	$this->Crud->action()->findMethod('published');
 
 	// Get the current configuration
-	$config = $this->Crud->getAction()->findMethod();
+	$config = $this->Crud->action()->findMethod();
 
 	return $this->Crud->executeAction();
 }
 
 public function admin_index() {
-	$this->Crud->getAction()->findMethod('unpublished');
+	$this->Crud->action()->findMethod('unpublished');
 
 	// Get the current configuration
-	$config = $this->Crud->getAction()->findMethod();
+	$config = $this->Crud->action()->findMethod();
 
 	return $this->Crud->executeAction();
 }
@@ -396,38 +396,38 @@ If you action is `admin_index` the `admin_index.ctp` view will be rendered by de
 
 ```php
 public function beforeFilter() {
-	$this->Crud->getAction('index')->view('my_index');
+	$this->Crud->action('index')->view('my_index');
 
 	// Get the current configuration
-	$config = $this->Crud->getAction('index')->view();
+	$config = $this->Crud->action('index')->view();
 
-	$this->Crud->getAction('admin_index')->view('my_admin_index');
+	$this->Crud->action('admin_index')->view('my_admin_index');
 
 	// Get the current configuration
-	$config = $this->Crud->getAction('admin_index')->view();
+	$config = $this->Crud->action('admin_index')->view();
 }
 ```
 
 ### In the controller action
 
 ```php
-// You don't have to provide the action name in 'getAction'
+// You don't have to provide the action name in 'action'
 // since the default is the current action
 
 public function index() {
-	$this->Crud->getAction()->view('my_index');
+	$this->Crud->action()->view('my_index');
 
 	// Get the current configuration
-	$config = $this->Crud->getAction()->view();
+	$config = $this->Crud->action()->view();
 
 	return $this->Crud->executeAction();
 }
 
 public function admin_index() {
-	$this->Crud->getAction()->view('my_admin_index');
+	$this->Crud->action()->view('my_admin_index');
 
 	// Get the current configuration
-	$config = $this->Crud->getAction()->view();
+	$config = $this->Crud->action()->view();
 
 	return $this->Crud->executeAction();
 }
@@ -444,8 +444,8 @@ Enabling a `CrudAction` automatically injects it into the Controller as if it wa
 // This can only be done in the beforeFilter
 
 public function beforeFilter() {
-	$this->Crud->getAction('delete')->enable();
-	$this->Crud->getAction('admin_delete')->enable();
+	$this->Crud->action('delete')->enable();
+	$this->Crud->action('admin_delete')->enable();
 }
 ```
 
@@ -460,8 +460,8 @@ Disabling a `CrudAction` automatically removes it from the Controller as if it w
 // This can only be done in the beforeFilter
 
 public function beforeFilter() {
-	$this->Crud->getAction('delete')->disable();
-	$this->Crud->getAction('admin_delete')->disable();
+	$this->Crud->action('delete')->disable();
+	$this->Crud->action('admin_delete')->disable();
 }
 ```
 
@@ -471,10 +471,10 @@ public function beforeFilter() {
 // This can be done both in beforeFilter and the controller action
 // All possible config keys can be found in the CrudAction classes (app/Plugin/Crud/Controller/Crud/Action)
 public function beforeFilter() {
-	$this->Crud->getAction('view')->config('validateId', 'uuid');
+	$this->Crud->action('view')->config('validateId', 'uuid');
 
 	// Get the current configuration
-	$config = $this->Crud->getAction('view')->config('validateId');
+	$config = $this->Crud->action('view')->config('validateId');
 }
 ```
 
@@ -492,10 +492,10 @@ The default setting is `true`
 // Disabling this feature allow HTTP POST to execute delete() actions
 // This can be changed in both beforeFilter and the controller action
 public function beforeFilter() {
-	$this->Crud->getAction('delete')->config('secureDelete', false);
+	$this->Crud->action('delete')->config('secureDelete', false);
 
 	// Get the current configuration
-	$config = $this->Crud->getAction('delete')->config('secureDelete');
+	$config = $this->Crud->action('delete')->config('secureDelete');
 }
 ```
 
@@ -521,19 +521,19 @@ If you set `relatedLists` to `false` no model relations will be fetched automati
 // This can be changed in beforeFilter and the controller action
 public function beforeFilter() {
 	// Automatically executes find('list') on the User ($users) and Tag ($tags) models
-	$this->Crud->getAction('add')->config('relatedLists', array('User', 'Tags'));
+	$this->Crud->action('add')->config('relatedLists', array('User', 'Tags'));
 
 	// Automatically executes find('list') on the User ($users) model
-	$this->Crud->getAction('add')->config('relatedLists', array('User'));
+	$this->Crud->action('add')->config('relatedLists', array('User'));
 
 	// Fetch related data from all model relations (default)
-	$this->Crud->getAction('add')->config('relatedLists', true);
+	$this->Crud->action('add')->config('relatedLists', true);
 
 	// Don't fetch any related data
-	$this->Crud->getAction('add')->config('relatedLists', false);
+	$this->Crud->action('add')->config('relatedLists', false);
 
 	// Get the current configuration
-	$config = $this->Crud->getAction('add')->config('relatedLists');
+	$config = $this->Crud->action('add')->config('relatedLists');
 }
 ```
 
@@ -549,6 +549,6 @@ The default for `add` and `edit` is `array('validate' => 'first', 'atomic' => tr
 // This can be changed in beforeFilter and in a controller action
 public function beforeFilter() {
 	// saveOptions is the 2nd argument to saveAll()
-	$this->Crud->getAction('add')->saveOptions(array('atomic' => false));
+	$this->Crud->action('add')->saveOptions(array('atomic' => false));
 }
 ```

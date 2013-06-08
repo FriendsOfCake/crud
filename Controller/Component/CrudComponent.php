@@ -160,7 +160,7 @@ class CrudComponent extends Component {
 
 		try {
 			// Execute the default action, inside this component
-			$response = $this->getAction($action)->handle($this->getSubject(compact('args')));
+			$response = $this->action($action)->handle($this->getSubject(compact('args')));
 			if ($response instanceof CakeResponse) {
 				return $response;
 			}
@@ -172,7 +172,7 @@ class CrudComponent extends Component {
 			throw $e;
 		}
 
-		$view = $this->getAction($action)->view();
+		$view = $this->action($action)->view();
 		return $this->_controller->response = $this->_controller->render($view);
 	}
 
@@ -182,7 +182,7 @@ class CrudComponent extends Component {
  * @param string $name The controller action name
  * @return CrudAction
  */
-	public function getAction($name = null) {
+	public function action($name = null) {
 		if (empty($name)) {
 			$name = $this->_action;
 		}
@@ -197,7 +197,7 @@ class CrudComponent extends Component {
  * @return void
  */
 	public function enableAction($action) {
-		$this->getAction($action)->enable($action);
+		$this->action($action)->enable($action);
 	}
 
 /**
@@ -207,7 +207,7 @@ class CrudComponent extends Component {
  * @return void
  */
 	public function disableAction($action) {
-		$this->getAction($action)->disable($action);
+		$this->action($action)->disable($action);
 	}
 
 /**
@@ -222,12 +222,12 @@ class CrudComponent extends Component {
 	public function mapActionView($action, $view = null) {
 		if (is_array($action)) {
 			foreach ($action as $realAction => $realView) {
-				$this->getAction($realAction)->view($realView);
+				$this->action($realAction)->view($realView);
 			}
 			return;
 		}
 
-		$this->getAction($action)->view($view);
+		$this->action($action)->view($view);
 	}
 
 /**
@@ -258,7 +258,7 @@ class CrudComponent extends Component {
 		}
 
 		try {
-			return $this->getAction($action)->config('enabled');
+			return $this->action($action)->config('enabled');
 		} catch (Exception $e) {
 
 		}
@@ -274,7 +274,7 @@ class CrudComponent extends Component {
  * @return void
  */
 	public function mapFindMethod($action, $method = null) {
-		$this->getAction($action)->findMethod($method);
+		$this->action($action)->findMethod($method);
 	}
 
 /**

@@ -487,7 +487,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 			->expects($this->never())
 			->method('render');
 
-		$this->Crud->getAction('delete')->config('secureDelete', false);
+		$this->Crud->action('delete')->config('secureDelete', false);
 
 		$this->controller->request->addDetector('delete', array(
 			'callback' => function() { return false; }
@@ -712,7 +712,7 @@ class CrudComponentTestCase extends ControllerTestCase {
  */
 	public function testFetchRelatedMapped() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')), false);
-		$this->Crud->getAction('add')->config('relatedLists', array('Author'));
+		$this->Crud->action('add')->config('relatedLists', array('Author'));
 
 		$expectedAuthors = array(1 => '1', 2 => '2', 3 => '3', 4 => '4');
 
@@ -877,10 +877,10 @@ class CrudComponentTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testCustomFindDefaults() {
-		$this->assertEquals('all', $this->Crud->getAction('index')->findMethod());
-		$this->assertEquals('first', $this->Crud->getAction('add')->findMethod());
-		$this->assertEquals('first', $this->Crud->getAction('edit')->findMethod());
-		$this->assertEquals('count', $this->Crud->getAction('delete')->findMethod());
+		$this->assertEquals('all', $this->Crud->action('index')->findMethod());
+		$this->assertEquals('first', $this->Crud->action('add')->findMethod());
+		$this->assertEquals('first', $this->Crud->action('edit')->findMethod());
+		$this->assertEquals('count', $this->Crud->action('delete')->findMethod());
 	}
 
 /**
@@ -890,10 +890,10 @@ class CrudComponentTestCase extends ControllerTestCase {
  */
 	public function testCustomFindChanged() {
 		$this->Crud->mapFindMethod('index', 'custom_find');
-		$this->assertEquals('custom_find', $this->Crud->getAction('index')->findMethod());
+		$this->assertEquals('custom_find', $this->Crud->action('index')->findMethod());
 
 		$this->Crud->mapFindMethod('index', 'all');
-		$this->assertEquals('all', $this->Crud->getAction('index')->findMethod());
+		$this->assertEquals('all', $this->Crud->action('index')->findMethod());
 	}
 
 /**

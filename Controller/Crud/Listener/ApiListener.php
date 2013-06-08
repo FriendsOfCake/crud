@@ -182,7 +182,7 @@ class ApiListener extends CrudListener {
 		}
 
 		// Copy the _serialize configuration from the CrudAction config
-		$this->_controller->set('_serialize', $event->subject->crud->getAction()->config('serialize'));
+		$this->_controller->set('_serialize', $event->subject->crud->action()->config('serialize'));
 
 		// Make sure to use Cruds own View renderer for json and xml
 		// @TODO: make the viewClassMap configurable
