@@ -48,13 +48,8 @@ class IndexCrudAction extends CrudAction {
  * @return void
  */
 	protected function _handle() {
-		$Paginator = $this->_collection->load('Paginator');
-
 		// Compute the pagination settings
-		$settings = $this->_computePaginationConfig();
-
-		$Paginator->settings = $settings;
-		$this->_controller->paginate = $settings;
+		$this->_computePaginationConfig();
 
 		// Do the pagination
 		$items = $this->_controller->paginate($this->_model);
@@ -74,11 +69,14 @@ class IndexCrudAction extends CrudAction {
 /**
  * Compute pagination settings
  *
- * @return array
+ * @return void
  */
 	protected function _computePaginationConfig() {
 		// Ensure we have Paginator loaded
-		$Paginator = $this->_collection->load('Paginator');
+		if (!isset($this->_controller->Paginator)) {
+			$this->_controller->Paginator = $this->_collection->load('Paginator');
+		}
+		$Paginator = $this->_controller->Paginator;
 		$settings = $Paginator->settings;
 
 		// Copy pagination settings from the controller
@@ -108,7 +106,8 @@ class IndexCrudAction extends CrudAction {
 			$settings['findType'] = $subject->findMethod;
 		}
 
-		return $settings;
+		$Paginator->settings = $settings;
+		$this->_controller->paginate = $settings;
 	}
 
 }
