@@ -4,14 +4,68 @@
  *
  * All Crud.* events passes this object as subject
  *
- * Copyright 2010-2012, Nodes ApS. (http://www.nodesagency.com/)
- *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright Nodes ApS, 2012
+ * @copyright Christian Winther, 2013
  */
-class CrudSubject extends stdClass {
+class CrudSubject {
+
+/**
+ * Instance of the crud component
+ *
+ * @var CrudComponent
+ */
+	public $crud;
+
+/**
+ * Instance of the controller
+ *
+ * @var Controller
+ */
+	public $controller;
+
+/**
+ * Name of the default controller model class
+ *
+ * @var string
+ */
+	public $modelClass;
+
+/**
+ * The default action model instance
+ *
+ * @var Model
+ */
+	public $model;
+
+/**
+ * Request object instance
+ *
+ * @return CakeRequest
+ */
+	public $request;
+
+/**
+ * Response object instance
+ *
+ * @var CakeResponse
+ */
+	public $response;
+
+/**
+ * The name of the action object associated with this dispatch
+ *
+ * @var string
+ */
+	public $action;
+
+/**
+ * Optional arguments passed to the controller action
+ *
+ * @var array
+ */
+	public $args;
 
 /**
  * Constructor
@@ -23,8 +77,8 @@ class CrudSubject extends stdClass {
 		$this->set($fields);
 	}
 
-/**sh
- * Set a list of key / values to the stdClass
+/**
+ * Set a list of key / values for this object
  *
  * @param array $fields
  * @return void
@@ -45,8 +99,8 @@ class CrudSubject extends stdClass {
  *
  * @param string $mode
  * @param mixed $actions
- *
  * @return boolean
+ * @throws Exception In case of invalid mode
  */
 	public function shouldProcess($mode, $actions = array()) {
 		if (is_string($actions)) {
@@ -56,14 +110,12 @@ class CrudSubject extends stdClass {
 		switch ($mode) {
 			case 'only':
 				return in_array($this->action, $actions);
-				break;
 
 			case 'not':
 				return !in_array($this->action, $actions);
-				break;
 
 			default:
-				throw new \Exception('Invalid mode');
+				throw new Exception('Invalid mode');
 		}
 	}
 

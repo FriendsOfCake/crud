@@ -1,18 +1,16 @@
 <?php
 
 App::uses('AppShell', 'Console/Command');
-App::uses('CrudSubject', 'Crud.Controller/Event');
-App::uses('TranslationsListener', 'Crud.Controller/Event');
+App::uses('CrudSubject', 'Crud.Controller/Crud');
+App::uses('TranslationsListener', 'Crud.Controller/Crud/Listener');
 
 /**
  * TranslationsShell
  *
- * Copyright 2010-2012, Nodes ApS. (http://www.nodesagency.com/)
- *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright Nodes ApS, 2012
+ * @copyright Christian Winther, 2013
  */
 class TranslationsShell extends AppShell {
 
@@ -197,12 +195,12 @@ class TranslationsShell extends AppShell {
 /**
  * _initializeMessages
  *
- * Extract all the messages used by the crud componentn, and write to the _messages property
+ * Extract all the messages used by the crud component, and write to the _messages property
  *
  * @return void
  */
 	protected function _initializeMessages() {
-		$event = new TranslationsListener(new CrudSubject());
+		$event = new TranslationsListener(new CrudSubject(array('crud' => null)));
 		$defaults = $event->getDefaults();
 		foreach ($defaults as $key => $array) {
 			if (!is_array($array)) {

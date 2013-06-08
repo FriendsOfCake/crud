@@ -23,10 +23,10 @@ App::uses('Validation', 'Utility');
  */
 class TestCrudEventManager extends CakeEventManager {
 
-	protected $log = array();
+	protected $_log = array();
 
 	public function dispatch($event) {
-		$this->log[]= array(
+		$this->_log[] = array(
 			'name' => $event->name(),
 			'subject' => $event->subject()
 		);
@@ -36,7 +36,7 @@ class TestCrudEventManager extends CakeEventManager {
 	public function getLog($params = array()) {
 		$params += array('clear' => true, 'format' => 'names');
 
-		$log = $this->log;
+		$log = $this->_log;
 
 		if ($params['format'] === 'names') {
 			$return = array();
@@ -47,11 +47,12 @@ class TestCrudEventManager extends CakeEventManager {
 		}
 
 		if ($params['clear']) {
-			$this->log = array();
+			$this->_log = array();
 		}
 
 		return $log;
 	}
+
 }
 
 class CrudExamplesController extends Controller {
@@ -90,8 +91,9 @@ class CrudExamplesController extends Controller {
  * @return void
  */
 	public function add() {
-		$this->Crud->executeAction();
+		return $this->Crud->executeAction();
 	}
+
 }
 
 /**
@@ -100,48 +102,6 @@ class CrudExamplesController extends Controller {
  * Expose protected methods so we can test them in isolation
  */
 class TestCrudComponent extends CrudComponent {
-
-/**
- * Test visibility wrapper
- */
-	public function testGetSubject($additional = array()) {
-		return $this->_getSubject($additional);
-	}
-
-/**
- * Test visibility wrapper
- */
-	public function testRedirect($subject, $url = null) {
-		return $this->_redirect($subject, $url);
-	}
-
-/**
- * Test visibility wrapper
- */
-	public function testValidateId($id) {
-		return $this->_validateId($id);
-	}
-
-/**
- * test visibility wrapper
- */
-	public function testGetFindMethod($action = null, $default = null) {
-		return parent::_getFindMethod($action, $default);
-	}
-
-/**
- * test visibility wrapper
- */
-	public function detectPrimaryKeyFieldType() {
-		return parent::_detectPrimaryKeyFieldType();
-	}
-
-/**
- * test visibility wrapper
- */
-	public function getSaveAllOptions($action = null) {
-		return parent::_getSaveAllOptions($action);
-	}
 
 /**
  * test visibility wrapper - access protected _modelName property
@@ -193,7 +153,7 @@ class CrudComponentTestCase extends ControllerTestCase {
  * Setup the classes the crud component needs to be testable
  */
 	public function setUp() {
-		require_once('models.php');
+		require_once ('models.php');
 
 		parent::setUp();
 
@@ -320,47 +280,6 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$this->Crud->initialize($this->controller);
 		$result = $this->Crud->isActionMapped();
 		$this->assertFalse($result);
-	}
-
-/**
- * testGetIdFromRequest
- *
- * Check that numeric and uuids are returned
- */
-	public function testGetIdFromRequest() {
-		$this->request->params['pass'][0] = '1';
-		$id = $this->Crud->getIdFromRequest();
-		$this->assertSame('1', $id);
-
-		$this->request->params['pass'][0] = 1;
-		$id = $this->Crud->getIdFromRequest();
-		$this->assertSame(1, $id);
-
-		$this->request->params['pass'][0] = '12345678-1234-1234-1234-123456789012';
-		$id = $this->Crud->getIdFromRequest();
-		$this->assertSame('12345678-1234-1234-1234-123456789012', $id);
-	}
-
-/**
- * testGetIdFromRequestEmpty
- *
- * None of these values should be returned
- */
-	public function testGetIdFromRequestEmpty() {
-		$id = $this->Crud->getIdFromRequest();
-		$this->assertNull($id);
-
-		$this->request->params['pass'][0] = '';
-		$id = $this->Crud->getIdFromRequest();
-		$this->assertNull($id);
-
-		$this->request->params['pass'][0] = 0;
-		$id = $this->Crud->getIdFromRequest();
-		$this->assertNull($id);
-
-		$this->request->params['pass'][0] = '0';
-		$id = $this->Crud->getIdFromRequest();
-		$this->assertNull($id);
 	}
 
 /**
@@ -568,7 +487,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 			->expects($this->never())
 			->method('render');
 
-		$this->Crud->config('secureDelete', false);
+		$this->Crud->action('delete')->config('secureDelete', false);
 
 		$this->controller->request->addDetector('delete', array(
 			'callback' => function() { return false; }
@@ -676,7 +595,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 			->method('render')
 			->with('index');
 
-		$this->request->params['named']= array();
+		$this->request->params['named'] = array();
 
 		$this->Crud->executeAction('index');
 
@@ -687,76 +606,16 @@ class CrudComponentTestCase extends ControllerTestCase {
 	}
 
 /**
- * testRedirect
- *
- * TODO this test isn't testing anything
- */
-	public function testRedirect() {
-		$subject = $this->Crud->testGetSubject();
-		$this->Crud->testRedirect($subject);
-	}
-
-/**
- * testvalidateIdIntValid
- */
-	public function testvalidateIdIntValid() {
-		$this->controller->expects($this->never())->method('redirect');
-
-		$this->Crud->settings['validateId'] = 'notUuid';
-
-		$id = 1;
-		$return = $this->Crud->testValidateId($id, 'int');
-		$this->assertTrue($return, "Expected id $id to be accepted, it was rejected");
-	}
-
-/**
- * testvalidateIdIntInvalid
- */
-	public function testvalidateIdIntInvalid() {
-		$this->controller->expects($this->once())->method('redirect');
-
-		$this->Crud->settings['validateId'] = 'notUuid';
-
-		$id = 'abc';
-		$return = $this->Crud->testValidateId($id, 'int');
-		$this->assertSame(get_class($return), 'CakeResponse');
-	}
-
-/**
- * testvalidateIdUUIDValid
- */
-	public function testvalidateIdUUIDValid() {
-		$this->controller->expects($this->never())->method('redirect');
-
-		$this->Crud->settings['validateId'] = 'uuid';
-
-		$id = String::uuid();
-		$return = $this->Crud->testValidateId($id);
-		$this->assertTrue($return, "Expected id $id to be accepted, it was rejected");
-	}
-
-/**
- * testvalidateIdUUIDInvalid
- */
-	public function testvalidateIdUUIDInvalid() {
-		$this->Crud->settings['validateId'] = 'uuid';
-		$this->controller->expects($this->once())->method('redirect');
-
-		$id = 123;
-		$return = $this->Crud->testValidateId($id, 'int');
-		$this->assertSame(get_class($return), 'CakeResponse');
-	}
-
-/**
  * Tests on method for beforePaginateEvent
  *
- * @expectedException RuntimeException
+ * @expectedException CakeException
  * @expectedExceptionMessage Crud.beforePaginate called
  * @return void
+ * @throws CakeException
  */
 	public function testOnBeforePaginateString() {
 		$this->Crud->on('beforePaginate', function($event) {
-			throw new RuntimeException($event->name() . ' called');
+			throw new CakeException($event->name() . ' called');
 		});
 		$this->Crud->executeAction('index');
 	}
@@ -764,13 +623,14 @@ class CrudComponentTestCase extends ControllerTestCase {
 /**
  * Tests on method for afterPaginate
  *
- * @expectedException RuntimeException
+ * @expectedException CakeException
  * @expectedExceptionMessage Crud.afterPaginate called
  * @return void
+ * @throws CakeException
  */
 	public function testOnAfterPaginateString() {
 		$this->Crud->on('afterPaginate', function($event) {
-			throw new RuntimeException($event->name() . ' called');
+			throw new CakeException($event->name() . ' called');
 		});
 		$this->Crud->executeAction('index');
 	}
@@ -778,13 +638,14 @@ class CrudComponentTestCase extends ControllerTestCase {
 /**
  * Tests on method for afterPaginate with full event name
  *
- * @expectedException RuntimeException
+ * @expectedException CakeException
  * @expectedExceptionMessage Crud.afterPaginate called
  * @return void
+ * @throws CakeException
  */
 	public function testOnAfterPaginateFullNameString() {
 		$this->Crud->on('Crud.afterPaginate', function($event) {
-			throw new RuntimeException($event->name() . ' called');
+			throw new CakeException($event->name() . ' called');
 		});
 		$this->Crud->executeAction('index');
 	}
@@ -842,17 +703,6 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$this->assertEquals($expectedTags, $vars['tags']);
 		$this->assertEquals($expectedAuthors, $vars['authors']);
 		$this->controller->viewVars = array();
-
-		$this->Crud->executeAction('admin_add');
-		$vars = $this->controller->viewVars;
-		$this->assertEquals($expectedTags, $vars['tags']);
-		$this->assertEquals($expectedAuthors, $vars['authors']);
-		$this->controller->viewVars = array();
-
-		$this->Crud->executeAction('admin_edit', array(1));
-		$vars = $this->controller->viewVars;
-		$this->assertEquals($expectedTags, $vars['tags']);
-		$this->assertEquals($expectedAuthors, $vars['authors']);
 	}
 
 /**
@@ -862,8 +712,7 @@ class CrudComponentTestCase extends ControllerTestCase {
  */
 	public function testFetchRelatedMapped() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')), false);
-		$this->Crud->settings['relatedLists']['add'] = array('Author');
-		$this->Crud->settings['relatedLists']['admin_add'] = array('Author');
+		$this->Crud->action('add')->config('relatedLists', array('Author'));
 
 		$expectedAuthors = array(1 => '1', 2 => '2', 3 => '3', 4 => '4');
 
@@ -872,11 +721,6 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$this->assertEquals($expectedAuthors, $vars['authors']);
 		$this->assertFalse(isset($vars['tags']));
 		$this->controller->viewVars = array();
-
-		$this->Crud->executeAction('admin_add');
-		$vars = $this->controller->viewVars;
-		$this->assertEquals($expectedAuthors, $vars['authors']);
-		$this->assertFalse(isset($vars['tags']));
 	}
 
 /**
@@ -888,7 +732,6 @@ class CrudComponentTestCase extends ControllerTestCase {
 	public function testFetchRelatedMappedMethod() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
 		$this->Crud->getListener('related')->map(array('Tag'), 'add');
-		$this->Crud->getListener('related')->map(array('Tag'), 'admin_add');
 		$expectedTags = array(1 => '1', 2 => '2', 3 => '3');
 
 		$this->Crud->executeAction('add');
@@ -896,11 +739,6 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$this->assertEquals($expectedTags, $vars['tags']);
 		$this->assertFalse(isset($vars['authors']));
 		$this->controller->viewVars = array();
-
-		$this->Crud->executeAction('admin_add');
-		$vars = $this->controller->viewVars;
-		$this->assertEquals($expectedTags, $vars['tags']);
-		$this->assertFalse(isset($vars['authors']));
 	}
 
 /**
@@ -911,7 +749,7 @@ class CrudComponentTestCase extends ControllerTestCase {
  */
 	public function testFetchRelatedMappedAll() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
-		$this->Crud->getListener('related')->map(array('Tag'), 'default');
+		$this->Crud->getListener('related')->map(array('Tag'), 'edit');
 		$expectedTags = array(1 => '1', 2 => '2', 3 => '3');
 
 		$this->Crud->executeAction('edit', array('1'));
@@ -927,28 +765,11 @@ class CrudComponentTestCase extends ControllerTestCase {
  */
 	public function testFetchRelatedMappedAllNotEnabled() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
-		$this->Crud->getListener('related')->map(array('Tag'));
+		$this->Crud->getListener('related')->map(array('Tag'), 'delete');
 
 		$this->Crud->executeAction('delete', array('1'));
 		$vars = $this->controller->viewVars;
 		$this->assertFalse(isset($vars['tags']));
-		$this->assertFalse(isset($vars['authors']));
-	}
-
-/**
- * Tests that mammpe actions are not used if you define specific related models
- * for the mapped controller action
- *
- * @return void
- */
-	public function testFetchRelatedSpecificActionMapped() {
-		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
-		$this->Crud->getListener('related')->map(array('Tag'), 'admin_add');
-		$expectedTags = array(1 => '1', 2 => '2', 3 => '3');
-
-		$this->Crud->executeAction('admin_add', array('1'));
-		$vars = $this->controller->viewVars;
-		$this->assertEquals($expectedTags, $vars['tags']);
 		$this->assertFalse(isset($vars['authors']));
 	}
 
@@ -959,7 +780,7 @@ class CrudComponentTestCase extends ControllerTestCase {
  */
 	public function testFetchRelatedEvents() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
-		$this->Crud->getListener('related')->map(array('Tag'), 'default');
+		$this->Crud->getListener('related')->map(array('Tag'), 'add');
 		$expectedTags = array(1 => '1', 2 => '2', 'foo' => 'bar');
 		$self = $this;
 
@@ -988,7 +809,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 	public function testRelatedModelsDefaultFalseAdd() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
 
-		$this->Crud->getListener('related')->map(false, 'default');
+		$this->Crud->getListener('related')->map(false, 'add');
 		$this->assertEquals(array(), $this->Crud->getListener('related')->models('add'));
 
 		$this->Crud->executeAction('add');
@@ -1005,7 +826,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 	public function testRelatedModelsDefaultFalseEdit() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
 
-		$this->Crud->getListener('related')->map(false, 'default');
+		$this->Crud->getListener('related')->map(false, 'edit');
 		$this->assertEquals(array(), $this->Crud->getListener('related')->models('edit'));
 
 		$this->Crud->executeAction('edit');
@@ -1022,7 +843,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 	public function testRelatedModelsDefaultTrueAdd() {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
 
-		$this->Crud->getListener('related')->map(true, 'default');
+		$this->Crud->getListener('related')->map(true, 'add');
 		$this->assertEquals(array('Author', 'Tag'), $this->Crud->getListener('related')->models('add'));
 
 		$this->Crud->executeAction('add');
@@ -1040,7 +861,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$this->Crud->settings['validateId'] = 'integer';
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')), false);
 
-		$this->Crud->getListener('related')->map(true, 'default');
+		$this->Crud->getListener('related')->map(true, 'edit');
 		$this->assertEquals(array('Author', 'Tag'), $this->Crud->getListener('related')->models('edit'));
 
 		$this->Crud->executeAction('edit', array(3));
@@ -1051,40 +872,15 @@ class CrudComponentTestCase extends ControllerTestCase {
 	}
 
 /**
- * Test mapRelatedList with an action mapped using mapAction
- *
- * @return void
- */
-	public function testRelatedModelsWithAliasMappedLookup() {
-		$this->Crud->settings['validateId'] = 'integer';
-		$this->model->bindModel(array('belongsTo' => array('Author')), false);
-
-		$this->Crud->mapAction('modify_action', 'edit');
-		$this->Crud->getListener('related')->map(true);
-		$this->assertEquals(array('Author'), $this->Crud->getListener('related')->models('modify_action'));
-
-		$this->Crud->executeAction('modify_action', array(1));
-
-		$vars = $this->controller->viewVars;
-		$expectedVars = array('authors' => array(1 => '1', 2 => '2', '3' => '3', '4' => '4'));
-		$this->assertEquals($expectedVars, $vars);
-	}
-
-/**
  * Test the default settings match the expected
  *
  * @return void
  */
 	public function testCustomFindDefaults() {
-		$this->assertEquals('all', $this->Crud->testGetFindMethod('index'));
-		$this->assertEquals(null, $this->Crud->testGetFindMethod('add'));
-		$this->assertEquals('first', $this->Crud->testGetFindMethod('edit'));
-		$this->assertEquals('count', $this->Crud->testGetFindMethod('delete'));
-
-		$this->assertEquals('all', $this->Crud->testGetFindMethod('admin_index'));
-		$this->assertEquals(null, $this->Crud->testGetFindMethod('admin_add'));
-		$this->assertEquals('first', $this->Crud->testGetFindMethod('admin_edit'));
-		$this->assertEquals('count', $this->Crud->testGetFindMethod('admin_delete'));
+		$this->assertEquals('all', $this->Crud->action('index')->findMethod());
+		$this->assertEquals('first', $this->Crud->action('add')->findMethod());
+		$this->assertEquals('first', $this->Crud->action('edit')->findMethod());
+		$this->assertEquals('count', $this->Crud->action('delete')->findMethod());
 	}
 
 /**
@@ -1094,10 +890,10 @@ class CrudComponentTestCase extends ControllerTestCase {
  */
 	public function testCustomFindChanged() {
 		$this->Crud->mapFindMethod('index', 'custom_find');
-		$this->assertEquals('custom_find', $this->Crud->testGetFindMethod('index'));
+		$this->assertEquals('custom_find', $this->Crud->action('index')->findMethod());
 
 		$this->Crud->mapFindMethod('index', 'all');
-		$this->assertEquals('all', $this->Crud->testGetFindMethod('index'));
+		$this->assertEquals('all', $this->Crud->action('index')->findMethod());
 	}
 
 /**
@@ -1108,7 +904,6 @@ class CrudComponentTestCase extends ControllerTestCase {
 	public function testCustomFindPaginationDefaultNoAlias() {
 		$this->Crud->executeAction('index');
 
-		$this->assertEquals('all', $this->controller->paginate[0]);
 		$this->assertEquals('all', $this->controller->paginate['findType']);
 	}
 
@@ -1127,12 +922,10 @@ class CrudComponentTestCase extends ControllerTestCase {
 
 		$this->Crud->executeAction('index');
 
-		$this->assertTrue(empty($this->controller->paginate[0]));
 		$this->assertTrue(empty($this->controller->paginate['findType']));
 		$this->assertFalse(empty($this->controller->paginate['CrudExample']));
-		$this->assertFalse(empty($this->controller->paginate['CrudExample'][0]));
 		$this->assertFalse(empty($this->controller->paginate['CrudExample']['findType']));
-		$this->assertEquals(array('order' => array('name' => 'desc'), 0 => 'all', 'findType' => 'all'), $this->controller->paginate['CrudExample']);
+		$this->assertEquals(array('order' => array('name' => 'desc'), 'findType' => 'all'), $this->controller->paginate['CrudExample']);
 	}
 
 /**
@@ -1143,9 +936,8 @@ class CrudComponentTestCase extends ControllerTestCase {
 	public function testCustomFindPaginationCustomPublished() {
 		$this->Crud->mapFindMethod('index', 'published');
 		$this->Crud->executeAction('index');
-		$this->assertEquals('published', $this->controller->paginate[0]);
 		$this->assertEquals('published', $this->controller->paginate['findType']);
-		$this->assertEquals(3, sizeof($this->controller->viewVars['items']));
+		$this->assertEquals(3, count($this->controller->viewVars['items']));
 	}
 
 /**
@@ -1156,9 +948,8 @@ class CrudComponentTestCase extends ControllerTestCase {
 	public function testCustomFindPaginationCustomUnpublished() {
 		$this->Crud->mapFindMethod('index', 'unpublished');
 		$this->Crud->executeAction('index');
-		$this->assertEquals('unpublished', $this->controller->paginate[0]);
 		$this->assertEquals('unpublished', $this->controller->paginate['findType']);
-		$this->assertEquals(0, sizeof($this->controller->viewVars['items']));
+		$this->assertEquals(0, count($this->controller->viewVars['items']));
 	}
 
 /**
@@ -1170,9 +961,8 @@ class CrudComponentTestCase extends ControllerTestCase {
 	public function testCustomFindPaginationWithControllerFindMethod() {
 		$this->controller->paginate = array('findType' => 'unpublished');
 		$this->Crud->executeAction('index');
-		$this->assertEquals('unpublished', $this->controller->paginate[0]);
 		$this->assertEquals('unpublished', $this->controller->paginate['findType']);
-		$this->assertEquals(0, sizeof($this->controller->viewVars['items']));
+		$this->assertEquals(0, count($this->controller->viewVars['items']));
 	}
 
 /**
@@ -1187,7 +977,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 
 		$this->assertNotEmpty($this->request->data);
 		$this->assertNotEmpty($this->request->data['CrudExample']);
-		$this->assertSame('2', $this->request->data['CrudExample']['id']);
+		$this->assertSame('2', (string)$this->request->data['CrudExample']['id']);
 	}
 
 /**
@@ -1308,7 +1098,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 /**
  * Test if crud complains about unmapped actions
  *
- * @expectedException RuntimeException
+ * @expectedException CakeException
  * @return void
  */
 	public function testCrudWillComplainAboutUnmappedAction() {
@@ -1343,6 +1133,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 			->method('render')
 			->with('overview');
 
+		$this->Crud->mapAction('show_all', 'index');
 		$this->Crud->mapActionView(array('show_all' => 'index', 'index' => 'overview'));
 
 		$this->Crud->executeAction('index');
@@ -1354,7 +1145,7 @@ class CrudComponentTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testEnableRelatedListStringForIndexAction() {
-		$this->Crud->getListener('related')->map('Tag', 'default');
+		$this->Crud->getListener('related')->map('Tag', 'index');
 		$this->Crud->getListener('related')->enable('index');
 
 		$expected = array('Tag');
@@ -1366,8 +1157,8 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$this->assertTrue(!empty($this->controller->viewVars['tags']));
 		$this->assertTrue(!empty($this->controller->viewVars['items']));
 
-		$this->assertSame(3, sizeof($this->controller->viewVars['tags']));
-		$this->assertSame(3, sizeof($this->controller->viewVars['items']));
+		$this->assertSame(3, count($this->controller->viewVars['tags']));
+		$this->assertSame(3, count($this->controller->viewVars['items']));
 	}
 
 /**
@@ -1376,7 +1167,7 @@ class CrudComponentTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testEnableRelatedListArrayForIndexAction() {
-		$this->Crud->getListener('related')->map(array('Tag', 'Author'), 'default');
+		$this->Crud->getListener('related')->map(array('Tag', 'Author'), 'index');
 		$this->Crud->getListener('related')->enable(array('index'));
 
 		$this->assertSame(array('Tag', 'Author'), $this->Crud->getListener('related')->models('index'));
@@ -1387,9 +1178,9 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$this->assertTrue(!empty($this->controller->viewVars['items']));
 		$this->assertTrue(!empty($this->controller->viewVars['authors']));
 
-		$this->assertSame(3, sizeof($this->controller->viewVars['tags']));
-		$this->assertSame(3, sizeof($this->controller->viewVars['items']));
-		$this->assertSame(4, sizeof($this->controller->viewVars['authors']));
+		$this->assertSame(3, count($this->controller->viewVars['tags']));
+		$this->assertSame(3, count($this->controller->viewVars['items']));
+		$this->assertSame(4, count($this->controller->viewVars['authors']));
 	}
 
 	public function testIndexActionPaginationSettingsNotLost() {
@@ -1440,7 +1231,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$this->Crud->executeAction('index');
 
 		$items = $this->controller->viewVars['items'];
-		$this->assertSame(2, sizeof($items), 'beforePaginate needs to have an effect on the pagination');
+		$this->assertSame(2, count($items), 'beforePaginate needs to have an effect on the pagination');
 		$this->assertEquals(array('author_id' => 1), $Paginator->settings['conditions']);
 	}
 
@@ -1458,18 +1249,18 @@ class CrudComponentTestCase extends ControllerTestCase {
 	public function testIfConditionsPersistetInIndexAction() {
 		$Paginator = $this->controller->Components->load('Paginator');
 
-		$this->controller->paginate = array('conditions' => array(1 => 2));
+		$this->controller->paginate = array('conditions' => array('1 = 2'));
 		$this->Crud->executeAction('index');
-		$this->assertSame(array(1 => 2), $Paginator->settings['conditions']);
+		$this->assertSame(array('1 = 2'), $Paginator->settings['conditions']);
 
-		$Paginator->settings = array('conditions' => array(2 => 3));
+		$Paginator->settings = array('conditions' => array('2 = 3'));
 		$this->Crud->executeAction('index');
-		$this->assertSame(array(1 => 2), $Paginator->settings['conditions'], "Pagination settings from controller should always trump Paginator->settings");
+		$this->assertSame(array('1 = 2'), $Paginator->settings['conditions'], "Pagination settings from controller should always trump Paginator->settings");
 
-		$Paginator->settings = array('conditions' => array(2 => 3));
+		$Paginator->settings = array('conditions' => array('2 = 3'));
 		$this->controller->paginate = array();
 		$this->Crud->executeAction('index');
-		$this->assertSame(array(2 => 3), $Paginator->settings['conditions']);
+		$this->assertSame(array('2 = 3'), $Paginator->settings['conditions']);
 	}
 
 	public function testPaginationWithIterator() {
@@ -1483,7 +1274,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 
 		$this->assertNotEmpty($this->controller->viewVars);
 		$this->assertNotEmpty($this->controller->viewVars['items']);
-		$this->assertSame(3, sizeof($this->controller->viewVars['items']));
+		$this->assertSame(3, count($this->controller->viewVars['items']));
 
 		$ids = Hash::extract($this->controller->viewVars['items'], '{n}.CrudExample.id');
 		$this->assertEquals(array(1,2,3), $ids);
@@ -1527,6 +1318,8 @@ class CrudComponentTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testAddActionTranslatedChangedName() {
+		//TODO: migrate Translations listener config to the new format in CrudAction
+		$this->skipIf(true);
 		Router::connect("/:action", array('controller' => 'crud_examples'));
 
 		$this->Controller = $this->generate(
@@ -1536,7 +1329,10 @@ class CrudComponentTestCase extends ControllerTestCase {
 				'components' => array('Session'),
 			)
 		);
-		$this->Controller->Crud->settings['translations']['name'] = 'Thingy';
+		$this->Controller->Crud->initialize($this->Controller);
+		$this->Controller->Crud->defaults('action', 'add', array(
+			'translations' => array('name' => 'Thingy')
+		));
 
 		$this->Controller->Session
 			->expects($this->once())
@@ -1560,6 +1356,8 @@ class CrudComponentTestCase extends ControllerTestCase {
  * @return void
  */
 	public function testAddActionTranslatedChangedMessage() {
+		//TODO: migrate Translations listener config to the new format in CrudAction
+		$this->skipIf(true);
 		Router::connect("/:action", array('controller' => 'crud_examples'));
 
 		$this->Controller = $this->generate(
@@ -1585,169 +1383,6 @@ class CrudComponentTestCase extends ControllerTestCase {
 				)
 			)
 		));
-	}
-
-/**
- * testAddActionTranslated
- *
- * @return void
- */
-	public function testAddActionTranslated() {
-		$this->skipIf(!class_exists('Translation'), 'Test depends on the Translations plugin');
-
-		$translatedMessage = 'El ejemplo ha sido creado con exito';
-		Translation::update('Successfully created CrudExample', $translatedMessage, array('domain' => 'crud'));
-		$this->assertSame($translatedMessage, __d('crud', 'Successfully created CrudExample'));
-
-		Router::connect("/:action", array('controller' => 'crud_examples'));
-
-		$this->Controller = $this->generate(
-			'CrudExamples',
-			array(
-				'methods' => array('header', 'redirect', 'render'),
-				'components' => array('Session'),
-			)
-		);
-
-		$this->Controller->Session
-			->expects($this->once())
-			->method('setFlash')
-			->with($translatedMessage);
-
-		$this->testAction('/add', array(
-			'data' => array(
-				'CrudExample' => array(
-					'title' => __METHOD__,
-					'description' => __METHOD__,
-					'author_id' => 0
-				)
-			)
-		));
-	}
-
-/**
- * testAddActionTranslatedDefaultDomain
- *
- * Simulate the controller's components array having defined the default domain for crud messages
- * Verify that that is the default domain is used for the crud translations
- *
- * @return void
- */
-	public function testAddActionTranslatedDefaultDomain() {
-		$this->skipIf(!class_exists('Translation'), 'Test depends on the Translations plugin');
-
-		$translatedMessage = 'eksemplet blev oprettet med succes';
-		Translation::update('Successfully created CrudExample', $translatedMessage);
-		$this->assertSame($translatedMessage, __d('default', 'Successfully created CrudExample'));
-
-		Router::connect("/:action", array('controller' => 'crud_examples'));
-
-		CrudExamplesController::$componentsArray['Crud.Crud']['translations']['domain'] = 'default';
-		$this->Controller = $this->generate(
-			'CrudExamples',
-			array(
-				'methods' => array('header', 'redirect', 'render'),
-				'components' => array('Session'),
-			)
-		);
-
-		$this->Controller->Session
-			->expects($this->once())
-			->method('setFlash')
-			->with($translatedMessage);
-
-		$this->testAction('/add', array(
-			'data' => array(
-				'CrudExample' => array(
-					'title' => __METHOD__,
-					'description' => __METHOD__,
-					'author_id' => 0
-				)
-			)
-		));
-	}
-
-/**
- * Test that detecting the correct validation strategy for validateId
- * works as expected
- *
- * @return void
- */
-	public function testDetectPrimaryKeyFieldType() {
-		$this->model = $this->getMock('CrudExample', array('schema'));
-		$this->controller->CrudExample = $this->model;
-
-		$this->model
-			->expects($this->at(0))
-			->method('schema')
-			->with('id')
-			->will($this->returnValue(false));
-
-		$this->model
-			->expects($this->at(1))
-			->method('schema')
-			->with('id')
-			->will($this->returnValue(array('length' => 36, 'type' => 'string')));
-
-		$this->model
-			->expects($this->at(2))
-			->method('schema')
-			->with('id')
-			->will($this->returnValue(array('length' => 10, 'type' => 'integer')));
-
-		$this->model
-			->expects($this->at(3))
-			->method('schema')
-			->with('id')
-			->will($this->returnValue(array('length' => 10, 'type' => 'string')));
-
-		$this->assertFalse($this->Crud->detectPrimaryKeyFieldType());
-		$this->assertSame('uuid', $this->Crud->detectPrimaryKeyFieldType());
-		$this->assertSame('integer', $this->Crud->detectPrimaryKeyFieldType());
-		$this->assertFalse($this->Crud->detectPrimaryKeyFieldType());
-	}
-
-/**
- * Test default saveAll options works when modified
- *
- * @return void
- */
-	public function testGetSaveAllOptionsDefaults() {
-		$expected = array('validate' => 'first', 'atomic' => true);
-		$value = $this->Crud->getSaveAllOptions();
-		$this->assertEqual($value, $expected);
-
-		$this->Crud->config('saveAllOptions.default', array('atomic' => false));
-		$expected = array('validate' => 'first', 'atomic' => false);
-		$value = $this->Crud->getSaveAllOptions();
-		$this->assertEqual($value, $expected);
-
-		$this->Crud->config('saveAllOptions.default.atomic', true);
-		$expected = array('validate' => 'first', 'atomic' => true);
-		$value = $this->Crud->getSaveAllOptions();
-		$this->assertEqual($value, $expected);
-
-		$this->Crud->config('saveAllOptions.default', array('fieldList' => array('hello')));
-		$expected = array('validate' => 'first', 'atomic' => true, 'fieldList' => array('hello'));
-		$value = $this->Crud->getSaveAllOptions();
-		$this->assertEqual($value, $expected);
-	}
-
-/**
- * Test that defining specific action configuration for saveAll takes
- * precedence over default configurations
- *
- * @return void
- */
-	public function testGetSaveAllOptionsCustomAction() {
-		$expected = array('validate' => 'first', 'atomic' => true);
-		$value = $this->Crud->getSaveAllOptions('add');
-		$this->assertEqual($value, $expected);
-
-		$this->Crud->config('saveAllOptions.add', array('atomic' => false));
-		$expected = array('validate' => 'first', 'atomic' => false);
-		$value = $this->Crud->getSaveAllOptions('add');
-		$this->assertEqual($value, $expected);
 	}
 
 /**
@@ -1782,7 +1417,7 @@ class CrudComponentTestCase extends ControllerTestCase {
  * Test that having mapped a custom model for an action,
  * but the custom model isn't loaded, will throw an exception
  *
- * @expectedException RuntimeException
+ * @expectedException CakeException
  * @expectedExceptionMessage No model loaded in the Controller by the name "Donkey". Please add it to $uses.
  */
 	public function testSetModelPropertiesChangeModelForActionNotLoadedModel() {
@@ -1793,4 +1428,80 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$this->assertSame('Donkey', $this->Crud->getModelName());
 	}
 
+/**
+ * Test that the build in action names can't be used
+ * within other plugins
+ *
+ * @expectedException CakeException
+ * @expectedExceptionMessage The build-in CrudActions (Index, View, Add, Edit and Delete) must be loaded from the Crud plugin
+ * @return void
+ */
+	public function testBuildInCrudActionsCantBeUsedInOtherPluginsIndex() {
+		$this->Crud->mapAction('test', 'Sample.Index');
+	}
+
+/**
+ * Test that the build in action names can't be used
+ * within other plugins
+ *
+ * @expectedException CakeException
+ * @expectedExceptionMessage The build-in CrudActions (Index, View, Add, Edit and Delete) must be loaded from the Crud plugin
+ * @return void
+ */
+	public function testBuildInCrudActionsCantBeUsedInOtherPluginsView() {
+		$this->Crud->mapAction('test', 'Sample.View');
+	}
+
+/**
+ * Test that the build in action names can't be used
+ * within other plugins
+ *
+ * @expectedException CakeException
+ * @expectedExceptionMessage The build-in CrudActions (Index, View, Add, Edit and Delete) must be loaded from the Crud plugin
+ * @return void
+ */
+	public function testBuildInCrudActionsCantBeUsedInOtherPluginsAdd() {
+		$this->Crud->mapAction('test', 'Sample.Add');
+	}
+
+/**
+ * Test that the build in action names can't be used
+ * within other plugins
+ *
+ * @expectedException CakeException
+ * @expectedExceptionMessage The build-in CrudActions (Index, View, Add, Edit and Delete) must be loaded from the Crud plugin
+ * @return void
+ */
+	public function testBuildInCrudActionsCantBeUsedInOtherPluginsEdit() {
+		$this->Crud->mapAction('test', 'Sample.Edit');
+	}
+
+/**
+ * Test that the build in action names can't be used
+ * within other plugins
+ *
+ * @expectedException CakeException
+ * @expectedExceptionMessage The build-in CrudActions (Index, View, Add, Edit and Delete) must be loaded from the Crud plugin
+ * @return void
+ */
+	public function testBuildInCrudActionsCantBeUsedInOtherPluginsDelete() {
+		$this->Crud->mapAction('test', 'Sample.Delete');
+	}
+
+/**
+ * Test that Providing a CrudAction name that isn't in the
+ * list of build-in once, will allow you to use it inside
+ * another plugin.
+ *
+ * It's expected that the plugin CrudSample doesn't exist,
+ * the App::uses() where the warning is raised is *after*
+ * the check for the above build-in class names
+ *
+ * @expectedException CakeException
+ * @expectedExceptionMessage Plugin CrudSample could not be found.
+ * @return void
+ */
+	public function testCustomCrudActionsCanBeUsedInPlugins() {
+		$this->Crud->mapAction('test', 'CrudSample.MyDelete');
+	}
 }

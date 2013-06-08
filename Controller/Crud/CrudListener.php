@@ -1,21 +1,71 @@
 <?php
 
 App::uses('CakeEventListener', 'Event');
+App::uses('Hash', 'Utility');
 
 /**
  * The Base Crud Listener
  *
  * All callbacks are defined here for good measure
  *
- * Copyright 2010-2012, Nodes ApS. (http://www.nodesagency.com/)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright Nodes ApS, 2012
- * @abstract
+ * @copyright Christian Winther, 2013
  */
 abstract class CrudListener extends Object implements CakeEventListener {
+
+/**
+ * Reference to the CakeRequest
+ *
+ * @var CakeRequest
+ */
+	protected $_request;
+
+/**
+ * Reference to the Controller
+ *
+ * @var Controller
+ */
+	protected $_controller;
+
+/**
+ * Crud Component reference
+ *
+ * @var CrudComponent
+ */
+	protected $_crud;
+
+/**
+ * Crud Event subject
+ *
+ * @var CrudSubject
+ */
+	protected $_subject;
+
+/**
+ * Listener configuration
+ *
+ * @var array
+ */
+	protected $_settings = array();
+
+/**
+ * Class constructor
+ *
+ * @param string $prefix CRUD component events name prefix
+ * @param array $models List of models to be fetched in beforeRenderEvent
+ * @return void
+ */
+	public function __construct(CrudSubject $subject, $defaults = null) {
+		$this->_crud = $subject->crud;
+		$this->_subject = $subject;
+
+		if (!empty($defaults)) {
+			$this->config($defaults);
+		}
+	}
 
 /**
  * Returns a list of all events that will fire in the controller during it's life cycle.
@@ -62,7 +112,8 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function init(CakeEvent $event) {
-
+		$this->_request = $event->subject->request;
+		$this->_controller = $event->subject->controller;
 	}
 
 /**
@@ -72,7 +123,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function beforeSave(CakeEvent $event) {
-
 	}
 
 /**
@@ -82,7 +132,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function beforeRedirect(CakeEvent $event) {
-
 	}
 
 /**
@@ -92,7 +141,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function beforeFind(CakeEvent $event) {
-
 	}
 
 /**
@@ -102,7 +150,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function afterFind(CakeEvent $event) {
-
 	}
 
 /**
@@ -112,7 +159,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function afterSave(CakeEvent $event) {
-
 	}
 
 /**
@@ -122,7 +168,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function beforeRender(CakeEvent $event) {
-
 	}
 
 /**
@@ -132,7 +177,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function beforeDelete(CakeEvent $event) {
-
 	}
 
 /**
@@ -142,7 +186,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function afterDelete(CakeEvent $event) {
-
 	}
 
 /**
@@ -152,11 +195,10 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * - query: An array with options for find('list')
  * - model: Model instance, the model to be used for fiding the list or records
  *
- *  @param CakeEvent $event The CakePHP CakeEvent object.
+ * @param CakeEvent $event The CakePHP CakeEvent object.
  * @return void
  */
 	public function beforeListRelated(CakeEvent $event) {
-
 	}
 
 /**
@@ -171,7 +213,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function afterListRelated(CakeEvent $event) {
-
 	}
 
 /**
@@ -181,7 +222,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function recordNotFound(CakeEvent $event) {
-
 	}
 
 /**
@@ -191,7 +231,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function beforePaginate(CakeEvent $event) {
-
 	}
 
 /**
@@ -201,7 +240,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function afterPaginate(CakeEvent $event) {
-
 	}
 
 /**
@@ -211,7 +249,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function invalidId(CakeEvent $event) {
-
 	}
 
 /**
@@ -227,7 +264,51 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function setFlash(CakeEvent $event) {
+	}
 
+/**
+ * Sets a configuration variable into this listener
+ *
+ * If called with no arguments, all configuration values are
+ * returned.
+ *
+ * $key is interpreted with dot notation, like the one used for
+ * Configure::write()
+ *
+ * If $key is string and $value is not passed, it will return the
+ * value associated with such key.
+ *
+ * If $key is an array and $value is empty, then $key will
+ * be interpreted as key => value dictionary of settings and
+ * it will be merged directly with $this->settings
+ *
+ * If $key is a string, the value will be inserted in the specified
+ * slot as indicated using the dot notation
+ *
+ * @param mixed $key
+ * @param mixed $value
+ * @return mixed|CrudAction
+ */
+	public function config($key = null, $value = null) {
+		if (is_null($key) && is_null($value)) {
+			return $this->_settings;
+		}
+
+		if (is_null($value)) {
+			if (is_array($key)) {
+				$this->_settings = $key + $this->_settings;
+				return $this;
+			}
+
+			return Hash::get($this->_settings, $key);
+		}
+
+		if (is_array($value)) {
+			$value = $value + (array)Hash::get($this->_settings, $key);
+		}
+
+		$this->_settings = Hash::insert($this->_settings, $key, $value);
+		return $this;
 	}
 
 }
