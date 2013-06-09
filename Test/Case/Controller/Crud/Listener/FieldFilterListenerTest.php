@@ -61,8 +61,12 @@ class FieldFilterListenerTest extends CakeTestCase {
 			->setConstructorArgs(array(
 				array('table' => 'models', 'name' => 'Model', 'ds' => 'test')
 			))
-			->setMethods(array('hasField'))
+			->setMethods(array('hasField', 'getAssociated'))
 			->getMock();
+		$Model
+			->expects($this->any())
+			->method('getAssociated')
+			->will($this->returnValue(array('Sample' => array(), 'Demo' => array(), 'User' => array())));
 		$Model->alias = 'Model';
 
 		$Controller = $this->ControllerMock
@@ -210,6 +214,50 @@ class FieldFilterListenerTest extends CakeTestCase {
 		$Listener->beforeFind($Event);
 
 		$expected = array('Model.id', 'Model.name');
+		$actual = $CrudSubject->query['fields'];
+		$this->assertSame($expected, $actual);
+	}
+
+/**
+ * Test that the field Sample.my_fk gets rejected since there is no
+ * whitelist for the associated model "Sample"
+ *
+ * @return void
+ */
+	public function testAssociatedModelGetsRejectedByDefault() {
+		$hasField = array('id' => true,	'name' => true,	'password' => true);
+		extract($this->_mockClasses($hasField));
+		$Request->query['fields'] = 'id,name,password,Sample.my_fk';
+
+		$Listener->beforeFind($Event);
+
+		$expected = array('Model.id', 'Model.name', 'Model.password');
+		$actual = $CrudSubject->query['fields'];
+		$this->assertSame($expected, $actual);
+	}
+
+/**
+ * Test that the field Sample.my_fk gets rejected since there is no
+ * whitelist for the associated model "Sample"
+ *
+ * @return void
+ */
+	public function testAssociatedModelWhitelist() {
+		$hasField = array('id' => true,	'name' => true,	'password' => true);
+		extract($this->_mockClasses($hasField));
+		$Request->query['fields'] = 'id,name,password,Sample.my_fk';
+
+		$Model->Sample = $this->getMock('Model', array('hasField'), array(array('Sample' => array(), 'Demo' => array(), 'User' => array())));
+		$Model->Sample
+			->expects($this->at(0))
+			->method('hasField')
+			->with('my_fk')
+			->will($this->returnValue(true));
+
+		$Listener->whitelistModels(array('Sample'));
+		$Listener->beforeFind($Event);
+
+		$expected = array('Model.id', 'Model.name', 'Model.password', 'Sample.my_fk');
 		$actual = $CrudSubject->query['fields'];
 		$this->assertSame($expected, $actual);
 	}

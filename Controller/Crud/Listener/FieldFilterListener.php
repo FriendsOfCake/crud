@@ -125,6 +125,22 @@ class FieldFilterListener extends CrudListener {
 	}
 
 /**
+ * Whitelist associated models that are allowed to be included in the
+ * output list of fields
+ *
+ * @param array $models
+ * @param string $action
+ * @return mixed
+ */
+	public function whitelistModels($models = null, $action = null) {
+		if (empty($models)) {
+			return $this->_crud->action($action)->config('fieldFilter.models.whitelist');
+		}
+
+		$this->_crud->action($action )->config('fieldFilter.models.whitelist', $models);
+	}
+
+/**
  * Get the list of fields that should be selected
  * in the query based on the HTTP GET requests fields
  *
@@ -238,7 +254,7 @@ class FieldFilterListener extends CrudListener {
 	}
 
 /**
- * Check if the associated is whitelisted to be automatically
+ * Check if the associated model is whitelisted to be automatically
  * contained on demand or not
  *
  * If no whitelisting exists, no associated models may be joined
@@ -247,7 +263,7 @@ class FieldFilterListener extends CrudListener {
  * @return boolean
  */
 	protected function _whitelistedAssociatedModel($modelName) {
-		$allowedModels = $this->_crud->action()->config('fieldFilter.models');
+		$allowedModels = $this->whitelistModels();
 		if (empty($allowedModels)) {
 			return false;
 		}
