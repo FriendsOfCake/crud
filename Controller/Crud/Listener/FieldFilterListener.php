@@ -75,6 +75,7 @@ class FieldFilterListener extends CrudListener {
 /**
  * beforePaginate
  *
+ * @codeCoverageIgnore This is exactly the same as beforeFind()
  * @param CakeEvent $event
  * @return void
  */

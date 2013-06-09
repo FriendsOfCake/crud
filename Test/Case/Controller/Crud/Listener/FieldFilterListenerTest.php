@@ -132,6 +132,7 @@ class FieldFilterListenerTest extends CakeTestCase {
 			'Crud.beforePaginate' => array('callable' => 'beforePaginate', 'priority' => 50),
 			'Crud.beforeFind' => array('callable' => 'beforeFind', 'priority' => 50)
 		);
+
 		$actual = $Listener->implementedEvents();
 		$this->assertEqual($expected, $actual);
 	}
