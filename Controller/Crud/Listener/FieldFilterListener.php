@@ -63,9 +63,7 @@ class FieldFilterListener extends CrudListener {
  * @return void
  */
 	public function beforeFind(CakeEvent $event) {
-		$this->_relations = array();
-
-		$fields = $this->_getFieldsForQuery($event->subject->model);
+		$fields = $this->_getFields($event);
 		if (empty($fields)) {
 			return;
 		}
@@ -77,19 +75,77 @@ class FieldFilterListener extends CrudListener {
 /**
  * beforePaginate
  *
+ * @codeCoverageIgnore This is exactly the same as beforeFind()
  * @param CakeEvent $event
  * @return void
  */
 	public function beforePaginate(CakeEvent $event) {
-		$this->_relations = array();
-
-		$fields = $this->_getFieldsForQuery($event->subject->model);
+		$fields = $this->_getFields($event);
 		if (empty($fields)) {
 			return;
 		}
 
 		$this->_controller->paginate['fields'] = $fields;
 		$this->_controller->paginate['contain'] = $this->_relations;
+	}
+
+/**
+ * Whitelist fields that are allowed to be included in the
+ * output list of fields
+ *
+ * @param array $fields
+ * @param string $action
+ * @return mixed
+ */
+	public function whitelistFields($fields = null, $action = null) {
+		if (empty($fields)) {
+			return $this->_crud->action($action)->config('fieldFilter.fields.whitelist');
+		}
+
+		$this->_crud->action($action )->config('fieldFilter.fields.whitelist', $fields);
+	}
+
+/**
+ * Blacklist fields that are not allowed to be included in the
+ * output list of fields
+ *
+ * @param array $fields
+ * @param string $action
+ * @return mixed
+ */
+	public function blacklistFields($fields = null, $action = null) {
+		if (empty($fields)) {
+			return $this->_crud->action($action)->config('fieldFilter.fields.blacklist');
+		}
+
+		$this->_crud->action($action)->config('fieldFilter.fields.blacklist', $fields);
+	}
+
+/**
+ * Whitelist associated models that are allowed to be included in the
+ * output list of fields
+ *
+ * @param array $models
+ * @param string $action
+ * @return mixed
+ */
+	public function whitelistModels($models = null, $action = null) {
+		if (empty($models)) {
+			return $this->_crud->action($action)->config('fieldFilter.models.whitelist');
+		}
+
+		$this->_crud->action($action )->config('fieldFilter.models.whitelist', $models);
+	}
+
+/**
+ * Get fields for the query
+ *
+ * @param CakeEvent $event
+ * @return array
+ */
+	protected function _getFields(CakeEvent $event) {
+		$this->_relations = array();
+		return $this->_getFieldsForQuery($event->subject->model);
 	}
 
 /**
@@ -206,7 +262,7 @@ class FieldFilterListener extends CrudListener {
 	}
 
 /**
- * Check if the associated is whitelisted to be automatically
+ * Check if the associated model is whitelisted to be automatically
  * contained on demand or not
  *
  * If no whitelisting exists, no associated models may be joined
@@ -215,7 +271,7 @@ class FieldFilterListener extends CrudListener {
  * @return boolean
  */
 	protected function _whitelistedAssociatedModel($modelName) {
-		$allowedModels = $this->_crud->action()->config('fieldFilter.models');
+		$allowedModels = $this->whitelistModels();
 		if (empty($allowedModels)) {
 			return false;
 		}
@@ -233,7 +289,7 @@ class FieldFilterListener extends CrudListener {
  * @return boolean
  */
 	protected function _whitelistedField($fieldName) {
-		$allowedFields = $this->_crud->action()->config('fieldFilter.fields.whitelist');
+		$allowedFields = $this->whitelistFields();
 		if (empty($allowedFields)) {
 			return true;
 		}
@@ -248,7 +304,7 @@ class FieldFilterListener extends CrudListener {
  * @return boolean
  */
 	protected function _blacklistedField($fieldName) {
-		$disallowedFields = $this->_crud->action()->config('fieldFilter.fields.blacklist');
+		$disallowedFields = $this->blacklistFields();
 		if (empty($disallowedFields)) {
 			return false;
 		}

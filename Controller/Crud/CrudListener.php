@@ -73,6 +73,7 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * Returns a list of all events that will fire in the controller during it's life cycle.
  * You can override this function to add you own listener callbacks
  *
+ * @codeCoverageIgnore
  * @return array
  */
 	public function implementedEvents() {
@@ -96,10 +97,7 @@ abstract class CrudListener extends Object implements CakeEventListener {
 			'Crud.afterFind' => array('callable' => 'afterFind'),
 
 			'Crud.beforeDelete' => array('callable' => 'beforeDelete'),
-			'Crud.afterDelete' => array('callable' => 'afterDelete'),
-
-			'Crud.beforeListRelated' => array('callable' => 'beforeListRelated'),
-			'Crud.afterListRelated'	=> array('callable' => 'afterListRelated'),
+			'Crud.afterDelete' => array('callable' => 'afterDelete')
 		);
 	}
 
@@ -110,6 +108,7 @@ abstract class CrudListener extends Object implements CakeEventListener {
  *
  * Just set the arguments as instance properties for easier access later
  *
+ * @codeCoverageIgnore
  * @param CakeEvent $event The CakePHP CakeEvent object.
  * @return void
  */
@@ -120,6 +119,7 @@ abstract class CrudListener extends Object implements CakeEventListener {
 /**
  * Called before a record is saved in add or edit actions
  *
+ * @codeCoverageIgnore
  * @param CakeEvent $event The CakePHP CakeEvent object.
  * @return void
  */
@@ -129,6 +129,7 @@ abstract class CrudListener extends Object implements CakeEventListener {
 /**
  * Called before any CRUD redirection
  *
+ * @codeCoverageIgnore
  * @param CakeEvent $event The CakePHP CakeEvent object.
  * @return void
  */
@@ -138,6 +139,7 @@ abstract class CrudListener extends Object implements CakeEventListener {
 /**
  * Called before any find() on the model
  *
+ * @codeCoverageIgnore
  * @param CakeEvent $event The CakePHP CakeEvent object.
  * @return void
  */
@@ -147,6 +149,7 @@ abstract class CrudListener extends Object implements CakeEventListener {
 /**
  * After find callback
  *
+ * @codeCoverageIgnore
  * @param CakeEvent $event The CakePHP CakeEvent object.
  * @return void
  */
@@ -156,6 +159,7 @@ abstract class CrudListener extends Object implements CakeEventListener {
 /**
  * Called after any save() method
  *
+ * @codeCoverageIgnore
  * @param CakeEvent $event The CakePHP CakeEvent object.
  * @return void
  */
@@ -165,6 +169,7 @@ abstract class CrudListener extends Object implements CakeEventListener {
 /**
  * Called before cake's own render()
  *
+ * @codeCoverageIgnore
  * CakeEvent $event The CakePHP CakeEvent object.
  * @return void
  */
@@ -174,6 +179,7 @@ abstract class CrudListener extends Object implements CakeEventListener {
 /**
  * Called before any delete() action
  *
+ * @codeCoverageIgnore
  * @param CakeEvent $event The CakePHP CakeEvent object.
  * @return void
  */
@@ -183,6 +189,7 @@ abstract class CrudListener extends Object implements CakeEventListener {
 /**
  * Called after any delete() action
  *
+ * @codeCoverageIgnore
  * @param CakeEvent $event The CakePHP CakeEvent object.
  * @return void
  */
@@ -196,6 +203,7 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * - query: An array with options for find('list')
  * - model: Model instance, the model to be used for fiding the list or records
  *
+ * @codeCoverageIgnore
  * @param CakeEvent $event The CakePHP CakeEvent object.
  * @return void
  */
@@ -210,6 +218,7 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * - viewVar: Variable name to be set on the view with items as value
  * - model: Model instance, the model to be used for fiding the list or records
  *
+ * @codeCoverageIgnore
  * @param CakeEvent $event The CakePHP CakeEvent object.
  * @return void
  */
@@ -219,6 +228,7 @@ abstract class CrudListener extends Object implements CakeEventListener {
 /**
  * Called if a find() did not return any records
  *
+ * @codeCoverageIgnore
  * @param CakeEvent $event The CakePHP CakeEvent object.
  * @return void
  */
@@ -228,6 +238,7 @@ abstract class CrudListener extends Object implements CakeEventListener {
 /**
  * Called right before any paginate() method
  *
+ * @codeCoverageIgnore
  * @param CakeEvent $event The CakePHP CakeEvent object.
  * @return void
  */
@@ -237,6 +248,7 @@ abstract class CrudListener extends Object implements CakeEventListener {
 /**
  * Called right after any paginate() method
  *
+ * @codeCoverageIgnore
  * @param CakeEvent $event The CakePHP CakeEvent object.
  * @return void
  */
@@ -246,6 +258,7 @@ abstract class CrudListener extends Object implements CakeEventListener {
 /**
  * Called if the ID format validation failed
  *
+ * @codeCoverageIgnore
  * @param CakeEvent $event The CakePHP CakeEvent object.
  * @return void
  */
@@ -261,6 +274,7 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * 	- params = array()
  * 	- key = 'flash'
  *
+ * @codeCoverageIgnore
  * @param CakeEvent $event The CakePHP CakeEvent object.
  * @return void
  */

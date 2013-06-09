@@ -115,7 +115,7 @@ class CrudSubject {
 				return !in_array($this->action, $actions);
 
 			default:
-				throw new Exception('Invalid mode');
+				throw new CakeException('Invalid mode');
 		}
 	}
 
