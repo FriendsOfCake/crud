@@ -265,7 +265,7 @@ class FieldFilterListener extends CrudListener {
  * @return boolean
  */
 	protected function _whitelistedField($fieldName) {
-		$allowedFields = $this->_crud->action()->config('fieldFilter.fields.whitelist');
+		$allowedFields = $this->whitelistFields();
 		if (empty($allowedFields)) {
 			return true;
 		}
@@ -280,7 +280,7 @@ class FieldFilterListener extends CrudListener {
  * @return boolean
  */
 	protected function _blacklistedField($fieldName) {
-		$disallowedFields = $this->_crud->action()->config('fieldFilter.fields.blacklist');
+		$disallowedFields = $this->blacklistFields();
 		if (empty($disallowedFields)) {
 			return false;
 		}
