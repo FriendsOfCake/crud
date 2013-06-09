@@ -102,7 +102,6 @@ class RelatedModelsListener extends CrudListener implements CakeEventListener {
  */
 	public function implementedEvents() {
 		return array(
-			$this->_crud->config('eventPrefix') . '.init' => 'init',
 			$this->_crud->config('eventPrefix') . '.beforeRender' => 'beforeRender'
 		);
 	}
