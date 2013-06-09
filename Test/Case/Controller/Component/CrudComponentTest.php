@@ -621,6 +621,35 @@ class CrudComponentTestCase extends ControllerTestCase {
 	}
 
 /**
+ * Test Paginator->settings updation in beforePaginate callback
+ *
+ * @return void
+ */
+	public function testPaginatorSettingsUpdation() {
+		$this->controller->paginate = array(
+			'CrudExample' => array(
+				'paramType' => 'named',
+				'order' => array('name' => 'desc')
+			)
+		);
+
+		$this->Crud->on('beforePaginate', function($event) {
+			unset($event->subject->controller->paginate);
+			$event->subject->controller->Paginator->settings['CrudExample']['paramType'] = 'querystring';
+		});
+
+		$this->Crud->executeAction('index');
+
+		$expected = array(
+			'order' => array('name' => 'desc'),
+			'paramType' => 'querystring',
+			'findType' => 'all'
+		);
+
+		$this->assertEquals($expected, $this->controller->Paginator->settings['CrudExample']);
+	}
+
+/**
  * Tests on method for afterPaginate
  *
  * @expectedException CakeException
