@@ -42,7 +42,7 @@ class ApiListener extends CrudListener {
 			'Crud.afterFind' => array('callable' => 'afterFind', 'priority' => 100),
 
 			'Crud.beforeDelete' => array('callable' => 'beforeDelete', 'priority' => 100),
-			'Crud.afterDelete' => array('callable' => 'afterDelete', 'priority' => 100),
+			'Crud.afterDelete' => array('callable' => 'afterDelete', 'priority' => 100)
 		);
 	}
 

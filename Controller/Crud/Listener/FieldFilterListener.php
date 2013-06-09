@@ -44,8 +44,6 @@ class FieldFilterListener extends CrudListener {
  */
 	public function implementedEvents() {
 		return array(
-			'Crud.init' => array('callable' => 'init'),
-
 			'Crud.beforePaginate' => array('callable' => 'beforePaginate', 'priority' => 50),
 			'Crud.beforeFind' => array('callable' => 'beforeFind', 'priority' => 50)
 		);

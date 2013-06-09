@@ -61,6 +61,8 @@ abstract class CrudListener extends Object implements CakeEventListener {
 	public function __construct(CrudSubject $subject, $defaults = null) {
 		$this->_crud = $subject->crud;
 		$this->_subject = $subject;
+		$this->_request = $subject->request;
+		$this->_controller = $subject->controller;
 
 		if (!empty($defaults)) {
 			$this->config($defaults);
@@ -112,8 +114,7 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * @return void
  */
 	public function init(CakeEvent $event) {
-		$this->_request = $event->subject->request;
-		$this->_controller = $event->subject->controller;
+
 	}
 
 /**
