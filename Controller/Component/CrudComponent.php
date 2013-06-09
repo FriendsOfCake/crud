@@ -523,7 +523,7 @@ class CrudComponent extends Component {
 			$class .= 'CrudAction';
 			App::uses($class, $plugin . 'Controller/Crud/Action');
 			$subject = $this->getSubject(array('action' => $name));
-			$this->_actionInstances[$name] = new $class($subject, $this->defaults('action', $name));
+			$this->_actionInstances[$name] = new $class($subject, $this->defaults('actions', $name));
 			$this->_eventManager->attach($this->_actionInstances[$name]);
 		}
 
