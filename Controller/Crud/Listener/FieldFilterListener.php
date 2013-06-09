@@ -63,9 +63,7 @@ class FieldFilterListener extends CrudListener {
  * @return void
  */
 	public function beforeFind(CakeEvent $event) {
-		$this->_relations = array();
-
-		$fields = $this->_getFieldsForQuery($event->subject->model);
+		$fields = $this->_getFields($event);
 		if (empty($fields)) {
 			return;
 		}
@@ -81,9 +79,7 @@ class FieldFilterListener extends CrudListener {
  * @return void
  */
 	public function beforePaginate(CakeEvent $event) {
-		$this->_relations = array();
-
-		$fields = $this->_getFieldsForQuery($event->subject->model);
+		$fields = $this->_getFields($event);
 		if (empty($fields)) {
 			return;
 		}
@@ -138,6 +134,17 @@ class FieldFilterListener extends CrudListener {
 		}
 
 		$this->_crud->action($action )->config('fieldFilter.models.whitelist', $models);
+	}
+
+/**
+ * Get fields for the query
+ *
+ * @param CakeEvent $event
+ * @return array
+ */
+	protected function _getFields(CakeEvent $event) {
+		$this->_relations = array();
+		return $this->_getFieldsForQuery($event->subject->model);
 	}
 
 /**
