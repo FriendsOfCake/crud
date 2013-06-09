@@ -1,19 +1,33 @@
 <?php
 
-App::uses('TranslationsEvent', 'Crud.Controller/Listener');
 App::uses('CakeEvent', 'Event');
+App::uses('CrudSubject', 'Crud.Controller/Crud');
+App::uses('TranslationsListener', 'Crud.Controller/Crud/Listener');
 
-class TranslationsListenerTest extends CakeTestCase {
+/**
+ *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright Christian Winther, 2013
+ */
+class TranslationsListenerTest extends ControllerTestCase {
+
+/**
+ * fixtures
+ *
+ * Use the core posts fixture to have something to work on.
+ * What fixture is used is almost irrelevant, was chosen as it is simple
+ */
+	public $fixtures = array('core.post', 'core.author', 'core.tag', 'plugin.crud.posts_tag');
 
 	public function setUp() {
 		parent::setUp();
-
-		$this->Translations = new TranslationsListener(new CrudSubject());
+		$this->Translations = new TranslationsListener(new CrudSubject(array('crud' => new StdClass)));
 	}
 
 	public function tearDown() {
 		parent::tearDown();
-
 		unset($this->Translations);
 	}
 
@@ -42,9 +56,11 @@ class TranslationsListenerTest extends CakeTestCase {
 			'find' => array(
 				'error' => array('message' => 'Could not find {name}', 'element' => 'error')
 			),
-			'error' => array(
-				'invalid_http_request' => array('message' => 'Invalid HTTP request', 'element' => 'error'),
-				'invalid_id' => array('message' => 'Invalid id', 'element' => 'error')
+			'invalid_http_request' => array(
+				'error' => array('message' => 'Invalid HTTP request', 'element' => 'error'),
+			),
+			'invalid_id' => array(
+				'error' => array('message' => 'Invalid id', 'element' => 'error')
 			)
 		);
 
@@ -58,7 +74,9 @@ class TranslationsListenerTest extends CakeTestCase {
 				'error' => array('message' => 'Denied!', 'element' => 'error')
 			)
 		);
-		$config = $this->Translations->config($override);
+
+		$this->Translations->config($override);
+		$config = $this->Translations->config();
 
 		$expected = array(
 			'domain' => 'crud',
@@ -78,11 +96,14 @@ class TranslationsListenerTest extends CakeTestCase {
 			'find' => array(
 				'error' => array('message' => 'Could not find {name}', 'element' => 'error')
 			),
-			'error' => array(
-				'invalid_http_request' => array('message' => 'Invalid HTTP request', 'element' => 'error'),
-				'invalid_id' => array('message' => 'Invalid id', 'element' => 'error')
+			'invalid_http_request' => array(
+				'error' => array('message' => 'Invalid HTTP request', 'element' => 'error'),
+			),
+			'invalid_id' => array(
+				'error' => array('message' => 'Invalid id', 'element' => 'error')
 			)
 		);
+
 		$this->assertEquals($expected, $config);
 	}
 
@@ -186,4 +207,106 @@ class TranslationsListenerTest extends CakeTestCase {
 		$Event = new CakeEvent('Crud.afterSave', $std);
 		$this->Translations->setFlash($Event);
 	}
+
+/**
+ * testAddActionTranslatedBaseline
+ *
+ * @return void
+ */
+	public function testAddActionTranslatedBaseline() {
+		Router::connect("/:action", array('controller' => 'crud_examples'));
+
+		$this->Controller = $this->generate(
+			'CrudExamples',
+			array(
+				'methods' => array('header', 'redirect', 'render'),
+				'components' => array('Session'),
+			)
+		);
+
+		$this->Controller->Session
+			->expects($this->once())
+			->method('setFlash')
+			->with('Successfully created CrudExample');
+
+		$this->testAction('/add', array(
+			'data' => array(
+				'CrudExample' => array(
+					'title' => __METHOD__,
+					'description' => __METHOD__,
+					'author_id' => 0
+				)
+			)
+		));
+	}
+
+/**
+ * testAddActionTranslatedChangedName
+ *
+ * @return void
+ */
+	public function testAddActionTranslatedChangedName() {
+		Router::connect("/:action", array('controller' => 'crud_examples'));
+
+		$this->Controller = $this->generate(
+			'CrudExamples',
+			array(
+				'methods' => array('header', 'redirect', 'render'),
+				'components' => array('Session'),
+			)
+		);
+
+		$this->Controller->Crud->defaults('listener', 'translations', array('name' => 'Thingy'));
+		$this->Controller->Session
+			->expects($this->once())
+			->method('setFlash')
+			->with('Successfully created Thingy');
+
+		$this->testAction('/add', array(
+			'data' => array(
+				'CrudExample' => array(
+					'title' => __METHOD__,
+					'description' => __METHOD__,
+					'author_id' => 0
+				)
+			)
+		));
+	}
+
+/**
+ * testAddActionTranslatedChangedName
+ *
+ * @return void
+ */
+	public function testAddActionTranslatedChangedMessage() {
+		Router::connect("/:action", array('controller' => 'crud_examples'));
+
+		$this->Controller = $this->generate(
+			'CrudExamples',
+			array(
+				'methods' => array('header', 'redirect', 'render'),
+				'components' => array('Session'),
+			)
+		);
+
+		$this->Controller->Crud->defaults('listener', 'translations', array(
+			'create' => array('success' => array('message' => "Yay!"))
+		));
+
+		$this->Controller->Session
+			->expects($this->once())
+			->method('setFlash')
+			->with('Yay!');
+
+		$this->testAction('/add', array(
+			'data' => array(
+				'CrudExample' => array(
+					'title' => __METHOD__,
+					'description' => __METHOD__,
+					'author_id' => 0
+				)
+			)
+		));
+	}
+
 }

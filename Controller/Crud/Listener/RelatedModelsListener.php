@@ -1,40 +1,19 @@
 <?php
 
 App::uses('CakeEventListener', 'Event');
-App::uses('CrudSubject', 'Crud.Controller/Event');
+App::uses('CrudListener', 'Crud.Controller/Crud');
+App::uses('CrudSubject', 'Crud.Controller/Crud');
 
 /**
  * Implements beforeRender event listener to set related models' lists to
  * the view
  *
- */
-class RelatedModelsListener implements CakeEventListener {
-
-/**
- * Crud Component reference
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
  *
- * @var CrudComponent
+ * @copyright Christian Winther, 2013
  */
-	protected $_crud;
-
-/**
- * Crud Event subject
- *
- * @var CrudSubject
- */
-	protected $_subject;
-
-/**
- * Class constructor
- *
- * @param string $prefix CRUD component events name prefix
- * @param array $models List of models to be fetched in beforeRenderEvent
- * @return void
- */
-	public function __construct(CrudSubject $subject) {
-		$this->_subject = $subject;
-		$this->_crud = $subject->crud;
-	}
+class RelatedModelsListener extends CrudListener implements CakeEventListener {
 
 /**
  * Enables association list fetching for specified actions.
@@ -48,8 +27,10 @@ class RelatedModelsListener implements CakeEventListener {
 		}
 
 		foreach ($actions as $action) {
-			if (empty($this->_crud->settings['relatedLists'][$action])) {
-				$this->_crud->settings['relatedLists'][$action] = true;
+			$actionClass = $this->_crud->action($action);
+			$config = $actionClass->config('relatedLists');
+			if (empty($config)) {
+				$actionClass->config('relatedLists', true);
 			}
 		}
 	}
@@ -72,7 +53,7 @@ class RelatedModelsListener implements CakeEventListener {
 			$models = array($models);
 		}
 
-		$this->_crud->settings['relatedLists'][$action] = $models;
+		$this->_crud->action($action)->config('relatedLists', $models);
 	}
 
 /**
@@ -82,41 +63,35 @@ class RelatedModelsListener implements CakeEventListener {
  * @return array
  */
 	public function models($action = null) {
-		if (empty($action)) {
-			$action = $this->_subject->action;
+		$actionClass = $this->_crud->action($action);
+
+		$settings = $actionClass->config('relatedLists');
+		if ($settings === true) {
+			return array_keys($this->_subject->model->getAssociated());
 		}
 
-		$settings = $this->_crud->config('relatedLists');
-
-		// If we don't have any related configuration, look up its alias in the actionMap
-		if (empty($settings[$action]) && $this->_crud->isActionMapped($action)) {
-			$action = $this->_crud->config(sprintf('actionMap.%s', $action));
-		}
-
-		// If current action isn't configured
-		if (!isset($settings[$action])) {
+		if (empty($settings)) {
 			return array();
 		}
 
-		// If the action value is true and we got a configured default, inspect it
-		if ($settings[$action] === true && isset($settings['default'])) {
-			// If default is false, don't fetch any related records
+		if (is_string($settings)) {
+			$settings = array($settings);
+		}
+
+		if (isset($settings['default'])) {
 			if (false === $settings['default']) {
 				return array();
 			}
 
-			// If it's an array, return it
 			if (is_array($settings['default'])) {
 				return $settings['default'];
 			}
 		}
 
-		// Use whatever value there may have been set by the user
-		if ($settings[$action] !== true) {
-			return $settings[$action];
+		if ($settings !== true) {
+			return $settings;
 		}
 
-		// Default to everything associated to the current model
 		return array_keys($this->_subject->model->getAssociated());
 	}
 
@@ -126,7 +101,10 @@ class RelatedModelsListener implements CakeEventListener {
  * @return array
  */
 	public function implementedEvents() {
-		return array($this->_crud->config('eventPrefix') . '.beforeRender' => 'beforeRender');
+		return array(
+			$this->_crud->config('eventPrefix') . '.init' => 'init',
+			$this->_crud->config('eventPrefix') . '.beforeRender' => 'beforeRender'
+		);
 	}
 
 /**
@@ -137,7 +115,7 @@ class RelatedModelsListener implements CakeEventListener {
  * @param CakeEvent
  * @return void
  */
-	public function beforeRender($event) {
+	public function beforeRender(CakeEvent $event) {
 		$component = $event->subject->crud;
 		$controller = $event->subject->controller;
 		$models = $this->models();

@@ -1,4 +1,11 @@
 <?php
+
+/*
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright Christian Winther, 2013
+ */
 class AllCrudTest extends PHPUnit_Framework_TestSuite {
 
 	public static function suite() {

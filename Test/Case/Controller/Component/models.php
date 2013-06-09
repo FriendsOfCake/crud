@@ -2,6 +2,13 @@
 App::uses('Model', 'Model');
 App::uses('AppModel', 'Model');
 
+/**
+ *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright Christian Winther, 2013
+ */
 class CrudExample extends AppModel {
 
 	public $alias = 'CrudExample';
