@@ -120,6 +120,23 @@ class FieldFilterListenerTest extends CakeTestCase {
 	}
 
 /**
+ * Test that the listener listen to the correct
+ * events with the correct priority
+ *
+ * @return void
+ */
+	public function testImplementedEvents() {
+		extract($this->_mockClasses());
+
+		$expected = array(
+			'Crud.beforePaginate' => array('callable' => 'beforePaginate', 'priority' => 50),
+			'Crud.beforeFind' => array('callable' => 'beforeFind', 'priority' => 50)
+		);
+		$actual = $Listener->implementedEvents();
+		$this->assertEqual($expected, $actual);
+	}
+
+/**
  * Test that a beforeFind with no fields in the query
  * will not inject any fields or contain into the query
  *
@@ -258,6 +275,31 @@ class FieldFilterListenerTest extends CakeTestCase {
 		$Listener->beforeFind($Event);
 
 		$expected = array('Model.id', 'Model.name', 'Model.password', 'Sample.my_fk');
+		$actual = $CrudSubject->query['fields'];
+		$this->assertSame($expected, $actual);
+	}
+
+
+/**
+ * Test that blacklisting always will win
+ * in the filtering.
+ *
+ * If a field is both white and blacklisted
+ * it will end up being removed
+ *
+ * @return void
+ */
+	public function testBlacklistingWinOverWhitelist() {
+		$hasField = array('id' => true,	'name' => true,	'password' => true);
+		extract($this->_mockClasses($hasField));
+		$Request->query['fields'] = 'id,name,password';
+
+		$Listener->whitelistFields(array('Model.id', 'Model.name', 'Model.password'));
+		$Listener->blacklistFields(array('Model.password'));
+
+		$Listener->beforeFind($Event);
+
+		$expected = array('Model.id', 'Model.name');
 		$actual = $CrudSubject->query['fields'];
 		$this->assertSame($expected, $actual);
 	}
