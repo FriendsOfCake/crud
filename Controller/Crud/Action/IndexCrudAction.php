@@ -77,7 +77,7 @@ class IndexCrudAction extends CrudAction {
 			$this->_controller->Paginator = $this->_collection->load('Paginator');
 		}
 		$Paginator = $this->_controller->Paginator;
-		$settings = $Paginator->settings;
+		$settings = &$Paginator->settings;
 
 		// Copy pagination settings from the controller
 		if (!empty($this->_controller->paginate)) {
@@ -96,7 +96,7 @@ class IndexCrudAction extends CrudAction {
 
 		// Copy pagination settings from the controller
 		if (!empty($this->_controller->paginate)) {
-			$settings = array_merge($settings, $Paginator->settings, $this->_controller->paginate);
+			$settings = array_merge($settings, $this->_controller->paginate);
 		}
 
 		// If pagination settings is using ModelAlias modify that
@@ -106,7 +106,6 @@ class IndexCrudAction extends CrudAction {
 			$settings['findType'] = $subject->findMethod;
 		}
 
-		$Paginator->settings = $settings;
 		$this->_controller->paginate = $settings;
 	}
 
