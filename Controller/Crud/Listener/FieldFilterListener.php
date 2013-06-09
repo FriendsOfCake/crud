@@ -93,6 +93,38 @@ class FieldFilterListener extends CrudListener {
 	}
 
 /**
+ * Whitelist fields that are allowed to be included in the
+ * output list of fields
+ *
+ * @param array $fields
+ * @param string $action
+ * @return mixed
+ */
+	public function whitelistFields($fields = null, $action = null) {
+		if (empty($fields)) {
+			return $this->_crud->action($action)->config('fieldFilter.fields.whitelist');
+		}
+
+		$this->_crud->action($action )->config('fieldFilter.fields.whitelist', $fields);
+	}
+
+/**
+ * Blacklist fields that are not allowed to be included in the
+ * output list of fields
+ *
+ * @param array $fields
+ * @param string $action
+ * @return mixed
+ */
+	public function blacklistFields($fields = null, $action = null) {
+		if (empty($fields)) {
+			return $this->_crud->action($action)->config('fieldFilter.fields.blacklist');
+		}
+
+		$this->_crud->action($action)->config('fieldFilter.fields.blacklist', $fields);
+	}
+
+/**
  * Get the list of fields that should be selected
  * in the query based on the HTTP GET requests fields
  *
