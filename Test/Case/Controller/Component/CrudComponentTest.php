@@ -57,6 +57,10 @@ class TestCrudEventManager extends CakeEventManager {
 
 class CrudExamplesController extends Controller {
 
+	public $uses = array('CrudExample');
+
+	public $modelClass = 'CrudExample';
+
 	public static $componentsArray = array(
 		'Session',
 		'Crud.Crud' => array(
@@ -68,6 +72,10 @@ class CrudExamplesController extends Controller {
 				'view'
 			)
 		)
+	);
+
+	public $paginate = array(
+		'limit' => 1000
 	);
 
 /**
@@ -92,6 +100,24 @@ class CrudExamplesController extends Controller {
  */
 	public function add() {
 		return $this->Crud->executeAction();
+	}
+
+/**
+ * Test that it should render 'search.ctp'
+ *
+ * @return void
+ */
+	public function search() {
+		return $this->Crud->executeAction('index');
+	}
+
+/**
+ * Test that it should render 'index'
+ *
+ * @return void
+ */
+	public function index() {
+		return $this->Crud->executeAction('index');
 	}
 
 }
@@ -126,18 +152,10 @@ class TestCrudComponent extends CrudComponent {
 
 }
 
-class CrudController extends Controller {
-
-	public $paginate = array(
-		'limit' => 1000
-	);
-
-}
-
 /**
  * CrudComponentTestCase
  */
-class CrudComponentTestCase extends ControllerTestCase {
+class CrudComponentTest extends ControllerTestCase {
 
 /**
  * fixtures
@@ -164,7 +182,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 		$this->model = new CrudExample();
 
 		$this->controller = $this->getMock(
-			'CrudController',
+			'CrudExamplesController',
 			array('header', 'redirect', 'render', '_stop'),
 			array(),
 			'',
@@ -179,6 +197,8 @@ class CrudComponentTestCase extends ControllerTestCase {
 
 		$Collection = new ComponentCollection();
 		$Collection->init($this->controller);
+		$this->controller->Components = $Collection;
+
 		$settings = array(
 			'actions' => array(
 				'index',
@@ -188,7 +208,6 @@ class CrudComponentTestCase extends ControllerTestCase {
 				'delete'
 			)
 		);
-		$this->controller->Components = $Collection;
 
 		$this->Crud = $this->getMock(
 			'TestCrudComponent',
@@ -197,6 +216,7 @@ class CrudComponentTestCase extends ControllerTestCase {
 		);
 
 		$this->Crud->initialize($this->controller);
+		$this->controller->Crud = $this->Crud;
 	}
 
 /**
@@ -288,6 +308,8 @@ class CrudComponentTestCase extends ControllerTestCase {
  * Add should render the form template
  */
 	public function testAddActionGet() {
+		$this->request->action = 'add';
+
 		$this->controller
 			->expects($this->once())
 			->method('render')
@@ -519,6 +541,8 @@ class CrudComponentTestCase extends ControllerTestCase {
  * Do we get a call to render the form template?
  */
 	public function testEditActionGet() {
+		$this->request->action = 'edit';
+
 		$this->controller
 			->expects($this->once())
 			->method('render')
@@ -573,6 +597,8 @@ class CrudComponentTestCase extends ControllerTestCase {
  * Make sure that there is a call to render the view template
  */
 	public function testViewAction() {
+		$this->request->action = 'view';
+
 		$this->controller
 			->expects($this->once())
 			->method('render')
@@ -590,6 +616,8 @@ class CrudComponentTestCase extends ControllerTestCase {
  * Make sure that there is a call to render the index template
  */
 	public function testIndexAction() {
+		$this->request->action = 'index';
+
 		$this->controller
 			->expects($this->once())
 			->method('render')
@@ -1532,5 +1560,23 @@ class CrudComponentTestCase extends ControllerTestCase {
  */
 	public function testCustomCrudActionsCanBeUsedInPlugins() {
 		$this->Crud->mapAction('test', 'CrudSample.MyDelete');
+	}
+
+/**
+ * Test that having a 'search' action in the controller
+ * and calling ->executeAction('index') will still
+ * render the 'search' view
+ *
+ * @return void
+ */
+	public function testViewCanBeChangedInControllerAction() {
+		$this->request->action = 'search';
+
+		$this->controller
+			->expects($this->once())
+			->method('render')
+			->with('search');
+
+		$this->controller->search();
 	}
 }

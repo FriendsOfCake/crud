@@ -153,8 +153,9 @@ class CrudComponent extends Component {
  */
 	public function executeAction($controllerAction = null, $args = array()) {
 		$view = $action = $controllerAction ?: $this->_action;
-		$this->_setModelProperties();
 		$this->_action = $action;
+
+		$this->_setModelProperties();
 		$this->_loadListeners();
 		$this->trigger('init');
 
@@ -224,6 +225,7 @@ class CrudComponent extends Component {
 			foreach ($action as $realAction => $realView) {
 				$this->action($realAction)->view($realView);
 			}
+
 			return;
 		}
 
