@@ -234,11 +234,11 @@ class CrudComponentTest extends ControllerTestCase {
 	}
 
 /**
- * testEnableAction
+ * testEnable
  */
-	public function testEnableAction() {
+	public function testEnable() {
 		$this->Crud->mapAction('puppies', 'view', false);
-		$this->Crud->enableAction('puppies');
+		$this->Crud->enable('puppies');
 
 		$result = $this->Crud->isActionMapped('puppies');
 		$this->assertTrue($result);
@@ -248,7 +248,7 @@ class CrudComponentTest extends ControllerTestCase {
  * testDisableAction
  */
 	public function testDisableAction() {
-		$this->Crud->disableAction('view');
+		$this->Crud->disable('view');
 
 		$result = $this->Crud->isActionMapped('view');
 		$this->assertFalse($result);
@@ -265,14 +265,14 @@ class CrudComponentTest extends ControllerTestCase {
 	}
 
 /**
- * testMapActionView
+ * testView
  */
-	public function testMapActionView() {
+	public function testiew() {
 		$this->controller
 			->expects($this->once())
 			->method('render');
 
-		$this->Crud->mapActionView('view', 'cupcakes');
+		$this->Crud->view('view', 'cupcakes');
 		$this->Crud->executeAction('view', array(1));
 	}
 
@@ -964,10 +964,10 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testCustomFindChanged() {
-		$this->Crud->mapFindMethod('index', 'custom_find');
+		$this->Crud->findMethod('index', 'custom_find');
 		$this->assertEquals('custom_find', $this->Crud->action('index')->findMethod());
 
-		$this->Crud->mapFindMethod('index', 'all');
+		$this->Crud->findMethod('index', 'all');
 		$this->assertEquals('all', $this->Crud->action('index')->findMethod());
 	}
 
@@ -1009,7 +1009,7 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testCustomFindPaginationCustomPublished() {
-		$this->Crud->mapFindMethod('index', 'published');
+		$this->Crud->findMethod('index', 'published');
 		$this->Crud->executeAction('index');
 		$this->assertEquals('published', $this->controller->paginate['findType']);
 		$this->assertEquals(3, count($this->controller->viewVars['items']));
@@ -1021,7 +1021,7 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testCustomFindPaginationCustomUnpublished() {
-		$this->Crud->mapFindMethod('index', 'unpublished');
+		$this->Crud->findMethod('index', 'unpublished');
 		$this->Crud->executeAction('index');
 		$this->assertEquals('unpublished', $this->controller->paginate['findType']);
 		$this->assertEquals(0, count($this->controller->viewVars['items']));
@@ -1047,7 +1047,7 @@ class CrudComponentTest extends ControllerTestCase {
  */
 	public function testCustomFindEditPublished() {
 		$this->Crud->settings['validateId'] = 'integer';
-		$this->Crud->mapFindMethod('edit', 'firstPublished');
+		$this->Crud->findMethod('edit', 'firstPublished');
 		$this->Crud->executeAction('edit', array(2));
 
 		$this->assertNotEmpty($this->request->data);
@@ -1064,7 +1064,7 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->controller->expects($this->once())->method('redirect');
 
 		$this->Crud->settings['validateId'] = 'integer';
-		$this->Crud->mapFindMethod('edit', 'firstUnpublished');
+		$this->Crud->findMethod('edit', 'firstUnpublished');
 		$this->Crud->executeAction('edit', array(2));
 
 		$this->assertTrue(empty($this->request->data));
@@ -1085,7 +1085,7 @@ class CrudComponentTest extends ControllerTestCase {
 		));
 
 		$this->Crud->settings['validateId'] = 'integer';
-		$this->Crud->mapFindMethod('delete', 'firstPublished');
+		$this->Crud->findMethod('delete', 'firstPublished');
 		$this->Crud->executeAction('delete', array(2));
 
 		$events = CakeEventManager::instance()->getLog();
@@ -1114,7 +1114,7 @@ class CrudComponentTest extends ControllerTestCase {
 		));
 
 		$this->Crud->settings['validateId'] = 'integer';
-		$this->Crud->mapFindMethod('delete', 'firstUnpublished');
+		$this->Crud->findMethod('delete', 'firstUnpublished');
 		$this->Crud->executeAction('delete', array(2));
 
 		$events = CakeEventManager::instance()->getLog();
@@ -1139,7 +1139,7 @@ class CrudComponentTest extends ControllerTestCase {
  */
 	public function testCustomFindViewPublished() {
 		$this->Crud->settings['validateId'] = 'integer';
-		$this->Crud->mapFindMethod('view', 'firstPublished');
+		$this->Crud->findMethod('view', 'firstPublished');
 		$this->Crud->executeAction('view', array(2));
 
 		$events = CakeEventManager::instance()->getLog();
@@ -1161,7 +1161,7 @@ class CrudComponentTest extends ControllerTestCase {
  */
 	public function testCustomFindViewUnpublished() {
 		$this->Crud->settings['validateId'] = 'integer';
-		$this->Crud->mapFindMethod('view', 'firstUnpublished');
+		$this->Crud->findMethod('view', 'firstUnpublished');
 		$this->Crud->executeAction('view', array(2));
 
 		$events = CakeEventManager::instance()->getLog();
@@ -1181,35 +1181,35 @@ class CrudComponentTest extends ControllerTestCase {
 	}
 
 /**
- * Test if mapActionView with array yields the expected result
+ * Test if view with array yields the expected result
  *
  * @return void
  */
-	public function testMapActionViewWithArrayNewAction() {
+	public function testViewWithArrayNewAction() {
 		$this->controller
 			->expects($this->once())
 			->method('render')
 			->with('index');
 
 		$this->Crud->mapAction('show_all', 'index');
-		$this->Crud->mapActionView(array('show_all' => 'index', 'index' => 'overview'));
+		$this->Crud->view(array('show_all' => 'index', 'index' => 'overview'));
 
 		$this->Crud->executeAction('show_all');
 	}
 
 /**
- * Test if mapActionView with array yields the expected result
+ * Test if view with array yields the expected result
  *
  * @return void
  */
-	public function testMapActionViewWithArrayIndexAction() {
+	public function testViewWithArrayIndexAction() {
 		$this->controller
 			->expects($this->once())
 			->method('render')
 			->with('overview');
 
 		$this->Crud->mapAction('show_all', 'index');
-		$this->Crud->mapActionView(array('show_all' => 'index', 'index' => 'overview'));
+		$this->Crud->view(array('show_all' => 'index', 'index' => 'overview'));
 
 		$this->Crud->executeAction('index');
 	}

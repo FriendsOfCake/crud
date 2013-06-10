@@ -192,23 +192,35 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Enable a CRUD action
+ * Enable one or multiple CRUD actions
  *
- * @param string $action The action to enable
+ * @param string $actions The action to enable
  * @return void
  */
-	public function enableAction($action) {
-		$this->action($action)->enable($action);
+	public function enable($actions) {
+		if (!is_array($actions)) {
+			$actions = array($actions);
+		}
+
+		foreach ($actions as $action) {
+			$this->action($action)->enable();
+		}
 	}
 
 /**
- * Disable a CRUD action
+ * Disable one or multiple CRUD actions
  *
- * @param string $action The action to disable
+ * @param string $actions The action to disable
  * @return void
  */
-	public function disableAction($action) {
-		$this->action($action)->disable($action);
+	public function disable($actions) {
+		if (!is_array($actions)) {
+			$actions = array($actions);
+		}
+
+		foreach ($actions as $action) {
+			$this->action($action)->disable();
+		}
 	}
 
 /**
@@ -220,7 +232,7 @@ class CrudComponent extends Component {
  * @param string $view
  * @return void
  */
-	public function mapActionView($action, $view = null) {
+	public function view($action, $view = null) {
 		if (is_array($action)) {
 			foreach ($action as $realAction => $realView) {
 				$this->action($realAction)->view($realView);
@@ -230,6 +242,27 @@ class CrudComponent extends Component {
 		}
 
 		$this->action($action)->view($view);
+	}
+
+/**
+ * Map a controller action to a Model::find($method)
+ *
+ * To map multiple findMethods in one go pass an array as first argument and no second argument
+ *
+ * @param string $action
+ * @param strign $method
+ * @return void
+ */
+	public function findMethod($action, $method = null) {
+		if (is_array($action)) {
+			foreach ($action as $realAction => $realView) {
+				$this->action($realAction)->view($realView);
+			}
+
+			return;
+		}
+
+		$this->action($action)->findMethod($method);
 	}
 
 /**
@@ -244,7 +277,7 @@ class CrudComponent extends Component {
 		$this->config('actions.' . $action, $type);
 
 		if ($enable) {
-			$this->enableAction($action);
+			$this->enable($action);
 		}
 	}
 
@@ -266,17 +299,6 @@ class CrudComponent extends Component {
 		}
 
 		return false;
-	}
-
-/**
- * Map a controller action to a Model::find($method)
- *
- * @param string $action
- * @param strign $method
- * @return void
- */
-	public function mapFindMethod($action, $method = null) {
-		$this->action($action)->findMethod($method);
 	}
 
 /**

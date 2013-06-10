@@ -123,6 +123,7 @@ The method __must be public__, since it's called from outside the scope of the c
 __Pro tip__: Prefix your callbacks with `_` and CakePHP will prevent the method to be called through the web.
 
 ```php
+<?php
 public function implementedEvents() {
 	return parent::implementedEvents() + array(
 		'Crud.beforeFind' => '_beforeFind',
@@ -137,6 +138,7 @@ public function _beforeFind(CakeEvent $event) {
 public function _beforeSave(CakeEvent $event) {
 
 }
+?>
 ```
 
 ## Lambda / Closure inside a specific controller action

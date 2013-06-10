@@ -9,7 +9,7 @@
 
 The only installation method supported by this plugin is by using composer. Just add this to your composer.json configuration:
 
-```
+```json
 {
 	"extra": {
 		"installer-paths": {

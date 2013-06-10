@@ -7,12 +7,13 @@ There is no view for delete action, it will always redirect
 Default `$components` variable according to the documentation is like this:
 
 ```php
+<?php
 public $components = array(
-    // Enable CRUD actions
-    'Crud.Crud' => array(
-        'actions' => array('index', 'add', 'edit', 'view', 'delete')
-    )
+  'Crud.Crud' => array(
+      'actions' => array('index', 'add', 'edit', 'view', 'delete')
+  )
 );
+?>
 ```
 
 In this case, it will assume that all the IDs of your models are made with integers.
@@ -20,13 +21,14 @@ In this case, it will assume that all the IDs of your models are made with integ
 If they are `UUID indexed`, please add the following setting:
 
 ```php
+<?php
 public $components = array(
-    // Enable CRUD actions
-    'Crud.Crud' => array(
-        'actions' => array('index', 'add', 'edit', 'view', 'delete'),
-        'validateId' => 'uuid'
-    )
+  'Crud.Crud' => array(
+      'actions' => array('index', 'add', 'edit', 'view', 'delete'),
+      'validateId' => 'uuid'
+  )
 );
+?>
 ```
 
 In the `Index` views:
@@ -34,7 +36,9 @@ In the `Index` views:
 The paginated array is in $items. So if you have Baked an Index view, set in the beginning something like this:
 
 ```php
+<?php
 $users = $items;
+?>
 ```
 
 The rest of the view will work. Otherwise you will get an error message about undefined variable $users.
@@ -44,7 +48,9 @@ In the `View` views:
 Add the following at the beginning of the page.
 
 ```php
+<?ph
 $user = $item;
+?>
 ```
 
 ## Error and Success elements

@@ -29,7 +29,7 @@ class AppController extends Controller {
 ?>
 ```
 
-In the above example, if the `delete` action is called on __any__ controller, cake will raise it's normal missing action error as if nothing has happened
+In the above example, if the `delete` action is called on __any__ controller (that doesn't implement it on their own), cake will raise it's normal `MissingActionException` error
 
 You can enable and disable Crud actions on the fly
 
