@@ -133,6 +133,7 @@ __d('crud', 'Could not update Post');
 __d('crud', 'Successfully deleted Post');
 __d('crud', 'Could not delete Post');
 __d('crud', 'Could not find Post');
+?>
 ```
 
 This file provides static calls of all permutations of the messages that the component could use for the App's

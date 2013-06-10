@@ -50,16 +50,27 @@ abstract class AppController extends Controller {
 	public $components = array(
 		// Enable CRUD actions
 		'Crud.Crud' => array(
-			'actions' => array('index', 'add', 'edit', 'view', 'delete')
+			'actions' => array(
+				// Same as array('index' => 'Crud.Index')
+				'index',
+				// Same as array('add' => 'Crud.Add')
+				'add',
+				// Same as array('edit' => 'Crud.Edit')
+				'edit',
+				// Same as array('view' => 'Crud.View')
+				'view',
+				// Same as array('delete' => 'Crud.Delete')
+				'delete'
+			)
 		)
 	);
 
 	public function beforeFilter() {
 		// Will ignore delete action
-		$this->Crud->disableAction('delete');
+		$this->Crud->disable('delete');
 
 		// Will process delete action again
-		$this->Crud->enableAction('delete');
+		$this->Crud->enable('delete');
 
 		parent::beforeFilter();
 	}
@@ -74,13 +85,20 @@ You can also change the default view used for a Crud action
 class DemoController extends AppController {
 	public function beforeFilter() {
 		// Change the view for add crud action to be "public_add.ctp"
-		$this->Crud->mapActionView('add',  'public_add');
+		$this->Crud->view('add',  'public_add');
+		// Same as
+		$this->Crud->action('add')->view('public_add');
 
 		// Change the view for edit crud action to be "public_edit.ctp"
-		$this->Crud->mapActionView('edit', 'public_edit');
+		$this->Crud->view('edit', 'public_edit');
+		// Same as
+		$this->Crud->action('edit')->view('public_edit');
 
 		// Convenient shortcut to change both at once
-		$this->Crud->mapActionView(array('add' => 'public_add', 'edit' => 'public_edit'));
+		$this->Crud->view(array('add' => 'public_add', 'edit' => 'public_edit'));
+		// Same as
+		$this->Crud->action('add')->view('public_add');
+		$this->Crud->action('edit')->view('public_edit');
 
 		parent::beforeFilter();
 	}
@@ -92,9 +110,9 @@ class DemoController extends AppController {
 
 A `CrudAction` is a class that handles a specific kind of crud action type (index, add, edit, view, delete) in isolation.
 
-Each CrudAction have it's own unique configuration and events it uses.
+Each `CrudAction` have it's own unique configuration and events it uses.
 
-If you don't like how a specific CurdAction behaves, you can very easily replace it with your own
+If you don't like how a specific `CrudAction` behaves, you can very easily replace it with your own - see the `custom actions` documentation for how to do this.
 
 ## Index CrudAction
 
@@ -347,6 +365,7 @@ By default `delete` uses `find('count')`
 ### Using beforeFilter
 
 ```php
+<?php
 public function beforeFilter() {
 	// The index() function will call find('published') on your model
 	$this->Crud->action('index')->findMethod('published');
@@ -360,11 +379,13 @@ public function beforeFilter() {
 	// Get the current configuration
 	$config = $this->Crud->action('admin_index')->findMethod();
 }
+?>
 ```
 
 ### In the controller action
 
 ```php
+<?php
 // You don't have to provide the action name in 'action'
 // since the default is the current action
 public function index() {
@@ -384,6 +405,7 @@ public function admin_index() {
 
 	return $this->Crud->executeAction();
 }
+?>
 ```
 
 ## Change the view to be rendered
@@ -395,7 +417,9 @@ If you action is `admin_index` the `admin_index.ctp` view will be rendered by de
 ### Using beforeFilter
 
 ```php
+<?php
 public function beforeFilter() {
+	// Change the 'index' view  to 'my_index'
 	$this->Crud->action('index')->view('my_index');
 
 	// Get the current configuration
@@ -406,11 +430,13 @@ public function beforeFilter() {
 	// Get the current configuration
 	$config = $this->Crud->action('admin_index')->view();
 }
+?>
 ```
 
 ### In the controller action
 
 ```php
+<?php
 // You don't have to provide the action name in 'action'
 // since the default is the current action
 
@@ -431,6 +457,7 @@ public function admin_index() {
 
 	return $this->Crud->executeAction();
 }
+?>
 ```
 
 ## Change the viewVar (variable name in the view)
@@ -442,6 +469,7 @@ If you want to change these settings, simply call the `viewVar()` method on the 
 ### Using beforeFilter
 
 ```php
+<?php
 public function beforeFilter() {
 	$this->Crud->action('index')->viewVar('data');
 
@@ -453,11 +481,13 @@ public function beforeFilter() {
 	// Get the current configuration
 	$config = $this->Crud->action('admin_index')->viewVar();
 }
+?>
 ```
 
 ### In the controller action
 
 ```php
+<?php
 // You don't have to provide the action name in 'action'
 // since the default is the current action
 
@@ -478,6 +508,7 @@ public function admin_index() {
 
 	return $this->Crud->executeAction();
 }
+?>
 ```
 
 ## Enable a Crud action on the fly
@@ -488,12 +519,14 @@ before the actual controller action is executed.
 Enabling a `CrudAction` automatically injects it into the Controller as if it was defined in the `actions` array in the crud component configuration.
 
 ```php
+<?php
 // This can only be done in the beforeFilter
 
 public function beforeFilter() {
 	$this->Crud->action('delete')->enable();
 	$this->Crud->action('admin_delete')->enable();
 }
+?>
 ```
 
 ## Disable a Crud action on the fly
@@ -504,17 +537,20 @@ before the actual controller action is executed.
 Disabling a `CrudAction` automatically removes it from the Controller as if it was never defined in the `actions` array in the crud component configuration.
 
 ```php
+<?php
 // This can only be done in the beforeFilter
 
 public function beforeFilter() {
 	$this->Crud->action('delete')->disable();
 	$this->Crud->action('admin_delete')->disable();
 }
+?>
 ```
 
 ## Change CrudAction configuration settings on the fly
 
 ```php
+<?php
 // This can be done both in beforeFilter and the controller action
 // All possible config keys can be found in the CrudAction classes (app/Plugin/Crud/Controller/Crud/Action)
 public function beforeFilter() {
@@ -523,6 +559,7 @@ public function beforeFilter() {
 	// Get the current configuration
 	$config = $this->Crud->action('view')->config('validateId');
 }
+?>
 ```
 
 ## Disable secureDelete for delete() actions
@@ -536,6 +573,7 @@ If set to `false` both `HTTP DELETE` and `HTTP POST` is considered valid for `de
 The default setting is `true`
 
 ```php
+<?php
 // Disabling this feature allow HTTP POST to execute delete() actions
 // This can be changed in both beforeFilter and the controller action
 public function beforeFilter() {
@@ -544,6 +582,7 @@ public function beforeFilter() {
 	// Get the current configuration
 	$config = $this->Crud->action('delete')->config('secureDelete');
 }
+?>
 ```
 
 ## Configure related model data for add / edit views
@@ -565,6 +604,7 @@ If you set `relatedLists` to an `array`, only the related models in that array w
 If you set `relatedLists` to `false` no model relations will be fetched automatically.
 
 ```php
+<?php
 // This can be changed in beforeFilter and the controller action
 public function beforeFilter() {
 	// Automatically executes find('list') on the User ($users) and Tag ($tags) models
@@ -582,6 +622,7 @@ public function beforeFilter() {
 	// Get the current configuration
 	$config = $this->Crud->action('add')->config('relatedLists');
 }
+?>
 ```
 
 ## Change save options
@@ -593,9 +634,11 @@ This configuration maps directly to the 2nd parameter of `saveAll()` called `$op
 The default for `add` and `edit` is `array('validate' => 'first', 'atomic' => true)`
 
 ```php
+<?php
 // This can be changed in beforeFilter and in a controller action
 public function beforeFilter() {
 	// saveOptions is the 2nd argument to saveAll()
 	$this->Crud->action('add')->saveOptions(array('atomic' => false));
 }
+?>
 ```

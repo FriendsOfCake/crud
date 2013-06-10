@@ -79,12 +79,14 @@ Don't put too many lines of logic in a closure callback as it quickly gets messy
 ```php
 <?php
 class DemoController extends AppController {
+
 	public function beforeFilter() {
 		$this->Crud->on('beforePaginate', function(CakeEvent $event) {
 			$event->subject->query['conditions'] = array('is_active' => true);
 			debug($event->subject->query);
 		});
 	}
+
 }
 ?>
 ```
@@ -100,6 +102,7 @@ __Pro tip__: Prefix your callbacks with `_` and CakePHP will prevent the method 
 ```php
 <?php
 class DemoController extends AppController {
+
 	public function beforeFilter() {
 		$this->Crud->on('beforePaginate', array($this, '_demoCallback'));
 	}
@@ -108,6 +111,7 @@ class DemoController extends AppController {
 		$event->subject->query['conditions']['is_active'] = true;
 		debug($event->subject->query);
 	}
+
 }
 ?>
 ```
@@ -152,6 +156,7 @@ This will allow Crud to continue to do it's magic just as if the method didn't e
 ```php
 <?php
 class DemoController extends AppController {
+
 	public function view($id = null) {
 		$this->Crud->on('beforeFind', function(CakeEvent $event) use ($id) {
 			$event->subject->query['conditions']['is_active'] = true;
@@ -160,66 +165,28 @@ class DemoController extends AppController {
 		// Important for the ViewCrudAction to be executed
 		return $this->Crud->executeAction();
 	}
+
 }
 ?>
 ```
 
-# Listener classes
+## CrudListener classes
 
-Crud listeners must be inside app/Controller/Crud/Listener ( app/Plugin/$plugin/Controller/Crud/Listener for plugins)
+You can attach custom listener classes by simply passing them to the normal
+controller `EventManager`
 
-The `CrudListener` class provides an implementation of all the available callbacks you can listen for in Crud.
-
-You can override the methods as needed inside your own Listener class.
-
-Below is an example of a `CrudListener`
-
-```php
-<?php
-App::uses('CrudListener', 'Crud.Controller/Crud');
-
-class DemoListener extends CrudListener {
-
-	public function beforeRender(CakeEvent $event) {
-		// Check about this is admin, and about this function should be process for this action
-		if ($event->subject->shouldProcess('only', array('admin_add'))) {
-			// We only wanna do something, if this is admin request, and only for "admin_add"
-		}
-	}
-
-	public function afterSave(CakeEvent $event) {
-		// In this test, we want afterSave to do one thing, for admin_add and another for admin_edit
-		// If admin_add redirect to index
-		if ($event->subject->shouldProcess('only', array('admin_add'))) {
-			if ($event->subject->success) {
-				$event->subject->controller->redirect(array('action' => 'index'));
-			}
-		}
-		// If admin_edit redirect to self
-		elseif ($event->subject->shouldProcess('only', array('admin_edit'))) {
-			if ($event->subject->success) {
-				$event->subject->controller->redirect(array('action' => 'edit', $id));
-			}
-		}
-	}
-}
-?>
-```
-
-Attaching the above Listener to your Crud component is done as below.
-
-You simply attach it to the normal `CakeEventManager` inside your controller.
-
-`Crud` share the same event manager as the controller for maximum flexibility.
+Creating custom listener classes is documented in the [custom listeners](30-custom-listeners.md) section
 
 ```php
 <?php
 App::uses('DemoListener', 'Controller/Crud/Listener');
 
 class DemoController extends AppController {
+
 	public function beforeFilter() {
 		$this->getEventManager()->attach(new DemoListener());
 	}
+
 }
 ?>
 ```

@@ -7,7 +7,7 @@
 
 ### composer
 
-The only installation method supported by this plugin is by using composer. Just add this to your composer.json configuration:
+The recommended installation method for this plugin is by using composer. Just add this to your `composer.json` configuration:
 
 ```json
 {
@@ -24,11 +24,15 @@ The only installation method supported by this plugin is by using composer. Just
 
 ### git clone
 
+Alternatively you can just `git clone` the code into your application
+
 ```
 git clone git://github.com/jippi/cakephp-crud.git app/Plugin/Crud
 ```
 
 ### git submodule
+
+Or add it as a git module, this is recommended over `git clone` since it's easier to keep up to date with development that way
 
 ```
 git submodule add git://github.com/jippi/cakephp-crud.git app/Plugin/Crud
@@ -36,7 +40,7 @@ git submodule add git://github.com/jippi/cakephp-crud.git app/Plugin/Crud
 
 # Loading and installation
 
-Add the following to your __app/Config/bootstrap.php__
+Add the following to your `app/Config/bootstrap.php`
 
 ```php
 CakePlugin::load('Crud');
@@ -55,11 +59,13 @@ App::uses('CrudControllerTrait', 'Crud.Lib');
 and add the `CrudControllerTrait` inside you `AppController` class
 
 ```php
+<?php
 class AppController extends Controller {
 
 	use CrudControllerTrait;
 
 }
+?>
 ```
 
 ## <= PHP 5.3
@@ -128,4 +134,5 @@ abstract class AppController extends Controller {
 		}
 	}
 }
+?>
 ```

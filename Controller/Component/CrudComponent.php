@@ -245,6 +245,27 @@ class CrudComponent extends Component {
 	}
 
 /**
+ * Change the viewVar name for one or multiple actions
+ *
+ * To map multiple action viewVars in one go pass an array as first argument and no second argument
+ *
+ * @param string|array $action
+ * @param string $viewVar
+ * @return void
+ */
+	public function viewVar($action, $viewVar = null) {
+		if (is_array($action)) {
+			foreach ($action as $realAction => $realViewVar) {
+				$this->action($realAction)->viewVar($realViewVar);
+			}
+
+			return;
+		}
+
+		$this->action($action)->viewVar($viewVar);
+	}
+
+/**
  * Map a controller action to a Model::find($method)
  *
  * To map multiple findMethods in one go pass an array as first argument and no second argument
@@ -255,8 +276,8 @@ class CrudComponent extends Component {
  */
 	public function findMethod($action, $method = null) {
 		if (is_array($action)) {
-			foreach ($action as $realAction => $realView) {
-				$this->action($realAction)->view($realView);
+			foreach ($action as $realAction => $realMethod) {
+				$this->action($realAction)->findMethod($realMethod);
 			}
 
 			return;

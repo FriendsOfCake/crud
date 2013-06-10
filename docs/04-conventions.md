@@ -1,55 +1,62 @@
-## Convention
+# Convention
 
-The Crud component always operates on the __$modelClass__ of your controller, that's the first model in your $uses array
+The Crud component always operates on the `$modelClass` of your controller, that's the first model in your `$uses` array
 
-There is no view for delete action, it will always redirect
+# View variable names
 
-Default `$components` variable according to the documentation is like this:
+## Index
+
+The result of `paginate()` in the `Index` Crud Action is by default called `$items`
+
+You have two ways of making this compatible with baked views.
+
+### Change the viewVar name in the controller
+
+This method has the advantage of persisting if you later decide to re-bake your views
 
 ```php
 <?php
-public $components = array(
-  'Crud.Crud' => array(
-      'actions' => array('index', 'add', 'edit', 'view', 'delete')
-  )
-);
+public function beforeFilter() {
+	parent::beforeFilter();
+	$this->Crud->viewVar('index', 'users');
+}
 ?>
 ```
 
-In this case, it will assume that all the IDs of your models are made with integers.
-
-If they are `UUID indexed`, please add the following setting:
+### Rename the variable in the view
 
 ```php
 <?php
-public $components = array(
-  'Crud.Crud' => array(
-      'actions' => array('index', 'add', 'edit', 'view', 'delete'),
-      'validateId' => 'uuid'
-  )
-);
-?>
-```
-
-In the `Index` views:
-
-The paginated array is in $items. So if you have Baked an Index view, set in the beginning something like this:
-
-```php
-<?php
+// Users/index.ctp
 $users = $items;
 ?>
 ```
 
-The rest of the view will work. Otherwise you will get an error message about undefined variable $users.
+## View
 
-In the `View` views:
+The result of `find()` in the `View` Crud Action is by default called `$item`
 
-Add the following at the beginning of the page.
+You have two ways of making this compatible with baked views.
+
+## Change the viewVar name in the controller
+
+This method has the advantage of persisting if you later decide to re-bake your views
 
 ```php
-<?ph
-$user = $item;
+<?php
+public function beforeFilter() {
+	parent::beforeFilter();
+	$this->Crud->viewVar('view', 'user');
+}
+?>
+```
+
+### Rename the variable in the view
+
+```php
+<?php
+// Users/view.ctp
+$user = $items;
 ?>
 ```
 
@@ -62,7 +69,3 @@ So create the following:
 * `Views/Elements/success.ctp`
 
 In each, the message passed is in the variable `$message` as usual.
-
-# Event system
-
-The CRUD plugin uses the new event system introduced in Cake 2.1
