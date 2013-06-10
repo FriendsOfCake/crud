@@ -2,7 +2,7 @@
 
 We only use routes without prefix in these examples, but the Crud component works with __any__ prefixes you may have. It just requires some additional configuration.
 
-In the code example above, we pass in an actions array with all the controller actions we wish the Crud component to handle - you can easily omit some of the actions
+In the code example above, we pass in an actions array with all the controller actions we wish the Crud component to handle - you can omit some of the actions if you wish.
 
 ```php
 <?php
@@ -112,13 +112,13 @@ A `CrudAction` is a class that handles a specific kind of crud action type (inde
 
 Each `CrudAction` have it's own unique configuration and events it uses.
 
-If you don't like how a specific `CrudAction` behaves, you can very easily replace it with your own - see the `custom actions` documentation for how to do this.
+If you don't like how a specific `CrudAction` behaves, you can very easily replace it with your own - see the [custom actions documentation](20-custom-actions.md) for how to do this.
 
 ## Index CrudAction
 
 The `index` CrudAction paginates over the primary model in the controller.
 
-The source code can be found here: `Controller/Crud/Action/IndexCrudAction.php`
+The source code can be found here: [Controller/Crud/Action/IndexCrudAction.php](../Controller/Crud/Action/IndexCrudAction.php)
 
 ### Events
 
@@ -158,7 +158,7 @@ The source code can be found here: `Controller/Crud/Action/IndexCrudAction.php`
 
 The `add` CrudAction will create a record if the request is `HTTP POST` and the data is valid.
 
-The source code can be found here: `Controller/Crud/Action/AddCrudAction.php`
+The source code can be found here: [Controller/Crud/Action/AddCrudAction.php](../Controller/Crud/Action/AddCrudAction.php)
 
 ### Events
 
@@ -198,7 +198,7 @@ The source code can be found here: `Controller/Crud/Action/AddCrudAction.php`
 
 The `edit` CrudAction will modify a record if the request is `HTTP PUT`, the data is valid and the ID that is part of the request exist in the database.
 
-The source code can be found here: `Controller/Crud/Action/EditCrudAction.php`
+The source code can be found here: [Controller/Crud/Action/EditCrudAction.php](../Controller/Crud/Action/EditCrudAction.php)
 
 ### Events
 
@@ -253,7 +253,7 @@ The source code can be found here: `Controller/Crud/Action/EditCrudAction.php`
 
 The `view` CrudAction will read a record from the database based on the ID that is part of the request.
 
-The source code can be found here: `Controller/Crud/Action/ViewCrudAction.php`
+The source code can be found here: [Controller/Crud/Action/ViewCrudAction.php](../Controller/Crud/Action/ViewCrudAction.php)
 
 ### Events
 
@@ -301,7 +301,7 @@ The source code can be found here: `Controller/Crud/Action/ViewCrudAction.php`
 
 The `delete` CrudAction will delete a record if the request is `HTTP DELETE` or `HTTP POST` and the ID that is part of the request exist in the database.
 
-The source code can be found here: `Controller/Crud/Action/DeleteCrudAction.php`
+The source code can be found here: [Controller/Crud/Action/DeleteCrudAction.php](../Controller/Crud/Action/DeleteCrudAction.php)
 
 ### Events
 
@@ -587,43 +587,7 @@ public function beforeFilter() {
 
 ## Configure related model data for add / edit views
 
-This feature automates the task of generating lists with related data
-for your add / edit forms.
-Each model relation you have will automatically be inflected to be FormHelper compatible, for example:
-
-`YourModel hasAndBelongsToMany Tags` will be `$tags in the view
-
-`YourModel belongsTo User` will be `$users` in the view
-
-You can enable and disable which model relations you want to have automatically fetched very easily, as shown below.
-
-If you set `relatedLists` to `true` all model relations will be fetched automatically.
-
-If you set `relatedLists` to an `array`, only the related models in that array will be fetched automatically.
-
-If you set `relatedLists` to `false` no model relations will be fetched automatically.
-
-```php
-<?php
-// This can be changed in beforeFilter and the controller action
-public function beforeFilter() {
-	// Automatically executes find('list') on the User ($users) and Tag ($tags) models
-	$this->Crud->action('add')->config('relatedLists', array('User', 'Tags'));
-
-	// Automatically executes find('list') on the User ($users) model
-	$this->Crud->action('add')->config('relatedLists', array('User'));
-
-	// Fetch related data from all model relations (default)
-	$this->Crud->action('add')->config('relatedLists', true);
-
-	// Don't fetch any related data
-	$this->Crud->action('add')->config('relatedLists', false);
-
-	// Get the current configuration
-	$config = $this->Crud->action('add')->config('relatedLists');
-}
-?>
-```
+Please see the [related data documentation](06-related-data.md)
 
 ## Change save options
 

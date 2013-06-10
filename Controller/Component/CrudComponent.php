@@ -349,7 +349,7 @@ class CrudComponent extends Component {
  * @param string $name
  * @return CrudBaseEvent
  */
-	public function getListener($name) {
+	public function listener($name) {
 		return $this->_loadListener($name);
 	}
 
