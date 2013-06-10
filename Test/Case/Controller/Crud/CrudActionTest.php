@@ -375,10 +375,10 @@ class CrudActionTest extends CakeTestCase {
 		$object->key = 'flash';
 		$object->name = 'test';
 
-		$this->Subject->crud = $this->getMock('CrudComponent', array('trigger', 'getListener'), array($this->Collection));
+		$this->Subject->crud = $this->getMock('CrudComponent', array('trigger', 'listener'), array($this->Collection));
 		$this->Subject->crud
 			->expects($this->once())
-			->method('getListener')
+			->method('listener')
 			->with('translations');
 		$this->Subject->crud
 			->expects($this->once())
