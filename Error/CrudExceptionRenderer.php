@@ -78,21 +78,11 @@ class CrudExceptionRenderer extends ExceptionRenderer {
 
 		if (Configure::read('debug')) {
 			$data['exception']['trace'] = preg_split('@\n@', $viewVars['error']->getTraceAsString());
-
-			$previous = $viewVars['error']->getPrevious();
-			if ($previous) {
-				$data['exception']['previous'] = array(
-					'class' => get_class($previous),
-					'code' => $previous->getCode(),
-					'message' => $previous->getMessage(),
-					'trace' => preg_split('@\n@', $previous->getTraceAsString())
-				);
-			}
-
 		}
+
 		if (class_exists('ConnectionManager') && Configure::read('debug') > 1) {
 			$sources = ConnectionManager::sourceList();
-			$queryLog = array();
+			$data['queryLog'] = array();
 			foreach ($sources as $source) {
 				$db = ConnectionManager::getDataSource($source);
 				if (!method_exists($db, 'getLog')) {

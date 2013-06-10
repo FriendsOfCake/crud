@@ -13,7 +13,7 @@ App::uses('RelatedModelListener', 'Crud.Controller/Crud/Listener');
 class RelatedModelListenerTest extends CakeTestCase {
 
 	public function testMakeMeAUnitTest() {
-		$this->skipIf(true);
+		$this->assertTrue(true);
 	}
 
 }
