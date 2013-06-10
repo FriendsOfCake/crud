@@ -356,4 +356,42 @@ class ApiListenerTest extends CakeTestCase {
 		$apiListener->recordNotFound($event);
 	}
 
+	/**
+ * Tests that invalidId will do nothing when the call is not API
+ *
+ * @return void
+ */
+	public function testInvalidIdNoAPI() {
+		$subject = $this->getMock('CrudSubject');
+		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
+		$apiListener = new ApiListener($subject);
+		$subject->request->expects($this->once())
+			->method('is')
+			->with('api')
+			->will($this->returnValue(false));
+
+		$event = new CakeEvent('Crud.invalidId', $subject);
+		$apiListener->invalidId($event);
+	}
+
+/**
+ * Tests that recordNotFound will throw an exception
+ *
+ * @expectedException BadRequestException
+ * @return void
+ */
+	public function testInvalidID() {
+		$subject = $this->getMock('CrudSubject');
+		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
+		$apiListener = new ApiListener($subject);
+		$subject->request->expects($this->once())
+			->method('is')
+			->with('api')
+			->will($this->returnValue(true));
+
+		$event = new CakeEvent('Crud.invalidId', $subject);
+		$apiListener->invalidId($event);
+	}
+
+	
 }
