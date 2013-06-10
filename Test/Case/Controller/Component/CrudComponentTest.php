@@ -805,10 +805,11 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testFetchRelatedMappedAll() {
-		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
+		$this->model->bindModel(array('belongsTo' => array('Author')));
 		$this->Crud->getListener('related')->map(array('Tag'), 'edit');
 		$expectedTags = array(1 => '1', 2 => '2', 3 => '3');
 
+		$this->controller->Tag = ClassRegistry::init('Tag');
 		$this->Crud->executeAction('edit', array('1'));
 		$vars = $this->controller->viewVars;
 		$this->assertEquals($expectedTags, $vars['tags']);
@@ -827,6 +828,23 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->Crud->executeAction('delete', array('1'));
 		$vars = $this->controller->viewVars;
 		$this->assertFalse(isset($vars['tags']));
+		$this->assertFalse(isset($vars['authors']));
+	}
+
+/**
+ * Tests that relatedLists will not overwrite existing variables
+ *
+ * @return void
+ */
+	public function testFetchRelatedNoOverwrite() {
+		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
+		$this->Crud->getListener('related')->map(array('Tag'), 'edit');
+		$expectedTags = array('mine', 'tag');
+
+		$this->controller->viewVars['tags'] = $expectedTags;
+		$this->Crud->executeAction('edit', array('1'));
+		$vars = $this->controller->viewVars;
+		$this->assertEquals($expectedTags, $vars['tags']);
 		$this->assertFalse(isset($vars['authors']));
 	}
 
