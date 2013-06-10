@@ -375,7 +375,7 @@ class ApiListenerTest extends CakeTestCase {
 	}
 
 /**
- * Tests that recordNotFound will throw an exception
+ * Tests that invalidId will throw an exception
  *
  * @expectedException BadRequestException
  * @return void
@@ -393,5 +393,70 @@ class ApiListenerTest extends CakeTestCase {
 		$apiListener->invalidId($event);
 	}
 
-	
+/**
+ * Tests that beforeRender logic is not run if the call is not API
+ *
+ * @return void
+ */
+	public function testBeforeRenderNoAPI() {
+		$subject = $this->getMock('CrudSubject');
+		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
+		$subject->controller = $this->getMock('Controller', array('set'), array($subject->request));
+		$subject->response = $this->getMock('CakeResponse');
+		$apiListener = new ApiListener($subject);
+
+		$subject->request->expects($this->once())
+			->method('is')
+			->with('api')
+			->will($this->returnValue(false));
+		$subject->controller->expects($this->never())->method('set');
+		$event = new CakeEvent('Crud.beforeRender', $subject);
+		$apiListener->beforeRender($event);
+	}
+
+/**
+ * Tests that beforeRender logic is not run if the call is not API
+ *
+ * @return void
+ */
+	public function testBeforeRenderAPI() {
+		$subject = $this->getMock('CrudSubject');
+		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
+		$subject->controller = $this->getMock('Controller', array('set'), array($subject->request));
+		$subject->controller->RequestHandler = $this->getMock('RequestHandlerComponent', array('viewClassMap', 'renderAs'));
+		$subject->controller->RequestHandler->ext = 'json';
+		$subject->response = $this->getMock('CakeResponse');
+
+		$subject->crud = $this->getMock('stdClass', array('action'));
+		$apiListener = new ApiListener($subject);
+
+		$subject->request->expects($this->once())
+			->method('is')
+			->with('api')
+			->will($this->returnValue(true));
+
+		$action = $this->getMock('stdClass', array('config'));
+		$subject->crud->expects($this->once())->method('action')->will($this->returnValue($action));
+		$action->expects($this->once())
+			->method('config')
+			->with('serialize')
+			->will($this->returnValue('foo'));
+
+		$subject->controller->expects($this->once())
+			->method('set')
+			->with('_serialize', 'foo');
+
+		$subject->controller->RequestHandler->expects($this->at(0))
+			->method('viewClassMap')
+			->with('json', 'Crud.CrudJson');
+		$subject->controller->RequestHandler->expects($this->at(1))
+			->method('viewClassMap')
+			->with('xml', 'Crud.CrudXml');
+		$subject->controller->RequestHandler->expects($this->once())
+			->method('renderAs')
+			->with($subject->controller, 'json');
+		$event = new CakeEvent('Crud.beforeRender', $subject);
+		$apiListener->beforeRender($event);
+	}
+
 }
