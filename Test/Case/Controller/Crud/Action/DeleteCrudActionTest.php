@@ -4,8 +4,9 @@ App::uses('Model', 'Model');
 App::uses('Controller', 'Controller');
 App::uses('CakeRequest', 'Network');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
-App::uses('ViewCrudAction', 'Crud.Controller/Crud/Action');
-App::uses('CrudComponent', 'Crud.Controlller/Component');
+App::uses('DeleteCrudAction', 'Crud.Controller/Crud/Action');
+App::uses('CrudComponent', 'Crud.Controller/Component');
+App::uses('ComponentCollection', 'Controller');
 
 /**
  *
@@ -31,7 +32,7 @@ class DeleteCrudActionText extends CakeTestCase {
 
 		$this->ModelMock = $this->getMockBuilder('Model');
 		$this->ControllerMock = $this->getMockBuilder('Controller');
-		$this->ActionMock = $this->getMockBuilder('ViewCrudAction');
+		$this->ActionMock = $this->getMockBuilder('DeleteCrudAction');
 		$this->RequestMock = $this->getMockBuilder('CakeRequest');
 		$this->CrudMock = $this->getMockBuilder('CrudComponent');
 	}
@@ -49,38 +50,52 @@ class DeleteCrudActionText extends CakeTestCase {
 	}
 
 	protected function _mockClasses() {
+		$Request = $this->RequestMock
+			->setMethods(null)
+			->getMock();
+		$Request->params['pass'][0] = 1;
+
 		$CrudSubject = new CrudSubject();
 
-		$Crud = $this->CrudMock
-			->disableOriginalConstructor()
-			->setMethods(array('trigger'))
-			->getMock();
-		$Model = $this->ModelMock
-			->disableOriginalConstructor()
-			->setMethods(array('escapeField', 'find'))
-			->getMock();
+		$Component = $this->getMock('ComponentCollection', null);
+
 		$Controller = $this->ControllerMock
 			->disableOriginalConstructor()
 			->setMethods(array('set'))
 			->getMock();
-		$Request = $this->RequestMock
-			->setMethods(array('is'))
+		$Controller->modelClass = 'Model';
+		$Controller->Components = $Component;
+		$Controller->request = $Request;
+		$Controller->response = new CakeResponse();
+
+		$Crud = $this->CrudMock
+			->setConstructorArgs(array($Component))
+			->setMethods(null)
 			->getMock();
-		$Action = $this->ActionMock
-			->setConstructorArgs(array($CrudSubject))
-			->setMethods(array('enabled', 'config', '_validateId', 'setFlash', '_redirect'))
+
+		$Crud->initialize($Controller);
+
+		// $Crud->Session = $this->getMock('stdClass', array('setFlash'));
+
+		$Model = $this->ModelMock
+			->disableOriginalConstructor()
+			->setMethods(array('escapeField', 'find', 'schema', 'delete'))
 			->getMock();
 
 		$CrudSubject->set(array(
 			'crud' => $Crud,
 			'request' => $Request,
 			'controller' => $Controller,
-			'action' => 'view',
-			'action' => 'view',
+			'action' => 'delete',
 			'model' => $Model,
 			'modelClass' => $Model->name,
-			'args' => array(1)
+			'args' => array()
 		));
+
+		$Action = $this->ActionMock
+			->setConstructorArgs(array($CrudSubject))
+			->setMethods(array('setFlash', '_redirect'))
+			->getMock();
 
 		return compact('Crud', 'Model', 'Controller', 'Request', 'CrudSubject', 'Action');
 	}
@@ -91,33 +106,92 @@ class DeleteCrudActionText extends CakeTestCase {
  * @return void
  */
 	public function testThatCrudActionWillHandle() {
+		extract($this->_mockClasses());
+
 		$Action = $this->ActionMock
-			->disableOriginalConstructor()
-			->setMethods(array('config', '_handle'))
+			->setConstructorArgs(array($CrudSubject))
+			->setMethods(array('_handle'))
 			->getMock();
-		$Action
-			->expects($this->at(0))
-			->method('config')
-			->with('enabled')
-			->will($this->returnValue(true));
-		$Action
-			->expects($this->at(1))
-			->method('config')
-			->with('action')
-			->will($this->returnValue('delete'));
+
 		$Action
 			->expects($this->once())
 			->method('_handle');
 
-		$CrudSubject = new CrudSubject(array(
-			'action' => 'delete',
-			'model' => new StdClass(),
-			'modelClass' => 'Blog',
-			'args' => array()
-		));
+		$Action->handle($CrudSubject);
+	}
+
+/**
+ * Test that the Crud.beforeDelete method can stop a delete
+ *
+ * @return void
+ */
+	public function testDeleteCanBeStoppedFromEvent() {
+		extract($this->_mockClasses());
+
+		$Request->addDetector('delete', array('callback' => function() {
+			return true;
+		}));
+
+		$Crud->on('Crud.beforeDelete', function(CakeEvent $event) {
+			$event->stopPropagation();
+			return false;
+		});
+
+		$Model
+			->expects($this->once())
+			->method('find')
+			->with('count')
+			->will($this->returnValue(1));
+
+		$Model
+			->expects($this->never())
+			->method('delete');
+
+		$Action
+			->expects($this->once())
+			->method('setFlash')
+			->with('delete.error');
+
+		$Action
+			->expects($this->once())
+			->method('_redirect');
 
 		$Action->handle($CrudSubject);
 	}
 
+/**
+ * Test that the Crud.beforeDelete method can stop a delete
+ *
+ * @return void
+ */
+	public function testAfterDeleteIsCalledOnFailure() {
+		extract($this->_mockClasses());
 
+		$Request->addDetector('delete', array('callback' => function() {
+			return true;
+		}));
+
+		$Model
+			->expects($this->once())
+			->method('find')
+			->with('count')
+			->will($this->returnValue(1));
+
+		$Model
+			->expects($this->once())
+			->method('delete')
+			->with(1)
+			->will($this->returnValue(false));
+
+		$Action
+			->expects($this->once())
+			->method('setFlash')
+			->with('delete.error');
+
+		$Action
+			->expects($this->once())
+			->method('_redirect');
+
+		$Action->handle($CrudSubject);
+	}
 }

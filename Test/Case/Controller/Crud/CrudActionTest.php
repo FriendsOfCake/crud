@@ -281,17 +281,12 @@ class CrudActionTest extends CakeTestCase {
  * @return void
  */
 	public function testViewGetWithoutConfiguredView() {
+		$this->Request->action = 'add';
 		$this->ActionClass = $this->getMock('CrudAction', array('config', '_handle'), array($this->Subject));
 		$this->ActionClass
 			->expects($this->at(0))
 			->method('config')
 			->with('view');
-
-		$this->ActionClass
-			->expects($this->at(1))
-			->method('config')
-			->with('action')
-			->will($this->returnValue('add'));
 
 		$expected = 'add';
 		$actual = $this->ActionClass->view();
