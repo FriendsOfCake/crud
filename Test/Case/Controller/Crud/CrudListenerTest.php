@@ -9,8 +9,14 @@
  */
 class CrudListenerTest extends CakeTestCase {
 
-	public function testSkip() {
-		$this->skipIf(true);
+	/**
+	 * Not much going on here at the moment
+	 * Everything is tested through the other classes
+	 * depending on this one
+	 */
+
+	public function testNothing() {
+		$this->assertTrue(true);
 	}
 
 }
