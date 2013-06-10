@@ -226,7 +226,7 @@ class ApiListenerTest extends CakeTestCase {
 		$subject->response->expects($this->once())->method('header')
 			->with('Location', Router::url(array('action' => 'view', 100), true));
 
-		$event = new CakeEvent('Crud.init', $subject);
+		$event = new CakeEvent('Crud.afterSave', $subject);
 		$result = $apiListener->afterSave($event);
 		$this->assertSame($subject->response, $result);
 	}
@@ -262,8 +262,98 @@ class ApiListenerTest extends CakeTestCase {
 			->with('data', $subject->model->validationErrors);
 
 		$subject->controller->expects($this->never())->method('render');
-		$event = new CakeEvent('Crud.init', $subject);
+		$event = new CakeEvent('Crud.afterSave', $subject);
 		$this->assertNull($apiListener->afterSave($event));
+	}
+
+/**
+ * Tests that afterDelete logic is not run if the call is not API
+ *
+ * @return void
+ */
+	public function testAfterDeleteNotAPI() {
+		$subject = $this->getMock('CrudSubject');
+		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
+		$subject->controller = $this->getMock('Controller', array('set'), array($subject->request));
+		$subject->response = $this->getMock('CakeResponse');
+		$apiListener = new ApiListener($subject);
+
+		$subject->request->expects($this->once())
+			->method('is')
+			->with('api')
+			->will($this->returnValue(false));
+		$subject->controller->expects($this->never())->method('set');
+		$event = new CakeEvent('Crud.afterDelete', $subject);
+		$apiListener->afterDelete($event);
+	}
+
+/**
+ * Tests afterDelete logic
+ *
+ * @return void
+ */
+	public function testAfterDelete() {
+		$subject = $this->getMock('CrudSubject');
+		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
+		$subject->controller = $this->getMock('Controller', array('set', 'render'), array($subject->request));
+		$subject->response = $this->getMock('CakeResponse');
+		$apiListener = new ApiListener($subject);
+
+		$subject->request->expects($this->once())
+			->method('is')
+			->with('api')
+			->will($this->returnValue(true));
+
+		$subject->success = true;
+		$subject->controller->expects($this->at(0))->method('set')
+			->with('success', true);
+
+		$subject->controller->expects($this->at(1))->method('set')
+			->with('data', null);
+
+		$subject->controller->expects($this->once())
+			->method('render')
+			->will($this->returnValue($subject->response));
+
+		$event = new CakeEvent('Crud.afterDelete', $subject);
+		$this->assertEquals($subject->response, $apiListener->afterDelete($event));
+	}
+
+/**
+ * Tests that recordNotFound will do nothing when the call is not API
+ *
+ * @return void
+ */
+	public function testRecordNotFoundNoAPI() {
+		$subject = $this->getMock('CrudSubject');
+		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
+		$apiListener = new ApiListener($subject);
+		$subject->request->expects($this->once())
+			->method('is')
+			->with('api')
+			->will($this->returnValue(false));
+
+		$event = new CakeEvent('Crud.recordNotFound', $subject);
+		$apiListener->recordNotFound($event);
+	}
+
+/**
+ * Tests that recordNotFound will throw an exception
+ *
+ * @expectedException NotFoundException
+ * @return void
+ */
+	public function testRecordNotFound() {
+		$subject = $this->getMock('CrudSubject');
+		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
+		$apiListener = new ApiListener($subject);
+		$subject->request->expects($this->once())
+			->method('is')
+			->with('api')
+			->will($this->returnValue(true));
+
+		$event = new CakeEvent('Crud.recordNotFound', $subject);
+		$apiListener->recordNotFound($event);
 	}
 
 }
