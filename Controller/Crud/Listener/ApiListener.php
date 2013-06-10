@@ -217,7 +217,7 @@ class ApiListener extends CrudListener {
 				return true;
 			}
 
-			return $request->accepts('xml');
+			return $request->accepts('text/xml');
 		}));
 
 		$this->_request->addDetector('api', array('callback' => function(CakeRequest $request) {
