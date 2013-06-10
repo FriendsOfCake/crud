@@ -15,4 +15,8 @@ class CrudListenerTest extends CakeTestCase {
 	 * depending on this one
 	 */
 
+	public function testNothing() {
+		$this->assertTrue(true);
+	}
+
 }
