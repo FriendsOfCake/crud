@@ -62,8 +62,10 @@ class CrudExceptionRenderer extends ExceptionRenderer {
 		$data = array();
 
 		$viewVars = $this->controller->viewVars;
-		foreach ($viewVars['_serialize'] as $v) {
-			$data[$v] = $viewVars[$v];
+		if (!empty($viewVars['_serialize'])) {
+			foreach ($viewVars['_serialize'] as $v) {
+				$data[$v] = $viewVars[$v];
+			}
 		}
 
 		if (!empty($viewVars['error'])) {
