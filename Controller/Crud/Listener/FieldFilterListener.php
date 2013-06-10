@@ -102,7 +102,7 @@ class FieldFilterListener extends CrudListener {
 			return $this->_crud->action($action)->config('fieldFilter.fields.whitelist');
 		}
 
-		$this->_crud->action($action )->config('fieldFilter.fields.whitelist', $fields);
+		$this->_crud->action($action)->config('fieldFilter.fields.whitelist', $fields);
 	}
 
 /**
@@ -134,7 +134,7 @@ class FieldFilterListener extends CrudListener {
 			return $this->_crud->action($action)->config('fieldFilter.models.whitelist');
 		}
 
-		$this->_crud->action($action )->config('fieldFilter.models.whitelist', $models);
+		$this->_crud->action($action)->config('fieldFilter.models.whitelist', $models);
 	}
 
 /**
