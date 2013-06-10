@@ -3,6 +3,7 @@
 App::uses('CakeEvent', 'Event');
 App::uses('CakeRequest', 'Network');
 App::uses('CakeResponse', 'Network');
+App::uses('Controller', 'Controller');
 App::uses('ApiListener', 'Crud.Controller/Crud/Listener');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
 
@@ -149,4 +150,120 @@ class ApiListenerTest extends CakeTestCase {
 			->will($this->returnValue(false));
 		$apiListener->init($event);
 	}
+
+/**
+ * Tests that the function is not run if it is not an API call
+ *
+ * @return void
+ */
+	public function testAfterSaveNotAPI() {
+		$subject = $this->getMock('CrudSubject');
+		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
+		$subject->controller = $this->getMock('Controller', array('set'), array($subject->request));
+		$subject->response = $this->getMock('CakeResponse');
+		$apiListener = new ApiListener($subject);
+
+		$subject->request->expects($this->once())
+			->method('is')
+			->with('api')
+			->will($this->returnValue(false));
+		$subject->controller->expects($this->never())->method('set');
+		$event = new CakeEvent('Crud.init', $subject);
+		$apiListener->afterSave($event);
+	}
+
+/**
+ * Returns the 2 possible states for subject->created
+ *
+ * @return void
+ */
+	public function createdProvider() {
+		return array(
+			array(true, 'once'),
+			array(false, 'never')
+		);
+	}
+
+/**
+ * Test the response mangling after saving a record and is an API call
+ *
+ * @dataProvider createdProvider
+ * @return void
+ */
+	public function testAfterSaveSuccess($created, $matcher) {
+		$subject = $this->getMock('CrudSubject');
+		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
+		$subject->controller = $this->getMock('Controller', array('set', 'render'), array($subject->request));
+		$subject->response = $this->getMock('CakeResponse');
+		$apiListener = new ApiListener($subject);
+
+		$subject->request->expects($this->once())
+			->method('is')
+			->with('api')
+			->will($this->returnValue(true));
+
+		$subject->success = true;
+		$subject->controller->expects($this->at(0))
+			->method('set')
+			->with('success', true);
+
+		$subject->model = new Model(array('alias' => 'Thing'));
+		$subject->id = 100;
+		$subject->controller->expects($this->at(1))
+			->method('set')
+			->with('data', array('Thing' => array('id' => 100)));
+
+		$subject->controller->expects($this->once())->method('render')
+			->will($this->returnValue($subject->response));
+
+		$subject->created = $created;
+		$expect = $subject->response->expects($this->{$matcher}())->method('statusCode');
+
+		if ($created) {
+			$expect->with(201);
+		}
+
+		$subject->response->expects($this->once())->method('header')
+			->with('Location', Router::url(array('action' => 'view', 100), true));
+
+		$event = new CakeEvent('Crud.init', $subject);
+		$result = $apiListener->afterSave($event);
+		$this->assertSame($subject->response, $result);
+	}
+
+/**
+ * Tests afterSave method when some validation errors occurred
+ *
+ * @return void
+ */
+	public function testAfterSaveNotSuccess() {
+		$subject = $this->getMock('CrudSubject');
+		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
+		$subject->controller = $this->getMock('Controller', array('set', 'render'), array($subject->request));
+		$subject->response = $this->getMock('CakeResponse');
+		$apiListener = new ApiListener($subject);
+
+		$subject->request->expects($this->once())
+			->method('is')
+			->with('api')
+			->will($this->returnValue(true));
+
+		$subject->success = false;
+		$subject->controller->expects($this->at(0))
+			->method('set')
+			->with('success', false);
+
+		$subject->response->expects($this->once())->method('statusCode')->with(400);
+
+		$subject->model = new Model(array('alias' => 'Thing'));
+		$subject->model->validationErrors = array('field' => 'An error');
+		$subject->controller->expects($this->at(1))
+			->method('set')
+			->with('data', $subject->model->validationErrors);
+
+		$subject->controller->expects($this->never())->method('render');
+		$event = new CakeEvent('Crud.init', $subject);
+		$this->assertNull($apiListener->afterSave($event));
+	}
+
 }

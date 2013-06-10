@@ -100,7 +100,7 @@ class ApiListener extends CrudListener {
 
 		// Push the model ID back as response body if it's not set already
 		if (empty($this->_controller->viewVars['data'])) {
-			$this->_controller->set('data', array($model->alias => array($model->primaryKey => $event->subject->model->id)));
+			$this->_controller->set('data', array($model->alias => array($model->primaryKey => $event->subject->id)));
 		}
 
 		// Render the view
