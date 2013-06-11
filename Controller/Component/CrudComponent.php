@@ -99,7 +99,7 @@ class CrudComponent extends Component {
 		'actions' => array(),
 		'listeners' => array(
 			'translations' => 'Crud.TranslationsListener',
-			'related' => 'Crud.RelatedModelsListener'
+			'relatedModels' => 'Crud.RelatedModelsListener'
 		)
 	);
 
@@ -435,7 +435,7 @@ class CrudComponent extends Component {
  * Set or get defaults for listeners and actions
  *
  * @param string $type Can be anything, but 'listener' or 'action' is currently only used
- * @param mixed $name The name of the $type - e.g. 'api', 'translations', 'related'
+ * @param mixed $name The name of the $type - e.g. 'api', 'translations', 'relatedModels'
  * 	or an array ('api', 'translations'). If $name is an array, the $config will be applied
  * 	to each entry in the $name array.
  * @param mixed $config If NULL, the defaults is returned, else the defaults are changed
