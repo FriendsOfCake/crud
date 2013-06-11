@@ -23,7 +23,7 @@ class AddCrudAction extends CrudAction {
  * `view` A map of the controller action and the view to render
  * If `NULL` (the default) the controller action name will be used
  *
- * `relatedLists` is a map of the controller action and the whether it should fetch associations lists
+ * `relatedModels` is a map of the controller action and the whether it should fetch associations lists
  * to be used in select boxes. An array as value means it is enabled and represent the list
  * of model associations to be fetched
  *
@@ -42,7 +42,7 @@ class AddCrudAction extends CrudAction {
 		'enabled' => true,
 		'findMethod' => 'first',
 		'view' => null,
-		'relatedLists' => true,
+		'relatedModels' => true,
 		'validateId' => null,
 		'saveOptions' => array(
 			'validate' => 'first',

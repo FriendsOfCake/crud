@@ -1,53 +1,24 @@
 # Filling Related Models select boxes
 
-If you are used to bake or CakePHP scaffolding you might want to have some control over the data it is sent to the view for
-filling select boxes for associated models.
+If you are used to bake or CakePHP scaffolding you might want to have some control over the data it is sent to the view for filling select boxes for associated models.
 
-Crud component can be configured to return the list of record for all related models
-or just those you want to in a per-action basis
+Crud component can be configured to return the list of record for all related models or just those you want to in a per-action basis
 
 By default all related model lists for main Crud component model instance will be fetched, but only for `add`, `edit` and corresponding admin actions.
 
-For instance if your `Post` model in associated to `Tag` and `Author`, then for the aforementioned actions you will have
-in your view the `authors` and `tags` variable containing the result of calling find('list') on each model.
+For instance if your `Post` model in associated to `Tag` and `Author`, then for the aforementioned actions you will have in your view the `$authors` and `$tags` variable containing the result of calling find('list') on each model.
 
 Should you need more fine grain control over the lists fetched, you can configure statically or use dynamic methods:
 
+## Configuring relatedModels
+
 You can enable and disable which model relations you want to have automatically fetched very easily, as shown below.
 
-If you set `relatedLists` to `true` all model relations will be fetched automatically.
+If you set `relatedModels` to `true` all model relations will be fetched automatically.
 
-If you set `relatedLists` to an `array`, only the related models in that array will be fetched automatically.
+If you set `relatedModels` to an `array`, only the related models in that array will be fetched automatically.
 
-If you set `relatedLists` to `false` no model relations will be fetched automatically.
-
-```php
-<?php
-class DemoController extends AppController {
-
- /**
-	* List of global controller components
-	*
-	* @cakephp
-	* @var array
-	*/
-	public $components = array(
-		// Enable CRUD actions
-		'Crud.Crud' => array(
-			'actions' => array('index', 'add', 'edit', 'view', 'delete'),
-			'relatedList' => array(
-				'add' => array('Author'), //Only set $authors variable in the view for action add and admin_add
-				'edit' => array('Tag', 'Cms.Page'), //Set $tags and $pages variable. Page model from plugin Cms will be used
-				// As admin_edit is not listed here it will use defaults from edit action
-			)
-		)
-	);
-
-}
-?>
-```
-
-You can also configure default to not repeat yourself too much:
+If you set `relatedModels` to `false` no model relations will be fetched automatically.
 
 ```php
 <?php
@@ -62,13 +33,23 @@ class DemoController extends AppController {
 	public $components = array(
 		// Enable CRUD actions
 		'Crud.Crud' => array(
-			'actions' => array('index', 'add', 'edit', 'view', 'delete'),
-			'relatedList' => array(
-				'default' => array('Author'),
-				'add' => true, // add action is enabled and will fetch Author by default
-				'admin_change' => true, // admin_change action is enabled and will fetch Author by default
-				'edit' => array('Tag'), //edit action is enabled and will only fetch Tags
-				'admin_edit' => false // admin_edit action is disabled, no related models will be fetched
+			'actions' => array(
+				'index',
+				'add',
+				'edit',
+				'view',
+				'delete'
+			),
+			'defaults' => array(
+				'actions' => array(
+					'add' => array(
+						'relatedModels' => array('Author')
+					),
+					'edit' => array(
+						'relatedModels' => array('Tag', 'Cms.Page')
+					),
+					// As admin_edit is not listed here it will use defaults from edit action
+				)
 			)
 		)
 	);
@@ -77,45 +58,44 @@ class DemoController extends AppController {
 ?>
 ```
 
-If configuring statically is not your thing, or you want to dynamically fetch related models based on some conditions, then you can
-call `mapRelatedList` and `enableRelatedList` function in CrudComponent:
+It's possible to dynamically reconfigure the `relatedModels` listener
 
 ```php
 <?php
 // This can be changed in beforeFilter and the controller action
 public function beforeFilter() {
 	// Automatically executes find('list') on the User ($users) and Tag ($tags) models
-	$this->Crud->listener('related')->map(array('User', 'Tag'), 'add');
+	$this->Crud->action($action)->config('relatedModels', array('User', 'Tag'));
 
 	// Automatically executes find('list') on the User ($users) model
-	$this->Crud->listener('related')->map(array('User'), 'add');
+	$this->Crud->action($action)->config('relatedModels', array('User'));
 
 	// Fetch related data from all model relations (default)
-	$this->Crud->listener('related')->map(true, 'add');
+	$this->Crud->action($action)->config('relatedModels', true);
 
 	// Don't fetch any related data
-	$this->Crud->listener('related')->map(false, 'add');
+	$this->Crud->action($action)->config('relatedModels', false);
 
 	// Get the current configuration
-	$config = $this->listener->map(null, 'add');
+	$config = $this->Crud->action($action)->config('relatedModels');
 }
 ?>
 ```
 
 ## Related models' list events
 
-If for any reason you need to alter the query or final results generated by fetching related models lists, you can use `Crud.beforeListRelated` and `Crud.afterListRelated` events to inject your own logic.
+If for any reason you need to alter the query or final results generated by fetching related models lists, you can use `Crud.beforeRelatedModel` and `Crud.afterRelatedModel` events to inject your own logic.
 
-`Crud.beforeListRelated` will receive the following parameters in the event subject, which can be altered on the fly before any result is fetched
+`Crud.beforeRelatedModel` will receive the following parameters in the event subject, which can be altered on the fly before any result is fetched
 
 	* query: An array with options for find('list')
-	* model: Model instance, the model to be used for fiding the list or records
+	* model: Model instance, the model to be used for finding the list or records
 
-`Crud.afterListRelated` will receive the following parameters in the event subject, which can be altered on the fly after results were fetched
+`Crud.afterRelatedModel` will receive the following parameters in the event subject, which can be altered on the fly after results were fetched
 
 	* items: result from calling find('list')
 	* viewVar: Variable name to be set on the view with items as value
-	* model: Model instance, the model to be used for fiding the list or records
+	* model: Model instance, the model to be used for finding the list or records
 
 ## Example
 
@@ -128,14 +108,14 @@ class DemoController extends AppController {
 		parent::beforeFilter();
 
 		//Authors list should only have the 3 most recen items
-		$this->Crud->on('beforeListRelated', function($event) {
+		$this->Crud->on('beforeRelatedModel', function($event) {
 			if ($event->subject->model instanceof Author) {
 				$event->subject->query['limit'] = 3;
 				$event->subject->query['order'] = array('Author.created' => 'DESC');
 			}
 		});
 
-		$this->Crud->on('afterListRelated', function($event) {
+		$this->Crud->on('afterRelatedModel', function($event) {
 			if ($event->subject->model instanceof Tag) {
 				$event->subject->items += array(0 => 'N/A');
 				$event->subject->viewVar = 'labels';

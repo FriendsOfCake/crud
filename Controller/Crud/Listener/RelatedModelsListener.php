@@ -16,43 +16,6 @@ App::uses('CrudSubject', 'Crud.Controller/Crud');
 class RelatedModelsListener extends CrudListener implements CakeEventListener {
 
 /**
- * Enables association list fetching for specified actions.
- *
- * @param string|array $actions list of action names to enable
- * @return void
- */
-	public function enable($actions) {
-		if (!is_array($actions)) {
-			$actions = array($actions);
-		}
-
-		foreach ($actions as $action) {
-			$actionClass = $this->_crud->action($action);
-			$config = $actionClass->config('relatedLists');
-			if ($config === null) {
-				$actionClass->config('relatedLists', true);
-			}
-		}
-	}
-
-/**
- * Sets the list of model relationships to be fetched as lists for an action
- *
- * @param array|boolean $models list of model association names to be fetch on $action
- *  if `true`, list of models will be constructed out of associated models of main controller's model
- * @param string $action name of the action to apply this rule to. If left null then
- *  it will use the current controller action
- * @return void
- */
-	public function map($models, $action = null) {
-		if (is_string($models)) {
-			$models = array($models);
-		}
-
-		$this->_crud->action($action)->config('relatedLists', $models);
-	}
-
-/**
  * Gets the list of associated model lists to be fetched for an action
  *
  * @param string $action name of the action
@@ -61,8 +24,8 @@ class RelatedModelsListener extends CrudListener implements CakeEventListener {
 	public function models($action = null) {
 		$actionClass = $this->_crud->action($action);
 
-		$settings = $actionClass->config('relatedLists');
-		if ($settings === true) {
+		$settings = $actionClass->config('relatedModels');
+		if (is_null($settings) || $settings === true) {
 			return array_keys($this->_subject->model->getAssociated());
 		}
 
@@ -89,7 +52,7 @@ class RelatedModelsListener extends CrudListener implements CakeEventListener {
 /**
  * Fetches related models' list and sets them to a variable for the view
  * Lists are limited buy default to 200 items. Should you need more, attach
- * an event listener for `beforeListRelated` event to modify the query
+ * an event listener for `beforeRelatedModel` event to modify the query
  *
  * @param CakeEvent
  * @return void
@@ -108,7 +71,7 @@ class RelatedModelsListener extends CrudListener implements CakeEventListener {
 			$query = array('limit' => 200);
 
 			$viewVar = Inflector::variable(Inflector::pluralize($model->alias));
-			$subject = $component->trigger('beforeListRelated', compact('model', 'query', 'viewVar'));
+			$subject = $component->trigger('beforeRelatedModel', compact('model', 'query', 'viewVar'));
 
 			// If the viewVar is already set, don't overwrite it
 			if (array_key_exists($subject->viewVar, $controller->viewVars)) {
@@ -118,7 +81,7 @@ class RelatedModelsListener extends CrudListener implements CakeEventListener {
 			$query = $subject->query;
 			$items = $model->find('list', $query);
 
-			$subject = $component->trigger('afterListRelated', compact('model', 'items', 'viewVar'));
+			$subject = $component->trigger('afterRelatedModel', compact('model', 'items', 'viewVar'));
 			$controller->set($subject->viewVar, $subject->items);
 		}
 	}

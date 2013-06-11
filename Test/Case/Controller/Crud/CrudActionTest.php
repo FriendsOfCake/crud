@@ -60,7 +60,7 @@ class CrudActionTest extends CakeTestCase {
 			'enabled' => true,
 			'findMethod' => 'first',
 			'view' => null,
-			'relatedLists' => true,
+			'relatedModels' => true,
 			'validateId' => null,
 			'saveOptions' => array(
 				'validate' => 'first',
@@ -84,7 +84,7 @@ class CrudActionTest extends CakeTestCase {
 			'enabled' => false,
 			'findMethod' => 'any',
 			'view' => 'my_view',
-			'relatedLists' => array('Tag'),
+			'relatedModels' => array('Tag'),
 			'validateId' => 'id',
 			'saveOptions' => array(
 				'validate' => 'never',

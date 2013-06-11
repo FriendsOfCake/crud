@@ -197,35 +197,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
 	}
 
 /**
- * Called before related records list for a model is fetched.
- * `$event->subject` will contain the following properties that can be modified:
- *
- * - query: An array with options for find('list')
- * - model: Model instance, the model to be used for fiding the list or records
- *
- * @codeCoverageIgnore
- * @param CakeEvent $event The CakePHP CakeEvent object.
- * @return void
- */
-	public function beforeListRelated(CakeEvent $event) {
-	}
-
-/**
- * Called after related records list for a model is fetched
- * `$event->subject` will contain the following properties that can be modified:
- *
- * - items: result from calling find('list')
- * - viewVar: Variable name to be set on the view with items as value
- * - model: Model instance, the model to be used for fiding the list or records
- *
- * @codeCoverageIgnore
- * @param CakeEvent $event The CakePHP CakeEvent object.
- * @return void
- */
-	public function afterListRelated(CakeEvent $event) {
-	}
-
-/**
  * Called if a find() did not return any records
  *
  * @codeCoverageIgnore

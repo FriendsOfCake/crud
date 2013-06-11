@@ -14,23 +14,13 @@ App::uses('CrudSubject', 'Crud.Controller/Crud');
 class RelatedModelListenerTest extends CakeTestCase {
 
 /**
- * Tests that when there is no config for relatedLists then it will be enabled
+ * There is no unit tests for this class at the moment
+ * The class is tested through integration tests in CrudComponent
  *
  * @return void
  */
-	public function testEnable() {
-		$subject = new CrudSubject;
-		$subject->crud = $this->getMock('stdClass', array('action'));
-		$action = $this->getMock('stdClass', array('config'));
-		$listener = new RelatedModelsListener($subject);
-
-		$subject->crud->expects($this->once())
-			->method('action')
-			->with('index')
-			->will($this->returnValue($action));
-		$action->expects($this->at(0))->method('config')->with('relatedLists');
-		$action->expects($this->at(1))->method('config')->with('relatedLists', true);
-		$listener->enable('index');
+	public function testEmpty() {
+		$this->assertTrue(true);
 	}
 
 }
