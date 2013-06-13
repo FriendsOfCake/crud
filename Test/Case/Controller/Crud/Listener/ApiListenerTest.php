@@ -180,7 +180,7 @@ class ApiListenerTest extends CakeTestCase {
 	public function createdProvider() {
 		return array(
 			array(true, 'once'),
-			array(false, 'never')
+			array(false, 'once')
 		);
 	}
 
@@ -194,30 +194,66 @@ class ApiListenerTest extends CakeTestCase {
 		$subject = $this->getMock('CrudSubject');
 		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
 		$subject->controller = $this->getMock('Controller', array('set', 'render'), array($subject->request));
+		$subject->controller->RequestHandler = $this->getMock('stdClass', array('viewClassMap', 'renderAs'));
+		$subject->controller->RequestHandler->ext = 'json';
 		$subject->response = $this->getMock('CakeResponse');
+		$subject->crud = $this->getMock('stdClass', array('action'));
+		$action = $this->getMock('stdClass', array('config'));
+		$action
+			->expects($this->at(0))
+			->method('config')
+			->with('serialize')
+			->will($this->returnValue(array()));
+		$subject->crud
+			->expects($this->once())
+			->method('action')
+			->with()
+			->will($this->returnValue($action));
 		$apiListener = new ApiListener($subject);
 
-		$subject->request->expects($this->once())
+		$subject->request
+			->expects($this->any())
 			->method('is')
 			->with('api')
 			->will($this->returnValue(true));
 
 		$subject->success = true;
-		$subject->controller->expects($this->at(0))
+		$subject->controller
+			->expects($this->at(0))
 			->method('set')
 			->with('success', true);
 
 		$subject->model = new Model(array('alias' => 'Thing'));
 		$subject->id = 100;
-		$subject->controller->expects($this->at(1))
+		$subject->controller
+			->expects($this->at(1))
 			->method('set')
 			->with('data', array('Thing' => array('id' => 100)));
 
-		$subject->controller->expects($this->once())->method('render')
+		$subject->controller
+			->expects($this->once())
+			->method('render')
 			->will($this->returnValue($subject->response));
 
+		$subject->controller->RequestHandler
+			->expects($this->at(0))
+			->method('viewClassMap')
+			->with('json', 'Crud.CrudJson');
+
+		$subject->controller->RequestHandler
+			->expects($this->at(1))
+			->method('viewClassMap')
+			->with('xml', 'Crud.CrudXml');
+
+		$subject->controller->RequestHandler
+			->expects($this->at(2))
+			->method('renderAs')
+			->with($subject->controller, $subject->controller->RequestHandler->ext);
+
 		$subject->created = $created;
-		$expect = $subject->response->expects($this->{$matcher}())->method('statusCode');
+		$expect = $subject->response
+			->expects($this->{$matcher}())
+			->method('statusCode');
 
 		if ($created) {
 			$expect->with(201);

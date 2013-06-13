@@ -84,6 +84,7 @@ class AddCrudAction extends CrudAction {
 		$this->setFlash('create.error');
 		$this->_crud->trigger('afterSave', array('success' => false, 'created' => false));
 		$this->_request->data = Hash::merge($this->_request->data, $this->_model->data);
+		$this->_crud->trigger('beforeRender', array('success' => false));
 	}
 
 }

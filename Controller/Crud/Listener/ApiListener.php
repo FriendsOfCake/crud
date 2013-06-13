@@ -89,7 +89,6 @@ class ApiListener extends CrudListener {
 		$this->_controller->set('success', $event->subject->success);
 
 		$model = $event->subject->model;
-
 		// If we had an error in our save
 		if (!$event->subject->success) {
 			$event->subject->response->statusCode(400);
@@ -104,11 +103,14 @@ class ApiListener extends CrudListener {
 		}
 
 		// Render the view
+		$this->beforeRender($event);
 		$response = $this->_controller->render();
 
 		// REST says newly created objects should get a "201 Created" response code back
 		if ($event->subject->created) {
 			$response->statusCode(201);
+		} else {
+			$response->statusCode(301);
 		}
 
 		// Send a redirect header for the 'view' action
@@ -184,8 +186,8 @@ class ApiListener extends CrudListener {
 		// Copy the _serialize configuration from the CrudAction config
 		$action = $event->subject->crud->action();
 		$serialize = $action->config('serialize');
-		$serialize[] = 'success';
 
+		$serialize[] = 'success';
 		if (method_exists($action, 'viewVar')) {
 			$serialize[$action->viewVar()] = 'data';
 		} else {
