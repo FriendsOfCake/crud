@@ -30,10 +30,7 @@ class IndexCrudAction extends CrudAction {
 		'findMethod' => 'all',
 		'view' => null,
 		'viewVar' => 'items',
-		'serialize' => array(
-			'success',
-			'items' => 'data'
-		)
+		'serialize' => array()
 	);
 
 /**

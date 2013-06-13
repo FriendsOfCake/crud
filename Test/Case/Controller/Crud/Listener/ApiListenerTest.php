@@ -65,7 +65,7 @@ class ApiListenerTest extends CakeTestCase {
 		$this->assertTrue($subject->request->is('json'));
 		$this->assertTrue($subject->request->is('api'));
 
-		
+
 		$this->assertFalse($subject->request->is('xml'));
 		$this->assertTrue($subject->request->is('xml'));
 
@@ -435,16 +435,62 @@ class ApiListenerTest extends CakeTestCase {
 			->with('api')
 			->will($this->returnValue(true));
 
-		$action = $this->getMock('stdClass', array('config'));
+		$action = $this->getMock('stdClass', array('config', 'viewVar'));
 		$subject->crud->expects($this->once())->method('action')->will($this->returnValue($action));
 		$action->expects($this->once())
 			->method('config')
 			->with('serialize')
-			->will($this->returnValue('foo'));
+			->will($this->returnValue(array()));
+		$action->expects($this->once())
+			->method('viewVar')
+			->will($this->returnValue('items'));
 
 		$subject->controller->expects($this->once())
 			->method('set')
-			->with('_serialize', 'foo');
+			->with('_serialize', array('items' => 'data', 'success'));
+
+		$subject->controller->RequestHandler->expects($this->at(0))
+			->method('viewClassMap')
+			->with('json', 'Crud.CrudJson');
+		$subject->controller->RequestHandler->expects($this->at(1))
+			->method('viewClassMap')
+			->with('xml', 'Crud.CrudXml');
+		$subject->controller->RequestHandler->expects($this->once())
+			->method('renderAs')
+			->with($subject->controller, 'json');
+		$event = new CakeEvent('Crud.beforeRender', $subject);
+		$apiListener->beforeRender($event);
+	}
+
+	public function testChangingViewVarWillReflectSerialize() {
+		$subject = $this->getMock('CrudSubject');
+		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
+		$subject->controller = $this->getMock('Controller', array('set'), array($subject->request));
+		$subject->controller->RequestHandler = $this->getMock('RequestHandlerComponent', array('viewClassMap', 'renderAs'));
+		$subject->controller->RequestHandler->ext = 'json';
+		$subject->response = $this->getMock('CakeResponse');
+
+		$subject->crud = $this->getMock('stdClass', array('action'));
+		$apiListener = new ApiListener($subject);
+
+		$subject->request->expects($this->once())
+			->method('is')
+			->with('api')
+			->will($this->returnValue(true));
+
+		$action = $this->getMock('stdClass', array('config', 'viewVar'));
+		$subject->crud->expects($this->once())->method('action')->will($this->returnValue($action));
+		$action->expects($this->once())
+			->method('config')
+			->with('serialize')
+			->will($this->returnValue(array()));
+		$action->expects($this->once())
+			->method('viewVar')
+			->will($this->returnValue('something_else'));
+
+		$subject->controller->expects($this->once())
+			->method('set')
+			->with('_serialize', array('something_else' => 'data', 'success'));
 
 		$subject->controller->RequestHandler->expects($this->at(0))
 			->method('viewClassMap')

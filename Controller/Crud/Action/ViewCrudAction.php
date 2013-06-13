@@ -30,10 +30,7 @@ class ViewCrudAction extends CrudAction {
 		'findMethod' => 'first',
 		'view' => null,
 		'viewVar' => 'item',
-		'serialize' => array(
-			'success',
-			'item' => 'data'
-		)
+		'serialize' => array()
 	);
 
 /**
