@@ -50,8 +50,3 @@ array(
 	)
 );
 ```
-
-
-## API listener should modify _serialize to accomodate any changes in the 'viewVar' config()
-
-If you change e..g index() action to use 'users' instead of 'items' by default, the ApiListener will break, since the 'serialize' configuration for the action is not updated accordingly 
