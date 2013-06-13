@@ -184,14 +184,13 @@ class ApiListener extends CrudListener {
 		// Copy the _serialize configuration from the CrudAction config
 		$action = $event->subject->crud->action();
 		$serialize = $action->config('serialize');
+		$serialize[] = 'success';
 
 		if (method_exists($action, 'viewVar')) {
 			$serialize[$action->viewVar()] = 'data';
 		} else {
 			$serialize[] = 'data';
 		}
-
-		$serialize[] = 'success';
 		$this->_controller->set('_serialize', $serialize);
 
 		// Make sure to use Cruds own View renderer for json and xml
