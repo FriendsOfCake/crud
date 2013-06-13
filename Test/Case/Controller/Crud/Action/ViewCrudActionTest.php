@@ -66,6 +66,7 @@ class ViewCrudActionTest extends CakeTestCase {
 			->disableOriginalConstructor()
 			->setMethods(array('create', 'escapeField', 'find', 'saveAll'))
 			->getMock();
+		$Model->name = 'Example';
 
 		$Controller = $this->ControllerMock
 			->disableOriginalConstructor()
@@ -178,7 +179,7 @@ class ViewCrudActionTest extends CakeTestCase {
 		$Controller
 			->expects($this->once())
 			->method('set')
-			->with(array('item' => $data, 'success' => true));
+			->with(array('example' => $data, 'success' => true));
 
 		$Action
 			->expects($this->once())

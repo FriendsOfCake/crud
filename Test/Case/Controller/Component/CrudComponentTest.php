@@ -1012,7 +1012,8 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->Crud->findMethod('index', 'published');
 		$this->Crud->executeAction('index');
 		$this->assertEquals('published', $this->controller->paginate['findType']);
-		$this->assertEquals(3, count($this->controller->viewVars['items']));
+		$this->assertEquals(array('success', 'crudExamples'), array_keys($this->controller->viewVars));
+		$this->assertEquals(3, count($this->controller->viewVars['crudExamples']));
 	}
 
 /**
@@ -1024,7 +1025,7 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->Crud->findMethod('index', 'unpublished');
 		$this->Crud->executeAction('index');
 		$this->assertEquals('unpublished', $this->controller->paginate['findType']);
-		$this->assertEquals(0, count($this->controller->viewVars['items']));
+		$this->assertEquals(0, count($this->controller->viewVars['crudExamples']));
 	}
 
 /**
@@ -1037,7 +1038,7 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->controller->paginate = array('findType' => 'unpublished');
 		$this->Crud->executeAction('index');
 		$this->assertEquals('unpublished', $this->controller->paginate['findType']);
-		$this->assertEquals(0, count($this->controller->viewVars['items']));
+		$this->assertEquals(0, count($this->controller->viewVars['crudExamples']));
 	}
 
 /**
@@ -1229,10 +1230,10 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->Crud->executeAction('index');
 
 		$this->assertTrue(!empty($this->controller->viewVars['tags']));
-		$this->assertTrue(!empty($this->controller->viewVars['items']));
+		$this->assertTrue(!empty($this->controller->viewVars['crudExamples']));
 
 		$this->assertSame(3, count($this->controller->viewVars['tags']));
-		$this->assertSame(3, count($this->controller->viewVars['items']));
+		$this->assertSame(3, count($this->controller->viewVars['crudExamples']));
 	}
 
 /**
@@ -1248,11 +1249,11 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->Crud->executeAction('index');
 
 		$this->assertTrue(!empty($this->controller->viewVars['tags']));
-		$this->assertTrue(!empty($this->controller->viewVars['items']));
+		$this->assertTrue(!empty($this->controller->viewVars['crudExamples']));
 		$this->assertTrue(!empty($this->controller->viewVars['authors']));
 
 		$this->assertSame(3, count($this->controller->viewVars['tags']));
-		$this->assertSame(3, count($this->controller->viewVars['items']));
+		$this->assertSame(3, count($this->controller->viewVars['crudExamples']));
 		$this->assertSame(4, count($this->controller->viewVars['authors']));
 	}
 
@@ -1303,7 +1304,7 @@ class CrudComponentTest extends ControllerTestCase {
 
 		$this->Crud->executeAction('index');
 
-		$items = $this->controller->viewVars['items'];
+		$items = $this->controller->viewVars['crudExamples'];
 		$this->assertSame(2, count($items), 'beforePaginate needs to have an effect on the pagination');
 		$this->assertEquals(array('author_id' => 1), $Paginator->settings['conditions']);
 	}
@@ -1346,10 +1347,10 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->Crud->executeAction('index');
 
 		$this->assertNotEmpty($this->controller->viewVars);
-		$this->assertNotEmpty($this->controller->viewVars['items']);
-		$this->assertSame(3, count($this->controller->viewVars['items']));
+		$this->assertNotEmpty($this->controller->viewVars['crudExamples']);
+		$this->assertSame(3, count($this->controller->viewVars['crudExamples']));
 
-		$ids = Hash::extract($this->controller->viewVars['items'], '{n}.CrudExample.id');
+		$ids = Hash::extract($this->controller->viewVars['crudExamples'], '{n}.CrudExample.id');
 		$this->assertEquals(array(1,2,3), $ids);
 	}
 

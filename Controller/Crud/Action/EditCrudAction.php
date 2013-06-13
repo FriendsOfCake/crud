@@ -48,10 +48,7 @@ class EditCrudAction extends CrudAction {
 			'validate' => 'first',
 			'atomic' => true
 		),
-		'serialize' => array(
-			'success',
-			'data'
-		)
+		'serialize' => array()
 	);
 
 /**

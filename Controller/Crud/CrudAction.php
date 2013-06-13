@@ -155,21 +155,6 @@ abstract class CrudAction implements CakeEventListener {
 	}
 
 /**
- * Change the name of the view variable name
- * of the data when its sent to the view
- *
- * @param mixed $method
- * @return mixed
- */
-	public function viewVar($name = null) {
-		if (empty($name)) {
-			return $this->config('viewVar');
-		}
-
-		return $this->config('viewVar', $name);
-	}
-
-/**
  * Change the saveOptions configuration
  *
  * This is the 2nd argument passed to saveAll()

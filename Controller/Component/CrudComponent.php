@@ -162,6 +162,7 @@ class CrudComponent extends Component {
 		try {
 			// Execute the default action, inside this component
 			$response = $this->action($action)->handle($this->getSubject(compact('args')));
+
 			if ($response instanceof CakeResponse) {
 				return $response;
 			}

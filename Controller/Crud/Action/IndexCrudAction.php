@@ -29,9 +29,24 @@ class IndexCrudAction extends CrudAction {
 		'enabled' => true,
 		'findMethod' => 'all',
 		'view' => null,
-		'viewVar' => 'items',
+		'viewVar' => null,
 		'serialize' => array()
 	);
+
+/**
+ * Change the name of the view variable name
+ * of the data when its sent to the view
+ *
+ * @param mixed $method
+ * @return mixed
+ */
+	public function viewVar($name = null) {
+		if (empty($name)) {
+			return $this->config('viewVar') ?: Inflector::variable($this->_controller->name);
+		}
+
+		return $this->config('viewVar', $name);
+	}
 
 /**
  * Generic index action
