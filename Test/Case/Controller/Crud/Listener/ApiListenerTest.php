@@ -332,19 +332,42 @@ class ApiListenerTest extends CakeTestCase {
 		$subject = $this->getMock('CrudSubject');
 		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
 		$subject->controller = $this->getMock('Controller', array('set', 'render'), array($subject->request));
+		$subject->controller->RequestHandler = $this->getMock('stdClass', array('viewClassMap', 'renderAs'));
+		$subject->controller->RequestHandler->ext = 'json';
 		$subject->response = $this->getMock('CakeResponse');
+		$subject->crud = $this->getMock('stdClass', array('action'));
+		$action = $this->getMock('stdClass', array('config'));
+		$action
+			->expects($this->at(0))
+			->method('config')
+			->with('serialize')
+			->will($this->returnValue(array()));
+		$subject->crud
+			->expects($this->once())
+			->method('action')
+			->with()
+			->will($this->returnValue($action));
 		$apiListener = new ApiListener($subject);
 
-		$subject->request->expects($this->once())
+		$subject->request->expects($this->any())
 			->method('is')
 			->with('api')
 			->will($this->returnValue(true));
 
 		$subject->success = true;
-		$subject->controller->expects($this->at(0))->method('set')
+		$subject->controller
+			->expects($this->at(0))
+			->method('set')
+			->with('_serialize', array('success', 'data'));
+
+		$subject->controller
+			->expects($this->at(1))
+			->method('set')
 			->with('success', true);
 
-		$subject->controller->expects($this->at(1))->method('set')
+		$subject->controller
+			->expects($this->at(2))
+			->method('set')
 			->with('data', null);
 
 		$subject->controller->expects($this->once())
