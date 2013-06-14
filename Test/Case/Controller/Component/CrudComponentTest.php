@@ -1603,4 +1603,85 @@ class CrudComponentTest extends ControllerTestCase {
 
 		$this->controller->search();
 	}
+
+/**
+ * Test the default configuration for CrudComponent
+ *
+ * @return void
+ */
+	public function testDefaultConfig() {
+		$Collection = $this->getMock('ComponentCollection');
+
+		$Crud = new CrudComponent($Collection);
+
+		$result = $Crud->config();
+		$expected = array(
+			'eventPrefix' => 'Crud',
+			'actions' => array(),
+			'listeners' => array(
+				'translations' => 'Crud.Translations',
+				'relatedModels' => 'Crud.RelatedModels'
+			)
+		);
+		$this->assertEqual($result, $expected);
+	}
+
+/**
+ * Test that providing configuration for a new
+ * listener in the Crud setting should preserve
+ * the defaults and add the new listener to the array
+ *
+ * @return void
+ */
+	public function testConstructMerging() {
+		$Collection = $this->getMock('ComponentCollection');
+
+		$config = array(
+			'listeners' => array(
+					'api' => 'Crud.Api'
+			)
+		);
+
+		$Crud = new CrudComponent($Collection, $config);
+		$result = $Crud->config();
+		$expected = array(
+			'eventPrefix' => 'Crud',
+			'actions' => array(),
+			'listeners' => array(
+				'translations' => 'Crud.Translations',
+				'relatedModels' => 'Crud.RelatedModels',
+				'api' => 'Crud.Api'
+			)
+		);
+		$this->assertEqual($result, $expected);
+	}
+
+/**
+ * Test that providing configuration for a new
+ * listener in the Crud setting should preserve
+ * the defaults and add the new listener to the array
+ *
+ * @return void
+ */
+	public function testConstructMerging2() {
+		$Collection = $this->getMock('ComponentCollection');
+
+		$config = array(
+			'listeners' => array(
+					'translations' => 'MyPlugin.Translations'
+			)
+		);
+
+		$Crud = new CrudComponent($Collection, $config);
+		$result = $Crud->config();
+		$expected = array(
+			'eventPrefix' => 'Crud',
+			'actions' => array(),
+			'listeners' => array(
+				'translations' => 'MyPlugin.Translations',
+				'relatedModels' => 'Crud.RelatedModels'
+			)
+		);
+		$this->assertEqual($result, $expected);
+	}
 }

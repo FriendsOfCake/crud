@@ -98,8 +98,8 @@ class CrudComponent extends Component {
 		'eventPrefix' => 'Crud',
 		'actions' => array(),
 		'listeners' => array(
-			'translations' => 'Crud.TranslationsListener',
-			'relatedModels' => 'Crud.RelatedModelsListener'
+			'translations' => 'Crud.Translations',
+			'relatedModels' => 'Crud.RelatedModels'
 		)
 	);
 
@@ -110,7 +110,7 @@ class CrudComponent extends Component {
  * @param array $settings Array of configuration settings.
  */
 	public function __construct(ComponentCollection $collection, $settings = array()) {
-		parent::__construct($collection, $settings + $this->settings);
+		parent::__construct($collection, $this->_mergeConfig($this->settings, $settings));
 	}
 
 /**
@@ -530,6 +530,7 @@ class CrudComponent extends Component {
 			$config = $this->config('listeners.' . $name);
 
 			list($plugin, $class) = pluginSplit($config, true);
+			$class .= 'Listener';
 			App::uses($class, $plugin . 'Controller/Crud/Listener');
 
 			$subject = $this->getSubject();
@@ -592,6 +593,33 @@ class CrudComponent extends Component {
 		if (empty($this->_model)) {
 			throw new CakeException('No model loaded in the Controller by the name "' . $this->_modelName . '". Please add it to $uses.');
 		}
+	}
+
+/**
+ * Merge configuration arrays
+ *
+ * Allow us to change e.g. a listener config without losing defaults
+ *
+ * This is like merge_array_recursive - with the difference that
+ * duplicate keys isn't changed to an array with both values, but
+ * overridden
+ *
+ * @param array $array1
+ * @param array $array2
+ * @return array
+ */
+	protected function _mergeConfig(array $array1, array $array2) {
+		$merged = $array1;
+		foreach ($array2 as $key => $value) {
+			if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
+				$merged[$key] = $this->_mergeConfig($merged[$key], $value);
+				continue;
+			}
+
+			$merged [$key] = $value;
+		}
+
+		return $merged;
 	}
 
 }
