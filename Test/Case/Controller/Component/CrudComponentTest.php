@@ -163,7 +163,10 @@ class CrudComponentTest extends ControllerTestCase {
  * Use the core posts fixture to have something to work on.
  * What fixture is used is almost irrelevant, was chosen as it is simple
  */
-	public $fixtures = array('core.post', 'core.author', 'core.tag', 'plugin.crud.posts_tag');
+	public $fixtures = array(
+		'core.post', 'core.author', 'core.tag', 'core.comment', 'core.flag_tree',
+		'plugin.crud.posts_tag'
+	);
 
 /**
  * setUp
@@ -943,6 +946,83 @@ class CrudComponentTest extends ControllerTestCase {
 
 		$vars = $this->controller->viewVars;
 		$expectedVars = array('tags' => array(1 => '1', 2 => '2', '3' => '3'), 'authors' => array(1 => '1', 2 => '2', '3' => '3', '4' => '4'));
+		$this->assertEquals($expectedVars, $vars);
+	}
+
+/**
+ * Test relatedModels with association condtions
+ *
+ * @return void
+ */
+	public function testRelatedModelsConditions() {
+		$this->model->bindModel(array('belongsTo' => array('Author')));
+
+		$this->Crud->executeAction('add');
+		$vars = $this->controller->viewVars;
+		$expectedVars = array('authors' => array('1' => '1', '2' => '2', '3' => '3', '4' => '4'));
+		$this->assertEquals($expectedVars, $vars);
+
+		$this->model->bindModel(array('belongsTo' => array(
+			'Author' => array('conditions' => array('Author.user' => 'garrett'))
+		)));
+		$this->controller->viewVars = array();
+
+		$this->Crud->executeAction('add');
+		$vars = $this->controller->viewVars;
+		$expectedVars = array('authors' => array('4' => '4'));
+		$this->assertEquals($expectedVars, $vars);
+	}
+
+/**
+ * Test relatedModels by default gets lists only for belongsTo and HABTM assocaited models
+ *
+ * @return void
+ */
+	public function testRelatedModelsDefaultModels() {
+		$this->model->bindModel(array(
+			'belongsTo' => array('Author'),
+			'hasAndBelongsToMany' => array('Tag'),
+			'hasMany' => array('Comment' => array('foreignKey' => 'article_id'))
+		));
+
+		$this->Crud->action('add')->config('relatedModels', true);
+		$this->assertEquals(array('Author', 'Tag'), $this->Crud->listener('relatedModels')->models('add'));
+	}
+
+/**
+ * Test relatedModels with Tree Behavior attached
+ *
+ * @return void
+ */
+	public function testRelatedModelsWithTree() {
+		$FlagTree = ClassRegistry::init('FlagTree');
+		$FlagTree->Behaviors->attach('Tree', array('scope' => array('FlagTree.flag' => 0)));
+		$FlagTree->save(array('name' => 'Node 1.1', 'flag' => 0));
+		$FlagTree->create();
+		$FlagTree->save(array('name' => 'Node 1.2', 'parent_id' => 1, 'flag' => 0));
+		$list = $FlagTree->generateTreeList();
+
+		$this->model->bindModel(array('belongsTo' => array('FlagTree')));
+
+		$this->Crud->action('add')->config('relatedModels', true);
+		$this->Crud->executeAction('add');
+		$vars = $this->controller->viewVars;
+		$expectedVars = array('flagTrees' => $list);
+		$this->assertEquals($expectedVars, $vars);
+
+		$FlagTree->Behaviors->detach('Tree');
+		$FlagTree->Behaviors->attach('Tree', array('scope' => array('FlagTree.flag' => 1)));
+		$FlagTree->create();
+		$FlagTree->save(array('name' => 'Node 2.1', 'flag' => 1));
+		$FlagTree->create();
+		$FlagTree->save(array('name' => 'Node 2.2', 'parent_id' => 3, 'flag' => 1));
+		$list = $FlagTree->generateTreeList(array('FlagTree.flag' => 1));
+		$this->assertEquals(array('3' => 'Node 2.1', '4' => '_Node 2.2'), $list);
+
+		$this->controller->viewVars = array();
+		$this->Crud->executeAction('add');
+		$vars = $this->controller->viewVars;
+		$expectedVars = array('flagTrees' => $list);
 		$this->assertEquals($expectedVars, $vars);
 	}
 
