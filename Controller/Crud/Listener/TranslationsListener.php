@@ -32,50 +32,41 @@ class TranslationsListener extends CrudListener implements CakeEventListener {
 		'name' => null,
 		'create' => array(
 			'success' => array(
-				'message' => 'Successfully created {name}',
-				'element' => 'default'
+				'message' => 'Successfully created {name}'
 			),
 			'error' => array(
-				'message' => 'Could not create {name}',
-				'element' => 'default'
+				'message' => 'Could not create {name}'
 			)
 		),
 		'update' => array(
 			'success' => array(
-				'message' => '{name} was successfully updated',
-				'element' => 'default'
+				'message' => '{name} was successfully updated'
 			),
 			'error' => array(
-				'message' => 'Could not update {name}',
-				'element' => 'default'
+				'message' => 'Could not update {name}'
 			)
 		),
 		'delete' => array(
 			'success' => array(
-				'message' => 'Successfully deleted {name}',
-				'element' => 'default'
+				'message' => 'Successfully deleted {name}'
 			),
 			'error' => array(
-				'message' => 'Could not delete {name}',
-				'element' => 'default'
+				'message' => 'Could not delete {name}'
 			)
 		),
 		'find' => array(
 			'error' => array(
-				'message' => 'Could not find {name}',
-				'element' => 'default'
+				'message' => 'Could not find {name}'
 			)
 		),
 		'invalid_http_request' => array(
 			'error' => array(
-				'message' => 'Invalid HTTP request',
-				'element' => 'default'
+				'message' => 'Invalid HTTP request'
 			)
 		),
 		'invalid_id' => array(
 			'error' => array(
-				'message' => 'Invalid id',
-				'element' => 'default'
+				'message' => 'Invalid id'
 			)
 		)
 	);
@@ -126,8 +117,21 @@ class TranslationsListener extends CrudListener implements CakeEventListener {
 		}
 
 		$name = $this->config('name') ?: $event->subject->name;
-		$config += array('message' => null, 'element' => null, 'params' => array(), 'key' => 'flash');
-		$message = String::insert($config['message'], array('name' => $name), array('before' => '{', 'after' => '}'));
+		$config = Hash::merge(array(
+			'message' => null,
+			'element' => 'default',
+			'params' => array('class' => 'message'),
+			'key' => 'flash'
+		), $config);
+
+		$type = explode('.', $type);
+		$config['params']['class'] .= ' ' . array_pop($type);
+
+		$message = String::insert(
+			$config['message'],
+			array('name' => $name),
+			array('before' => '{', 'after' => '}')
+		);
 
 		$event->subject->message = __d($this->config('domain'), $message);
 		$event->subject->element = $config['element'];
