@@ -42,25 +42,25 @@ class TranslationsListenerTest extends ControllerTestCase {
 			'domain' => 'crud',
 			'name' => null,
 			'create' => array(
-				'success' => array('message' => 'Successfully created {name}', 'element' => 'success'),
-				'error' => array('message' => 'Could not create {name}', 'element' => 'error')
+				'success' => array('message' => 'Successfully created {name}', 'element' => 'default'),
+				'error' => array('message' => 'Could not create {name}', 'element' => 'default')
 			),
 			'update' => array(
-				'success' => array('message' => '{name} was successfully updated', 'element' => 'success'),
-				'error' => array('message' => 'Could not update {name}', 'element' => 'error')
+				'success' => array('message' => '{name} was successfully updated', 'element' => 'default'),
+				'error' => array('message' => 'Could not update {name}', 'element' => 'default')
 			),
 			'delete' => array(
-				'success' => array('message' => 'Successfully deleted {name}', 'element' => 'success'),
-				'error' => array('message' => 'Could not delete {name}', 'element' => 'error')
+				'success' => array('message' => 'Successfully deleted {name}', 'element' => 'default'),
+				'error' => array('message' => 'Could not delete {name}', 'element' => 'default')
 			),
 			'find' => array(
-				'error' => array('message' => 'Could not find {name}', 'element' => 'error')
+				'error' => array('message' => 'Could not find {name}', 'element' => 'default')
 			),
 			'invalid_http_request' => array(
-				'error' => array('message' => 'Invalid HTTP request', 'element' => 'error'),
+				'error' => array('message' => 'Invalid HTTP request', 'element' => 'default'),
 			),
 			'invalid_id' => array(
-				'error' => array('message' => 'Invalid id', 'element' => 'error')
+				'error' => array('message' => 'Invalid id', 'element' => 'default')
 			)
 		);
 
@@ -86,21 +86,21 @@ class TranslationsListenerTest extends ControllerTestCase {
 				'error' => array('message' => 'Denied!', 'element' => 'error')
 			),
 			'update' => array(
-				'success' => array('message' => '{name} was successfully updated', 'element' => 'success'),
-				'error' => array('message' => 'Could not update {name}', 'element' => 'error')
+				'success' => array('message' => '{name} was successfully updated', 'element' => 'default'),
+				'error' => array('message' => 'Could not update {name}', 'element' => 'default')
 			),
 			'delete' => array(
-				'success' => array('message' => 'Successfully deleted {name}', 'element' => 'success'),
-				'error' => array('message' => 'Could not delete {name}', 'element' => 'error')
+				'success' => array('message' => 'Successfully deleted {name}', 'element' => 'default'),
+				'error' => array('message' => 'Could not delete {name}', 'element' => 'default')
 			),
 			'find' => array(
-				'error' => array('message' => 'Could not find {name}', 'element' => 'error')
+				'error' => array('message' => 'Could not find {name}', 'element' => 'default')
 			),
 			'invalid_http_request' => array(
-				'error' => array('message' => 'Invalid HTTP request', 'element' => 'error'),
+				'error' => array('message' => 'Invalid HTTP request', 'element' => 'default'),
 			),
 			'invalid_id' => array(
-				'error' => array('message' => 'Invalid id', 'element' => 'error')
+				'error' => array('message' => 'Invalid id', 'element' => 'default')
 			)
 		);
 
@@ -126,7 +126,7 @@ class TranslationsListenerTest extends ControllerTestCase {
 	public function testConfigChangeArraySingleKey() {
 		$expected = array('message' => 'hello world {name}');
 		$this->Translations->config('create.success', $expected);
-		$this->assertEquals($expected + array('element' => 'success'), ($this->Translations->config('create.success') + array('element' => 'success')));
+		$this->assertEquals($expected + array('element' => 'default'), ($this->Translations->config('create.success') + array('element' => 'default')));
 	}
 
 /**
@@ -159,7 +159,7 @@ class TranslationsListenerTest extends ControllerTestCase {
 
 		// Compare
 		$this->assertSame('Successfully created Blog', $std->message);
-		$this->assertSame('success', $std->element);
+		$this->assertSame('default', $std->element);
 		$this->assertSame(array(), $std->params);
 		$this->assertSame('flash', $std->key);
 
@@ -174,7 +174,7 @@ class TranslationsListenerTest extends ControllerTestCase {
 
 		// Check if our changed configurations gave the expected
 		$this->assertSame('Successfully created Blog', $std->message);
-		$this->assertSame('success', $std->element);
+		$this->assertSame('default', $std->element);
 		$this->assertSame(array('id' => 1), $std->params);
 		$this->assertSame('new_flash', $std->key);
 	}

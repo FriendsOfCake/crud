@@ -33,49 +33,49 @@ class TranslationsListener extends CrudListener implements CakeEventListener {
 		'create' => array(
 			'success' => array(
 				'message' => 'Successfully created {name}',
-				'element' => 'success'
+				'element' => 'default'
 			),
 			'error' => array(
 				'message' => 'Could not create {name}',
-				'element' => 'error'
+				'element' => 'default'
 			)
 		),
 		'update' => array(
 			'success' => array(
 				'message' => '{name} was successfully updated',
-				'element' => 'success'
+				'element' => 'default'
 			),
 			'error' => array(
 				'message' => 'Could not update {name}',
-				'element' => 'error'
+				'element' => 'default'
 			)
 		),
 		'delete' => array(
 			'success' => array(
 				'message' => 'Successfully deleted {name}',
-				'element' => 'success'
+				'element' => 'default'
 			),
 			'error' => array(
 				'message' => 'Could not delete {name}',
-				'element' => 'error'
+				'element' => 'default'
 			)
 		),
 		'find' => array(
 			'error' => array(
 				'message' => 'Could not find {name}',
-				'element' => 'error'
+				'element' => 'default'
 			)
 		),
 		'invalid_http_request' => array(
 			'error' => array(
 				'message' => 'Invalid HTTP request',
-				'element' => 'error'
+				'element' => 'default'
 			)
 		),
 		'invalid_id' => array(
 			'error' => array(
 				'message' => 'Invalid id',
-				'element' => 'error'
+				'element' => 'default'
 			)
 		)
 	);
