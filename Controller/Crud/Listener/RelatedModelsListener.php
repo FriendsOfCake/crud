@@ -26,7 +26,10 @@ class RelatedModelsListener extends CrudListener implements CakeEventListener {
 
 		$settings = $actionClass->config('relatedModels');
 		if (is_null($settings) || $settings === true) {
-			return array_keys($this->_subject->model->getAssociated());
+			return array_merge(
+				$this->_subject->model->getAssociated('belongsTo'),
+				$this->_subject->model->getAssociated('hasAndBelongsToMany')
+			);
 		}
 
 		if (empty($settings)) {
@@ -67,8 +70,29 @@ class RelatedModelsListener extends CrudListener implements CakeEventListener {
 		}
 
 		foreach ($models as $m) {
-			$model = $this->_getModelInstance($m, $event->subject->model, $controller);
+			$associationType = $this->_getAssociationType($m, $event->subject->model);
+			$model = $this->_getModelInstance($m, $event->subject->model, $controller, $associationType);
+
+			$isTree = false;
 			$query = array('limit' => 200);
+
+			if ($associationType == 'belongsTo') {
+				$query['conditions'] = $event->subject->model->belongsTo[$m]['conditions'];
+			}
+
+			if ($model->Behaviors->attached('Tree')) {
+				$isTree = true;
+				$query = array(
+					'keyPath' => null,
+					'valuePath' => null,
+					'spacer' => '_',
+					'recursive' => $model->Behaviors->Tree->settings[$model->alias]['recursive']
+				);
+
+				if (empty($query['conditions'])) {
+					$query['conditions'] = $model->Behaviors->Tree->settings[$model->alias]['scope'];
+				}
+			}
 
 			$viewVar = Inflector::variable(Inflector::pluralize($model->alias));
 			$subject = $component->trigger('beforeRelatedModel', compact('model', 'query', 'viewVar'));
@@ -79,7 +103,17 @@ class RelatedModelsListener extends CrudListener implements CakeEventListener {
 			}
 
 			$query = $subject->query;
-			$items = $model->find('list', $query);
+			if ($isTree) {
+				$items = $model->generateTreeList(
+					$query['conditions'],
+					$query['keyPath'],
+					$query['valuePath'],
+					$query['spacer'],
+					$query['recursive']
+				);
+			} else {
+				$items = $model->find('list', $query);
+			}
 
 			$subject = $component->trigger('afterRelatedModel', compact('model', 'items', 'viewVar'));
 			$controller->set($subject->viewVar, $subject->items);
@@ -94,7 +128,7 @@ class RelatedModelsListener extends CrudListener implements CakeEventListener {
  * @param Controller $controller instance to do a first look on it
  * @return Model
  */
-	protected function _getModelInstance($model, $controllerModel, $controller) {
+	protected function _getModelInstance($model, $controllerModel, $controller, $associationType = null) {
 		if (isset($controllerModel->{$model})) {
 			return $controllerModel->{$model};
 		}
@@ -103,7 +137,23 @@ class RelatedModelsListener extends CrudListener implements CakeEventListener {
 			return $controller->{$model};
 		}
 
+		if ($associationType && !empty($controllerModel->{$associationType}[$model]['className'])) {
+			return ClassRegistry::init($controllerModel->{$associationType}[$model]['className']);
+		}
+
 		return ClassRegistry::init($model);
+	}
+
+/**
+ * Returns model's association type with controller's model
+ *
+ * @param string $model name of the model
+ * @param Model $controllerModel default model instance for controller
+ * @return string|null Association type if found else null
+ */
+	protected function _getAssociationType($model, $controllerModel) {
+		$associated = $controllerModel->getAssociated();
+		return isset($associated[$model]) ? $associated[$model] : null;
 	}
 
 }
