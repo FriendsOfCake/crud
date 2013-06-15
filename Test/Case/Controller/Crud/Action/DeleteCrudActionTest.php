@@ -17,6 +17,7 @@ App::uses('ComponentCollection', 'Controller');
  */
 class DeleteCrudActionText extends CakeTestCase {
 
+// @codingStandardsIgnoreStart
 	protected $ModelMock;
 
 	protected $ControllerMock;
@@ -26,6 +27,7 @@ class DeleteCrudActionText extends CakeTestCase {
 	protected $RequestMock;
 
 	protected $CrudMock;
+// @codingStandardsIgnoreEnd
 
 	public function setUp() {
 		parent::setUp();

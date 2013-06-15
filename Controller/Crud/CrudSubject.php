@@ -100,7 +100,7 @@ class CrudSubject {
  * @param string $mode
  * @param mixed $actions
  * @return boolean
- * @throws Exception In case of invalid mode
+ * @throws CakeException In case of invalid mode
  */
 	public function shouldProcess($mode, $actions = array()) {
 		if (is_string($actions)) {

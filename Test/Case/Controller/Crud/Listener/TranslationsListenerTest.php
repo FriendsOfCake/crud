@@ -42,25 +42,25 @@ class TranslationsListenerTest extends ControllerTestCase {
 			'domain' => 'crud',
 			'name' => null,
 			'create' => array(
-				'success' => array('message' => 'Successfully created {name}', 'element' => 'default'),
-				'error' => array('message' => 'Could not create {name}', 'element' => 'default')
+				'success' => array('message' => 'Successfully created {name}'),
+				'error' => array('message' => 'Could not create {name}')
 			),
 			'update' => array(
-				'success' => array('message' => '{name} was successfully updated', 'element' => 'default'),
-				'error' => array('message' => 'Could not update {name}', 'element' => 'default')
+				'success' => array('message' => '{name} was successfully updated'),
+				'error' => array('message' => 'Could not update {name}')
 			),
 			'delete' => array(
-				'success' => array('message' => 'Successfully deleted {name}', 'element' => 'default'),
-				'error' => array('message' => 'Could not delete {name}', 'element' => 'default')
+				'success' => array('message' => 'Successfully deleted {name}'),
+				'error' => array('message' => 'Could not delete {name}')
 			),
 			'find' => array(
-				'error' => array('message' => 'Could not find {name}', 'element' => 'default')
+				'error' => array('message' => 'Could not find {name}')
 			),
 			'invalid_http_request' => array(
-				'error' => array('message' => 'Invalid HTTP request', 'element' => 'default'),
+				'error' => array('message' => 'Invalid HTTP request'),
 			),
 			'invalid_id' => array(
-				'error' => array('message' => 'Invalid id', 'element' => 'default')
+				'error' => array('message' => 'Invalid id')
 			)
 		);
 
@@ -86,21 +86,21 @@ class TranslationsListenerTest extends ControllerTestCase {
 				'error' => array('message' => 'Denied!', 'element' => 'error')
 			),
 			'update' => array(
-				'success' => array('message' => '{name} was successfully updated', 'element' => 'default'),
-				'error' => array('message' => 'Could not update {name}', 'element' => 'default')
+				'success' => array('message' => '{name} was successfully updated'),
+				'error' => array('message' => 'Could not update {name}')
 			),
 			'delete' => array(
-				'success' => array('message' => 'Successfully deleted {name}', 'element' => 'default'),
-				'error' => array('message' => 'Could not delete {name}', 'element' => 'default')
+				'success' => array('message' => 'Successfully deleted {name}'),
+				'error' => array('message' => 'Could not delete {name}')
 			),
 			'find' => array(
-				'error' => array('message' => 'Could not find {name}', 'element' => 'default')
+				'error' => array('message' => 'Could not find {name}')
 			),
 			'invalid_http_request' => array(
-				'error' => array('message' => 'Invalid HTTP request', 'element' => 'default'),
+				'error' => array('message' => 'Invalid HTTP request'),
 			),
 			'invalid_id' => array(
-				'error' => array('message' => 'Invalid id', 'element' => 'default')
+				'error' => array('message' => 'Invalid id')
 			)
 		);
 
@@ -160,11 +160,14 @@ class TranslationsListenerTest extends ControllerTestCase {
 		// Compare
 		$this->assertSame('Successfully created Blog', $std->message);
 		$this->assertSame('default', $std->element);
-		$this->assertSame(array(), $std->params);
+		$this->assertSame(array('class' => 'message success'), $std->params);
 		$this->assertSame('flash', $std->key);
 
 		// Update configuration for create.success key
-		$this->Translations->config('create.success', array('key' => 'new_flash', 'params' => array('id' => 1)));
+		$this->Translations->config('create.success', array(
+			'key' => 'new_flash',
+			'params' => array('id' => 1, 'class' => 'msg')
+		));
 
 		// Create new event
 		$Event = new CakeEvent('Crud.afterSave', $std);
@@ -175,7 +178,7 @@ class TranslationsListenerTest extends ControllerTestCase {
 		// Check if our changed configurations gave the expected
 		$this->assertSame('Successfully created Blog', $std->message);
 		$this->assertSame('default', $std->element);
-		$this->assertSame(array('id' => 1), $std->params);
+		$this->assertSame(array('class' => 'msg success', 'id' => 1), $std->params);
 		$this->assertSame('new_flash', $std->key);
 	}
 
