@@ -2,11 +2,12 @@
 [![Coverage Status](https://coveralls.io/repos/jippi/cakephp-crud/badge.png?branch=develop)](https://coveralls.io/r/jippi/cakephp-crud?branch=develop)
 
 # Introduction
+
 Crud was build to be [scaffolding](http://book.cakephp.org/2.0/en/controllers/scaffolding.html) on steroids, and allow developers to have enough flexibility to use it for both rapid prototyping and production applications, even on the same code base - saving you even more time.
 
-Crud is [very fast to install](docs/02-installation.md), 2 minutes top.
+Crud is [very fast to install](http://jippi.github.io/cakephp-crud/docs/installation.html), 2 minutes top.
 
-Crud is very flexible, and have tons of [configuration options](docs/03-configuration.md)
+Crud is very flexible, and have tons of [configuration options](http://jippi.github.io/cakephp-crud/docs/configuration.html)
 
 Crud aims to not get in your way, and if it happens to get in your way, you can change the behavior you don't like very easily.
 
@@ -20,25 +21,24 @@ Less boilerplate code means less code to maintain, and less code to spend time u
 
 Crud allows you to both use your own views, from bake or hand-crafted, as well as only adding the code needed to fulfill your application logic, using [events](docs/05-events.md). It is by default compatible with Cake's baked views.
 
-Crud also provides build in features for JSON and XML [API](docs/08-api.md) for any action you have enabled through Crud - that means no more double work maintaining both a HTML frontend and a JSON and/or XML interface for your applications - saving you tons of time and having a leaner code base.
+Crud also provides build in features for JSON and XML [API](http://jippi.github.io/cakephp-crud/docs/api.html) for any action you have enabled through Crud - that means no more double work maintaining both a HTML frontend and a JSON and/or XML interface for your applications - saving you tons of time and having a leaner code base.
 
 # Documentation
 
-Please check the [docs](docs/) folder for documentation and how-to guides
+Please check the [docs](http://jippi.github.io/cakephp-crud/docs/) site for documentation and how-to guides
 
-* [Introduction](docs/01-introduction.md)
-* [Installation](docs/02-installation.md)
-* [Configuration](docs/03-configuration.md)
-* [Conventions](docs/04-conventions.md)
-* [Events](docs/05-events.md)
-* [Related Data](docs/06-related-data.md)
-* [Translations](docs/07-translations.md)
-* [API](docs/08-api.md)
-* [API Field Filter](docs/09-api-field-filter.md)
-* [Examples](docs/10-examples.md)
-* [Custom actions](docs/20-custom-actions.md)
-* [Custom listeners](docs/30-custom-listeners.md)
-* [TODO](docs/99-todo.md)
+* [Introduction](http://jippi.github.io/cakephp-crud/docs/)
+* [Installation](http://jippi.github.io/cakephp-crud/docs/installation.html)
+* [Configuration](http://jippi.github.io/cakephp-crud/docs/configuration.html)
+* [Conventions](http://jippi.github.io/cakephp-crud/docs/conventions.html)
+* [Events](http://jippi.github.io/cakephp-crud/docs/events.html)
+* [Related Data](http://jippi.github.io/cakephp-crud/docs/related-data.html)
+* [Translations](http://jippi.github.io/cakephp-crud/docs/translations.html)
+* [API](http://jippi.github.io/cakephp-crud/docs/api.html)
+* [API Field Filter](http://jippi.github.io/cakephp-crud/docs/api-field-filter.html)
+* [Custom actions](http://jippi.github.io/cakephp-crud/docs/custom-actions.html)
+* [Custom listeners](http://jippi.github.io/cakephp-crud/docs/custom-listeners.html)
+* [TODO](http://jippi.github.io/cakephp-crud/docs/todo.html)
 
 # Bugs
 
