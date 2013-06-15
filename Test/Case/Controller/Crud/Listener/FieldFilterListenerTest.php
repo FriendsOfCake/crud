@@ -143,9 +143,40 @@ class FieldFilterListenerTest extends CakeTestCase {
  *
  * @return void
  */
-	public function testRequestWithoutFields() {
+	public function testRequestWithoutFieldsWithNoFilterOn() {
 		extract($this->_mockClasses());
+		$Action->config('fieldFilter.allowNoFilter', true);
+		$Listener->beforeFind($Event);
 
+		$this->assertNull($CrudSubject->query['fields']);
+	}
+
+/**
+ * Test that a beforeFind with no fields in the query
+ * will throw an exception by default
+ *
+ * @expectedException CakeException
+ * @expectedExceptionMessage Please specify which fields you would like to select
+ * @return void
+ */
+	public function testRequestWithoutFieldsWithNoFilterDefault() {
+		extract($this->_mockClasses());
+		$Listener->beforeFind($Event);
+
+		$this->assertNull($CrudSubject->query['fields']);
+	}
+
+/**
+ * Test that a beforeFind with no fields in the query
+ * will throw an exception if 'allowNofilter' is set to false
+ *
+ * @expectedException CakeException
+ * @expectedExceptionMessage Please specify which fields you would like to select
+ * @return void
+ */
+	public function testRequestWithoutFieldsWithNoFilterOff() {
+		extract($this->_mockClasses());
+		$Action->config('fieldFilter.allowNoFilter', false);
 		$Listener->beforeFind($Event);
 
 		$this->assertNull($CrudSubject->query['fields']);
