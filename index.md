@@ -4,5 +4,5 @@ layout: default
 ---
 
 <script type="text/javascript">
-document.location = 'docs/introduction.html';
+document.location = 'docs/';
 </script>
