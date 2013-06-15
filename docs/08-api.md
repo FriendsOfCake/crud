@@ -14,7 +14,8 @@ You need to tell the `Router` to parse extensions else it won't be able to proce
 
 ```php
 // app/Config/routes.php
-Router::parseExtensions('json', 'xml');
+Router::setExtensions(array('json', 'xml'));
+Router::parseExtensions();
 ```
 
 #### Attach it on the fly in your controller `beforeFilter`
