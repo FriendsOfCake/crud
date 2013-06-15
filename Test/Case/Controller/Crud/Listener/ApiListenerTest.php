@@ -16,16 +16,16 @@ App::uses('CrudSubject', 'Crud.Controller/Crud');
  */
 class ApiListenerTest extends CakeTestCase {
 
-	protected $config;
+	protected $_config;
 
 	public function setUp() {
 		parent::setUp();
-		$this->config = Configure::read();
+		$this->_config = Configure::read();
 	}
 
 	public function tearDown() {
 		parent::tearDown();
-		Configure::write($this->config);
+		Configure::write($this->_config);
 	}
 
 	public function testInitNotIsAPi() {
@@ -64,7 +64,6 @@ class ApiListenerTest extends CakeTestCase {
 		$subject->request->params['ext'] = 'json';
 		$this->assertTrue($subject->request->is('json'));
 		$this->assertTrue($subject->request->is('api'));
-
 
 		$this->assertFalse($subject->request->is('xml'));
 		$this->assertTrue($subject->request->is('xml'));
@@ -415,7 +414,7 @@ class ApiListenerTest extends CakeTestCase {
 		$apiListener->recordNotFound($event);
 	}
 
-	/**
+/**
  * Tests that invalidId will do nothing when the call is not API
  *
  * @return void

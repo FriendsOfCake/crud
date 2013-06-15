@@ -23,6 +23,7 @@ class TestController extends Controller {
  */
 class IndexCrudActionTest extends CakeTestCase {
 
+// @codingStandardsIgnoreStart
 	protected $ModelMock;
 
 	protected $ActionMock;
@@ -30,6 +31,7 @@ class IndexCrudActionTest extends CakeTestCase {
 	protected $RequestMock;
 
 	protected $CrudMock;
+// @codingStandardsIgnoreEnd
 
 	public function setUp() {
 		parent::setUp();

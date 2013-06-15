@@ -616,7 +616,7 @@ class CrudComponent extends Component {
 				continue;
 			}
 
-			$merged [$key] = $value;
+			$merged[$key] = $value;
 		}
 
 		return $merged;

@@ -312,5 +312,4 @@ class CrudExceptionRendererTest extends CakeTestCase {
 		$this->assertSame($NestedException, $viewVars['error']);
 	}
 
-
 }

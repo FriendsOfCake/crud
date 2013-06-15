@@ -1,6 +1,7 @@
 <?php
 /**
- *
+ * Enable Crud to catch MissingActionException and attempt to generate response
+ * using Crud.
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
