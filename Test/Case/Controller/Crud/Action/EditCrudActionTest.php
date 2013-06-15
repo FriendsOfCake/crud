@@ -16,6 +16,7 @@ App::uses('CrudComponent', 'Crud.Controlller/Component');
  */
 class EditCrudActionTest extends CakeTestCase {
 
+// @codingStandardsIgnoreStart
 	protected $ModelMock;
 
 	protected $ControllerMock;
@@ -25,6 +26,7 @@ class EditCrudActionTest extends CakeTestCase {
 	protected $RequestMock;
 
 	protected $CrudMock;
+// @codingStandardsIgnoreEnd
 
 	public function setUp() {
 		parent::setUp();

@@ -9,12 +9,11 @@
  */
 class CrudListenerTest extends CakeTestCase {
 
-	/**
-	 * Not much going on here at the moment
-	 * Everything is tested through the other classes
-	 * depending on this one
-	 */
-
+/**
+ * Not much going on here at the moment
+ * Everything is tested through the other classes
+ * depending on this one
+ */
 	public function testNothing() {
 		$this->assertTrue(true);
 	}

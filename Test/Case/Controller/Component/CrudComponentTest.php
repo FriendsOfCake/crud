@@ -337,7 +337,9 @@ class CrudComponentTest extends ControllerTestCase {
 			->method('render');
 
 		$this->controller->request->addDetector('post', array(
-			'callback' => function() { return true; }
+			'callback' => function() {
+				return true;
+			}
 		));
 
 		$this->controller->data = array(
@@ -375,7 +377,9 @@ class CrudComponentTest extends ControllerTestCase {
 			->method('render');
 
 		$this->controller->request->addDetector('delete', array(
-			'callback' => function() { return true; }
+			'callback' => function() {
+				return true;
+			}
 		));
 
 		$this->Crud->settings['validateId'] = 'notUuid';
@@ -406,7 +410,9 @@ class CrudComponentTest extends ControllerTestCase {
 			->method('render');
 
 		$this->controller->request->addDetector('delete', array(
-			'callback' => function() { return true; }
+			'callback' => function() {
+				return true;
+			}
 		));
 
 		$this->Crud->settings['validateId'] = 'notUuid';
@@ -440,7 +446,9 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->Crud->config('secureDelete', true);
 
 		$this->controller->request->addDetector('delete', array(
-			'callback' => function() { return true; }
+			'callback' => function() {
+				return true;
+			}
 		));
 
 		$this->Crud->settings['validateId'] = 'integer';
@@ -474,11 +482,15 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->Crud->config('secureDelete', true);
 
 		$this->controller->request->addDetector('delete', array(
-			'callback' => function() { return false; }
+			'callback' => function() {
+				return false;
+			}
 		));
 
 		$this->controller->request->addDetector('post', array(
-			'callback' => function() { return true; }
+			'callback' => function() {
+				return true;
+			}
 		));
 
 		$this->Crud->settings['validateId'] = 'integer';
@@ -515,11 +527,15 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->Crud->action('delete')->config('secureDelete', false);
 
 		$this->controller->request->addDetector('delete', array(
-			'callback' => function() { return false; }
+			'callback' => function() {
+				return false;
+			}
 		));
 
 		$this->controller->request->addDetector('post', array(
-			'callback' => function() { return true; }
+			'callback' => function() {
+				return true;
+			}
 		));
 
 		$this->Crud->settings['validateId'] = 'integer';
@@ -569,7 +585,9 @@ class CrudComponentTest extends ControllerTestCase {
 			->method('render');
 
 		$this->controller->request->addDetector('put', array(
-			'callback' => function() { return true; }
+			'callback' => function() {
+				return true;
+			}
 		));
 
 		$this->controller->data = array(
@@ -1162,7 +1180,9 @@ class CrudComponentTest extends ControllerTestCase {
  */
 	public function testCustomFindDeletePublished() {
 		$this->controller->request->addDetector('delete', array(
-			'callback' => function() { return true; }
+			'callback' => function() {
+				return true;
+			}
 		));
 
 		$this->Crud->settings['validateId'] = 'integer';
@@ -1191,7 +1211,9 @@ class CrudComponentTest extends ControllerTestCase {
  */
 	public function testCustomFindDeleteUnpublished() {
 		$this->controller->request->addDetector('delete', array(
-			'callback' => function() { return true; }
+			'callback' => function() {
+				return true;
+			}
 		));
 
 		$this->Crud->settings['validateId'] = 'integer';

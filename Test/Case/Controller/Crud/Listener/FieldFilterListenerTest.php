@@ -311,7 +311,6 @@ class FieldFilterListenerTest extends CakeTestCase {
 		$this->assertSame($expected, $actual);
 	}
 
-
 /**
  * Test that blacklisting always will win
  * in the filtering.
