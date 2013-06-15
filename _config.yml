@@ -1,5 +1,4 @@
-url: ""
-baseurl: ""
+url: "http://jippi.github.io/cakephp-crud"
 pygments: true
 safe: true
 timezone: UTC
