@@ -2,7 +2,7 @@
     "name": "jippi/cakephp-crud",
     "description": "CakePHP CRUD (Create, Retrieve, Update and Delete) framework",
     "type": "cakephp-plugin",
-    "keywords": ["cakephp", "crud", "create", "retrieve", "update", "delete", "bake", "cake"],
+    "keywords": ["cakephp", "crud", "create", "retrieve", "update", "delete", "bake", "cake", "scaffold", "scaffolding"],
     "homepage": "https://github.com/jippi/cakephp-crud",
     "license": "MIT",
     "authors": [
