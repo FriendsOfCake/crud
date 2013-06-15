@@ -138,6 +138,24 @@ class FieldFilterListener extends CrudListener {
 	}
 
 /**
+ * Can the client make a request without specifying the fields he wants
+ * returned?
+ *
+ * This will bypass all black- and white- listing if set to true
+ *
+ * @param boolean $permit
+ * @param string $action
+ * @return boolean
+ */
+	public function allowNoFilter($permit = null, $action = null) {
+		if (empty($permit)) {
+			return (bool)$this->_crud->action($action)->config('fieldFilter.allowNoFilter');
+		}
+
+		$this->_crud->action($action)->config('fieldFilter.allowNoFilter', (bool)$permit);
+	}
+
+/**
  * Get fields for the query
  *
  * @param CakeEvent $event
@@ -145,7 +163,11 @@ class FieldFilterListener extends CrudListener {
  */
 	protected function _getFields(CakeEvent $event) {
 		$this->_relations = array();
-		return $this->_getFieldsForQuery($event->subject->model);
+		$fields = $this->_getFieldsForQuery($event->subject->model);
+		if (empty($fields) && !$this->allowNoFilter(null, $event->subject->action)) {
+			throw new CakeException('Please specify which fields you would like to select');
+		}
+		return $fields;
 	}
 
 /**
