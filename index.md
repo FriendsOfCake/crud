@@ -3,6 +3,6 @@ title: jippi/cakephp-crud
 layout: default
 ---
 
-[Docs](docs/)
-
-hello world
+<script type="text/javascript">
+document.location = 'docs/introduction.html';
+</script>
