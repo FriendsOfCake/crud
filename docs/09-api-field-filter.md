@@ -64,10 +64,10 @@ This behavior can be changed
 
 ```php
 // Allow request without ?fields=
-$this->_crud->listener('field_filter')->allowNoFilter(true);
+$this->Crud->listener('field_filter')->allowNoFilter(true);
 
 // Reject requests without ?fields=
-$this->_crud->listener('field_filter')->allowNoFilter(false);
+$this->Crud->listener('field_filter')->allowNoFilter(false);
 ```
 
 ## Whitelist fields
@@ -79,7 +79,7 @@ If whitelisting exist, only those fields will be allowed to be selected.
 The fields must be in `Model.field` format
 
 ```php
-$this->_crud->listener('field_filter')->whitelistFields(array('Model.id', 'Model.name', 'Model.created'));
+$this->Crud->listener('field_filter')->whitelistFields(array('Model.id', 'Model.name', 'Model.created'));
 ```
 
 ## Blacklist fields
@@ -91,7 +91,7 @@ If blacklisting exist, the field will be removed from the field list if present 
 The fields must be in `Model.field` format
 
 ```php
-$this->_crud->listener('field_filter')->blacklistFields(array('Model.password', 'Model.auth_token', 'Model.created'));
+$this->Crud->listener('field_filter')->blacklistFields(array('Model.password', 'Model.auth_token', 'Model.created'));
 ```
 
 ## Whitelist models
@@ -101,7 +101,7 @@ For any model relation automatically to be joined, it has to be whitelisted firs
 If no whitelist exist, no relations will be added automatically
 
 ```php
-$this->_crud->listener('field_filter')->whitelistModels(array('list', 'of', 'models'));
+$this->Crud->listener('field_filter')->whitelistModels(array('list', 'of', 'models'));
 ```
 
 # Limitations
