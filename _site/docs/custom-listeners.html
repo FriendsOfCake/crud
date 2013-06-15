@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Custom Listeners</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="http://jippi.github.io/cakephp-crud/css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+
+      @media (max-width: 980px) {
+        /* Enable use of floated navbar text */
+        .navbar-text.pull-right {
+          float: none;
+          padding-left: 5px;
+          padding-right: 5px;
+        }
+      }
+    </style>
+
+    <link href="http://jippi.github.io/cakephp-crud/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="http://jippi.github.io/cakephp-crud/css/highlight.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">jippi/cakephp-crud</a>
+          <div class="nav-collapse collapse">
+            <p class="navbar-text pull-right">
+
+            </p>
+            <ul class="nav">
+              <li class="active"><a href="http://jippi.github.io/cakephp-crud/docs/index.html">Home</a></li>
+              <li><a href="http://jippi.github.io/cakephp-crud/docs/index.html">Documentation</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              <li class="nav-header">Getting started</li>
+              <li class=""><a href="http://jippi.github.io/cakephp-crud/docs/introduction.html">Introduction</a></li>
+              <li class=""><a href="http://jippi.github.io/cakephp-crud/docs/installation.html">Installation</a></li>
+              <li class=""><a href="http://jippi.github.io/cakephp-crud/docs/configuration.html">Configuration</a></li>
+              <li class=""><a href="http://jippi.github.io/cakephp-crud/docs/conventions.html">Conventions</a></li>
+              <li class=""><a href="http://jippi.github.io/cakephp-crud/docs/events.html">Events</a></li>
+              <li class="nav-header">Actions</li>
+              <li class=""><a href="http://jippi.github.io/cakephp-crud/docs/custom-actions.html">Custom actions</a></li>
+              <li class="nav-header">Listeners</li>
+              <li class=""><a href="http://jippi.github.io/cakephp-crud/docs/related-data.html">Related Data</a></li>
+              <li class=""><a href="http://jippi.github.io/cakephp-crud/docs/translations.html">Translations</a></li>
+              <li class=""><a href="http://jippi.github.io/cakephp-crud/docs/api.html">Api</a></li>
+              <li class=""><a href="http://jippi.github.io/cakephp-crud/docs/api-field-filter.html">Api Field Lister</a></li>
+              <li class="active"><a href="http://jippi.github.io/cakephp-crud/docs/custom-listeners.html">Custom listeners</a></li>
+            </ul>
+          </div><!--/.well -->
+        </div>
+        <div class="span9">
+          <div class="toc hide">...toc....</div>
+
+          <h1 id='custom_crud_listeners'>Custom Crud Listeners</h1>
+
+<p>Crud listeners must be inside <code>app/Controller/Crud/Listener</code> ( <code>app/Plugin/$plugin/Controller/Crud/Listener</code> for plugins)</p>
+
+<p>The <code>CrudListener</code> class provides an implementation of all the available callbacks you can listen for in Crud.</p>
+
+<p>You can override the methods as needed inside your own Listener class.</p>
+
+<p>Below is an example of a <code>CrudListener</code></p>
+<div class='highlight'><pre><code class='php'><span class='cp'>&lt;?php</span>
+<span class='nx'>App</span><span class='o'>::</span><span class='na'>uses</span><span class='p'>(</span><span class='s1'>&#39;CrudListener&#39;</span><span class='p'>,</span> <span class='s1'>&#39;Crud.Controller/Crud&#39;</span><span class='p'>);</span>
+
+<span class='k'>class</span> <span class='nc'>DemoListener</span> <span class='k'>extends</span> <span class='nx'>CrudListener</span> <span class='p'>{</span>
+
+	<span class='k'>public</span> <span class='k'>function</span> <span class='nf'>beforeRender</span><span class='p'>(</span><span class='nx'>CakeEvent</span> <span class='nv'>$event</span><span class='p'>)</span> <span class='p'>{</span>
+		<span class='c1'>// Check about this is admin, and about this function should be process for this action</span>
+		<span class='k'>if</span> <span class='p'>(</span><span class='nv'>$event</span><span class='o'>-&gt;</span><span class='na'>subject</span><span class='o'>-&gt;</span><span class='na'>shouldProcess</span><span class='p'>(</span><span class='s1'>&#39;only&#39;</span><span class='p'>,</span> <span class='k'>array</span><span class='p'>(</span><span class='s1'>&#39;admin_add&#39;</span><span class='p'>)))</span> <span class='p'>{</span>
+			<span class='c1'>// We only wanna do something, if this is admin request, and only for &quot;admin_add&quot;</span>
+		<span class='p'>}</span>
+	<span class='p'>}</span>
+
+	<span class='k'>public</span> <span class='k'>function</span> <span class='nf'>afterSave</span><span class='p'>(</span><span class='nx'>CakeEvent</span> <span class='nv'>$event</span><span class='p'>)</span> <span class='p'>{</span>
+		<span class='c1'>// In this test, we want afterSave to do one thing, for admin_add and another for admin_edit</span>
+		<span class='c1'>// If admin_add redirect to index</span>
+		<span class='k'>if</span> <span class='p'>(</span><span class='nv'>$event</span><span class='o'>-&gt;</span><span class='na'>subject</span><span class='o'>-&gt;</span><span class='na'>shouldProcess</span><span class='p'>(</span><span class='s1'>&#39;only&#39;</span><span class='p'>,</span> <span class='k'>array</span><span class='p'>(</span><span class='s1'>&#39;admin_add&#39;</span><span class='p'>)))</span> <span class='p'>{</span>
+			<span class='k'>if</span> <span class='p'>(</span><span class='nv'>$event</span><span class='o'>-&gt;</span><span class='na'>subject</span><span class='o'>-&gt;</span><span class='na'>success</span><span class='p'>)</span> <span class='p'>{</span>
+				<span class='nv'>$event</span><span class='o'>-&gt;</span><span class='na'>subject</span><span class='o'>-&gt;</span><span class='na'>controller</span><span class='o'>-&gt;</span><span class='na'>redirect</span><span class='p'>(</span><span class='k'>array</span><span class='p'>(</span><span class='s1'>&#39;action&#39;</span> <span class='o'>=&gt;</span> <span class='s1'>&#39;index&#39;</span><span class='p'>));</span>
+			<span class='p'>}</span>
+		<span class='p'>}</span>
+
+		<span class='c1'>// If admin_edit redirect to self</span>
+		<span class='k'>elseif</span> <span class='p'>(</span><span class='nv'>$event</span><span class='o'>-&gt;</span><span class='na'>subject</span><span class='o'>-&gt;</span><span class='na'>shouldProcess</span><span class='p'>(</span><span class='s1'>&#39;only&#39;</span><span class='p'>,</span> <span class='k'>array</span><span class='p'>(</span><span class='s1'>&#39;admin_edit&#39;</span><span class='p'>)))</span> <span class='p'>{</span>
+			<span class='k'>if</span> <span class='p'>(</span><span class='nv'>$event</span><span class='o'>-&gt;</span><span class='na'>subject</span><span class='o'>-&gt;</span><span class='na'>success</span><span class='p'>)</span> <span class='p'>{</span>
+				<span class='nv'>$event</span><span class='o'>-&gt;</span><span class='na'>subject</span><span class='o'>-&gt;</span><span class='na'>controller</span><span class='o'>-&gt;</span><span class='na'>redirect</span><span class='p'>(</span><span class='k'>array</span><span class='p'>(</span><span class='s1'>&#39;action&#39;</span> <span class='o'>=&gt;</span> <span class='s1'>&#39;edit&#39;</span><span class='p'>,</span> <span class='nv'>$id</span><span class='p'>));</span>
+			<span class='p'>}</span>
+		<span class='p'>}</span>
+	<span class='p'>}</span>
+<span class='p'>}</span>
+<span class='cp'>?&gt;</span><span class='x' />
+</code></pre></div>
+<p>Attaching the above Listener to your Crud component is done as below.</p>
+
+<p>You simply attach it to the normal <code>CakeEventManager</code> inside your controller.</p>
+
+<p><code>Crud</code> share the same event manager as the controller for maximum flexibility.</p>
+<div class='highlight'><pre><code class='php'><span class='cp'>&lt;?php</span>
+<span class='nx'>App</span><span class='o'>::</span><span class='na'>uses</span><span class='p'>(</span><span class='s1'>&#39;DemoListener&#39;</span><span class='p'>,</span> <span class='s1'>&#39;Controller/Crud/Listener&#39;</span><span class='p'>);</span>
+
+<span class='k'>class</span> <span class='nc'>DemoController</span> <span class='k'>extends</span> <span class='nx'>AppController</span> <span class='p'>{</span>
+
+	<span class='k'>public</span> <span class='k'>function</span> <span class='nf'>beforeFilter</span><span class='p'>()</span> <span class='p'>{</span>
+		<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>getEventManager</span><span class='p'>()</span><span class='o'>-&gt;</span><span class='na'>attach</span><span class='p'>(</span><span class='k'>new</span> <span class='nx'>DemoListener</span><span class='p'>());</span>
+	<span class='p'>}</span>
+
+<span class='p'>}</span>
+<span class='cp'>?&gt;</span><span class='x' />
+</code></pre></div>
+        </div>
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <p>&copy; Christian Winther 2013</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script src="../js/toc.js"></script>
+    <!--
+    <script src="../js/jquery.js"></script>
+    <script src="../js/bootstrap-transition.js"></script>
+    <script src="../js/bootstrap-alert.js"></script>
+    <script src="../js/bootstrap-modal.js"></script>
+    <script src="../js/bootstrap-dropdown.js"></script>
+    <script src="../js/bootstrap-scrollspy.js"></script>
+    <script src="../js/bootstrap-tab.js"></script>
+    <script src="../js/bootstrap-tooltip.js"></script>
+    <script src="../js/bootstrap-popover.js"></script>
+    <script src="../js/bootstrap-button.js"></script>
+    <script src="../js/bootstrap-collapse.js"></script>
+    <script src="../js/bootstrap-carousel.js"></script>
+    <script src="../js/bootstrap-typeahead.js"></script>
+    -->
+  </body>
+</html>

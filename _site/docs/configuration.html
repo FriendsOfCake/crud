@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Configuration</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="http://jippi.github.io/cakephp-crud/css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+
+      @media (max-width: 980px) {
+        /* Enable use of floated navbar text */
+        .navbar-text.pull-right {
+          float: none;
+          padding-left: 5px;
+          padding-right: 5px;
+        }
+      }
+    </style>
+
+    <link href="http://jippi.github.io/cakephp-crud/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="http://jippi.github.io/cakephp-crud/css/highlight.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">jippi/cakephp-crud</a>
+          <div class="nav-collapse collapse">
+            <p class="navbar-text pull-right">
+
+            </p>
+            <ul class="nav">
+              <li class="active"><a href="http://jippi.github.io/cakephp-crud/docs/index.html">Home</a></li>
+              <li><a href="http://jippi.github.io/cakephp-crud/docs/index.html">Documentation</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              <li class="nav-header">Getting started</li>
+              <li class=""><a href="http://jippi.github.io/cakephp-crud/docs/introduction.html">Introduction</a></li>
+              <li class=""><a href="http://jippi.github.io/cakephp-crud/docs/installation.html">Installation</a></li>
+              <li class="active"><a href="http://jippi.github.io/cakephp-crud/docs/configuration.html">Configuration</a></li>
+              <li class=""><a href="http://jippi.github.io/cakephp-crud/docs/conventions.html">Conventions</a></li>
+              <li class=""><a href="http://jippi.github.io/cakephp-crud/docs/events.html">Events</a></li>
+              <li class="nav-header">Actions</li>
+              <li class=""><a href="http://jippi.github.io/cakephp-crud/docs/custom-actions.html">Custom actions</a></li>
+              <li class="nav-header">Listeners</li>
+              <li class=""><a href="http://jippi.github.io/cakephp-crud/docs/related-data.html">Related Data</a></li>
+              <li class=""><a href="http://jippi.github.io/cakephp-crud/docs/translations.html">Translations</a></li>
+              <li class=""><a href="http://jippi.github.io/cakephp-crud/docs/api.html">Api</a></li>
+              <li class=""><a href="http://jippi.github.io/cakephp-crud/docs/api-field-filter.html">Api Field Lister</a></li>
+              <li class=""><a href="http://jippi.github.io/cakephp-crud/docs/custom-listeners.html">Custom listeners</a></li>
+            </ul>
+          </div><!--/.well -->
+        </div>
+        <div class="span9">
+          <div class="toc hide">...toc....</div>
+
+          <h1 id='configuration'>Configuration</h1>
+
+<p>We only use routes without prefix in these examples, but the Crud component works with <strong>any</strong> prefixes you may have. It just requires some additional configuration.</p>
+
+<p>In the code example above, we pass in an actions array with all the controller actions we wish the Crud component to handle - you can omit some of the actions if you wish.</p>
+<div class='highlight'><pre><code class='php'><span class='cp'>&lt;?php</span>
+<span class='k'>class</span> <span class='nc'>AppController</span> <span class='k'>extends</span> <span class='nx'>Controller</span> <span class='p'>{</span>
+
+	<span class='k'>public</span> <span class='nv'>$components</span> <span class='o'>=</span> <span class='k'>array</span><span class='p'>(</span>
+		<span class='c1'>// Enable CRUD actions</span>
+		<span class='s1'>&#39;Crud.Crud&#39;</span> <span class='o'>=&gt;</span> <span class='k'>array</span><span class='p'>(</span>
+			 <span class='c1'>// All actions but delete() will be implemented</span>
+			<span class='s1'>&#39;actions&#39;</span> <span class='o'>=&gt;</span> <span class='k'>array</span><span class='p'>(</span>
+				<span class='c1'>// The controller action &#39;index&#39; will map to the IndexCrudAction</span>
+				<span class='s1'>&#39;index&#39;</span> <span class='o'>=&gt;</span> <span class='s1'>&#39;Crud.Index&#39;</span><span class='p'>,</span>
+				<span class='c1'>// The controller action &#39;add&#39; will map to the AddCrudAction</span>
+				<span class='s1'>&#39;add&#39;</span> 	<span class='o'>=&gt;</span> <span class='s1'>&#39;Crud.Add&#39;</span><span class='p'>,</span>
+				<span class='c1'>// The controller action &#39;edit&#39; will map to the EditCrudAction</span>
+				<span class='s1'>&#39;edit&#39;</span> 	<span class='o'>=&gt;</span> <span class='s1'>&#39;Crud.edit&#39;</span><span class='p'>,</span>
+				<span class='c1'>// The controller action &#39;view&#39; will map to the ViewCrudAction</span>
+				<span class='s1'>&#39;view&#39;</span> 	<span class='o'>=&gt;</span> <span class='s1'>&#39;Crud.View&#39;</span>
+			<span class='p'>)</span>
+		<span class='p'>)</span>
+	<span class='p'>);</span>
+
+<span class='p'>}</span>
+<span class='cp'>?&gt;</span><span class='x' />
+</code></pre></div>
+<p>In the above example, if the <code>delete</code> action is called on <strong>any</strong> controller (that doesn&#8217;t implement it on their own), cake will raise it&#8217;s normal <code>MissingActionException</code> error</p>
+
+<p>You can enable and disable Crud actions on the fly</p>
+<div class='highlight'><pre><code class='php'><span class='cp'>&lt;?php</span>
+<span class='sd'>/**</span>
+<span class='sd'> * Application wide controller</span>
+<span class='sd'> *</span>
+<span class='sd'> * @abstract</span>
+<span class='sd'> * @package App.Controller</span>
+<span class='sd'> */</span>
+<span class='k'>abstract</span> <span class='k'>class</span> <span class='nc'>AppController</span> <span class='k'>extends</span> <span class='nx'>Controller</span> <span class='p'>{</span>
+<span class='sd'>/**</span>
+<span class='sd'> * List of global controller components</span>
+<span class='sd'> *</span>
+<span class='sd'> * @var array</span>
+<span class='sd'> */</span>
+	<span class='k'>public</span> <span class='nv'>$components</span> <span class='o'>=</span> <span class='k'>array</span><span class='p'>(</span>
+		<span class='c1'>// Enable CRUD actions</span>
+		<span class='s1'>&#39;Crud.Crud&#39;</span> <span class='o'>=&gt;</span> <span class='k'>array</span><span class='p'>(</span>
+			<span class='s1'>&#39;actions&#39;</span> <span class='o'>=&gt;</span> <span class='k'>array</span><span class='p'>(</span>
+				<span class='c1'>// Same as array(&#39;index&#39; =&gt; &#39;Crud.Index&#39;)</span>
+				<span class='s1'>&#39;index&#39;</span><span class='p'>,</span>
+				<span class='c1'>// Same as array(&#39;add&#39; =&gt; &#39;Crud.Add&#39;)</span>
+				<span class='s1'>&#39;add&#39;</span><span class='p'>,</span>
+				<span class='c1'>// Same as array(&#39;edit&#39; =&gt; &#39;Crud.Edit&#39;)</span>
+				<span class='s1'>&#39;edit&#39;</span><span class='p'>,</span>
+				<span class='c1'>// Same as array(&#39;view&#39; =&gt; &#39;Crud.View&#39;)</span>
+				<span class='s1'>&#39;view&#39;</span><span class='p'>,</span>
+				<span class='c1'>// Same as array(&#39;delete&#39; =&gt; &#39;Crud.Delete&#39;)</span>
+				<span class='s1'>&#39;delete&#39;</span>
+			<span class='p'>)</span>
+		<span class='p'>)</span>
+	<span class='p'>);</span>
+
+	<span class='k'>public</span> <span class='k'>function</span> <span class='nf'>beforeFilter</span><span class='p'>()</span> <span class='p'>{</span>
+		<span class='c1'>// Will ignore delete action</span>
+		<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>disable</span><span class='p'>(</span><span class='s1'>&#39;delete&#39;</span><span class='p'>);</span>
+
+		<span class='c1'>// Will process delete action again</span>
+		<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>enable</span><span class='p'>(</span><span class='s1'>&#39;delete&#39;</span><span class='p'>);</span>
+
+		<span class='k'>parent</span><span class='o'>::</span><span class='na'>beforeFilter</span><span class='p'>();</span>
+	<span class='p'>}</span>
+<span class='p'>}</span>
+<span class='cp'>?&gt;</span><span class='x' />
+</code></pre></div>
+<p>You can also change the default view used for a Crud action</p>
+<div class='highlight'><pre><code class='php'><span class='cp'>&lt;?php</span>
+<span class='k'>class</span> <span class='nc'>DemoController</span> <span class='k'>extends</span> <span class='nx'>AppController</span> <span class='p'>{</span>
+	<span class='k'>public</span> <span class='k'>function</span> <span class='nf'>beforeFilter</span><span class='p'>()</span> <span class='p'>{</span>
+		<span class='c1'>// Change the view for add crud action to be &quot;public_add.ctp&quot;</span>
+		<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>view</span><span class='p'>(</span><span class='s1'>&#39;add&#39;</span><span class='p'>,</span>  <span class='s1'>&#39;public_add&#39;</span><span class='p'>);</span>
+		<span class='c1'>// Same as</span>
+		<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='s1'>&#39;add&#39;</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>view</span><span class='p'>(</span><span class='s1'>&#39;public_add&#39;</span><span class='p'>);</span>
+
+		<span class='c1'>// Change the view for edit crud action to be &quot;public_edit.ctp&quot;</span>
+		<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>view</span><span class='p'>(</span><span class='s1'>&#39;edit&#39;</span><span class='p'>,</span> <span class='s1'>&#39;public_edit&#39;</span><span class='p'>);</span>
+		<span class='c1'>// Same as</span>
+		<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='s1'>&#39;edit&#39;</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>view</span><span class='p'>(</span><span class='s1'>&#39;public_edit&#39;</span><span class='p'>);</span>
+
+		<span class='c1'>// Convenient shortcut to change both at once</span>
+		<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>view</span><span class='p'>(</span><span class='k'>array</span><span class='p'>(</span><span class='s1'>&#39;add&#39;</span> <span class='o'>=&gt;</span> <span class='s1'>&#39;public_add&#39;</span><span class='p'>,</span> <span class='s1'>&#39;edit&#39;</span> <span class='o'>=&gt;</span> <span class='s1'>&#39;public_edit&#39;</span><span class='p'>));</span>
+		<span class='c1'>// Same as</span>
+		<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='s1'>&#39;add&#39;</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>view</span><span class='p'>(</span><span class='s1'>&#39;public_add&#39;</span><span class='p'>);</span>
+		<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='s1'>&#39;edit&#39;</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>view</span><span class='p'>(</span><span class='s1'>&#39;public_edit&#39;</span><span class='p'>);</span>
+
+		<span class='k'>parent</span><span class='o'>::</span><span class='na'>beforeFilter</span><span class='p'>();</span>
+	<span class='p'>}</span>
+<span class='p'>}</span>
+<span class='cp'>?&gt;</span><span class='x' />
+</code></pre></div>
+<h1 id='crud_actions'>Crud Actions</h1>
+
+<p>A <code>CrudAction</code> is a class that handles a specific kind of crud action type (index, add, edit, view, delete) in isolation.</p>
+
+<p>Each <code>CrudAction</code> have it&#8217;s own unique configuration and events it uses.</p>
+
+<p>If you don&#8217;t like how a specific <code>CrudAction</code> behaves, you can very easily replace it with your own - see the <a href='20-custom-actions.md'>custom actions documentation</a> for how to do this.</p>
+
+<h2 id='index_crudaction'>Index CrudAction</h2>
+
+<p>The <code>index</code> CrudAction paginates over the primary model in the controller.</p>
+
+<p>The source code can be found here: <a href='https://github.com/jippi/cakephp-crud/tree/develop/Controller/Crud/Action/IndexCrudAction.php'>Controller/Crud/Action/IndexCrudAction.php</a></p>
+
+<h3 id='events'>Events</h3>
+<table class='table'>
+<thead>
+	<tr>
+		<th>Event</th>
+		<th>Subject modifiers</th>
+		<th>Description</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>Crud.init</td>
+		<td>N/A</td>
+		<td>Initialize method</td>
+	</tr>
+	<tr>
+		<td>Crud.beforePaginate</td>
+		<td>$subject->controller->paginate</td>
+		<td>Executed before the pagination call is made. You can modify the pagination array like you normally would in your model inside this event</td>
+	</tr>
+	<tr>
+		<td>Crud.afterPaginate</td>
+		<td>$subject->items</td>
+		<td>Executed after the pagination call is made. You can modify the items from the database here.</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeRender</td>
+		<td>N/A</td>
+		<td>Invoked right before the view will be rendered. This is also before the controllers own beforeRender callback</td>
+	</tr>
+</tbody>
+</table>
+<h2 id='add_crudaction'>Add CrudAction</h2>
+
+<p>The <code>add</code> CrudAction will create a record if the request is <code>HTTP POST</code> and the data is valid.</p>
+
+<p>The source code can be found here: <a href='https://github.com/jippi/cakephp-crud/tree/develop/Controller/Crud/Action/AddCrudAction.php'>Controller/Crud/Action/AddCrudAction.php</a></p>
+
+<h3 id='events'>Events</h3>
+<table class='table'>
+<thead>
+	<tr>
+		<th>Event</th>
+		<th>Subject modifiers</th>
+		<th>Description</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>Crud.init</td>
+		<td>N/A</td>
+		<td>Initialize method</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeSave</td>
+		<td>N/A</td>
+		<td>Access and modify the data from the $request object like you normally would in your own controller action</td>
+	</tr>
+	<tr>
+		<td>Crud.afterSave</td>
+		<td>$subject->id</td>
+		<td>`$id` is only available if the save was successful. You can test also test on the `$subject->success` property if the save worked.</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeRender</td>
+		<td>N/A</td>
+		<td>Invoked right before the view will be rendered. This is also before the controllers own beforeRender callback</td>
+	</tr>
+</tbody>
+</table>
+<h2 id='edit_crudaction'>Edit CrudAction</h2>
+
+<p>The <code>edit</code> CrudAction will modify a record if the request is <code>HTTP PUT</code>, the data is valid and the ID that is part of the request exist in the database.</p>
+
+<p>The source code can be found here: <a href='https://github.com/jippi/cakephp-crud/tree/develop/Controller/Crud/Action/EditCrudAction.php'>Controller/Crud/Action/EditCrudAction.php</a></p>
+
+<h3 id='events'>Events</h3>
+<table class='table'>
+<thead>
+	<tr>
+		<th>Event</th>
+		<th>Subject modifiers</th>
+		<th>Description</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>Crud.init</td>
+		<td>N/A</td>
+		<td>Initialize method</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeSave</td>
+		<td>N/A</td>
+		<td>Access and modify the data from the $request object like you normally would in your own controller action</td>
+	</tr>
+	<tr>
+		<td>Crud.afterSave</td>
+		<td>$subject->id</td>
+		<td>`$id` is only available if the save was successful. You can test also test on the `$subject->success` property if the save worked.</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeFind</td>
+		<td>$subject->query</td>
+		<td>Modify the $query array, same as the $queryParams in a behaviors beforeFind() or 2nd argument to any Model::find()</td>
+	</tr>
+	<tr>
+		<td>Crud.recordNotFound</td>
+		<td>N/A</td>
+		<td>If beforeFind could not find a record this event is emitted</td>
+	</tr>
+	<tr>
+		<td>Crud.afterFind</td>
+		<td>N/A</td>
+		<td>Modify the record found by find() and return it. The data is attached to the request->data object</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeRender</td>
+		<td>N/A</td>
+		<td>Invoked right before the view will be rendered. This is also before the controllers own beforeRender callback</td>
+	</tr>
+</tbody>
+</table>
+<h2 id='view_crudaction'>View CrudAction</h2>
+
+<p>The <code>view</code> CrudAction will read a record from the database based on the ID that is part of the request.</p>
+
+<p>The source code can be found here: <a href='https://github.com/jippi/cakephp-crud/tree/develop/Controller/Crud/Action/ViewCrudAction.php'>Controller/Crud/Action/ViewCrudAction.php</a></p>
+
+<h3 id='events'>Events</h3>
+<table class='table'>
+<thead>
+	<tr>
+		<th>Event</th>
+		<th>Subject modifiers</th>
+		<th>Description</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>Crud.init</td>
+		<td>N/A</td>
+		<td>Initialize method</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeFind</td>
+		<td>$subject->query</td>
+		<td>Modify the $query array, same as the $queryParams in a behaviors beforeFind() or 2nd argument to any Model::find()</td>
+	</tr>
+	<tr>
+		<td>Crud.recordNotFound</td>
+		<td>N/A</td>
+		<td>If beforeFind could not find a record this event is emitted</td>
+	</tr>
+	<tr>
+		<td>Crud.afterFind</td>
+		<td>
+			$subject->id
+			$subject->item
+		</td>
+		<td>Modify the $subject->item property if you need to do any afterFind() operations</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeRender</td>
+		<td>N/A</td>
+		<td>Invoked right before the view will be rendered. This is also before the controllers own beforeRender callback</td>
+	</tr>
+</tbody>
+</table>
+<h2 id='delete_crudaction'>Delete CrudAction</h2>
+
+<p>The <code>delete</code> CrudAction will delete a record if the request is <code>HTTP DELETE</code> or <code>HTTP POST</code> and the ID that is part of the request exist in the database.</p>
+
+<p>The source code can be found here: <a href='https://github.com/jippi/cakephp-crud/tree/develop/Controller/Crud/Action/DeleteCrudAction.php'>Controller/Crud/Action/DeleteCrudAction.php</a></p>
+
+<h3 id='events'>Events</h3>
+<table class='table'>
+<thead>
+	<tr>
+		<th>Event</th>
+		<th>Subject modifiers</th>
+		<th>Description</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>Crud.init</td>
+		<td>N/A</td>
+		<td>Initialize method</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeFind</td>
+		<td>$subject->query</td>
+		<td>Modify the $query array, same as the $queryParams in a behaviors beforeFind() or 2nd argument to any Model::find()</td>
+	</tr>
+	<tr>
+		<td>Crud.recordNotFound</td>
+		<td>N/A</td>
+		<td>If beforeFind could not find a record this event is emitted</td>
+	</tr>
+	<tr>
+		<td>Crud.beforeDelete</td>
+		<td>N/A</td>
+		<td>Stop the delete by redirecting away from the action or calling $event->stopPropagation()</td>
+	</tr>
+	<tr>
+		<td>Crud.afterDelete</td>
+		<td>N/A</td>
+		<td>Executed after Model::delete() has called. You can check if the delete succeed or not in $subject->success</td>
+	</tr>
+</tbody>
+</table>
+<h1 id='examples'>Examples</h1>
+
+<h2 id='change_the_find_method'>Change the find() method</h2>
+
+<p>Changing the <code>find type</code> allows you to use <a href='http://book.cakephp.org/2.0/en/models/retrieving-your-data.html#creating-custom-find-types'>custom find methods</a> inside a <code>CrudAction</code></p>
+
+<p>By providing your own custom find method, you can easily inject more complex <code>find</code> logic and at the same time follow the <a href='http://www.mikebernat.com/images/cake/layercake.png'>skinny controllers, fat models</a> code guideline.</p>
+
+<p>Adding custom data to your custom find is also possible, and very simple, have a look at the <code>events</code> documentation.</p>
+
+<p>By default <code>index</code> uses <code>find(&#39;all&#39;)</code></p>
+
+<p>By default <code>view</code> uses <code>find(&#39;first&#39;)</code></p>
+
+<p>By default <code>add</code> uses <code>find(&#39;first&#39;)</code></p>
+
+<p>By default <code>edit</code> uses <code>find(&#39;first&#39;)</code></p>
+
+<p>By default <code>delete</code> uses <code>find(&#39;count&#39;)</code></p>
+
+<h3 id='using_beforefilter'>Using beforeFilter</h3>
+<div class='highlight'><pre><code class='php'><span class='cp'>&lt;?php</span>
+<span class='k'>public</span> <span class='k'>function</span> <span class='nf'>beforeFilter</span><span class='p'>()</span> <span class='p'>{</span>
+	<span class='c1'>// The index() function will call find(&#39;published&#39;) on your model</span>
+	<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='s1'>&#39;index&#39;</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>findMethod</span><span class='p'>(</span><span class='s1'>&#39;published&#39;</span><span class='p'>);</span>
+
+	<span class='c1'>// Get the current configuration</span>
+	<span class='nv'>$config</span> <span class='o'>=</span> <span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='s1'>&#39;index&#39;</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>findMethod</span><span class='p'>();</span>
+
+	<span class='c1'>// The admin_index() function will call find(&#39;unpublished&#39;) on your model</span>
+	<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='s1'>&#39;admin_unpublished&#39;</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>findMethod</span><span class='p'>(</span><span class='s1'>&#39;unpublished&#39;</span><span class='p'>);</span>
+
+	<span class='c1'>// Get the current configuration</span>
+	<span class='nv'>$config</span> <span class='o'>=</span> <span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='s1'>&#39;admin_index&#39;</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>findMethod</span><span class='p'>();</span>
+<span class='p'>}</span>
+<span class='cp'>?&gt;</span><span class='x' />
+</code></pre></div>
+<h3 id='in_the_controller_action'>In the controller action</h3>
+<div class='highlight'><pre><code class='php'><span class='cp'>&lt;?php</span>
+<span class='c1'>// You don&#39;t have to provide the action name in &#39;action&#39;</span>
+<span class='c1'>// since the default is the current action</span>
+<span class='k'>public</span> <span class='k'>function</span> <span class='nf'>index</span><span class='p'>()</span> <span class='p'>{</span>
+	<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>()</span><span class='o'>-&gt;</span><span class='na'>findMethod</span><span class='p'>(</span><span class='s1'>&#39;published&#39;</span><span class='p'>);</span>
+
+	<span class='c1'>// Get the current configuration</span>
+	<span class='nv'>$config</span> <span class='o'>=</span> <span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>()</span><span class='o'>-&gt;</span><span class='na'>findMethod</span><span class='p'>();</span>
+
+	<span class='k'>return</span> <span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>executeAction</span><span class='p'>();</span>
+<span class='p'>}</span>
+
+<span class='k'>public</span> <span class='k'>function</span> <span class='nf'>admin_index</span><span class='p'>()</span> <span class='p'>{</span>
+	<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>()</span><span class='o'>-&gt;</span><span class='na'>findMethod</span><span class='p'>(</span><span class='s1'>&#39;unpublished&#39;</span><span class='p'>);</span>
+
+	<span class='c1'>// Get the current configuration</span>
+	<span class='nv'>$config</span> <span class='o'>=</span> <span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>()</span><span class='o'>-&gt;</span><span class='na'>findMethod</span><span class='p'>();</span>
+
+	<span class='k'>return</span> <span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>executeAction</span><span class='p'>();</span>
+<span class='p'>}</span>
+<span class='cp'>?&gt;</span><span class='x' />
+</code></pre></div>
+<h2 id='change_the_view_to_be_rendered'>Change the view to be rendered</h2>
+
+<p>By default Crud renders a view with the same name as the controller action, but there are cases where you want to change this.</p>
+
+<p>If you action is <code>admin_index</code> the <code>admin_index.ctp</code> view will be rendered by default.</p>
+
+<h3 id='using_beforefilter'>Using beforeFilter</h3>
+<div class='highlight'><pre><code class='php'><span class='cp'>&lt;?php</span>
+<span class='k'>public</span> <span class='k'>function</span> <span class='nf'>beforeFilter</span><span class='p'>()</span> <span class='p'>{</span>
+	<span class='c1'>// Change the &#39;index&#39; view  to &#39;my_index&#39;</span>
+	<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='s1'>&#39;index&#39;</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>view</span><span class='p'>(</span><span class='s1'>&#39;my_index&#39;</span><span class='p'>);</span>
+
+	<span class='c1'>// Get the current configuration</span>
+	<span class='nv'>$config</span> <span class='o'>=</span> <span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='s1'>&#39;index&#39;</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>view</span><span class='p'>();</span>
+
+	<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='s1'>&#39;admin_index&#39;</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>view</span><span class='p'>(</span><span class='s1'>&#39;my_admin_index&#39;</span><span class='p'>);</span>
+
+	<span class='c1'>// Get the current configuration</span>
+	<span class='nv'>$config</span> <span class='o'>=</span> <span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='s1'>&#39;admin_index&#39;</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>view</span><span class='p'>();</span>
+<span class='p'>}</span>
+<span class='cp'>?&gt;</span><span class='x' />
+</code></pre></div>
+<h3 id='in_the_controller_action'>In the controller action</h3>
+<div class='highlight'><pre><code class='php'><span class='cp'>&lt;?php</span>
+<span class='c1'>// You don&#39;t have to provide the action name in &#39;action&#39;</span>
+<span class='c1'>// since the default is the current action</span>
+
+<span class='k'>public</span> <span class='k'>function</span> <span class='nf'>index</span><span class='p'>()</span> <span class='p'>{</span>
+	<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>()</span><span class='o'>-&gt;</span><span class='na'>view</span><span class='p'>(</span><span class='s1'>&#39;my_index&#39;</span><span class='p'>);</span>
+
+	<span class='c1'>// Get the current configuration</span>
+	<span class='nv'>$config</span> <span class='o'>=</span> <span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>()</span><span class='o'>-&gt;</span><span class='na'>view</span><span class='p'>();</span>
+
+	<span class='k'>return</span> <span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>executeAction</span><span class='p'>();</span>
+<span class='p'>}</span>
+
+<span class='k'>public</span> <span class='k'>function</span> <span class='nf'>admin_index</span><span class='p'>()</span> <span class='p'>{</span>
+	<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>()</span><span class='o'>-&gt;</span><span class='na'>view</span><span class='p'>(</span><span class='s1'>&#39;my_admin_index&#39;</span><span class='p'>);</span>
+
+	<span class='c1'>// Get the current configuration</span>
+	<span class='nv'>$config</span> <span class='o'>=</span> <span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>()</span><span class='o'>-&gt;</span><span class='na'>view</span><span class='p'>();</span>
+
+	<span class='k'>return</span> <span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>executeAction</span><span class='p'>();</span>
+<span class='p'>}</span>
+<span class='cp'>?&gt;</span><span class='x' />
+</code></pre></div>
+<h2 id='change_the_viewvar_variable_name_in_the_view'>Change the viewVar (variable name in the view)</h2>
+
+<p>By default Crud follows the convention of <code>$items</code> in <code>index()</code> actions and <code>$item</code> in <code>view()</code> actions</p>
+
+<p>If you want to change these settings, simply call the <code>viewVar()</code> method on the action</p>
+
+<h3 id='using_beforefilter'>Using beforeFilter</h3>
+<div class='highlight'><pre><code class='php'><span class='cp'>&lt;?php</span>
+<span class='k'>public</span> <span class='k'>function</span> <span class='nf'>beforeFilter</span><span class='p'>()</span> <span class='p'>{</span>
+	<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='s1'>&#39;index&#39;</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>viewVar</span><span class='p'>(</span><span class='s1'>&#39;data&#39;</span><span class='p'>);</span>
+
+	<span class='c1'>// Get the current configuration</span>
+	<span class='nv'>$config</span> <span class='o'>=</span> <span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='s1'>&#39;index&#39;</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>viewVar</span><span class='p'>();</span>
+
+	<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='s1'>&#39;admin_index&#39;</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>viewVar</span><span class='p'>(</span><span class='s1'>&#39;data&#39;</span><span class='p'>);</span>
+
+	<span class='c1'>// Get the current configuration</span>
+	<span class='nv'>$config</span> <span class='o'>=</span> <span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='s1'>&#39;admin_index&#39;</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>viewVar</span><span class='p'>();</span>
+<span class='p'>}</span>
+<span class='cp'>?&gt;</span><span class='x' />
+</code></pre></div>
+<h3 id='in_the_controller_action'>In the controller action</h3>
+<div class='highlight'><pre><code class='php'><span class='cp'>&lt;?php</span>
+<span class='c1'>// You don&#39;t have to provide the action name in &#39;action&#39;</span>
+<span class='c1'>// since the default is the current action</span>
+
+<span class='k'>public</span> <span class='k'>function</span> <span class='nf'>index</span><span class='p'>()</span> <span class='p'>{</span>
+	<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>()</span><span class='o'>-&gt;</span><span class='na'>viewVar</span><span class='p'>(</span><span class='s1'>&#39;data&#39;</span><span class='p'>);</span>
+
+	<span class='c1'>// Get the current configuration</span>
+	<span class='nv'>$config</span> <span class='o'>=</span> <span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>()</span><span class='o'>-&gt;</span><span class='na'>viewVar</span><span class='p'>();</span>
+
+	<span class='k'>return</span> <span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>executeAction</span><span class='p'>();</span>
+<span class='p'>}</span>
+
+<span class='k'>public</span> <span class='k'>function</span> <span class='nf'>admin_index</span><span class='p'>()</span> <span class='p'>{</span>
+	<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>()</span><span class='o'>-&gt;</span><span class='na'>viewVar</span><span class='p'>(</span><span class='s1'>&#39;data&#39;</span><span class='p'>);</span>
+
+	<span class='c1'>// Get the current configuration</span>
+	<span class='nv'>$config</span> <span class='o'>=</span> <span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>()</span><span class='o'>-&gt;</span><span class='na'>viewVar</span><span class='p'>();</span>
+
+	<span class='k'>return</span> <span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>executeAction</span><span class='p'>();</span>
+<span class='p'>}</span>
+<span class='cp'>?&gt;</span><span class='x' />
+</code></pre></div>
+<h2 id='enable_a_crud_action_on_the_fly'>Enable a Crud action on the fly</h2>
+
+<p>This can only be done in <code>beforeFilter</code> (or earlier in the request) since it&#8217;s the last method called before the actual controller action is executed.</p>
+
+<p>Enabling a <code>CrudAction</code> automatically injects it into the Controller as if it was defined in the <code>actions</code> array in the crud component configuration.</p>
+<div class='highlight'><pre><code class='php'><span class='cp'>&lt;?php</span>
+<span class='c1'>// This can only be done in the beforeFilter</span>
+
+<span class='k'>public</span> <span class='k'>function</span> <span class='nf'>beforeFilter</span><span class='p'>()</span> <span class='p'>{</span>
+	<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='s1'>&#39;delete&#39;</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>enable</span><span class='p'>();</span>
+	<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='s1'>&#39;admin_delete&#39;</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>enable</span><span class='p'>();</span>
+<span class='p'>}</span>
+<span class='cp'>?&gt;</span><span class='x' />
+</code></pre></div>
+<h2 id='disable_a_crud_action_on_the_fly'>Disable a Crud action on the fly</h2>
+
+<p>This can only be done in <code>beforeFilter</code> (or earlier in the request) since it&#8217;s the last method called before the actual controller action is executed.</p>
+
+<p>Disabling a <code>CrudAction</code> automatically removes it from the Controller as if it was never defined in the <code>actions</code> array in the crud component configuration.</p>
+<div class='highlight'><pre><code class='php'><span class='cp'>&lt;?php</span>
+<span class='c1'>// This can only be done in the beforeFilter</span>
+
+<span class='k'>public</span> <span class='k'>function</span> <span class='nf'>beforeFilter</span><span class='p'>()</span> <span class='p'>{</span>
+	<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='s1'>&#39;delete&#39;</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>disable</span><span class='p'>();</span>
+	<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='s1'>&#39;admin_delete&#39;</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>disable</span><span class='p'>();</span>
+<span class='p'>}</span>
+<span class='cp'>?&gt;</span><span class='x' />
+</code></pre></div>
+<h2 id='change_crudaction_configuration_settings_on_the_fly'>Change CrudAction configuration settings on the fly</h2>
+<div class='highlight'><pre><code class='php'><span class='cp'>&lt;?php</span>
+<span class='c1'>// This can be done both in beforeFilter and the controller action</span>
+<span class='c1'>// All possible config keys can be found in the CrudAction classes (app/Plugin/Crud/Controller/Crud/Action)</span>
+<span class='k'>public</span> <span class='k'>function</span> <span class='nf'>beforeFilter</span><span class='p'>()</span> <span class='p'>{</span>
+	<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='s1'>&#39;view&#39;</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>config</span><span class='p'>(</span><span class='s1'>&#39;validateId&#39;</span><span class='p'>,</span> <span class='s1'>&#39;uuid&#39;</span><span class='p'>);</span>
+
+	<span class='c1'>// Get the current configuration</span>
+	<span class='nv'>$config</span> <span class='o'>=</span> <span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='s1'>&#39;view&#39;</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>config</span><span class='p'>(</span><span class='s1'>&#39;validateId&#39;</span><span class='p'>);</span>
+<span class='p'>}</span>
+<span class='cp'>?&gt;</span><span class='x' />
+</code></pre></div>
+<h2 id='disable_securedelete_for_delete_actions'>Disable secureDelete for delete() actions</h2>
+
+<p><code>secureDelete</code> enforces that a <code>HTTP DELETE</code> request must be used for any <code>delete()</code> actions.</p>
+
+<p>If set to <code>true</code> only <code>HTTP DELETE</code> is considered valid for <code>delete()</code> actions.</p>
+
+<p>If set to <code>false</code> both <code>HTTP DELETE</code> and <code>HTTP POST</code> is considered valid for <code>delete()</code> actions.</p>
+
+<p>The default setting is <code>true</code></p>
+<div class='highlight'><pre><code class='php'><span class='cp'>&lt;?php</span>
+<span class='c1'>// Disabling this feature allow HTTP POST to execute delete() actions</span>
+<span class='c1'>// This can be changed in both beforeFilter and the controller action</span>
+<span class='k'>public</span> <span class='k'>function</span> <span class='nf'>beforeFilter</span><span class='p'>()</span> <span class='p'>{</span>
+	<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='s1'>&#39;delete&#39;</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>config</span><span class='p'>(</span><span class='s1'>&#39;secureDelete&#39;</span><span class='p'>,</span> <span class='k'>false</span><span class='p'>);</span>
+
+	<span class='c1'>// Get the current configuration</span>
+	<span class='nv'>$config</span> <span class='o'>=</span> <span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='s1'>&#39;delete&#39;</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>config</span><span class='p'>(</span><span class='s1'>&#39;secureDelete&#39;</span><span class='p'>);</span>
+<span class='p'>}</span>
+<span class='cp'>?&gt;</span><span class='x' />
+</code></pre></div>
+<h2 id='configure_related_model_data_for_add__edit_views'>Configure related model data for add / edit views</h2>
+
+<p>Please see the <a href='06-related-data.md'>related data documentation</a></p>
+
+<h2 id='change_save_options'>Change save options</h2>
+
+<p>All options as described in <a href='http://book.cakephp.org/2.0/en/models/saving-your-data.html#model-saveall-array-data-null-array-options-array'>CakePHP documentation on saveAll()</a> is valid here</p>
+
+<p>This configuration maps directly to the 2nd parameter of <code>saveAll()</code> called <code>$options</code></p>
+
+<p>The default for <code>add</code> and <code>edit</code> is <code>array(&#39;validate&#39; =&gt; &#39;first&#39;, &#39;atomic&#39; =&gt; true)</code></p>
+<div class='highlight'><pre><code class='php'><span class='cp'>&lt;?php</span>
+<span class='c1'>// This can be changed in beforeFilter and in a controller action</span>
+<span class='k'>public</span> <span class='k'>function</span> <span class='nf'>beforeFilter</span><span class='p'>()</span> <span class='p'>{</span>
+	<span class='c1'>// saveOptions is the 2nd argument to saveAll()</span>
+	<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='s1'>&#39;add&#39;</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>saveOptions</span><span class='p'>(</span><span class='k'>array</span><span class='p'>(</span><span class='s1'>&#39;atomic&#39;</span> <span class='o'>=&gt;</span> <span class='k'>false</span><span class='p'>));</span>
+<span class='p'>}</span>
+<span class='cp'>?&gt;</span><span class='x' />
+</code></pre></div>
+        </div>
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <p>&copy; Christian Winther 2013</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script src="../js/toc.js"></script>
+    <!--
+    <script src="../js/jquery.js"></script>
+    <script src="../js/bootstrap-transition.js"></script>
+    <script src="../js/bootstrap-alert.js"></script>
+    <script src="../js/bootstrap-modal.js"></script>
+    <script src="../js/bootstrap-dropdown.js"></script>
+    <script src="../js/bootstrap-scrollspy.js"></script>
+    <script src="../js/bootstrap-tab.js"></script>
+    <script src="../js/bootstrap-tooltip.js"></script>
+    <script src="../js/bootstrap-popover.js"></script>
+    <script src="../js/bootstrap-button.js"></script>
+    <script src="../js/bootstrap-collapse.js"></script>
+    <script src="../js/bootstrap-carousel.js"></script>
+    <script src="../js/bootstrap-typeahead.js"></script>
+    -->
+  </body>
+</html>
