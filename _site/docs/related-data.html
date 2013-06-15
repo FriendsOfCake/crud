@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Related data</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="../css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+
+      @media (max-width: 980px) {
+        /* Enable use of floated navbar text */
+        .navbar-text.pull-right {
+          float: none;
+          padding-left: 5px;
+          padding-right: 5px;
+        }
+      }
+    </style>
+
+    <link href="../css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="../css/highlight.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">jippi/cakephp-crud</a>
+          <div class="nav-collapse collapse">
+            <p class="navbar-text pull-right">
+
+            </p>
+            <ul class="nav">
+              <li class="active"><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/index.html">Home</a></li>
+              <li><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/index.html">Documentation</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              <li class="nav-header">Getting started</li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/introduction.html">Introduction</a></li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/installation.html">Installation</a></li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/configuration.html">Configuration</a></li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/conventions.html">Conventions</a></li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/events.html">Events</a></li>
+              <li class="nav-header">Actions</li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/custom-actions.html">Custom actions</a></li>
+              <li class="nav-header">Listeners</li>
+              <li class="active"><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/related-data.html">Related Data</a></li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/translations.html">Translations</a></li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/api.html">Api</a></li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/api-field-filter.html">Api Field Lister</a></li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/custom-listeners.html">Custom listeners</a></li>
+            </ul>
+          </div><!--/.well -->
+        </div>
+        <div class="span9">
+          <div class="toc hide">...toc....</div>
+
+          <h1 id='filling_related_models_select_boxes'>Filling Related Models select boxes</h1>
+
+<p>If you are used to bake or CakePHP scaffolding you might want to have some control over the data it is sent to the view for filling select boxes for associated models.</p>
+
+<p>Crud component can be configured to return the list of record for all related models or just those you want to in a per-action basis</p>
+
+<p>By default all related model lists for main Crud component model instance will be fetched, but only for <code>add</code>, <code>edit</code> and corresponding admin actions.</p>
+
+<p>For instance if your <code>Post</code> model in associated to <code>Tag</code> and <code>Author</code>, then for the aforementioned actions you will have in your view the <code>$authors</code> and <code>$tags</code> variable containing the result of calling find(&#8216;list&#8217;) on each model.</p>
+
+<p>Should you need more fine grain control over the lists fetched, you can configure statically or use dynamic methods:</p>
+
+<h2 id='configuring_relatedmodels'>Configuring relatedModels</h2>
+
+<p>You can enable and disable which model relations you want to have automatically fetched very easily, as shown below.</p>
+
+<p>If you set <code>relatedModels</code> to <code>true</code> all model relations will be fetched automatically.</p>
+
+<p>If you set <code>relatedModels</code> to an <code>array</code>, only the related models in that array will be fetched automatically.</p>
+
+<p>If you set <code>relatedModels</code> to <code>false</code> no model relations will be fetched automatically.</p>
+<div class='highlight'><pre><code class='php'><span class='cp'>&lt;?php</span>
+<span class='k'>class</span> <span class='nc'>DemoController</span> <span class='k'>extends</span> <span class='nx'>AppController</span> <span class='p'>{</span>
+
+ <span class='sd'>/**</span>
+<span class='sd'>	* List of global controller components</span>
+<span class='sd'>	*</span>
+<span class='sd'>	* @cakephp</span>
+<span class='sd'>	* @var array</span>
+<span class='sd'>	*/</span>
+	<span class='k'>public</span> <span class='nv'>$components</span> <span class='o'>=</span> <span class='k'>array</span><span class='p'>(</span>
+		<span class='c1'>// Enable CRUD actions</span>
+		<span class='s1'>&#39;Crud.Crud&#39;</span> <span class='o'>=&gt;</span> <span class='k'>array</span><span class='p'>(</span>
+			<span class='s1'>&#39;actions&#39;</span> <span class='o'>=&gt;</span> <span class='k'>array</span><span class='p'>(</span>
+				<span class='s1'>&#39;index&#39;</span><span class='p'>,</span>
+				<span class='s1'>&#39;add&#39;</span><span class='p'>,</span>
+				<span class='s1'>&#39;edit&#39;</span><span class='p'>,</span>
+				<span class='s1'>&#39;view&#39;</span><span class='p'>,</span>
+				<span class='s1'>&#39;delete&#39;</span>
+			<span class='p'>),</span>
+			<span class='s1'>&#39;defaults&#39;</span> <span class='o'>=&gt;</span> <span class='k'>array</span><span class='p'>(</span>
+				<span class='s1'>&#39;actions&#39;</span> <span class='o'>=&gt;</span> <span class='k'>array</span><span class='p'>(</span>
+					<span class='s1'>&#39;add&#39;</span> <span class='o'>=&gt;</span> <span class='k'>array</span><span class='p'>(</span>
+						<span class='s1'>&#39;relatedModels&#39;</span> <span class='o'>=&gt;</span> <span class='k'>array</span><span class='p'>(</span><span class='s1'>&#39;Author&#39;</span><span class='p'>)</span>
+					<span class='p'>),</span>
+					<span class='s1'>&#39;edit&#39;</span> <span class='o'>=&gt;</span> <span class='k'>array</span><span class='p'>(</span>
+						<span class='s1'>&#39;relatedModels&#39;</span> <span class='o'>=&gt;</span> <span class='k'>array</span><span class='p'>(</span><span class='s1'>&#39;Tag&#39;</span><span class='p'>,</span> <span class='s1'>&#39;Cms.Page&#39;</span><span class='p'>)</span>
+					<span class='p'>),</span>
+					<span class='c1'>// As admin_edit is not listed here it will use defaults from edit action</span>
+				<span class='p'>)</span>
+			<span class='p'>)</span>
+		<span class='p'>)</span>
+	<span class='p'>);</span>
+
+<span class='p'>}</span>
+<span class='cp'>?&gt;</span><span class='x' />
+</code></pre></div>
+<p>It&#8217;s possible to dynamically reconfigure the <code>relatedModels</code> listener</p>
+<div class='highlight'><pre><code class='php'><span class='cp'>&lt;?php</span>
+<span class='c1'>// This can be changed in beforeFilter and the controller action</span>
+<span class='k'>public</span> <span class='k'>function</span> <span class='nf'>beforeFilter</span><span class='p'>()</span> <span class='p'>{</span>
+	<span class='c1'>// Automatically executes find(&#39;list&#39;) on the User ($users) and Tag ($tags) models</span>
+	<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='nv'>$action</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>config</span><span class='p'>(</span><span class='s1'>&#39;relatedModels&#39;</span><span class='p'>,</span> <span class='k'>array</span><span class='p'>(</span><span class='s1'>&#39;User&#39;</span><span class='p'>,</span> <span class='s1'>&#39;Tag&#39;</span><span class='p'>));</span>
+
+	<span class='c1'>// Automatically executes find(&#39;list&#39;) on the User ($users) model</span>
+	<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='nv'>$action</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>config</span><span class='p'>(</span><span class='s1'>&#39;relatedModels&#39;</span><span class='p'>,</span> <span class='k'>array</span><span class='p'>(</span><span class='s1'>&#39;User&#39;</span><span class='p'>));</span>
+
+	<span class='c1'>// Fetch related data from all model relations (default)</span>
+	<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='nv'>$action</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>config</span><span class='p'>(</span><span class='s1'>&#39;relatedModels&#39;</span><span class='p'>,</span> <span class='k'>true</span><span class='p'>);</span>
+
+	<span class='c1'>// Don&#39;t fetch any related data</span>
+	<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='nv'>$action</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>config</span><span class='p'>(</span><span class='s1'>&#39;relatedModels&#39;</span><span class='p'>,</span> <span class='k'>false</span><span class='p'>);</span>
+
+	<span class='c1'>// Get the current configuration</span>
+	<span class='nv'>$config</span> <span class='o'>=</span> <span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>action</span><span class='p'>(</span><span class='nv'>$action</span><span class='p'>)</span><span class='o'>-&gt;</span><span class='na'>config</span><span class='p'>(</span><span class='s1'>&#39;relatedModels&#39;</span><span class='p'>);</span>
+<span class='p'>}</span>
+<span class='cp'>?&gt;</span><span class='x' />
+</code></pre></div>
+<h2 id='related_models_list_events'>Related models&#8217; list events</h2>
+
+<p>If for any reason you need to alter the query or final results generated by fetching related models lists, you can use <code>Crud.beforeRelatedModel</code> and <code>Crud.afterRelatedModel</code> events to inject your own logic.</p>
+
+<p><code>Crud.beforeRelatedModel</code> will receive the following parameters in the event subject, which can be altered on the fly before any result is fetched</p>
+
+<pre><code>* query: An array with options for find(&#39;list&#39;)
+* model: Model instance, the model to be used for finding the list or records</code></pre>
+
+<p><code>Crud.afterRelatedModel</code> will receive the following parameters in the event subject, which can be altered on the fly after results were fetched</p>
+
+<pre><code>* items: result from calling find(&#39;list&#39;)
+* viewVar: Variable name to be set on the view with items as value
+* model: Model instance, the model to be used for finding the list or records</code></pre>
+
+<h2 id='example'>Example</h2>
+<div class='highlight'><pre><code class='php'><span class='cp'>&lt;?php</span>
+<span class='k'>class</span> <span class='nc'>DemoController</span> <span class='k'>extends</span> <span class='nx'>AppController</span> <span class='p'>{</span>
+	<span class='c1'>//...</span>
+
+	<span class='k'>public</span> <span class='k'>function</span> <span class='nf'>beforeFilter</span><span class='p'>()</span> <span class='p'>{</span>
+		<span class='k'>parent</span><span class='o'>::</span><span class='na'>beforeFilter</span><span class='p'>();</span>
+
+		<span class='c1'>//Authors list should only have the 3 most recen items</span>
+		<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>on</span><span class='p'>(</span><span class='s1'>&#39;beforeRelatedModel&#39;</span><span class='p'>,</span> <span class='k'>function</span><span class='p'>(</span><span class='nv'>$event</span><span class='p'>)</span> <span class='p'>{</span>
+			<span class='k'>if</span> <span class='p'>(</span><span class='nv'>$event</span><span class='o'>-&gt;</span><span class='na'>subject</span><span class='o'>-&gt;</span><span class='na'>model</span> <span class='nx'>instanceof</span> <span class='nx'>Author</span><span class='p'>)</span> <span class='p'>{</span>
+				<span class='nv'>$event</span><span class='o'>-&gt;</span><span class='na'>subject</span><span class='o'>-&gt;</span><span class='na'>query</span><span class='p'>[</span><span class='s1'>&#39;limit&#39;</span><span class='p'>]</span> <span class='o'>=</span> <span class='mi'>3</span><span class='p'>;</span>
+				<span class='nv'>$event</span><span class='o'>-&gt;</span><span class='na'>subject</span><span class='o'>-&gt;</span><span class='na'>query</span><span class='p'>[</span><span class='s1'>&#39;order&#39;</span><span class='p'>]</span> <span class='o'>=</span> <span class='k'>array</span><span class='p'>(</span><span class='s1'>&#39;Author.created&#39;</span> <span class='o'>=&gt;</span> <span class='s1'>&#39;DESC&#39;</span><span class='p'>);</span>
+			<span class='p'>}</span>
+		<span class='p'>});</span>
+
+		<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>on</span><span class='p'>(</span><span class='s1'>&#39;afterRelatedModel&#39;</span><span class='p'>,</span> <span class='k'>function</span><span class='p'>(</span><span class='nv'>$event</span><span class='p'>)</span> <span class='p'>{</span>
+			<span class='k'>if</span> <span class='p'>(</span><span class='nv'>$event</span><span class='o'>-&gt;</span><span class='na'>subject</span><span class='o'>-&gt;</span><span class='na'>model</span> <span class='nx'>instanceof</span> <span class='nx'>Tag</span><span class='p'>)</span> <span class='p'>{</span>
+				<span class='nv'>$event</span><span class='o'>-&gt;</span><span class='na'>subject</span><span class='o'>-&gt;</span><span class='na'>items</span> <span class='o'>+=</span> <span class='k'>array</span><span class='p'>(</span><span class='mi'>0</span> <span class='o'>=&gt;</span> <span class='s1'>&#39;N/A&#39;</span><span class='p'>);</span>
+				<span class='nv'>$event</span><span class='o'>-&gt;</span><span class='na'>subject</span><span class='o'>-&gt;</span><span class='na'>viewVar</span> <span class='o'>=</span> <span class='s1'>&#39;labels&#39;</span><span class='p'>;</span>
+			<span class='p'>}</span>
+		<span class='p'>});</span>
+
+	<span class='p'>}</span>
+
+<span class='p'>}</span>
+<span class='cp'>?&gt;</span><span class='x' />
+</code></pre></div>
+        </div>
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <p>&copy; Christian Winther 2013</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script src="../js/toc.js"></script>
+    <!--
+    <script src="../js/jquery.js"></script>
+    <script src="../js/bootstrap-transition.js"></script>
+    <script src="../js/bootstrap-alert.js"></script>
+    <script src="../js/bootstrap-modal.js"></script>
+    <script src="../js/bootstrap-dropdown.js"></script>
+    <script src="../js/bootstrap-scrollspy.js"></script>
+    <script src="../js/bootstrap-tab.js"></script>
+    <script src="../js/bootstrap-tooltip.js"></script>
+    <script src="../js/bootstrap-popover.js"></script>
+    <script src="../js/bootstrap-button.js"></script>
+    <script src="../js/bootstrap-collapse.js"></script>
+    <script src="../js/bootstrap-carousel.js"></script>
+    <script src="../js/bootstrap-typeahead.js"></script>
+    -->
+  </body>
+</html>

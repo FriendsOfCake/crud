@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Api</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="../css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+
+      @media (max-width: 980px) {
+        /* Enable use of floated navbar text */
+        .navbar-text.pull-right {
+          float: none;
+          padding-left: 5px;
+          padding-right: 5px;
+        }
+      }
+    </style>
+
+    <link href="../css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="../css/highlight.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">jippi/cakephp-crud</a>
+          <div class="nav-collapse collapse">
+            <p class="navbar-text pull-right">
+
+            </p>
+            <ul class="nav">
+              <li class="active"><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/index.html">Home</a></li>
+              <li><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/index.html">Documentation</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              <li class="nav-header">Getting started</li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/introduction.html">Introduction</a></li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/installation.html">Installation</a></li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/configuration.html">Configuration</a></li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/conventions.html">Conventions</a></li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/events.html">Events</a></li>
+              <li class="nav-header">Actions</li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/custom-actions.html">Custom actions</a></li>
+              <li class="nav-header">Listeners</li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/related-data.html">Related Data</a></li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/translations.html">Translations</a></li>
+              <li class="active"><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/api.html">Api</a></li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/api-field-filter.html">Api Field Lister</a></li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/custom-listeners.html">Custom listeners</a></li>
+            </ul>
+          </div><!--/.well -->
+        </div>
+        <div class="span9">
+          <div class="toc hide">...toc....</div>
+
+          <h1 id='api_listener'>Api Listener</h1>
+
+<p>This listener allows you to easily create a JSON or XML Api build on top of Crud.</p>
+
+<h1 id='setup'>Setup</h1>
+
+<p>The Api listener depends on the <code>RequestHandler</code> to be loaded <strong>before</strong> <code>Crud</code></p>
+
+<p><a href='http://book.cakephp.org/2.0/en/views/json-and-xml-views.html#enabling-data-views-in-your-application'>Please also see the CakePHP documentation on JSON and XML views</a></p>
+
+<h2 id='router'>Router</h2>
+
+<p>You need to tell the <code>Router</code> to parse extensions else it won&#8217;t be able to process and render the <code>json</code> and <code>xml</code> URL extension</p>
+<div class='highlight'><pre><code class='php'><span class='cp'>&lt;?php</span>
+<span class='c1'>// app/Config/routes.php</span>
+<span class='nx'>Router</span><span class='o'>::</span><span class='na'>setExtensions</span><span class='p'>(</span><span class='k'>array</span><span class='p'>(</span><span class='s1'>&#39;json&#39;</span><span class='p'>,</span> <span class='s1'>&#39;xml&#39;</span><span class='p'>));</span>
+<span class='nx'>Router</span><span class='o'>::</span><span class='na'>parseExtensions</span><span class='p'>();</span>
+<span class='cp'>?&gt;</span><span class='x' />
+</code></pre></div>
+<h2 id='attach_it_on_the_fly_in_your_controller_'>Attach it on the fly in your controller <code>beforeFilter</code></h2>
+
+<p>This is recommended if you want to attach it only to specific controllers and actions</p>
+<div class='highlight'><pre><code class='php'><span class='cp'>&lt;?php</span>
+<span class='k'>class</span> <span class='nc'>SamplesController</span> <span class='k'>extends</span> <span class='nx'>AppController</span> <span class='p'>{</span>
+
+	<span class='k'>public</span> <span class='k'>function</span> <span class='nf'>beforeFilter</span><span class='p'>()</span> <span class='p'>{</span>
+		<span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>Crud</span><span class='o'>-&gt;</span><span class='na'>config</span><span class='p'>(</span><span class='s1'>&#39;listeners.api&#39;</span><span class='p'>,</span> <span class='s1'>&#39;Crud.Api&#39;</span><span class='p'>);</span>
+
+		<span class='k'>parent</span><span class='o'>::</span><span class='na'>beforeFilter</span><span class='p'>();</span>
+	<span class='p'>}</span>
+<span class='p'>}</span>
+<span class='cp'>?&gt;</span><span class='x' />
+</code></pre></div>
+<h2 id='attach_it_using_components_array'>Attach it using components array</h2>
+
+<p>This is recommended if you want to attach it to all controllers, application wide</p>
+<div class='highlight'><pre><code class='php'><span class='cp'>&lt;?php</span>
+<span class='k'>class</span> <span class='nc'>SamplesController</span> <span class='k'>extends</span> <span class='nx'>AppController</span> <span class='p'>{</span>
+
+	<span class='k'>public</span> <span class='nv'>$components</span> <span class='o'>=</span> <span class='p'>[</span>
+		<span class='s1'>&#39;RequestHandler&#39;</span><span class='p'>,</span>
+		<span class='s1'>&#39;Crud.Crud&#39;</span> <span class='o'>=&gt;</span> <span class='p'>[</span>
+			<span class='s1'>&#39;actions&#39;</span> <span class='o'>=&gt;</span> <span class='p'>[</span>
+				<span class='s1'>&#39;index&#39;</span><span class='p'>,</span>
+				<span class='s1'>&#39;view&#39;</span><span class='p'>,</span>
+			<span class='p'>],</span>
+			<span class='s1'>&#39;listeners&#39;</span> <span class='o'>=&gt;</span> <span class='p'>[</span>
+				<span class='s1'>&#39;api&#39;</span> <span class='o'>=&gt;</span> <span class='s1'>&#39;Crud.Api&#39;</span>
+			<span class='p'>]</span>
+		<span class='p'>];</span>
+
+<span class='p'>}</span>
+<span class='cp'>?&gt;</span><span class='x' />
+</code></pre></div>
+<h1 id='new_cakerequest_detectors'>New CakeRequest detectors</h1>
+
+<p>The Api Listener creates 3 new detectors in your <code>CakeRequest</code> object.</p>
+
+<h2 id='isjson'>is(&#8216;json&#8217;)</h2>
+
+<p>Checks if the extension of the request is &#8216;.json&#8217; or if the requester accepts json as part of the <code>HTTP accepts</code> header</p>
+
+<h2 id='isxml'>is(&#8216;xml&#8217;)</h2>
+
+<p>Checks if the extension of the request is &#8216;.xml&#8217; or if the requester accepts XML as part of the <code>HTTP accepts</code> header</p>
+
+<h2 id='isapi'>is(&#8216;api&#8217;)</h2>
+
+<p>Checking if the request is either <code>is(&#39;json&#39;)</code> or <code>is(&#39;xml&#39;)</code></p>
+
+<h1 id='default_behavior'>Default behavior</h1>
+
+<p>If the current request doesn&#8217;t evaluate <code>is(&#39;api&#39;)</code> to true, the listener won&#8217;t do anything at all. All it&#8217;s callbacks will simply return NULL and don&#8217;t get in your way.</p>
+
+<h1 id='exception_handler'>Exception handler</h1>
+
+<p>The Api listener overrides the <code>Exception.renderer</code> for <code>api</code> requests, so in case of an error, a standardized error will be returned, in either <code>json</code> or <code>xml</code> - according to the API request type.</p>
+
+<h1 id='request_type_enforcing'>Request type enforcing</h1>
+
+<p>The Api listener will try to enforce some best practices on how an API should behave.</p>
+
+<p>For a request to <code>index</code>, <code>view</code>, <code>admin_index</code> or <code>admin_view</code> the HTTP request type <strong>must</strong> be <code>HTTP GET</code> - else an <code>MethodNotAllowed</code> exception will be raised.</p>
+
+<p>For a request to <code>add</code>, <code>admin_add</code> the HTTP request type <strong>must</strong> be <code>HTTP POST</code> - else an <code>MethodNotAllowed</code> exception will be raised.</p>
+
+<p>For a request to <code>edit</code>, <code>admin_edit</code> the HTTP request type <strong>must</strong> be <code>HTTP PUT</code> - else an <code>MethodNotAllowed</code> exception will be raised.</p>
+
+<p>For a request to <code>delete</code>, <code>admin_delete</code> the HTTP request type <strong>must</strong> be <code>HTTP DELETE</code> - else an <code>MethodNotAllowed</code> exception will be raised.</p>
+
+<h1 id='response_format'>Response format</h1>
+
+<p>The default response format for both XML and JSON is two root keys, <code>success</code> and <code>data</code></p>
+
+<p>It&#8217;s possible to add your root keys simply by <a href='http://book.cakephp.org/2.0/en/views/json-and-xml-views.html#enabling-data-views-in-your-application'>expanding on the cakephp</a> <code>_serialize</code> key</p>
+
+<h2 id='json'>JSON</h2>
+<div class='highlight'><pre><code class='json'><span class='p'>{</span>
+	<span class='nt'>&quot;success&quot;</span><span class='p'>:</span> <span class='kc'>true</span><span class='p'>,</span>
+	<span class='nt'>&quot;data&quot;</span><span class='p'>:</span> <span class='p'>{}</span>
+<span class='p'>}</span>
+</code></pre></div>
+<h2 id='xml'>XML</h2>
+<div class='highlight'><pre><code class='xml'><span class='nt'>&lt;response&gt;</span>
+	<span class='nt'>&lt;success&gt;</span>1<span class='nt'>&lt;/success&gt;</span>
+	<span class='nt'>&lt;data&gt;&lt;/data&gt;</span>
+<span class='nt'>&lt;/response&gt;</span>
+</code></pre></div>
+<h2 id='exception_response_format'>Exception response format</h2>
+
+<p>The <code>data.exception</code> key is only returned if <code>debug</code> is &gt; 0</p>
+
+<p>The <code>data.queryLog</code> key is only included if <code>debug</code> is &gt; 1</p>
+
+<h3 id='json'>JSON</h3>
+<div class='highlight'><pre><code class='json'><span class='p'>{</span>
+	<span class='nt'>&quot;success&quot;</span><span class='p'>:</span> <span class='kc'>false</span><span class='p'>,</span>
+	<span class='nt'>&quot;data&quot;</span><span class='p'>:</span> <span class='p'>{</span>
+		<span class='nt'>&quot;code&quot;</span><span class='p'>:</span> <span class='mi'>500</span><span class='p'>,</span>
+		<span class='nt'>&quot;url&quot;</span><span class='p'>:</span> <span class='s2'>&quot;/some/url.json&quot;</span><span class='p'>,</span>
+		<span class='nt'>&quot;name&quot;</span><span class='p'>:</span> <span class='s2'>&quot;Some exception message&quot;</span><span class='p'>,</span>
+		<span class='nt'>&quot;exception&quot;</span><span class='p'>:</span> <span class='p'>{</span>
+			<span class='nt'>&quot;class&quot;</span><span class='p'>:</span> <span class='s2'>&quot;CakeException&quot;</span><span class='p'>,</span>
+			<span class='nt'>&quot;code&quot;</span><span class='p'>:</span> <span class='mi'>500</span><span class='p'>,</span>
+			<span class='nt'>&quot;message&quot;</span><span class='p'>:</span> <span class='s2'>&quot;Some exception message&quot;</span><span class='p'>,</span>
+			<span class='nt'>&quot;trace&quot;</span><span class='p'>:</span> <span class='p'>[]</span>
+		<span class='p'>},</span>
+		<span class='nt'>&quot;queryLog&quot;</span><span class='p'>:</span> <span class='p'>[</span> <span class='p'>]</span>
+	<span class='p'>}</span>
+<span class='p'>}</span>
+</code></pre></div>
+<h3 id='xml'>XML</h3>
+<div class='highlight'><pre><code class='xml'><span class='nt'>&lt;response&gt;</span>
+	<span class='nt'>&lt;success&gt;</span>0<span class='nt'>&lt;/success&gt;</span>
+	<span class='nt'>&lt;data&gt;</span>
+		<span class='nt'>&lt;code&gt;</span>500<span class='nt'>&lt;/code&gt;</span>
+		<span class='nt'>&lt;url&gt;</span>/some/url.json<span class='nt'>&lt;/url&gt;</span>
+		<span class='nt'>&lt;name&gt;</span>Some exception message<span class='nt'>&lt;/name&gt;</span>
+		<span class='nt'>&lt;exception&gt;</span>
+			<span class='nt'>&lt;class&gt;</span>CakeException<span class='nt'>&lt;/class&gt;</span>
+			<span class='nt'>&lt;code&gt;</span>500<span class='nt'>&lt;/code&gt;</span>
+			<span class='nt'>&lt;message&gt;</span>Some exception message<span class='nt'>&lt;/message&gt;</span>
+			<span class='nt'>&lt;trace&gt;&lt;/trace&gt;</span>
+			<span class='nt'>&lt;trace&gt;&lt;/trace&gt;</span>
+		<span class='nt'>&lt;/exception&gt;</span>
+		<span class='nt'>&lt;queryLog/&gt;</span>
+	<span class='nt'>&lt;/data&gt;</span>
+<span class='nt'>&lt;/response&gt;</span>
+</code></pre></div>
+<h2 id='http_post__put_add__edit'>HTTP POST / PUT (add / edit)</h2>
+
+<p><code>success</code> is based on the <code>event-&gt;subject-&gt;success</code> parameter from <code>Add</code> or <code>Edit</code> action</p>
+
+<p>If <code>success</code> is <code>false</code> a HTTP response code of <code>400</code> will be returned, and the <code>data</code> property will be the list of validation errors from the model.</p>
+
+<p>If <code>success</code> is <code>true</code> a HTTP response code of <code>201</code> will be returned if the model item was <strong>created</strong> else a <code>301</code> response code will be used.</p>
+
+<p>A success will always include a HTTP <code>Location</code> header to the <code>view</code> action with the existing or newly created id of the record</p>
+
+<h2 id='http_delete_delete'>HTTP DELETE (delete)</h2>
+
+<p><code>success</code> is based on the <code>event-&gt;subject-&gt;success</code> parameter from the <code>delete</code>action</p>
+
+<p><code>data</code> will always be <code>null</code></p>
+
+<p>No special HTTP codes is sent</p>
+
+<h2 id='not_found_view__edit__delete'>Not Found (view / edit / delete)</h2>
+
+<p>In case a <code>ìd</code> is provided to a crud action and the id does not exist in the database, a <code>404</code> <code>NotFoundException</code> will be thrown</p>
+
+<h2 id='invalid_id_view__edit__delete'>Invalid id (view / edit / delete)</h2>
+
+<p>In case a <code>ìd</code> is provided to a crud action and the id is not valid according to the database type a <code>500</code> <code>BadRequestException</code> will be thrown</p>
+        </div>
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <p>&copy; Christian Winther 2013</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script src="../js/toc.js"></script>
+    <!--
+    <script src="../js/jquery.js"></script>
+    <script src="../js/bootstrap-transition.js"></script>
+    <script src="../js/bootstrap-alert.js"></script>
+    <script src="../js/bootstrap-modal.js"></script>
+    <script src="../js/bootstrap-dropdown.js"></script>
+    <script src="../js/bootstrap-scrollspy.js"></script>
+    <script src="../js/bootstrap-tab.js"></script>
+    <script src="../js/bootstrap-tooltip.js"></script>
+    <script src="../js/bootstrap-popover.js"></script>
+    <script src="../js/bootstrap-button.js"></script>
+    <script src="../js/bootstrap-collapse.js"></script>
+    <script src="../js/bootstrap-carousel.js"></script>
+    <script src="../js/bootstrap-typeahead.js"></script>
+    -->
+  </body>
+</html>

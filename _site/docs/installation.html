@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Installation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="../css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+
+      @media (max-width: 980px) {
+        /* Enable use of floated navbar text */
+        .navbar-text.pull-right {
+          float: none;
+          padding-left: 5px;
+          padding-right: 5px;
+        }
+      }
+    </style>
+
+    <link href="../css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="../css/highlight.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">jippi/cakephp-crud</a>
+          <div class="nav-collapse collapse">
+            <p class="navbar-text pull-right">
+
+            </p>
+            <ul class="nav">
+              <li class="active"><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/index.html">Home</a></li>
+              <li><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/index.html">Documentation</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              <li class="nav-header">Getting started</li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/introduction.html">Introduction</a></li>
+              <li class="active"><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/installation.html">Installation</a></li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/configuration.html">Configuration</a></li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/conventions.html">Conventions</a></li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/events.html">Events</a></li>
+              <li class="nav-header">Actions</li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/custom-actions.html">Custom actions</a></li>
+              <li class="nav-header">Listeners</li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/related-data.html">Related Data</a></li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/translations.html">Translations</a></li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/api.html">Api</a></li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/api-field-filter.html">Api Field Lister</a></li>
+              <li class=""><a href="file://localhost/Users/cw/cakephp-crud/_site/docs/custom-listeners.html">Custom listeners</a></li>
+            </ul>
+          </div><!--/.well -->
+        </div>
+        <div class="span9">
+          <div class="toc hide">...toc....</div>
+
+          <h1 id='requirements'>Requirements</h1>
+
+<ul>
+<li>CakePHP 2.2</li>
+
+<li>PHP 5.3</li>
+</ul>
+
+<h1 id='installing'>Installing</h1>
+
+<h3 id='composer'>composer</h3>
+
+<p>The recommended installation method for this plugin is by using composer. Just add this to your <code>composer.json</code> configuration:</p>
+<div class='highlight'><pre><code class='json'><span class='p'>{</span>
+	<span class='nt'>&quot;extra&quot;</span><span class='p'>:</span> <span class='p'>{</span>
+		<span class='nt'>&quot;installer-paths&quot;</span><span class='p'>:</span> <span class='p'>{</span>
+			<span class='nt'>&quot;app/Plugin/Crud&quot;</span><span class='p'>:</span> <span class='p'>[</span><span class='s2'>&quot;jippi/cakephp-crud&quot;</span><span class='p'>]</span>
+		<span class='p'>}</span>
+	<span class='p'>},</span>
+	<span class='nt'>&quot;require&quot;</span> <span class='p'>:</span> <span class='p'>{</span>
+		<span class='nt'>&quot;jippi/cakephp-crud&quot;</span><span class='p'>:</span> <span class='s2'>&quot;master&quot;</span>
+	<span class='p'>}</span>
+<span class='p'>}</span>
+</code></pre></div>
+<h3 id='git_clone'>git clone</h3>
+
+<p>Alternatively you can just <code>git clone</code> the code into your application</p>
+
+<p><code>
+git clone git://github.com/jippi/cakephp-crud.git app/Plugin/Crud
+</code></p>
+
+<h3 id='git_submodule'>git submodule</h3>
+
+<p>Or add it as a git module, this is recommended over <code>git clone</code> since it&#8217;s easier to keep up to date with development that way</p>
+
+<p><code>
+git submodule add git://github.com/jippi/cakephp-crud.git app/Plugin/Crud
+</code></p>
+
+<h1 id='loading_and_installation'>Loading and installation</h1>
+
+<p>Add the following to your <code>app/Config/bootstrap.php</code></p>
+<div class='highlight'><pre><code class='php'><span class='cp'>&lt;?php</span>
+<span class='nx'>CakePlugin</span><span class='o'>::</span><span class='na'>load</span><span class='p'>(</span><span class='s1'>&#39;Crud&#39;</span><span class='p'>);</span>
+<span class='cp'>?&gt;</span><span class='x' />
+</code></pre></div>
+<p>In your <code>AppController</code> do <strong>one</strong> of the following to inject the required code for <code>CrudComponent</code> to work</p>
+
+<h2 id='_php_54'>&gt;= PHP 5.4</h2>
+
+<p>Add an App::uses in the top of you <code>AppController.php</code> file</p>
+<div class='highlight'><pre><code class='php'><span class='cp'>&lt;?php</span>
+<span class='nx'>App</span><span class='o'>::</span><span class='na'>uses</span><span class='p'>(</span><span class='s1'>&#39;CrudControllerTrait&#39;</span><span class='p'>,</span> <span class='s1'>&#39;Crud.Lib&#39;</span><span class='p'>);</span>
+<span class='cp'>?&gt;</span><span class='x' />
+</code></pre></div>
+<p>and add the <code>CrudControllerTrait</code> inside you <code>AppController</code> class</p>
+<div class='highlight'><pre><code class='php'><span class='cp'>&lt;?php</span>
+<span class='k'>class</span> <span class='nc'>AppController</span> <span class='k'>extends</span> <span class='nx'>Controller</span> <span class='p'>{</span>
+
+	<span class='k'>use</span> <span class='nx'>CrudControllerTrait</span><span class='p'>;</span>
+
+<span class='p'>}</span>
+<span class='cp'>?&gt;</span><span class='x' />
+</code></pre></div>
+<h2 id='_php_53'>&lt;= PHP 5.3</h2>
+<div class='highlight'><pre><code class='php'><span class='cp'>&lt;?php</span>
+<span class='sd'>/**</span>
+<span class='sd'> * Application wide controller</span>
+<span class='sd'> *</span>
+<span class='sd'> * @abstract</span>
+<span class='sd'> * @package App.Controller</span>
+<span class='sd'> */</span>
+<span class='k'>abstract</span> <span class='k'>class</span> <span class='nc'>AppController</span> <span class='k'>extends</span> <span class='nx'>Controller</span> <span class='p'>{</span>
+
+<span class='sd'>/**</span>
+<span class='sd'> * List of components which can handle action invocation</span>
+<span class='sd'> * @var array</span>
+<span class='sd'> */</span>
+	<span class='k'>public</span> <span class='nv'>$dispatchComponents</span> <span class='o'>=</span> <span class='k'>array</span><span class='p'>();</span>
+
+<span class='sd'>/**</span>
+<span class='sd'> * Dispatches the controller action. Checks that the action exists and isn&#39;t private.</span>
+<span class='sd'> *</span>
+<span class='sd'> * If Cake raises MissingActionException we attempt to execute Crud</span>
+<span class='sd'> *</span>
+<span class='sd'> * @param CakeRequest $request</span>
+<span class='sd'> * @return mixed The resulting response.</span>
+<span class='sd'> * @throws PrivateActionException When actions are not public or prefixed by _</span>
+<span class='sd'> * @throws MissingActionException When actions are not defined and scaffolding and CRUD is not enabled.</span>
+<span class='sd'> */</span>
+	<span class='k'>public</span> <span class='k'>function</span> <span class='nf'>invokeAction</span><span class='p'>(</span><span class='nx'>CakeRequest</span> <span class='nv'>$request</span><span class='p'>)</span> <span class='p'>{</span>
+		<span class='k'>try</span> <span class='p'>{</span>
+			<span class='k'>return</span> <span class='k'>parent</span><span class='o'>::</span><span class='na'>invokeAction</span><span class='p'>(</span><span class='nv'>$request</span><span class='p'>);</span>
+		<span class='p'>}</span> <span class='k'>catch</span> <span class='p'>(</span><span class='nx'>MissingActionException</span> <span class='nv'>$e</span><span class='p'>)</span> <span class='p'>{</span>
+			<span class='c1'>// Check for any dispatch components</span>
+			<span class='k'>if</span> <span class='p'>(</span><span class='o'>!</span><span class='k'>empty</span><span class='p'>(</span><span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>dispatchComponents</span><span class='p'>))</span> <span class='p'>{</span>
+				<span class='c1'>// Iterate dispatchComponents</span>
+				<span class='k'>foreach</span> <span class='p'>(</span><span class='nv'>$this</span><span class='o'>-&gt;</span><span class='na'>dispatchComponents</span> <span class='k'>as</span> <span class='nv'>$component</span> <span class='o'>=&gt;</span> <span class='nv'>$enabled</span><span class='p'>)</span> <span class='p'>{</span>
+					<span class='c1'>// Skip them if they aren&#39;t enabled</span>
+					<span class='k'>if</span> <span class='p'>(</span><span class='k'>empty</span><span class='p'>(</span><span class='nv'>$enabled</span><span class='p'>))</span> <span class='p'>{</span>
+						<span class='k'>continue</span><span class='p'>;</span>
+					<span class='p'>}</span>
+
+					<span class='c1'>// Skip if isActionMapped isn&#39;t defined in the Component</span>
+					<span class='k'>if</span> <span class='p'>(</span><span class='o'>!</span><span class='nb'>method_exists</span><span class='p'>(</span><span class='nv'>$this</span><span class='o'>-&gt;</span><span class='p'>{</span><span class='nv'>$component</span><span class='p'>},</span> <span class='s1'>&#39;isActionMapped&#39;</span><span class='p'>))</span> <span class='p'>{</span>
+						<span class='k'>continue</span><span class='p'>;</span>
+					<span class='p'>}</span>
+
+					<span class='c1'>// Skip if the action isn&#39;t mapped</span>
+					<span class='k'>if</span> <span class='p'>(</span><span class='o'>!</span><span class='nv'>$this</span><span class='o'>-&gt;</span><span class='p'>{</span><span class='nv'>$component</span><span class='p'>}</span><span class='o'>-&gt;</span><span class='na'>isActionMapped</span><span class='p'>(</span><span class='nv'>$request</span><span class='o'>-&gt;</span><span class='na'>params</span><span class='p'>[</span><span class='s1'>&#39;action&#39;</span><span class='p'>]))</span> <span class='p'>{</span>
+						<span class='k'>continue</span><span class='p'>;</span>
+					<span class='p'>}</span>
+
+					<span class='c1'>// Skip if executeAction isn&#39;t defined in the Component</span>
+					<span class='k'>if</span> <span class='p'>(</span><span class='o'>!</span><span class='nb'>method_exists</span><span class='p'>(</span><span class='nv'>$this</span><span class='o'>-&gt;</span><span class='p'>{</span><span class='nv'>$component</span><span class='p'>},</span> <span class='s1'>&#39;executeAction&#39;</span><span class='p'>))</span> <span class='p'>{</span>
+						<span class='k'>continue</span><span class='p'>;</span>
+					<span class='p'>}</span>
+
+					<span class='c1'>// Execute the callback, can return CakeResponse object</span>
+					<span class='k'>return</span> <span class='nv'>$this</span><span class='o'>-&gt;</span><span class='p'>{</span><span class='nv'>$component</span><span class='p'>}</span><span class='o'>-&gt;</span><span class='na'>executeAction</span><span class='p'>();</span>
+				<span class='p'>}</span>
+			<span class='p'>}</span>
+
+			<span class='c1'>// No additional callbacks, re-throw the normal Cake exception</span>
+			<span class='k'>throw</span> <span class='nv'>$e</span><span class='p'>;</span>
+		<span class='p'>}</span>
+	<span class='p'>}</span>
+<span class='p'>}</span>
+<span class='cp'>?&gt;</span><span class='x' />
+</code></pre></div>
+        </div>
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <p>&copy; Christian Winther 2013</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script src="../js/toc.js"></script>
+    <!--
+    <script src="../js/jquery.js"></script>
+    <script src="../js/bootstrap-transition.js"></script>
+    <script src="../js/bootstrap-alert.js"></script>
+    <script src="../js/bootstrap-modal.js"></script>
+    <script src="../js/bootstrap-dropdown.js"></script>
+    <script src="../js/bootstrap-scrollspy.js"></script>
+    <script src="../js/bootstrap-tab.js"></script>
+    <script src="../js/bootstrap-tooltip.js"></script>
+    <script src="../js/bootstrap-popover.js"></script>
+    <script src="../js/bootstrap-button.js"></script>
+    <script src="../js/bootstrap-collapse.js"></script>
+    <script src="../js/bootstrap-carousel.js"></script>
+    <script src="../js/bootstrap-typeahead.js"></script>
+    -->
+  </body>
+</html>
