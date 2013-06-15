@@ -3,8 +3,6 @@
 
 # Introduction
 
-The `Crud` plugin allow high reusability of the default Create (`add` action), Retrieve (`index` and `view` action), Update (`edit` action) and Delete (`delete` action`) (CRUD) in your controllers
-
 Crud was build to be [scaffolding](http://book.cakephp.org/2.0/en/controllers/scaffolding.html) on steroids, and allow developers to have enough flexibility to use it for both rapid prototyping and production applications, even on the same code base - saving you even more time.
 
 Usually the basic code for controller CRUD actions is very simple, and always look the same - this plugin will add the actions to your controller so you don't have to re-implement them over and over
@@ -20,6 +18,8 @@ Crud is relying heavily on Cake events, and it's possible to override, extend or
 Crud also provides build in features for JSON and XML [API](docs/08-api.md) for any action you have enabled through Crud - that means no more double work maintaining both a HTML frontend and a JSON and/or XML interface for your applications - saving you tons of time and having a leaner code base.
 
 Crud aims to not get in your way, and if it happens to get in your way, you can change the behavior you don't like very easily.
+
+Crud is [very fast to install](docs/02-installation.md), 2 minutes top.
 
 Crud is very flexible, and have tons of [configuration options](docs/03-configuration.md)
 
