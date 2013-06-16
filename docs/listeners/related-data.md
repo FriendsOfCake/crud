@@ -38,13 +38,7 @@ class DemoController extends AppController {
 	public $components = array(
 		// Enable CRUD actions
 		'Crud.Crud' => array(
-			'actions' => array(
-				'index',
-				'add',
-				'edit',
-				'view',
-				'delete'
-			),
+			'actions' => array('index', 'add',	'edit',	'view',	'delete'),
 			'defaults' => array(
 				'actions' => array(
 					'add' => array(
@@ -53,7 +47,6 @@ class DemoController extends AppController {
 					'edit' => array(
 						'relatedModels' => array('Tag', 'Cms.Page')
 					),
-					// As admin_edit is not listed here it will use defaults from edit action
 				)
 			)
 		)

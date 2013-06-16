@@ -7,9 +7,9 @@ layout: default
 
 Crud was build to be [scaffolding](http://book.cakephp.org/2.0/en/controllers/scaffolding.html) on steroids, and allow developers to have enough flexibility to use it for both rapid prototyping and production applications, even on the same code base - saving you even more time.
 
-Crud is [very fast to install](installation.html), 2 minutes top.
+Crud is [very fast to install]({{site.url}}/docs/installation.html), 2 minutes top.
 
-Crud is very flexible, and have tons of [configuration options](configuration.html)
+Crud is very flexible, and have tons of [configuration options]({{site.url}}/docs/configuration.html)
 
 Crud aims to not get in your way, and if it happens to get in your way, you can change the behavior you don't like very easily.
 
@@ -21,9 +21,9 @@ Crud does not have the same limitations as Cake's own scaffolding, which is 'the
 
 Less boilerplate code means less code to maintain, and less code to spend time unit testing.
 
-Crud allows you to both use your own views, from bake or hand-crafted, as well as only adding the code needed to fulfill your application logic, using [events](events.html). It is by default compatible with Cake's baked views.
+Crud allows you to both use your own views, from bake or hand-crafted, as well as only adding the code needed to fulfill your application logic, using [events]({{site.url}}/docs/events.html). It is by default compatible with Cake's baked views.
 
-Crud also provides build in features for JSON and XML [API](api.html) for any action you have enabled through Crud - that means no more double work maintaining both a HTML frontend and a JSON and/or XML interface for your applications - saving you tons of time and having a leaner code base.
+Crud also provides build in features for JSON and XML [API]({{site.url}}/docs/listeners/api.html) for any action you have enabled through Crud - that means no more double work maintaining both a HTML frontend and a JSON and/or XML interface for your applications - saving you tons of time and having a leaner code base.
 
 # Bugs
 

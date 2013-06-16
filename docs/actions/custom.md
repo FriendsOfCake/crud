@@ -9,7 +9,7 @@ A `CrudAction` is a class that handles a specific kind of crud action type (inde
 
 Each `CrudAction` have it's own unique configuration and events it uses.
 
-If you don't like how a specific `CrudAction` behaves, you can very easily replace it with your own - see the [custom actions documentation](20-custom-actions.md) for how to do this.
+If you don't like how a specific `CrudAction` behaves, you can very easily replace it with your own.
 
 # Custom Crud Actions
 

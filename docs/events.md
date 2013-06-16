@@ -180,7 +180,7 @@ class DemoController extends AppController {
 You can attach custom listener classes by simply passing them to the normal
 controller `EventManager`
 
-Creating custom listener classes is documented in the [custom listeners](30-custom-listeners.md) section
+Creating custom listener classes is documented in the [custom listeners]({{site.url}}/docs/listeners/custom.html) section
 
 {% highlight php %}
 <?php

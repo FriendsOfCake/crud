@@ -3,12 +3,11 @@ title: Translations
 layout: default
 ---
 
-## Language
+# Translations
 
-All of the messages used in the crud component can be overridden in one of two ways: by explicitly defining the messages
-to use in the controller's components array, or by using the standard translations functions of CakePHP.
+All of the messages used in the crud component can be overridden in one of two ways: by explicitly defining the messages to use in the controller's components array, or by using the standard translations functions of CakePHP.
 
-### Overriding individual messages
+# Overriding individual messages
 
 The below components array is populated with all of the messages used:
 
@@ -88,7 +87,7 @@ The `Crud.Crud.translations.name` key, if defined, overrides the model's name pr
 used to replace the `{name}` placeholder in the messages for each CRUD action. If it is not set,
 the model's name property is used.
 
-### Using translations
+# Using translations
 
 The strings indicated in the above code block are converted to complete sententces and then passed
 through Cake's translate functions](http://book.cakephp.org/2.0/en/core-libraries/internationalization-and-localization.html).
@@ -122,7 +121,6 @@ The contents of the file `app/Config/i18n_crud.php` is only calls to the transla
 
 {% highlight php %}
 <?php
-
 /**
  * Common CRUD Component translations
  */

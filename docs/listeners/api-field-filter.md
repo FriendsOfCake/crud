@@ -12,7 +12,7 @@ Example: `http://example.com/blogs.json?fields=Blog.id,Blog.name,Post.id,Post.na
 
 # Setup
 
-[This feature requires the Api listener to work](08-api.md)
+This feature requires the [Api listener]({{site.url}}/docs/listeners/api.html) to work
 
 ## Attach it on the fly in your controller `beforeFilter`
 
@@ -68,11 +68,13 @@ By default when the listener is enabled, it will refuse requests without a `fiel
 This behavior can be changed
 
 {% highlight php %}
+<?php
 // Allow request without ?fields=
 $this->Crud->listener('field_filter')->allowNoFilter(true);
 
 // Reject requests without ?fields=
 $this->Crud->listener('field_filter')->allowNoFilter(false);
+?>
 {% endhighlight %}
 
 ## Whitelist fields
@@ -84,7 +86,9 @@ If whitelisting exist, only those fields will be allowed to be selected.
 The fields must be in `Model.field` format
 
 {% highlight php %}
+<?php
 $this->Crud->listener('field_filter')->whitelistFields(array('Model.id', 'Model.name', 'Model.created'));
+?>
 {% endhighlight %}
 
 ## Blacklist fields
@@ -96,7 +100,9 @@ If blacklisting exist, the field will be removed from the field list if present 
 The fields must be in `Model.field` format
 
 {% highlight php %}
+<?php
 $this->Crud->listener('field_filter')->blacklistFields(array('Model.password', 'Model.auth_token', 'Model.created'));
+?>
 {% endhighlight %}
 
 ## Whitelist models
@@ -106,7 +112,9 @@ For any model relation automatically to be joined, it has to be whitelisted firs
 If no whitelist exist, no relations will be added automatically
 
 {% highlight php %}
+<?php
 $this->Crud->listener('field_filter')->whitelistModels(array('list', 'of', 'models'));
+?>
 {% endhighlight %}
 
 # Limitations
