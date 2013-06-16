@@ -297,6 +297,7 @@ class CrudComponent extends Component {
  */
 	public function mapAction($action, $type, $enable = true) {
 		$this->config('actions.' . $action, $type);
+		$this->_normalizeActionConfiguration();
 
 		if ($enable) {
 			$this->enable($action);
@@ -531,18 +532,32 @@ class CrudComponent extends Component {
  */
 	protected function _normalizeActionConfiguration() {
 		$this->settings['actions'] = Hash::normalize($this->settings['actions']);
-		foreach ($this->settings['actions'] as $action => $class) {
-			if (!empty($class)) {
+		foreach ($this->settings['actions'] as $action => $settings) {
+			if (is_array($settings) && !empty($settings['className'])) {
 				continue;
 			}
 
-			if (false !== strstr($action, '_')) {
-				list($prefix, $class) = explode('_', $action, 2);
-			} else {
-				$class = $action;
+			$className = null;
+			if (empty($settings)) {
+				$settings = array();
+			} elseif (is_string($settings)) {
+				$className = $settings;
+				$settings = array();
 			}
 
-			$this->settings['actions'][$action] = 'Crud.' . ucfirst($class);
+			if (empty($className)) {
+				if (false !== strstr($action, '_')) {
+					list($prefix, $className) = explode('_', $action, 2);
+					$className = 'Crud.' . ucfirst($className);
+				} else {
+					$className = 'Crud.' . ucfirst($action);
+				}
+			} elseif (false === strpos($className, '.')) {
+				$className = ucfirst($className);
+			}
+
+			$settings['className'] = $className;
+			$this->settings['actions'][$action] = $settings;
 		}
 	}
 
@@ -593,12 +608,13 @@ class CrudComponent extends Component {
  */
 	protected function _loadAction($name) {
 		if (!isset($this->_actionInstances[$name])) {
-			$actionClass = $this->config('actions.' . $name);
+			$settings = $this->config('actions.' . $name);
 
-			if (empty($actionClass)) {
+			if (empty($settings)) {
 				throw new CakeException(sprintf('Action "%s" has not been mapped', $name));
 			}
 
+			$actionClass = $settings['className'];
 			list($plugin, $class) = pluginSplit($actionClass, true);
 			$class = ucfirst($class);
 
@@ -613,7 +629,7 @@ class CrudComponent extends Component {
 			$class .= 'CrudAction';
 			App::uses($class, $plugin . 'Controller/Crud/Action');
 			$subject = $this->getSubject(array('action' => $name));
-			$this->_actionInstances[$name] = new $class($subject, $this->defaults('actions', $name));
+			$this->_actionInstances[$name] = new $class($subject, $settings);
 			$this->_eventManager->attach($this->_actionInstances[$name]);
 		}
 
