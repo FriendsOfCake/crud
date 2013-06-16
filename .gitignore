@@ -2,3 +2,4 @@ _local
 _site
 _source
 .DS_Store
+link-checker-crawled-pages.pstore
