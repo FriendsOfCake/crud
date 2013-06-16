@@ -13,7 +13,7 @@ This example is not meant to be a introduction to cakephp, but more an easy way 
 
 This is obviously a very simple example, and doesn't showcase all the features of Crud.
 
-Please dive into the [documentation]({{site.url}}/docs) for more information.
+Please dive into the [documentation]({{site.url}}/docs/) for more information.
 
 # Installation & Configuration
 
@@ -109,7 +109,7 @@ Router::parseExtensions('json', 'xml');
 
 ## Modify AppController
 
-We need to attach the [cakephp request handler](http://book.cakephp.org/2.0/en/core-libraries/components/request-handling.html) and the [crud api listener]({{site.url}}/docs/api.html) by modifying the `AppController::$components` array
+We need to attach the [cakephp request handler](http://book.cakephp.org/2.0/en/core-libraries/components/request-handling.html) and the [crud api listener]({{site.url}}/docs/listeners/api.html) by modifying the `AppController::$components` array
 
 {% highlight php %}
 <?php
