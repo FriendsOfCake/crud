@@ -355,6 +355,44 @@ class CrudComponent extends Component {
 	}
 
 /**
+ * Add a new listener to Crud
+ *
+ * This will not load or initialize the listener, only lazy-load it
+ *
+ * @param string $name
+ * @param string $class Normal cakephp plugin-dot annotation supported
+ * @param array $defaults Any default settings for a listener
+ * @return void
+ */
+	public function addListener($name, $class, $defaults = array()) {
+		$this->config(sprintf('listeners.%s', $name), $class);
+		$this->defaults('listener', $name, $defaults);
+	}
+
+/**
+ * Remove a listener from Crud
+ *
+ * This will also detach it from the EventManager if it's attached
+ *
+ * @param string $name
+ * @return boolean
+ */
+	public function removeListener($name) {
+		$listeners = $this->config('listeners');
+		if (!array_key_exists($name, $listeners)) {
+			return false;
+		}
+
+		if (isset($this->_listenerInstances[$name])) {
+			$this->_eventManager->detach($this->_listenerInstances[$name]);
+			unset($this->_listenerInstances[$name]);
+		}
+
+		unset($listeners[$name]);
+		$this->settings['listeners'] = $listeners;
+	}
+
+/**
  * Triggers a Crud event by creating a new subject and filling it with $data
  * if $data is an instance of CrudSubject it will be reused as the subject
  * object for this event.
@@ -528,6 +566,10 @@ class CrudComponent extends Component {
 	protected function _loadListener($name) {
 		if (!isset($this->_listenerInstances[$name])) {
 			$config = $this->config('listeners.' . $name);
+
+			if (empty($config)) {
+				throw new CakeException(sprintf('Listener "%s" is not configured', $name));
+			}
 
 			list($plugin, $class) = pluginSplit($config, true);
 			$class .= 'Listener';

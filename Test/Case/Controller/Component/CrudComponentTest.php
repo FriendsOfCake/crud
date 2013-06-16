@@ -1706,4 +1706,118 @@ class CrudComponentTest extends ControllerTestCase {
 		);
 		$this->assertEqual($result, $expected);
 	}
+
+/**
+ * Test that addListener works - without listener
+ * default config
+ *
+ * @return void
+ */
+	public function testAddListenerWithoutDefaults() {
+		$listeners = $this->Crud->config('listeners');
+		$expected = array(
+			'translations' => "Crud.Translations",
+			'relatedModels' => "Crud.RelatedModels"
+		);
+
+		$this->assertEqual($listeners, $expected);
+
+		$this->Crud->addListener('api', 'Crud.Api');
+
+		$listeners = $this->Crud->config('listeners');
+		$expected = array(
+			'translations' => "Crud.Translations",
+			'relatedModels' => "Crud.RelatedModels",
+			'api' => 'Crud.Api'
+		);
+		$this->assertEqual($listeners, $expected);
+
+		$this->assertEqual(array(), $this->Crud->defaults('listener', 'api'));
+	}
+
+/**
+ * Test that addListener works - with listener
+ * default config
+ *
+ * @return void
+ */
+	public function testAddListenerWithDefaults() {
+		$listeners = $this->Crud->config('listeners');
+		$expected = array(
+			'translations' => "Crud.Translations",
+			'relatedModels' => "Crud.RelatedModels"
+		);
+
+		$this->assertEqual($listeners, $expected);
+
+		$this->Crud->addListener('api', 'Crud.Api', array('test' => 1));
+
+		$listeners = $this->Crud->config('listeners');
+		$expected = array(
+			'translations' => "Crud.Translations",
+			'relatedModels' => "Crud.RelatedModels",
+			'api' => 'Crud.Api'
+		);
+		$this->assertEqual($listeners, $expected);
+
+		$this->assertEqual(array('test' => 1), $this->Crud->defaults('listener', 'api'));
+	}
+
+/**
+ * Test that removeLister works
+ *
+ * @return void
+ */
+	public function testRemoveListener() {
+		$listeners = $this->Crud->config('listeners');
+		$expected = array(
+			'translations' => "Crud.Translations",
+			'relatedModels' => "Crud.RelatedModels"
+		);
+
+		$this->assertEqual($listeners, $expected);
+
+		$this->Crud->removeListener('translations');
+
+		$listeners = $this->Crud->config('listeners');
+		$expected = array(
+			'relatedModels' => "Crud.RelatedModels",
+		);
+		$this->assertEqual($listeners, $expected);
+
+		// Should now throw an exception
+		$this->setExpectedException('CakeException', 'Listener "translations" is not configured');
+		$this->Crud->listener('translations');
+	}
+
+/**
+ * Test that removeLister works
+ *
+ * Also ensure that the listener is detached from EventManager
+ *
+ * @return void
+ */
+	public function testRemoveListenerAttached() {
+		$listeners = $this->Crud->config('listeners');
+		$expected = array(
+			'translations' => "Crud.Translations",
+			'relatedModels' => "Crud.RelatedModels"
+		);
+		$this->assertEqual($listeners, $expected);
+
+		// Make sure the listener is attached
+		$this->Crud->listener('translations');
+
+		// Remove it (including detach)
+		$this->Crud->removeListener('translations');
+
+		$listeners = $this->Crud->config('listeners');
+		$expected = array('relatedModels' => "Crud.RelatedModels");
+		$this->assertEqual($listeners, $expected);
+
+		// Should now throw an exception
+		$this->setExpectedException('CakeException', 'Listener "translations" is not configured');
+
+		$this->Crud->listener('translations');
+	}
 }
