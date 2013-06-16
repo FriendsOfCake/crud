@@ -24,8 +24,8 @@ class SamplesController extends AppController {
 
 	public function beforeFilter() {
 		// Also requires the API listener
-		$this->Crud->config('listeners.api', 'Crud.Api');
-		$this->Crud->config('listeners.field_filter', 'Crud.FieldFilter');
+		$this->Crud->addListener('api', 'Crud.Api');
+		$this->Crud->addListener('field_filter', 'Crud.FieldFilter');
 
 		parent::beforeFilter();
 	}

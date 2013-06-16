@@ -34,7 +34,7 @@ This is recommended if you want to attach it only to specific controllers and ac
 class SamplesController extends AppController {
 
 	public function beforeFilter() {
-		$this->Crud->config('listeners.api', 'Crud.Api');
+		$this->Crud->addListener('api', 'Crud.Api');
 
 		parent::beforeFilter();
 	}
