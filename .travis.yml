@@ -20,7 +20,6 @@ matrix:
     - php: 5.4
       env:
         - DB=mysql CAKE_VERSION=master PHPCS=1
-
   allow_failures:
     - php: 5.4
       env:
