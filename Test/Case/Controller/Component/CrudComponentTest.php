@@ -237,6 +237,38 @@ class CrudComponentTest extends ControllerTestCase {
 	}
 
 /**
+ * Test actions config normalization
+ *
+ * @return void
+ */
+	public function testActionsConfigNormalization() {
+		$Collection = $this->getMock('ComponentCollection');
+
+		$settings = array(
+			'actions' => array(
+				'index',
+				'admin_index',
+				'add' => 'Crud.Add',
+				'view' => array('viewVar' => 'beers'),
+				'edit' => array('viewVar' => 'beers', 'className' => 'MyPlugin.MyEdit'),
+				'foo' => 'index'
+			)
+		);
+		$Crud = new CrudComponent($Collection, $settings);
+		$Crud->initialize($this->controller);
+
+		$expected = array(
+			'index' => array('className' => 'Crud.Index'),
+			'admin_index' => array('className' => 'Crud.Index'),
+			'add' => array('className' => 'Crud.Add'),
+			'view' => array('viewVar' => 'beers', 'className' => 'Crud.View'),
+			'edit' => array('viewVar' => 'beers', 'className' => 'MyPlugin.MyEdit'),
+			'foo' => array('className' => 'Index')
+		);
+		$this->assertEqual($expected, $Crud->settings['actions']);
+	}
+
+/**
  * testEnable
  */
 	public function testEnable() {
