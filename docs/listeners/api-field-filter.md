@@ -3,7 +3,7 @@ title: Api Field Filter
 layout: default
 ---
 
-# Feed Filter Listener
+# Field Filter Listener
 
 Allow the requester to decide what fields and relations that should be
 returned by providing a `fields` GET argument with a comma separated list of fields.
