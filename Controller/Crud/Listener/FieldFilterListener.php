@@ -160,6 +160,7 @@ class FieldFilterListener extends CrudListener {
  *
  * @param CakeEvent $event
  * @return array
+ * @throws CakeException If fields not specified
  */
 	protected function _getFields(CakeEvent $event) {
 		$this->_relations = array();
