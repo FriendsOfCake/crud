@@ -237,11 +237,11 @@ class CrudComponentTest extends ControllerTestCase {
 	}
 
 /**
- * Test actions config normalization
+ * Test config normalization
  *
  * @return void
  */
-	public function testActionsConfigNormalization() {
+	public function testConfigNormalization() {
 		$Collection = $this->getMock('ComponentCollection');
 
 		$settings = array(
@@ -252,6 +252,11 @@ class CrudComponentTest extends ControllerTestCase {
 				'view' => array('viewVar' => 'beers'),
 				'edit' => array('viewVar' => 'beers', 'className' => 'MyPlugin.MyEdit'),
 				'foo' => 'index'
+			),
+			'listeners' => array(
+				'related' => 'Related',
+				'translations' => array('foo' => 'bar', 'className' => 'Crud.Translations'),
+				'mylistener' => 'MyPlugin.Mylistener'
 			)
 		);
 		$Crud = new CrudComponent($Collection, $settings);
@@ -266,6 +271,14 @@ class CrudComponentTest extends ControllerTestCase {
 			'foo' => array('className' => 'Index')
 		);
 		$this->assertEqual($expected, $Crud->settings['actions']);
+
+		$expected = array(
+			'related' => array('className' => 'Related'),
+			'relatedModels' => array('className' => 'Crud.RelatedModels'),
+			'translations' => array('foo' => 'bar', 'className' => 'Crud.Translations'),
+			'mylistener' => array('className' => 'MyPlugin.Mylistener')
+		);
+		$this->assertEqual($expected, $Crud->settings['listeners']);
 	}
 
 /**
