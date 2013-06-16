@@ -127,7 +127,7 @@ class CrudComponent extends Component {
 			return true;
 		}
 
-		$this->_normalizeActionConfiguration();
+		$this->_normalizeConfig();
 
 		$this->_controller = $controller;
 		$this->_controller->methods = array_keys(array_flip($this->_controller->methods) + array_flip(array_keys($this->settings['actions'])));
@@ -297,7 +297,7 @@ class CrudComponent extends Component {
  */
 	public function mapAction($action, $type, $enable = true) {
 		$this->config('actions.' . $action, $type);
-		$this->_normalizeActionConfiguration();
+		$this->_normalizeConfig('actions');
 
 		if ($enable) {
 			$this->enable($action);
@@ -366,8 +366,7 @@ class CrudComponent extends Component {
  * @return void
  */
 	public function addListener($name, $class, $defaults = array()) {
-		$this->config(sprintf('listeners.%s', $name), $class);
-		$this->defaults('listener', $name, $defaults);
+		$this->config(sprintf('listeners.%s', $name), array('className' => $class) + $defaults);
 	}
 
 /**
@@ -468,13 +467,18 @@ class CrudComponent extends Component {
 		}
 
 		$this->settings = Hash::insert($this->settings, $key, $value);
+		foreach (array('listeners', 'actions') as $type) {
+			if (strpos($key, $type . '.') === 0) {
+				$this->_normalizeConfig($type);
+			}
+		}
 		return $this;
 	}
 
 /**
  * Set or get defaults for listeners and actions
  *
- * @param string $type Can be anything, but 'listener' or 'action' is currently only used
+ * @param string $type Can be anything, but 'listeners' or 'actions' is currently only used
  * @param mixed $name The name of the $type - e.g. 'api', 'translations', 'relatedModels'
  * 	or an array ('api', 'translations'). If $name is an array, the $config will be applied
  * 	to each entry in the $name array.
@@ -488,13 +492,13 @@ class CrudComponent extends Component {
 			}
 
 			foreach ($name as $realName) {
-				$this->config(sprintf('defaults.%s.%s', $type, $realName), $config);
+				$this->config(sprintf('%s.%s', $type, $realName), $config);
 			}
 
 			return;
 		}
 
-		return $this->config(sprintf('defaults.%s.%s', $type, $name));
+		return $this->config(sprintf('%s.%s', $type, $name));
 	}
 
 /**
@@ -528,36 +532,48 @@ class CrudComponent extends Component {
  * try to compute it by exploding on action name on '_' and take the last chunk
  * as CrudClass identifier
  *
+ * @param mixed $types Class type(s)
  * @return void
+ * @throws CakeException If className is missing for listener
  */
-	protected function _normalizeActionConfiguration() {
-		$this->settings['actions'] = Hash::normalize($this->settings['actions']);
-		foreach ($this->settings['actions'] as $action => $settings) {
-			if (is_array($settings) && !empty($settings['className'])) {
-				continue;
-			}
+	protected function _normalizeConfig($types = null) {
+		if (!$types) {
+			$types = array('listeners', 'actions');
+		}
 
-			$className = null;
-			if (empty($settings)) {
-				$settings = array();
-			} elseif (is_string($settings)) {
-				$className = $settings;
-				$settings = array();
-			}
-
-			if (empty($className)) {
-				if (false !== strstr($action, '_')) {
-					list($prefix, $className) = explode('_', $action, 2);
-					$className = 'Crud.' . ucfirst($className);
-				} else {
-					$className = 'Crud.' . ucfirst($action);
+		foreach ((array)$types as $type) {
+			$this->settings[$type] = Hash::normalize($this->settings[$type]);
+			foreach ($this->settings[$type] as $name => $settings) {
+				if (is_array($settings) && !empty($settings['className'])) {
+					continue;
 				}
-			} elseif (false === strpos($className, '.')) {
-				$className = ucfirst($className);
-			}
 
-			$settings['className'] = $className;
-			$this->settings['actions'][$action] = $settings;
+				$className = null;
+				if (empty($settings)) {
+					$settings = array();
+				} elseif (is_string($settings)) {
+					$className = $settings;
+					$settings = array();
+				}
+
+				if ($type === 'actions') {
+					if (empty($className)) {
+						if (false !== strstr($name, '_')) {
+							list($prefix, $className) = explode('_', $name, 2);
+							$className = 'Crud.' . ucfirst($className);
+						} else {
+							$className = 'Crud.' . ucfirst($name);
+						}
+					} elseif (false === strpos($className, '.')) {
+						$className = ucfirst($className);
+					}
+				} elseif (empty($className)) {
+					throw new CakeException(sprintf('Missing "className" for %s', $name));
+				}
+
+				$settings['className'] = $className;
+				$this->settings[$type][$name] = $settings;
+			}
 		}
 	}
 
@@ -587,12 +603,12 @@ class CrudComponent extends Component {
 				throw new CakeException(sprintf('Listener "%s" is not configured', $name));
 			}
 
-			list($plugin, $class) = pluginSplit($config, true);
+			list($plugin, $class) = pluginSplit($config['className'], true);
 			$class .= 'Listener';
 			App::uses($class, $plugin . 'Controller/Crud/Listener');
 
 			$subject = $this->getSubject();
-			$this->_listenerInstances[$name] = new $class($subject, $this->defaults('listener', $name));
+			$this->_listenerInstances[$name] = new $class($subject, $config);
 			$this->_eventManager->attach($this->_listenerInstances[$name]);
 		}
 
@@ -608,14 +624,13 @@ class CrudComponent extends Component {
  */
 	protected function _loadAction($name) {
 		if (!isset($this->_actionInstances[$name])) {
-			$settings = $this->config('actions.' . $name);
+			$config = $this->config('actions.' . $name);
 
-			if (empty($settings)) {
+			if (empty($config)) {
 				throw new CakeException(sprintf('Action "%s" has not been mapped', $name));
 			}
 
-			$actionClass = $settings['className'];
-			list($plugin, $class) = pluginSplit($actionClass, true);
+			list($plugin, $class) = pluginSplit($config['className'], true);
 			$class = ucfirst($class);
 
 			if (in_array($class, array('Index', 'View', 'Add', 'Edit', 'Delete'))) {
@@ -629,7 +644,7 @@ class CrudComponent extends Component {
 			$class .= 'CrudAction';
 			App::uses($class, $plugin . 'Controller/Crud/Action');
 			$subject = $this->getSubject(array('action' => $name));
-			$this->_actionInstances[$name] = new $class($subject, $settings);
+			$this->_actionInstances[$name] = new $class($subject, $config);
 			$this->_eventManager->attach($this->_actionInstances[$name]);
 		}
 

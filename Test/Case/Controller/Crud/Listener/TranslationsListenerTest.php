@@ -259,7 +259,8 @@ class TranslationsListenerTest extends ControllerTestCase {
 			)
 		);
 
-		$this->Controller->Crud->defaults('listener', 'translations', array('name' => 'Thingy'));
+		$this->Controller->Crud->initialize($this->Controller);
+		$this->Controller->Crud->defaults('listeners', 'translations', array('name' => 'Thingy'));
 		$this->Controller->Session
 			->expects($this->once())
 			->method('setFlash')
@@ -292,7 +293,8 @@ class TranslationsListenerTest extends ControllerTestCase {
 			)
 		);
 
-		$this->Controller->Crud->defaults('listener', 'translations', array(
+		$this->Controller->Crud->initialize($this->Controller);
+		$this->Controller->Crud->defaults('listeners', 'translations', array(
 			'create' => array('success' => array('message' => "Yay!"))
 		));
 
