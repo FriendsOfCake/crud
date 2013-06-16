@@ -560,6 +560,7 @@ class CrudComponent extends Component {
 /**
  * Load a single event class attached to Crud
  *
+ * @throws CakeException
  * @param string $name
  * @return void
  */
