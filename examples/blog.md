@@ -43,6 +43,8 @@ class AppController extends Controller {
 
 # Basic tutorial
 
+This part covers the basic introductional blog example, nothing more, nothing less
+
 ## Post Controller
 
 Create `app/Controller/PostsController.php`
@@ -82,6 +84,14 @@ class Post extends AppModel {
 }
 ?>
 {% endhighlight %}
+
+## Done
+
+That was it.. the 15 minute blog tutorial done with Crud.
+
+Obviously there isn't a huge win in this small example, but read on and see how much awesome features Crud can provide.
+
+Read on and lets add a API layer on top of our new Blog.
 
 # Adding API
 
@@ -125,13 +135,19 @@ Reading posts in XML or JSON is as easy as using http://your-site-domain.com/pos
 
 ### JSON API
 
+By adding '.json' to your URLs CakePHP and Crud will make sure that all responses is in JSON
+
 #### List posts
+
+Simply request `/posts.json` and you will get a list of posts in JSON format.
 
 {% highlight text %}
 curl -I -X GET http://your-site-domain.com/posts.json
 {% endhighlight %}
 
 #### Add post
+
+Simply POST to `/posts/add.json`
 
 {% highlight text %}
 curl -I -X POST http://your-site-domain.com/posts.json \
@@ -159,6 +175,10 @@ Location: http://crud.local.bownty.net/posts/view/5
 
 #### Validation errors
 
+Example on how validation errors in JSON looks
+
+In this example, I left out the `body` field
+
 {% highlight text %}
 curl -I -X POST http://your-site-domain.com/posts.json \
 	-d title="My new JSON API blog post"
@@ -181,7 +201,11 @@ Set-Cookie: CAKEPHP=vevclsl2o6r7h4v7uon9j5tkd1; expires=Sun, 16-Jun-2013 16:25:1
 
 ### XML API
 
+By adding '.xml' to your URLs CakePHP and Crud will make sure that all responses is in XML
+
 #### List posts
+
+Simply request `/posts.xml` and you will get a list of posts in XML format.
 
 {% highlight text %}
 curl -I -X GET http://your-site-domain.com/posts.xml
@@ -189,8 +213,10 @@ curl -I -X GET http://your-site-domain.com/posts.xml
 
 #### Add post
 
+Simply POST to `/posts/add.xml`
+
 {% highlight text %}
-curl -I -X POST http://your-site-domain.com/posts.xml \
+curl -I -X POST http://your-site-domain.com/posts/add.xml \
 	-d title="My new XML API blog post" \
 	-d body="With an epic body"
 
@@ -215,6 +241,10 @@ Location: http://crud.local.bownty.net/posts/view/5
 {% endhighlight %}
 
 #### Validation errors
+
+Example on how validation errors in XML looks
+
+In this example, I left out the `body` field
 
 {% highlight text %}
 curl -I -X POST http://your-site-domain.com/posts.xml \
