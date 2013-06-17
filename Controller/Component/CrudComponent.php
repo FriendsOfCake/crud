@@ -291,12 +291,12 @@ class CrudComponent extends Component {
  * Map action to a internal request type
  *
  * @param string $action The Controller action to provide an implementation for
- * @param string $type one of the CRUD events (index, add, edit, delete, view)
+ * @param string|array $setting Settings array or one of the CRUD events (index, add, edit, delete, view)
  * @param boolean $enable Should the mapping be enabled right away?
  * @return void
  */
-	public function mapAction($action, $type, $enable = true) {
-		$this->config('actions.' . $action, $type);
+	public function mapAction($action, $settings, $enable = true) {
+		$this->config('actions.' . $action, $settings);
 		$this->_normalizeConfig('actions');
 
 		if ($enable) {
