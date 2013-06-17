@@ -881,7 +881,6 @@ class CrudComponentTest extends ControllerTestCase {
 		$self = $this;
 
 		$this->controller->getEventManager()->attach(function($event) use($self) {
-			$self->assertEquals(200, $event->subject->query['limit']);
 			$event->subject->query['limit'] = 2;
 		}, 'Crud.beforeRelatedModel');
 

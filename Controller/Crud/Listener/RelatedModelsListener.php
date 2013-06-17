@@ -54,8 +54,6 @@ class RelatedModelsListener extends CrudListener implements CakeEventListener {
 
 /**
  * Fetches related models' list and sets them to a variable for the view
- * Lists are limited buy default to 200 items. Should you need more, attach
- * an event listener for `beforeRelatedModel` event to modify the query
  *
  * @param CakeEvent
  * @return void
@@ -74,7 +72,7 @@ class RelatedModelsListener extends CrudListener implements CakeEventListener {
 			$model = $this->_getModelInstance($m, $event->subject->model, $controller, $associationType);
 
 			$isTree = false;
-			$query = array('limit' => 200);
+			$query = array();
 
 			if ($associationType == 'belongsTo') {
 				$query['conditions'] = $event->subject->model->belongsTo[$m]['conditions'];
