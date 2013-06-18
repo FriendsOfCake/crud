@@ -268,7 +268,7 @@ class CrudComponentTest extends ControllerTestCase {
 			'add' => array('className' => 'Crud.Add'),
 			'view' => array('viewVar' => 'beers', 'className' => 'Crud.View'),
 			'edit' => array('viewVar' => 'beers', 'className' => 'MyPlugin.MyEdit'),
-			'foo' => array('className' => 'Index')
+			'foo' => array('className' => 'Crud.Index')
 		);
 		$this->assertEquals($expected, $Crud->settings['actions']);
 

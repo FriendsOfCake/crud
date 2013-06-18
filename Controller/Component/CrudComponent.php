@@ -557,16 +557,7 @@ class CrudComponent extends Component {
 				}
 
 				if ($type === 'actions') {
-					if (empty($className)) {
-						if (false !== strstr($name, '_')) {
-							list($prefix, $className) = explode('_', $name, 2);
-							$className = 'Crud.' . ucfirst($className);
-						} else {
-							$className = 'Crud.' . ucfirst($name);
-						}
-					} elseif (false === strpos($className, '.')) {
-						$className = ucfirst($className);
-					}
+					$className = $this->_handlerClassName($name, $className);
 				} elseif (empty($className)) {
 					throw new CakeException(sprintf('Missing "className" for %s', $name));
 				}
@@ -575,6 +566,27 @@ class CrudComponent extends Component {
 				$this->settings[$type][$name] = $settings;
 			}
 		}
+	}
+
+/**
+ * Generate valid class name for action handler
+ *
+ * @param string $action
+ * @param string|null $className
+ * @return string Class name
+ */
+	protected function _handlerClassName($action, $className) {
+		if (empty($className)) {
+			if (false !== strstr($action, '_')) {
+				list($prefix, $className) = explode('_', $action, 2);
+				$className = 'Crud.' . ucfirst($className);
+			} else {
+				$className = 'Crud.' . ucfirst($action);
+			}
+		} elseif (false === strpos($className, '.')) {
+			$className = 'Crud.' . ucfirst($className);
+		}
+		return $className;
 	}
 
 /**
