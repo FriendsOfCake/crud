@@ -1704,7 +1704,7 @@ class CrudComponentTest extends ControllerTestCase {
 				'relatedModels' => 'Crud.RelatedModels'
 			)
 		);
-		$this->assertEquals($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -1734,7 +1734,7 @@ class CrudComponentTest extends ControllerTestCase {
 				'api' => 'Crud.Api'
 			)
 		);
-		$this->assertEquals($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -1763,7 +1763,7 @@ class CrudComponentTest extends ControllerTestCase {
 				'relatedModels' => 'Crud.RelatedModels'
 			)
 		);
-		$this->assertEquals($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
