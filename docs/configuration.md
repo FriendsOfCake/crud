@@ -34,6 +34,33 @@ class AppController extends Controller {
 ?>
 {% endhighlight %}
 
+If you wish to modify the default settings, simply pass in an array as `value` for each action array key
+
+{% highlight php %}
+<?php
+class AppController extends Controller {
+
+	public $components = array(
+		// Enable CRUD actions
+		'Crud.Crud' => array(
+			 // All actions but delete() will be implemented
+			'actions' => array(
+				// The controller action 'index' will still map to the IndexCrudAction
+				'index' => array('viewVar' => 'items')
+				// The controller action 'add' will map to the MyPlugin.Controller/Crud/Action/MyIndexCrudAction
+				'add' 	=> array('className' => 'MyPlugin.MyIndex')
+				// The controller action 'edit' will map to the EditCrudAction
+				'edit' 	=> 'Crud.edit',
+				// The controller action 'view' will map to the ViewCrudAction
+				'view' 	=> 'Crud.View'
+			)
+		)
+	);
+
+}
+?>
+{% endhighlight %}
+
 In the above example, if the `delete` action is called on __any__ controller (that doesn't implement it on their own), cake will raise it's normal `MissingActionException` error
 
 You can enable and disable Crud actions on the fly
@@ -370,6 +397,53 @@ The default for `add` and `edit` is `array('validate' => 'first', 'atomic' => tr
 public function beforeFilter() {
 	// saveOptions is the 2nd argument to saveAll()
 	$this->Crud->action('add')->saveOptions(array('atomic' => false));
+}
+?>
+{% endhighlight %}
+
+# Change the crud action class
+
+Please remember that the CrudAction class names `index`, `view`, `add`, `edit` and `delete` is reserved, and can only be used inside the Crud plugin.
+
+You own CrudActions can be called anything but these class names
+
+Please see the [custom crud action documentationn]({{site.url}}/docs/actions/custom.html) for more information
+
+## Through component configuration
+
+{% highlight php %}
+<?php
+class AppController extends Controller {
+
+	public $components = array(
+		// Enable CRUD actions
+		'Crud.Crud' => array(
+			 // All actions but delete() will be implemented
+			'actions' => array(
+				// The controller action 'add' will map to the MyPlugin.Controller/Crud/Action/MyIndexCrudAction
+				'index' => array('className' => 'MyPlugin.MyIndex')
+				// The controller action 'add' will map to the MyPlugin.Controller/Crud/Action/MyAddCrudAction
+				'add' 	=> array('className' => 'MyPlugin.MyAdd')
+				// The controller action 'add' will map to the MyPlugin.Controller/Crud/Action/MyEditCrudAction
+				'edit' 	=> array('className' => 'MyPlugin.MyEdit')
+				// The controller action 'add' will map to the MyPlugin.Controller/Crud/Action/MyViewCrudAction
+				'view' 	=> array('className' => 'MyPlugin.MyView')
+			)
+		)
+	);
+
+}
+?>
+{% endhighlight %}
+
+## On The fly
+
+{% highlight php %}
+<?php
+// This can be changed in beforeFilter and in a controller action
+public function beforeFilter() {
+	// saveOptions is the 2nd argument to saveAll()
+	$this->Crud->defaults('action', 'index', array('className' => 'MyPlugin.MyAction'));
 }
 ?>
 {% endhighlight %}

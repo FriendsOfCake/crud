@@ -38,16 +38,16 @@ class DemoController extends AppController {
 	public $components = array(
 		// Enable CRUD actions
 		'Crud.Crud' => array(
-			'actions' => array('index', 'add',	'edit',	'view',	'delete'),
-			'defaults' => array(
-				'actions' => array(
-					'add' => array(
-						'relatedModels' => array('Author')
-					),
-					'edit' => array(
-						'relatedModels' => array('Tag', 'Cms.Page')
-					),
-				)
+			'actions' => array(
+				'index',
+				'add' => array(
+					'relatedModels' => array('Author')
+				),
+				'edit' => array(
+					'relatedModels' => array('Tag', 'Cms.Page')
+				),
+				'view',
+				'delete'
 			)
 		)
 	);

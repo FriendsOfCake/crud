@@ -25,7 +25,7 @@ class SamplesController extends AppController {
 	public function beforeFilter() {
 		// Also requires the API listener
 		$this->Crud->addListener('api', 'Crud.Api');
-		$this->Crud->addListener('field_filter', 'Crud.FieldFilter');
+		$this->Crud->addListener('fieldFilter', 'Crud.FieldFilter');
 
 		parent::beforeFilter();
 	}
@@ -51,7 +51,7 @@ class SamplesController extends AppController {
 			'listeners' => [
 				// Also requires the API listener
 				'api' => 'Crud.Api',
-				'field_filter', 'Crud.FieldFilter'
+				'fieldFilter', 'Crud.FieldFilter'
 			]
 		];
 
@@ -70,10 +70,10 @@ This behavior can be changed
 {% highlight php %}
 <?php
 // Allow request without ?fields=
-$this->Crud->listener('field_filter')->allowNoFilter(true);
+$this->Crud->listener('fieldFilter')->allowNoFilter(true);
 
 // Reject requests without ?fields=
-$this->Crud->listener('field_filter')->allowNoFilter(false);
+$this->Crud->listener('fieldFilter')->allowNoFilter(false);
 ?>
 {% endhighlight %}
 
@@ -87,7 +87,7 @@ The fields must be in `Model.field` format
 
 {% highlight php %}
 <?php
-$this->Crud->listener('field_filter')->whitelistFields(array('Model.id', 'Model.name', 'Model.created'));
+$this->Crud->listener('fieldFilter')->whitelistFields(array('Model.id', 'Model.name', 'Model.created'));
 ?>
 {% endhighlight %}
 
@@ -101,7 +101,7 @@ The fields must be in `Model.field` format
 
 {% highlight php %}
 <?php
-$this->Crud->listener('field_filter')->blacklistFields(array('Model.password', 'Model.auth_token', 'Model.created'));
+$this->Crud->listener('fieldFilter')->blacklistFields(array('Model.password', 'Model.auth_token', 'Model.created'));
 ?>
 {% endhighlight %}
 
@@ -113,7 +113,7 @@ If no whitelist exist, no relations will be added automatically
 
 {% highlight php %}
 <?php
-$this->Crud->listener('field_filter')->whitelistModels(array('list', 'of', 'models'));
+$this->Crud->listener('fieldFilter')->whitelistModels(array('list', 'of', 'models'));
 ?>
 {% endhighlight %}
 
