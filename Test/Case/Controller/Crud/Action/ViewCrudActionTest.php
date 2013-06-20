@@ -313,14 +313,8 @@ class ViewCrudActionTest extends CakeTestCase {
 			->method('_validateId')
 			->with(1)
 			->will($this->returnValue(true));
-		$Action
-			->expects($this->once())
-			->method('setFlash')
-			->with('find.error');
-		$Action
-			->expects($this->once())
-			->method('_redirect')
-			->with(new CrudSubject(array('item' => $data)), array('action' => 'index'));
+
+		$this->setExpectedException('NotFoundException');
 
 		$Action->handle($CrudSubject);
 	}

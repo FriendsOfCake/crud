@@ -41,6 +41,8 @@ class DeleteCrudAction extends CrudAction {
  *
  * @param string $id
  * @return void
+ * @throws NotFoundException If record not found
+ * @throws BadRequestException If secure delete enabled and not a HTTP DELETE request
  */
 	protected function _handle($id = null) {
 		if (empty($id)) {
@@ -49,10 +51,12 @@ class DeleteCrudAction extends CrudAction {
 
 		$this->_validateId($id);
 
-		if (!$this->_request->is('delete') && !($this->_request->is('post') && false === $this->config('secureDelete'))) {
+		if (!$this->_request->is('delete') &&
+			!($this->_request->is('post') &&
+			false === $this->config('secureDelete'))
+		) {
 			$subject = $this->_crud->getSubject(compact('id'));
-			$this->setFlash('invalid_http_request.error');
-			return $this->_redirect($subject, $this->_controller->referer(array('action' => 'index')));
+			throw new BadRequestException('invalid_http_request.error');
 		}
 
 		$query = array();
@@ -65,8 +69,7 @@ class DeleteCrudAction extends CrudAction {
 		$count = $this->_model->find($subject->findMethod, $query);
 		if (empty($count)) {
 			$subject = $this->_crud->trigger('recordNotFound', compact('id'));
-			$this->setFlash('find.error');
-			return $this->_redirect($subject, $this->_controller->referer(array('action' => 'index')));
+			throw new NotFoundException('find.error');
 		}
 
 		$subject = $this->_crud->trigger('beforeDelete', compact('id'));

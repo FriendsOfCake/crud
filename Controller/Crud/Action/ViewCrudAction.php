@@ -60,6 +60,7 @@ class ViewCrudAction extends CrudAction {
  *
  * @param string $id
  * @return void
+ * @throws NotFoundException If record not found
  */
 	protected function _handle($id = null) {
 		if (empty($id)) {
@@ -81,8 +82,7 @@ class ViewCrudAction extends CrudAction {
 
 		if (empty($item)) {
 			$subject = $this->_crud->trigger('recordNotFound', compact('id'));
-			$this->setFlash('find.error');
-			return $this->_redirect($subject, array('action' => 'index'));
+			throw new NotFoundException('find.error');
 		}
 
 		$subject = $this->_crud->trigger('afterFind', compact('id', 'item'));
