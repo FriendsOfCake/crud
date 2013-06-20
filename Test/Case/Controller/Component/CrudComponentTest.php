@@ -476,7 +476,12 @@ class CrudComponentTest extends ControllerTestCase {
 
 		$this->Crud->settings['validateId'] = 'notUuid';
 		$id = 42;
-		$this->Crud->executeAction('delete', array($id));
+
+		try {
+			$this->Crud->executeAction('delete', array($id));
+		} catch (Exception $e) {
+			$this->assertTrue($e instanceof NotFoundException);
+		}
 
 		$count = $this->model->find('count');
 		$this->assertSame(3, $count);
@@ -555,7 +560,11 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->Crud->settings['validateId'] = 'integer';
 		$id = 1;
 
-		$this->Crud->executeAction('delete', array($id));
+		try {
+			$this->Crud->executeAction('delete', array($id));
+		} catch (Exception $e) {
+			$this->assertTrue($e instanceof BadRequestException);
+		}
 
 		$count = $this->model->find('count', array('conditions' => array('id' => $id)));
 		$this->assertSame(1, $count);
@@ -566,9 +575,6 @@ class CrudComponentTest extends ControllerTestCase {
 
 		$index = array_search('Crud.afterDelete', $events);
 		$this->assertSame(false, $index, "There was a Crud.beforeDelete event triggered");
-
-		$index = array_search('Crud.setFlash', $events);
-		$this->assertNotSame(false, $index, "There was no Crud.afterDelete event triggered");
 	}
 
 /**
@@ -905,7 +911,12 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
 		$this->Crud->action('delete')->config('relatedModels', array('Tag'));
 
-		$this->Crud->executeAction('delete', array('1'));
+		try {
+			$this->Crud->executeAction('delete', array('1'));
+		} catch (Exception $e) {
+			$this->assertTrue($e instanceof BadRequestException);
+		}
+
 		$vars = $this->controller->viewVars;
 		$this->assertFalse(isset($vars['tags']));
 		$this->assertFalse(isset($vars['authors']));
@@ -983,7 +994,7 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->Crud->action('edit')->config('relatedModels', false);
 		$this->assertEquals(array(), $this->Crud->listener('relatedModels')->models('edit'));
 
-		$this->Crud->executeAction('edit');
+		$this->Crud->executeAction('edit', array(1));
 		$vars = $this->controller->viewVars;
 		$this->assertTrue(empty($vars['tags']));
 		$this->assertTrue(empty($vars['authors']));
@@ -1218,11 +1229,14 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testCustomFindEditUnpublished() {
-		$this->controller->expects($this->once())->method('redirect');
-
 		$this->Crud->settings['validateId'] = 'integer';
 		$this->Crud->findMethod('edit', 'firstUnpublished');
-		$this->Crud->executeAction('edit', array(2));
+
+		try {
+			$this->Crud->executeAction('edit', array(2));
+		} catch (Exception $e) {
+			$this->assertTrue($e instanceof NotFoundException);
+		}
 
 		$this->assertTrue(empty($this->request->data));
 
@@ -1276,7 +1290,12 @@ class CrudComponentTest extends ControllerTestCase {
 
 		$this->Crud->settings['validateId'] = 'integer';
 		$this->Crud->findMethod('delete', 'firstUnpublished');
-		$this->Crud->executeAction('delete', array(2));
+
+		try {
+			$this->Crud->executeAction('delete', array(2));
+		} catch (Exception $e) {
+			$this->assertTrue($e instanceof NotFoundException);
+		}
 
 		$events = CakeEventManager::instance()->getLog();
 
@@ -1323,10 +1342,14 @@ class CrudComponentTest extends ControllerTestCase {
 	public function testCustomFindViewUnpublished() {
 		$this->Crud->settings['validateId'] = 'integer';
 		$this->Crud->findMethod('view', 'firstUnpublished');
-		$this->Crud->executeAction('view', array(2));
+
+		try {
+			$this->Crud->executeAction('view', array(2));
+		} catch (Exception $e) {
+			$this->assertTrue($e instanceof NotFoundException);
+		}
 
 		$events = CakeEventManager::instance()->getLog();
-
 		$index = array_search('Crud.recordNotFound', $events);
 		$this->assertNotSame(false, $index, "There was no Crud.recordNotFound event triggered");
 	}

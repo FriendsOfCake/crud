@@ -345,7 +345,7 @@ abstract class CrudAction implements CakeEventListener {
  */
 	protected function _getResourceName() {
 		if (empty($this->_settings['name'])) {
-			$this->_settings['name']	= Inflector::humanize($this->_modelClass);
+			$this->_settings['name'] = Inflector::humanize($this->_modelClass);
 		}
 
 		return $this->_settings['name'];
@@ -361,6 +361,7 @@ abstract class CrudAction implements CakeEventListener {
  *
  * @param mixed $id
  * @return boolean
+ * @throws BadRequestException If id is invalid
  */
 	protected function _validateId($id) {
 		$type = $this->config('validateId');
@@ -382,9 +383,7 @@ abstract class CrudAction implements CakeEventListener {
 		}
 
 		$subject = $this->_crud->trigger('invalidId', compact('id'));
-		$this->setFlash('invalid_id.error');
-		$this->_redirect($subject, $this->_controller->referer());
-		return false;
+		throw new BadRequestException('invalid_id.error');
 	}
 
 /**
