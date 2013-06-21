@@ -515,17 +515,11 @@ class EditCrudActionTest extends CakeTestCase {
 			->will($this->returnValue(true));
 		$Action
 			->expects($this->once())
-			->method('setFlash')
-			->with('find.error');
-		$Action
-			->expects($this->once())
-			->method('_redirect')
-			->with($CrudSubject, array('action' => 'index'));
-		$Action
-			->expects($this->once())
 			->method('_getFindMethod')
 			->with('first')
 			->will($this->returnValue('first'));
+
+		$this->setExpectedException('NotFoundException');
 
 		$Action->handle($CrudSubject);
 	}

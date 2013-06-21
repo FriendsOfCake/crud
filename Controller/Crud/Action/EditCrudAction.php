@@ -65,6 +65,7 @@ class EditCrudAction extends CrudAction {
  *
  * @param string $id
  * @return void
+ * @throws NotFoundException If record not found
  */
 	protected function _handle($id = null) {
 		if (empty($id)) {
@@ -95,8 +96,7 @@ class EditCrudAction extends CrudAction {
 			$this->_request->data = $this->_model->find($subject->findMethod, $query);
 			if (empty($this->_request->data)) {
 				$subject = $this->_crud->trigger('recordNotFound', compact('id'));
-				$this->setFlash('find.error');
-				return $this->_redirect($subject, array('action' => 'index'));
+				throw new NotFoundException('find.error');
 			}
 
 			$this->_crud->trigger('afterFind', compact('id'));
