@@ -56,11 +56,13 @@ class ScaffoldListener extends CrudListener {
 			'modelClass', 'primaryKey', 'displayField', 'singularVar', 'pluralVar',
 			'singularHumanName', 'pluralHumanName', 'scaffoldFields', 'associations'
 		));
+
 		$controller->set('title_for_layout', $title);
 
 		if ($controller->viewClass) {
 			$controller->viewClass = 'Scaffold';
 		}
+
 	}
 
 /**
@@ -82,9 +84,9 @@ class ScaffoldListener extends CrudListener {
 			$assocData = $assocDataAll[$assocKey];
 			$associatedModel = $model->{$assocKey};
 
-			$associations[$type][$assocKey]['primaryKey'] =	$associatedModel->primaryKey;
-			$associations[$type][$assocKey]['displayField'] =	$associatedModel->displayField;
-			$associations[$type][$assocKey]['foreignKey'] =	$assocData['foreignKey'];
+			$associations[$type][$assocKey]['primaryKey'] = $associatedModel->primaryKey;
+			$associations[$type][$assocKey]['displayField'] = $associatedModel->displayField;
+			$associations[$type][$assocKey]['foreignKey'] = $assocData['foreignKey'];
 
 			list($plugin, $modelClass) = pluginSplit($assocData['className']);
 
@@ -93,7 +95,7 @@ class ScaffoldListener extends CrudListener {
 			}
 
 			$associations[$type][$assocKey]['plugin'] = $plugin;
-			$associations[$type][$assocKey]['controller'] =	Inflector::pluralize(Inflector::underscore($modelClass));
+			$associations[$type][$assocKey]['controller'] = Inflector::pluralize(Inflector::underscore($modelClass));
 
 			if ($type === 'hasAndBelongsToMany') {
 				$associations[$type][$assocKey]['with'] = $assocData['with'];

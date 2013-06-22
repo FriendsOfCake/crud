@@ -21,8 +21,21 @@ class ScaffoldListenerTest extends CakeTestCase {
  *
  * @var array
  */
-	public $fixtures = array('core.article', 'core.user', 'core.comment', 'core.join_thing', 'core.tag', 'core.attachment');
+	public $fixtures = array(
+		'core.article',
+		'core.user',
+		'core.comment',
+		'core.join_thing',
+		'core.tag',
+		'core.attachment'
+	);
 
+/**
+ * Data used for beforeRenderProvider to setup
+ * the tests and environments
+ *
+ * @var array
+ */
 	protected $_beforeRenderTests = array(
 		// Index (Article)
 		array(
@@ -233,6 +246,14 @@ class ScaffoldListenerTest extends CakeTestCase {
 		)
 	);
 
+/**
+ * Data provider for testBeforeRender
+ *
+ * Setup the required classes and their
+ * relations
+ *
+ * @return array
+ */
 	public function beforeRenderProvider() {
 		$data = array();
 
@@ -255,7 +276,7 @@ class ScaffoldListenerTest extends CakeTestCase {
 
 			$Listener = $this->getMock('ScaffoldListener', null, array($Subject));
 
-			$data[] = array($Listener, $Event, $Subject, $test['expected']);
+			$data[] = array($Listener, $Subject, $test['expected']);
 		}
 
 		return $data;
@@ -267,43 +288,23 @@ class ScaffoldListenerTest extends CakeTestCase {
  * @dataProvider beforeRenderProvider
  * @return void
  */
-	public function testScaffoldVariableSetting($listener, $event, $subject, $expected) {
+	public function testBeforeRender($listener, $subject, $expected) {
 		$listener->beforeRender($event);
 		$this->assertEqual($subject->controller->viewVars, $expected);
+	}
 
-		return;
-		$params = array(
-			'plugin' => null,
-			'pass' => array(),
-			'form' => array(),
-			'named' => array(),
-			'url' => array('url' => 'admin/scaffold_mock/edit'),
-			'controller' => 'scaffold_mock',
-			'action' => 'admin_edit',
-			'admin' => true,
-		);
-		$this->Controller->request->base = '';
-		$this->Controller->request->webroot = '/';
-		$this->Controller->request->here = '/admin/scaffold_mock/edit';
-		$this->Controller->request->addParams($params);
+/**
+ * Test that implementedEvents return the correct events
+ *
+ * @return void
+ */
+	public function testImplementedEvents() {
+		$Subject = new CrudSubject();
+		$Listener = $this->getMock('ScaffoldListener', null, array($Subject));
 
-		//set router.
-		Router::setRequestInfo($this->Controller->request);
-
-		$this->Controller->constructClasses();
-		$Scaffold = new TestScaffoldMock($this->Controller, $this->Controller->request);
-		$result = $Scaffold->controller->viewVars;
-
-		$this->assertEquals('Scaffold :: Admin Edit :: Scaffold Mock', $result['title_for_layout']);
-		$this->assertEquals('Scaffold Mock', $result['singularHumanName']);
-		$this->assertEquals('Scaffold Mock', $result['pluralHumanName']);
-		$this->assertEquals('ScaffoldMock', $result['modelClass']);
-		$this->assertEquals('id', $result['primaryKey']);
-		$this->assertEquals('title', $result['displayField']);
-		$this->assertEquals('scaffoldMock', $result['singularVar']);
-		$this->assertEquals('scaffoldMock', $result['pluralVar']);
-		$this->assertEquals(array('id', 'user_id', 'title', 'body', 'published', 'created', 'updated'), $result['scaffoldFields']);
-		$this->assertArrayHasKey('plugin', $result['associations']['belongsTo']['User']);
+		$expected = array('Crud.beforeRender' => 'beforeRender');
+		$result = $Listener->implementedEvents();
+		$this->assertEqual($result, $expected);
 	}
 
 }
