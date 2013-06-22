@@ -42,4 +42,5 @@ class PostsTagFixture extends CakeTestFixture {
 	public $records = array(
 
 	);
+
 }

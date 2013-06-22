@@ -43,38 +43,38 @@ class ScaffoldListenerTest extends CakeTestCase {
 			'action' => 'index',
 			'controller' => 'ArticlesController',
 			'expected' => array(
-		    'title_for_layout' => 'Scaffold :: Index :: ',
-  			'modelClass' => 'Article',
-  			'primaryKey' => 'id',
-  			'displayField' => 'title',
-  			'singularVar' => 'article',
-  			'pluralVar' => 'articlesController',
-  			'singularHumanName' => 'Article',
-  			'pluralHumanName' => 'Articles Controller',
-  			'scaffoldFields' => array(
-          'id', 'user_id', 'title', 'body', 'published', 'created', 'updated'
-        ),
-  			'associations' => array(
-          'belongsTo' => array(
+				'title_for_layout' => 'Scaffold :: Index :: ',
+				'modelClass' => 'Article',
+				'primaryKey' => 'id',
+				'displayField' => 'title',
+				'singularVar' => 'article',
+				'pluralVar' => 'articlesController',
+				'singularHumanName' => 'Article',
+				'pluralHumanName' => 'Articles Controller',
+				'scaffoldFields' => array(
+					'id', 'user_id', 'title', 'body', 'published', 'created', 'updated'
+				),
+				'associations' => array(
+					'belongsTo' => array(
 						'User' => array(
 							'primaryKey' => 'id',
-              'displayField' => 'id',
+							'displayField' => 'id',
 							'foreignKey' => 'user_id',
 							'plugin' => null,
 							'controller' => 'users'
 						),
 					),
-          'hasMany' => array(
-          	'Comment' => array(
+					'hasMany' => array(
+						'Comment' => array(
 							'primaryKey' => 'id',
 							'displayField' => 'id',
 							'foreignKey' => 'article_id',
 							'plugin' => null,
 							'controller' => 'comments'
 						)
-          ),
-          'hasAndBelongsToMany' => array(
-          	'Tag' => array(
+					),
+					'hasAndBelongsToMany' => array(
+						'Tag' => array(
 							'primaryKey' => 'id',
 							'displayField' => 'id',
 							'foreignKey' => 'article_id',
@@ -82,8 +82,8 @@ class ScaffoldListenerTest extends CakeTestCase {
 							'controller' => 'tags',
 							'with' => 'ArticlesTag',
 						)
-          )
-      	)
+					)
+				)
 			)
 		),
 		// Add (Article)
@@ -92,38 +92,38 @@ class ScaffoldListenerTest extends CakeTestCase {
 			'action' => 'add',
 			'controller' => 'ArticlesController',
 			'expected' => array(
-		    'title_for_layout' => 'Scaffold :: Add :: ',
-  			'modelClass' => 'Article',
-  			'primaryKey' => 'id',
-  			'displayField' => 'title',
-  			'singularVar' => 'article',
-  			'pluralVar' => 'articlesController',
-  			'singularHumanName' => 'Article',
-  			'pluralHumanName' => 'Articles Controller',
-  			'scaffoldFields' => array(
-          'id', 'user_id', 'title', 'body', 'published', 'created', 'updated'
-        ),
-  			'associations' => array(
-          'belongsTo' => array(
+				'title_for_layout' => 'Scaffold :: Add :: ',
+				'modelClass' => 'Article',
+				'primaryKey' => 'id',
+				'displayField' => 'title',
+				'singularVar' => 'article',
+				'pluralVar' => 'articlesController',
+				'singularHumanName' => 'Article',
+				'pluralHumanName' => 'Articles Controller',
+				'scaffoldFields' => array(
+					'id', 'user_id', 'title', 'body', 'published', 'created', 'updated'
+				),
+				'associations' => array(
+					'belongsTo' => array(
 						'User' => array(
 							'primaryKey' => 'id',
-              'displayField' => 'id',
+							'displayField' => 'id',
 							'foreignKey' => 'user_id',
 							'plugin' => null,
 							'controller' => 'users'
 						),
 					),
-          'hasMany' => array(
-          	'Comment' => array(
+					'hasMany' => array(
+						'Comment' => array(
 							'primaryKey' => 'id',
 							'displayField' => 'id',
 							'foreignKey' => 'article_id',
 							'plugin' => null,
 							'controller' => 'comments'
 						)
-          ),
-          'hasAndBelongsToMany' => array(
-          	'Tag' => array(
+					),
+					'hasAndBelongsToMany' => array(
+						'Tag' => array(
 							'primaryKey' => 'id',
 							'displayField' => 'id',
 							'foreignKey' => 'article_id',
@@ -131,8 +131,8 @@ class ScaffoldListenerTest extends CakeTestCase {
 							'controller' => 'tags',
 							'with' => 'ArticlesTag',
 						)
-          )
-      	)
+					)
+				)
 			)
 		),
 		// Edit (Article)
@@ -141,38 +141,38 @@ class ScaffoldListenerTest extends CakeTestCase {
 			'action' => 'edit',
 			'controller' => 'ArticlesController',
 			'expected' => array(
-		    'title_for_layout' => 'Scaffold :: Edit :: ',
-  			'modelClass' => 'Article',
-  			'primaryKey' => 'id',
-  			'displayField' => 'title',
-  			'singularVar' => 'article',
-  			'pluralVar' => 'articlesController',
-  			'singularHumanName' => 'Article',
-  			'pluralHumanName' => 'Articles Controller',
-  			'scaffoldFields' => array(
-          'id', 'user_id', 'title', 'body', 'published', 'created', 'updated'
-        ),
-  			'associations' => array(
-          'belongsTo' => array(
+				'title_for_layout' => 'Scaffold :: Edit :: ',
+				'modelClass' => 'Article',
+				'primaryKey' => 'id',
+				'displayField' => 'title',
+				'singularVar' => 'article',
+				'pluralVar' => 'articlesController',
+				'singularHumanName' => 'Article',
+				'pluralHumanName' => 'Articles Controller',
+				'scaffoldFields' => array(
+					'id', 'user_id', 'title', 'body', 'published', 'created', 'updated'
+				),
+				'associations' => array(
+					'belongsTo' => array(
 						'User' => array(
 							'primaryKey' => 'id',
-              'displayField' => 'id',
+							'displayField' => 'id',
 							'foreignKey' => 'user_id',
 							'plugin' => null,
 							'controller' => 'users'
 						),
 					),
-          'hasMany' => array(
-          	'Comment' => array(
+					'hasMany' => array(
+						'Comment' => array(
 							'primaryKey' => 'id',
 							'displayField' => 'id',
 							'foreignKey' => 'article_id',
 							'plugin' => null,
 							'controller' => 'comments'
 						)
-          ),
-          'hasAndBelongsToMany' => array(
-          	'Tag' => array(
+					),
+					'hasAndBelongsToMany' => array(
+						'Tag' => array(
 							'primaryKey' => 'id',
 							'displayField' => 'id',
 							'foreignKey' => 'article_id',
@@ -180,8 +180,8 @@ class ScaffoldListenerTest extends CakeTestCase {
 							'controller' => 'tags',
 							'with' => 'ArticlesTag',
 						)
-          )
-      	)
+					)
+				)
 			)
 		),
 		// Index (User)
@@ -190,19 +190,19 @@ class ScaffoldListenerTest extends CakeTestCase {
 			'action' => 'index',
 			'controller' => 'UsersController',
 			'expected' => array(
-		    'title_for_layout' => 'Scaffold :: Index :: ',
-  			'modelClass' => 'User',
-  			'primaryKey' => 'id',
-  			'displayField' => 'id',
-  			'singularVar' => 'user',
-  			'pluralVar' => 'usersController',
-  			'singularHumanName' => 'User',
-  			'pluralHumanName' => 'Users Controller',
-  			'scaffoldFields' => array(
-          'id', 'user', 'password', 'created', 'updated'
-        ),
-  			'associations' => array(
-      	)
+				'title_for_layout' => 'Scaffold :: Index :: ',
+				'modelClass' => 'User',
+				'primaryKey' => 'id',
+				'displayField' => 'id',
+				'singularVar' => 'user',
+				'pluralVar' => 'usersController',
+				'singularHumanName' => 'User',
+				'pluralHumanName' => 'Users Controller',
+				'scaffoldFields' => array(
+					'id', 'user', 'password', 'created', 'updated'
+				),
+				'associations' => array(
+				)
 			)
 		),
 		// Index (Comment)
@@ -211,37 +211,37 @@ class ScaffoldListenerTest extends CakeTestCase {
 			'action' => 'index',
 			'controller' => 'CommentsController',
 			'expected' => array(
-		    'title_for_layout' => 'Scaffold :: Index :: ',
-  			'modelClass' => 'Comment',
-  			'primaryKey' => 'id',
-  			'displayField' => 'id',
-  			'singularVar' => 'comment',
-  			'pluralVar' => 'commentsController',
-  			'singularHumanName' => 'Comment',
-  			'pluralHumanName' => 'Comments Controller',
-  			'scaffoldFields' => array(
-          'id', 'article_id', 'user_id', 'comment', 'published', 'created', 'updated'
-        ),
-  			'associations' => array(
-          'belongsTo' => array(
-          	'User' => array(
+				'title_for_layout' => 'Scaffold :: Index :: ',
+				'modelClass' => 'Comment',
+				'primaryKey' => 'id',
+				'displayField' => 'id',
+				'singularVar' => 'comment',
+				'pluralVar' => 'commentsController',
+				'singularHumanName' => 'Comment',
+				'pluralHumanName' => 'Comments Controller',
+				'scaffoldFields' => array(
+					'id', 'article_id', 'user_id', 'comment', 'published', 'created', 'updated'
+				),
+				'associations' => array(
+					'belongsTo' => array(
+						'User' => array(
 							'primaryKey' => 'id',
 							'displayField' => 'id',
 							'foreignKey' => 'user_id',
 							'plugin' => null,
 							'controller' => 'users'
 						)
-          ),
-          'hasOne' => array(
-          	'Attachment' => array(
+					),
+					'hasOne' => array(
+						'Attachment' => array(
 							'primaryKey' => 'id',
 							'displayField' => 'id',
 							'foreignKey' => 'comment_id',
 							'plugin' => null,
 							'controller' => 'attachments'
-          	)
-          )
-      	)
+						)
+					)
+				)
 			)
 		)
 	);
@@ -276,7 +276,7 @@ class ScaffoldListenerTest extends CakeTestCase {
 
 			$Listener = $this->getMock('ScaffoldListener', null, array($Subject));
 
-			$data[] = array($Listener, $Subject, $test['expected']);
+			$data[] = array($Listener, $Event, $test['expected']);
 		}
 
 		return $data;
@@ -286,11 +286,14 @@ class ScaffoldListenerTest extends CakeTestCase {
  * test that the proper names and variable values are set by Scaffold
  *
  * @dataProvider beforeRenderProvider
+ * @param CrudListener $Listener
+ * @param CakeEvent $Event
+ * @param array $expected
  * @return void
  */
-	public function testBeforeRender($listener, $subject, $expected) {
-		$listener->beforeRender($event);
-		$this->assertEqual($subject->controller->viewVars, $expected);
+	public function testBeforeRender($Listener, $Event, $expected) {
+		$Listener->beforeRender($Event);
+		$this->assertEqual($Event->subject->controller->viewVars, $expected);
 	}
 
 /**

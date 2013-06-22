@@ -1,21 +1,21 @@
 {
-    "name": "jippi/cakephp-crud",
-    "description": "Automated CRUD / Scaffolding and API for CakePHP 2.1+ - keep your controllers DRY while maintaining flexibility ",
-    "type": "cakephp-plugin",
-    "keywords": ["cakephp", "crud", "create", "retrieve", "update", "delete", "bake", "cake", "scaffold", "scaffolding"],
-    "homepage": "https://github.com/jippi/cakephp-crud",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Christian Winther",
-            "role": "Author"
-        },
+	"name": "jippi/cakephp-crud",
+	"description": "Automated CRUD / Scaffolding and API for CakePHP 2.1+ - keep your controllers DRY while maintaining flexibility ",
+	"type": "cakephp-plugin",
+	"keywords": ["cakephp", "crud", "create", "retrieve", "update", "delete", "bake", "cake", "scaffold", "scaffolding"],
+	"homepage": "https://github.com/jippi/cakephp-crud",
+	"license": "MIT",
+	"authors": [
 		{
-            "name": "José Lorenzo Rodríguez",
-            "role": "Contributor"
-        }
-    ],
-    "require": {
-        "composer/installers": "*"
-    }
+			"name": "Christian Winther",
+			"role": "Author"
+		},
+		{
+			"name": "José Lorenzo Rodríguez",
+			"role": "Contributor"
+		}
+	],
+	"require": {
+		"composer/installers": "*"
+	}
 }
