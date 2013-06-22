@@ -305,7 +305,12 @@ class ScaffoldListenerTest extends CakeTestCase {
 		$Subject = new CrudSubject();
 		$Listener = $this->getMock('ScaffoldListener', null, array($Subject));
 
-		$expected = array('Crud.beforeRender' => 'beforeRender');
+		$expected = array(
+			'Crud.beforeRender' => 'beforeRender',
+			'Crud.beforeFind' => 'beforeFind',
+			'Crud.beforePaginate' => 'beforePaginate'
+		);
+
 		$result = $Listener->implementedEvents();
 		$this->assertEqual($result, $expected);
 	}

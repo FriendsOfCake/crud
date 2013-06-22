@@ -23,7 +23,61 @@ class ScaffoldListener extends CrudListener {
  * @return array
  */
 	public function implementedEvents() {
-		return array('Crud.beforeRender' => 'beforeRender');
+		return array(
+			'Crud.beforeRender' => 'beforeRender',
+			'Crud.beforeFind' => 'beforeFind',
+			'Crud.beforePaginate' => 'beforePaginate'
+		);
+	}
+
+/**
+ * Make sure to contain associated models
+ *
+ * This have no effect on clean applications where containable isn't
+ * loaded, but for those who does have it loaded, we should
+ * use it.
+ *
+ * This help applications with `$recursive -1` in their AppModel
+ * and containable behavior loaded
+ *
+ * @param CakeEvent $event
+ * @return void
+ */
+	public function beforeFind(CakeEvent $event) {
+		if (!isset($event->subject->query['contain'])) {
+			$event->subject->query['contain'] = array();
+		}
+
+		$existing = $event->subject->query['contain'];
+		$associated = array_keys($event->subject->model->getAssociated());
+
+		$event->subject->query['contain'] = array_merge($existing, $associated);
+	}
+
+/**
+ * Make sure to contain associated models
+ *
+ * This have no effect on clean applications where containable isn't
+ * loaded, but for those who does have it loaded, we should
+ * use it.
+ *
+ * This help applications with `$recursive -1` in their AppModel
+ * and containable behavior loaded
+ *
+ * @param CakeEvent $event
+ * @return void
+ */
+	public function beforePaginate(CakeEvent $event) {
+		$Paginator = $event->subject->controller->Paginator;
+
+		if (!isset($Paginator->settings['contain'])) {
+			$Paginator->settings['contain'] = array();
+		}
+
+		$existing = $Paginator->settings['contain'];
+		$associated = array_keys($event->subject->model->getAssociated());
+
+		$Paginator->settings['contain'] = array_merge($existing, $associated);
 	}
 
 /**
