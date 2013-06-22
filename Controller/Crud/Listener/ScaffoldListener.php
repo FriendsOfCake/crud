@@ -1,8 +1,6 @@
 <?php
 
-App::uses('Inflector', 'Utility');
 App::uses('CakeEvent', 'Event');
-App::uses('Model', 'Model');
 App::uses('CrudListener', 'Crud.Controller/Crud');
 
 /**
