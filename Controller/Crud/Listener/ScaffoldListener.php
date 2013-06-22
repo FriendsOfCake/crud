@@ -71,30 +71,32 @@ class ScaffoldListener extends CrudListener {
  */
 	protected function _associations(Model $model) {
 		$associations = array();
+		$keys = array('belongsTo', 'hasOne', 'hasMany', 'hasAndBelongsToMany');
 
-		foreach ($model->associations() as $type) {
+		$associated = $model->getAssociated();
+		foreach ($associated as $assocKey => $type) {
 			$associations[$type] = array();
 
-			if (empty($model->{$type})) {
-				continue;
+			$assocDataAll = $model->$type;
+
+			$assocData = $assocDataAll[$assocKey];
+			$associatedModel = $model->{$assocKey};
+
+			$associations[$type][$assocKey]['primaryKey'] =	$associatedModel->primaryKey;
+			$associations[$type][$assocKey]['displayField'] =	$associatedModel->displayField;
+			$associations[$type][$assocKey]['foreignKey'] =	$assocData['foreignKey'];
+
+			list($plugin, $modelClass) = pluginSplit($assocData['className']);
+
+			if ($plugin) {
+				$plugin = Inflector::underscore($plugin);
 			}
 
-			foreach ($model->{$type} as $assocKey => $assocData) {
-				$associations[$type][$assocKey]['primaryKey'] =	$model->{$assocKey}->primaryKey;
-				$associations[$type][$assocKey]['displayField'] =	$model->{$assocKey}->displayField;
-				$associations[$type][$assocKey]['foreignKey'] =	$assocData['foreignKey'];
+			$associations[$type][$assocKey]['plugin'] = $plugin;
+			$associations[$type][$assocKey]['controller'] =	Inflector::pluralize(Inflector::underscore($modelClass));
 
-				list($plugin, $model) = pluginSplit($assocData['className']);
-				if ($plugin) {
-					$plugin = Inflector::underscore($plugin);
-				}
-
-				$associations[$type][$assocKey]['plugin'] = $plugin;
-				$associations[$type][$assocKey]['controller'] =	Inflector::pluralize(Inflector::underscore($model));
-
-				if ($type === 'hasAndBelongsToMany') {
-					$associations[$type][$assocKey]['with'] = $assocData['with'];
-				}
+			if ($type === 'hasAndBelongsToMany') {
+				$associations[$type][$assocKey]['with'] = $assocData['with'];
 			}
 		}
 
