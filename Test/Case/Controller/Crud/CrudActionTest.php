@@ -362,24 +362,19 @@ class CrudActionTest extends CakeTestCase {
  */
 	public function testSetFlash() {
 		$data = array(
-			'message' => null,
-			'element' => null,
-			'params' => array(),
-			'key' => null,
-			'type' => 'create.success',
-			'name' => null
+			'message' => 'Hello',
+			'element' => 'default',
+			'params' => array(
+				'class' => 'message success',
+				'original' => 'Hello'
+			),
+			'key' => 'flash',
+			'type' => 'add.success',
+			'name' => 'test'
 		);
 		$object = (object)$data;
-		$object->message = 'hello';
-		$object->element = 'default';
-		$object->key = 'flash';
-		$object->name = 'test';
 
-		$this->Subject->crud = $this->getMock('CrudComponent', array('trigger', 'listener'), array($this->Collection));
-		$this->Subject->crud
-			->expects($this->once())
-			->method('listener')
-			->with('Translations');
+		$this->Subject->crud = $this->getMock('CrudComponent', array('trigger'), array($this->Collection));
 		$this->Subject->crud
 			->expects($this->once())
 			->method('trigger')
@@ -393,7 +388,9 @@ class CrudActionTest extends CakeTestCase {
 			->with($object->message, $object->element, $object->params, $object->key);
 
 		$this->ActionClass = new $this->actionClassName($this->Subject);
-		$this->ActionClass->setFlash('create.success');
+		$this->ActionClass->config('name', 'test');
+		$this->ActionClass->config('flash', array('success' => array('message' => 'hello')));
+		$this->ActionClass->setFlash('success');
 	}
 
 /**

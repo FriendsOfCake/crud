@@ -1,8 +1,10 @@
 <?php
 
 App::uses('TranslationsShell', 'Crud.Console/Command');
-App::uses('ConsoleOutput', 'Console');
+App::uses('CakeRequest', 'Network');
 App::uses('ConsoleInput', 'Console');
+App::uses('ConsoleOutput', 'Console');
+App::uses('Controller', 'Controller');
 
 /**
  * TranslationsShellTest
@@ -15,22 +17,6 @@ App::uses('ConsoleInput', 'Console');
 class TranslationsShellTest extends CakeTestCase {
 
 /**
- * setupBeforeClass
- *
- * Manipulate protected properties/methods to make them directly accessible
- * This permits testing the internal state of the class without creating a test
- * double
- *
- * @return void
- */
-	public static function setupBeforeClass() {
-		$class = new ReflectionClass('TranslationsShell');
-
-		$property = $class->getProperty('_strings');
-		$property->setAccessible(true);
-	}
-
-/**
  * setup test
  *
  * @return void
@@ -41,7 +27,7 @@ class TranslationsShellTest extends CakeTestCase {
 
 		$this->Shell = $this->getMock(
 			'TranslationsShell',
-			array('in', 'out', 'hr', 'err', '_stop', '_getModels'),
+			array('in', 'out', 'hr', 'err', '_stop', '_getControllers', '_loadController'),
 			array($this->out, $this->out, $this->in)
 		);
 
@@ -51,26 +37,17 @@ class TranslationsShellTest extends CakeTestCase {
 /**
  * testGenerateTranslations
  *
+ * With no controllers, nothing's going to happen
+ *
  * @return void
  */
 	public function testGenerateTranslations() {
-		$method = new ReflectionMethod('TranslationsShell', '_initializeMessages');
-		$method->setAccessible(true);
-		$method->invoke($this->Shell);
-
-		$method = new ReflectionMethod('TranslationsShell', '_generateTranslations');
+		$method = new ReflectionMethod('TranslationsShell', '_processController');
 		$method->setAccessible(true);
 		$method->invoke($this->Shell, false);
 
-		$expected = array(
-			"",
-			"/**",
-			" * Common CRUD Component translations",
-			" */",
-			"__d('crud', 'Invalid HTTP request');",
-			"__d('crud', 'Invalid id');"
-		);
-		$this->assertSame($expected, $this->Shell->_strings);
+		$expected = array();
+		$this->assertSame($expected, $this->Shell->lines);
 	}
 
 /**
@@ -79,11 +56,25 @@ class TranslationsShellTest extends CakeTestCase {
  * @return void
  */
 	public function testGenerateTranslationsForAModel() {
-		$method = new ReflectionMethod('TranslationsShell', '_initializeMessages');
-		$method->setAccessible(true);
-		$method->invoke($this->Shell);
+		$controller = new Controller(new CakeRequest());
+		$controller->Example = new StdClass(); // dummy
+		$controller->modelClass = 'Example';
+		$controller->components = array(
+			'Crud.Crud' => array(
+				'actions' => array(
+					'index', 'add', 'edit', 'view', 'delete'
+				)
+			)
+		);
+		$controller->constructClasses();
+		$controller->startupProcess();
 
-		$method = new ReflectionMethod('TranslationsShell', '_generateTranslations');
+		$this->Shell
+			->expects($this->once())
+			->method('_loadController')
+			->will($this->returnValue($controller));
+
+		$method = new ReflectionMethod('TranslationsShell', '_processController');
 		$method->setAccessible(true);
 		$method->invoke($this->Shell, 'Example');
 
@@ -92,24 +83,44 @@ class TranslationsShellTest extends CakeTestCase {
 			"/**",
 			" * Example CRUD Component translations",
 			" */",
-			"__d('crud', 'Successfully created Example');",
-			"__d('crud', 'Could not create Example');",
-			"__d('crud', 'Example was successfully updated');",
-			"__d('crud', 'Could not update Example');",
-			"__d('crud', 'Successfully deleted Example');",
-			"__d('crud', 'Could not delete Example');",
-			"__d('crud', 'Could not find Example');"
+			"__d('crud', 'Successfully created example');",
+			"__d('crud', 'Could not create example');",
+			"__d('crud', 'Successfully updated example');",
+			"__d('crud', 'Could not update example');",
+			"__d('crud', 'Successfully deleted example');",
+			"__d('crud', 'Could not delete example');"
 		);
-		$this->assertSame($expected, $this->Shell->_strings);
+		$this->assertSame($expected, $this->Shell->lines);
 	}
 
 	public function testGenerateFile() {
+		$controller = new Controller(new CakeRequest());
+		$controller->Example = new StdClass(); // dummy
+		$controller->modelClass = 'Example';
+		$controller->components = array(
+			'Crud.Crud' => array(
+				'actions' => array(
+					'index', 'add', 'edit', 'view', 'delete'
+				)
+			)
+		);
+		$controller->constructClasses();
+		$controller->startupProcess();
+
 		$this->Shell
 			->expects($this->once())
-			->method('_getModels')
+			->method('_loadController')
+			->will($this->returnValue($controller));
+
+		$this->Shell
+			->expects($this->once())
+			->method('_getControllers')
 			->will($this->returnValue(array('Example')));
 
 		$path = TMP . 'crud_translations_shell_test.php';
+		if (file_exists($path)) {
+			unlink($path);
+		}
 		$this->Shell->path($path);
 		$this->Shell->generate();
 
@@ -120,21 +131,14 @@ class TranslationsShellTest extends CakeTestCase {
 <?php
 
 /**
- * Common CRUD Component translations
- */
-__d('crud', 'Invalid HTTP request');
-__d('crud', 'Invalid id');
-
-/**
  * Example CRUD Component translations
  */
-__d('crud', 'Successfully created Example');
-__d('crud', 'Could not create Example');
-__d('crud', 'Example was successfully updated');
-__d('crud', 'Could not update Example');
-__d('crud', 'Successfully deleted Example');
-__d('crud', 'Could not delete Example');
-__d('crud', 'Could not find Example');
+__d('crud', 'Successfully created example');
+__d('crud', 'Could not create example');
+__d('crud', 'Successfully updated example');
+__d('crud', 'Could not update example');
+__d('crud', 'Successfully deleted example');
+__d('crud', 'Could not delete example');
 END;
 
 		$this->assertSame(trim($expected), trim($contents));

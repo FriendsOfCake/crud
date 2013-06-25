@@ -73,6 +73,8 @@ abstract class CrudAction implements CakeEventListener {
 		$this->_request = $subject->request;
 		$this->_collection = $subject->controller->Components;
 		$this->_controller = $subject->controller;
+		$this->_model = $subject->model;
+		$this->_modelClass = $subject->modelClass;
 
 		// Mark that we will only handle this specific action if asked
 		$this->_settings['action'] = $subject->action;
@@ -281,16 +283,43 @@ abstract class CrudAction implements CakeEventListener {
  *
  * @param string $type Message type
  * @return void
+ * @throws CakeException for a missing or undefined flash type
  */
 	public function setFlash($type) {
+		if (empty($type)) {
+			throw new CakeException('Missing flash type');
+		}
+
+		$config = $this->config('flash.' . $type);
+		if (empty($config)) {
+			throw new CakeException(sprintf('Invalid flash type "%s"', $type));
+		}
+
+		if (is_string($config)) {
+			$config = array('message' => $config);
+		}
+
+		$class = $type;
+		$type = $this->config('action') . '.' . $type;
+
 		$name = $this->_getResourceName();
-		$this->_crud->listener('Translations');
 
-		// default values
-		$message = $element = $key = null;
-		$params = array();
+		$config = Hash::merge(array(
+			'message' => null,
+			'element' => 'default',
+			'params' => array('class' => 'message'),
+			'key' => 'flash',
+			'type' => $type,
+			'name' => $name
+		), $config);
 
-		$subject = $this->_crud->trigger('setFlash', compact('message', 'element', 'params', 'key', 'type', 'name'));
+		$config['params']['class'] .= ' ' . $class;
+
+		$config['params']['original'] = ucfirst(str_replace('{name}', $name, $config['message']));
+
+		$config['message'] = __d($this->config('flash.domain') ?: 'crud', $config['params']['original']);
+
+		$subject = $this->_crud->trigger('setFlash', $config);
 		if (!empty($subject->stopped)) {
 			return;
 		}
@@ -345,7 +374,7 @@ abstract class CrudAction implements CakeEventListener {
  */
 	protected function _getResourceName() {
 		if (empty($this->_settings['name'])) {
-			$this->_settings['name'] = Inflector::humanize($this->_modelClass);
+			$this->_settings['name'] = strtolower(Inflector::humanize(Inflector::underscore($this->_modelClass)));
 		}
 
 		return $this->_settings['name'];

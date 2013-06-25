@@ -279,7 +279,7 @@ class EditCrudActionTest extends CakeTestCase {
 		$Action
 			->expects($this->at(4))
 			->method('setFlash')
-			->with('update.success');
+			->with('success');
 		$Action
 			->expects($this->at(5))
 			->method('_redirect')
@@ -362,7 +362,7 @@ class EditCrudActionTest extends CakeTestCase {
 		$Action
 			->expects($this->at(4))
 			->method('setFlash')
-			->with('update.error');
+			->with('error');
 
 		$Action->handle($CrudSubject);
 	}

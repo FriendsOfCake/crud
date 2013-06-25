@@ -27,7 +27,15 @@ class DeleteCrudAction extends CrudAction {
 	protected $_settings = array(
 		'enabled' => true,
 		'findMethod' => 'count',
-		'secureDelete' => true
+		'secureDelete' => true,
+		'flash' => array(
+			'success' => array(
+				'message' => 'Successfully deleted {name}'
+			),
+			'error' => array(
+				'message' => 'Could not delete {name}'
+			)
+		)
 	);
 
 /**
@@ -74,15 +82,15 @@ class DeleteCrudAction extends CrudAction {
 
 		$subject = $this->_crud->trigger('beforeDelete', compact('id'));
 		if ($subject->stopped) {
-			$this->setFlash('delete.error');
+			$this->setFlash('error');
 			return $this->_redirect($subject, $this->_controller->referer(array('action' => 'index')));
 		}
 
 		if ($this->_model->delete($id)) {
-			$this->setFlash('delete.success');
+			$this->setFlash('success');
 			$subject = $this->_crud->trigger('afterDelete', array('id' => $id, 'success' => true));
 		} else {
-			$this->setFlash('delete.error');
+			$this->setFlash('error');
 			$subject = $this->_crud->trigger('afterDelete', array('id' => $id, 'success' => false));
 		}
 

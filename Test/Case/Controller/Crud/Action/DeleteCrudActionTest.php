@@ -152,7 +152,7 @@ class DeleteCrudActionText extends CakeTestCase {
 		$Action
 			->expects($this->once())
 			->method('setFlash')
-			->with('delete.error');
+			->with('error');
 
 		$Action
 			->expects($this->once())
@@ -188,7 +188,7 @@ class DeleteCrudActionText extends CakeTestCase {
 		$Action
 			->expects($this->once())
 			->method('setFlash')
-			->with('delete.error');
+			->with('error');
 
 		$Action
 			->expects($this->once())

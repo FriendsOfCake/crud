@@ -501,7 +501,8 @@ class ApiListenerTest extends CakeTestCase {
 			'Crud.init' => array('callable' => 'init', 'priority' => 10),
 			'Crud.beforeRender' => array('callable' => 'beforeRender', 'priority' => 100),
 			'Crud.afterSave' => array('callable' => 'afterSave', 'priority' => 100),
-			'Crud.afterDelete' => array('callable' => 'afterDelete', 'priority' => 100)
+			'Crud.afterDelete' => array('callable' => 'afterDelete', 'priority' => 100),
+			'Crud.setFlash' => array('callable' => 'setFlash', 'priority' => 100)
 		);
 		$this->assertEquals($expected, $apiListener->implementedEvents());
 	}
