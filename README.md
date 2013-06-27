@@ -3,7 +3,7 @@
 
 # Introduction
 
-Crud was built to be [scaffolding](http://book.cakephp.org/2.0/en/controllers/scaffolding.html) on steroids, and allow 
+Crud was built to be [scaffolding](http://book.cakephp.org/2.0/en/controllers/scaffolding.html) on steroids, and allow
 developers to have enough flexibility to use it for both rapid prototyping and production applications, even on the same
 code base - saving you even more time.
 
@@ -11,44 +11,32 @@ Crud is [very fast to install](http://jippi.github.io/cakephp-crud/docs/installa
 
 Crud is very flexible, and has tons of [configuration options](http://jippi.github.io/cakephp-crud/docs/configuration.html)
 
-Crud aims to not get in your way, and if it happens to get in your way, you can change the behavior you don't like very 
+Crud aims to not get in your way, and if it happens to get in your way, you can change the behavior you don't like very
 easily.
 
-Crud relies heavily on Cake events and it's possible to override, extend or disable almost all of Crud's functionality, 
+Crud relies heavily on Cake events and it's possible to override, extend or disable almost all of Crud's functionality,
 either globally or for just one specific action.
 
-Usually the basic code for controller CRUD actions is very simple, and always look the same - this plugin will add the 
+Usually the basic code for controller CRUD actions is very simple, and always look the same - this plugin will add the
 actions to your controller so you don't have to re-implement them over and over.
 
-Crud does not have the same limitations as Cake's own scaffolding, which is 'their way or the highway'. Crud allows you 
-to hook into all stages of a request, only building the controller code needed specifically for your business logic, 
+Crud does not have the same limitations as Cake's own scaffolding, which is 'their way or the highway'. Crud allows you
+to hook into all stages of a request, only building the controller code needed specifically for your business logic,
 outsourcing the all the heavy boilerplating to Crud.
 
 Less boilerplate code means less code to maintain, and less code to spend time unit testing.
 
-Crud allows you to both use your own views, from bake or hand-crafted, as well as only adding the code needed to fulfill 
+Crud allows you to both use your own views, from bake or hand-crafted, as well as only adding the code needed to fulfill
 your application logic, using [events](docs/05-events.md). It is by default compatible with Cake's baked views.
 
-Crud also provides built-in features for JSON and XML [API](http://jippi.github.io/cakephp-crud/docs/api.html) for any 
+Crud also provides built-in features for JSON and XML [API](http://jippi.github.io/cakephp-crud/docs/api.html) for any
 action you have enabled through Crud - that means no more double work maintaining both a HTML frontend and a JSON and/or
 XML interface for your applications - saving you tons of time and having a leaner code base.
 
 # Documentation
 
-Please check the [docs](http://jippi.github.io/cakephp-crud/docs/) site for documentation and how-to guides
-
-* [Introduction](http://jippi.github.io/cakephp-crud/docs/)
-* [Installation](http://jippi.github.io/cakephp-crud/docs/installation.html)
-* [Configuration](http://jippi.github.io/cakephp-crud/docs/configuration.html)
-* [Conventions](http://jippi.github.io/cakephp-crud/docs/conventions.html)
-* [Events](http://jippi.github.io/cakephp-crud/docs/events.html)
-* [Related Data](http://jippi.github.io/cakephp-crud/docs/related-data.html)
-* [Translations](http://jippi.github.io/cakephp-crud/docs/translations.html)
-* [API](http://jippi.github.io/cakephp-crud/docs/api.html)
-* [API Field Filter](http://jippi.github.io/cakephp-crud/docs/api-field-filter.html)
-* [Custom actions](http://jippi.github.io/cakephp-crud/docs/custom-actions.html)
-* [Custom listeners](http://jippi.github.io/cakephp-crud/docs/custom-listeners.html)
-* [TODO](http://jippi.github.io/cakephp-crud/docs/todo.html)
+There's [extensive documentation](http://jippi.github.io/cakephp-crud/docs/) and how-to guides available. If you're reading
+this readme from a git checkout - you can read the docs offline by checking out the `gh-pages` branch.
 
 # Bugs
 
@@ -58,7 +46,7 @@ I can fix it asap.
 
 # Features
 
-If you have an good idea for a Crud feature, please chat me up on IRC, and let's discuss it - Pull Requests are always 
+If you have an good idea for a Crud feature, please chat me up on IRC, and let's discuss it - Pull Requests are always
 more than welcome.
 
 # Support / questions
