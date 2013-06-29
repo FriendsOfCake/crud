@@ -45,6 +45,47 @@ class AppController extends Controller {
 
 This part covers the basic introductional blog example, nothing more, nothing less
 
+## Initialize the database
+
+Create a table with some sample data with the following sql:
+
+{% highlight sql %}
+CREATE TABLE posts (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(50),
+    body TEXT,
+    created DATETIME DEFAULT NULL,
+    modified DATETIME DEFAULT NULL
+);
+
+/* Then insert some posts for testing: */
+INSERT INTO posts (title,body,created)
+    VALUES ('The title', 'This is the post body.', NOW());
+INSERT INTO posts (title,body,created)
+    VALUES ('A title once again', 'And the post body follows.', NOW());
+INSERT INTO posts (title,body,created)
+    VALUES ('Title strikes back', 'This is really exciting! Not.', NOW());
+{% endhighlight %}
+
+## Post Model
+
+Create `app/Model/Post.php`
+
+{% highlight php %}
+<?php
+class Post extends AppModel {
+    public $validate = array(
+        'title' => array(
+            'rule' => 'notEmpty'
+        ),
+        'body' => array(
+            'rule' => 'notEmpty'
+        )
+    );
+}
+?>
+{% endhighlight %}
+
 ## Post Controller
 
 Create `app/Controller/PostsController.php`
@@ -65,25 +106,6 @@ class PostsController extends AppController {
 Since Crud is bake compatible, we can just bake the views:
 
 `Console/cake bake view Post --public`
-
-## Post Model
-
-Create `app/Model/Post.php`
-
-{% highlight php %}
-<?php
-class Post extends AppModel {
-    public $validate = array(
-        'title' => array(
-            'rule' => 'notEmpty'
-        ),
-        'body' => array(
-            'rule' => 'notEmpty'
-        )
-    );
-}
-?>
-{% endhighlight %}
 
 ## Done
 
