@@ -1,6 +1,5 @@
 <?php
 App::uses('Model', 'Model');
-App::uses('AppModel', 'Model');
 
 /**
  *
@@ -9,7 +8,7 @@ App::uses('AppModel', 'Model');
  *
  * @copyright Christian Winther, 2013
  */
-class CrudExample extends AppModel {
+class CrudExample extends Model {
 
 	public $alias = 'CrudExample';
 

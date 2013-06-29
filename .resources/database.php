@@ -26,7 +26,7 @@ class DATABASE_CONFIG {
 				'test' => ':memory:',
 				'test2' => '/tmp/cakephp_test2.db',
 				'test_database_three' => '/tmp/cakephp_test3.db'
-			),
+			)
 		)
 	);
 
@@ -85,4 +85,5 @@ class DATABASE_CONFIG {
 			$this->{$source} = $config;
 		}
 	}
+
 }
