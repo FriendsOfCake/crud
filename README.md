@@ -46,7 +46,7 @@ I can fix it asap.
 
 # Features
 
-If you have an good idea for a Crud feature, please chat me up on IRC, and let's discuss it - Pull Requests are always
+If you have a good idea for a Crud feature, please chat me up on IRC, and let's discuss it - Pull Requests are always
 more than welcome.
 
 # Support / questions
