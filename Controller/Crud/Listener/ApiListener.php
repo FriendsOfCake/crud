@@ -55,8 +55,6 @@ class ApiListener extends CrudListener {
  * @return void
  */
 	public function init(CakeEvent $event) {
-		parent::init($event);
-
 		// Configure a few useful CakeRequest detectors
 		$this->_setupDetectors();
 
