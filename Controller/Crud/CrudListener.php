@@ -73,182 +73,54 @@ abstract class CrudListener extends Object implements CakeEventListener {
  * Returns a list of all events that will fire in the controller during it's life cycle.
  * You can override this function to add you own listener callbacks
  *
+ * - init : Called before any other method in the decorator.
+ *     Just set the arguments as instance properties for easier access later
+ * - recordNotFound : Called if a find() did not return any records
+ * - beforePaginate : Called right before any paginate() method
+ * - afterPaginate : Called right after any paginate() method
+ * - invalidId : Called if the ID format validation failed
+ * - setFlash : Called before any CakeSession::setFlash
+ *     Subject contains the following keys you can modify:
+ * 	     - message
+ * 	     - element = 'default',
+ * 	     - params = array()
+ * 	     - key = 'flash'
+ *
  * @codeCoverageIgnore
  * @return array
  */
 	public function implementedEvents() {
-		return array(
-			'Crud.init'	=> array('callable' => 'init'),
+		$eventMap = array(
+			'Crud.init'	=> 'init',
 
-			'Crud.beforePaginate' => array('callable' => 'beforePaginate'),
-			'Crud.afterPaginate' => array('callable' => 'afterPaginate'),
+			'Crud.beforePaginate' => 'beforePaginate',
+			'Crud.afterPaginate' => 'afterPaginate',
 
-			'Crud.recordNotFound' => array('callable' => 'recordNotFound'),
-			'Crud.invalidId' => array('callable' => 'invalidId'),
-			'Crud.setFlash' => array('callable' => 'setFlash'),
+			'Crud.recordNotFound' => 'recordNotFound',
+			'Crud.invalidId' => 'invalidId',
+			'Crud.setFlash' => 'setFlash',
 
-			'Crud.beforeRender' => array('callable' => 'beforeRender'),
-			'Crud.beforeRedirect' => array('callable' => 'beforeRedirect'),
+			'Crud.beforeRender' => 'beforeRender',
+			'Crud.beforeRedirect' => 'beforeRedirect',
 
-			'Crud.beforeSave' => array('callable' => 'beforeSave'),
-			'Crud.afterSave' => array('callable' => 'afterSave'),
+			'Crud.beforeSave' => 'beforeSave',
+			'Crud.afterSave' => 'afterSave',
 
-			'Crud.beforeFind' => array('callable' => 'beforeFind'),
-			'Crud.afterFind' => array('callable' => 'afterFind'),
+			'Crud.beforeFind' => 'beforeFind',
+			'Crud.afterFind' => 'afterFind',
 
-			'Crud.beforeDelete' => array('callable' => 'beforeDelete'),
-			'Crud.afterDelete' => array('callable' => 'afterDelete')
+			'Crud.beforeDelete' => 'beforeDelete',
+			'Crud.afterDelete' => 'afterDelete'
 		);
-	}
 
-/**
- * Initialize method
- *
- * Called before any other method in the decorator
- *
- * Just set the arguments as instance properties for easier access later
- *
- * @codeCoverageIgnore
- * @param CakeEvent $event The CakePHP CakeEvent object.
- * @return void
- */
-	public function init(CakeEvent $event) {
-	}
+		$events = array();
+		foreach ($eventMap as $event => $method) {
+			if (method_exists($this, $method)) {
+				$event[$event] = $method;
+			}
+		}
 
-/**
- * Called before a record is saved in add or edit actions
- *
- * @codeCoverageIgnore
- * @param CakeEvent $event The CakePHP CakeEvent object.
- * @return void
- */
-	public function beforeSave(CakeEvent $event) {
-	}
-
-/**
- * Called before any CRUD redirection
- *
- * @codeCoverageIgnore
- * @param CakeEvent $event The CakePHP CakeEvent object.
- * @return void
- */
-	public function beforeRedirect(CakeEvent $event) {
-	}
-
-/**
- * Called before any find() on the model
- *
- * @codeCoverageIgnore
- * @param CakeEvent $event The CakePHP CakeEvent object.
- * @return void
- */
-	public function beforeFind(CakeEvent $event) {
-	}
-
-/**
- * After find callback
- *
- * @codeCoverageIgnore
- * @param CakeEvent $event The CakePHP CakeEvent object.
- * @return void
- */
-	public function afterFind(CakeEvent $event) {
-	}
-
-/**
- * Called after any save() method
- *
- * @codeCoverageIgnore
- * @param CakeEvent $event The CakePHP CakeEvent object.
- * @return void
- */
-	public function afterSave(CakeEvent $event) {
-	}
-
-/**
- * Called before cake's own render()
- *
- * @codeCoverageIgnore
- * CakeEvent $event The CakePHP CakeEvent object.
- * @return void
- */
-	public function beforeRender(CakeEvent $event) {
-	}
-
-/**
- * Called before any delete() action
- *
- * @codeCoverageIgnore
- * @param CakeEvent $event The CakePHP CakeEvent object.
- * @return void
- */
-	public function beforeDelete(CakeEvent $event) {
-	}
-
-/**
- * Called after any delete() action
- *
- * @codeCoverageIgnore
- * @param CakeEvent $event The CakePHP CakeEvent object.
- * @return void
- */
-	public function afterDelete(CakeEvent $event) {
-	}
-
-/**
- * Called if a find() did not return any records
- *
- * @codeCoverageIgnore
- * @param CakeEvent $event The CakePHP CakeEvent object.
- * @return void
- */
-	public function recordNotFound(CakeEvent $event) {
-	}
-
-/**
- * Called right before any paginate() method
- *
- * @codeCoverageIgnore
- * @param CakeEvent $event The CakePHP CakeEvent object.
- * @return void
- */
-	public function beforePaginate(CakeEvent $event) {
-	}
-
-/**
- * Called right after any paginate() method
- *
- * @codeCoverageIgnore
- * @param CakeEvent $event The CakePHP CakeEvent object.
- * @return void
- */
-	public function afterPaginate(CakeEvent $event) {
-	}
-
-/**
- * Called if the ID format validation failed
- *
- * @codeCoverageIgnore
- * @param CakeEvent $event The CakePHP CakeEvent object.
- * @return void
- */
-	public function invalidId(CakeEvent $event) {
-	}
-
-/**
- * Called before any CakeSession::setFlash
- *
- * Subject contains the following keys you can modify:
- * 	- message
- * 	- element = 'default',
- * 	- params = array()
- * 	- key = 'flash'
- *
- * @codeCoverageIgnore
- * @param CakeEvent $event The CakePHP CakeEvent object.
- * @return void
- */
-	public function setFlash(CakeEvent $event) {
+		return $events;
 	}
 
 /**
