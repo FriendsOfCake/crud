@@ -176,7 +176,7 @@ class ApiListener extends CrudListener {
 		$serialize = array();
 		$serialize[] = 'success';
 		if (method_exists($action, 'viewVar')) {
-			$serialize[$action->viewVar()] = 'data';
+			$serialize['data'] = $action->viewVar();
 		} else {
 			$serialize[] = 'data';
 		}

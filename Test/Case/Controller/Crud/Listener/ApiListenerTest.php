@@ -505,7 +505,7 @@ class ApiListenerTest extends CakeTestCase {
 
 		$subject->controller->expects($this->once())
 			->method('set')
-			->with('_serialize', array('items' => 'data', 'success'));
+			->with('_serialize', array('data' => 'items', 'success'));
 
 		$subject->controller->RequestHandler->expects($this->at(0))
 			->method('viewClassMap')
@@ -548,7 +548,7 @@ class ApiListenerTest extends CakeTestCase {
 
 		$subject->controller->expects($this->once())
 			->method('set')
-			->with('_serialize', array('something_else' => 'data', 'success'));
+			->with('_serialize', array('data' => 'something_else', 'success'));
 
 		$subject->controller->RequestHandler->expects($this->at(0))
 			->method('viewClassMap')
