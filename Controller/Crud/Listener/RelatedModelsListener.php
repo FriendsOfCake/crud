@@ -25,7 +25,7 @@ class RelatedModelsListener extends CrudListener implements CakeEventListener {
 		$actionClass = $this->_crud->action($action);
 
 		$settings = $actionClass->config('relatedModels');
-		if (is_null($settings) || $settings === true) {
+		if ($settings === true) {
 			return array_merge(
 				$this->_subject->model->getAssociated('belongsTo'),
 				$this->_subject->model->getAssociated('hasAndBelongsToMany')
