@@ -212,6 +212,11 @@ class TranslationsShell extends AppShell {
 		$Controller->Crud->on('setFlash', function(CakeEvent $event) use ($that) {
 			$key = $event->subject->name . ' ' . $event->subject->type;
 			$message = $event->subject->params['original'];
+
+			if (!$message) {
+				return;
+			}
+
 			$string = "__d('crud', '$message');";
 
 			if (in_array($string, $that->lines)) {
@@ -245,7 +250,7 @@ class TranslationsShell extends AppShell {
 		}
 
 		$action = $Controller->Crud->action($actionName);
-		$messages = $action->config('flash');
+		$messages = $action->config('message');
 		if (!$messages) {
 			return;
 		}

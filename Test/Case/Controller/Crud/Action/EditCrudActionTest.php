@@ -464,6 +464,7 @@ class EditCrudActionTest extends CakeTestCase {
  */
 	public function testActionGetWithNonexistingId() {
 		extract($this->_mockClasses());
+		$CrudSubject->id = 1;
 
 		$query = array('conditions' => array('Model.id' => 1));
 

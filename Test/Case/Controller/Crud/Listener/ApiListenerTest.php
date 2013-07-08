@@ -507,4 +507,23 @@ class ApiListenerTest extends CakeTestCase {
 		$this->assertEquals($expected, $apiListener->implementedEvents());
 	}
 
+/**
+ * testNoFlashMessage
+ *
+ * The api listener should suppress all flash messages
+ *
+ * @return void
+ */
+	public function testNoFlashMessage() {
+		$subject = $this->getMock('CrudSubject');
+
+		$event = new CakeEvent('Crud.setFlash', $subject);
+
+		$apiListener = new ApiListener($subject);
+		$apiListener->setFlash($event);
+
+		$stopped = $event->isStopped();
+		$this->assertTrue($stopped, 'Set flash event is expected to be stopped');
+	}
+
 }

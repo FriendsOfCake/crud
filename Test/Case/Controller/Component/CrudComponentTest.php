@@ -561,7 +561,8 @@ class CrudComponentTest extends ControllerTestCase {
 		try {
 			$this->Crud->executeAction('delete', array($id));
 		} catch (Exception $e) {
-			$this->assertTrue($e instanceof BadRequestException);
+			$class = get_class($e);
+			$this->assertTrue($e instanceof MethodNotAllowedException, "Exception of class $class, is not a MethodNotAllowedException");
 		}
 
 		$count = $this->model->find('count', array('conditions' => array('id' => $id)));
@@ -912,7 +913,8 @@ class CrudComponentTest extends ControllerTestCase {
 		try {
 			$this->Crud->executeAction('delete', array('1'));
 		} catch (Exception $e) {
-			$this->assertTrue($e instanceof BadRequestException);
+			$class = get_class($e);
+			$this->assertTrue($e instanceof MethodNotAllowedException, "Exception of class $class, is not a MethodNotAllowedException");
 		}
 
 		$vars = $this->controller->viewVars;
@@ -1717,10 +1719,27 @@ class CrudComponentTest extends ControllerTestCase {
 
 		$result = $Crud->config();
 		$expected = array(
-			'eventPrefix' => 'Crud',
 			'actions' => array(),
+			'eventPrefix' => 'Crud',
 			'listeners' => array(
 				'RelatedModels' => 'Crud.RelatedModels'
+			),
+			'message' => array(
+				'invalidId' => array(
+					'code' => 400,
+					'class' => 'BadRequestException',
+					'text' => 'Invalid id'
+				),
+				'recordNotFound' => array(
+					'code' => 404,
+					'class' => 'NotFoundException',
+					'text' => 'Not found'
+				),
+				'badRequestMethod' => array(
+					'code' => 405,
+					'class' => 'MethodNotAllowedException',
+					'text' => 'Method not allowed. This action permits only {methods}'
+				)
 			)
 		);
 		$this->assertEquals($expected, $result);
@@ -1745,11 +1764,28 @@ class CrudComponentTest extends ControllerTestCase {
 		$Crud = new CrudComponent($Collection, $config);
 		$result = $Crud->config();
 		$expected = array(
-			'eventPrefix' => 'Crud',
 			'actions' => array(),
+			'eventPrefix' => 'Crud',
 			'listeners' => array(
 				'RelatedModels' => 'Crud.RelatedModels',
 				'Api' => 'Crud.Api'
+			),
+			'message' => array(
+				'invalidId' => array(
+					'code' => 400,
+					'class' => 'BadRequestException',
+					'text' => 'Invalid id'
+				),
+				'recordNotFound' => array(
+					'code' => 404,
+					'class' => 'NotFoundException',
+					'text' => 'Not found'
+				),
+				'badRequestMethod' => array(
+					'code' => 405,
+					'class' => 'MethodNotAllowedException',
+					'text' => 'Method not allowed. This action permits only {methods}'
+				)
 			)
 		);
 		$this->assertEquals($expected, $result);
@@ -1773,10 +1809,27 @@ class CrudComponentTest extends ControllerTestCase {
 		$Crud = new CrudComponent($Collection, $config);
 		$result = $Crud->config();
 		$expected = array(
-			'eventPrefix' => 'Crud',
 			'actions' => array(),
+			'eventPrefix' => 'Crud',
 			'listeners' => array(
 				'RelatedModels' => 'Crud.RelatedModels'
+			),
+			'message' => array(
+				'invalidId' => array(
+					'code' => 400,
+					'class' => 'BadRequestException',
+					'text' => 'Invalid id'
+				),
+				'recordNotFound' => array(
+					'code' => 404,
+					'class' => 'NotFoundException',
+					'text' => 'Not found'
+				),
+				'badRequestMethod' => array(
+					'code' => 405,
+					'class' => 'MethodNotAllowedException',
+					'text' => 'Method not allowed. This action permits only {methods}'
+				)
 			)
 		);
 		$this->assertEquals($expected, $result);

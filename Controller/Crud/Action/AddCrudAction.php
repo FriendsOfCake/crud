@@ -48,12 +48,12 @@ class AddCrudAction extends CrudAction {
 			'validate' => 'first',
 			'atomic' => true
 		),
-		'flash' => array(
+		'message' => array(
 			'success' => array(
-				'message' => 'Successfully created {name}'
+				'text' => 'Successfully created {name}'
 			),
 			'error' => array(
-				'message' => 'Could not create {name}'
+				'text' => 'Could not create {name}'
 			)
 		),
 		'serialize' => array()

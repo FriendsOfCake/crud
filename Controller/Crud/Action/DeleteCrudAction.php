@@ -28,12 +28,12 @@ class DeleteCrudAction extends CrudAction {
 		'enabled' => true,
 		'findMethod' => 'count',
 		'secureDelete' => true,
-		'flash' => array(
+		'message' => array(
 			'success' => array(
-				'message' => 'Successfully deleted {name}'
+				'text' => 'Successfully deleted {name}'
 			),
 			'error' => array(
-				'message' => 'Could not delete {name}'
+				'text' => 'Could not delete {name}'
 			)
 		)
 	);
@@ -50,7 +50,7 @@ class DeleteCrudAction extends CrudAction {
  * @param string $id
  * @return void
  * @throws NotFoundException If record not found
- * @throws BadRequestException If secure delete enabled and not a HTTP DELETE request
+ * @throws MethodNotAllowedException If secure delete enabled and not a HTTP DELETE request
  */
 	protected function _handle($id = null) {
 		if (empty($id)) {
@@ -59,12 +59,23 @@ class DeleteCrudAction extends CrudAction {
 
 		$this->_validateId($id);
 
-		if (!$this->_request->is('delete') &&
-			!($this->_request->is('post') &&
-			false === $this->config('secureDelete'))
-		) {
+		$validRequest = $this->_request->is('delete');
+		if (!$validRequest) {
+			$permitPost = !$this->config('secureDelete');
+			$validRequest = ($this->_request->is('post') && $permitPost);
+		}
+
+		if (!$validRequest) {
 			$subject = $this->_crud->getSubject(compact('id'));
-			throw new BadRequestException('invalid_http_request.error');
+
+			$methods = 'DELETE';
+			if ($permitPost) {
+				$methods .= 'or POST';
+			}
+
+			$message = $this->message('badRequestMethod', array('id' => $subject->id, 'methods' => $methods));
+			$exceptionClass = $message['class'];
+			throw new $exceptionClass($message['text'], $message['code']);
 		}
 
 		$query = array();
@@ -77,7 +88,10 @@ class DeleteCrudAction extends CrudAction {
 		$count = $this->_model->find($subject->findMethod, $query);
 		if (empty($count)) {
 			$subject = $this->_crud->trigger('recordNotFound', compact('id'));
-			throw new NotFoundException('find.error');
+
+			$message = $this->message('recordNotFound', array('id' => $subject->id));
+			$exceptionClass = $message['class'];
+			throw new $exceptionClass($message['text'], $message['code']);
 		}
 
 		$subject = $this->_crud->trigger('beforeDelete', compact('id'));

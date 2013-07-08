@@ -2,6 +2,7 @@
 
 App::uses('CakeEvent', 'Event');
 App::uses('ComponentCollection', 'Controller');
+App::uses('Controller', 'Controller');
 App::uses('SessionComponent', 'Controller/Component');
 App::uses('CrudAction', 'Crud.Controller/Crud');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
@@ -362,7 +363,6 @@ class CrudActionTest extends CakeTestCase {
  */
 	public function testSetFlash() {
 		$data = array(
-			'message' => 'Hello',
 			'element' => 'default',
 			'params' => array(
 				'class' => 'message success',
@@ -370,7 +370,8 @@ class CrudActionTest extends CakeTestCase {
 			),
 			'key' => 'flash',
 			'type' => 'add.success',
-			'name' => 'test'
+			'name' => 'test',
+			'text' => 'Hello',
 		);
 		$object = (object)$data;
 
@@ -385,11 +386,11 @@ class CrudActionTest extends CakeTestCase {
 		$this->Subject->crud->Session
 			->expects($this->once())
 			->method('setFlash')
-			->with($object->message, $object->element, $object->params, $object->key);
+			->with($object->text, $object->element, $object->params, $object->key);
 
 		$this->ActionClass = new $this->actionClassName($this->Subject);
 		$this->ActionClass->config('name', 'test');
-		$this->ActionClass->config('flash', array('success' => array('message' => 'hello')));
+		$this->ActionClass->config('message', array('success' => array('text' => 'hello')));
 		$this->ActionClass->setFlash('success');
 	}
 
@@ -483,4 +484,191 @@ class CrudActionTest extends CakeTestCase {
 		$this->assertEqual($expected, $actual);
 	}
 
+/**
+ * testEmptyMessage
+ *
+ * @expectedException CakeException
+ * @expectedExceptionMessage Missing message type
+ */
+	public function testEmptyMessage() {
+		$this->ActionClass->message(null);
+	}
+
+/**
+ * testUndefinedMessage
+ *
+ * @expectedException CakeException
+ * @expectedExceptionMessage Invalid message type "not defined"
+ */
+	public function testUndefinedMessage() {
+		$this->ActionClass->message('not defined');
+	}
+
+/**
+ * testBadMessageConfig
+ *
+ * @expectedException CakeException
+ * @expectedExceptionMessage Invalid message config for "badConfig" no text key found
+ */
+	public function testBadMessageConfig() {
+		$this->Crud->config('message.badConfig', array('foo' => 'bar'));
+		$this->ActionClass->message('badConfig');
+	}
+
+/**
+ * testInheritedSimpleMessage
+ *
+ * @return void
+ */
+	public function testInheritedSimpleMessage() {
+		$this->Crud->config('message.simple', 'Simple message');
+
+		$expected = array(
+			'element' => 'default',
+			'params' => array(
+				'class' => 'message simple',
+				'original' => 'Simple message'
+			),
+			'key' => 'flash',
+			'type' => 'add.simple',
+			'name' => '',
+			'text' => 'Simple message'
+		);
+		$actual = $this->ActionClass->message('simple');
+		$this->assertEqual($expected, $actual);
+	}
+
+/**
+ * testOverridenSimpleMessage
+ *
+ * @return void
+ */
+	public function testOverridenSimpleMessage() {
+		$this->Crud->config('message.simple', 'Simple message');
+		$this->ActionClass->config('message.simple', 'Overridden message');
+
+		$expected = array(
+			'element' => 'default',
+			'params' => array(
+				'class' => 'message simple',
+				'original' => 'Overridden message'
+			),
+			'key' => 'flash',
+			'type' => 'add.simple',
+			'name' => '',
+			'text' => 'Overridden message'
+		);
+		$actual = $this->ActionClass->message('simple');
+		$this->assertEqual($expected, $actual);
+	}
+
+/**
+ * testSimpleMessage
+ *
+ * @return void
+ */
+	public function testSimpleMessage() {
+		$this->ActionClass->config('message.simple', 'Simple message');
+
+		$expected = array(
+			'element' => 'default',
+			'params' => array(
+				'class' => 'message simple',
+				'original' => 'Simple message'
+			),
+			'key' => 'flash',
+			'type' => 'add.simple',
+			'name' => '',
+			'text' => 'Simple message'
+		);
+		$actual = $this->ActionClass->message('simple');
+		$this->assertEqual($expected, $actual);
+	}
+
+/**
+ * testSimpleMessageWithPlaceholders
+ *
+ * @return void
+ */
+	public function testSimpleMessageWithPlaceholders() {
+		$this->Crud->config('message.simple', 'Simple message with id "{id}"');
+
+		$expected = array(
+			'element' => 'default',
+			'params' => array(
+				'class' => 'message simple',
+				'original' => 'Simple message with id "{id}"'
+			),
+			'key' => 'flash',
+			'type' => 'add.simple',
+			'name' => '',
+			'text' => 'Simple message with id "123"'
+		);
+		$actual = $this->ActionClass->message('simple', array('id' => 123));
+		$this->assertEqual($expected, $actual);
+	}
+
+/**
+ * testInvalidIdMessage
+ *
+ * @return void
+ */
+	public function testInvalidIdMessage() {
+		$expected = array(
+			'code' => 400,
+			'class' => 'BadRequestException',
+			'element' => 'default',
+			'params' => array(
+				'class' => 'message invalidId',
+				'original' => 'Invalid id'
+			),
+			'key' => 'flash',
+			'type' => 'add.invalidId',
+			'name' => '',
+			'text' => 'Invalid id'
+		);
+		$actual = $this->ActionClass->message('invalidId');
+		$this->assertEqual($expected, $actual);
+	}
+
+	public function testRecordNotFoundMessage() {
+		$expected = array(
+			'code' => 404,
+			'class' => 'NotFoundException',
+			'element' => 'default',
+			'params' => array(
+				'class' => 'message recordNotFound',
+				'original' => 'Not found'
+			),
+			'key' => 'flash',
+			'type' => 'add.recordNotFound',
+			'name' => '',
+			'text' => 'Not found'
+		);
+		$actual = $this->ActionClass->message('recordNotFound');
+		$this->assertEqual($expected, $actual);
+	}
+
+/**
+ * testBadRequestMethodMessage
+ *
+ * @return void
+ */
+	public function testBadRequestMethodMessage() {
+		$expected = array(
+			'code' => 405,
+			'class' => 'MethodNotAllowedException',
+			'element' => 'default',
+			'params' => array(
+				'class' => 'message badRequestMethod',
+				'original' => 'Method not allowed. This action permits only {methods}'
+			),
+			'key' => 'flash',
+			'type' => 'add.badRequestMethod',
+			'name' => '',
+			'text' => 'Method not allowed. This action permits only THESE ONES'
+		);
+		$actual = $this->ActionClass->message('badRequestMethod', array('methods' => 'THESE ONES'));
+		$this->assertEqual($expected, $actual);
+	}
 }

@@ -157,6 +157,63 @@ abstract class CrudAction implements CakeEventListener {
 	}
 
 /**
+ * return the config for a given message type
+ *
+ * @param string $type
+ * @param array $replacements
+ * @return array
+ * @throws CakeException for a missing or undefined message type
+ */
+	public function message($type, $replacements = array()) {
+		if (empty($type)) {
+			throw new CakeException('Missing message type');
+		}
+
+		$config = $this->config('message.' . $type);
+		if (empty($config)) {
+			$config = $this->_crud->config('message.' . $type);
+			if (empty($config)) {
+				throw new CakeException(sprintf('Invalid message type "%s"', $type));
+			}
+		}
+
+		if (is_string($config)) {
+			$config = array('text' => $config);
+		}
+
+		$config = Hash::merge(array(
+			'element' => 'default',
+			'params' => array('class' => 'message'),
+			'key' => 'flash',
+			'type' => $this->config('action') . '.' . $type,
+			'name' => $this->_getResourceName()
+		), $config);
+
+		if (!isset($config['text'])) {
+			throw new CakeException(sprintf('Invalid message config for "%s" no text key found', $type));
+		}
+
+		$config['params']['original'] = ucfirst(
+			str_replace('{name}', $config['name'], $config['text'])
+		);
+
+		$config['text'] = __d(
+			$this->config('message.domain') ?: 'crud',
+			$config['params']['original']
+		);
+
+		$config['text'] = String::insert(
+			$config['text'],
+			$replacements + array('name' => $config['name']),
+			array('before' => '{', 'after' => '}')
+		);
+
+		$config['params']['class'] .= ' ' . $type;
+
+		return $config;
+	}
+
+/**
  * Change the saveOptions configuration
  *
  * This is the 2nd argument passed to saveAll()
@@ -283,48 +340,16 @@ abstract class CrudAction implements CakeEventListener {
  *
  * @param string $type Message type
  * @return void
- * @throws CakeException for a missing or undefined flash type
  */
 	public function setFlash($type) {
-		if (empty($type)) {
-			throw new CakeException('Missing flash type');
-		}
-
-		$config = $this->config('flash.' . $type);
-		if (empty($config)) {
-			throw new CakeException(sprintf('Invalid flash type "%s"', $type));
-		}
-
-		if (is_string($config)) {
-			$config = array('message' => $config);
-		}
-
-		$class = $type;
-		$type = $this->config('action') . '.' . $type;
-
-		$name = $this->_getResourceName();
-
-		$config = Hash::merge(array(
-			'message' => null,
-			'element' => 'default',
-			'params' => array('class' => 'message'),
-			'key' => 'flash',
-			'type' => $type,
-			'name' => $name
-		), $config);
-
-		$config['params']['class'] .= ' ' . $class;
-
-		$config['params']['original'] = ucfirst(str_replace('{name}', $name, $config['message']));
-
-		$config['message'] = __d($this->config('flash.domain') ?: 'crud', $config['params']['original']);
+		$config = $this->message($type, array('return' => 'array'));
 
 		$subject = $this->_crud->trigger('setFlash', $config);
 		if (!empty($subject->stopped)) {
 			return;
 		}
 
-		$this->_crud->Session->setFlash($subject->message, $subject->element, $subject->params, $subject->key);
+		$this->_crud->Session->setFlash($subject->text, $subject->element, $subject->params, $subject->key);
 	}
 
 /**
@@ -412,7 +437,10 @@ abstract class CrudAction implements CakeEventListener {
 		}
 
 		$subject = $this->_crud->trigger('invalidId', compact('id'));
-		throw new BadRequestException('invalid_id.error');
+
+		$message = $this->message('invalidId');
+		$exceptionClass = $message['class'];
+		throw new $exceptionClass($message['text'], $message['code']);
 	}
 
 /**

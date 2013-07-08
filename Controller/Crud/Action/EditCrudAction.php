@@ -48,12 +48,12 @@ class EditCrudAction extends CrudAction {
 			'validate' => 'first',
 			'atomic' => true
 		),
-		'flash' => array(
+		'message' => array(
 			'success' => array(
-				'message' => 'Successfully updated {name}'
+				'text' => 'Successfully updated {name}'
 			),
 			'error' => array(
-				'message' => 'Could not update {name}'
+				'text' => 'Could not update {name}'
 			)
 		),
 		'serialize' => array()
@@ -104,7 +104,10 @@ class EditCrudAction extends CrudAction {
 			$this->_request->data = $this->_model->find($subject->findMethod, $query);
 			if (empty($this->_request->data)) {
 				$subject = $this->_crud->trigger('recordNotFound', compact('id'));
-				throw new NotFoundException('find.error');
+
+				$message = $this->message('recordNotFound', array('id' => $subject->id));
+				$exceptionClass = $message['class'];
+				throw new $exceptionClass($message['text'], $message['code']);
 			}
 
 			$this->_crud->trigger('afterFind', compact('id'));

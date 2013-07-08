@@ -95,10 +95,27 @@ class CrudComponent extends Component {
  * @var array
  */
 	public $settings = array(
-		'eventPrefix' => 'Crud',
 		'actions' => array(),
+		'eventPrefix' => 'Crud',
 		'listeners' => array(
 			'RelatedModels' => 'Crud.RelatedModels'
+		),
+		'message' => array(
+			'invalidId' => array(
+				'code' => 400,
+				'class' => 'BadRequestException',
+				'text' => 'Invalid id'
+			),
+			'recordNotFound' => array(
+				'code' => 404,
+				'class' => 'NotFoundException',
+				'text' => 'Not found'
+			),
+			'badRequestMethod' => array(
+				'code' => 405,
+				'class' => 'MethodNotAllowedException',
+				'text' => 'Method not allowed. This action permits only {methods}'
+			)
 		)
 	);
 
