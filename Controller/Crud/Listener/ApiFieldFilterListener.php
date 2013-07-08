@@ -10,17 +10,17 @@ App::uses('CrudListener', 'Crud.Controller/Crud');
  *
  * For a relation automatically to be joined, it has to be whitelisted first.
  * If no whitelist exist, no relations will be added automatically
- * `$this->_crud->action()->config('fieldFilter.models', array('list', 'of', 'models'))`
+ * `$this->_crud->action()->config('apiFieldFilter.models', array('list', 'of', 'models'))`
  *
  * You can also whitelist fields, if no whitelist exist for fields, all fields are allowed
  * If whitelisting exist, only those fields will be allowed to be selected.
  * The fields must be in `Model.field` format
- * `$this->_crud->action()->config('fieldFilter.fields.whitelist', array('Model.id', 'Model.name', 'Model.created'))`
+ * `$this->_crud->action()->config('apiFieldFilter.fields.whitelist', array('Model.id', 'Model.name', 'Model.created'))`
  *
  * You can also blacklist fields, if no blacklist exist, no blacklisting is done
  * If blacklisting exist, the field will be removed from the field list if present
  * The fields must be in `Model.field` format
- * `$this->_crud->action()->config('fieldFilter.fields.blacklist', array('Model.password', 'Model.auth_token', 'Model.created'))`
+ * `$this->_crud->action()->config('apiFieldFilter.fields.blacklist', array('Model.password', 'Model.auth_token', 'Model.created'))`
  *
  * This is probably only useful if it's used in conjunction with the ApiListener
  *
@@ -32,7 +32,7 @@ App::uses('CrudListener', 'Crud.Controller/Crud');
  *
  * @copyright Christian Winther, 2013
  */
-class FieldFilterListener extends CrudListener {
+class ApiFieldFilterListener extends CrudListener {
 
 /**
  * Returns a list of all events that will fire in the controller during it's lifecycle.
@@ -107,10 +107,10 @@ class FieldFilterListener extends CrudListener {
  */
 	public function whitelistFields($fields = null, $action = null) {
 		if (empty($fields)) {
-			return $this->_crud->action($action)->config('fieldFilter.fields.whitelist');
+			return $this->_crud->action($action)->config('apiFieldFilter.fields.whitelist');
 		}
 
-		$this->_crud->action($action)->config('fieldFilter.fields.whitelist', $fields);
+		$this->_crud->action($action)->config('apiFieldFilter.fields.whitelist', $fields);
 	}
 
 /**
@@ -123,10 +123,10 @@ class FieldFilterListener extends CrudListener {
  */
 	public function blacklistFields($fields = null, $action = null) {
 		if (empty($fields)) {
-			return $this->_crud->action($action)->config('fieldFilter.fields.blacklist');
+			return $this->_crud->action($action)->config('apiFieldFilter.fields.blacklist');
 		}
 
-		$this->_crud->action($action)->config('fieldFilter.fields.blacklist', $fields);
+		$this->_crud->action($action)->config('apiFieldFilter.fields.blacklist', $fields);
 	}
 
 /**
@@ -139,10 +139,10 @@ class FieldFilterListener extends CrudListener {
  */
 	public function whitelistModels($models = null, $action = null) {
 		if (empty($models)) {
-			return $this->_crud->action($action)->config('fieldFilter.models.whitelist');
+			return $this->_crud->action($action)->config('apiFieldFilter.models.whitelist');
 		}
 
-		$this->_crud->action($action)->config('fieldFilter.models.whitelist', $models);
+		$this->_crud->action($action)->config('apiFieldFilter.models.whitelist', $models);
 	}
 
 /**
@@ -157,10 +157,10 @@ class FieldFilterListener extends CrudListener {
  */
 	public function allowNoFilter($permit = null, $action = null) {
 		if (empty($permit)) {
-			return (bool)$this->_crud->action($action)->config('fieldFilter.allowNoFilter');
+			return (bool)$this->_crud->action($action)->config('apiFieldFilter.allowNoFilter');
 		}
 
-		$this->_crud->action($action)->config('fieldFilter.allowNoFilter', (bool)$permit);
+		$this->_crud->action($action)->config('apiFieldFilter.allowNoFilter', (bool)$permit);
 	}
 
 /**

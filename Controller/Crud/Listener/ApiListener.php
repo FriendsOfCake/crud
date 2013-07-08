@@ -172,8 +172,8 @@ class ApiListener extends CrudListener {
 
 		// Copy the _serialize configuration from the CrudAction config
 		$action = $event->subject->crud->action();
-		$serialize = $action->config('serialize');
 
+		$serialize = array();
 		$serialize[] = 'success';
 		if (method_exists($action, 'viewVar')) {
 			$serialize[$action->viewVar()] = 'data';
@@ -181,7 +181,7 @@ class ApiListener extends CrudListener {
 			$serialize[] = 'data';
 		}
 
-		krsort($serialize);
+		$serialize = array_merge($serialize, $action->config('serialize'));
 
 		$this->_controller->set('_serialize', $serialize);
 

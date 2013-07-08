@@ -6,7 +6,7 @@ App::uses('CakeRequest', 'Network');
 App::uses('CakeEvent', 'Event');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
 App::uses('IndexCrudAction', 'Crud.Controller/Crud/Action');
-App::uses('FieldFilterListener', 'Crud.Controller/Crud/Listener');
+App::uses('ApiFieldFilterListener', 'Crud.Controller/Crud/Listener');
 
 /**
  *
@@ -15,7 +15,7 @@ App::uses('FieldFilterListener', 'Crud.Controller/Crud/Listener');
  *
  * @copyright Christian Winther, 2013
  */
-class FieldFilterListenerTest extends CakeTestCase {
+class ApiFieldFilterListenerTest extends CakeTestCase {
 
 	public function setUp() {
 		parent::setUp();
@@ -97,7 +97,7 @@ class FieldFilterListenerTest extends CakeTestCase {
 			->setMethods(null)
 			->getMock();
 
-		$Listener = new FieldFilterListener($CrudSubject);
+		$Listener = new ApiFieldFilterListener($CrudSubject);
 		$Event = new CakeEvent('Test', $CrudSubject);
 
 		$Crud
@@ -145,7 +145,7 @@ class FieldFilterListenerTest extends CakeTestCase {
  */
 	public function testRequestWithoutFieldsWithNoFilterOn() {
 		extract($this->_mockClasses());
-		$Action->config('fieldFilter.allowNoFilter', true);
+		$Action->config('apiFieldFilter.allowNoFilter', true);
 		$Listener->beforeFind($Event);
 
 		$this->assertNull($CrudSubject->query['fields']);
@@ -176,7 +176,7 @@ class FieldFilterListenerTest extends CakeTestCase {
  */
 	public function testRequestWithoutFieldsWithNoFilterOff() {
 		extract($this->_mockClasses());
-		$Action->config('fieldFilter.allowNoFilter', false);
+		$Action->config('apiFieldFilter.allowNoFilter', false);
 		$Listener->beforeFind($Event);
 
 		$this->assertNull($CrudSubject->query['fields']);
