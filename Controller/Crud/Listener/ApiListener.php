@@ -24,21 +24,11 @@ class ApiListener extends CrudListener {
  */
 	public function implementedEvents() {
 		return array(
-			'Crud.init' => array('callable' => 'init'),
-
+			'Crud.init' => array('callable' => 'init', 'priority' => 10),
 			'Crud.recordNotFound' => array('callable' => 'recordNotFound', 'priority' => 100),
 			'Crud.invalidId' => array('callable' => 'invalidId', 'priority' => 100),
-
 			'Crud.beforeRender' => array('callable' => 'beforeRender', 'priority' => 100),
-			'Crud.beforeRedirect' => array('callable' => 'beforeRedirect', 'priority' => 100),
-
-			'Crud.beforeSave' => array('callable' => 'beforeSave', 'priority' => 100),
 			'Crud.afterSave' => array('callable' => 'afterSave', 'priority' => 100),
-
-			'Crud.beforeFind' => array('callable' => 'beforeFind', 'priority' => 100),
-			'Crud.afterFind' => array('callable' => 'afterFind', 'priority' => 100),
-
-			'Crud.beforeDelete' => array('callable' => 'beforeDelete', 'priority' => 100),
 			'Crud.afterDelete' => array('callable' => 'afterDelete', 'priority' => 100)
 		);
 	}
