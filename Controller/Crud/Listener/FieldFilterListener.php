@@ -63,6 +63,10 @@ class FieldFilterListener extends CrudListener {
  * @return void
  */
 	public function beforeFind(CakeEvent $event) {
+		if (!$this->_request->is('api')) {
+			return;
+		}
+
 		$fields = $this->_getFields($event);
 		if (empty($fields)) {
 			return;
@@ -80,6 +84,10 @@ class FieldFilterListener extends CrudListener {
  * @return void
  */
 	public function beforePaginate(CakeEvent $event) {
+		if (!$this->_request->is('api')) {
+			return;
+		}
+
 		$fields = $this->_getFields($event);
 		if (empty($fields)) {
 			return;

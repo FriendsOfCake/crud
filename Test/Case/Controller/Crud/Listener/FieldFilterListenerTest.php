@@ -76,13 +76,13 @@ class FieldFilterListenerTest extends CakeTestCase {
 		$Controller->Components = new StdClass;
 
 		$Request = new CakeRequest();
+		$Request->addDetector('api', array('callback' => function() { return true; }));
 
 		$CrudSubject->set(array(
 			'crud' => $Crud,
 			'request' => $Request,
 			'controller' => $Controller,
-			'action' => 'view',
-			'action' => 'view',
+			'action' => 'add',
 			'model' => $Model,
 			'modelClass' => $Model->name,
 			'args' => array(),
