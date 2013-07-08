@@ -19,8 +19,6 @@ class ApiPaginationHelper extends AppHelper {
 		$_pagination = $this->Paginator->request->paging;
 		$_pagination = $_pagination[$this->Paginator->defaultModel()];
 
-		$extra_paginator_url_params = empty($extra_paginator_url_params) ? array() : $extra_paginator_url_params;
-
 		$pagination = array(
 			'pageCount' => $_pagination['pageCount'],
 			'current' => $_pagination['page'],
@@ -42,6 +40,15 @@ class ApiPaginationHelper extends AppHelper {
 		return $pagination;
 	}
 
+/**
+ * Extract the actual URL from the returned HTML
+ *
+ * Shame on CakePHP for now allowing next() and prev()
+ * to just return the URL and not a full blown html tag
+ *
+ * @param string $string
+ * @return string
+ */
 	protected function _getURL($string) {
 		preg_match('#href="(.*?)"#sim', $string, $r);
 		return Router::url(html_entity_decode($r[1]), true);
