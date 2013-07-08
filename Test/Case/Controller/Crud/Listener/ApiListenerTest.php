@@ -573,8 +573,6 @@ class ApiListenerTest extends CakeTestCase {
 		$apiListener = new ApiListener($subject);
 		$expected = array(
 			'Crud.init' => array('callable' => 'init'),
-			'Crud.beforePaginate' => array('callable' => 'beforePaginate', 'priority' => 100),
-			'Crud.afterPaginate' => array('callable' => 'afterPaginate', 'priority' => 100),
 			'Crud.recordNotFound' => array('callable' => 'recordNotFound', 'priority' => 100),
 			'Crud.invalidId' => array('callable' => 'invalidId', 'priority' => 100),
 			'Crud.beforeRender' => array('callable' => 'beforeRender', 'priority' => 100),
