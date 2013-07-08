@@ -180,6 +180,9 @@ class ApiListener extends CrudListener {
 		} else {
 			$serialize[] = 'data';
 		}
+
+		krsort($serialize);
+
 		$this->_controller->set('_serialize', $serialize);
 
 		// Make sure to use Cruds own View renderer for json and xml
