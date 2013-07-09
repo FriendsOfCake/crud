@@ -25,8 +25,6 @@ class ApiListener extends CrudListener {
 	public function implementedEvents() {
 		return array(
 			'Crud.init' => array('callable' => 'init', 'priority' => 10),
-			'Crud.recordNotFound' => array('callable' => 'recordNotFound', 'priority' => 100),
-			'Crud.invalidId' => array('callable' => 'invalidId', 'priority' => 100),
 			'Crud.beforeRender' => array('callable' => 'beforeRender', 'priority' => 100),
 			'Crud.afterSave' => array('callable' => 'afterSave', 'priority' => 100),
 			'Crud.afterDelete' => array('callable' => 'afterDelete', 'priority' => 100)
@@ -123,40 +121,6 @@ class ApiListener extends CrudListener {
 		$this->_controller->set('data', null);
 
 		return $this->_controller->render();
-	}
-
-/**
- * recordNotFound
- *
- * Always send a HTTP 404 response if something can't be found
- *
- * @param CakeEvent $event
- * @return void
- * @throws NotFoundException If record not found
- */
-	public function recordNotFound(CakeEvent $event) {
-		if (!$this->_request->is('api')) {
-			return;
-		}
-
-		throw new NotFoundException();
-	}
-
-/**
- * invalidId
- *
- * If the id is invalid, simply send a HTTP 400 response
- *
- * @param CakeEvent $event
- * @return void
- * @throws BadRequestException If invalid id provided
- */
-	public function invalidId(CakeEvent $event) {
-		if (!$this->_request->is('api')) {
-			return;
-		}
-
-		throw new BadRequestException('Invalid id');
 	}
 
 /**
