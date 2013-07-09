@@ -51,7 +51,7 @@ class SamplesController extends AppController {
 			'listeners' => [
 				// Also requires the API listener
 				'api' => 'Crud.Api',
-				'fieldFilter', 'Crud.FieldFilter'
+				'fieldFilter' => 'Crud.FieldFilter'
 			]
 		];
 
