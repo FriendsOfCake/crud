@@ -1,5 +1,6 @@
 <?php
 
+App::uses('ConnectionManager', 'Model');
 App::uses('CrudListener', 'Crud.Controller/Crud');
 
 /**
@@ -38,15 +39,15 @@ class ApiQueryLogListener extends CrudListener {
  * @return void
  */
 	public function beforeRender(CakeEvent $event) {
-		if (!$this->_request->is('api')) {
-			return;
-		}
-
 		if (Configure::read('debug') < 2) {
 			return;
 		}
 
-		$serialize = $this->_crud->action()->config('serialize.queryLog', 'queryLog');
+		if (!$this->_request->is('api')) {
+			return;
+		}
+
+		$this->_crud->action()->config('serialize.queryLog', 'queryLog');
 
 		$queryLog = $this->_getQueryLogs();
 		$this->_controller->set('queryLog', $queryLog);
@@ -62,10 +63,11 @@ class ApiQueryLogListener extends CrudListener {
 			return array();
 		}
 
-		$sources = ConnectionManager::sourceList();
+		$sources = $this->_getSources();
 		$queryLog = array();
 		foreach ($sources as $source) {
-			$db = ConnectionManager::getDataSource($source);
+			$db = $this->_getSource($source);
+
 			if (!method_exists($db, 'getLog')) {
 				continue;
 			}
@@ -74,6 +76,26 @@ class ApiQueryLogListener extends CrudListener {
 		}
 
 		return $queryLog;
+	}
+
+/**
+ * Get a list of sources defined in database.php
+ *
+ * @codeCoverageIgnore
+ * @return array
+ */
+	protected function _getSources() {
+		return ConnectionManager::sourceList();
+	}
+
+/**
+ * Get a specific data source
+ *
+ * @codeCoverageIgnore
+ * @return DataSource
+ */
+	protected function _getSource($source) {
+		return ConnectionManager::getDataSource($source);
 	}
 
 }
