@@ -23,12 +23,12 @@ class ApiPaginationListener extends CrudListener {
  */
 	public function implementedEvents() {
 		return array(
-			'Crud.beforeRender' => array('callable' => 'beforeRender')
+			'Crud.beforeRender' => array('callable' => 'beforeRender', 'priority' => 75)
 		);
 	}
 
 /**
- * Appends the query log to the JSON or XML output
+ * Appends the pagination information to the JSON or XML output
  *
  * @param CakeEvent $event
  * @return void
@@ -38,15 +38,19 @@ class ApiPaginationListener extends CrudListener {
 			return;
 		}
 
-		$_pagination = $this->_controller->request->paging;
+		$_pagination = $this->_request->paging;
+		if (!array_key_exists($event->subject->modelClass, $_pagination)) {
+			return;
+		}
+
 		$_pagination = $_pagination[$event->subject->modelClass];
 
 		$pagination = array(
 			'page_count' => $_pagination['pageCount'],
 			'current_page' => $_pagination['page'],
-			'page_count' => $_pagination['count'],
 			'has_next_page' => $_pagination['nextPage'],
 			'has_prev_page' => $_pagination['prevPage'],
+			'count' => $_pagination['count'],
 			'limit' => $_pagination['limit']
 		);
 
