@@ -3,12 +3,8 @@
 App::uses('CrudListener', 'Crud.Controller/Crud');
 
 /**
- * When loaded Crud API will include query logs in the response
- *
- * Very much like the DebugKit version, the SQL log will only be appended
- * if the following conditions is true:
- *  1) The request must be 'api' (.json/.xml)
- *  2) The debug level must be 2 or above
+ * When loaded Crud API Pagination Listener will include
+ * pagination information in the response
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
@@ -42,7 +38,19 @@ class ApiPaginationListener extends CrudListener {
 			return;
 		}
 
-		$this->_controller->helpers[] = 'Crud.ApiPagination';
+		$_pagination = $this->_controller->request->paging;
+		$_pagination = $_pagination[$event->subject->modelClass];
+
+		$pagination = array(
+			'page_count' => $_pagination['pageCount'],
+			'current_page' => $_pagination['page'],
+			'page_count' => $_pagination['count'],
+			'has_next_page' => $_pagination['nextPage'],
+			'has_prev_page' => $_pagination['prevPage'],
+			'limit' => $_pagination['limit']
+		);
+
 		$this->_crud->action()->config('serialize.pagination', 'pagination');
+		$this->_controller->set('pagination', $pagination);
 	}
 }
