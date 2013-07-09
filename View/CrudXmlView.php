@@ -26,9 +26,8 @@ class CrudXmlView extends XmlView {
 
 		if (is_array($serialize)) {
 			$data = array($rootNode => array());
-			$serialize = Hash::normalize($serialize);
-			foreach ($serialize as $key => $alias) {
-				if (empty($alias)) {
+			foreach ($serialize as $alias => $key) {
+				if (is_numeric($alias)) {
 					$alias = $key;
 				}
 

@@ -23,10 +23,9 @@ class CrudJsonView extends JsonView {
  */
 	protected function _serialize($serialize) {
 		if (is_array($serialize)) {
-			$serialize = Hash::normalize($serialize);
 			$data = array();
-			foreach ($serialize as $key => $alias) {
-				if (empty($alias)) {
+			foreach ($serialize as $alias => $key) {
+				if (is_numeric($alias)) {
 					$alias = $key;
 				}
 
