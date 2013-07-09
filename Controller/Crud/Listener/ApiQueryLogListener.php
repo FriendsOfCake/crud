@@ -59,7 +59,7 @@ class ApiQueryLogListener extends CrudListener {
  * @return array
  */
 	protected function _getQueryLogs() {
-		if (!class_exists('ConnectionManager')) {
+		if (!class_exists('ConnectionManager', false)) {
 			return array();
 		}
 
