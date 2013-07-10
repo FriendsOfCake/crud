@@ -100,7 +100,7 @@ class CrudComponent extends Component {
 		'listeners' => array(
 			'RelatedModels' => 'Crud.RelatedModels'
 		),
-		'message' => array(
+		'messages' => array(
 			'invalidId' => array(
 				'code' => 400,
 				'class' => 'BadRequestException',

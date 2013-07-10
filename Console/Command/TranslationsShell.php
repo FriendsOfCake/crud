@@ -250,7 +250,7 @@ class TranslationsShell extends AppShell {
 		}
 
 		$action = $Controller->Crud->action($actionName);
-		$messages = $action->config('message');
+		$messages = $action->config('messages');
 		if (!$messages) {
 			return;
 		}

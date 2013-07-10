@@ -28,7 +28,7 @@ class DeleteCrudAction extends CrudAction {
 		'enabled' => true,
 		'findMethod' => 'count',
 		'secureDelete' => true,
-		'message' => array(
+		'messages' => array(
 			'success' => array(
 				'text' => 'Successfully deleted {name}'
 			),

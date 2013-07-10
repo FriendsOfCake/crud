@@ -390,7 +390,7 @@ class CrudActionTest extends CakeTestCase {
 
 		$this->ActionClass = new $this->actionClassName($this->Subject);
 		$this->ActionClass->config('name', 'test');
-		$this->ActionClass->config('message', array('success' => array('text' => 'hello')));
+		$this->ActionClass->config('messages', array('success' => array('text' => 'hello')));
 		$this->ActionClass->setFlash('success');
 	}
 
@@ -511,7 +511,7 @@ class CrudActionTest extends CakeTestCase {
  * @expectedExceptionMessage Invalid message config for "badConfig" no text key found
  */
 	public function testBadMessageConfig() {
-		$this->Crud->config('message.badConfig', array('foo' => 'bar'));
+		$this->Crud->config('messages.badConfig', array('foo' => 'bar'));
 		$this->ActionClass->message('badConfig');
 	}
 
@@ -521,7 +521,7 @@ class CrudActionTest extends CakeTestCase {
  * @return void
  */
 	public function testInheritedSimpleMessage() {
-		$this->Crud->config('message.simple', 'Simple message');
+		$this->Crud->config('messages.simple', 'Simple message');
 
 		$expected = array(
 			'element' => 'default',
@@ -544,8 +544,8 @@ class CrudActionTest extends CakeTestCase {
  * @return void
  */
 	public function testOverridenSimpleMessage() {
-		$this->Crud->config('message.simple', 'Simple message');
-		$this->ActionClass->config('message.simple', 'Overridden message');
+		$this->Crud->config('messages.simple', 'Simple message');
+		$this->ActionClass->config('messages.simple', 'Overridden message');
 
 		$expected = array(
 			'element' => 'default',
@@ -568,7 +568,7 @@ class CrudActionTest extends CakeTestCase {
  * @return void
  */
 	public function testSimpleMessage() {
-		$this->ActionClass->config('message.simple', 'Simple message');
+		$this->ActionClass->config('messages.simple', 'Simple message');
 
 		$expected = array(
 			'element' => 'default',
@@ -591,7 +591,7 @@ class CrudActionTest extends CakeTestCase {
  * @return void
  */
 	public function testSimpleMessageWithPlaceholders() {
-		$this->Crud->config('message.simple', 'Simple message with id "{id}"');
+		$this->Crud->config('messages.simple', 'Simple message with id "{id}"');
 
 		$expected = array(
 			'element' => 'default',

@@ -48,7 +48,7 @@ class AddCrudAction extends CrudAction {
 			'validate' => 'first',
 			'atomic' => true
 		),
-		'message' => array(
+		'messages' => array(
 			'success' => array(
 				'text' => 'Successfully created {name}'
 			),

@@ -1724,7 +1724,7 @@ class CrudComponentTest extends ControllerTestCase {
 			'listeners' => array(
 				'RelatedModels' => 'Crud.RelatedModels'
 			),
-			'message' => array(
+			'messages' => array(
 				'invalidId' => array(
 					'code' => 400,
 					'class' => 'BadRequestException',
@@ -1770,7 +1770,7 @@ class CrudComponentTest extends ControllerTestCase {
 				'RelatedModels' => 'Crud.RelatedModels',
 				'Api' => 'Crud.Api'
 			),
-			'message' => array(
+			'messages' => array(
 				'invalidId' => array(
 					'code' => 400,
 					'class' => 'BadRequestException',
@@ -1814,7 +1814,7 @@ class CrudComponentTest extends ControllerTestCase {
 			'listeners' => array(
 				'RelatedModels' => 'Crud.RelatedModels'
 			),
-			'message' => array(
+			'messages' => array(
 				'invalidId' => array(
 					'code' => 400,
 					'class' => 'BadRequestException',

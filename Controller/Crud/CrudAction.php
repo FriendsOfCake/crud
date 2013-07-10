@@ -169,9 +169,9 @@ abstract class CrudAction implements CakeEventListener {
 			throw new CakeException('Missing message type');
 		}
 
-		$config = $this->config('message.' . $type);
+		$config = $this->config('messages.' . $type);
 		if (empty($config)) {
-			$config = $this->_crud->config('message.' . $type);
+			$config = $this->_crud->config('messages.' . $type);
 			if (empty($config)) {
 				throw new CakeException(sprintf('Invalid message type "%s"', $type));
 			}
@@ -197,10 +197,12 @@ abstract class CrudAction implements CakeEventListener {
 			str_replace('{name}', $config['name'], $config['text'])
 		);
 
-		$config['text'] = __d(
-			$this->config('message.domain') ?: 'crud',
-			$config['params']['original']
-		);
+		$domain = $this->config('messages.domain');
+		if (!$domain) {
+			$domain = $this->_crud->config('messages.domain') ?: 'crud';
+		}
+
+		$config['text'] = __d($domain, $config['params']['original']);
 
 		$config['text'] = String::insert(
 			$config['text'],
