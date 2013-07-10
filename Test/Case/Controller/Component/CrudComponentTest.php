@@ -273,7 +273,7 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->assertEquals($expected, $Crud->settings['actions']);
 
 		$expected = array(
-			'related' => array('className' => 'Related'),
+			'related' => array('className' => 'Crud.Related'),
 			'relatedModels' => array('className' => 'Crud.RelatedModels'),
 			'translations' => array('foo' => 'bar', 'className' => 'Crud.Translations'),
 			'mylistener' => array('className' => 'MyPlugin.Mylistener')
@@ -1875,6 +1875,18 @@ class CrudComponentTest extends ControllerTestCase {
 	}
 
 /**
+ * Test removing a listener that doesn't exist
+ * should return false
+ *
+ * @return void
+ */
+	public function testRemoveListenerNoExist() {
+		$expected = false;
+		$result = $this->Crud->removeListener('invalid_name');
+		$this->assertEqual($result, $expected);
+	}
+
+/**
  * Test that removeLister works
  *
  * Also ensure that the listener is detached from EventManager
@@ -1904,4 +1916,172 @@ class CrudComponentTest extends ControllerTestCase {
 
 		$this->Crud->listener('translations');
 	}
+
+/**
+ * Test changing view var for one action works
+ *
+ * @return void
+ */
+	public function testViewVarSingleAction() {
+		$this->Crud->viewVar('index', 'my_var');
+
+		$expected = 'my_var';
+		$result = $this->Crud->action('index')->viewVar();
+		$this->assertEqual($result, $expected);
+	}
+
+/**
+ * Test changing view var for multiple actions works
+ *
+ * @return void
+ */
+	public function testViewVarMultipleActions() {
+		$this->Crud->viewVar(array('index' => 'my_var', 'view' => 'view_var'));
+
+		$expected = 'my_var';
+		$result = $this->Crud->action('index')->viewVar();
+		$this->assertEqual($result, $expected);
+
+		$expected = 'view_var';
+		$result = $this->Crud->action('view')->viewVar();
+		$this->assertEqual($result, $expected);
+	}
+
+/**
+ * Test changing view var for multiple actions works
+ *
+ * @return void
+ */
+	public function testFindMethodMultipleActions() {
+		$this->Crud->findMethod(array('index' => 'my_all', 'view' => 'my_view'));
+
+		$expected = 'my_all';
+		$result = $this->Crud->action('index')->findMethod();
+		$this->assertEqual($result, $expected);
+
+		$expected = 'my_view';
+		$result = $this->Crud->action('view')->findMethod();
+		$this->assertEqual($result, $expected);
+	}
+
+/**
+ * Test setting defaults for one action works
+ *
+ * @return void
+ */
+	public function testDefaultsOnAction() {
+		$this->Crud->defaults('actions', 'index', array('unit_test' => true));
+		$config = $this->Crud->defaults('actions', 'index');
+
+		$this->assertEqual($config['unit_test'], true);
+	}
+
+/**
+ * Test setting defaults for multiple actions work
+ *
+ * @return void
+ */
+	public function testDefaultsMultipleActions() {
+		$this->Crud->defaults('actions', array('index', 'view'), array('unit_test' => true));
+
+		$config = $this->Crud->defaults('actions', 'index');
+		$this->assertEqual($config['unit_test'], true);
+
+		$config = $this->Crud->defaults('actions', 'view');
+		$this->assertEqual($config['unit_test'], true);
+	}
+
+/**
+ * Test setting defaults for one listener works
+ *
+ * @return void
+ */
+	public function testDefaultsOneListener() {
+		$this->Crud->defaults('listeners', 'translations', array('unit_test' => true));
+		$config = $this->Crud->defaults('listeners', 'translations');
+
+		$this->assertEqual($config['unit_test'], true);
+	}
+
+/**
+ * Test setting defaults for multiple actions work
+ *
+ * @return void
+ */
+	public function testDefaultsMultipleListeners() {
+		$this->Crud->defaults('listeners', array('translations', 'relatedModels'), array('unit_test' => true));
+
+		$config = $this->Crud->defaults('listeners', 'translations');
+		$this->assertEqual($config['unit_test'], true);
+
+		$config = $this->Crud->defaults('listeners', 'relatedModels');
+		$this->assertEqual($config['unit_test'], true);
+	}
+
+/**
+ * Test setting defaults for one listener works
+ *
+ * This proves that not setting 'className' doesn't break
+ *
+ * @return void
+ */
+	public function testDefaultsListenerNotAlreadyLoaded() {
+		$this->Crud->defaults('listeners', 'api', array('unit_test' => true));
+		$config = $this->Crud->defaults('listeners', 'api');
+		$this->assertEqual($config['unit_test'], true);
+	}
+
+/**
+ * Test adding a listener only by a name and no class works
+ *
+ * By only providing a name, it should default to Crud plugin
+ *
+ * @return void
+ */
+	public function testAddListenerOnlyNameNoClassName() {
+		$this->Crud->addListener('api');
+		$config = $this->Crud->config('listeners');
+		$this->assertEqual($config['api'], array('className' => 'Crud.Api'));
+	}
+
+/**
+ * Test adding a listener only by a name and a class works
+ *
+ * By providing a class, it should not default to Crud plugin
+ * even though it doesn't contain any plugin.
+ *
+ * This allow developers to put listeners in app/Controller/Crud
+ *
+ * @return void
+ */
+	public function testAddListenerOnlyNameClassName() {
+		$this->Crud->addListener('api', 'Api');
+		$config = $this->Crud->config('listeners');
+		$this->assertEqual($config['api'], array('className' => 'Api'));
+	}
+
+/**
+ * Test adding a listener only by its name, with plugin dot syntax
+ * works
+ *
+ * @return void
+ */
+	public function testAddListenerOnlyNameWithPlugin() {
+		$this->Crud->addListener('MyPlugin.Api');
+		$config = $this->Crud->config('listeners');
+		$this->assertEqual($config['api'], array('className' => 'MyPlugin.Api'));
+	}
+
+/**
+ * Test adding a listener only by its name, with plugin dot syntax
+ * works
+ *
+ * @return void
+ */
+	public function testAddListenerOnlyNameWithPluginLowercase() {
+		$this->Crud->addListener('MyPlugin.api');
+		$config = $this->Crud->config('listeners');
+		$this->assertEqual($config['api'], array('className' => 'MyPlugin.Api'));
+	}
+
 }

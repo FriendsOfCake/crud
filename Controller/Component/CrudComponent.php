@@ -356,12 +356,23 @@ class CrudComponent extends Component {
  *
  * This will not load or initialize the listener, only lazy-load it
  *
+ * If `$name` is provided but no `$class` argument, the className will
+ * be derived from the `$name`.
+ *
+ * CakePHP Plugin.ClassName format for `$name` and `$class` is supported
+ *
  * @param string $name
- * @param string $class Normal cakephp plugin-dot annotation supported
+ * @param string|null $class Normal CakePHP plugin-dot annotation supported
  * @param array $defaults Any default settings for a listener
  * @return void
  */
-	public function addListener($name, $class, $defaults = array()) {
+	public function addListener($name, $class = null, $defaults = array()) {
+		if (false !== strpos($name, '.')) {
+			list($plugin, $name) = pluginSplit($name);
+			$name = strtolower($name);
+			$class = $plugin . '.' . ucfirst($name);
+		}
+
 		$this->config(sprintf('listeners.%s', $name), array('className' => $class) + $defaults);
 	}
 
@@ -459,7 +470,7 @@ class CrudComponent extends Component {
 		}
 
 		if (is_array($value)) {
-			$value = $value + (array)Hash::get($this->settings, $key);
+			$value = array_merge((array)Hash::get($this->settings, $key), $value);
 		}
 
 		$this->settings = Hash::insert($this->settings, $key, $value);
@@ -468,6 +479,7 @@ class CrudComponent extends Component {
 				$this->_normalizeConfig($type);
 			}
 		}
+
 		return $this;
 	}
 
@@ -541,6 +553,7 @@ class CrudComponent extends Component {
 			$this->settings[$type] = Hash::normalize($this->settings[$type]);
 			foreach ($this->settings[$type] as $name => $settings) {
 				if (is_array($settings) && !empty($settings['className'])) {
+					$this->settings[$type][$name] = $settings;
 					continue;
 				}
 
@@ -552,11 +565,7 @@ class CrudComponent extends Component {
 					$settings = array();
 				}
 
-				if ($type === 'actions') {
-					$className = $this->_handlerClassName($name, $className);
-				} elseif (empty($className)) {
-					throw new CakeException(sprintf('Missing "className" for %s', $name));
-				}
+				$className = $this->_handlerClassName($name, $className);
 
 				$settings['className'] = $className;
 				$this->settings[$type][$name] = $settings;
@@ -565,7 +574,7 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Generate valid class name for action handler
+ * Generate valid class name for action and listener handler
  *
  * @param string $action
  * @param string|null $className
@@ -582,7 +591,8 @@ class CrudComponent extends Component {
 		} elseif (false === strpos($className, '.')) {
 			$className = 'Crud.' . ucfirst($className);
 		}
-		return $className;
+
+		return ucfirst($className);
 	}
 
 /**
