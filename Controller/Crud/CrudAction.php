@@ -344,7 +344,7 @@ abstract class CrudAction implements CakeEventListener {
  * @return void
  */
 	public function setFlash($type) {
-		$config = $this->message($type, array('return' => 'array'));
+		$config = $this->message($type);
 
 		$subject = $this->_crud->trigger('setFlash', $config);
 		if (!empty($subject->stopped)) {
