@@ -378,80 +378,6 @@ class ApiListenerTest extends CakeTestCase {
 	}
 
 /**
- * Tests that recordNotFound will do nothing when the call is not API
- *
- * @return void
- */
-	public function testRecordNotFoundNoAPI() {
-		$subject = $this->getMock('CrudSubject');
-		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
-		$apiListener = new ApiListener($subject);
-		$subject->request->expects($this->once())
-			->method('is')
-			->with('api')
-			->will($this->returnValue(false));
-
-		$event = new CakeEvent('Crud.recordNotFound', $subject);
-		$apiListener->recordNotFound($event);
-	}
-
-/**
- * Tests that recordNotFound will throw an exception
- *
- * @expectedException NotFoundException
- * @return void
- */
-	public function testRecordNotFound() {
-		$subject = $this->getMock('CrudSubject');
-		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
-		$apiListener = new ApiListener($subject);
-		$subject->request->expects($this->once())
-			->method('is')
-			->with('api')
-			->will($this->returnValue(true));
-
-		$event = new CakeEvent('Crud.recordNotFound', $subject);
-		$apiListener->recordNotFound($event);
-	}
-
-/**
- * Tests that invalidId will do nothing when the call is not API
- *
- * @return void
- */
-	public function testInvalidIdNoAPI() {
-		$subject = $this->getMock('CrudSubject');
-		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
-		$apiListener = new ApiListener($subject);
-		$subject->request->expects($this->once())
-			->method('is')
-			->with('api')
-			->will($this->returnValue(false));
-
-		$event = new CakeEvent('Crud.invalidId', $subject);
-		$apiListener->invalidId($event);
-	}
-
-/**
- * Tests that invalidId will throw an exception
- *
- * @expectedException BadRequestException
- * @return void
- */
-	public function testInvalidID() {
-		$subject = $this->getMock('CrudSubject');
-		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
-		$apiListener = new ApiListener($subject);
-		$subject->request->expects($this->once())
-			->method('is')
-			->with('api')
-			->will($this->returnValue(true));
-
-		$event = new CakeEvent('Crud.invalidId', $subject);
-		$apiListener->invalidId($event);
-	}
-
-/**
  * Tests that beforeRender logic is not run if the call is not API
  *
  * @return void
@@ -573,8 +499,6 @@ class ApiListenerTest extends CakeTestCase {
 		$apiListener = new ApiListener($subject);
 		$expected = array(
 			'Crud.init' => array('callable' => 'init', 'priority' => 10),
-			'Crud.recordNotFound' => array('callable' => 'recordNotFound', 'priority' => 100),
-			'Crud.invalidId' => array('callable' => 'invalidId', 'priority' => 100),
 			'Crud.beforeRender' => array('callable' => 'beforeRender', 'priority' => 100),
 			'Crud.afterSave' => array('callable' => 'afterSave', 'priority' => 100),
 			'Crud.afterDelete' => array('callable' => 'afterDelete', 'priority' => 100)
