@@ -11,7 +11,7 @@ Adds query log output to Api responses
 
 This feature requires the [Api listener]({{site.url}}/docs/listeners/api.html) to work
 
-This listener will only append the `query log` if `debug` is 2 or greater
+This listener will only append the `queryLog` key if `debug` is 2 or greater
 
 ## Attach it on the fly in your controller `beforeFilter`
 
@@ -21,11 +21,11 @@ This is recommended if you want to attach it only to specific controllers and ac
 <?php
 class SamplesController extends AppController {
 
-	public function beforeFilter() {
-		$this->Crud->addListener('api', 'Crud.Api');
-		$this->Crud->addListener('api_query_log', 'Crud.ApiQueryLog');
-		parent::beforeFilter();
-	}
+  public function beforeFilter() {
+    $this->Crud->addListener('Api');
+    $this->Crud->addListener('ApiQueryLog');
+  }
+
 }
 ?>
 {% endhighlight %}
@@ -38,19 +38,12 @@ This is recommended if you want to attach it to all controllers, application wid
 <?php
 class SamplesController extends AppController {
 
-	public $components = [
-		'RequestHandler',
-		'Crud.Crud' => [
-			'actions' => [
-				'index',
-				'view'
-			],
-			'listeners' => [
-				// Also requires the API listener
-				'api' => 'Crud.Api',
-				'api_query_log' => 'Crud.ApiQueryLog'
-			]
-		];
+  public $components = [
+    'RequestHandler',
+    'Crud.Crud' => [
+      'actions' => ['index', 'view'],
+      'listeners' => ['Api', 'ApiQueryLog']
+    ];
 
 }
 ?>
@@ -60,7 +53,7 @@ class SamplesController extends AppController {
 
 The listener do not have any configuration options
 
-This listener will only append the `query log` if `debug` is 2 or greater
+This listener will only append the `queryLog` key if `debug` is 2 or greater
 
 # Example output
 

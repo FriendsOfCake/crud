@@ -12,3 +12,5 @@ Crud follows the CakePHP bake / scaffold conventions by default.
 `UsersController::index()` will have a `$users` property with the paginated list of users
 
 `UsersController::view()` will have a `$user` property with the single user
+
+`Listeners` names is in `UpperCamelBack` format like Helpers, Behaviors and Components in CakePHP

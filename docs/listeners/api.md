@@ -33,11 +33,11 @@ This is recommended if you want to attach it only to specific controllers and ac
 <?php
 class SamplesController extends AppController {
 
-	public function beforeFilter() {
-		$this->Crud->addListener('api', 'Crud.Api');
+  public function beforeFilter() {
+    parent::beforeFilter();
+    $this->Crud->addListener('Api');
+  }
 
-		parent::beforeFilter();
-	}
 }
 ?>
 {% endhighlight %}
@@ -50,17 +50,13 @@ This is recommended if you want to attach it to all controllers, application wid
 <?php
 class SamplesController extends AppController {
 
-	public $components = [
-		'RequestHandler',
-		'Crud.Crud' => [
-			'actions' => [
-				'index',
-				'view',
-			],
-			'listeners' => [
-				'api' => 'Crud.Api'
-			]
-		];
+  public $components = [
+    'RequestHandler',
+    'Crud.Crud' => [
+      'actions' => ['index', 'view'],
+      'listeners' => ['Api']
+    ]
+  ];
 
 }
 ?>
@@ -113,8 +109,8 @@ It's possible to add your root keys simply by [expanding on the cakephp](http://
 
 {% highlight json %}
 {
-	"success": true,
-	"data": {}
+  "success": true,
+  "data": {}
 }
 {% endhighlight %}
 
@@ -122,8 +118,8 @@ It's possible to add your root keys simply by [expanding on the cakephp](http://
 
 {% highlight xml %}
 <response>
-	<success>1</success>
-	<data></data>
+  <success>1</success>
+  <data></data>
 </response>
 {% endhighlight %}
 
@@ -137,19 +133,19 @@ The `data.queryLog` key is only included if `debug` is > 1
 
 {% highlight json %}
 {
-	"success": false,
-	"data": {
-		"code": 500,
-		"url": "/some/url.json",
-		"name": "Some exception message",
-		"exception": {
-			"class": "CakeException",
-			"code": 500,
-			"message": "Some exception message",
-			"trace": []
-		},
-		"queryLog": [ ]
-	}
+  "success": false,
+  "data": {
+    "code": 500,
+    "url": "/some/url.json",
+    "name": "Some exception message",
+    "exception": {
+      "class": "CakeException",
+      "code": 500,
+      "message": "Some exception message",
+      "trace": []
+    },
+    "queryLog": [ ]
+  }
 }
 {% endhighlight %}
 
@@ -157,20 +153,20 @@ The `data.queryLog` key is only included if `debug` is > 1
 
 {% highlight xml %}
 <response>
-	<success>0</success>
-	<data>
-		<code>500</code>
-		<url>/some/url.json</url>
-		<name>Some exception message</name>
-		<exception>
-			<class>CakeException</class>
-			<code>500</code>
-			<message>Some exception message</message>
-			<trace></trace>
-			<trace></trace>
-		</exception>
-		<queryLog/>
-	</data>
+  <success>0</success>
+  <data>
+    <code>500</code>
+    <url>/some/url.json</url>
+    <name>Some exception message</name>
+    <exception>
+      <class>CakeException</class>
+      <code>500</code>
+      <message>Some exception message</message>
+      <trace></trace>
+      <trace></trace>
+    </exception>
+    <queryLog/>
+  </data>
 </response>
 {% endhighlight %}
 

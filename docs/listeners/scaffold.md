@@ -23,10 +23,14 @@ This is recommended if you want to attach it only to specific controllers and ac
 <?php
 class SamplesController extends AppController {
 
-	public function beforeFilter() {
-		$this->Crud->addListener('scaffold', 'Crud.Scaffold');
-		parent::beforeFilter();
-	}
+  public function beforeFilter() {
+    $this->Crud->addListener('Scaffold');
+    // Same as:
+    $this->Crud->addListener('Crud.Scaffold');
+    // Same as:
+    $this->Crud->addListener('Scaffold', 'Crud.Scaffold');
+  }
+
 }
 ?>
 {% endhighlight %}
@@ -39,17 +43,17 @@ This is recommended if you want to attach it to all controllers, application wid
 <?php
 class SamplesController extends AppController {
 
-	public $components = [
-		'Crud.Crud' => [
-			'actions' => [
-				'index',
-				'view'
-			],
-			'listeners' => [
-				'scaffold' => 'Crud.Scaffold'
-			]
-		];
-
+  public $components = [
+    'Crud.Crud' => [
+      'actions' => ['index', 'view' ],
+      'listeners' => [
+        'Scaffold'
+        // Same as
+        'Crud.Scaffold',
+        // Same as
+        'Scaffold' => 'Crud.Scaffold'
+      ]
+    ];
 }
 ?>
 {% endhighlight %}

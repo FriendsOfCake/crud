@@ -22,13 +22,13 @@ This is recommended if you want to attach it only to specific controllers and ac
 <?php
 class SamplesController extends AppController {
 
-	public function beforeFilter() {
-		// Also requires the API listener
-		$this->Crud->addListener('api', 'Crud.Api');
-		$this->Crud->addListener('fieldFilter', 'Crud.FieldFilter');
+  public function beforeFilter() {
+    // Also requires the API listener
+    $this->Crud->addListener('Api');
+    $this->Crud->addListener('ApiFieldFilter');
 
-		parent::beforeFilter();
-	}
+    parent::beforeFilter();
+  }
 }
 ?>
 {% endhighlight %}
@@ -41,19 +41,16 @@ This is recommended if you want to attach it to all controllers, application wid
 <?php
 class SamplesController extends AppController {
 
-	public $components = [
-		'RequestHandler',
-		'Crud.Crud' => [
-			'actions' => [
-				'index',
-				'view',
-			],
-			'listeners' => [
-				// Also requires the API listener
-				'api' => 'Crud.Api',
-				'fieldFilter' => 'Crud.FieldFilter'
-			]
-		];
+  public $components = [
+    'RequestHandler',
+    'Crud.Crud' => [
+      'actions' => ['index', 'view'],
+      'listeners' => [
+        // Also requires the API listener
+        'Api',
+        'ApiFieldFilter'
+      ]
+    ];
 
 }
 ?>
@@ -70,10 +67,10 @@ This behavior can be changed
 {% highlight php %}
 <?php
 // Allow request without ?fields=
-$this->Crud->listener('fieldFilter')->allowNoFilter(true);
+$this->Crud->listener('ApiFieldFilter')->allowNoFilter(true);
 
 // Reject requests without ?fields=
-$this->Crud->listener('fieldFilter')->allowNoFilter(false);
+$this->Crud->listener('ApiFieldFilter')->allowNoFilter(false);
 ?>
 {% endhighlight %}
 
@@ -87,7 +84,7 @@ The fields must be in `Model.field` format
 
 {% highlight php %}
 <?php
-$this->Crud->listener('fieldFilter')->whitelistFields(array('Model.id', 'Model.name', 'Model.created'));
+$this->Crud->listener('ApiFieldFilter')->whitelistFields(['Model.id', 'Model.name', 'Model.created']);
 ?>
 {% endhighlight %}
 
@@ -101,7 +98,7 @@ The fields must be in `Model.field` format
 
 {% highlight php %}
 <?php
-$this->Crud->listener('fieldFilter')->blacklistFields(array('Model.password', 'Model.auth_token', 'Model.created'));
+$this->Crud->listener('ApiFieldFilter')->blacklistFields(['Model.password', 'Model.auth_token', 'Model.created']);
 ?>
 {% endhighlight %}
 
@@ -113,7 +110,7 @@ If no whitelist exist, no relations will be added automatically
 
 {% highlight php %}
 <?php
-$this->Crud->listener('fieldFilter')->whitelistModels(array('list', 'of', 'models'));
+$this->Crud->listener('ApiFieldFilter')->whitelistModels(['list', 'of', 'models']);
 ?>
 {% endhighlight %}
 

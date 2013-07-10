@@ -19,11 +19,11 @@ This is recommended if you want to attach it only to specific controllers and ac
 <?php
 class SamplesController extends AppController {
 
-	public function beforeFilter() {
-		$this->Crud->addListener('api', 'Crud.Api');
-		$this->Crud->addListener('api_pagination', 'Crud.ApiPagination');
-		parent::beforeFilter();
-	}
+  public function beforeFilter() {
+    $this->Crud->addListener('Api');
+    $this->Crud->addListener('ApiPagination');
+  }
+
 }
 ?>
 {% endhighlight %}
@@ -36,19 +36,12 @@ This is recommended if you want to attach it to all controllers, application wid
 <?php
 class SamplesController extends AppController {
 
-	public $components = [
-		'RequestHandler',
-		'Crud.Crud' => [
-			'actions' => [
-				'index',
-				'view'
-			],
-			'listeners' => [
-				// Also requires the API listener
-				'api' => 'Crud.Api',
-				'api_pagination' => 'Crud.ApiPagination'
-			]
-		];
+  public $components = [
+    'RequestHandler',
+    'Crud.Crud' => [
+      'actions' => ['index', 'view'],
+      'listeners' => ['Api', 'ApiPagination']
+    ];
 
 }
 ?>

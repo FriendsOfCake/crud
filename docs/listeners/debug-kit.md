@@ -25,22 +25,15 @@ For the `DebugKit panel` the panel must be configured manually as shown below.
 <?php
 class SamplesController extends AppController {
 
-   public $components = [
-      // Make sure to add the Crud.Crud panel to DebugKit panels
-      'DebugKit.Toolbar' => [
-         'panels' => ['Crud.Crud']
-      ],
-      'Crud.Crud' => [
-         'actions' => [
-            'index',
-            'view'
-         ],
-         // Make sure to load the DebugKit listener
-         'listeners' => [
-            'debug_kit' => 'Crud.DebugKit'
-         ]
-      ];
-
+  public $components = [
+    'DebugKit.Toolbar' => [
+      // Add Crud panel to DebugKit
+      'panels' => ['Crud.Crud']
+    ],
+    'Crud.Crud' => [
+      // Load DebugKit listener
+      'listeners' => ['DebugKit']
+    ];
 }
 ?>
 {% endhighlight %}
