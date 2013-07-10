@@ -134,7 +134,7 @@ class TranslationsShell extends AppShell {
 						$controllers[] = $plugin . '.' . $controller;
 					} else {
 						$pluginControllers = App::objects("$plugin.Controller");
-						foreach($pluginControllers as &$c) {
+						foreach ($pluginControllers as &$c) {
 							$c = "$plugin.$c";
 						}
 						$controllers = array_merge($controllers, $pluginControllers);
