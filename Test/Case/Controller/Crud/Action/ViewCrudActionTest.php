@@ -288,7 +288,7 @@ class ViewCrudActionTest extends CakeTestCase {
 			->with('recordNotFound', array(
 				'id' => 1
 			))
-			->will($this->returnValue(new CrudSubject(array('item' => $data))));
+			->will($this->returnValue(new CrudSubject(array('item' => $data, 'id' => 1))));
 		$Crud
 			->expects($this->exactly(2))
 			->method('trigger');

@@ -48,6 +48,14 @@ class EditCrudAction extends CrudAction {
 			'validate' => 'first',
 			'atomic' => true
 		),
+		'messages' => array(
+			'success' => array(
+				'text' => 'Successfully updated {name}'
+			),
+			'error' => array(
+				'text' => 'Could not update {name}'
+			)
+		),
 		'serialize' => array()
 	);
 
@@ -79,11 +87,11 @@ class EditCrudAction extends CrudAction {
 		if ($this->_request->is('put')) {
 			$this->_crud->trigger('beforeSave', compact('id'));
 			if ($this->_model->saveAll($this->_request->data, $this->saveOptions())) {
-				$this->setFlash('update.success');
+				$this->setFlash('success');
 				$subject = $this->_crud->trigger('afterSave', array('id' => $id, 'success' => true, 'created' => false));
 				return $this->_redirect($subject, array('action' => 'index'));
 			} else {
-				$this->setFlash('update.error');
+				$this->setFlash('error');
 				$this->_crud->trigger('afterSave', array('id' => $id, 'success' => false, 'created' => false));
 			}
 		} else {
@@ -96,7 +104,10 @@ class EditCrudAction extends CrudAction {
 			$this->_request->data = $this->_model->find($subject->findMethod, $query);
 			if (empty($this->_request->data)) {
 				$subject = $this->_crud->trigger('recordNotFound', compact('id'));
-				throw new NotFoundException('find.error');
+
+				$message = $this->message('recordNotFound', array('id' => $subject->id));
+				$exceptionClass = $message['class'];
+				throw new $exceptionClass($message['text'], $message['code']);
 			}
 
 			$this->_crud->trigger('afterFind', compact('id'));
