@@ -101,6 +101,7 @@ class CrudComponent extends Component {
 			'RelatedModels' => 'Crud.RelatedModels'
 		),
 		'messages' => array(
+			'domain' => 'crud',
 			'invalidId' => array(
 				'code' => 400,
 				'class' => 'BadRequestException',

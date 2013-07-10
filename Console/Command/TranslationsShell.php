@@ -256,6 +256,9 @@ class TranslationsShell extends AppShell {
 		}
 
 		foreach (array_keys($messages) as $type) {
+			if ($type === 'domain') {
+				continue;
+			}
 			$action->setFlash($type);
 		}
 	}
