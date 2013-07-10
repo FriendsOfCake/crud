@@ -98,8 +98,8 @@ class CrudComponent extends Component {
 		'eventPrefix' => 'Crud',
 		'actions' => array(),
 		'listeners' => array(
-			'translations' => 'Crud.Translations',
-			'relatedModels' => 'Crud.RelatedModels'
+			'Translations' => 'Crud.Translations',
+			'RelatedModels' => 'Crud.RelatedModels'
 		)
 	);
 
@@ -551,6 +551,7 @@ class CrudComponent extends Component {
 
 		foreach ((array)$types as $type) {
 			$this->settings[$type] = Hash::normalize($this->settings[$type]);
+
 			foreach ($this->settings[$type] as $name => $settings) {
 				if (is_array($settings) && !empty($settings['className'])) {
 					$this->settings[$type][$name] = $settings;
@@ -565,8 +566,14 @@ class CrudComponent extends Component {
 					$settings = array();
 				}
 
-				$className = $this->_handlerClassName($name, $className);
+				if ($type === 'listeners' && false !== strpos($name, '.')) {
+					unset($this->settings[$type][$name]);
 
+					list($plugin, $name) = pluginSplit($name);
+					$name = Inflector::camelize($name);
+				}
+
+				$className = $this->_handlerClassName($name, $className);
 				$settings['className'] = $className;
 				$this->settings[$type][$name] = $settings;
 			}

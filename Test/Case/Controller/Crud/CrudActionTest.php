@@ -379,7 +379,7 @@ class CrudActionTest extends CakeTestCase {
 		$this->Subject->crud
 			->expects($this->once())
 			->method('listener')
-			->with('translations');
+			->with('Translations');
 		$this->Subject->crud
 			->expects($this->once())
 			->method('trigger')

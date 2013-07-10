@@ -254,9 +254,9 @@ class CrudComponentTest extends ControllerTestCase {
 				'foo' => 'index'
 			),
 			'listeners' => array(
-				'related' => 'Related',
-				'translations' => array('foo' => 'bar', 'className' => 'Crud.Translations'),
-				'mylistener' => 'MyPlugin.Mylistener'
+				'Related' => 'Related',
+				'Translations' => array('foo' => 'bar', 'className' => 'Crud.Translations'),
+				'Mylistener' => 'MyPlugin.Mylistener'
 			)
 		);
 		$Crud = new CrudComponent($Collection, $settings);
@@ -273,10 +273,10 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->assertEquals($expected, $Crud->settings['actions']);
 
 		$expected = array(
-			'related' => array('className' => 'Crud.Related'),
-			'relatedModels' => array('className' => 'Crud.RelatedModels'),
-			'translations' => array('foo' => 'bar', 'className' => 'Crud.Translations'),
-			'mylistener' => array('className' => 'MyPlugin.Mylistener')
+			'Related' => array('className' => 'Crud.Related'),
+			'Mylistener' => array('className' => 'MyPlugin.Mylistener'),
+			'RelatedModels' => array('className' => 'Crud.RelatedModels'),
+			'Translations' => array('foo' => 'bar', 'className' => 'Crud.Translations'),
 		);
 		$this->assertEquals($expected, $Crud->settings['listeners']);
 	}
@@ -975,7 +975,7 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
 
 		$this->Crud->action('add')->config('relatedModels', false);
-		$this->assertEquals(array(), $this->Crud->listener('relatedModels')->models('add'));
+		$this->assertEquals(array(), $this->Crud->listener('RelatedModels')->models('add'));
 
 		$this->Crud->executeAction('add');
 		$vars = $this->controller->viewVars;
@@ -992,7 +992,7 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
 
 		$this->Crud->action('edit')->config('relatedModels', false);
-		$this->assertEquals(array(), $this->Crud->listener('relatedModels')->models('edit'));
+		$this->assertEquals(array(), $this->Crud->listener('RelatedModels')->models('edit'));
 
 		$this->Crud->executeAction('edit', array(1));
 		$vars = $this->controller->viewVars;
@@ -1009,7 +1009,7 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
 
 		$this->Crud->action('add')->config('relatedModels', true);
-		$this->assertEquals(array('Author', 'Tag'), $this->Crud->listener('relatedModels')->models('add'));
+		$this->assertEquals(array('Author', 'Tag'), $this->Crud->listener('RelatedModels')->models('add'));
 
 		$this->Crud->executeAction('add');
 		$vars = $this->controller->viewVars;
@@ -1027,7 +1027,7 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')), false);
 
 		$this->Crud->action('edit')->config('relatedModels', true);
-		$this->assertEquals(array('Author', 'Tag'), $this->Crud->listener('relatedModels')->models('edit'));
+		$this->assertEquals(array('Author', 'Tag'), $this->Crud->listener('RelatedModels')->models('edit'));
 
 		$this->Crud->executeAction('edit', array(3));
 
@@ -1073,7 +1073,7 @@ class CrudComponentTest extends ControllerTestCase {
 		));
 
 		$this->Crud->action('add')->config('relatedModels', true);
-		$this->assertEquals(array('Author', 'Tag'), $this->Crud->listener('relatedModels')->models('add'));
+		$this->assertEquals(array('Author', 'Tag'), $this->Crud->listener('RelatedModels')->models('add'));
 	}
 
 /**
@@ -1407,7 +1407,7 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->Crud->action('index')->config('relatedModels', 'Tag');
 
 		$expected = array('Tag');
-		$value = $this->Crud->listener('relatedModels')->models('index');
+		$value = $this->Crud->listener('RelatedModels')->models('index');
 		$this->assertSame($expected, $value);
 
 		$this->Crud->executeAction('index');
@@ -1427,7 +1427,7 @@ class CrudComponentTest extends ControllerTestCase {
 	public function testEnableRelatedModelsArrayForIndexAction() {
 		$this->Crud->action('index')->config('relatedModels', array('Tag', 'Author'));
 
-		$this->assertSame(array('Tag', 'Author'), $this->Crud->listener('relatedModels')->models('index'));
+		$this->assertSame(array('Tag', 'Author'), $this->Crud->listener('RelatedModels')->models('index'));
 
 		$this->Crud->executeAction('index');
 
@@ -1722,8 +1722,8 @@ class CrudComponentTest extends ControllerTestCase {
 			'eventPrefix' => 'Crud',
 			'actions' => array(),
 			'listeners' => array(
-				'translations' => 'Crud.Translations',
-				'relatedModels' => 'Crud.RelatedModels'
+				'Translations' => 'Crud.Translations',
+				'RelatedModels' => 'Crud.RelatedModels'
 			)
 		);
 		$this->assertEquals($expected, $result);
@@ -1741,7 +1741,7 @@ class CrudComponentTest extends ControllerTestCase {
 
 		$config = array(
 			'listeners' => array(
-				'api' => 'Crud.Api'
+				'Api' => 'Crud.Api'
 			)
 		);
 
@@ -1751,9 +1751,9 @@ class CrudComponentTest extends ControllerTestCase {
 			'eventPrefix' => 'Crud',
 			'actions' => array(),
 			'listeners' => array(
-				'translations' => 'Crud.Translations',
-				'relatedModels' => 'Crud.RelatedModels',
-				'api' => 'Crud.Api'
+				'Translations' => 'Crud.Translations',
+				'RelatedModels' => 'Crud.RelatedModels',
+				'Api' => 'Crud.Api'
 			)
 		);
 		$this->assertEquals($expected, $result);
@@ -1771,7 +1771,7 @@ class CrudComponentTest extends ControllerTestCase {
 
 		$config = array(
 			'listeners' => array(
-				'translations' => 'MyPlugin.Translations'
+				'Translations' => 'MyPlugin.Translations'
 			)
 		);
 
@@ -1781,8 +1781,8 @@ class CrudComponentTest extends ControllerTestCase {
 			'eventPrefix' => 'Crud',
 			'actions' => array(),
 			'listeners' => array(
-				'translations' => 'MyPlugin.Translations',
-				'relatedModels' => 'Crud.RelatedModels'
+				'Translations' => 'MyPlugin.Translations',
+				'RelatedModels' => 'Crud.RelatedModels'
 			)
 		);
 		$this->assertEquals($expected, $result);
@@ -1797,8 +1797,8 @@ class CrudComponentTest extends ControllerTestCase {
 	public function testAddListenerWithoutDefaults() {
 		$listeners = $this->Crud->config('listeners');
 		$expected = array(
-			'translations' => array('className' => 'Crud.Translations'),
-			'relatedModels' => array('className' => 'Crud.RelatedModels')
+			'Translations' => array('className' => 'Crud.Translations'),
+			'RelatedModels' => array('className' => 'Crud.RelatedModels')
 		);
 
 		$this->assertEquals($listeners, $expected);
@@ -1807,8 +1807,8 @@ class CrudComponentTest extends ControllerTestCase {
 
 		$listeners = $this->Crud->config('listeners');
 		$expected = array(
-			'translations' => array('className' => 'Crud.Translations'),
-			'relatedModels' => array('className' => 'Crud.RelatedModels'),
+			'Translations' => array('className' => 'Crud.Translations'),
+			'RelatedModels' => array('className' => 'Crud.RelatedModels'),
 			'api' => array('className' => 'Crud.Api')
 		);
 		$this->assertEquals($listeners, $expected);
@@ -1825,8 +1825,8 @@ class CrudComponentTest extends ControllerTestCase {
 	public function testAddListenerWithDefaults() {
 		$listeners = $this->Crud->config('listeners');
 		$expected = array(
-			'translations' => array('className' => 'Crud.Translations'),
-			'relatedModels' => array('className' => 'Crud.RelatedModels')
+			'Translations' => array('className' => 'Crud.Translations'),
+			'RelatedModels' => array('className' => 'Crud.RelatedModels')
 		);
 
 		$this->assertEquals($listeners, $expected);
@@ -1835,8 +1835,8 @@ class CrudComponentTest extends ControllerTestCase {
 
 		$listeners = $this->Crud->config('listeners');
 		$expected = array(
-			'translations' => array('className' => 'Crud.Translations'),
-			'relatedModels' => array('className' => 'Crud.RelatedModels'),
+			'Translations' => array('className' => 'Crud.Translations'),
+			'RelatedModels' => array('className' => 'Crud.RelatedModels'),
 			'api' => array('className' => 'Crud.Api', 'test' => 1)
 		);
 		$this->assertEquals($listeners, $expected);
@@ -1855,17 +1855,17 @@ class CrudComponentTest extends ControllerTestCase {
 	public function testRemoveListener() {
 		$listeners = $this->Crud->config('listeners');
 		$expected = array(
-			'translations' => array('className' => 'Crud.Translations'),
-			'relatedModels' => array('className' => 'Crud.RelatedModels')
+			'Translations' => array('className' => 'Crud.Translations'),
+			'RelatedModels' => array('className' => 'Crud.RelatedModels')
 		);
 
 		$this->assertEquals($listeners, $expected);
 
-		$this->Crud->removeListener('translations');
+		$this->Crud->removeListener('Translations');
 
 		$listeners = $this->Crud->config('listeners');
 		$expected = array(
-			'relatedModels' => array('className' => 'Crud.RelatedModels'),
+			'RelatedModels' => array('className' => 'Crud.RelatedModels'),
 		);
 		$this->assertEquals($listeners, $expected);
 
@@ -1896,25 +1896,25 @@ class CrudComponentTest extends ControllerTestCase {
 	public function testRemoveListenerAttached() {
 		$listeners = $this->Crud->config('listeners');
 		$expected = array(
-			'translations' => array('className' => 'Crud.Translations'),
-			'relatedModels' => array('className' => 'Crud.RelatedModels')
+			'Translations' => array('className' => 'Crud.Translations'),
+			'RelatedModels' => array('className' => 'Crud.RelatedModels')
 		);
 		$this->assertEquals($listeners, $expected);
 
 		// Make sure the listener is attached
-		$this->Crud->listener('translations');
+		$this->Crud->listener('Translations');
 
 		// Remove it (including detach)
-		$this->Crud->removeListener('translations');
+		$this->Crud->removeListener('Translations');
 
 		$listeners = $this->Crud->config('listeners');
-		$expected = array('relatedModels' => array('className' => 'Crud.RelatedModels'));
+		$expected = array('RelatedModels' => array('className' => 'Crud.RelatedModels'));
 		$this->assertEquals($listeners, $expected);
 
 		// Should now throw an exception
-		$this->setExpectedException('CakeException', 'Listener "translations" is not configured');
+		$this->setExpectedException('CakeException', 'Listener "Translations" is not configured');
 
-		$this->Crud->listener('translations');
+		$this->Crud->listener('Translations');
 	}
 
 /**

@@ -284,7 +284,7 @@ abstract class CrudAction implements CakeEventListener {
  */
 	public function setFlash($type) {
 		$name = $this->_getResourceName();
-		$this->_crud->listener('translations');
+		$this->_crud->listener('Translations');
 
 		// default values
 		$message = $element = $key = null;
