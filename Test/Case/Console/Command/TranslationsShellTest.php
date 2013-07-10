@@ -35,6 +35,16 @@ class TranslationsShellTest extends CakeTestCase {
 	}
 
 /**
+ * tearDown
+ *
+ * @return void
+ */
+	public function tearDown() {
+		parent::tearDown();
+		CakePlugin::unload('TestPlugin');
+	}
+
+/**
  * testGenerateTranslations
  *
  * With no controllers, nothing's going to happen
@@ -266,13 +276,14 @@ END;
 	}
 
 /**
- * testGetControllers
+ * testGetControllersDefault
  *
  * Verify that it returns a list of controller names without the Controller suffix
+ * When called with no args, should return the app controller names
  *
  * @return void
  */
-	public function testGetControllers() {
+	public function testGetControllersDefault() {
 		$class = new ReflectionClass('TranslationsShell');
 		$method = $class->getMethod('_getControllers');
 		$method->setAccessible(true);
@@ -283,18 +294,149 @@ END;
 			array($this->out, $this->out, $this->in)
 		);
 
+		$path = CAKE . 'Test' . DS . 'test_app' . DS . 'Controller' . DS;
 		App::build(array(
-			'Controller' => array(CAKE . 'Test' . DS . 'test_app' . DS . 'Controller' . DS)
+			'Controller' => array($path)
 		), App::RESET);
 
 		$expected = array(
-			'App',
 			'Pages',
 			'TestAppsError',
 			'TestsApps',
 			'TestsAppsPosts'
 		);
-		$controllers = $method->invoke($this->Shell, '_getControllers');
+		$controllers = $method->invoke($this->Shell);
+		$this->assertSame($expected, $controllers);
+	}
+
+/**
+ * testGetControllersJunk
+ *
+ * @return void
+ */
+	public function testGetControllersJunk() {
+		$class = new ReflectionClass('TranslationsShell');
+		$method = $class->getMethod('_getControllers');
+		$method->setAccessible(true);
+
+		$this->Shell = $this->getMock(
+			'TranslationsShell',
+			array('in', 'out', 'hr', 'err', '_stop', '_loadController'),
+			array($this->out, $this->out, $this->in)
+		);
+
+		$args = array(
+			'not a path'
+		);
+
+		$expected = array();
+		$controllers = $method->invoke($this->Shell, $args);
+		$this->assertSame($expected, $controllers);
+	}
+
+/**
+ * testGetControllersAppNamed
+ *
+ * If the file paths to app controllers are passed - should be honored
+ *
+ * @return void
+ */
+	public function testGetControllersAppNamed() {
+		$class = new ReflectionClass('TranslationsShell');
+		$method = $class->getMethod('_getControllers');
+		$method->setAccessible(true);
+
+		$this->Shell = $this->getMock(
+			'TranslationsShell',
+			array('in', 'out', 'hr', 'err', '_stop', '_loadController'),
+			array($this->out, $this->out, $this->in)
+		);
+
+		$args = array(
+			'Controller/ThisController.php',
+			'Controller/ThatController.php',
+			'Controller/OtherController.php',
+		);
+
+		$expected = array(
+			'This',
+			'That',
+			'Other'
+		);
+		$controllers = $method->invoke($this->Shell, $args);
+		$this->assertSame($expected, $controllers);
+	}
+
+/**
+ * testGetControllersPlugin
+ *
+ * Passing the path to a plugin should process all controllers in that plugin
+ *
+ * @return void
+ */
+	public function testGetControllersPlugin() {
+		$class = new ReflectionClass('TranslationsShell');
+		$method = $class->getMethod('_getControllers');
+		$method->setAccessible(true);
+
+		$this->Shell = $this->getMock(
+			'TranslationsShell',
+			array('in', 'out', 'hr', 'err', '_stop', '_loadController'),
+			array($this->out, $this->out, $this->in)
+		);
+
+		$this->Shell->args = array(
+			CAKE . 'Test' . DS . 'test_app' . DS . 'Plugin' . DS . 'TestPlugin'
+		);
+
+		$path = CAKE . 'Test' . DS . 'test_app' . DS . 'Plugin' . DS;
+		App::build(array(
+			'Plugin' => array($path)
+		), App::RESET);
+		CakePlugin::load('TestPlugin');
+
+		$expected = array(
+			'TestPlugin.TestPlugin',
+			'TestPlugin.Tests'
+		);
+		$controllers = $method->invoke($this->Shell, array($path . 'TestPlugin'));
+		$this->assertSame($expected, $controllers);
+	}
+
+/**
+ * testGetControllersPluginNamed
+ *
+ * Passing the path to a single plugin controller should return that controller
+ *
+ * @return void
+ */
+	public function testGetControllersPluginNamed() {
+		$class = new ReflectionClass('TranslationsShell');
+		$method = $class->getMethod('_getControllers');
+		$method->setAccessible(true);
+
+		$this->Shell = $this->getMock(
+			'TranslationsShell',
+			array('in', 'out', 'hr', 'err', '_stop', '_loadController'),
+			array($this->out, $this->out, $this->in)
+		);
+
+		$this->Shell->args = array(
+			CAKE . 'Test' . DS . 'test_app' . DS . 'Plugin' . DS . 'TestPlugin'
+		);
+
+		$path = CAKE . 'Test' . DS . 'test_app' . DS . 'Plugin' . DS;
+		App::build(array(
+			'Plugin' => array($path)
+		), App::RESET);
+		CakePlugin::load('TestPlugin');
+
+		$expected = array(
+			'TestPlugin.TestPlugin'
+		);
+
+		$path .= 'TestPlugin/Controller/TestPluginController.php';
+		$controllers = $method->invoke($this->Shell, array($path));
 		$this->assertSame($expected, $controllers);
 	}
 }

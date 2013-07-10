@@ -49,7 +49,7 @@ class TranslationsShell extends AppShell {
  * @return void
  */
 	public function generate() {
-		$controllers = $this->_getControllers();
+		$controllers = $this->_getControllers($this->args);
 		if (!$controllers) {
 			$this->out('<warning>No controllers found to be processed</warning>');
 			return;
@@ -103,32 +103,59 @@ class TranslationsShell extends AppShell {
  * If no arguments are passed to the cli call, return all App controllers
  * Otherwise, assume the arguments are a list of file paths to plugin model dirs or an individual plugin model
  *
+ * @param array $args File paths to controllers to process
  * @return array
  */
-	protected function _getControllers() {
+	protected function _getControllers($args = array()) {
 		$objectType = 'Controller';
 		$controllers = array();
 
-		if ($this->args) {
-			foreach ($this->args as $arg) {
-				preg_match('@Plugin/([^/]*)/?(?:Controller/([^/]*))?@', $arg, $match);
+		if ($args) {
+			foreach ($args as $arg) {
+				$plugin = $controller = null;
+				preg_match('@Plugin/([^/]+)@', $arg, $match);
 
-				if (!empty($match[2])) {
-					$controllers[] = str_replace('.php', '', $match[2]);
-				} elseif (!empty($match[1])) {
+				if ($match) {
 					$plugin = $match[1];
-					$controllers = array_merge($controllers, App::objects("$plugin.Controller"));
+				}
+
+				preg_match('@Controller/([^/]+)@', $arg, $match);
+				if ($match) {
+					$controller = $match[1];
+				}
+
+				if (!$plugin && !$controller) {
+					$this->out("<info>Skipping argument:</info> $arg", 1, Shell::VERBOSE);
+					continue;
+				}
+
+				if ($plugin) {
+				   	if ($controller) {
+						$controllers[] = $plugin . '.' . $controller;
+					} else {
+						$pluginControllers = App::objects("$plugin.Controller");
+						foreach($pluginControllers as &$c) {
+							$c = "$plugin.$c";
+						}
+						$controllers = array_merge($controllers, $pluginControllers);
+					}
+				} else {
+					$controllers[] = $controller;
 				}
 			}
 		} else {
 			$controllers = App::objects('Controller');
 		}
 
-		foreach ($controllers as &$controller) {
-			$controller = preg_replace('/Controller$/', '', $controller);
+		foreach ($controllers as $i => &$controller) {
+			$controller = preg_replace('/Controller(\.php)?$/', '', $controller);
+
+			if (preg_match('/^(?:(\w+)\.\1)?App$/', $controller)) {
+				unset($controllers[$i]);
+			}
 		}
 
-		return $controllers;
+		return array_values($controllers);
 	}
 
 /**
@@ -160,11 +187,6 @@ class TranslationsShell extends AppShell {
 		$className = $name . 'Controller';
 		$prefix = rtrim($plugin, '.');
 
-		if ($className === $prefix . 'AppController') {
-			$this->out("<info>Skipping:</info> $className", 1, Shell::VERBOSE);
-			return;
-		}
-
 		App::uses($className, $plugin . 'Controller');
 
 		if (!class_exists($className)) {
@@ -172,7 +194,8 @@ class TranslationsShell extends AppShell {
 			return;
 		}
 
-		$Controller = new $className();
+		$request = new CakeRequest();
+		$Controller = new $className($request);
 		$Controller->constructClasses();
 		$Controller->startupProcess();
 
