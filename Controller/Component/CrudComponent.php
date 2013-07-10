@@ -123,10 +123,6 @@ class CrudComponent extends Component {
  * @return void
  */
 	public function initialize(Controller $controller) {
-		if ($controller->name === 'CakeError') {
-			return true;
-		}
-
 		$this->_normalizeConfig();
 
 		$this->_controller = $controller;
