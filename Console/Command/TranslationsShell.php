@@ -130,7 +130,7 @@ class TranslationsShell extends AppShell {
 				}
 
 				if ($plugin) {
-				   	if ($controller) {
+					if ($controller) {
 						$controllers[] = $plugin . '.' . $controller;
 					} else {
 						$pluginControllers = App::objects("$plugin.Controller");
