@@ -96,6 +96,52 @@ class TranslationsShellTest extends CakeTestCase {
 		$this->assertSame($expected, $this->Shell->lines);
 	}
 
+/**
+ * testGenerateTranslationsForAModel
+ *
+ * @return void
+ */
+	public function testGenerateTranslationsForAModelActionDomain() {
+		$controller = new Controller(new CakeRequest());
+		$controller->Example = new StdClass(); // dummy
+		$controller->modelClass = 'Example';
+		$controller->components = array(
+			'Crud.Crud' => array(
+				'actions' => array(
+					'index', 'add', 'edit', 'view', 'delete'
+				)
+			)
+		);
+		$controller->constructClasses();
+		$controller->startupProcess();
+		$controller->Crud->config('messages.domain', 'my');
+
+		$this->Shell
+			->expects($this->once())
+			->method('_loadController')
+			->will($this->returnValue($controller));
+
+		$method = new ReflectionMethod('TranslationsShell', '_processController');
+		$method->setAccessible(true);
+		$method->invoke($this->Shell, 'Example');
+
+		$expected = array(
+			"",
+			"/**",
+			" * Example CRUD Component translations",
+			" */",
+			"__d('my', 'Invalid id');",
+			"__d('my', 'Not found');",
+			"__d('my', 'Method not allowed. This action permits only {methods}');",
+			"__d('my', 'Successfully created example');",
+			"__d('my', 'Could not create example');",
+			"__d('my', 'Successfully updated example');",
+			"__d('my', 'Could not update example');",
+			"__d('my', 'Successfully deleted example');",
+			"__d('my', 'Could not delete example');"
+		);
+		$this->assertSame($expected, $this->Shell->lines);
+	}
 	public function testGenerateFile() {
 		$controller = new Controller(new CakeRequest());
 		$controller->Example = new StdClass(); // dummy
