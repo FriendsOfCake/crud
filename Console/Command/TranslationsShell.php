@@ -232,30 +232,6 @@ class TranslationsShell extends AppShell {
 
 		$this->_addDocBlock("$name CRUD Component translations");
 
-		$that = $this;
-		$Controller->Crud->on('setFlash', function(CakeEvent $event) use ($that) {
-			$key = $event->subject->name . ' ' . $event->subject->type;
-			$message = $event->subject->params['original'];
-
-			if (!$message) {
-				return;
-			}
-
-			$domain = $event->subject->crud->action()->config('messages.domain');
-			if (!$domain) {
-				$domain = $event->subject->crud->config('messages.domain') ?: 'crud';
-			}
-
-			$string = "__d('$domain', '$message');";
-
-			if (in_array($string, $that->lines)) {
-				$that->out('<info>Skipping:</info> ' . $message, 1, Shell::VERBOSE);
-			} else {
-				$that->out('<success>Adding:</success> ' . $message);
-				$that->lines[] = $string;
-			}
-		});
-
 		$actions = array_keys($Controller->Crud->config('actions'));
 		foreach ($actions as $actionName) {
 			$this->_processAction($actionName, $Controller);
@@ -289,7 +265,36 @@ class TranslationsShell extends AppShell {
 			if ($type === 'domain') {
 				continue;
 			}
-			$action->setFlash($type);
+			$message = $action->message($type);
+			$this->_processMessage($message, $action, $Controller->Crud);
+		}
+	}
+
+/**
+ * _processMessage
+ *
+ * @param mixed $message
+ * @param mixed $action
+ * @param mixed $crud
+ */
+	protected function _processMessage($message, $action, $crud) {
+		$text = $message['params']['original'];
+		if (!$text) {
+			return;
+		}
+
+		$domain = $action->config('messages.domain');
+		if (!$domain) {
+			$domain = $crud->config('messages.domain') ?: 'crud';
+		}
+
+		$string = "__d('$domain', '$text');";
+
+		if (in_array($string, $this->lines)) {
+			$this->out('<info>Skipping:</info> ' . $text, 1, Shell::VERBOSE);
+		} else {
+			$this->out('<success>Adding:</success> ' . $text);
+			$this->lines[] = $string;
 		}
 	}
 
