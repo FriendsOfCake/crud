@@ -26,8 +26,9 @@ class CrudPanel extends DebugPanel {
  * @return void
  */
 	public function beforeRender(Controller $controller) {
-		if (!$controller->Crud->isActionMapped()) {
-			return;
+		if ($controller->Crud->isActionMapped()) {
+			$Action = $controller->Crud->action();
+			$controller->set('CRUD_action_config', $Action->config());
 		}
 
 		$listener_config = array();
@@ -35,9 +36,7 @@ class CrudPanel extends DebugPanel {
 			$listener_config[$listener] = $controller->Crud->listener($listener)->config();
 		}
 
-		$Action = $controller->Crud->action();
 		$controller->set('CRUD_config', $controller->Crud->config());
-		$controller->set('CRUD_action_config', $Action->config());
 		$controller->set('CRUD_listener_config', $listener_config);
 	}
 
