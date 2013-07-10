@@ -83,6 +83,9 @@ class TranslationsShellTest extends CakeTestCase {
 			"/**",
 			" * Example CRUD Component translations",
 			" */",
+			"__d('crud', 'Invalid id');",
+			"__d('crud', 'Not found');",
+			"__d('crud', 'Method not allowed. This action permits only {methods}');",
 			"__d('crud', 'Successfully created example');",
 			"__d('crud', 'Could not create example');",
 			"__d('crud', 'Successfully updated example');",
@@ -133,6 +136,9 @@ class TranslationsShellTest extends CakeTestCase {
 /**
  * Example CRUD Component translations
  */
+__d('crud', 'Invalid id');
+__d('crud', 'Not found');
+__d('crud', 'Method not allowed. This action permits only {methods}');
 __d('crud', 'Successfully created example');
 __d('crud', 'Could not create example');
 __d('crud', 'Successfully updated example');

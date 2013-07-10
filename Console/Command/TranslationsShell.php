@@ -218,7 +218,12 @@ class TranslationsShell extends AppShell {
 				return;
 			}
 
-			$string = "__d('crud', '$message');";
+			$domain = $event->subject->crud->action()->config('messages.domain');
+			if (!$domain) {
+				$domain = $event->subject->crud->config('messages.domain') ?: 'crud';
+			}
+
+			$string = "__d('$domain', '$message');";
 
 			if (in_array($string, $that->lines)) {
 				$that->out('<info>Skipping:</info> ' . $message, 1, Shell::VERBOSE);
@@ -251,7 +256,8 @@ class TranslationsShell extends AppShell {
 		}
 
 		$action = $Controller->Crud->action($actionName);
-		$messages = $action->config('messages');
+
+		$messages = (array)$Controller->Crud->config('messages') + (array)$action->config('messages');
 		if (!$messages) {
 			return;
 		}
