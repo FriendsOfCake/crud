@@ -154,6 +154,7 @@ class TranslationsShell extends AppShell {
  *
  * @param string $name
  * @return Controller
+ * @codeCoverageIgnore
  */
 	protected function _loadController($name, $plugin) {
 		$className = $name . 'Controller';
