@@ -27,7 +27,8 @@ class ApiListener extends CrudListener {
 			'Crud.init' => array('callable' => 'init', 'priority' => 10),
 			'Crud.beforeRender' => array('callable' => 'beforeRender', 'priority' => 100),
 			'Crud.afterSave' => array('callable' => 'afterSave', 'priority' => 100),
-			'Crud.afterDelete' => array('callable' => 'afterDelete', 'priority' => 100)
+			'Crud.afterDelete' => array('callable' => 'afterDelete', 'priority' => 100),
+			'Crud.setFlash' => array('callable' => 'setFlash', 'priority' => 100)
 		);
 	}
 
@@ -154,6 +155,17 @@ class ApiListener extends CrudListener {
 		$this->_controller->RequestHandler->viewClassMap('json', 'Crud.CrudJson');
 		$this->_controller->RequestHandler->viewClassMap('xml', 'Crud.CrudXml');
 		$this->_controller->RequestHandler->renderAs($this->_controller, $this->_controller->RequestHandler->ext);
+	}
+
+/**
+ * setFlash
+ *
+ * An api request doesn't need flash messages - so stop them being processed
+ *
+ * @param CakeEvent $event
+ */
+	public function setFlash(CakeEvent $event) {
+		$event->stopPropagation();
 	}
 
 /**

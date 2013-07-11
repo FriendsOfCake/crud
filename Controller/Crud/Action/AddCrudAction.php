@@ -48,6 +48,14 @@ class AddCrudAction extends CrudAction {
 			'validate' => 'first',
 			'atomic' => true
 		),
+		'messages' => array(
+			'success' => array(
+				'text' => 'Successfully created {name}'
+			),
+			'error' => array(
+				'text' => 'Could not create {name}'
+			)
+		),
 		'serialize' => array()
 	);
 
@@ -72,7 +80,7 @@ class AddCrudAction extends CrudAction {
 
 		$this->_crud->trigger('beforeSave');
 		if ($this->_model->saveAll($this->_request->data, $this->saveOptions())) {
-			$this->setFlash('create.success');
+			$this->setFlash('success');
 			$subject = $this->_crud->trigger('afterSave', array(
 				'success' => true,
 				'created' => true,
@@ -81,7 +89,7 @@ class AddCrudAction extends CrudAction {
 			return $this->_redirect($subject, array('action' => 'index'));
 		}
 
-		$this->setFlash('create.error');
+		$this->setFlash('error');
 		$this->_crud->trigger('afterSave', array('success' => false, 'created' => false));
 		$this->_request->data = Hash::merge($this->_request->data, $this->_model->data);
 		$this->_crud->trigger('beforeRender', array('success' => false));

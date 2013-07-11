@@ -89,17 +89,34 @@ class CrudComponent extends Component {
  * By default no actions are enabled
  *
  * `listeners` List of internal-name => ${plugin}.${class} listeners
- * that will be bound automatically in Crud. By default translations and related model events
+ * that will be bound automatically in Crud. By default the related model event
  * are bound. Events will always assume to be in the Controller/Event folder
  *
  * @var array
  */
 	public $settings = array(
-		'eventPrefix' => 'Crud',
 		'actions' => array(),
+		'eventPrefix' => 'Crud',
 		'listeners' => array(
-			'Translations' => 'Crud.Translations',
 			'RelatedModels' => 'Crud.RelatedModels'
+		),
+		'messages' => array(
+			'domain' => 'crud',
+			'invalidId' => array(
+				'code' => 400,
+				'class' => 'BadRequestException',
+				'text' => 'Invalid id'
+			),
+			'recordNotFound' => array(
+				'code' => 404,
+				'class' => 'NotFoundException',
+				'text' => 'Not found'
+			),
+			'badRequestMethod' => array(
+				'code' => 405,
+				'class' => 'MethodNotAllowedException',
+				'text' => 'Method not allowed. This action permits only {methods}'
+			)
 		)
 	);
 
@@ -140,6 +157,20 @@ class CrudComponent extends Component {
 	}
 
 /**
+ * initAction
+ *
+ * @param string $controllerAction Override the controller action to execute as
+ * @param mixed $controllerAction
+ */
+	public function initAction($controllerAction = null) {
+		$this->_action = $controllerAction ?: $this->_action;
+
+		$this->_setModelProperties();
+		$this->_loadListeners();
+		$this->trigger('init');
+	}
+
+/**
  * Execute a Crud action
  *
  * @param string $controllerAction Override the controller action to execute as
@@ -148,12 +179,8 @@ class CrudComponent extends Component {
  * @throws CakeException If an action is not mapped
  */
 	public function executeAction($controllerAction = null, $args = array()) {
-		$view = $action = $controllerAction ?: $this->_action;
-		$this->_action = $action;
-
-		$this->_setModelProperties();
-		$this->_loadListeners();
-		$this->trigger('init');
+		$this->initAction($controllerAction);
+		$view = $action = $this->_action;
 
 		try {
 			// Execute the default action, inside this component
@@ -487,8 +514,8 @@ class CrudComponent extends Component {
  * Set or get defaults for listeners and actions
  *
  * @param string $type Can be anything, but 'listeners' or 'actions' is currently only used
- * @param mixed $name The name of the $type - e.g. 'api', 'translations', 'relatedModels'
- * 	or an array ('api', 'translations'). If $name is an array, the $config will be applied
+ * @param mixed $name The name of the $type - e.g. 'api', 'relatedModels'
+ * 	or an array ('api', 'relatedModels'). If $name is an array, the $config will be applied
  * 	to each entry in the $name array.
  * @param mixed $config If NULL, the defaults is returned, else the defaults are changed
  * @return mixed

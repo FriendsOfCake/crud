@@ -279,7 +279,7 @@ class EditCrudActionTest extends CakeTestCase {
 		$Action
 			->expects($this->at(4))
 			->method('setFlash')
-			->with('update.success');
+			->with('success');
 		$Action
 			->expects($this->at(5))
 			->method('_redirect')
@@ -362,7 +362,7 @@ class EditCrudActionTest extends CakeTestCase {
 		$Action
 			->expects($this->at(4))
 			->method('setFlash')
-			->with('update.error');
+			->with('error');
 
 		$Action->handle($CrudSubject);
 	}
@@ -464,6 +464,7 @@ class EditCrudActionTest extends CakeTestCase {
  */
 	public function testActionGetWithNonexistingId() {
 		extract($this->_mockClasses());
+		$CrudSubject->id = 1;
 
 		$query = array('conditions' => array('Model.id' => 1));
 

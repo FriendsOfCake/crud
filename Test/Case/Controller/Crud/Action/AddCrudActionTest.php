@@ -210,7 +210,7 @@ class AddCrudActionTest extends CakeTestCase {
 		$Action
 			->expects($this->once())
 			->method('setFlash')
-			->with('create.success');
+			->with('success');
 		$Action
 			->expects($this->once())
 			->method('_redirect')
@@ -267,7 +267,7 @@ class AddCrudActionTest extends CakeTestCase {
 		$Action
 			->expects($this->once())
 			->method('setFlash')
-			->with('create.error');
+			->with('error');
 
 		$Action
 			->expects($this->never())
@@ -324,7 +324,7 @@ class AddCrudActionTest extends CakeTestCase {
 		$Action
 			->expects($this->once())
 			->method('setFlash')
-			->with('create.error');
+			->with('error');
 		$Action
 			->expects($this->never())
 			->method('_redirect');

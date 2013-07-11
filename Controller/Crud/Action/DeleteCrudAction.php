@@ -27,7 +27,15 @@ class DeleteCrudAction extends CrudAction {
 	protected $_settings = array(
 		'enabled' => true,
 		'findMethod' => 'count',
-		'secureDelete' => true
+		'secureDelete' => true,
+		'messages' => array(
+			'success' => array(
+				'text' => 'Successfully deleted {name}'
+			),
+			'error' => array(
+				'text' => 'Could not delete {name}'
+			)
+		)
 	);
 
 /**
@@ -42,7 +50,7 @@ class DeleteCrudAction extends CrudAction {
  * @param string $id
  * @return void
  * @throws NotFoundException If record not found
- * @throws BadRequestException If secure delete enabled and not a HTTP DELETE request
+ * @throws MethodNotAllowedException If secure delete enabled and not a HTTP DELETE request
  */
 	protected function _handle($id = null) {
 		if (empty($id)) {
@@ -51,12 +59,23 @@ class DeleteCrudAction extends CrudAction {
 
 		$this->_validateId($id);
 
-		if (!$this->_request->is('delete') &&
-			!($this->_request->is('post') &&
-			false === $this->config('secureDelete'))
-		) {
+		$validRequest = $this->_request->is('delete');
+		if (!$validRequest) {
+			$permitPost = !$this->config('secureDelete');
+			$validRequest = ($this->_request->is('post') && $permitPost);
+		}
+
+		if (!$validRequest) {
 			$subject = $this->_crud->getSubject(compact('id'));
-			throw new BadRequestException('invalid_http_request.error');
+
+			$methods = 'DELETE';
+			if ($permitPost) {
+				$methods .= 'or POST';
+			}
+
+			$message = $this->message('badRequestMethod', array('id' => $subject->id, 'methods' => $methods));
+			$exceptionClass = $message['class'];
+			throw new $exceptionClass($message['text'], $message['code']);
 		}
 
 		$query = array();
@@ -69,20 +88,23 @@ class DeleteCrudAction extends CrudAction {
 		$count = $this->_model->find($subject->findMethod, $query);
 		if (empty($count)) {
 			$subject = $this->_crud->trigger('recordNotFound', compact('id'));
-			throw new NotFoundException('find.error');
+
+			$message = $this->message('recordNotFound', array('id' => $subject->id));
+			$exceptionClass = $message['class'];
+			throw new $exceptionClass($message['text'], $message['code']);
 		}
 
 		$subject = $this->_crud->trigger('beforeDelete', compact('id'));
 		if ($subject->stopped) {
-			$this->setFlash('delete.error');
+			$this->setFlash('error');
 			return $this->_redirect($subject, $this->_controller->referer(array('action' => 'index')));
 		}
 
 		if ($this->_model->delete($id)) {
-			$this->setFlash('delete.success');
+			$this->setFlash('success');
 			$subject = $this->_crud->trigger('afterDelete', array('id' => $id, 'success' => true));
 		} else {
-			$this->setFlash('delete.error');
+			$this->setFlash('error');
 			$subject = $this->_crud->trigger('afterDelete', array('id' => $id, 'success' => false));
 		}
 

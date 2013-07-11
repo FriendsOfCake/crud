@@ -82,7 +82,10 @@ class ViewCrudAction extends CrudAction {
 
 		if (empty($item)) {
 			$subject = $this->_crud->trigger('recordNotFound', compact('id'));
-			throw new NotFoundException('find.error');
+
+			$message = $this->message('recordNotFound', array('id' => $subject->id));
+			$exceptionClass = $message['class'];
+			throw new $exceptionClass($message['text'], $message['code']);
 		}
 
 		$subject = $this->_crud->trigger('afterFind', compact('id', 'item'));
