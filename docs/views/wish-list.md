@@ -12,6 +12,7 @@ Inspiration
 
 ## General
 
+* Maybe as a secondary plugin called `crud-view`
 * Dynamic, should not require files on disk for core features
 ** People can override functionality by providing their own widget / view paths
 * Based on TwitterBootstrap (a theme that doesn't suck - with MIT license)
