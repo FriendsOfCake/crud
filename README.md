@@ -7,9 +7,9 @@ Crud was built to be [scaffolding](http://book.cakephp.org/2.0/en/controllers/sc
 developers to have enough flexibility to use it for both rapid prototyping and production applications, even on the same
 code base - saving you even more time.
 
-Crud is [very fast to install](http://jippi.github.io/cakephp-crud/docs/installation.html), 2 minutes top.
+Crud is [very fast to install](http://cakephp.nu/cakephp-crud/docs/installation.html), 2 minutes top.
 
-Crud is very flexible, and has tons of [configuration options](http://jippi.github.io/cakephp-crud/docs/configuration.html)
+Crud is very flexible, and has tons of [configuration options](http://cakephp.nu/cakephp-crud/docs/configuration.html)
 
 Crud aims to not get in your way, and if it happens to get in your way, you can change the behavior you don't like very
 easily.
@@ -27,15 +27,15 @@ outsourcing the all the heavy boilerplating to Crud.
 Less boilerplate code means less code to maintain, and less code to spend time unit testing.
 
 Crud allows you to both use your own views, from bake or hand-crafted, as well as only adding the code needed to fulfill
-your application logic, using [events](http://jippi.github.io/cakephp-crud/docs/events.html). It is by default compatible with Cake's baked views.
+your application logic, using [events](http://cakephp.nu/cakephp-crud/docs/events.html). It is by default compatible with Cake's baked views.
 
-Crud also provides built-in features for JSON and XML [API](http://jippi.github.io/cakephp-crud/docs/api.html) for any
+Crud also provides built-in features for JSON and XML [API](http://cakephp.nu/cakephp-crud/docs/api.html) for any
 action you have enabled through Crud - that means no more double work maintaining both a HTML frontend and a JSON and/or
 XML interface for your applications - saving you tons of time and having a leaner code base.
 
 # Documentation
 
-There's [extensive documentation](http://jippi.github.io/cakephp-crud/docs/) and how-to guides available. If you're reading
+There's [extensive documentation](http://cakephp.nu/cakephp-crud/docs/) and how-to guides available. If you're reading
 this readme from a git checkout - you can read the docs offline by checking out the `gh-pages` branch.
 
 # Bugs
