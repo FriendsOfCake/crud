@@ -29,7 +29,7 @@ Less boilerplate code means less code to maintain, and less code to spend time u
 Crud allows you to both use your own views, from bake or hand-crafted, as well as only adding the code needed to fulfill
 your application logic, using [events](http://cakephp.nu/cakephp-crud/docs/events.html). It is by default compatible with Cake's baked views.
 
-Crud also provides built-in features for JSON and XML [API](http://cakephp.nu/cakephp-crud/docs/api.html) for any
+Crud also provides built-in features for JSON and XML [API](http://cakephp.nu/cakephp-crud/docs/listeners/api.html) for any
 action you have enabled through Crud - that means no more double work maintaining both a HTML frontend and a JSON and/or
 XML interface for your applications - saving you tons of time and having a leaner code base.
 
