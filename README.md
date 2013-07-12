@@ -27,7 +27,7 @@ outsourcing the all the heavy boilerplating to Crud.
 Less boilerplate code means less code to maintain, and less code to spend time unit testing.
 
 Crud allows you to both use your own views, from bake or hand-crafted, as well as only adding the code needed to fulfill
-your application logic, using [events](docs/05-events.md). It is by default compatible with Cake's baked views.
+your application logic, using [events](http://jippi.github.io/cakephp-crud/docs/events.html). It is by default compatible with Cake's baked views.
 
 Crud also provides built-in features for JSON and XML [API](http://jippi.github.io/cakephp-crud/docs/api.html) for any
 action you have enabled through Crud - that means no more double work maintaining both a HTML frontend and a JSON and/or
