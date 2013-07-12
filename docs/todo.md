@@ -5,4 +5,4 @@ layout: default
 
 # TODO
 
-No ideas for improvements to be done in Crud at the moment
+* Batch actions (mass edit/delete)
