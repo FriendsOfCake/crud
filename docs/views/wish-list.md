@@ -17,6 +17,7 @@ Inspiration
 ** People can override functionality by providing their own widget / view paths
 * Based on TwitterBootstrap (a theme that doesn't suck - with MIT license)
 * Agnostic on authentication and authorization
+* Responsive by default (Desktop & Mobile)
 
 ## Index
 
