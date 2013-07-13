@@ -13,6 +13,25 @@ App::uses('CrudListener', 'Crud.Controller/Crud');
 class SearchListener extends CrudListener {
 
 /**
+ * Default configuration
+ *
+ * @var array
+ */
+	protected $_settings = array(
+		'component' => array(
+			'commonProcess' => array(
+				'paramType' => 'querystring'
+			),
+			'presetForm' => array(
+				'paramType' => 'querystring'
+			)
+		),
+		'scope' => array(
+
+		)
+	);
+
+/**
  * Returns a list of all events that will fire in the controller during it's lifecycle.
  * You can override this function to add you own listener callbacks
  *
@@ -35,7 +54,7 @@ class SearchListener extends CrudListener {
  * @return ScopedListener
  */
 	public function scope($name, $query, $filter = null) {
-		$this->config($name, compact('query', 'filter'));
+		$this->config('scope. ' . $name, compact('query', 'filter'));
 		return $this;
 	}
 
@@ -56,9 +75,9 @@ class SearchListener extends CrudListener {
 
 		$controller->Prg->commonProcess($e->subject->modelClass);
 
-		$query = $request->query;
-		if (!empty($request->query['scope'])) {
-			$config = $this->config($request->query['scope']);
+		$query = $controller->query;
+		if (!empty($request->query['_scope'])) {
+			$config = $this->config('scope. ' . $request->query['_scope']);
 			$query = $config['query'];
 
 			if (!empty($config['filter'])) {
@@ -102,7 +121,8 @@ class SearchListener extends CrudListener {
 			return;
 		}
 
-		$Controller->Prg = $Controller->Components->load('Search.Prg');
+		$Controller->Prg = $Controller->Components->load('Search.Prg', $this->config('component'));
+		$Controller->Prg->startup($Controller);
 		$Controller->Prg->initialize($Controller);
 	}
 
