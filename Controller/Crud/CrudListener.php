@@ -45,6 +45,13 @@ abstract class CrudListener extends Object implements CakeEventListener {
 	protected $_subject;
 
 /**
+ * Reference to the Model instance
+ *
+ * @var Model
+ */
+	protected $_model;
+
+/**
  * Listener configuration
  *
  * @var array
@@ -63,6 +70,7 @@ abstract class CrudListener extends Object implements CakeEventListener {
 		$this->_subject = $subject;
 		$this->_request = $subject->request;
 		$this->_controller = $subject->controller;
+		$this->_model = $subject->model;
 
 		if (!empty($defaults)) {
 			$this->config($defaults);

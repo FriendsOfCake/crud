@@ -26,9 +26,7 @@ class SearchListener extends CrudListener {
 				'paramType' => 'querystring'
 			)
 		),
-		'scope' => array(
-
-		)
+		'scope' => array()
 	);
 
 /**
@@ -65,38 +63,31 @@ class SearchListener extends CrudListener {
  * @return void
  */
 	public function beforePaginate(CakeEvent $e) {
-		$controller = $this->_controller;
-		$request = $this->_request;
-		$model = $e->subject->model;
-
 		$this->_checkRequiredPlugin();
-		$this->_ensureComponent($controller);
-		$this->_ensureBehavior($model);
+		$this->_ensureComponent($this->_controller);
+		$this->_ensureBehavior($this->_model);
+		$this->_commonProcess($this->_controller, $this->_model->name);
 
-		$controller->Prg->commonProcess($e->subject->modelClass);
-
-		$query = $controller->query;
-		if (!empty($request->query['_scope'])) {
-			$config = $this->config('scope.' . $request->query['_scope']);
+		$query = $this->_request->query;
+		if (!empty($this->_request->query['_scope'])) {
+			$config = $this->config('scope.' . $this->_request->query['_scope']);
 			$query = $config['query'];
 
 			if (!empty($config['filter'])) {
-				$model->filterArgs = $config['filter'];
-				$model->Behaviors->Searchable->setup($model);
+				$this->_setFilterArgs($this->_model, $config['filter']);
 			}
 		}
 
 		// Avoid notice if there is no filterArgs
-		if (empty($model->filterArgs)) {
-			$model->filterArgs = array();
+		if (empty($this->_model->filterArgs)) {
+			$this->_setFilterArgs($this->_model, array());
 		}
 
-		$controller->Paginator->settings['conditions'] = $model->parseCriteria($query);
+		$this->_setPaginationOptions($this->_controller, $this->_model, $query);
 	}
 
 /**
  * Check that the cakedc/search plugin is installed
- * and loaded
  *
  * @throws CakeException If cakedc/search isn't loaded
  * @return void
@@ -113,31 +104,67 @@ class SearchListener extends CrudListener {
  * Ensure that the Prg component is loaded from
  * the Search plugin
  *
- * @param Controller $Controller
+ * @param Controller $controller
  * @return void
  */
-	protected function _ensureComponent(Controller $Controller) {
-		if ($Controller->Components->loaded('Prg')) {
+	protected function _ensureComponent(Controller $controller) {
+		if ($controller->Components->loaded('Prg')) {
 			return;
 		}
 
-		$Controller->Prg = $Controller->Components->load('Search.Prg', $this->config('component'));
-		$Controller->Prg->startup($Controller);
-		$Controller->Prg->initialize($Controller);
+		$controller->Prg = $controller->Components->load('Search.Prg', $this->config('component'));
+		$controller->Prg->initialize($controller);
+		$controller->Prg->startup($controller);
 	}
 
 /**
  * Ensure that the searchable behavior is loaded
  *
- * @param Model $Model
+ * @param Model $model
  * @return void
  */
-	protected function _ensureBehavior(Model $Model) {
-		if ($Model->Behaviors->loaded('Searchable')) {
+	protected function _ensureBehavior(Model $model) {
+		if ($model->Behaviors->loaded('Searchable')) {
 			return;
 		}
 
-		$Model->Behaviors->load('Search.Searchable');
+		$model->Behaviors->load('Search.Searchable');
+		$model->Behaviors->Searchable->setup($model);
+	}
+
+/**
+ * Execute commonProcess on Prg component
+ *
+ * @param Controller $controller
+ * @param string $modelClass
+ * @return void
+ */
+	protected function _commonProcess(Controller $controller, $modelClass) {
+		$controller->Prg->commonProcess($modelClass);
+	}
+
+/**
+ * Set the pagination options
+ *
+ * @param Controller $controller
+ * @param Model $model
+ * @param array $query
+ * @return void
+ */
+	protected function _setPaginationOptions(Controller $controller, Model $model, $query) {
+		$controller->Paginator->settings['conditions'] = $model->parseCriteria($query);
+	}
+
+/**
+ * Set the model filter args
+ *
+ * @param Model $model
+ * @param array $filter
+ * @return void
+ */
+	protected function _setFilterArgs(Model $model, $filter) {
+		$model->filterArgs = $filter;
+		$model->Behaviors->Searchable->setup($model);
 	}
 
 }
