@@ -28,6 +28,16 @@ class SearchListenerTest extends CakeTestCase {
 	}
 
 /**
+ * Test that CakeDC/Search is loaded
+ *
+ * @return void
+ */
+	public function testSearchPluginIsLoaded() {
+		$bool = CakePlugin::loaded('Search');
+		$this->assertTrue($bool, "CakeDC/Search is not installed");
+	}
+
+/**
  * Test that scope returns instance of it self for chaining
  *
  * @return void
