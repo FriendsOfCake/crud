@@ -1,4 +1,6 @@
 <?php
+require_once dirname(dirname(__DIR__)) . '/vendors/autoload.php';
+
 /**
  * This file is loaded automatically by the app/webroot/index.php file after core.php
  *
