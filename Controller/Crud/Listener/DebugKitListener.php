@@ -34,7 +34,7 @@ class DebugKitListener extends CrudListener {
 			'Crud.afterFind' => array('callable' => 'afterFind', 'priority' => 5000),
 
 			'Crud.beforeDelete' => array('callable' => 'beforeDelete', 'priority' => 1),
-			'Crud.afterDelete' => array('callable' => 'afterDelete',  'priority' => 5000),
+			'Crud.afterDelete' => array('callable' => 'afterDelete', 'priority' => 5000),
 		);
 	}
 
