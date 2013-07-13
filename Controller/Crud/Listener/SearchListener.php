@@ -54,7 +54,7 @@ class SearchListener extends CrudListener {
  * @return ScopedListener
  */
 	public function scope($name, $query, $filter = null) {
-		$this->config('scope. ' . $name, compact('query', 'filter'));
+		$this->config('scope.' . $name, compact('query', 'filter'));
 		return $this;
 	}
 
@@ -77,7 +77,7 @@ class SearchListener extends CrudListener {
 
 		$query = $controller->query;
 		if (!empty($request->query['_scope'])) {
-			$config = $this->config('scope. ' . $request->query['_scope']);
+			$config = $this->config('scope.' . $request->query['_scope']);
 			$query = $config['query'];
 
 			if (!empty($config['filter'])) {
