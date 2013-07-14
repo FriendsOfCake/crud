@@ -12,7 +12,8 @@ layout: default
 
 ### composer
 
-The recommended installation method for this plugin is by using composer. Just add this to your `composer.json` configuration:
+The recommended installation method for this plugin is by using composer. Just add this to your
+`composer.json` configuration:
 
 {% highlight json %}
 {
@@ -37,7 +38,8 @@ git clone git://github.com/jippi/cakephp-crud.git app/Plugin/Crud
 
 ### git submodule
 
-Or add it as a git module, this is recommended over `git clone` since it's easier to keep up to date with development that way
+Or add it as a git module, this is recommended over `git clone` since it's easier to keep up to date
+with development that way
 
 ```
 git submodule add git://github.com/jippi/cakephp-crud.git app/Plugin/Crud
@@ -53,7 +55,8 @@ CakePlugin::load('Crud');
 ?>
 {% endhighlight %}
 
-In your `AppController` do **one** of the following to inject the required code for `CrudComponent` to work
+In your `AppController` do **one** of the following to inject the required code for `CrudComponent`
+to work
 
 ## >= PHP 5.4
 
