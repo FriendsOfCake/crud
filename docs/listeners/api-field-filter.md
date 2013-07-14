@@ -5,8 +5,8 @@ layout: default
 
 # Field Filter Listener
 
-Allow the requester to decide what fields and relations that should be
-returned by providing a `fields` GET argument with a comma separated list of fields.
+Allow the requester to decide what fields and relations that should be returned by providing a
+`fields` GET argument with a comma separated list of fields.
 
 Example: `http://example.com/blogs.json?fields=Blog.id,Blog.name,Post.id,Post.name,Post.created`
 
@@ -60,7 +60,8 @@ class SamplesController extends AppController {
 
 ## Allow no filter
 
-By default when the listener is enabled, it will refuse requests without a `fields` key in the request
+By default when the listener is enabled, it will refuse requests without a `fields` key in the
+request
 
 This behavior can be changed
 
@@ -92,7 +93,8 @@ $this->Crud->listener('ApiFieldFilter')->whitelistFields(['Model.id', 'Model.nam
 
 If no blacklist exist, no blacklisting is done
 
-If blacklisting exist, the field will be removed from the field list if present in the `field` query argument
+If blacklisting exist, the field will be removed from the field list if present in the `field` query
+argument
 
 The fields must be in `Model.field` format
 
@@ -116,4 +118,5 @@ $this->Crud->listener('ApiFieldFilter')->whitelistModels(['list', 'of', 'models'
 
 # Limitations
 
-Related models is only supported in 1 level away from the primary model at this time. E.g. "Blog" => Auth, Tag, Posts
+Related models is only supported in 1 level away from the primary model at this time. E.g. "Blog" =>
+Auth, Tag, Posts

@@ -5,7 +5,8 @@ layout: default
 
 # Delete CrudAction
 
-The `delete` CrudAction will delete a record if the request is `HTTP DELETE` or `HTTP POST` and the ID that is part of the request exist in the database.
+The `delete` CrudAction will delete a record if the request is `HTTP DELETE` or `HTTP POST` and the
+ID that is part of the request exist in the database.
 
 The source code can be found here: [Controller/Crud/Action/DeleteCrudAction.php]({{ site.github_url }}/Controller/Crud/Action/DeleteCrudAction.php)
 

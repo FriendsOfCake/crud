@@ -9,9 +9,11 @@ Listeners are an easy way to extend Crud functionality
 
 They can hook into all the Crud events emitted from CrudComponent or the CrudActions
 
-Most of the functionality in Crud is build with listeners, keeping the CrudAction code lean and simple, and Crud flexible
+Most of the functionality in Crud is build with listeners, keeping the CrudAction code lean and
+simple, and Crud flexible
 
-Naming convention for Listeners is "Camelize" e.g. `Api` and `RelatedModels` - just like CakePHP for `Helpers`, `Components` and `Behaviors`
+Naming convention for Listeners is "Camelize" e.g. `Api` and `RelatedModels` - just like CakePHP for
+`Helpers`, `Components` and `Behaviors`
 
 # API
 The `CrudComponent` API for managing listeners
