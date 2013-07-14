@@ -23,7 +23,7 @@ The recommended installation method for this plugin is by using composer. Just a
 		}
 	},
 	"require" : {
-		"jippi/cakephp-crud": "master"
+		"jippi/cakephp-crud": "dev-develop"
 	}
 }
 {% endhighlight %}
