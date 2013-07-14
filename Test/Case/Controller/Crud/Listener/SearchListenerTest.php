@@ -15,6 +15,15 @@ App::uses('SearchListener', 'Crud.Controller/Crud/Listener');
  */
 class SearchListenerTest extends CakeTestCase {
 
+	public function setup() {
+		parent::setup();
+
+		if (!CakePlugin::loaded('Search')) {
+			CakePlugin::load('Search');
+		}
+
+	}
+
 /**
  * Test implemented events
  *
@@ -147,6 +156,81 @@ class SearchListenerTest extends CakeTestCase {
 		$Instance->expects($this->once())->method('_commonProcess')->with($Controller, 'Model');
 		$Instance->expects($this->never())->method('_setFilterArgs', 'Should not be called when model got filterArgs already');
 		$Instance->expects($this->once())->method('_setPaginationOptions')->with($Controller, $Model, array());
+
+		$Instance->beforePaginate(new CakeEvent('beforePaginate', $CrudSubject));
+	}
+
+/**
+ * Test that _checkRequiredPlugin doesn't throw an exception
+ *
+ * @return void
+ */
+	public function testCheckRequiredPlugins() {
+		$Model = new Model();
+		$Model->filterArgs = array('sample' => 'test');
+		$Request = new CakeRequest();
+		$Controller = new Controller();
+		$CrudSubject = new CrudSubject(array(
+			'request' => $Request,
+			'controller' => $Controller,
+			'model' => $Model
+		));
+
+		$mocked = array(
+			'_ensureComponent',
+			'_ensureBehavior',
+			'_commonProcess',
+			'_setFilterArgs',
+			'_setPaginationOptions'
+		);
+
+		$Instance = $this->getMock('SearchListener', $mocked, array($CrudSubject));
+		$Instance->expects($this->once())->method('_ensureComponent')->with($Controller);
+		$Instance->expects($this->once())->method('_ensureBehavior')->with($Model);
+		$Instance->expects($this->once())->method('_commonProcess')->with($Controller, 'Model');
+		$Instance->expects($this->never())->method('_setFilterArgs', 'Should not be called when model got filterArgs already');
+		$Instance->expects($this->once())->method('_setPaginationOptions')->with($Controller, $Model, array());
+
+		$Instance->beforePaginate(new CakeEvent('beforePaginate', $CrudSubject));
+	}
+
+/**
+ * Test that _checkRequiredPlugin doesn't throw an exception
+ *
+ * @return void
+ */
+	public function testCheckRequiredPluginsWithoutPlugin() {
+		CakePlugin::unload('Search');
+
+		$this->setExpectedException(
+			'CakeException',
+			'SearchListener requires the CakeDC/search plugin. Please install it from https://github.com/CakeDC/search'
+		);
+
+		$Model = new Model();
+		$Model->filterArgs = array('sample' => 'test');
+		$Request = new CakeRequest();
+		$Controller = new Controller();
+		$CrudSubject = new CrudSubject(array(
+			'request' => $Request,
+			'controller' => $Controller,
+			'model' => $Model
+		));
+
+		$mocked = array(
+			'_ensureComponent',
+			'_ensureBehavior',
+			'_commonProcess',
+			'_setFilterArgs',
+			'_setPaginationOptions'
+		);
+
+		$Instance = $this->getMock('SearchListener', $mocked, array($CrudSubject));
+		$Instance->expects($this->never())->method('_ensureComponent');
+		$Instance->expects($this->never())->method('_ensureBehavior');
+		$Instance->expects($this->never())->method('_commonProcess');
+		$Instance->expects($this->never())->method('_setFilterArgs');
+		$Instance->expects($this->never())->method('_setPaginationOptions');
 
 		$Instance->beforePaginate(new CakeEvent('beforePaginate', $CrudSubject));
 	}
