@@ -13,7 +13,8 @@ The panel contains the following information:
  * All `Crud Listeners` configurations
  * The `Crud Component` configuration
 
-Additionally the `DebugKit listener` will add useful DebugKit timing information to the `Timer` panel
+Additionally the `DebugKit listener` will add useful DebugKit timing information to the `Timer`
+panel
 
 # Setup
 

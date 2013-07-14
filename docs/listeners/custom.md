@@ -5,9 +5,11 @@ layout: default
 
 # Custom Crud Listeners
 
-Crud listeners must be inside `app/Controller/Crud/Listener` ( `app/Plugin/$plugin/Controller/Crud/Listener` for plugins)
+Crud listeners must be inside `app/Controller/Crud/Listener` (
+`app/Plugin/$plugin/Controller/Crud/Listener` for plugins)
 
-The `CrudListener` class provides an implementation of all the available callbacks you can listen for in Crud.
+The `CrudListener` class provides an implementation of all the available callbacks you can listen
+for in Crud.
 
 You can override the methods as needed inside your own Listener class.
 

@@ -5,7 +5,8 @@ layout: default
 
 # Edit CrudAction
 
-The `edit` CrudAction will modify a record if the request is `HTTP PUT`, the data is valid and the ID that is part of the request exist in the database.
+The `edit` CrudAction will modify a record if the request is `HTTP PUT`, the data is valid and the
+ID that is part of the request exist in the database.
 
 The source code can be found here: [Controller/Crud/Action/EditCrudAction.php]({{ site.github_url }}/Controller/Crud/Action/EditCrudAction.php)
 

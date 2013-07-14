@@ -5,7 +5,8 @@ layout: default
 
 # View CrudAction
 
-The `view` CrudAction will read a record from the database based on the ID that is part of the request.
+The `view` CrudAction will read a record from the database based on the ID that is part of the
+request.
 
 The source code can be found here: [Controller/Crud/Action/ViewCrudAction.php]({{ site.github_url }}/Controller/Crud/Action/ViewCrudAction.php)
 

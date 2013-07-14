@@ -9,7 +9,8 @@ Forces all Crud controller actions to use the build-in Scaffolding views
 
 This is the exact same views as the `$scaffold` property in the controller would get you
 
-Only with the added benefit of actually being able to modify the controller logic like normal using Crud
+Only with the added benefit of actually being able to modify the controller logic like normal using
+Crud
 
 # Setup
 
