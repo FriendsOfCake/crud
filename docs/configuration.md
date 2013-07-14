@@ -5,9 +5,11 @@ layout: default
 
 # Configuration
 
-We only use routes without prefix in these examples, but the Crud component works with __any__ prefixes you may have. It just requires some additional configuration.
+We only use routes without prefix in these examples, but the Crud component works with __any__
+prefixes you may have. It just requires some additional configuration.
 
-In the code example above, we pass in an actions array with all the controller actions we wish the Crud component to handle - you can omit some of the actions if you wish.
+In the code example above, we pass in an actions array with all the controller actions we wish the
+Crud component to handle - you can omit some of the actions if you wish.
 
 {% highlight php %}
 <?php
@@ -61,7 +63,8 @@ class AppController extends Controller {
 ?>
 {% endhighlight %}
 
-In the above example, if the `delete` action is called on __any__ controller (that doesn't implement it on their own), cake will raise it's normal `MissingActionException` error
+In the above example, if the `delete` action is called on __any__ controller (that doesn't implement
+it on their own), cake will raise it's normal `MissingActionException` error
 
 You can enable and disable Crud actions on the fly
 
@@ -140,11 +143,14 @@ class DemoController extends AppController {
 
 # Change the find() method
 
-Changing the `find type` allows you to use [custom find methods](http://book.cakephp.org/2.0/en/models/retrieving-your-data.html#creating-custom-find-types) inside a `CrudAction`
+Changing the `find type` allows you to use [custom find methods](http://book.cakephp.org/2.0/en/models/retrieving-your-data.html#creating-custom-find-types)
+inside a `CrudAction`
 
-By providing your own custom find method, you can easily inject more complex `find` logic and at the same time follow the [skinny controllers, fat models](http://www.mikebernat.com/images/cake/layercake.png) code guideline.
+By providing your own custom find method, you can easily inject more complex `find` logic and at the
+same time follow the [skinny controllers, fat models](http://www.mikebernat.com/images/cake/layercake.png) code guideline.
 
-Adding custom data to your custom find is also possible, and very simple, have a look at the `events` documentation.
+Adding custom data to your custom find is also possible, and very simple, have a look at the
+`events` documentation.
 
 By default `index` uses `find('all')`
 
@@ -204,7 +210,8 @@ public function admin_index() {
 
 # Change the view to be rendered
 
-By default Crud renders a view with the same name as the controller action, but there are cases where you want to change this.
+By default Crud renders a view with the same name as the controller action, but there are cases
+where you want to change this.
 
 If you action is `admin_index` the `admin_index.ctp` view will be rendered by default.
 
@@ -256,7 +263,8 @@ public function admin_index() {
 
 # Change the viewVar (variable name in the view)
 
-By default Crud follows the convention of `$items` in `index()` actions and `$item` in `view()` actions
+By default Crud follows the convention of `$items` in `index()` actions and `$item` in `view()`
+actions
 
 If you want to change these settings, simply call the `viewVar()` method on the action
 
@@ -307,10 +315,11 @@ public function admin_index() {
 
 # Enable a Crud action on the fly
 
-This can only be done in `beforeFilter` (or earlier in the request) since it's the last method called
-before the actual controller action is executed.
+This can only be done in `beforeFilter` (or earlier in the request) since it's the last method
+called before the actual controller action is executed.
 
-Enabling a `CrudAction` automatically injects it into the Controller as if it was defined in the `actions` array in the crud component configuration.
+Enabling a `CrudAction` automatically injects it into the Controller as if it was defined in the
+`actions` array in the crud component configuration.
 
 {% highlight php %}
 <?php
@@ -325,10 +334,11 @@ public function beforeFilter() {
 
 # Disable a Crud action on the fly
 
-This can only be done in `beforeFilter` (or earlier in the request) since it's the last method called
-before the actual controller action is executed.
+This can only be done in `beforeFilter` (or earlier in the request) since it's the last method
+called before the actual controller action is executed.
 
-Disabling a `CrudAction` automatically removes it from the Controller as if it was never defined in the `actions` array in the crud component configuration.
+Disabling a `CrudAction` automatically removes it from the Controller as if it was never defined in
+the `actions` array in the crud component configuration.
 
 {% highlight php %}
 <?php
@@ -385,7 +395,8 @@ Please see the [related data documentation]({{site.url}}/docs/listeners/related-
 
 # Change save options
 
-All options as described in [CakePHP documentation on saveAll()](http://book.cakephp.org/2.0/en/models/saving-your-data.html#model-saveall-array-data-null-array-options-array) is valid here
+All options as described in [CakePHP documentation on saveAll()](http://book.cakephp.org/2.0/en/models/saving-your-data.html#model-saveall-array-data-null-array-options-array)
+is valid here.
 
 This configuration maps directly to the 2nd parameter of `saveAll()` called `$options`
 
@@ -403,11 +414,13 @@ public function beforeFilter() {
 
 # Change the crud action class
 
-Please remember that the CrudAction class names `index`, `view`, `add`, `edit` and `delete` is reserved, and can only be used inside the Crud plugin.
+Please remember that the CrudAction class names `index`, `view`, `add`, `edit` and `delete` is
+reserved, and can only be used inside the Crud plugin.
 
 You own CrudActions can be called anything but these class names
 
-Please see the [custom crud action documentationn]({{site.url}}/docs/actions/custom.html) for more information
+Please see the [custom crud action documentationn]({{site.url}}/docs/actions/custom.html) for more
+information
 
 ## Through component configuration
 
