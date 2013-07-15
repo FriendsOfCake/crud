@@ -13,7 +13,7 @@ App::uses('CrudSubject', 'Crud.Controller/Crud');
  *
  * @copyright Christian Winther, 2013
  */
-class RelatedModelsListener extends CrudListener implements CakeEventListener {
+class RelatedModelsListener extends CrudListener {
 
 /**
  * Gets the list of associated model lists to be fetched for an action
