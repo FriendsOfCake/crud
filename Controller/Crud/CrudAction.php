@@ -473,7 +473,7 @@ abstract class CrudAction implements CakeEventListener {
  * Implements all the request handling and response serving logic
  * for this action
  *
- * @return CakeResponse
+ * @return void|CakeResponse
  */
 	protected abstract function _handle();
 
