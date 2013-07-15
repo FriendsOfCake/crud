@@ -157,10 +157,9 @@ class CrudComponent extends Component {
 	}
 
 /**
- * initAction
+ * Initialize action
  *
  * @param string $controllerAction Override the controller action to execute as
- * @param mixed $controllerAction
  */
 	public function initAction($controllerAction = null) {
 		$this->_action = $controllerAction ?: $this->_action;

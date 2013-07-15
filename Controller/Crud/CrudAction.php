@@ -66,6 +66,7 @@ abstract class CrudAction implements CakeEventListener {
  * Constructor
  *
  * @param CrudSubject $subject
+ * @param array $defaults Default settings
  * @return void
  */
 	public function __construct(CrudSubject $subject, $defaults = array()) {
@@ -311,8 +312,7 @@ abstract class CrudAction implements CakeEventListener {
 /**
  * Get the model find method for a current controller action
  *
- * @param string|NULL $action The controller action
- * @param string|NULL $default The default find method in case it haven't been mapped
+ * @param string|NULL $default The default find method in case it hasn't been mapped
  * @return string The find method used in ->_model->find($method)
  */
 	protected function _getFindMethod($default = null) {

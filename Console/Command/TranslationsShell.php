@@ -75,8 +75,6 @@ class TranslationsShell extends AppShell {
 	}
 
 /**
- * _addDocBlock
- *
  * Add a doc block to the lines property with the passed message appropriately formatted
  * If the doc block already exists - return false
  *
@@ -98,8 +96,6 @@ class TranslationsShell extends AppShell {
 	}
 
 /**
- * _getControllers
- *
  * If no arguments are passed to the cli call, return all App controllers
  * Otherwise, assume the arguments are a list of file paths to plugin model dirs or an individual plugin model
  *
@@ -159,8 +155,6 @@ class TranslationsShell extends AppShell {
 	}
 
 /**
- * path
- *
  * Set or retrieve the path to write the output file to
  * Defaults to APP/Config/i18n_crud.php
  *
@@ -177,9 +171,10 @@ class TranslationsShell extends AppShell {
 	}
 
 /**
- * _loadController
+ * Get controller instance
  *
- * @param string $name
+ * @param string $name Controller name
+ * @param string $plugin Plugin name
  * @return Controller
  * @codeCoverageIgnore
  */
@@ -213,8 +208,6 @@ class TranslationsShell extends AppShell {
 	}
 
 /**
- * processController
- *
  * For the given controller name, initialize the crud component and process each action.
  * Create a listener for the setFlash event to log the flash message details.
  *
@@ -239,8 +232,6 @@ class TranslationsShell extends AppShell {
 	}
 
 /**
- * _processAction
- *
  * Process a single crud action. Initialize the action object, and trigger each
  * flash message.
  *
@@ -271,7 +262,7 @@ class TranslationsShell extends AppShell {
 	}
 
 /**
- * _processMessage
+ * Generates translation statement string and adds to lines property
  *
  * @param mixed $message
  * @param mixed $action
@@ -299,8 +290,6 @@ class TranslationsShell extends AppShell {
 	}
 
 /**
- * _writeFile
- *
  * Take the lines property, populated by the generate method - and write it
  * out to the output file path
  *

@@ -2,6 +2,14 @@
 
 App::uses('ExceptionRenderer', 'Error');
 
+/**
+ * Exception renderer for ApiListener
+ *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright Christian Winther, 2013
+ */
 class CrudExceptionRenderer extends ExceptionRenderer {
 
 /**
@@ -54,7 +62,7 @@ class CrudExceptionRenderer extends ExceptionRenderer {
 	}
 
 /**
- * Helper method used to generate  extra debugging data into the error template
+ * Helper method used to generate extra debugging data into the error template
  *
  * @return array debugging data
  */
