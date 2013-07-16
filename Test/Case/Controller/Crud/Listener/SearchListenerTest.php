@@ -1,6 +1,10 @@
 <?php
 
 App::uses('Controller', 'Controller');
+App::uses('Component', 'Controller');
+App::uses('ComponentCollection', 'Controller');
+App::uses('Behavior', 'Model');
+App::uses('BehaviorCollection', 'Model');
 App::uses('CakeEvent', 'Event');
 App::uses('CakeRequest', 'Network');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
@@ -242,19 +246,59 @@ class SearchListenerTest extends CakeTestCase {
  * @return void
  */
 	public function testEnsureComponent() {
-		$Instance = new SearchListener(new CrudSubject());
-
 		$Controller = new Controller(new CakeRequest());
-		$Controller->uses = array('Test');
-		$Controller->constructClasses();
 
-		$this->assertFalse(isset($Controller->Prg));
+		$Component = $this->getMock('Component', array('initialize', 'startup'), array(), '', false);
+		$Component
+			->expects($this->once())
+			->method('initialize')
+			->with($Controller);
+		$Component
+			->expects($this->once())
+			->method('startup')
+			->with($Controller);
+
+		$Controller->Components = $this->getMock('ComponentCollection', array('loaded', 'load'));
+		$Controller->Components
+			->expects($this->once())
+			->method('loaded')
+			->with('Prg')
+			->will($this->returnValue(false));
+		$Controller->Components
+			->expects($this->once())
+			->method('load')
+			->with('Search.Prg')
+			->will($this->returnValue($Component));
+
+		$Instance = new SearchListener(new CrudSubject());
 
 		$Method = new ReflectionMethod('SearchListener', '_ensureComponent');
 		$Method->setAccessible(true);
 		$Method->invoke($Instance, $Controller);
+	}
 
-		$this->assertTrue(isset($Controller->Prg));
+/**
+ * Test that nothing is done if the Prg component is already loaded
+ *
+ * @return void
+ */
+	public function testEnsureComponentAlreadyLoaded() {
+		$Controller = new Controller(new CakeRequest());
+		$Controller->Components = $this->getMock('ComponentCollection', array('loaded', 'load'));
+		$Controller->Components
+			->expects($this->once())
+			->method('loaded')
+			->with('Prg')
+			->will($this->returnValue(true));
+		$Controller->Components
+			->expects($this->never())
+			->method('load');
+
+		$Instance = new SearchListener(new CrudSubject());
+
+		$Method = new ReflectionMethod('SearchListener', '_ensureComponent');
+		$Method->setAccessible(true);
+		$Method->invoke($Instance, $Controller);
 	}
 
 /**
@@ -264,17 +308,62 @@ class SearchListenerTest extends CakeTestCase {
  * @return void
  */
 	public function testEnsureBehavior() {
-		$Instance = new SearchListener(new CrudSubject());
-
 		$Model = new Model();
 
-		$this->assertFalse($Model->Behaviors->loaded('Searchable'));
+		$Behavior = $this->getMock('Behavior', array('setup'), array(), '', false);
+		$Behavior
+			->expects($this->once())
+			->method('setup')
+			->with($Model);
+
+		$Model->Behaviors = $this->getMock('BehaviorCollection', array('loaded', 'load'));
+		$Model->Behaviors->Searchable = $Behavior;
+		$Model->Behaviors
+			->expects($this->once())
+			->method('loaded')
+			->with('Searchable')
+			->will($this->returnValue(false));
+		$Model->Behaviors
+			->expects($this->once())
+			->method('load')
+			->with('Search.Searchable');
+
+		$Instance = new SearchListener(new CrudSubject());
 
 		$Method = new ReflectionMethod('SearchListener', '_ensureBehavior');
 		$Method->setAccessible(true);
 		$Method->invoke($Instance, $Model);
+	}
 
-		$this->assertTrue($Model->Behaviors->loaded('Searchable'));
+/**
+ * Test that nothing is done if the Searchable behavior is already loaded
+ *
+ * @return void
+ */
+	public function testEnsureBehaviorAlreadyLoaded() {
+		$Model = new Model();
+
+		$Behavior = $this->getMock('Behavior', array('setup'), array(), '', false);
+		$Behavior
+			->expects($this->never())
+			->method('setup');
+
+		$Model->Behaviors = $this->getMock('BehaviorCollection', array('loaded', 'load'));
+		$Model->Behaviors->Searchable = $Behavior;
+		$Model->Behaviors
+			->expects($this->once())
+			->method('loaded')
+			->with('Searchable')
+			->will($this->returnValue(true));
+		$Model->Behaviors
+			->expects($this->never())
+			->method('load');
+
+		$Instance = new SearchListener(new CrudSubject());
+
+		$Method = new ReflectionMethod('SearchListener', '_ensureBehavior');
+		$Method->setAccessible(true);
+		$Method->invoke($Instance, $Model);
 	}
 
 }
