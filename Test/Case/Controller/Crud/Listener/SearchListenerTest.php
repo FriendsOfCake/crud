@@ -165,6 +165,128 @@ class SearchListenerTest extends CakeTestCase {
 	}
 
 /**
+ * Test beforePaginate
+ *
+ * Test that query scope works without a defined
+ * query scope in the listener
+ *
+ * @return void
+ */
+	public function testBeforePaginateWithUndefinedQueryScope() {
+		$Model = new Model();
+		$Model->filterArgs = array('sample' => 'test');
+		$Request = new CakeRequest();
+		$Request->query['_scope'] = 'sample';
+		$Controller = new Controller();
+		$CrudSubject = new CrudSubject(array(
+			'request' => $Request,
+			'controller' => $Controller,
+			'model' => $Model
+		));
+
+		$mocked = array(
+			'_checkRequiredPlugin',
+			'_ensureComponent',
+			'_ensureBehavior',
+			'_commonProcess',
+			'_setFilterArgs',
+			'_setPaginationOptions'
+		);
+
+		$Instance = $this->getMock('SearchListener', $mocked, array($CrudSubject));
+		$Instance->expects($this->once())->method('_checkRequiredPlugin');
+		$Instance->expects($this->once())->method('_ensureComponent')->with($Controller);
+		$Instance->expects($this->once())->method('_ensureBehavior')->with($Model);
+		$Instance->expects($this->once())->method('_commonProcess')->with($Controller, 'Model');
+		$Instance->expects($this->never())->method('_setFilterArgs', 'Should not be called when model got filterArgs already');
+		$Instance->expects($this->once())->method('_setPaginationOptions')->with($Controller, $Model, null);
+
+		$Instance->beforePaginate(new CakeEvent('beforePaginate', $CrudSubject));
+	}
+
+/**
+ * Test beforePaginate
+ *
+ * Test that query scope works with a defined
+ * query scope in the listener
+ *
+ * @return void
+ */
+	public function testBeforePaginateWithDefinedQueryScope() {
+		$Model = new Model();
+		$Model->filterArgs = array('sample' => 'test');
+		$Request = new CakeRequest();
+		$Request->query['_scope'] = 'sample';
+		$Controller = new Controller();
+		$CrudSubject = new CrudSubject(array(
+			'request' => $Request,
+			'controller' => $Controller,
+			'model' => $Model
+		));
+
+		$mocked = array(
+			'_checkRequiredPlugin',
+			'_ensureComponent',
+			'_ensureBehavior',
+			'_commonProcess',
+			'_setFilterArgs',
+			'_setPaginationOptions'
+		);
+
+		$Instance = $this->getMock('SearchListener', $mocked, array($CrudSubject));
+		$Instance->scope('sample', array('test' => 1));
+		$Instance->expects($this->once())->method('_checkRequiredPlugin');
+		$Instance->expects($this->once())->method('_ensureComponent')->with($Controller);
+		$Instance->expects($this->once())->method('_ensureBehavior')->with($Model);
+		$Instance->expects($this->once())->method('_commonProcess')->with($Controller, 'Model');
+		$Instance->expects($this->never())->method('_setFilterArgs', 'Should not be called when model got filterArgs already');
+		$Instance->expects($this->once())->method('_setPaginationOptions')->with($Controller, $Model, array('test' => 1));
+
+		$Instance->beforePaginate(new CakeEvent('beforePaginate', $CrudSubject));
+	}
+
+/**
+ * Test beforePaginate
+ *
+ * Test that query scope works with a defined
+ * query scope in the listener and a filter
+ *
+ * @return void
+ */
+	public function testBeforePaginateWithDefinedQueryScopeAndFilter() {
+		$Model = new Model();
+		$Model->filterArgs = array('sample' => 'test');
+		$Request = new CakeRequest();
+		$Request->query['_scope'] = 'sample';
+		$Controller = new Controller();
+		$CrudSubject = new CrudSubject(array(
+			'request' => $Request,
+			'controller' => $Controller,
+			'model' => $Model
+		));
+
+		$mocked = array(
+			'_checkRequiredPlugin',
+			'_ensureComponent',
+			'_ensureBehavior',
+			'_commonProcess',
+			'_setFilterArgs',
+			'_setPaginationOptions'
+		);
+
+		$Instance = $this->getMock('SearchListener', $mocked, array($CrudSubject));
+		$Instance->scope('sample', array('test' => 1), array('filter' => true));
+		$Instance->expects($this->once())->method('_checkRequiredPlugin');
+		$Instance->expects($this->once())->method('_ensureComponent')->with($Controller);
+		$Instance->expects($this->once())->method('_ensureBehavior')->with($Model);
+		$Instance->expects($this->once())->method('_commonProcess')->with($Controller, 'Model');
+		$Instance->expects($this->once())->method('_setFilterArgs')->with($Model, array('filter' => true));
+		$Instance->expects($this->once())->method('_setPaginationOptions')->with($Controller, $Model, array('test' => 1));
+
+		$Instance->beforePaginate(new CakeEvent('beforePaginate', $CrudSubject));
+	}
+
+/**
  * Test that _checkRequiredPlugin doesn't throw an exception
  *
  * @return void
@@ -192,7 +314,7 @@ class SearchListenerTest extends CakeTestCase {
 		$Instance->expects($this->once())->method('_ensureComponent')->with($Controller);
 		$Instance->expects($this->once())->method('_ensureBehavior')->with($Model);
 		$Instance->expects($this->once())->method('_commonProcess')->with($Controller, 'Model');
-		$Instance->expects($this->never())->method('_setFilterArgs', 'Should not be called when model got filterArgs already');
+		$Instance->expects($this->never())->method('_setFilterArgs');
 		$Instance->expects($this->once())->method('_setPaginationOptions')->with($Controller, $Model, array());
 
 		$Instance->beforePaginate(new CakeEvent('beforePaginate', $CrudSubject));
