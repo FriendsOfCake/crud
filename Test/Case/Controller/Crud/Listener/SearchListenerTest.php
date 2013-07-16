@@ -116,12 +116,29 @@ class SearchListenerTest extends CakeTestCase {
 		);
 
 		$Instance = $this->getMock('SearchListener', $mocked, array($CrudSubject));
-		$Instance->expects($this->once())->method('_checkRequiredPlugin');
-		$Instance->expects($this->once())->method('_ensureComponent')->with($Controller);
-		$Instance->expects($this->once())->method('_ensureBehavior')->with($Model);
-		$Instance->expects($this->once())->method('_commonProcess')->with($Controller, 'Model');
-		$Instance->expects($this->once())->method('_setFilterArgs')->with($Model, array());
-		$Instance->expects($this->once())->method('_setPaginationOptions')->with($Controller, $Model, array());
+		$Instance
+			->expects($this->once())
+			->method('_checkRequiredPlugin');
+		$Instance
+			->expects($this->once())
+			->method('_ensureComponent')
+			->with($Controller);
+		$Instance
+			->expects($this->once())
+			->method('_ensureBehavior')
+			->with($Model);
+		$Instance
+			->expects($this->once())
+			->method('_commonProcess')
+			->with($Controller, 'Model');
+		$Instance
+			->expects($this->once())
+			->method('_setFilterArgs')
+			->with($Model, array());
+		$Instance
+			->expects($this->once())
+			->method('_setPaginationOptions')
+			->with($Controller, $Model, array());
 
 		$Instance->beforePaginate(new CakeEvent('beforePaginate', $CrudSubject));
 	}
@@ -154,12 +171,28 @@ class SearchListenerTest extends CakeTestCase {
 		);
 
 		$Instance = $this->getMock('SearchListener', $mocked, array($CrudSubject));
-		$Instance->expects($this->once())->method('_checkRequiredPlugin');
-		$Instance->expects($this->once())->method('_ensureComponent')->with($Controller);
-		$Instance->expects($this->once())->method('_ensureBehavior')->with($Model);
-		$Instance->expects($this->once())->method('_commonProcess')->with($Controller, 'Model');
-		$Instance->expects($this->never())->method('_setFilterArgs', 'Should not be called when model got filterArgs already');
-		$Instance->expects($this->once())->method('_setPaginationOptions')->with($Controller, $Model, array());
+		$Instance
+			->expects($this->once())
+			->method('_checkRequiredPlugin');
+		$Instance
+			->expects($this->once())
+			->method('_ensureComponent')
+			->with($Controller);
+		$Instance
+			->expects($this->once())
+			->method('_ensureBehavior')
+			->with($Model);
+		$Instance
+			->expects($this->once())
+			->method('_commonProcess')
+			->with($Controller, 'Model');
+		$Instance
+			->expects($this->never())
+			->method('_setFilterArgs', 'Should not be called when model got filterArgs already');
+		$Instance
+			->expects($this->once())
+			->method('_setPaginationOptions')
+			->with($Controller, $Model, array());
 
 		$Instance->beforePaginate(new CakeEvent('beforePaginate', $CrudSubject));
 	}
@@ -194,12 +227,28 @@ class SearchListenerTest extends CakeTestCase {
 		);
 
 		$Instance = $this->getMock('SearchListener', $mocked, array($CrudSubject));
-		$Instance->expects($this->once())->method('_checkRequiredPlugin');
-		$Instance->expects($this->once())->method('_ensureComponent')->with($Controller);
-		$Instance->expects($this->once())->method('_ensureBehavior')->with($Model);
-		$Instance->expects($this->once())->method('_commonProcess')->with($Controller, 'Model');
-		$Instance->expects($this->never())->method('_setFilterArgs', 'Should not be called when model got filterArgs already');
-		$Instance->expects($this->once())->method('_setPaginationOptions')->with($Controller, $Model, null);
+		$Instance
+			->expects($this->once())
+			->method('_checkRequiredPlugin');
+		$Instance
+			->expects($this->once())
+			->method('_ensureComponent')
+			->with($Controller);
+		$Instance
+			->expects($this->once())
+			->method('_ensureBehavior')
+			->with($Model);
+		$Instance
+			->expects($this->once())
+			->method('_commonProcess')
+			->with($Controller, 'Model');
+		$Instance
+			->expects($this->never())
+			->method('_setFilterArgs', 'Should not be called when model got filterArgs already');
+		$Instance
+			->expects($this->once())
+			->method('_setPaginationOptions')
+			->with($Controller, $Model, null);
 
 		$Instance->beforePaginate(new CakeEvent('beforePaginate', $CrudSubject));
 	}
@@ -235,12 +284,28 @@ class SearchListenerTest extends CakeTestCase {
 
 		$Instance = $this->getMock('SearchListener', $mocked, array($CrudSubject));
 		$Instance->scope('sample', array('test' => 1));
-		$Instance->expects($this->once())->method('_checkRequiredPlugin');
-		$Instance->expects($this->once())->method('_ensureComponent')->with($Controller);
-		$Instance->expects($this->once())->method('_ensureBehavior')->with($Model);
-		$Instance->expects($this->once())->method('_commonProcess')->with($Controller, 'Model');
-		$Instance->expects($this->never())->method('_setFilterArgs', 'Should not be called when model got filterArgs already');
-		$Instance->expects($this->once())->method('_setPaginationOptions')->with($Controller, $Model, array('test' => 1));
+		$Instance
+			->expects($this->once())
+			->method('_checkRequiredPlugin');
+		$Instance
+			->expects($this->once())
+			->method('_ensureComponent')
+			->with($Controller);
+		$Instance
+			->expects($this->once())
+			->method('_ensureBehavior')
+			->with($Model);
+		$Instance
+			->expects($this->once())
+			->method('_commonProcess')
+			->with($Controller, 'Model');
+		$Instance
+			->expects($this->never())
+			->method('_setFilterArgs', 'Should not be called when model got filterArgs already');
+		$Instance
+			->expects($this->once())
+			->method('_setPaginationOptions')
+			->with($Controller, $Model, array('test' => 1));
 
 		$Instance->beforePaginate(new CakeEvent('beforePaginate', $CrudSubject));
 	}
@@ -276,12 +341,29 @@ class SearchListenerTest extends CakeTestCase {
 
 		$Instance = $this->getMock('SearchListener', $mocked, array($CrudSubject));
 		$Instance->scope('sample', array('test' => 1), array('filter' => true));
-		$Instance->expects($this->once())->method('_checkRequiredPlugin');
-		$Instance->expects($this->once())->method('_ensureComponent')->with($Controller);
-		$Instance->expects($this->once())->method('_ensureBehavior')->with($Model);
-		$Instance->expects($this->once())->method('_commonProcess')->with($Controller, 'Model');
-		$Instance->expects($this->once())->method('_setFilterArgs')->with($Model, array('filter' => true));
-		$Instance->expects($this->once())->method('_setPaginationOptions')->with($Controller, $Model, array('test' => 1));
+		$Instance
+			->expects($this->once())
+			->method('_checkRequiredPlugin');
+		$Instance
+			->expects($this->once())
+			->method('_ensureComponent')
+			->with($Controller);
+		$Instance
+			->expects($this->once())
+			->method('_ensureBehavior')
+			->with($Model);
+		$Instance
+			->expects($this->once())
+			->method('_commonProcess')
+			->with($Controller, 'Model');
+		$Instance
+			->expects($this->once())
+			->method('_setFilterArgs')
+			->with($Model, array('filter' => true));
+		$Instance
+			->expects($this->once())
+			->method('_setPaginationOptions')
+			->with($Controller, $Model, array('test' => 1));
 
 		$Instance->beforePaginate(new CakeEvent('beforePaginate', $CrudSubject));
 	}
@@ -311,11 +393,25 @@ class SearchListenerTest extends CakeTestCase {
 		);
 
 		$Instance = $this->getMock('SearchListener', $mocked, array($CrudSubject));
-		$Instance->expects($this->once())->method('_ensureComponent')->with($Controller);
-		$Instance->expects($this->once())->method('_ensureBehavior')->with($Model);
-		$Instance->expects($this->once())->method('_commonProcess')->with($Controller, 'Model');
-		$Instance->expects($this->never())->method('_setFilterArgs');
-		$Instance->expects($this->once())->method('_setPaginationOptions')->with($Controller, $Model, array());
+		$Instance
+			->expects($this->once())
+			->method('_ensureComponent')
+			->with($Controller);
+		$Instance
+			->expects($this->once())
+			->method('_ensureBehavior')
+			->with($Model);
+		$Instance
+			->expects($this->once())
+			->method('_commonProcess')
+			->with($Controller, 'Model');
+		$Instance
+			->expects($this->never())
+			->method('_setFilterArgs');
+		$Instance
+			->expects($this->once())
+			->method('_setPaginationOptions')
+			->with($Controller, $Model, array());
 
 		$Instance->beforePaginate(new CakeEvent('beforePaginate', $CrudSubject));
 	}
@@ -352,11 +448,21 @@ class SearchListenerTest extends CakeTestCase {
 		);
 
 		$Instance = $this->getMock('SearchListener', $mocked, array($CrudSubject));
-		$Instance->expects($this->never())->method('_ensureComponent');
-		$Instance->expects($this->never())->method('_ensureBehavior');
-		$Instance->expects($this->never())->method('_commonProcess');
-		$Instance->expects($this->never())->method('_setFilterArgs');
-		$Instance->expects($this->never())->method('_setPaginationOptions');
+		$Instance
+			->expects($this->never())
+			->method('_ensureComponent');
+		$Instance
+			->expects($this->never())
+			->method('_ensureBehavior');
+		$Instance
+			->expects($this->never())
+			->method('_commonProcess');
+		$Instance
+			->expects($this->never())
+			->method('_setFilterArgs');
+		$Instance
+			->expects($this->never())
+			->method('_setPaginationOptions');
 
 		$Instance->beforePaginate(new CakeEvent('beforePaginate', $CrudSubject));
 	}
