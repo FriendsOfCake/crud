@@ -235,4 +235,46 @@ class SearchListenerTest extends CakeTestCase {
 		$Instance->beforePaginate(new CakeEvent('beforePaginate', $CrudSubject));
 	}
 
+/**
+ * Test that the Prg component is automatically initialized
+ * if its not loaded by the controller directly
+ *
+ * @return void
+ */
+	public function testEnsureComponent() {
+		$Instance = new SearchListener(new CrudSubject());
+
+		$Controller = new Controller(new CakeRequest());
+		$Controller->uses = array('Test');
+		$Controller->constructClasses();
+
+		$this->assertFalse(isset($Controller->Prg));
+
+		$Method = new ReflectionMethod('SearchListener', '_ensureComponent');
+		$Method->setAccessible(true);
+		$Method->invoke($Instance, $Controller);
+
+		$this->assertTrue(isset($Controller->Prg));
+	}
+
+/**
+ * Test that the Searchable behavior is automatically initialized
+ * if its not loaded by the model directly
+ *
+ * @return void
+ */
+	public function testEnsureBehavior() {
+		$Instance = new SearchListener(new CrudSubject());
+
+		$Model = new Model();
+
+		$this->assertFalse($Model->Behaviors->loaded('Searchable'));
+
+		$Method = new ReflectionMethod('SearchListener', '_ensureBehavior');
+		$Method->setAccessible(true);
+		$Method->invoke($Instance, $Model);
+
+		$this->assertTrue($Model->Behaviors->loaded('Searchable'));
+	}
+
 }

@@ -135,6 +135,7 @@ class SearchListener extends CrudListener {
 /**
  * Execute commonProcess on Prg component
  *
+ * @codeCoverageIgnore
  * @param Controller $controller
  * @param string $modelClass
  * @return void
@@ -146,6 +147,7 @@ class SearchListener extends CrudListener {
 /**
  * Set the pagination options
  *
+ * @codeCoverageIgnore
  * @param Controller $controller
  * @param Model $model
  * @param array $query
@@ -158,6 +160,7 @@ class SearchListener extends CrudListener {
 /**
  * Set the model filter args
  *
+ * @codeCoverageIgnore
  * @param Model $model
  * @param array $filter
  * @return void
