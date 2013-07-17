@@ -1,5 +1,19 @@
 {
+	"minimum-stability": "dev",
+  "config": {
+		"vendor-dir": "vendors",
+    "preferred-install": "source"
+  },
+  "extra": {
+    "installer-paths": {
+      "app/Plugin/Search": ["cakedc/search"]
+    }
+  },
 	"require-dev": {
 		"satooshi/php-coveralls": "dev-master"
+	},
+	"require": {
+		"composer/installers" : "~1.0",
+		"cakedc/search"				: "dev-develop"
 	}
 }

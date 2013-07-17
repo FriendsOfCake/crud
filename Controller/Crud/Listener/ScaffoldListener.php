@@ -116,7 +116,6 @@ class ScaffoldListener extends CrudListener {
 		if ($controller->viewClass) {
 			$controller->viewClass = 'Scaffold';
 		}
-
 	}
 
 /**
