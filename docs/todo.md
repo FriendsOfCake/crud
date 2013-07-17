@@ -5,7 +5,8 @@ layout: default
 
 # TODO
 
-* Batch actions (mass edit/delete)
+* Batch actions (mass enable/disable/edit/delete)
+* Tree actions (moveUp, moveDown & friends)
 * History action (viewing audit trail)
 * CrudCsvView
 * CrudXlsView (with [optional dependencies][1])
