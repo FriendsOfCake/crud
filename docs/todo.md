@@ -6,4 +6,6 @@ layout: default
 # TODO
 
 * Batch actions (mass edit/delete)
-* Histor action (viewing audit trail)
+* History action (viewing audit trail)
+* CrudCsvView
+* CrudXlsView (with optional dependencies)
