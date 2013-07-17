@@ -198,9 +198,9 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->controller->__construct($this->request, $response);
 		$this->controller->methods = array();
 
-		$Collection = new ComponentCollection();
-		$Collection->init($this->controller);
-		$this->controller->Components = $Collection;
+		$this->Collection = new ComponentCollection();
+		$this->Collection->init($this->controller);
+		$this->controller->Components = $this->Collection;
 
 		$settings = array(
 			'actions' => array(
@@ -212,12 +212,7 @@ class CrudComponentTest extends ControllerTestCase {
 			)
 		);
 
-		$this->Crud = $this->getMock(
-			'TestCrudComponent',
-			null,
-			array($Collection, $settings)
-		);
-
+		$this->Crud = new TestCrudComponent($this->Collection, $settings);
 		$this->Crud->initialize($this->controller);
 		$this->controller->Crud = $this->Crud;
 	}
@@ -230,7 +225,8 @@ class CrudComponentTest extends ControllerTestCase {
 			$this->model,
 			$this->request,
 			$this->controller,
-			$this->Crud
+			$this->Crud,
+			$this->Collection
 		);
 
 		parent::tearDown();
@@ -2123,6 +2119,24 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->Crud->addListener('MyPlugin.api');
 		$config = $this->Crud->config('listeners');
 		$this->assertEqual($config['api'], array('className' => 'MyPlugin.Api'));
+	}
+
+/**
+ * Test the Crud sets model and modelClass to NULL
+ * if there is no model defined in the controller
+ *
+ * @return void
+ */
+	public function testControllerWithEmptyUses() {
+		$controller = new Controller(new CakeRequest());
+		$this->Crud = new CrudComponent($this->Collection, array('actions' => array('index')));
+		$this->Crud->initialize($controller);
+		$this->controller->Crud = $this->Crud;
+		$this->Crud->initAction('index');
+		$subject = $this->Crud->trigger('sample');
+
+		$this->assertNull($subject->model);
+		$this->assertNull($subject->modelClass);
 	}
 
 }
