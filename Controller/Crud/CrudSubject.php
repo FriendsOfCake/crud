@@ -42,7 +42,7 @@ class CrudSubject {
 /**
  * Request object instance
  *
- * @return CakeRequest
+ * @var CakeRequest
  */
 	public $request;
 

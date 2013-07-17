@@ -92,6 +92,7 @@ class ApiQueryLogListener extends CrudListener {
  * Get a specific data source
  *
  * @codeCoverageIgnore
+ * @param string $source Datasource name
  * @return DataSource
  */
 	protected function _getSource($source) {

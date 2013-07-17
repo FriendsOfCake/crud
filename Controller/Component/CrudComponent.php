@@ -157,10 +157,9 @@ class CrudComponent extends Component {
 	}
 
 /**
- * initAction
+ * Initialize action
  *
  * @param string $controllerAction Override the controller action to execute as
- * @param mixed $controllerAction
  */
 	public function initAction($controllerAction = null) {
 		$this->_action = $controllerAction ?: $this->_action;
@@ -339,6 +338,11 @@ class CrudComponent extends Component {
 		}
 
 		try {
+			$test = $this->config('actions.' . $action);
+			if (empty($test)) {
+				return false;
+			}
+
 			return $this->action($action)->config('enabled');
 		} catch (Exception $e) {
 
@@ -713,6 +717,12 @@ class CrudComponent extends Component {
 		$configKey = 'modelMap.' . $this->_action;
 		if (!$this->_modelName = $this->config($configKey)) {
 			$this->_modelName = $this->_controller->modelClass;
+		}
+
+		if (empty($this->_modelName)) {
+			$this->_model = null;
+			$this->_modelName = null;
+			return;
 		}
 
 		$this->_model = $this->_controller->{$this->_modelName};

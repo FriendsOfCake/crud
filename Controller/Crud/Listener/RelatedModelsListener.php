@@ -13,7 +13,7 @@ App::uses('CrudSubject', 'Crud.Controller/Crud');
  *
  * @copyright Christian Winther, 2013
  */
-class RelatedModelsListener extends CrudListener implements CakeEventListener {
+class RelatedModelsListener extends CrudListener {
 
 /**
  * Gets the list of associated model lists to be fetched for an action
@@ -124,6 +124,7 @@ class RelatedModelsListener extends CrudListener implements CakeEventListener {
  * @param string $model name of the model
  * @param Model $controllerModel default model instance for controller
  * @param Controller $controller instance to do a first look on it
+ * @param string $associationType Association types
  * @return Model
  */
 	protected function _getModelInstance($model, $controllerModel, $controller, $associationType = null) {

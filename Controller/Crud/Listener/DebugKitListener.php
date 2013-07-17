@@ -38,42 +38,102 @@ class DebugKitListener extends CrudListener {
 		);
 	}
 
+/**
+ * Start timer for Crud.init
+ *
+ * @param CakeEvent $event
+ * @return void
+ */
 	public function init(CakeEvent $event) {
 		DebugTimer::start('Event: Crud.init');
 	}
 
+/**
+ * Stop timer for Crud.init
+ *
+ * @param CakeEvent $event
+ * @return void
+ */
 	public function beforeRender(CakeEvent $event) {
 		DebugTimer::stop('Event: Crud.init');
 	}
 
+/**
+ * Start timer for Crud.Paginate
+ *
+ * @param CakeEvent $event
+ * @return void
+ */
 	public function beforePaginate(CakeEvent $event) {
 		DebugTimer::start('Event: Crud.Paginate');
 	}
 
+/**
+ * Stop timer for Crud.init
+ *
+ * @param CakeEvent $event
+ * @return void
+ */
 	public function afterPaginate(CakeEvent $event) {
 		DebugTimer::stop('Event: Crud.Paginate');
 	}
 
+/**
+ * Start timer for Crud.Save
+ *
+ * @param CakeEvent $event
+ * @return void
+ */
 	public function beforeSave(CakeEvent $event) {
 		DebugTimer::start('Event: Crud.Save');
 	}
 
+/**
+ * Stop timer for Crud.Save
+ *
+ * @param CakeEvent $event
+ * @return void
+ */
 	public function afterSave(CakeEvent $event) {
 		DebugTimer::stop('Event: Crud.Save');
 	}
 
+/**
+ * Start timer for Crud.Find
+ *
+ * @param CakeEvent $event
+ * @return void
+ */
 	public function beforeFind(CakeEvent $event) {
 		DebugTimer::start('Event: Crud.Find');
 	}
 
+/**
+ * Stop timer for Crud.Find
+ *
+ * @param CakeEvent $event
+ * @return void
+ */
 	public function afterFind(CakeEvent $event) {
 		DebugTimer::stop('Event: Crud.Find');
 	}
 
+/**
+ * Start timer for Crud.Delete
+ *
+ * @param CakeEvent $event
+ * @return void
+ */
 	public function beforeDelete(CakeEvent $event) {
 		DebugTimer::start('Event: Crud.Delete');
 	}
 
+/**
+ * Stop timer for Crud.Delete
+ *
+ * @param CakeEvent $event
+ * @return void
+ */
 	public function afterDelete(CakeEvent $event) {
 		DebugTimer::stop('Event: Crud.Delete');
 	}
