@@ -12,7 +12,6 @@ Inspiration
 
 ## General
 
-* Maybe as a secondary plugin called `crud-view`
 * Dynamic, should not require files on disk for core features
 ** People can override functionality by providing their own widget / view paths
 * Based on TwitterBootstrap (a theme that doesn't suck - with MIT license)
@@ -22,14 +21,14 @@ Inspiration
 ## Index
 
 * Normal index lists
-* "Scopes" (active, deleted etc.)
+* "Scopes"  - active, deleted etc. - (server side works with SearchListener))
 * "labels" (e.g. checkmark / minus for boolean) for fields in the list
-* change order of fields
+* change sorting on fields
 * configuration for each file (e.g. date format)
-* Filters (Using CakeDC/search?)
+* Filters (Somewhat done by AD7Six + cakedc/Search)
 ** Date
 ** Search
-* API links for current request
+* API links (json, xml, csv, xls) for current request
 * Action items (Add new etc.)
 
 ## Form
