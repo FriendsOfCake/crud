@@ -8,4 +8,6 @@ layout: default
 * Batch actions (mass edit/delete)
 * History action (viewing audit trail)
 * CrudCsvView
-* CrudXlsView (with optional dependencies)
+* CrudXlsView (with [optional dependencies][1])
+
+ [1]: https://github.com/PHPOffice/PHPExcel
