@@ -39,7 +39,7 @@ class ApiPaginationListener extends CrudListener {
 		}
 
 		$_pagination = $this->_request->paging;
-		if (!array_key_exists($event->subject->modelClass, $_pagination)) {
+		if (empty($_pagination) || !array_key_exists($event->subject->modelClass, $_pagination)) {
 			return;
 		}
 

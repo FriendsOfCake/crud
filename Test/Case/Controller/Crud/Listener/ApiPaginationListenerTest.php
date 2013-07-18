@@ -76,6 +76,32 @@ class ApiPaginationListenerTest extends CakeTestCase {
 	}
 
 /**
+ * Test that API requests do not get processed
+ * if there if pagination data is NULL
+ *
+ * @return void
+ */
+	public function testBeforeRenderPaginationDataIsNull() {
+		$Request = $this->getMock('CakeRequest', array('is'));
+		$Request->paging = null;
+		$Request
+			->expects($this->once())
+			->method('is')
+			->with('api')
+			->will($this->returnValue(true));
+
+		$Crud = $this->getMock('stdClass', array('action'));
+		$Crud
+			->expects($this->never())
+			->method('action');
+
+		$CrudSubject = new CrudSubject(array('request' => $Request, 'crud' => $Crud, 'modelClass' => 'AnotherModel'));
+
+		$Instance = new ApiPaginationListener($CrudSubject);
+		$Instance->beforeRender(new CakeEvent('something', $CrudSubject));
+	}
+
+/**
  * Test that API requests do get processed
  * if there is pagination data
  *
