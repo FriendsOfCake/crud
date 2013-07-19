@@ -493,7 +493,7 @@ class CrudComponent extends Component {
 
 		if (is_null($value)) {
 			if (is_array($key)) {
-				$this->settings = $key + $this->settings;
+				$this->settings = Hash::merge($this->settings, $key);
 				return $this;
 			}
 

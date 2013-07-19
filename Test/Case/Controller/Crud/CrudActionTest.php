@@ -671,4 +671,29 @@ class CrudActionTest extends CakeTestCase {
 		$actual = $this->ActionClass->message('badRequestMethod', array('methods' => 'THESE ONES'));
 		$this->assertEqual($expected, $actual);
 	}
+
+/**
+ * Test that it's possible to change just one sub key
+ * by providing all the parents, without loosing any
+ * default settings
+ *
+ * @return void
+ */
+	public function testConfigMergeWorks() {
+		$this->ActionClass->config('messages.invalidId', array(
+			'code' => 400,
+			'class' => 'BadRequestException',
+			'text' => 'Invalid id'
+		));
+		$this->ActionClass->config(array('messages' => array('invalidId' => array('code' => 500))));
+
+		$expected = array(
+			'code' => 500,
+			'class' => 'BadRequestException',
+			'text' => 'Invalid id'
+		);
+		$result = $this->ActionClass->config('messages.invalidId');
+		$this->assertEqual($result, $expected);
+	}
+
 }

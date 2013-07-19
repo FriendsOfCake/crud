@@ -294,7 +294,7 @@ abstract class CrudAction implements CakeEventListener {
 
 		if (is_null($value)) {
 			if (is_array($key)) {
-				$this->_settings = $key + $this->_settings;
+				$this->_settings = Hash::merge($this->_settings, $key);
 				return $this;
 			}
 

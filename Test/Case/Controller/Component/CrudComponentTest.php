@@ -2139,4 +2139,23 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->assertNull($subject->modelClass);
 	}
 
+/**
+ * Test that it's possible to change just one sub key
+ * by providing all the parents, without loosing any
+ * default settings
+ *
+ * @return void
+ */
+	public function testConfigMergeWorks() {
+		$this->Crud->config(array('messages' => array('invalidId' => array('code' => 500))));
+
+		$expected = array(
+			'code' => 500,
+			'class' => 'BadRequestException',
+			'text' => 'Invalid id'
+		);
+		$result = $this->Crud->config('messages.invalidId');
+		$this->assertEqual($result, $expected);
+	}
+
 }
