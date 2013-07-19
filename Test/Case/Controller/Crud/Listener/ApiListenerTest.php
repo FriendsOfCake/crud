@@ -508,22 +508,49 @@ class ApiListenerTest extends CakeTestCase {
 	}
 
 /**
- * testNoFlashMessage
+ * testFlashMessageSupressed
  *
- * The api listener should suppress all flash messages
+ * The API listener should suppress flash messages
+ * if the request is "API"
  *
  * @return void
  */
-	public function testNoFlashMessage() {
-		$subject = $this->getMock('CrudSubject');
+	public function testFlashMessageSupressed() {
+		$Request = new CakeRequest();
+		$Request->addDetector('api', array('callback' => function() { return true; }));
 
-		$event = new CakeEvent('Crud.setFlash', $subject);
+		$subject = new CrudSubject(array('request' => $Request));
 
 		$apiListener = new ApiListener($subject);
+
+		$event = new CakeEvent('Crud.setFlash', $subject);
 		$apiListener->setFlash($event);
 
 		$stopped = $event->isStopped();
 		$this->assertTrue($stopped, 'Set flash event is expected to be stopped');
+	}
+
+/**
+ * testFlashMessageNotSupressed
+ *
+ * The API listener should not suppress flash messages
+ * if the request isn't "API"
+ *
+ * @return void
+ */
+	public function testFlashMessageNotSupressed() {
+		$Request = new CakeRequest();
+		$Request->addDetector('api', array('callback' => function() { return false; }));
+
+		$subject = new CrudSubject(array('request' => $Request));
+
+		$apiListener = new ApiListener($subject);
+
+		$event = new CakeEvent('Crud.setFlash', $subject);
+		$apiListener->setFlash($event);
+
+		$stopped = $event->isStopped();
+		$this->assertFalse($stopped, 'Set flash event is expected not to be stopped');
 	}
 
 }

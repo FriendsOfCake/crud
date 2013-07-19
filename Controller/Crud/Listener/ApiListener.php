@@ -165,6 +165,10 @@ class ApiListener extends CrudListener {
  * @param CakeEvent $event
  */
 	public function setFlash(CakeEvent $event) {
+		if (!$this->_request->is('api')) {
+			return;
+		}
+
 		$event->stopPropagation();
 	}
 
