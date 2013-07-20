@@ -53,11 +53,9 @@ class DeleteCrudAction extends CrudAction {
  * @throws MethodNotAllowedException If secure delete enabled and not a HTTP DELETE request
  */
 	protected function _handle($id = null) {
-		if (empty($id)) {
-			$id = $this->getIdFromRequest();
+		if (!$this->_validateId($id)) {
+			return false;
 		}
-
-		$this->_validateId($id);
 
 		$validRequest = $this->_request->is('delete');
 		if (!$validRequest) {

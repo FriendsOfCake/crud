@@ -180,6 +180,9 @@ class CrudComponent extends Component {
 	public function executeAction($controllerAction = null, $args = array()) {
 		$this->initAction($controllerAction);
 		$view = $action = $this->_action;
+		if (empty($args)) {
+			$args = $this->_request->params['pass'];
+		}
 
 		try {
 			// Execute the default action, inside this component

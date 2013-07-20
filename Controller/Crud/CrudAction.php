@@ -325,19 +325,6 @@ abstract class CrudAction implements CakeEventListener {
 	}
 
 /**
- * Helper method to get the passed ID to an action
- *
- * @return string
- */
-	public function getIdFromRequest() {
-		if (empty($this->_request->params['pass'][0])) {
-			return null;
-		}
-
-		return $this->_request->params['pass'][0];
-	}
-
-/**
  * Wrapper for Session::setFlash
  *
  * @param string $type Message type
