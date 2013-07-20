@@ -102,15 +102,22 @@ class IndexCrudActionTest extends CakeTestCase {
 			->getMock();
 
 		$Collection = $this->CollectionMock->getMock();
-		$Paginate = $this->getMock('PaginatorComponent', array('paginate'), array($Collection));
 
-		$Collection->expects($this->any())->method('load')
+		$Paginator = $this->getMock('PaginatorComponent', array('paginate'), array($Collection));
+		$Paginator->settings['findType'] = 'another';
+
+		$Collection
+			->expects($this->any())
+			->method('load')
 			->with('Paginator')
-			->will($this->returnValue($Paginate));
+			->will($this->returnCallback(function($class, $settings) use ($Paginator) {
+				$Paginator->settings = array_merge($Paginator->settings, (array)$settings);
+				return $Paginator;
+			}));
 
 		$Controller = new $controllerClass($Request);
 		$Controller->Components = $Collection;
-		$Controller->Paginator = $Paginate;
+		$Controller->Paginator = $Paginator;
 
 		$CrudSubject = new CrudSubject(array(
 			'crud' => $Crud,
@@ -121,13 +128,13 @@ class IndexCrudActionTest extends CakeTestCase {
 			'model' => null,
 			'modelClass' => null,
 			'args' => array(),
-			'findMethod' => 'another'
+			'paginator' => $Paginator
 		));
 
 		$Crud
 			->expects($this->at(0))
 			->method('trigger')
-			->with('beforePaginate', array('findMethod' => 'all'))
+			->with('beforePaginate', array('paginator' => $Paginator))
 			->will($this->returnValue($CrudSubject));
 
 		$Action = $this->ActionMock
@@ -145,7 +152,7 @@ class IndexCrudActionTest extends CakeTestCase {
 			->with('action')
 			->will($this->returnValue('index'));
 
-		return compact('Request', 'Crud', 'Collection', 'Paginate', 'Controller', 'CrudSubject', 'Action');
+		return compact('Request', 'Crud', 'Collection', 'Paginator', 'Controller', 'CrudSubject', 'Action');
 	}
 
 /**
@@ -156,7 +163,9 @@ class IndexCrudActionTest extends CakeTestCase {
 	public function testIndexAction() {
 		extract($this->_mockClasses());
 
-		$Paginate->expects($this->once())->method('paginate')
+		$Paginator
+			->expects($this->once())
+			->method('paginate')
 			->will($this->returnValue(array('foo', 'bar')));
 
 		$CrudSubject->items = array('foo', 'bar');
@@ -166,9 +175,13 @@ class IndexCrudActionTest extends CakeTestCase {
 			->with('afterPaginate', array('items' => array('foo', 'bar')))
 			->will($this->returnValue($CrudSubject));
 
-		$Crud->expects($this->at(2))->method('trigger')->with('beforeRender');
+		$Crud
+			->expects($this->at(2))
+			->method('trigger')
+			->with('beforeRender');
 
 		$Action->handle($CrudSubject);
+
 		$expected = array(
 			'page' => 1,
 			'limit' => 20,
@@ -176,7 +189,7 @@ class IndexCrudActionTest extends CakeTestCase {
 			'paramType' => 'named',
 			'findType' => 'another'
 		);
-		$this->assertEquals($expected, $Paginate->settings);
+		$this->assertEquals($expected, $Paginator->settings);
 		$Controller->viewVars['items'] = array('foo', 'bar');
 		$Controller->viewVars['success'] = true;
 	}
@@ -190,7 +203,9 @@ class IndexCrudActionTest extends CakeTestCase {
 		extract($this->_mockClasses());
 
 		$iterator = new ArrayIterator(array('foo', 'bar'));
-		$Paginate->expects($this->once())->method('paginate')
+		$Paginator
+			->expects($this->once())
+			->method('paginate')
 			->will($this->returnValue($iterator));
 
 		$CrudSubject->items = $iterator;
@@ -210,7 +225,7 @@ class IndexCrudActionTest extends CakeTestCase {
 			'paramType' => 'named',
 			'findType' => 'another'
 		);
-		$this->assertEquals($expected, $Paginate->settings);
+		$this->assertEquals($expected, $Paginator->settings);
 		$Controller->viewVars['items'] = array('foo', 'bar');
 		$Controller->viewVars['success'] = true;
 	}
@@ -228,11 +243,11 @@ class IndexCrudActionTest extends CakeTestCase {
 			'paramType' => 'querystring'
 		);
 
-		$Paginate->settings = array(
-			'maxLimit' => 70
-		);
+		$Paginator->settings['maxLimit'] = 70;
 
-		$Paginate->expects($this->once())->method('paginate')
+		$Paginator
+			->expects($this->once())
+			->method('paginate')
 			->will($this->returnValue(array('foo', 'bar')));
 
 		$CrudSubject->items = array('foo', 'bar');
@@ -242,16 +257,21 @@ class IndexCrudActionTest extends CakeTestCase {
 			->with('afterPaginate', array('items' => array('foo', 'bar')))
 			->will($this->returnValue($CrudSubject));
 
-		$Crud->expects($this->at(2))->method('trigger')->with('beforeRender');
+		$Crud
+			->expects($this->at(2))
+			->method('trigger')
+			->with('beforeRender');
 
 		$Action->handle($CrudSubject);
 		$expected = array(
 			'limit' => 50,
 			'maxLimit' => 70,
 			'paramType' => 'querystring',
-			'findType' => 'another'
+			'findType' => 'another',
+			'page' => 1
 		);
-		$this->assertEquals($expected, $Paginate->settings);
+
+		$this->assertEquals($expected, $Paginator->settings);
 		$Controller->viewVars['items'] = array('foo', 'bar');
 		$Controller->viewVars['success'] = true;
 	}
@@ -265,13 +285,14 @@ class IndexCrudActionTest extends CakeTestCase {
 		extract($this->_mockClasses('TestController'));
 
 		$CrudSubject->modelClass = 'MyModel';
-		$Paginate->settings = array(
-			'MyModel' => array(
-				'limit' => 5
-			)
+		$Paginator->settings['MyModel'] = array(
+			'limit' => 5,
+			'findType' => 'another'
 		);
 
-		$Paginate->expects($this->once())->method('paginate')
+		$Paginator
+			->expects($this->once())
+			->method('paginate')
 			->will($this->returnValue(array('foo', 'bar')));
 
 		$CrudSubject->items = array('foo', 'bar');
@@ -281,17 +302,18 @@ class IndexCrudActionTest extends CakeTestCase {
 			->with('afterPaginate', array('items' => array('foo', 'bar')))
 			->will($this->returnValue($CrudSubject));
 
-		$Crud->expects($this->at(2))->method('trigger')->with('beforeRender');
+		$Crud
+			->expects($this->at(2))
+			->method('trigger')
+			->with('beforeRender');
 
 		$Action->handle($CrudSubject);
 		$expected = array(
-			'MyModel' => array(
-				'limit' => 5,
-				'findType' => 'another'
-			)
+			'limit' => 5,
+			'findType' => 'another'
 		);
 
-		$this->assertEquals($expected, $Paginate->settings);
+		$this->assertEquals($expected, $Paginator->settings['MyModel']);
 		$Controller->viewVars['items'] = array('foo', 'bar');
 		$Controller->viewVars['success'] = true;
 	}

@@ -84,41 +84,20 @@ class IndexCrudAction extends CrudAction {
  * @return void
  */
 	protected function _computePaginationConfig() {
-		// Ensure we have Paginator loaded
 		if (!isset($this->_controller->Paginator)) {
-			$this->_controller->Paginator = $this->_collection->load('Paginator');
+			$this->_controller->Paginator = $this->_collection->load('Paginator', $this->_controller->paginate);
 		}
+
 		$Paginator = $this->_controller->Paginator;
 		$settings = &$Paginator->settings;
 
-		// Copy pagination settings from the controller
-		if (!empty($this->_controller->paginate)) {
-			$settings = array_merge($settings, $this->_controller->paginate);
+		if (isset($settings[$this->_modelClass]) && empty($settings[$this->_modelClass]['findType'])) {
+			$settings[$this->_modelClass]['findType'] = $this->_getFindMethod('all');
+		} elseif (empty($settings['findType'])) {
+			$settings['findType'] = $this->_getFindMethod('all');
 		}
 
-		if (!empty($settings[$this->_modelClass]['findType'])) {
-			$findMethod = $settings[$this->_modelClass]['findType'];
-		} elseif (!empty($settings['findType'])) {
-			$findMethod = $settings['findType'];
-		} else {
-			$findMethod = $this->_getFindMethod('all');
-		}
-
-		$subject = $this->_crud->trigger('beforePaginate', compact('findMethod'));
-
-		// Copy pagination settings from the controller
-		if (!empty($this->_controller->paginate)) {
-			$settings = array_merge($settings, $this->_controller->paginate);
-		}
-
-		// If pagination settings is using ModelAlias modify that
-		if (!empty($settings[$this->_modelClass])) {
-			$settings[$this->_modelClass]['findType'] = $subject->findMethod;
-		} else { // Or just work directly on the root key
-			$settings['findType'] = $subject->findMethod;
-		}
-
-		$this->_controller->paginate = $settings;
+		$subject = $this->_crud->trigger('beforePaginate', array('paginator' => $Paginator));
 	}
 
 }
