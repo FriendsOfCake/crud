@@ -49,6 +49,32 @@ class IndexCrudAction extends CrudAction {
 	}
 
 /**
+ * Compute pagination settings
+ *
+ * Initializes PaginatorComponent if it isn't loaded already
+ * Modified the findType based on the CrudAction configuration
+ *
+ * @return array The Paginator settings
+ */
+	public function paginationConfig() {
+		if (!isset($this->_controller->Paginator)) {
+			$pagination = isset($this->_controller->paginate) ? $this->_controller->paginate : array();
+			$this->_controller->Paginator = $this->_collection->load('Paginator', $pagination);
+		}
+
+		$Paginator = $this->_controller->Paginator;
+		$settings = &$Paginator->settings;
+
+		if (isset($settings[$this->_modelClass]) && empty($settings[$this->_modelClass]['findType'])) {
+			$settings[$this->_modelClass]['findType'] = $this->_getFindMethod('all');
+		} elseif (empty($settings['findType'])) {
+			$settings['findType'] = $this->_getFindMethod('all');
+		}
+
+		return $settings;
+	}
+
+/**
  * Generic index action
  *
  * Triggers the following callbacks
@@ -74,32 +100,6 @@ class IndexCrudAction extends CrudAction {
 
 		$this->_controller->set(array('success' => true, $this->viewVar() => $items));
 		$this->_crud->trigger('beforeRender');
-	}
-
-/**
- * Compute pagination settings
- *
- * Initializes PaginatorComponent if it isn't loaded already
- * Modified the findType based on the CrudAction configuration
- *
- * @return array The Paginator settings
- */
-	public function paginationConfig() {
-		if (!isset($this->_controller->Paginator)) {
-			$pagination = isset($this->_controller->paginate) ? $this->_controller->paginate : array();
-			$this->_controller->Paginator = $this->_collection->load('Paginator', $pagination);
-		}
-
-		$Paginator = $this->_controller->Paginator;
-		$settings = &$Paginator->settings;
-
-		if (isset($settings[$this->_modelClass]) && empty($settings[$this->_modelClass]['findType'])) {
-			$settings[$this->_modelClass]['findType'] = $this->_getFindMethod('all');
-		} elseif (empty($settings['findType'])) {
-			$settings['findType'] = $this->_getFindMethod('all');
-		}
-
-		return $settings;
 	}
 
 }
