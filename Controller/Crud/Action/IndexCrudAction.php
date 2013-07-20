@@ -97,7 +97,7 @@ class IndexCrudAction extends CrudAction {
 			$settings['findType'] = $this->_getFindMethod('all');
 		}
 
-		$subject = $this->_crud->trigger('beforePaginate', array('paginator' => $Paginator));
+		$this->_crud->trigger('beforePaginate', array('paginator' => $Paginator));
 	}
 
 }
