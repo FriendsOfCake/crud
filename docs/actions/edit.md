@@ -5,56 +5,72 @@ layout: default
 
 # Edit CrudAction
 
-The `edit` CrudAction will modify a record if the request is `HTTP PUT`, the data is valid and the
-ID that is part of the request exist in the database.
+The `edit` CrudAction will update an existing record if the request is `HTTP POST` or `HTTP PUT` and the data validates.
 
-The source code can be found here: [Controller/Crud/Action/EditCrudAction.php]({{ site.github_url }}/Controller/Crud/Action/EditCrudAction.php)
+Relevant links: [PHP source code]({{ site.github_url }}/Controller/Crud/Action/EditCrudAction.php) | [API documentation](http://cakephp.dk/cakephp-crud/develop/class-EditCrudAction.html)
 
 # Events
+
+This is a list of events emitted by `EditCrudAction`
 
 <table class="table">
 <thead>
 	<tr>
 		<th>Event</th>
-		<th>Subject modifiers</th>
+		<th>Subject properties</th>
 		<th>Description</th>
 	</tr>
 </thead>
 <tbody>
+	{% include actions/event/init.md %}
+	{% include actions/event/before_save.md %}
+	{% include actions/event/after_save.md %}
+	{% include actions/event/before_find.md %}
+	{% include actions/event/after_find.md %}
+	{% include actions/event/not_found.md %}
+	{% include actions/event/before_render.md %}
+</tbody>
+</table>
+
+# Configuration
+
+{% include actions/configuration.md %}
+
+<table class="table">
+<thead>
 	<tr>
-		<td>Crud.init</td>
-		<td>N/A</td>
-		<td>Initialize method</td>
+		<th>Key</th>
+		<th>Default value</th>
+		<th>Description</th>
 	</tr>
+</thead>
+<tbody>
+	{% include actions/config/enabled.md %}
+	{% include actions/config/find_method.md %}
+	{% include actions/config/view.md %}
+	{% include actions/config/related_models.md %}
+	{% include actions/config/save_options.md %}
+	{% include actions/config/serialize.md %}
+</tbody>
+</table>
+
+# Methods
+
+This is a list of the most relevant public methods in the Crud action class.
+
+For a full list please see the [full API documentation]({{site.api_url}}/class-AddCrudAction.html)
+
+<table class="table">
+<thead>
 	<tr>
-		<td>Crud.beforeSave</td>
-		<td>N/A</td>
-		<td>Access and modify the data from the $request object like you normally would in your own controller action</td>
+		<th>Method</th>
+		<th>Description</th>
 	</tr>
-	<tr>
-		<td>Crud.afterSave</td>
-		<td>$subject->id</td>
-		<td>`$id` is only available if the save was successful. You can test also test on the `$subject->success` property if the save worked.</td>
-	</tr>
-	<tr>
-		<td>Crud.beforeFind</td>
-		<td>$subject->query</td>
-		<td>Modify the $query array, same as the $queryParams in a behaviors beforeFind() or 2nd argument to any Model::find()</td>
-	</tr>
-	<tr>
-		<td>Crud.recordNotFound</td>
-		<td>N/A</td>
-		<td>If beforeFind could not find a record this event is emitted</td>
-	</tr>
-	<tr>
-		<td>Crud.afterFind</td>
-		<td>N/A</td>
-		<td>Modify the record found by find() and return it. The data is attached to the request->data object</td>
-	</tr>
-	<tr>
-		<td>Crud.beforeRender</td>
-		<td>N/A</td>
-		<td>Invoked right before the view will be rendered. This is also before the controllers own beforeRender callback</td>
-	</tr>
+</thead>
+<tbody>
+	{% include actions/listener/related_models.md %}
+	{% include actions/method/find_method.md %}
+	{% include actions/method/view.md %}
+	{% include actions/method/save_options.md %}
 </tbody>
 </table>

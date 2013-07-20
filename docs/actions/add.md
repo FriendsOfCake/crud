@@ -5,40 +5,67 @@ layout: default
 
 # Add CrudAction
 
-The `add` CrudAction will create a record if the request is `HTTP POST` and the data is valid.
+The `add` CrudAction will create a new record if the request is `HTTP POST` and the data validates.
 
-The source code can be found here: [Controller/Crud/Action/AddCrudAction.php]({{ site.github_url }}/Controller/Crud/Action/AddCrudAction.php)
+Relevant links: [PHP source code]({{ site.github_url }}/Controller/Crud/Action/AddCrudAction.php) | [API documentation](http://cakephp.dk/cakephp-crud/develop/class-AddCrudAction.html)
 
 # Events
+
+This is a list of events emitted by `AddCrudAction`
 
 <table class="table">
 <thead>
 	<tr>
 		<th>Event</th>
-		<th>Subject modifiers</th>
+		<th>Subject properties</th>
 		<th>Description</th>
 	</tr>
 </thead>
 <tbody>
+	{% include actions/event/init.md %}
+	{% include actions/event/before_save.md %}
+	{% include actions/event/after_save.md %}
+	{% include actions/event/before_render.md %}
+</tbody>
+</table>
+
+# Configuration
+
+{% include actions/configuration.md %}
+
+<table class="table">
+<thead>
 	<tr>
-		<td>Crud.init</td>
-		<td>N/A</td>
-		<td>Initialize method</td>
+		<th>Key</th>
+		<th>Default value</th>
+		<th>Description</th>
 	</tr>
+</thead>
+<tbody>
+	{% include actions/config/enabled.md %}
+	{% include actions/config/view.md %}
+	{% include actions/config/related_models.md %}
+	{% include actions/config/save_options.md %}
+	{% include actions/config/serialize.md %}
+</tbody>
+</table>
+
+# Methods
+
+This is a list of the most relevant public methods in the Crud action class.
+
+For a full list please see the [full API documentation]({{site.api_url}}/class-AddCrudAction.html)
+
+<table class="table">
+<thead>
 	<tr>
-		<td>Crud.beforeSave</td>
-		<td>N/A</td>
-		<td>Access and modify the data from the $request object like you normally would in your own controller action</td>
+		<th>Method</th>
+		<th>Description</th>
 	</tr>
-	<tr>
-		<td>Crud.afterSave</td>
-		<td>$subject->id</td>
-		<td>`$id` is only available if the save was successful. You can test also test on the `$subject->success` property if the save worked.</td>
-	</tr>
-	<tr>
-		<td>Crud.beforeRender</td>
-		<td>N/A</td>
-		<td>Invoked right before the view will be rendered. This is also before the controllers own beforeRender callback</td>
-	</tr>
+</thead>
+<tbody>
+	{% include actions/listener/related_models.md %}
+	{% include actions/method/view.md %}
+	{% include actions/method/save_options.md %}
 </tbody>
 </table>

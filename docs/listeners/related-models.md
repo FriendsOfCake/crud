@@ -1,5 +1,5 @@
 ---
-title: Related data
+title: Related Models
 layout: default
 ---
 

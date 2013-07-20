@@ -8,9 +8,15 @@ layout: default
 The `delete` CrudAction will delete a record if the request is `HTTP DELETE` or `HTTP POST` and the
 ID that is part of the request exist in the database.
 
-The source code can be found here: [Controller/Crud/Action/DeleteCrudAction.php]({{ site.github_url }}/Controller/Crud/Action/DeleteCrudAction.php)
+Relevant links:
+	[PHP source code]({{ site.github_url }}/Controller/Crud/Action/DeleteCrudAction.php)
+	|
+	[API documentation](http://cakephp.dk/cakephp-crud/develop/class-DeleteCrudAction.html)
+
 
 # Events
+
+This is a list of events emitted by `DeleteCrudAction`
 
 <table class="table">
 <thead>
@@ -21,30 +27,47 @@ The source code can be found here: [Controller/Crud/Action/DeleteCrudAction.php]
 	</tr>
 </thead>
 <tbody>
+	{% include actions/event/init.md %}
+	{% include actions/event/before_find.md %}
+	{% include actions/event/not_found.md %}
+	{% include actions/event/before_delete.md %}
+	{% include actions/event/after_delete.md %}
+</tbody>
+</table>
+
+# Configuration
+
+{% include actions/configuration.md %}
+
+<table class="table">
+<thead>
 	<tr>
-		<td>Crud.init</td>
-		<td>N/A</td>
-		<td>Initialize method</td>
+		<th>Key</th>
+		<th>Default value</th>
+		<th>Description</th>
 	</tr>
+</thead>
+<tbody>
+	{% include actions/config/enabled.md %}
+	{% include actions/config/find_method.md %}
+	{% include actions/config/secure_delete.md %}
+</tbody>
+</table>
+
+# Methods
+
+This is a list of the most relevant public methods in the Crud action class.
+
+For a full list please see the [full API documentation]({{site.api_url}}/class-DeleteCrudAction.html)
+
+<table class="table">
+<thead>
 	<tr>
-		<td>Crud.beforeFind</td>
-		<td>$subject->query</td>
-		<td>Modify the $query array, same as the $queryParams in a behaviors beforeFind() or 2nd argument to any Model::find()</td>
+		<th>Method</th>
+		<th>Description</th>
 	</tr>
-	<tr>
-		<td>Crud.recordNotFound</td>
-		<td>N/A</td>
-		<td>If beforeFind could not find a record this event is emitted</td>
-	</tr>
-	<tr>
-		<td>Crud.beforeDelete</td>
-		<td>N/A</td>
-		<td>Stop the delete by redirecting away from the action or calling $event->stopPropagation()</td>
-	</tr>
-	<tr>
-		<td>Crud.afterDelete</td>
-		<td>N/A</td>
-		<td>Executed after Model::delete() has called. You can check if the delete succeed or not in $subject->success</td>
-	</tr>
+</thead>
+<tbody>
+	{% include actions/method/find_method.md %}
 </tbody>
 </table>

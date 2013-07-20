@@ -8,9 +8,14 @@ layout: default
 The `view` CrudAction will read a record from the database based on the ID that is part of the
 request.
 
-The source code can be found here: [Controller/Crud/Action/ViewCrudAction.php]({{ site.github_url }}/Controller/Crud/Action/ViewCrudAction.php)
+Relevant links:
+[PHP source code]({{ site.github_url }}/Controller/Crud/Action/ViewCrudAction.php)
+|
+[API documentation](http://cakephp.dk/cakephp-crud/develop/class-ViewCrudAction.html)
 
 # Events
+
+This is a list of events emitted by `ViewCrudAction`
 
 <table class="table">
 <thead>
@@ -21,33 +26,51 @@ The source code can be found here: [Controller/Crud/Action/ViewCrudAction.php]({
 	</tr>
 </thead>
 <tbody>
+	{% include actions/event/init.md %}
+	{% include actions/event/before_find.md %}
+	{% include actions/event/after_find.md %}
+	{% include actions/event/not_found.md %}
+	{% include actions/event/before_render.md %}
+</tbody>
+</table>
+
+# Configuration
+
+{% include actions/configuration.md %}
+
+<table class="table">
+<thead>
 	<tr>
-		<td>Crud.init</td>
-		<td>N/A</td>
-		<td>Initialize method</td>
+		<th>Key</th>
+		<th>Default value</th>
+		<th>Description</th>
 	</tr>
+</thead>
+<tbody>
+	{% include actions/config/enabled.md %}
+	{% include actions/config/find_method.md %}
+	{% include actions/config/view.md %}
+	{% include actions/config/view_var.md %}
+	{% include actions/config/serialize.md %}
+</tbody>
+</table>
+
+# Methods
+
+This is a list of the most relevant public methods in the Crud action class.
+
+For a full list please see the [full API documentation]({{site.api_url}}/class-AddCrudAction.html)
+
+<table class="table">
+<thead>
 	<tr>
-		<td>Crud.beforeFind</td>
-		<td>$subject->query</td>
-		<td>Modify the $query array, same as the $queryParams in a behaviors beforeFind() or 2nd argument to any Model::find()</td>
+		<th>Method</th>
+		<th>Description</th>
 	</tr>
-	<tr>
-		<td>Crud.recordNotFound</td>
-		<td>N/A</td>
-		<td>If beforeFind could not find a record this event is emitted</td>
-	</tr>
-	<tr>
-		<td>Crud.afterFind</td>
-		<td>
-			$subject->id
-			$subject->item
-		</td>
-		<td>Modify the $subject->item property if you need to do any afterFind() operations</td>
-	</tr>
-	<tr>
-		<td>Crud.beforeRender</td>
-		<td>N/A</td>
-		<td>Invoked right before the view will be rendered. This is also before the controllers own beforeRender callback</td>
-	</tr>
+</thead>
+<tbody>
+	{% include actions/method/find_method.md %}
+	{% include actions/method/view.md %}
+	{% include actions/method/view_var.md %}
 </tbody>
 </table>
