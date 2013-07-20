@@ -1,6 +1,6 @@
 <?php
 
-App::uses ('DebugPanel', 'DebugKit.Lib');
+App::uses('DebugPanel', 'DebugKit.Lib');
 
 /**
  * Crud debug panel in DebugKit
@@ -31,13 +31,13 @@ class CrudPanel extends DebugPanel {
 			$controller->set('CRUD_action_config', $Action->config());
 		}
 
-		$listener_config = array();
+		$listenerConfig = array();
 		foreach ($controller->Crud->config('listeners') as $listener => $value) {
-			$listener_config[$listener] = $controller->Crud->listener($listener)->config();
+			$listenerConfig[$listener] = $controller->Crud->listener($listener)->config();
 		}
 
 		$controller->set('CRUD_config', $controller->Crud->config());
-		$controller->set('CRUD_listener_config', $listener_config);
+		$controller->set('CRUD_listener_config', $listenerConfig);
 	}
 
 }
