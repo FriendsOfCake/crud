@@ -110,8 +110,9 @@ class EditCrudAction extends CrudAction {
 				throw new $exceptionClass($message['text'], $message['code']);
 			}
 
-			$this->_crud->trigger('afterFind', compact('id'));
-			$this->_request->data = Hash::merge($this->_request->data, $this->_model->data);
+			$item = $this->_request->data;
+			$subject = $this->_crud->trigger('afterFind', compact('id', 'item'));
+			$this->_request->data = Hash::merge($this->_request->data, $this->_model->data, $subject->item);
 		}
 
 		$this->_crud->trigger('beforeRender');

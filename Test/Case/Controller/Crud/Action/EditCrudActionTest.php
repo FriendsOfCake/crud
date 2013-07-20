@@ -167,7 +167,8 @@ class EditCrudActionTest extends CakeTestCase {
 		$Crud
 			->expects($this->at(1))
 			->method('trigger')
-			->with('afterFind', array('id' => 1));
+			->with('afterFind', array('id' => 1, 'item' => $data))
+			->will($this->returnValue(new CrudSubject(array('item' => $data))));
 		$Crud
 			->expects($this->at(2))
 			->method('trigger')
@@ -557,7 +558,8 @@ class EditCrudActionTest extends CakeTestCase {
 		$Crud
 			->expects($this->at(1))
 			->method('trigger')
-			->with('afterFind', array('id' => 1));
+			->with('afterFind', array('id' => 1, 'item' => $data))
+			->will($this->returnValue(new CrudSubject(array('item' => $data))));
 		$Crud
 			->expects($this->at(2))
 			->method('trigger')

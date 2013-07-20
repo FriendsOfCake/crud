@@ -1116,8 +1116,9 @@ class CrudComponentTest extends ControllerTestCase {
  */
 	public function testCustomFindDefaults() {
 		$this->assertEquals('all', $this->Crud->action('index')->findMethod());
-		$this->assertEquals('first', $this->Crud->action('add')->findMethod());
+		$this->assertEquals(null, $this->Crud->action('add')->findMethod());
 		$this->assertEquals('first', $this->Crud->action('edit')->findMethod());
+		$this->assertEquals('first', $this->Crud->action('view')->findMethod());
 		$this->assertEquals('count', $this->Crud->action('delete')->findMethod());
 	}
 

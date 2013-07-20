@@ -18,19 +18,12 @@ class AddCrudAction extends CrudAction {
  *
  * `enabled` Is this crud action enabled or disabled
  *
- * `findMethod` The default `Model::find()` method for reading data
- *
  * `view` A map of the controller action and the view to render
  * If `NULL` (the default) the controller action name will be used
  *
  * `relatedModels` is a map of the controller action and the whether it should fetch associations lists
  * to be used in select boxes. An array as value means it is enabled and represent the list
  * of model associations to be fetched
- *
- * `validateId` ID Argument validation - by default it will inspect your model's primary key
- * and based on it's data type either use integer or uuid validation.
- * Can be disabled by setting it to "false". Supports "integer" and "uuid" configuration
- * By default it's configuration is NULL, which means "auto detect"
  *
  * `saveOptions` Raw array passed as 2nd argument to saveAll() in `add` and `edit` method
  * If you configure a key with your action name, it will override the default settings.
@@ -40,10 +33,8 @@ class AddCrudAction extends CrudAction {
  */
 	protected $_settings = array(
 		'enabled' => true,
-		'findMethod' => 'first',
 		'view' => null,
 		'relatedModels' => true,
-		'validateId' => null,
 		'saveOptions' => array(
 			'validate' => 'first',
 			'atomic' => true
