@@ -76,10 +76,6 @@ class EditCrudAction extends CrudAction {
  * @throws NotFoundException If record not found
  */
 	protected function _handle($id = null) {
-		if (empty($id)) {
-			$id = $this->getIdFromRequest();
-		}
-
 		if (!$this->_validateId($id)) {
 			return false;
 		}

@@ -91,7 +91,7 @@ class DeleteCrudActionText extends CakeTestCase {
 			'action' => 'delete',
 			'model' => $Model,
 			'modelClass' => $Model->name,
-			'args' => array()
+			'args' => $Request->params['pass']
 		));
 
 		$Action = $this->ActionMock
