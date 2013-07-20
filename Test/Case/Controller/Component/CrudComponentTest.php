@@ -1143,7 +1143,7 @@ class CrudComponentTest extends ControllerTestCase {
 	public function testCustomFindPaginationDefaultNoAlias() {
 		$this->Crud->executeAction('index');
 
-		$this->assertEquals('all', $this->controller->paginate['findType']);
+		$this->assertEquals('all', $this->controller->Paginator->settings['findType']);
 	}
 
 /**
@@ -1161,10 +1161,10 @@ class CrudComponentTest extends ControllerTestCase {
 
 		$this->Crud->executeAction('index');
 
-		$this->assertTrue(empty($this->controller->paginate['findType']));
-		$this->assertFalse(empty($this->controller->paginate['CrudExample']));
-		$this->assertFalse(empty($this->controller->paginate['CrudExample']['findType']));
-		$this->assertEquals(array('order' => array('name' => 'desc'), 'findType' => 'all'), $this->controller->paginate['CrudExample']);
+		$this->assertTrue(empty($this->controller->Paginator->settings['findType']));
+		$this->assertFalse(empty($this->controller->Paginator->settings['CrudExample']));
+		$this->assertFalse(empty($this->controller->Paginator->settings['CrudExample']['findType']));
+		$this->assertEquals(array('order' => array('name' => 'desc'), 'findType' => 'all'), $this->controller->Paginator->settings['CrudExample']);
 	}
 
 /**
@@ -1175,7 +1175,7 @@ class CrudComponentTest extends ControllerTestCase {
 	public function testCustomFindPaginationCustomPublished() {
 		$this->Crud->findMethod('index', 'published');
 		$this->Crud->executeAction('index');
-		$this->assertEquals('published', $this->controller->paginate['findType']);
+		$this->assertEquals('published', $this->controller->Paginator->settings['findType']);
 		$this->assertEquals(array('success', 'crudExamples'), array_keys($this->controller->viewVars));
 		$this->assertEquals(3, count($this->controller->viewVars['crudExamples']));
 	}
@@ -1188,7 +1188,7 @@ class CrudComponentTest extends ControllerTestCase {
 	public function testCustomFindPaginationCustomUnpublished() {
 		$this->Crud->findMethod('index', 'unpublished');
 		$this->Crud->executeAction('index');
-		$this->assertEquals('unpublished', $this->controller->paginate['findType']);
+		$this->assertEquals('unpublished', $this->controller->Paginator->settings['findType']);
 		$this->assertEquals(0, count($this->controller->viewVars['crudExamples']));
 	}
 
@@ -1462,9 +1462,7 @@ class CrudComponentTest extends ControllerTestCase {
 	}
 
 	public function testPersistDirectPaginatorSettingsWillNotBeCopied() {
-		$Paginator = $this->controller->Components->load('Paginator');
-
-		$Paginator->settings = array('limit' => 23);
+		$Paginator = $this->controller->Components->load('Paginator', $this->controller->paginate);
 
 		$this->Crud->executeAction('index');
 
@@ -1479,7 +1477,7 @@ class CrudComponentTest extends ControllerTestCase {
 	public function testOnBeforePaginateWithPaginatConditionsFromBeforePaginateCallback() {
 		$Paginator = $this->controller->Components->load('Paginator');
 		$this->Crud->on('beforePaginate', function($event) {
-			$event->subject->controller->paginate['conditions'] = array('author_id' => 1);
+			$event->subject->paginator->settings['conditions'] = array('author_id' => 1);
 		});
 
 		$this->Crud->executeAction('index');
@@ -1492,7 +1490,7 @@ class CrudComponentTest extends ControllerTestCase {
 	public function testOnBeforePaginateWithPaginatLimitFromBeforePaginateCallback() {
 		$Paginator = $this->controller->Components->load('Paginator');
 		$this->Crud->on('beforePaginate', function($event) {
-			$event->subject->controller->paginate['limit'] = 99;
+			$event->subject->paginator->settings['limit'] = 99;
 		});
 
 		$this->Crud->executeAction('index');
@@ -1503,11 +1501,12 @@ class CrudComponentTest extends ControllerTestCase {
 	public function testIfConditionsPersistetInIndexAction() {
 		$Paginator = $this->controller->Components->load('Paginator');
 
-		$this->controller->paginate = array('conditions' => array('1 = 2'));
+		$Paginator->settings = array('conditions' => array('1 = 2'));
 		$this->Crud->executeAction('index');
 		$this->assertSame(array('1 = 2'), $Paginator->settings['conditions']);
 
-		$Paginator->settings = array('conditions' => array('2 = 3'));
+		$Paginator = $this->controller->Components->load('Paginator', array('conditions' => array('2 = 3')));
+		$Paginator->settings = array('conditions' => array('1 = 2'));
 		$this->Crud->executeAction('index');
 		$this->assertSame(array('1 = 2'), $Paginator->settings['conditions'], "Pagination settings from controller should always trump Paginator->settings");
 
