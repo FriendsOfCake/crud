@@ -85,7 +85,8 @@ class IndexCrudAction extends CrudAction {
  */
 	protected function _computePaginationConfig() {
 		if (!isset($this->_controller->Paginator)) {
-			$this->_controller->Paginator = $this->_collection->load('Paginator', $this->_controller->paginate);
+			$pagination = isset($this->_controller->paginate) ? $this->_controller->paginate : array();
+			$this->_controller->Paginator = $this->_collection->load('Paginator', $pagination);
 		}
 
 		$Paginator = $this->_controller->Paginator;
