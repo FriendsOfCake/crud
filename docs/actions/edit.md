@@ -11,7 +11,7 @@ Relevant links: [PHP source code]({{ site.github_url }}/Controller/Crud/Action/E
 
 # Events
 
-This is a list of events emitted by `EditCrudAction`
+{% include actions/events.md %}
 
 <table class="table">
 <thead>

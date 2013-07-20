@@ -16,7 +16,7 @@ Relevant links:
 
 # Events
 
-This is a list of events emitted by `DeleteCrudAction`
+{% include actions/events.md %}
 
 <table class="table">
 <thead>
