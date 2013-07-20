@@ -331,32 +331,6 @@ class CrudActionTest extends CakeTestCase {
 	}
 
 /**
- * Test that getting the ID from request without any id in the request
- * object will return null
- *
- * @return void
- */
-	public function testGetIdFromRequestWithoutPassZeroIndex() {
-		$expected = null;
-		$actual = $this->ActionClass->getIdFromRequest();
-		$this->assertSame($expected, $actual);
-	}
-
-/**
- * Test that getting the ID from request with an id in the request
- * object will return the correct ID
- *
- * @return void
- */
-	public function testGetIdFromRequestWithPassZeroIndex() {
-		$this->Request->params['pass'][0] = 1;
-
-		$expected = 1;
-		$actual = $this->ActionClass->getIdFromRequest();
-		$this->assertSame($expected, $actual);
-	}
-
-/**
  * Test that setFlash triggers the correct methods
  *
  * @return void

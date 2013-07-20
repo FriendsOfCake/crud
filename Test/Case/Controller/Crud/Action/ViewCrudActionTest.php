@@ -346,31 +346,4 @@ class ViewCrudActionTest extends CakeTestCase {
 		$this->assertSame($expected, $actual);
 	}
 
-/**
- * Test that calling HTTP GET on an view action
- * will trigger the appropriate events
- *
- * This test fakes that the id is invalid
- * since we don't care for the rest of the code
- *
- * @return void
- */
-	public function testActionGetMissingId() {
-		extract($this->_mockClasses());
-
-		$Request->params['pass'][0] = null;
-		$CrudSubject->args = array();
-
-		$Action
-			->expects($this->once())
-			->method('_validateId')
-			->with(null)
-			->will($this->returnValue(false));
-
-		$expected = false;
-		$actual = $Action->handle($CrudSubject);
-
-		$this->assertSame($expected, $actual);
-	}
-
 }
