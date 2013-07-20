@@ -133,8 +133,7 @@ class DemoController extends AppController {
 
 ## Overriding implementedEvents() in the controller
 
-You can override the `implementedEvents` method inside the controller and provide a list of `event
-=> callback` for Crud.
+You can override the `implementedEvents` method inside the controller and provide a list of `event => callback` for Crud.
 
 The key is the Crud event name (Remember all events need the `Crud.` prefix) and the value is the
 name of the method in your controller that should be executed.
