@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+	<meta name="robots" content="noindex" />
+
+	<title>File Controller/Event/Compat/CrudBaseEvent.php | jippi/cakephp-crud (master)</title>
+
+	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
+	<script type="text/javascript" src="elementlist.js?2522011804"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
+
+</head>
+
+<body>
+	<a href="https://github.com/jippi/cakephp-crud/">
+      		<img style="position: absolute; top: 0; right: 0; border: 0; z-index: 10000" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+    	</a>
+	<div id="navigation" class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<a href="index.html" class="brand">jippi/cakephp-crud (master)</a>
+				<div class="nav-collapse">
+					<ul class="nav">
+						<li>
+							<a href="class-CrudBaseEvent.html" title="Summary of CrudBaseEvent"><span>Class</span></a>
+						</li>
+
+						<li class="divider-vertical"></li>
+
+						<li>
+							<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+						</li>
+						<li>
+							<a href="deprecated.html" title="List of deprecated elements"><span>Deprecated</span></a>
+						</li>
+						<li>
+							<a href="todo.html" title="Todo list"><span>Todo</span></a>
+						</li>
+
+						<li class="divider-vertical"></li>
+
+						<li>
+							<a href="jippi-cakephp-crud-master-api-documentation.zip" title="Download documentation as ZIP archive"><span>Download</span></a>
+						</li>
+
+                                                <li class="divider-vertical"></li>
+						<li><a href="http://cakephp.nu/cakephp-crud/" title="Documentation"><span>View Documentation</span></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="left">
+	<div id="menu">
+		<form id="search" class="form-search">
+			<input type="hidden" name="cx" value="" />
+			<input type="hidden" name="ie" value="UTF-8" />
+			<input type="text" name="q" class="search-query" placeholder="Search" />
+		</form>
+
+
+		<div id="groups">
+		</div>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li class="active"><a href="class-CrudBaseEvent.html">CrudBaseEvent</a></li>
+				<li><a href="class-CrudComponent.html">CrudComponent</a></li>
+				<li><a href="class-CrudEventSubject.html">CrudEventSubject</a></li>
+				<li><a href="class-CrudListener.html">CrudListener</a></li>
+				<li><a href="class-CrudSubject.html">CrudSubject</a></li>
+				<li><a href="class-RelatedModelsListener.html">RelatedModelsListener</a></li>
+				<li><a href="class-TranslationsListener.html">TranslationsListener</a></li>
+				<li><a href="class-TranslationsShell.html">TranslationsShell</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+	<div id="rightInner">
+<pre id="source"><code><span id="1" class="l"><a class="l" href="#1"> 1 </a><span class="xlang">&lt;?php</span>
+</span><span id="2" class="l"><a class="l" href="#2"> 2 </a>
+</span><span id="3" class="l"><a class="l" href="#3"> 3 </a>App::uses(<span class="php-quote">'CrudBaseEvent'</span>, <span class="php-quote">'Crud.Controller/Event'</span>);
+</span><span id="4" class="l"><a class="l" href="#4"> 4 </a>
+</span><span id="5" class="l"><a class="l" href="#5"> 5 </a><span class="php-comment">/**
+</span></span><span id="6" class="l"><a class="l" href="#6"> 6 </a><span class="php-comment"> * Crud Base Event
+</span></span><span id="7" class="l"><a class="l" href="#7"> 7 </a><span class="php-comment"> *
+</span></span><span id="8" class="l"><a class="l" href="#8"> 8 </a><span class="php-comment"> * Added for backward compatibility only.
+</span></span><span id="9" class="l"><a class="l" href="#9"> 9 </a><span class="php-comment"> * Will be removed at some point
+</span></span><span id="10" class="l"><a class="l" href="#10">10 </a><span class="php-comment"> *
+</span></span><span id="11" class="l"><a class="l" href="#11">11 </a><span class="php-comment"> * Copyright 2010-2012, Nodes ApS. (http://www.nodesagency.com/)
+</span></span><span id="12" class="l"><a class="l" href="#12">12 </a><span class="php-comment"> *
+</span></span><span id="13" class="l"><a class="l" href="#13">13 </a><span class="php-comment"> * Licensed under The MIT License
+</span></span><span id="14" class="l"><a class="l" href="#14">14 </a><span class="php-comment"> * Redistributions of files must retain the above copyright notice.
+</span></span><span id="15" class="l"><a class="l" href="#15">15 </a><span class="php-comment"> *
+</span></span><span id="16" class="l"><a class="l" href="#16">16 </a><span class="php-comment"> * @copyright Nodes ApS, 2012
+</span></span><span id="17" class="l"><a class="l" href="#17">17 </a><span class="php-comment"> * @abstract
+</span></span><span id="18" class="l"><a class="l" href="#18">18 </a><span class="php-comment"> */</span>
+</span><span id="19" class="l"><a class="l" href="#19">19 </a><span class="php-keyword1">abstract</span> <span class="php-keyword1">class</span> <a id="CrudBaseEvent" href="#CrudBaseEvent">CrudBaseEvent</a> <span class="php-keyword1">extends</span> CrudListener {
+</span><span id="20" class="l"><a class="l" href="#20">20 </a>
+</span><span id="21" class="l"><a class="l" href="#21">21 </a>}
+</span><span id="22" class="l"><a class="l" href="#22">22 </a></span></code></pre>
+	</div>
+
+	<div id="footer">
+		jippi/cakephp-crud (master) API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</body>
+</html>

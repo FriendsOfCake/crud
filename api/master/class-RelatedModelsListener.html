@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Class RelatedModelsListener | jippi/cakephp-crud (master)</title>
+
+	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
+	<script type="text/javascript" src="elementlist.js?2522011804"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
+
+</head>
+
+<body>
+	<a href="https://github.com/jippi/cakephp-crud/">
+      		<img style="position: absolute; top: 0; right: 0; border: 0; z-index: 10000" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+    	</a>
+	<div id="navigation" class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<a href="index.html" class="brand">jippi/cakephp-crud (master)</a>
+				<div class="nav-collapse">
+					<ul class="nav">
+						<li class="active">
+<span>Class</span>						</li>
+
+						<li class="divider-vertical"></li>
+
+						<li>
+							<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+						</li>
+						<li>
+							<a href="deprecated.html" title="List of deprecated elements"><span>Deprecated</span></a>
+						</li>
+						<li>
+							<a href="todo.html" title="Todo list"><span>Todo</span></a>
+						</li>
+
+						<li class="divider-vertical"></li>
+
+						<li>
+							<a href="jippi-cakephp-crud-master-api-documentation.zip" title="Download documentation as ZIP archive"><span>Download</span></a>
+						</li>
+
+                                                <li class="divider-vertical"></li>
+						<li><a href="http://cakephp.nu/cakephp-crud/" title="Documentation"><span>View Documentation</span></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="left">
+	<div id="menu">
+		<form id="search" class="form-search">
+			<input type="hidden" name="cx" value="" />
+			<input type="hidden" name="ie" value="UTF-8" />
+			<input type="text" name="q" class="search-query" placeholder="Search" />
+		</form>
+
+
+		<div id="groups">
+		</div>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-CrudBaseEvent.html">CrudBaseEvent</a></li>
+				<li><a href="class-CrudComponent.html">CrudComponent</a></li>
+				<li><a href="class-CrudEventSubject.html">CrudEventSubject</a></li>
+				<li><a href="class-CrudListener.html">CrudListener</a></li>
+				<li><a href="class-CrudSubject.html">CrudSubject</a></li>
+				<li class="active"><a href="class-RelatedModelsListener.html">RelatedModelsListener</a></li>
+				<li><a href="class-TranslationsListener.html">TranslationsListener</a></li>
+				<li><a href="class-TranslationsShell.html">TranslationsShell</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+	<div id="rightInner">
+<div id="content" class="class">
+	<h1>Class RelatedModelsListener</h1>
+
+
+	<div class="description">
+	
+<p>Implements beforeRender event listener to set related models' lists to the
+view</p>
+
+	</div>
+
+	<dl class="tree well">
+		<dd style="padding-left:0px">
+<b><span>RelatedModelsListener</span></b>			
+			 implements 
+<span>CakeEventListener</span>
+			
+			
+		</dd>
+	</dl>
+
+
+
+
+
+
+
+
+	<div class="alert alert-info">
+		
+		
+		
+		
+
+		<b>Located at</b> <a href="source-class-RelatedModelsListener.html#6-189" title="Go to source code">Controller/Event/RelatedModelsListener.php</a><br />
+	</div>
+
+
+
+		<h2>Methods summary</h2>
+		<table class="summary table table-bordered table-striped" id="methods">
+		<tr data-order="__construct" id="___construct">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#___construct">#</a>
+			<code><a href="source-class-RelatedModelsListener.html#27-37" title="Go to source code">__construct</a>( <span><code><a href="class-CrudSubject.html">CrudSubject</a></code> <var>$subject</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Class constructor</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Class constructor</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$subject</var></dt>
+						<dd><code>string</code><br>$prefix CRUD component events name prefix</dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="enable" id="_enable">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_enable">#</a>
+			<code><a href="source-class-RelatedModelsListener.html#39-55" title="Go to source code">enable</a>( <span>string|array <var>$actions</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Enables association list fetching for specified actions.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Enables association list fetching for specified actions.</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$actions</var></dt>
+						<dd><code>string|array</code><br>$actions list of action names to enable</dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="map" id="_map">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_map">#</a>
+			<code><a href="source-class-RelatedModelsListener.html#57-76" title="Go to source code">map</a>( <span>array|boolean <var>$models</var></span>, <span>string <var>$action</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Sets the list of model relationships to be fetched as lists for an action</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Sets the list of model relationships to be fetched as lists for an action</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$models</var></dt>
+						<dd><code>array|boolean</code><br>$models list of model association names to be fetch on $action if
+<code>true</code>, list of models will be constructed out of associated models
+of main controller's model</dd>
+						<dt><var>$action</var></dt>
+						<dd><code>string</code><br>$action name of the action to apply this rule to. If left null then it will use
+the current controller action</dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="models" id="_models">
+
+			<td class="attributes"><code>
+				 public 
+				array
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_models">#</a>
+			<code><a href="source-class-RelatedModelsListener.html#78-121" title="Go to source code">models</a>( <span>string <var>$action</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Gets the list of associated model lists to be fetched for an action</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Gets the list of associated model lists to be fetched for an action</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$action</var></dt>
+						<dd><code>string</code><br>$action name of the action</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>array</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="implementedEvents" id="_implementedEvents">
+
+			<td class="attributes"><code>
+				 public 
+				array
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_implementedEvents">#</a>
+			<code><a href="source-class-RelatedModelsListener.html#123-130" title="Go to source code">implementedEvents</a>( )</code>
+
+			<div class="description short">
+				
+<p>List of events implemented by this class</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>List of events implemented by this class</p>
+
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>array</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="beforeRender" id="_beforeRender">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_beforeRender">#</a>
+			<code><a href="source-class-RelatedModelsListener.html#132-167" title="Go to source code">beforeRender</a>( <span>CakeEvent <var>$event</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Fetches related models' list and sets them to a variable for the view Lists
+are limited buy default to 200 items. Should you need more, attach an event
+listener for <code>beforeListRelated</code> event to modify the query</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Fetches related models' list and sets them to a variable for the view Lists
+are limited buy default to 200 items. Should you need more, attach an event
+listener for <code>beforeListRelated</code> event to modify the query</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$event</var></dt>
+						<dd><code>CakeEvent</code></dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_getModelInstance" id="__getModelInstance">
+
+			<td class="attributes"><code>
+				 protected 
+				Model
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__getModelInstance">#</a>
+			<code><a href="source-class-RelatedModelsListener.html#169-187" title="Go to source code">_getModelInstance</a>( <span>string <var>$model</var></span>, <span>Model <var>$controllerModel</var></span>, <span>Controller <var>$controller</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Returns model instance based on its name</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Returns model instance based on its name</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$model</var></dt>
+						<dd><code>string</code><br>$model name of the model</dd>
+						<dt><var>$controllerModel</var></dt>
+						<dd><code>Model</code><br>$controllerModel default model instance for controller</dd>
+						<dt><var>$controller</var></dt>
+						<dd><code>Controller</code><br>$controller instance to do a first look on it</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>Model</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		</table>
+
+
+
+		<h3>Magic methods summary</h3>
+
+
+
+
+
+
+
+
+		<h2>Properties summary</h2>
+		<table class="summary table table-bordered table-striped" id="properties">
+		<tr data-order="_crud" id="$_crud">
+			<td class="attributes"><code>
+				protected  
+				<code><a href="class-CrudComponent.html">CrudComponent</a></code>
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-RelatedModelsListener.html#13-18" title="Go to source code"><var>$_crud</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$_crud" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>Crud Component reference</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>Crud Component reference</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		<tr data-order="_subject" id="$_subject">
+			<td class="attributes"><code>
+				protected  
+				<code><a href="class-CrudSubject.html">CrudSubject</a></code>
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-RelatedModelsListener.html#20-25" title="Go to source code"><var>$_subject</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$_subject" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>Crud Event subject</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>Crud Event subject</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		</table>
+
+
+
+
+
+
+</div>
+	</div>
+
+	<div id="footer">
+		jippi/cakephp-crud (master) API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</body>
+</html>

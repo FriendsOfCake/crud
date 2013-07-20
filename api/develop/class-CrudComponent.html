@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Class CrudComponent | jippi/cakephp-crud (develop)</title>
+
+	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
+	<script type="text/javascript" src="elementlist.js?2001747644"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
+
+</head>
+
+<body>
+	<a href="https://github.com/jippi/cakephp-crud/">
+      		<img style="position: absolute; top: 0; right: 0; border: 0; z-index: 10000" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+    	</a>
+	<div id="navigation" class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<a href="index.html" class="brand">jippi/cakephp-crud (develop)</a>
+				<div class="nav-collapse">
+					<ul class="nav">
+						<li class="active">
+<span>Class</span>						</li>
+
+						<li class="divider-vertical"></li>
+
+						<li>
+							<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+						</li>
+						<li>
+							<a href="deprecated.html" title="List of deprecated elements"><span>Deprecated</span></a>
+						</li>
+						<li>
+							<a href="todo.html" title="Todo list"><span>Todo</span></a>
+						</li>
+
+						<li class="divider-vertical"></li>
+
+						<li>
+							<a href="jippi-cakephp-crud-develop-api-documentation.zip" title="Download documentation as ZIP archive"><span>Download</span></a>
+						</li>
+
+                                                <li class="divider-vertical"></li>
+						<li><a href="http://cakephp.nu/cakephp-crud/" title="Documentation"><span>View Documentation</span></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="left">
+	<div id="menu">
+		<form id="search" class="form-search">
+			<input type="hidden" name="cx" value="" />
+			<input type="hidden" name="ie" value="UTF-8" />
+			<input type="text" name="q" class="search-query" placeholder="Search" />
+		</form>
+
+
+		<div id="groups">
+		</div>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-AddCrudAction.html">AddCrudAction</a></li>
+				<li><a href="class-ApiFieldFilterListener.html">ApiFieldFilterListener</a></li>
+				<li><a href="class-ApiListener.html">ApiListener</a></li>
+				<li><a href="class-ApiPaginationListener.html">ApiPaginationListener</a></li>
+				<li><a href="class-ApiQueryLogListener.html">ApiQueryLogListener</a></li>
+				<li><a href="class-CrudAction.html">CrudAction</a></li>
+				<li class="active"><a href="class-CrudComponent.html">CrudComponent</a></li>
+				<li><a href="class-CrudExceptionRenderer.html">CrudExceptionRenderer</a></li>
+				<li><a href="class-CrudJsonView.html">CrudJsonView</a></li>
+				<li><a href="class-CrudListener.html">CrudListener</a></li>
+				<li><a href="class-CrudPanel.html">CrudPanel</a></li>
+				<li><a href="class-CrudSubject.html">CrudSubject</a></li>
+				<li><a href="class-CrudXmlView.html">CrudXmlView</a></li>
+				<li><a href="class-DebugKitListener.html">DebugKitListener</a></li>
+				<li><a href="class-DeleteCrudAction.html">DeleteCrudAction</a></li>
+				<li><a href="class-EditCrudAction.html">EditCrudAction</a></li>
+				<li><a href="class-IndexCrudAction.html">IndexCrudAction</a></li>
+				<li><a href="class-RelatedModelsListener.html">RelatedModelsListener</a></li>
+				<li><a href="class-ScaffoldListener.html">ScaffoldListener</a></li>
+				<li><a href="class-SearchListener.html">SearchListener</a></li>
+				<li><a href="class-TranslationsShell.html">TranslationsShell</a></li>
+				<li><a href="class-ViewCrudAction.html">ViewCrudAction</a></li>
+			</ul>
+
+
+			<h3>Traits</h3>
+			<ul>
+				<li><a href="class-CrudControllerTrait.html">CrudControllerTrait</a></li>
+			</ul>
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+	<div id="rightInner">
+<div id="content" class="class">
+	<h1>Class CrudComponent</h1>
+
+
+	<div class="description">
+	
+<p>Crud component</p>
+
+<p>Scaffolding on steroids! :)</p>
+
+<p>Licensed under The MIT License Redistributions of files must retain the above
+copyright notice.</p>
+
+	</div>
+
+	<dl class="tree well">
+		<dd style="padding-left:0px">
+Component
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by" />
+<b><span>CrudComponent</span></b>			
+			
+			
+		</dd>
+	</dl>
+
+
+
+
+
+
+
+
+	<div class="alert alert-info">
+		
+		
+		
+		
+
+				<b>Copyright:</b>
+				Christian Winther, 2013<br />
+		<b>Located at</b> <a href="source-class-CrudComponent.html#6-764" title="Go to source code">Controller/Component/CrudComponent.php</a><br />
+	</div>
+
+
+
+		<h2>Methods summary</h2>
+		<table class="summary table table-bordered table-striped" id="methods">
+		<tr data-order="__construct" id="___construct">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#___construct">#</a>
+			<code><a href="source-class-CrudComponent.html#123-131" title="Go to source code">__construct</a>( <span>ComponentCollection <var>$collection</var></span>, <span>array <var>$settings</var> = <span class="php-keyword1">array</span>()</span> )</code>
+
+			<div class="description short">
+				
+<p>Constructor</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Constructor</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$collection</var></dt>
+						<dd><code>ComponentCollection</code><br>$collection A ComponentCollection this component can use to lazy load its
+components</dd>
+						<dt><var>$settings</var></dt>
+						<dd><code>array</code><br>$settings Array of configuration settings.</dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="initialize" id="_initialize">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_initialize">#</a>
+			<code><a href="source-class-CrudComponent.html#133-157" title="Go to source code">initialize</a>( <span>Controller <var>$controller</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Make sure to update the list of known controller methods before startup is
+called</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Make sure to update the list of known controller methods before startup is
+called</p>
+
+<p>The reason for this is that if we don't, the Auth component won't execute any
+callbacks on the controller like isAuthorized</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$controller</var></dt>
+						<dd><code>Controller</code><br>$controller</dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="initAction" id="_initAction">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_initAction">#</a>
+			<code><a href="source-class-CrudComponent.html#159-170" title="Go to source code">initAction</a>( <span>string <var>$controllerAction</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Initialize action</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Initialize action</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$controllerAction</var></dt>
+						<dd><code>string</code><br>$controllerAction Override the controller action to execute as</dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="executeAction" id="_executeAction">
+
+			<td class="attributes"><code>
+				 public 
+				mixed
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_executeAction">#</a>
+			<code><a href="source-class-CrudComponent.html#172-204" title="Go to source code">executeAction</a>( <span>string <var>$controllerAction</var> = <span class="php-keyword1">null</span></span>, <span>array <var>$args</var> = <span class="php-keyword1">array</span>()</span> )</code>
+
+			<div class="description short">
+				
+<p>Execute a Crud action</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Execute a Crud action</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$controllerAction</var></dt>
+						<dd><code>string</code><br>$controllerAction Override the controller action to execute as</dd>
+						<dt><var>$args</var></dt>
+						<dd><code>array</code><br>$arguments List of arguments to pass to the CRUD action (Usually an ID to edit /
+delete)</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>mixed</code><br>void, or a CakeResponse object<br />
+					</div>
+
+					<h4>Throws</h4>
+					<div class="list">
+						<code>CakeException</code><br>If an action is not mapped<br />
+					</div>
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="action" id="_action">
+
+			<td class="attributes"><code>
+				 public 
+				<code><a href="class-CrudAction.html">CrudAction</a></code>
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_action">#</a>
+			<code><a href="source-class-CrudComponent.html#206-218" title="Go to source code">action</a>( <span>string <var>$name</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Get an CrudAction object by action name</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Get an CrudAction object by action name</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$name</var></dt>
+						<dd><code>string</code><br>$name The controller action name</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code><code><a href="class-CrudAction.html">CrudAction</a></code></code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="enable" id="_enable">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_enable">#</a>
+			<code><a href="source-class-CrudComponent.html#220-234" title="Go to source code">enable</a>( <span>string <var>$actions</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Enable one or multiple CRUD actions</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Enable one or multiple CRUD actions</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$actions</var></dt>
+						<dd><code>string</code><br>$actions The action to enable</dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="disable" id="_disable">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_disable">#</a>
+			<code><a href="source-class-CrudComponent.html#236-250" title="Go to source code">disable</a>( <span>string <var>$actions</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Disable one or multiple CRUD actions</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Disable one or multiple CRUD actions</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$actions</var></dt>
+						<dd><code>string</code><br>$actions The action to disable</dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="view" id="_view">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_view">#</a>
+			<code><a href="source-class-CrudComponent.html#252-271" title="Go to source code">view</a>( <span>string|array <var>$action</var></span>, <span>string <var>$view</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Map the view file to use for a controller action</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Map the view file to use for a controller action</p>
+
+<p>To map multiple action views in one go pass an array as first argument and no
+second argument</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$action</var></dt>
+						<dd><code>string|array</code><br>$action</dd>
+						<dt><var>$view</var></dt>
+						<dd><code>string</code><br>$view</dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="viewVar" id="_viewVar">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_viewVar">#</a>
+			<code><a href="source-class-CrudComponent.html#273-292" title="Go to source code">viewVar</a>( <span>string|array <var>$action</var></span>, <span>string <var>$viewVar</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Change the viewVar name for one or multiple actions</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Change the viewVar name for one or multiple actions</p>
+
+<p>To map multiple action viewVars in one go pass an array as first argument and
+no second argument</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$action</var></dt>
+						<dd><code>string|array</code><br>$action</dd>
+						<dt><var>$viewVar</var></dt>
+						<dd><code>string</code><br>$viewVar</dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="findMethod" id="_findMethod">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_findMethod">#</a>
+			<code><a href="source-class-CrudComponent.html#294-313" title="Go to source code">findMethod</a>( <span>string <var>$action</var></span>, <span>strign <var>$method</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Map a controller action to a Model::find($method)</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Map a controller action to a Model::find($method)</p>
+
+<p>To map multiple findMethods in one go pass an array as first argument and no
+second argument</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$action</var></dt>
+						<dd><code>string</code><br>$action</dd>
+						<dt><var>$method</var></dt>
+						<dd><code>strign</code><br>$method</dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="mapAction" id="_mapAction">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_mapAction">#</a>
+			<code><a href="source-class-CrudComponent.html#315-330" title="Go to source code">mapAction</a>( <span>string <var>$action</var></span>, <span>string|array <var>$settings</var></span>, <span>boolean <var>$enable</var> = <span class="php-keyword1">true</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Map action to a internal request type</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Map action to a internal request type</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$action</var></dt>
+						<dd><code>string</code><br>$action The Controller action to provide an implementation for</dd>
+						<dt><var>$settings</var></dt>
+						<dd><code>string|array</code><br>$setting Settings array or one of the CRUD events (index, add, edit, delete,
+view)</dd>
+						<dt><var>$enable</var></dt>
+						<dd><code>boolean</code><br>$enable Should the mapping be enabled right away?</dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="isActionMapped" id="_isActionMapped">
+
+			<td class="attributes"><code>
+				 public 
+				boolean
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_isActionMapped">#</a>
+			<code><a href="source-class-CrudComponent.html#332-355" title="Go to source code">isActionMapped</a>( <span>string|null <var>$action</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Check if a CRUD action has been mapped (whether it will be handled by CRUD
+component)</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Check if a CRUD action has been mapped (whether it will be handled by CRUD
+component)</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$action</var></dt>
+						<dd><code>string|null</code><br>$action If null, use the current action</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>boolean</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="on" id="_on">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_on">#</a>
+			<code><a href="source-class-CrudComponent.html#357-376" title="Go to source code">on</a>( <span>string|array <var>$events</var></span>, <span>callable <var>$callback</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Attaches an event listener function to the controller for Crud Events</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Attaches an event listener function to the controller for Crud Events</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$events</var></dt>
+						<dd><code>string|array</code><br>$events Name of the Crud Event you want to attach to controller</dd>
+						<dt><var>$callback</var></dt>
+						<dd><code>callable</code><br>$callback callable method or closure to be executed on event</dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="listener" id="_listener">
+
+			<td class="attributes"><code>
+				 public 
+				CrudBaseEvent
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_listener">#</a>
+			<code><a href="source-class-CrudComponent.html#378-386" title="Go to source code">listener</a>( <span>string <var>$name</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Get a single event class</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Get a single event class</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$name</var></dt>
+						<dd><code>string</code><br>$name</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>CrudBaseEvent</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="addListener" id="_addListener">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_addListener">#</a>
+			<code><a href="source-class-CrudComponent.html#388-411" title="Go to source code">addListener</a>( <span>string <var>$name</var></span>, <span>string|null <var>$class</var> = <span class="php-keyword1">null</span></span>, <span>array <var>$defaults</var> = <span class="php-keyword1">array</span>()</span> )</code>
+
+			<div class="description short">
+				
+<p>Add a new listener to Crud</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Add a new listener to Crud</p>
+
+<p>This will not load or initialize the listener, only lazy-load it</p>
+
+<p>If <code>$name</code> is provided but no <code>$class</code> argument, the
+className will be derived from the <code>$name</code>.</p>
+
+<p>CakePHP Plugin.ClassName format for <code>$name</code> and
+<code>$class</code> is supported</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$name</var></dt>
+						<dd><code>string</code><br>$name</dd>
+						<dt><var>$class</var></dt>
+						<dd><code>string|null</code><br>$class Normal CakePHP plugin-dot annotation supported</dd>
+						<dt><var>$defaults</var></dt>
+						<dd><code>array</code><br>$defaults Any default settings for a listener</dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="removeListener" id="_removeListener">
+
+			<td class="attributes"><code>
+				 public 
+				boolean
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_removeListener">#</a>
+			<code><a href="source-class-CrudComponent.html#413-434" title="Go to source code">removeListener</a>( <span>string <var>$name</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Remove a listener from Crud</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Remove a listener from Crud</p>
+
+<p>This will also detach it from the EventManager if it's attached</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$name</var></dt>
+						<dd><code>string</code><br>$name</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>boolean</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="trigger" id="_trigger">
+
+			<td class="attributes"><code>
+				 public 
+				<code><a href="class-CrudSubject.html">CrudSubject</a></code>
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_trigger">#</a>
+			<code><a href="source-class-CrudComponent.html#436-467" title="Go to source code">trigger</a>( <span>string <var>$eventName</var></span>, <span>array <var>$data</var> = <span class="php-keyword1">array</span>()</span> )</code>
+
+			<div class="description short">
+				
+<p>Triggers a Crud event by creating a new subject and filling it with $data if
+$data is an instance of CrudSubject it will be reused as the subject object for
+this event.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Triggers a Crud event by creating a new subject and filling it with $data if
+$data is an instance of CrudSubject it will be reused as the subject object for
+this event.</p>
+
+<p>If Event listeners return a CakeResponse object, the this method will throw
+an exception and fill a 'response' property on it with a reference to the
+response object.</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$eventName</var></dt>
+						<dd><code>string</code><br>$eventName</dd>
+						<dt><var>$data</var></dt>
+						<dd><code>array</code><br>$data</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code><code><a href="class-CrudSubject.html">CrudSubject</a></code></code><br />
+					</div>
+
+					<h4>Throws</h4>
+					<div class="list">
+						<code>Exception</code><br>if any event listener return a CakeResponse object<br />
+					</div>
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="config" id="_config">
+
+			<td class="attributes"><code>
+				 public 
+				mixed|<code><a href="class-CrudComponent.html">CrudComponent</a></code>
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_config">#</a>
+			<code><a href="source-class-CrudComponent.html#469-518" title="Go to source code">config</a>( <span>mixed <var>$key</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$value</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Sets a configuration variable into this component</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Sets a configuration variable into this component</p>
+
+<p>If called with no arguments, all configuration values are returned.</p>
+
+<p>$key is interpreted with dot notation, like the one used for
+Configure::write()</p>
+
+<p>If $key is string and $value is not passed, it will return the value
+associated with such key.</p>
+
+<p>If $key is an array and $value is empty, then $key will be interpreted as key
+=&gt; value dictionary of settings and it will be merged directly with
+$this-&gt;settings</p>
+
+<p>If $key is a string, the value will be inserted in the specified slot as
+indicated using the dot notation</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$key</var></dt>
+						<dd><code>mixed</code><br>$key</dd>
+						<dt><var>$value</var></dt>
+						<dd><code>mixed</code><br>$value</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>mixed|<code><a href="class-CrudComponent.html">CrudComponent</a></code></code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="defaults" id="_defaults">
+
+			<td class="attributes"><code>
+				 public 
+				mixed
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_defaults">#</a>
+			<code><a href="source-class-CrudComponent.html#520-544" title="Go to source code">defaults</a>( <span>string <var>$type</var></span>, <span>mixed <var>$name</var></span>, <span>mixed <var>$config</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Set or get defaults for listeners and actions</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Set or get defaults for listeners and actions</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$type</var></dt>
+						<dd><code>string</code><br>$type Can be anything, but 'listeners' or 'actions' is currently only used</dd>
+						<dt><var>$name</var></dt>
+						<dd><code>mixed</code><br>$name The name of the $type - e.g. 'api', 'relatedModels' or an array ('api',
+'relatedModels'). If $name is an array, the $config will be applied to each
+entry in the $name array.</dd>
+						<dt><var>$config</var></dt>
+						<dd><code>mixed</code><br>$config If NULL, the defaults is returned, else the defaults are changed</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>mixed</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="getSubject" id="_getSubject">
+
+			<td class="attributes"><code>
+				 public 
+				<code><a href="class-CrudSubject.html">CrudSubject</a></code>
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_getSubject">#</a>
+			<code><a href="source-class-CrudComponent.html#546-568" title="Go to source code">getSubject</a>( <span>array <var>$additional</var> = <span class="php-keyword1">array</span>()</span> )</code>
+
+			<div class="description short">
+				
+<p>Create a CakeEvent subject with the required properties</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Create a CakeEvent subject with the required properties</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$additional</var></dt>
+						<dd><code>array</code><br>$additional Additional properties for the subject</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code><code><a href="class-CrudSubject.html">CrudSubject</a></code></code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_normalizeConfig" id="__normalizeConfig">
+
+			<td class="attributes"><code>
+				 protected 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__normalizeConfig">#</a>
+			<code><a href="source-class-CrudComponent.html#570-615" title="Go to source code">_normalizeConfig</a>( <span>mixed <var>$types</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Normalize action configuration</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Normalize action configuration</p>
+
+<p>If an action don't have a CrudClass specified (the value part of the array)
+try to compute it by exploding on action name on '_' and take the last chunk as
+CrudClass identifier</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$types</var></dt>
+						<dd><code>mixed</code><br>$types Class type(s)</dd>
+					</dl></div>
+
+
+					<h4>Throws</h4>
+					<div class="list">
+						<code>CakeException</code><br>If className is missing for listener<br />
+					</div>
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_handlerClassName" id="__handlerClassName">
+
+			<td class="attributes"><code>
+				 protected 
+				string
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__handlerClassName">#</a>
+			<code><a href="source-class-CrudComponent.html#617-637" title="Go to source code">_handlerClassName</a>( <span>string <var>$action</var></span>, <span>string|null <var>$className</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Generate valid class name for action and listener handler</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Generate valid class name for action and listener handler</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$action</var></dt>
+						<dd><code>string</code><br>$action</dd>
+						<dt><var>$className</var></dt>
+						<dd><code>string|null</code><br>$className</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>string</code><br>Class name<br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_loadListeners" id="__loadListeners">
+
+			<td class="attributes"><code>
+				 protected 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__loadListeners">#</a>
+			<code><a href="source-class-CrudComponent.html#639-648" title="Go to source code">_loadListeners</a>( )</code>
+
+			<div class="description short">
+				
+<p>Load all event classes attached to Crud</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Load all event classes attached to Crud</p>
+
+
+
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_loadListener" id="__loadListener">
+
+			<td class="attributes"><code>
+				 protected 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__loadListener">#</a>
+			<code><a href="source-class-CrudComponent.html#650-675" title="Go to source code">_loadListener</a>( <span>string <var>$name</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Load a single event class attached to Crud</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Load a single event class attached to Crud</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$name</var></dt>
+						<dd><code>string</code><br>$name</dd>
+					</dl></div>
+
+
+					<h4>Throws</h4>
+					<div class="list">
+						<code>CakeException</code><br />
+					</div>
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_loadAction" id="__loadAction">
+
+			<td class="attributes"><code>
+				 protected 
+				<code><a href="class-CrudAction.html">CrudAction</a></code>
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__loadAction">#</a>
+			<code><a href="source-class-CrudComponent.html#677-711" title="Go to source code">_loadAction</a>( <span>string <var>$name</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Load a CrudAction instance</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Load a CrudAction instance</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$name</var></dt>
+						<dd><code>string</code><br>$name The controller action name</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code><code><a href="class-CrudAction.html">CrudAction</a></code></code><br />
+					</div>
+
+					<h4>Throws</h4>
+					<div class="list">
+						<code>CakeException</code><br>If action is not mapped<br />
+					</div>
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_setModelProperties" id="__setModelProperties">
+
+			<td class="attributes"><code>
+				 protected 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__setModelProperties">#</a>
+			<code><a href="source-class-CrudComponent.html#713-735" title="Go to source code">_setModelProperties</a>( )</code>
+
+			<div class="description short">
+				
+<p>Set internal model properties from the controller</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Set internal model properties from the controller</p>
+
+
+
+
+
+					<h4>Throws</h4>
+					<div class="list">
+						<code>CakeException</code><br>If unable to get model instance<br />
+					</div>
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_mergeConfig" id="__mergeConfig">
+
+			<td class="attributes"><code>
+				 protected 
+				array
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__mergeConfig">#</a>
+			<code><a href="source-class-CrudComponent.html#737-762" title="Go to source code">_mergeConfig</a>( <span>array <var>$array1</var></span>, <span>array <var>$array2</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Merge configuration arrays</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Merge configuration arrays</p>
+
+<p>Allow us to change e.g. a listener config without losing defaults</p>
+
+<p>This is like merge_array_recursive - with the difference that duplicate keys
+isn't changed to an array with both values, but overridden</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$array1</var></dt>
+						<dd><code>array</code><br>$array1</dd>
+						<dt><var>$array2</var></dt>
+						<dd><code>array</code><br>$array2</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>array</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		</table>
+
+
+
+		<h3>Magic methods summary</h3>
+
+
+
+
+
+
+
+
+		<h2>Properties summary</h2>
+		<table class="summary table table-bordered table-striped" id="properties">
+		<tr data-order="components" id="$components">
+			<td class="attributes"><code>
+				public  
+				array
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-CrudComponent.html#18-23" title="Go to source code"><var>$components</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$components" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>Reference to a Session component</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>Reference to a Session component</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		<tr data-order="_action" id="$_action">
+			<td class="attributes"><code>
+				protected  
+				string
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-CrudComponent.html#25-30" title="Go to source code"><var>$_action</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$_action" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>The current controller action</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>The current controller action</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		<tr data-order="_controller" id="$_controller">
+			<td class="attributes"><code>
+				protected  
+				Controller
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-CrudComponent.html#32-37" title="Go to source code"><var>$_controller</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$_controller" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>Reference to the current controller</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>Reference to the current controller</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		<tr data-order="_request" id="$_request">
+			<td class="attributes"><code>
+				protected  
+				CakeRequest
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-CrudComponent.html#39-44" title="Go to source code"><var>$_request</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$_request" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>Reference to the current request</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>Reference to the current request</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		<tr data-order="_eventManager" id="$_eventManager">
+			<td class="attributes"><code>
+				protected  
+				CakeEventManager
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-CrudComponent.html#46-51" title="Go to source code"><var>$_eventManager</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$_eventManager" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>Reference to the current event manager</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>Reference to the current event manager</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		<tr data-order="_modelName" id="$_modelName">
+			<td class="attributes"><code>
+				protected  
+				string
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-CrudComponent.html#53-58" title="Go to source code"><var>$_modelName</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$_modelName" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>Cached property for Controller::modelClass</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>Cached property for Controller::modelClass</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		<tr data-order="_model" id="$_model">
+			<td class="attributes"><code>
+				protected  
+				Model
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-CrudComponent.html#60-65" title="Go to source code"><var>$_model</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$_model" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>Cached property for the current Controller::modelClass instance</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>Cached property for the current Controller::modelClass instance</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		<tr data-order="_listenerInstances" id="$_listenerInstances">
+			<td class="attributes"><code>
+				protected  
+				array
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-CrudComponent.html#67-72" title="Go to source code"><var>$_listenerInstances</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$_listenerInstances" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>List of listener objects attached to Crud</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>List of listener objects attached to Crud</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		<tr data-order="_actionInstances" id="$_actionInstances">
+			<td class="attributes"><code>
+				protected  
+				array
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-CrudComponent.html#74-79" title="Go to source code"><var>$_actionInstances</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$_actionInstances" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>List of crud actions</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>List of crud actions</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		<tr data-order="settings" id="$settings">
+			<td class="attributes"><code>
+				public  
+				array
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-CrudComponent.html#81-121" title="Go to source code"><var>$settings</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$settings" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>Components settings.</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>Components settings.</p>
+
+<p><code>eventPrefix</code> All emitted events will be prefixed with this
+property value</p>
+
+<p><code>actions</code> contains an array of controller methods this component
+should offer implementation for. Each action maps to a CrudAction class.
+<code>$controllerAction =&gt; $crudActionClass</code>. Example:
+<code>array('admin_index' =&gt; 'Crud.Index')</code> By default no actions are
+enabled</p>
+
+<p><code>listeners</code> List of internal-name =&gt; ${plugin}.${class}
+listeners that will be bound automatically in Crud. By default the related model
+event are bound. Events will always assume to be in the Controller/Event
+folder</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		</table>
+
+
+
+
+
+
+</div>
+	</div>
+
+	<div id="footer">
+		jippi/cakephp-crud (develop) API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</body>
+</html>
