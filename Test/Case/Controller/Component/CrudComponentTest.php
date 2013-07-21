@@ -715,6 +715,52 @@ class CrudComponentTest extends ControllerTestCase {
 	}
 
 /**
+ * Tests on method registers an event
+ *
+ */
+	public function testOn() {
+		$this->Crud->on('event', 'fakeCallback');
+
+		$return = $this->controller->getEventManager()->listeners('Crud.event');
+
+		$expected = array(
+			array(
+				'callable' => 'fakeCallback',
+				'passParams' => false
+			)
+		);
+		$this->assertSame($expected, $return);
+	}
+
+/**
+ * tests on method registers an event with extra params
+ *
+ */
+	public function testOnWithPriPriorityy() {
+		$this->Crud->on('event', 'fakeCallback');
+		$this->Crud->on('event', 'fakeHighPriority', array('priority' => 1));
+		$this->Crud->on('event', 'fakeLowPriority', array('priority' => 99999));
+
+		$return = $this->controller->getEventManager()->listeners('Crud.event');
+
+		$expected = array(
+			array(
+				'callable' => 'fakeHighPriority',
+				'passParams' => false
+			),
+			array(
+				'callable' => 'fakeCallback',
+				'passParams' => false
+			),
+			array(
+				'callable' => 'fakeLowPriority',
+				'passParams' => false
+			)
+		);
+		$this->assertSame($expected, $return);
+	}
+
+/**
  * Tests on method for beforePaginateEvent
  *
  * @expectedException CakeException
