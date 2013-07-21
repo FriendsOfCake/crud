@@ -356,9 +356,10 @@ class CrudComponent extends Component {
  *
  * @param string|array $events Name of the Crud Event you want to attach to controller
  * @param callback $callback callable method or closure to be executed on event
+ * @param array $options used to set the `priority` and `passParams` flags to the listener.
  * @return void
  */
-	public function on($events, $callback) {
+	public function on($events, $callback, $options = array()) {
 		if (!is_array($events)) {
 			$events = array($events);
 		}
@@ -368,7 +369,7 @@ class CrudComponent extends Component {
 				$event = $this->settings['eventPrefix'] . '.' . $event;
 			}
 
-			$this->_eventManager->attach($callback, $event);
+			$this->_eventManager->attach($callback, $event, $options);
 		}
 	}
 
