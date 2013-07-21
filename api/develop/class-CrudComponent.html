@@ -148,7 +148,7 @@ Component
 
 				<b>Copyright:</b>
 				Christian Winther, 2013<br />
-		<b>Located at</b> <a href="source-class-CrudComponent.html#6-764" title="Go to source code">Controller/Component/CrudComponent.php</a><br />
+		<b>Located at</b> <a href="source-class-CrudComponent.html#6-765" title="Go to source code">Controller/Component/CrudComponent.php</a><br />
 	</div>
 
 
@@ -671,7 +671,7 @@ component)</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_on">#</a>
-			<code><a href="source-class-CrudComponent.html#357-376" title="Go to source code">on</a>( <span>string|array <var>$events</var></span>, <span>callable <var>$callback</var></span> )</code>
+			<code><a href="source-class-CrudComponent.html#357-377" title="Go to source code">on</a>( <span>string|array <var>$events</var></span>, <span>callable <var>$callback</var></span>, <span>array <var>$options</var> = <span class="php-keyword1">array</span>()</span> )</code>
 
 			<div class="description short">
 				
@@ -691,6 +691,9 @@ component)</p>
 						<dd><code>string|array</code><br>$events Name of the Crud Event you want to attach to controller</dd>
 						<dt><var>$callback</var></dt>
 						<dd><code>callable</code><br>$callback callable method or closure to be executed on event</dd>
+						<dt><var>$options</var></dt>
+						<dd><code>array</code><br>$options used to set the <code>priority</code> and <code>passParams</code> flags
+to the listener.</dd>
 					</dl></div>
 
 
@@ -711,7 +714,7 @@ component)</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_listener">#</a>
-			<code><a href="source-class-CrudComponent.html#378-386" title="Go to source code">listener</a>( <span>string <var>$name</var></span> )</code>
+			<code><a href="source-class-CrudComponent.html#379-387" title="Go to source code">listener</a>( <span>string <var>$name</var></span> )</code>
 
 			<div class="description short">
 				
@@ -753,7 +756,7 @@ component)</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_addListener">#</a>
-			<code><a href="source-class-CrudComponent.html#388-411" title="Go to source code">addListener</a>( <span>string <var>$name</var></span>, <span>string|null <var>$class</var> = <span class="php-keyword1">null</span></span>, <span>array <var>$defaults</var> = <span class="php-keyword1">array</span>()</span> )</code>
+			<code><a href="source-class-CrudComponent.html#389-412" title="Go to source code">addListener</a>( <span>string <var>$name</var></span>, <span>string|null <var>$class</var> = <span class="php-keyword1">null</span></span>, <span>array <var>$defaults</var> = <span class="php-keyword1">array</span>()</span> )</code>
 
 			<div class="description short">
 				
@@ -803,7 +806,7 @@ className will be derived from the <code>$name</code>.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_removeListener">#</a>
-			<code><a href="source-class-CrudComponent.html#413-434" title="Go to source code">removeListener</a>( <span>string <var>$name</var></span> )</code>
+			<code><a href="source-class-CrudComponent.html#414-435" title="Go to source code">removeListener</a>( <span>string <var>$name</var></span> )</code>
 
 			<div class="description short">
 				
@@ -847,7 +850,7 @@ className will be derived from the <code>$name</code>.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_trigger">#</a>
-			<code><a href="source-class-CrudComponent.html#436-467" title="Go to source code">trigger</a>( <span>string <var>$eventName</var></span>, <span>array <var>$data</var> = <span class="php-keyword1">array</span>()</span> )</code>
+			<code><a href="source-class-CrudComponent.html#437-468" title="Go to source code">trigger</a>( <span>string <var>$eventName</var></span>, <span>array <var>$data</var> = <span class="php-keyword1">array</span>()</span> )</code>
 
 			<div class="description short">
 				
@@ -903,7 +906,7 @@ response object.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_config">#</a>
-			<code><a href="source-class-CrudComponent.html#469-518" title="Go to source code">config</a>( <span>mixed <var>$key</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$value</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-CrudComponent.html#470-519" title="Go to source code">config</a>( <span>mixed <var>$key</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$value</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -962,7 +965,7 @@ indicated using the dot notation</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_defaults">#</a>
-			<code><a href="source-class-CrudComponent.html#520-544" title="Go to source code">defaults</a>( <span>string <var>$type</var></span>, <span>mixed <var>$name</var></span>, <span>mixed <var>$config</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-CrudComponent.html#521-545" title="Go to source code">defaults</a>( <span>string <var>$type</var></span>, <span>mixed <var>$name</var></span>, <span>mixed <var>$config</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -1010,7 +1013,7 @@ entry in the $name array.</dd>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_getSubject">#</a>
-			<code><a href="source-class-CrudComponent.html#546-568" title="Go to source code">getSubject</a>( <span>array <var>$additional</var> = <span class="php-keyword1">array</span>()</span> )</code>
+			<code><a href="source-class-CrudComponent.html#547-569" title="Go to source code">getSubject</a>( <span>array <var>$additional</var> = <span class="php-keyword1">array</span>()</span> )</code>
 
 			<div class="description short">
 				
@@ -1052,7 +1055,7 @@ entry in the $name array.</dd>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__normalizeConfig">#</a>
-			<code><a href="source-class-CrudComponent.html#570-615" title="Go to source code">_normalizeConfig</a>( <span>mixed <var>$types</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-CrudComponent.html#571-616" title="Go to source code">_normalizeConfig</a>( <span>mixed <var>$types</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -1098,7 +1101,7 @@ CrudClass identifier</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__handlerClassName">#</a>
-			<code><a href="source-class-CrudComponent.html#617-637" title="Go to source code">_handlerClassName</a>( <span>string <var>$action</var></span>, <span>string|null <var>$className</var></span> )</code>
+			<code><a href="source-class-CrudComponent.html#618-638" title="Go to source code">_handlerClassName</a>( <span>string <var>$action</var></span>, <span>string|null <var>$className</var></span> )</code>
 
 			<div class="description short">
 				
@@ -1142,7 +1145,7 @@ CrudClass identifier</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__loadListeners">#</a>
-			<code><a href="source-class-CrudComponent.html#639-648" title="Go to source code">_loadListeners</a>( )</code>
+			<code><a href="source-class-CrudComponent.html#640-649" title="Go to source code">_loadListeners</a>( )</code>
 
 			<div class="description short">
 				
@@ -1175,7 +1178,7 @@ CrudClass identifier</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__loadListener">#</a>
-			<code><a href="source-class-CrudComponent.html#650-675" title="Go to source code">_loadListener</a>( <span>string <var>$name</var></span> )</code>
+			<code><a href="source-class-CrudComponent.html#651-676" title="Go to source code">_loadListener</a>( <span>string <var>$name</var></span> )</code>
 
 			<div class="description short">
 				
@@ -1217,7 +1220,7 @@ CrudClass identifier</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__loadAction">#</a>
-			<code><a href="source-class-CrudComponent.html#677-711" title="Go to source code">_loadAction</a>( <span>string <var>$name</var></span> )</code>
+			<code><a href="source-class-CrudComponent.html#678-712" title="Go to source code">_loadAction</a>( <span>string <var>$name</var></span> )</code>
 
 			<div class="description short">
 				
@@ -1263,7 +1266,7 @@ CrudClass identifier</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__setModelProperties">#</a>
-			<code><a href="source-class-CrudComponent.html#713-735" title="Go to source code">_setModelProperties</a>( )</code>
+			<code><a href="source-class-CrudComponent.html#714-736" title="Go to source code">_setModelProperties</a>( )</code>
 
 			<div class="description short">
 				
@@ -1300,7 +1303,7 @@ CrudClass identifier</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__mergeConfig">#</a>
-			<code><a href="source-class-CrudComponent.html#737-762" title="Go to source code">_mergeConfig</a>( <span>array <var>$array1</var></span>, <span>array <var>$array2</var></span> )</code>
+			<code><a href="source-class-CrudComponent.html#738-763" title="Go to source code">_mergeConfig</a>( <span>array <var>$array1</var></span>, <span>array <var>$array2</var></span> )</code>
 
 			<div class="description short">
 				
