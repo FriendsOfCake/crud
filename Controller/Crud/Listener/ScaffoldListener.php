@@ -126,11 +126,12 @@ class ScaffoldListener extends CrudListener {
  */
 	protected function _associations(Model $model) {
 		$associations = array();
-		$keys = array('belongsTo', 'hasOne', 'hasMany', 'hasAndBelongsToMany');
 
 		$associated = $model->getAssociated();
 		foreach ($associated as $assocKey => $type) {
-			$associations[$type] = array();
+			if (!isset($associations[$type])) {
+				$associations[$type] = array();
+			}
 
 			$assocDataAll = $model->$type;
 
