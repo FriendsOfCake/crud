@@ -230,6 +230,13 @@ class ScaffoldListenerTest extends CakeTestCase {
 							'foreignKey' => 'user_id',
 							'plugin' => null,
 							'controller' => 'users'
+						),
+						'Article' => array(
+							'primaryKey' => 'id',
+							'displayField' => 'title',
+							'foreignKey' => 'article_id',
+							'plugin' => null,
+							'controller' => 'articles'
 						)
 					),
 					'hasOne' => array(
