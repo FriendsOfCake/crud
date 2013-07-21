@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Class CrudListener | jippi/cakephp-crud (develop)</title>
+
+	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
+	<script type="text/javascript" src="elementlist.js?2001747644"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
+
+</head>
+
+<body>
+	<a href="https://github.com/jippi/cakephp-crud/">
+      		<img style="position: absolute; top: 0; right: 0; border: 0; z-index: 10000" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+    	</a>
+	<div id="navigation" class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<a href="index.html" class="brand">jippi/cakephp-crud (develop)</a>
+				<div class="nav-collapse">
+					<ul class="nav">
+						<li class="active">
+<span>Class</span>						</li>
+
+						<li class="divider-vertical"></li>
+
+						<li>
+							<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+						</li>
+						<li>
+							<a href="deprecated.html" title="List of deprecated elements"><span>Deprecated</span></a>
+						</li>
+						<li>
+							<a href="todo.html" title="Todo list"><span>Todo</span></a>
+						</li>
+
+						<li class="divider-vertical"></li>
+
+						<li>
+							<a href="jippi-cakephp-crud-develop-api-documentation.zip" title="Download documentation as ZIP archive"><span>Download</span></a>
+						</li>
+
+                                                <li class="divider-vertical"></li>
+						<li><a href="http://cakephp.nu/cakephp-crud/" title="Documentation"><span>View Documentation</span></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="left">
+	<div id="menu">
+		<form id="search" class="form-search">
+			<input type="hidden" name="cx" value="" />
+			<input type="hidden" name="ie" value="UTF-8" />
+			<input type="text" name="q" class="search-query" placeholder="Search" />
+		</form>
+
+
+		<div id="groups">
+		</div>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-AddCrudAction.html">AddCrudAction</a></li>
+				<li><a href="class-ApiFieldFilterListener.html">ApiFieldFilterListener</a></li>
+				<li><a href="class-ApiListener.html">ApiListener</a></li>
+				<li><a href="class-ApiPaginationListener.html">ApiPaginationListener</a></li>
+				<li><a href="class-ApiQueryLogListener.html">ApiQueryLogListener</a></li>
+				<li><a href="class-CrudAction.html">CrudAction</a></li>
+				<li><a href="class-CrudComponent.html">CrudComponent</a></li>
+				<li><a href="class-CrudExceptionRenderer.html">CrudExceptionRenderer</a></li>
+				<li><a href="class-CrudJsonView.html">CrudJsonView</a></li>
+				<li class="active"><a href="class-CrudListener.html">CrudListener</a></li>
+				<li><a href="class-CrudPanel.html">CrudPanel</a></li>
+				<li><a href="class-CrudSubject.html">CrudSubject</a></li>
+				<li><a href="class-CrudXmlView.html">CrudXmlView</a></li>
+				<li><a href="class-DebugKitListener.html">DebugKitListener</a></li>
+				<li><a href="class-DeleteCrudAction.html">DeleteCrudAction</a></li>
+				<li><a href="class-EditCrudAction.html">EditCrudAction</a></li>
+				<li><a href="class-IndexCrudAction.html">IndexCrudAction</a></li>
+				<li><a href="class-RelatedModelsListener.html">RelatedModelsListener</a></li>
+				<li><a href="class-ScaffoldListener.html">ScaffoldListener</a></li>
+				<li><a href="class-SearchListener.html">SearchListener</a></li>
+				<li><a href="class-TranslationsShell.html">TranslationsShell</a></li>
+				<li><a href="class-ViewCrudAction.html">ViewCrudAction</a></li>
+			</ul>
+
+
+			<h3>Traits</h3>
+			<ul>
+				<li><a href="class-CrudControllerTrait.html">CrudControllerTrait</a></li>
+			</ul>
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+	<div id="rightInner">
+<div id="content" class="class">
+	<h1>Class CrudListener</h1>
+
+
+	<div class="description">
+	
+<p>The Base Crud Listener</p>
+
+<p>All callbacks are defined here for good measure</p>
+
+<p>Licensed under The MIT License Redistributions of files must retain the above
+copyright notice.</p>
+
+	</div>
+
+	<dl class="tree well">
+		<dd style="padding-left:0px">
+Object
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by" />
+<b><span>CrudListener</span></b>			
+			 implements 
+<span>CakeEventListener</span>
+			
+			
+		</dd>
+	</dl>
+
+
+	<div>
+		<h3>Direct known subclasses</h3>
+		<p class="elementList">
+			<code><a href="class-ApiFieldFilterListener.html">ApiFieldFilterListener</a></code>, 
+			<code><a href="class-ApiListener.html">ApiListener</a></code>, 
+			<code><a href="class-ApiPaginationListener.html">ApiPaginationListener</a></code>, 
+			<code><a href="class-ApiQueryLogListener.html">ApiQueryLogListener</a></code>, 
+			<code><a href="class-DebugKitListener.html">DebugKitListener</a></code>, 
+			<code><a href="class-RelatedModelsListener.html">RelatedModelsListener</a></code>, 
+			<code><a href="class-ScaffoldListener.html">ScaffoldListener</a></code>, 
+			<code><a href="class-SearchListener.html">SearchListener</a></code>
+		</p>
+	</div>
+
+
+
+
+
+
+	<div class="alert alert-info">
+		<b>Abstract</b><br />
+		
+		
+		
+
+				<b>Copyright:</b>
+				Christian Winther, 2013<br />
+		<b>Located at</b> <a href="source-class-CrudListener.html#6-179" title="Go to source code">Controller/Crud/CrudListener.php</a><br />
+	</div>
+
+
+
+		<h2>Methods summary</h2>
+		<table class="summary table table-bordered table-striped" id="methods">
+		<tr data-order="__construct" id="___construct">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#___construct">#</a>
+			<code><a href="source-class-CrudListener.html#61-78" title="Go to source code">__construct</a>( <span><code><a href="class-CrudSubject.html">CrudSubject</a></code> <var>$subject</var></span>, <span>array <var>$defaults</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Class constructor</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Class constructor</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$subject</var></dt>
+						<dd><code>string</code><br>$prefix CRUD component events name prefix</dd>
+						<dt><var>$defaults</var></dt>
+						<dd><code>array</code><br>$models List of models to be fetched in beforeRenderEvent</dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="implementedEvents" id="_implementedEvents">
+
+			<td class="attributes"><code>
+				 public 
+				array
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_implementedEvents">#</a>
+			<code><a href="source-class-CrudListener.html#80-132" title="Go to source code">implementedEvents</a>( )</code>
+
+			<div class="description short">
+				
+<p>Returns a list of all events that will fire in the controller during it's
+life cycle. You can override this function to add you own listener callbacks</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Returns a list of all events that will fire in the controller during it's
+life cycle. You can override this function to add you own listener callbacks</p>
+
+<ul>
+	<li>init : Called before any other method in the decorator. Just set the
+	arguments as instance properties for easier access later</li>
+
+	<li>recordNotFound : Called if a find() did not return any records</li>
+
+	<li>beforePaginate : Called right before any paginate() method</li>
+
+	<li>afterPaginate : Called right after any paginate() method</li>
+
+	<li>invalidId : Called if the ID format validation failed</li>
+
+	<li>setFlash : Called before any CakeSession::setFlash Subject contains the
+	following keys you can modify: - message - element = 'default', - params =
+	array() - key = 'flash'</li>
+</ul>
+
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>array</code><br />
+					</div>
+
+
+					<h4>CodeCoverageIgnore</h4>
+					<div class="list">
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="config" id="_config">
+
+			<td class="attributes"><code>
+				 public 
+				mixed|<code><a href="class-CrudAction.html">CrudAction</a></code>
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_config">#</a>
+			<code><a href="source-class-CrudListener.html#134-177" title="Go to source code">config</a>( <span>mixed <var>$key</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$value</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Sets a configuration variable into this listener</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Sets a configuration variable into this listener</p>
+
+<p>If called with no arguments, all configuration values are returned.</p>
+
+<p>$key is interpreted with dot notation, like the one used for
+Configure::write()</p>
+
+<p>If $key is string and $value is not passed, it will return the value
+associated with such key.</p>
+
+<p>If $key is an array and $value is empty, then $key will be interpreted as key
+=&gt; value dictionary of settings and it will be merged directly with
+$this-&gt;settings</p>
+
+<p>If $key is a string, the value will be inserted in the specified slot as
+indicated using the dot notation</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$key</var></dt>
+						<dd><code>mixed</code><br>$key</dd>
+						<dt><var>$value</var></dt>
+						<dd><code>mixed</code><br>$value</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>mixed|<code><a href="class-CrudAction.html">CrudAction</a></code></code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		</table>
+
+
+
+		<h3>Magic methods summary</h3>
+
+
+
+
+
+
+
+
+		<h2>Properties summary</h2>
+		<table class="summary table table-bordered table-striped" id="properties">
+		<tr data-order="_request" id="$_request">
+			<td class="attributes"><code>
+				protected  
+				CakeRequest
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-CrudListener.html#19-24" title="Go to source code"><var>$_request</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$_request" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>Reference to the CakeRequest</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>Reference to the CakeRequest</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		<tr data-order="_controller" id="$_controller">
+			<td class="attributes"><code>
+				protected  
+				Controller
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-CrudListener.html#26-31" title="Go to source code"><var>$_controller</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$_controller" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>Reference to the Controller</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>Reference to the Controller</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		<tr data-order="_crud" id="$_crud">
+			<td class="attributes"><code>
+				protected  
+				<code><a href="class-CrudComponent.html">CrudComponent</a></code>
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-CrudListener.html#33-38" title="Go to source code"><var>$_crud</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$_crud" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>Crud Component reference</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>Crud Component reference</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		<tr data-order="_subject" id="$_subject">
+			<td class="attributes"><code>
+				protected  
+				<code><a href="class-CrudSubject.html">CrudSubject</a></code>
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-CrudListener.html#40-45" title="Go to source code"><var>$_subject</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$_subject" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>Crud Event subject</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>Crud Event subject</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		<tr data-order="_model" id="$_model">
+			<td class="attributes"><code>
+				protected  
+				Model
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-CrudListener.html#47-52" title="Go to source code"><var>$_model</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$_model" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>Reference to the Model instance</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>Reference to the Model instance</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		<tr data-order="_settings" id="$_settings">
+			<td class="attributes"><code>
+				protected  
+				array
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-CrudListener.html#54-59" title="Go to source code"><var>$_settings</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$_settings" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>Listener configuration</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>Listener configuration</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		</table>
+
+
+
+
+
+
+</div>
+	</div>
+
+	<div id="footer">
+		jippi/cakephp-crud (develop) API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</body>
+</html>

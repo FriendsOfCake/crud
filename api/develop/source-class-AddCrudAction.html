@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+	<meta name="robots" content="noindex" />
+
+	<title>File Controller/Crud/Action/AddCrudAction.php | jippi/cakephp-crud (develop)</title>
+
+	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
+	<script type="text/javascript" src="elementlist.js?2001747644"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
+
+</head>
+
+<body>
+	<a href="https://github.com/jippi/cakephp-crud/">
+      		<img style="position: absolute; top: 0; right: 0; border: 0; z-index: 10000" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+    	</a>
+	<div id="navigation" class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<a href="index.html" class="brand">jippi/cakephp-crud (develop)</a>
+				<div class="nav-collapse">
+					<ul class="nav">
+						<li>
+							<a href="class-AddCrudAction.html" title="Summary of AddCrudAction"><span>Class</span></a>
+						</li>
+
+						<li class="divider-vertical"></li>
+
+						<li>
+							<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+						</li>
+						<li>
+							<a href="deprecated.html" title="List of deprecated elements"><span>Deprecated</span></a>
+						</li>
+						<li>
+							<a href="todo.html" title="Todo list"><span>Todo</span></a>
+						</li>
+
+						<li class="divider-vertical"></li>
+
+						<li>
+							<a href="jippi-cakephp-crud-develop-api-documentation.zip" title="Download documentation as ZIP archive"><span>Download</span></a>
+						</li>
+
+                                                <li class="divider-vertical"></li>
+						<li><a href="http://cakephp.nu/cakephp-crud/" title="Documentation"><span>View Documentation</span></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="left">
+	<div id="menu">
+		<form id="search" class="form-search">
+			<input type="hidden" name="cx" value="" />
+			<input type="hidden" name="ie" value="UTF-8" />
+			<input type="text" name="q" class="search-query" placeholder="Search" />
+		</form>
+
+
+		<div id="groups">
+		</div>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li class="active"><a href="class-AddCrudAction.html">AddCrudAction</a></li>
+				<li><a href="class-ApiFieldFilterListener.html">ApiFieldFilterListener</a></li>
+				<li><a href="class-ApiListener.html">ApiListener</a></li>
+				<li><a href="class-ApiPaginationListener.html">ApiPaginationListener</a></li>
+				<li><a href="class-ApiQueryLogListener.html">ApiQueryLogListener</a></li>
+				<li><a href="class-CrudAction.html">CrudAction</a></li>
+				<li><a href="class-CrudComponent.html">CrudComponent</a></li>
+				<li><a href="class-CrudExceptionRenderer.html">CrudExceptionRenderer</a></li>
+				<li><a href="class-CrudJsonView.html">CrudJsonView</a></li>
+				<li><a href="class-CrudListener.html">CrudListener</a></li>
+				<li><a href="class-CrudPanel.html">CrudPanel</a></li>
+				<li><a href="class-CrudSubject.html">CrudSubject</a></li>
+				<li><a href="class-CrudXmlView.html">CrudXmlView</a></li>
+				<li><a href="class-DebugKitListener.html">DebugKitListener</a></li>
+				<li><a href="class-DeleteCrudAction.html">DeleteCrudAction</a></li>
+				<li><a href="class-EditCrudAction.html">EditCrudAction</a></li>
+				<li><a href="class-IndexCrudAction.html">IndexCrudAction</a></li>
+				<li><a href="class-RelatedModelsListener.html">RelatedModelsListener</a></li>
+				<li><a href="class-ScaffoldListener.html">ScaffoldListener</a></li>
+				<li><a href="class-SearchListener.html">SearchListener</a></li>
+				<li><a href="class-TranslationsShell.html">TranslationsShell</a></li>
+				<li><a href="class-ViewCrudAction.html">ViewCrudAction</a></li>
+			</ul>
+
+
+			<h3>Traits</h3>
+			<ul>
+				<li><a href="class-CrudControllerTrait.html">CrudControllerTrait</a></li>
+			</ul>
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+	<div id="rightInner">
+<pre id="source"><code><span id="1" class="l"><a class="l" href="#1"> 1 </a><span class="xlang">&lt;?php</span>
+</span><span id="2" class="l"><a class="l" href="#2"> 2 </a>
+</span><span id="3" class="l"><a class="l" href="#3"> 3 </a>App::uses(<span class="php-quote">'Hash'</span>, <span class="php-quote">'Utility'</span>);
+</span><span id="4" class="l"><a class="l" href="#4"> 4 </a>App::uses(<span class="php-quote">'CrudAction'</span>, <span class="php-quote">'Crud.Controller/Crud'</span>);
+</span><span id="5" class="l"><a class="l" href="#5"> 5 </a>
+</span><span id="6" class="l"><a class="l" href="#6"> 6 </a><span class="php-comment">/**
+</span></span><span id="7" class="l"><a class="l" href="#7"> 7 </a><span class="php-comment"> * Handles 'Add' Crud actions
+</span></span><span id="8" class="l"><a class="l" href="#8"> 8 </a><span class="php-comment"> *
+</span></span><span id="9" class="l"><a class="l" href="#9"> 9 </a><span class="php-comment"> * Licensed under The MIT License
+</span></span><span id="10" class="l"><a class="l" href="#10">10 </a><span class="php-comment"> * Redistributions of files must retain the above copyright notice.
+</span></span><span id="11" class="l"><a class="l" href="#11">11 </a><span class="php-comment"> *
+</span></span><span id="12" class="l"><a class="l" href="#12">12 </a><span class="php-comment"> * @copyright Christian Winther, 2013
+</span></span><span id="13" class="l"><a class="l" href="#13">13 </a><span class="php-comment"> */</span>
+</span><span id="14" class="l"><a class="l" href="#14">14 </a><span class="php-keyword1">class</span> <a id="AddCrudAction" href="#AddCrudAction">AddCrudAction</a> <span class="php-keyword1">extends</span> CrudAction {
+</span><span id="15" class="l"><a class="l" href="#15">15 </a>
+</span><span id="16" class="l"><a class="l" href="#16">16 </a><span class="php-comment">/**
+</span></span><span id="17" class="l"><a class="l" href="#17">17 </a><span class="php-comment"> * Default settings for 'add' actions
+</span></span><span id="18" class="l"><a class="l" href="#18">18 </a><span class="php-comment"> *
+</span></span><span id="19" class="l"><a class="l" href="#19">19 </a><span class="php-comment"> * `enabled` Is this crud action enabled or disabled
+</span></span><span id="20" class="l"><a class="l" href="#20">20 </a><span class="php-comment"> *
+</span></span><span id="21" class="l"><a class="l" href="#21">21 </a><span class="php-comment"> * `view` A map of the controller action and the view to render
+</span></span><span id="22" class="l"><a class="l" href="#22">22 </a><span class="php-comment"> * If `NULL` (the default) the controller action name will be used
+</span></span><span id="23" class="l"><a class="l" href="#23">23 </a><span class="php-comment"> *
+</span></span><span id="24" class="l"><a class="l" href="#24">24 </a><span class="php-comment"> * `relatedModels` is a map of the controller action and the whether it should fetch associations lists
+</span></span><span id="25" class="l"><a class="l" href="#25">25 </a><span class="php-comment"> * to be used in select boxes. An array as value means it is enabled and represent the list
+</span></span><span id="26" class="l"><a class="l" href="#26">26 </a><span class="php-comment"> * of model associations to be fetched
+</span></span><span id="27" class="l"><a class="l" href="#27">27 </a><span class="php-comment"> *
+</span></span><span id="28" class="l"><a class="l" href="#28">28 </a><span class="php-comment"> * `saveOptions` Raw array passed as 2nd argument to saveAll() in `add` and `edit` method
+</span></span><span id="29" class="l"><a class="l" href="#29">29 </a><span class="php-comment"> * If you configure a key with your action name, it will override the default settings.
+</span></span><span id="30" class="l"><a class="l" href="#30">30 </a><span class="php-comment"> * This is useful for adding fieldList to enhance security in saveAll.
+</span></span><span id="31" class="l"><a class="l" href="#31">31 </a><span class="php-comment"> *
+</span></span><span id="32" class="l"><a class="l" href="#32">32 </a><span class="php-comment"> * @var array
+</span></span><span id="33" class="l"><a class="l" href="#33">33 </a><span class="php-comment"> */</span>
+</span><span id="34" class="l"><a class="l" href="#34">34 </a>    <span class="php-keyword1">protected</span> <span class="php-var"><a id="$_settings" href="#$_settings">$_settings</a></span> = <span class="php-keyword1">array</span>(
+</span><span id="35" class="l"><a class="l" href="#35">35 </a>        <span class="php-quote">'enabled'</span> =&gt; <span class="php-keyword1">true</span>,
+</span><span id="36" class="l"><a class="l" href="#36">36 </a>        <span class="php-quote">'view'</span> =&gt; <span class="php-keyword1">null</span>,
+</span><span id="37" class="l"><a class="l" href="#37">37 </a>        <span class="php-quote">'relatedModels'</span> =&gt; <span class="php-keyword1">true</span>,
+</span><span id="38" class="l"><a class="l" href="#38">38 </a>        <span class="php-quote">'saveOptions'</span> =&gt; <span class="php-keyword1">array</span>(
+</span><span id="39" class="l"><a class="l" href="#39">39 </a>            <span class="php-quote">'validate'</span> =&gt; <span class="php-quote">'first'</span>,
+</span><span id="40" class="l"><a class="l" href="#40">40 </a>            <span class="php-quote">'atomic'</span> =&gt; <span class="php-keyword1">true</span>
+</span><span id="41" class="l"><a class="l" href="#41">41 </a>        ),
+</span><span id="42" class="l"><a class="l" href="#42">42 </a>        <span class="php-quote">'messages'</span> =&gt; <span class="php-keyword1">array</span>(
+</span><span id="43" class="l"><a class="l" href="#43">43 </a>            <span class="php-quote">'success'</span> =&gt; <span class="php-keyword1">array</span>(
+</span><span id="44" class="l"><a class="l" href="#44">44 </a>                <span class="php-quote">'text'</span> =&gt; <span class="php-quote">'Successfully created {name}'</span>
+</span><span id="45" class="l"><a class="l" href="#45">45 </a>            ),
+</span><span id="46" class="l"><a class="l" href="#46">46 </a>            <span class="php-quote">'error'</span> =&gt; <span class="php-keyword1">array</span>(
+</span><span id="47" class="l"><a class="l" href="#47">47 </a>                <span class="php-quote">'text'</span> =&gt; <span class="php-quote">'Could not create {name}'</span>
+</span><span id="48" class="l"><a class="l" href="#48">48 </a>            )
+</span><span id="49" class="l"><a class="l" href="#49">49 </a>        ),
+</span><span id="50" class="l"><a class="l" href="#50">50 </a>        <span class="php-quote">'serialize'</span> =&gt; <span class="php-keyword1">array</span>()
+</span><span id="51" class="l"><a class="l" href="#51">51 </a>    );
+</span><span id="52" class="l"><a class="l" href="#52">52 </a>
+</span><span id="53" class="l"><a class="l" href="#53">53 </a><span class="php-comment">/**
+</span></span><span id="54" class="l"><a class="l" href="#54">54 </a><span class="php-comment"> * Generic add action
+</span></span><span id="55" class="l"><a class="l" href="#55">55 </a><span class="php-comment"> *
+</span></span><span id="56" class="l"><a class="l" href="#56">56 </a><span class="php-comment"> * Triggers the following callbacks
+</span></span><span id="57" class="l"><a class="l" href="#57">57 </a><span class="php-comment"> *  - Crud.init
+</span></span><span id="58" class="l"><a class="l" href="#58">58 </a><span class="php-comment"> *  - Crud.beforeSave
+</span></span><span id="59" class="l"><a class="l" href="#59">59 </a><span class="php-comment"> *  - Crud.afterSave
+</span></span><span id="60" class="l"><a class="l" href="#60">60 </a><span class="php-comment"> *  - Crud.beforeRender
+</span></span><span id="61" class="l"><a class="l" href="#61">61 </a><span class="php-comment"> *
+</span></span><span id="62" class="l"><a class="l" href="#62">62 </a><span class="php-comment"> * @return void
+</span></span><span id="63" class="l"><a class="l" href="#63">63 </a><span class="php-comment"> */</span>
+</span><span id="64" class="l"><a class="l" href="#64">64 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__handle" href="#__handle">_handle</a>() {
+</span><span id="65" class="l"><a class="l" href="#65">65 </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$this</span>-&gt;_request-&gt;is(<span class="php-quote">'post'</span>)) {
+</span><span id="66" class="l"><a class="l" href="#66">66 </a>            <span class="php-var">$this</span>-&gt;_model-&gt;create();
+</span><span id="67" class="l"><a class="l" href="#67">67 </a>            <span class="php-var">$this</span>-&gt;_request-&gt;data = <span class="php-var">$this</span>-&gt;_model-&gt;data;
+</span><span id="68" class="l"><a class="l" href="#68">68 </a>            <span class="php-var">$this</span>-&gt;_crud-&gt;trigger(<span class="php-quote">'beforeRender'</span>, <span class="php-keyword1">array</span>(<span class="php-quote">'success'</span> =&gt; <span class="php-keyword1">false</span>));
+</span><span id="69" class="l"><a class="l" href="#69">69 </a>            <span class="php-keyword1">return</span>;
+</span><span id="70" class="l"><a class="l" href="#70">70 </a>        }
+</span><span id="71" class="l"><a class="l" href="#71">71 </a>
+</span><span id="72" class="l"><a class="l" href="#72">72 </a>        <span class="php-var">$this</span>-&gt;_crud-&gt;trigger(<span class="php-quote">'beforeSave'</span>);
+</span><span id="73" class="l"><a class="l" href="#73">73 </a>        <span class="php-keyword1">if</span> (<span class="php-var">$this</span>-&gt;_model-&gt;saveAll(<span class="php-var">$this</span>-&gt;_request-&gt;data, <span class="php-var">$this</span>-&gt;saveOptions())) {
+</span><span id="74" class="l"><a class="l" href="#74">74 </a>            <span class="php-var">$this</span>-&gt;setFlash(<span class="php-quote">'success'</span>);
+</span><span id="75" class="l"><a class="l" href="#75">75 </a>            <span class="php-var">$subject</span> = <span class="php-var">$this</span>-&gt;_crud-&gt;trigger(<span class="php-quote">'afterSave'</span>, <span class="php-keyword1">array</span>(
+</span><span id="76" class="l"><a class="l" href="#76">76 </a>                <span class="php-quote">'success'</span> =&gt; <span class="php-keyword1">true</span>,
+</span><span id="77" class="l"><a class="l" href="#77">77 </a>                <span class="php-quote">'created'</span> =&gt; <span class="php-keyword1">true</span>,
+</span><span id="78" class="l"><a class="l" href="#78">78 </a>                <span class="php-quote">'id'</span> =&gt; <span class="php-var">$this</span>-&gt;_model-&gt;id
+</span><span id="79" class="l"><a class="l" href="#79">79 </a>            ));
+</span><span id="80" class="l"><a class="l" href="#80">80 </a>            <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;_redirect(<span class="php-var">$subject</span>, <span class="php-keyword1">array</span>(<span class="php-quote">'action'</span> =&gt; <span class="php-quote">'index'</span>));
+</span><span id="81" class="l"><a class="l" href="#81">81 </a>        }
+</span><span id="82" class="l"><a class="l" href="#82">82 </a>
+</span><span id="83" class="l"><a class="l" href="#83">83 </a>        <span class="php-var">$this</span>-&gt;setFlash(<span class="php-quote">'error'</span>);
+</span><span id="84" class="l"><a class="l" href="#84">84 </a>        <span class="php-var">$this</span>-&gt;_crud-&gt;trigger(<span class="php-quote">'afterSave'</span>, <span class="php-keyword1">array</span>(<span class="php-quote">'success'</span> =&gt; <span class="php-keyword1">false</span>, <span class="php-quote">'created'</span> =&gt; <span class="php-keyword1">false</span>));
+</span><span id="85" class="l"><a class="l" href="#85">85 </a>        <span class="php-var">$this</span>-&gt;_request-&gt;data = <span class="php-keyword2">Hash</span>::merge(<span class="php-var">$this</span>-&gt;_request-&gt;data, <span class="php-var">$this</span>-&gt;_model-&gt;data);
+</span><span id="86" class="l"><a class="l" href="#86">86 </a>        <span class="php-var">$this</span>-&gt;_crud-&gt;trigger(<span class="php-quote">'beforeRender'</span>, <span class="php-keyword1">array</span>(<span class="php-quote">'success'</span> =&gt; <span class="php-keyword1">false</span>));
+</span><span id="87" class="l"><a class="l" href="#87">87 </a>    }
+</span><span id="88" class="l"><a class="l" href="#88">88 </a>
+</span><span id="89" class="l"><a class="l" href="#89">89 </a>}
+</span><span id="90" class="l"><a class="l" href="#90">90 </a></span></code></pre>
+	</div>
+
+	<div id="footer">
+		jippi/cakephp-crud (develop) API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</body>
+</html>
