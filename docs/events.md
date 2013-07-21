@@ -10,7 +10,7 @@ object (`$event->subject`)
 
 All Crud events take exactly one parameter, `CakeEvent $event`
 
-For a list of emitted events, please see the `configuration` documentation
+For a list of emitted events, please see the [configuration documentation]({{site.url}}/docs/configuration.html)
 
 ## Global accessible subject properties
 
