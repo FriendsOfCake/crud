@@ -165,7 +165,7 @@ class CrudComponentTest extends ControllerTestCase {
  */
 	public $fixtures = array(
 		'core.post', 'core.author', 'core.tag', 'core.comment', 'core.flag_tree',
-		'plugin.crud.posts_tag'
+		'plugin.crud.posts_tag', 'core.cake_session'
 	);
 
 /**
