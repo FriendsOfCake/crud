@@ -204,7 +204,7 @@ __d('crud', 'Successfully deleted example');
 __d('crud', 'Could not delete example');
 END;
 
-		$this->assertSame(trim($expected), trim($contents));
+		$this->assertTextEquals(trim($expected), trim($contents));
 
 		unlink($path);
 	}
@@ -270,7 +270,7 @@ END;
 		$expected .= $onlyNewTranslation;
 		$contents = file_get_contents($path);
 
-		$this->assertSame(trim($expected), trim($contents), "Only expected one translation to be added");
+		$this->assertTextEquals(trim($expected), trim($contents), "Only expected one translation to be added");
 
 		unlink($path);
 	}
