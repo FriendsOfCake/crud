@@ -35,6 +35,11 @@
 <table cellpadding="0" cellspacing="0">
 <tr>
 <?php foreach ($scaffoldFields as $_field): ?>
+  <?php
+    if (in_array($_field, $scaffoldFieldExclude)) {
+      continue;
+    }
+  ?>
   <th><?php echo $this->Paginator->sort($_field); ?></th>
 <?php endforeach; ?>
   <th><?php echo __d('cake', 'Actions'); ?></th>
@@ -43,6 +48,9 @@
 foreach (${$pluralVar} as ${$singularVar}):
   echo '<tr>';
     foreach ($scaffoldFields as $_field) {
+      if (in_array($_field, $scaffoldFieldExclude)) {
+        continue;
+      }
       $isKey = false;
       if (!empty($associations['belongsTo'])) {
         foreach ($associations['belongsTo'] as $_alias => $_details) {
