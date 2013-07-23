@@ -105,6 +105,15 @@ class ScaffoldListener extends CrudListener {
 		$scaffoldFields = array_keys($model->schema());
 		$associations = $this->_associations($model);
 
+		$_scaffoldFields = $subject->crud->config("actions.{$action}.scaffoldFields");
+		if (!empty($_scaffoldFields)) {
+			$_scaffoldFields = (array)$_scaffoldFields;
+			$scaffoldFields = array_intersect($scaffoldFields, array_combine(
+				$_scaffoldFields,
+				$_scaffoldFields
+			));
+		}
+
 		$className = $subject->crud->config("actions.{$action}.className");
 		$scaffoldFieldExclude = $subject->crud->config("actions.{$action}.scaffoldFieldExclude");
 		if (empty($scaffoldFieldExclude)) {
