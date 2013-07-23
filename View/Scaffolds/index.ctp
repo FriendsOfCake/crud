@@ -19,6 +19,19 @@
 ?>
 <div class="<?php echo $pluralVar; ?> index">
 <h2><?php echo $pluralHumanName; ?></h2>
+<?php if (!empty($scaffoldFilters)) : ?>
+<div class="filter">
+<?php
+  echo $this->Form->create($modelClass, array(
+    'url' => array_merge(array('action' => $this->request->params['action']), $this->params['pass'])
+  ));
+  foreach ($scaffoldFilters as $_field => $scaffoldFilter) {
+    echo $this->Form->input($_field, $scaffoldFilter);
+  }
+  echo $this->Form->end(__d('cake', 'Filter'));
+?>
+</div>
+<?php endif; ?>
 <table cellpadding="0" cellspacing="0">
 <tr>
 <?php foreach ($scaffoldFields as $_field): ?>

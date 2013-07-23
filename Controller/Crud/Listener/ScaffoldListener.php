@@ -129,10 +129,30 @@ class ScaffoldListener extends CrudListener {
 			}
 		}
 
+		$scaffoldFilters = array();
+		$_scaffoldFilters = $subject->crud->config("actions.{$action}.scope");
+		if (!empty($_scaffoldFilters)) {
+			$scaffoldFilters = (array)$_scaffoldFilters;
+			foreach ($scaffoldFilters as $_field => $scaffoldField) {
+				$scaffoldFilters[$_field] = Hash::merge(array(
+					'type' => 'value',
+					'form' => array(
+						'label' => false,
+						'placeholder' => $_field,
+					),
+				), $scaffoldField);
+				$scaffoldFilters[$_field] = $scaffoldFilters[$_field]['form'];
+
+				if (!isset($scaffoldFilters[$_field]['value'])) {
+					$scaffoldFilters[$_field]['value'] = $request->query($_field);
+				}
+			}
+		}
+
 		$controller->set(compact(
 			'modelClass', 'primaryKey', 'displayField', 'singularVar', 'pluralVar',
 			'singularHumanName', 'pluralHumanName', 'scaffoldFields', 'associations',
-			'scaffoldFieldExclude'
+			'scaffoldFilters', 'action', 'scaffoldFieldExclude'
 		));
 
 		$controller->set('title_for_layout', $title);
