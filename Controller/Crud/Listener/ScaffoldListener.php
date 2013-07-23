@@ -160,6 +160,13 @@ class ScaffoldListener extends CrudListener {
 		if ($controller->viewClass) {
 			$controller->viewClass = 'Scaffold';
 		}
+
+		App::build(array(
+			'View' => array(
+				APP . 'View' . DS,
+				APP . 'Plugin' . DS . 'Crud' . DS . 'View' . DS
+			)
+		));
 	}
 
 /**
