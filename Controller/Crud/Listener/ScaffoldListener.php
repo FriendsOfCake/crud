@@ -86,9 +86,11 @@ class ScaffoldListener extends CrudListener {
  * @return void
  */
 	public function beforeRender(CakeEvent $event) {
+		$subject = $event->subject;
 		$model = $this->_model();
 		$request = $this->_request();
 		$controller = $this->_controller();
+		$action = $request->params['action'];
 
 		$scaffoldTitle = Inflector::humanize(Inflector::underscore($controller->viewPath));
 		$title = __d('cake', 'Scaffold :: ') . Inflector::humanize($request->action) . ' :: ' . $scaffoldTitle;
@@ -103,9 +105,25 @@ class ScaffoldListener extends CrudListener {
 		$scaffoldFields = array_keys($model->schema());
 		$associations = $this->_associations($model);
 
+		$className = $subject->crud->config("actions.{$action}.className");
+		$scaffoldFieldExclude = $subject->crud->config("actions.{$action}.scaffoldFieldExclude");
+		if (empty($scaffoldFieldExclude)) {
+			if ($className == 'Crud.Add' || $className == 'Crud.Edit') {
+				$scaffoldFieldExclude = array('created', 'modified', 'updated');
+				foreach ($scaffoldFields as $_field) {
+					if (substr($_field, -6) === '_count') {
+						$scaffoldFieldExclude[] = $_field;
+					}
+				}
+			} else {
+				$scaffoldFieldExclude = array();
+			}
+		}
+
 		$controller->set(compact(
 			'modelClass', 'primaryKey', 'displayField', 'singularVar', 'pluralVar',
-			'singularHumanName', 'pluralHumanName', 'scaffoldFields', 'associations'
+			'singularHumanName', 'pluralHumanName', 'scaffoldFields', 'associations',
+			'scaffoldFieldExclude'
 		));
 
 		$controller->set('title_for_layout', $title);
