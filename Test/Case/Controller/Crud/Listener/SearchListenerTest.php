@@ -23,7 +23,11 @@ class SearchListenerTest extends CakeTestCase {
 		parent::setup();
 
 		if (!CakePlugin::loaded('Search')) {
-			CakePlugin::load('Search');
+			try {
+				CakePlugin::load('Search');
+			} catch (MissingPluginException $e) {
+				$this->markTestSkipped('Search plugin not available');
+			}
 		}
 
 	}
