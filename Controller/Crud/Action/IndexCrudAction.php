@@ -89,7 +89,7 @@ class IndexCrudAction extends CrudAction {
 		$this->paginationConfig();
 
 		$this->_crud->trigger('beforePaginate', array('paginator' => $this->_controller->Paginator));
-		$items = $this->_controller->Paginator->paginate($this->_model);
+		$items = $this->_controller->paginate($this->_model);
 		$subject = $this->_crud->trigger('afterPaginate', compact('items'));
 
 		$items = $subject->items;
