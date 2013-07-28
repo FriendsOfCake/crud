@@ -257,4 +257,18 @@ class ApiListener extends CrudListener {
 		}
 	}
 
+/**
+* Create REST resource routes for all controllers in the app
+*
+* @return void
+ */
+	public static function mapResources(){
+		$controllers = array();
+		foreach (App::objects('controller') as $controller) {
+			if ($controller != 'AppController') {
+				array_push($controllers, str_replace('Controller', '', $controller));
+			}
+		}
+		Router::mapResources($controllers);
+	}
 }
