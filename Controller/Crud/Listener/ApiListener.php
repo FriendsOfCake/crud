@@ -258,14 +258,39 @@ class ApiListener extends CrudListener {
 	}
 
 /**
-* Create REST resource routes for all controllers in the app
-*
-* @return void
+ * Automatically create REST resource routes for all controllers found in your main
+ * application or in a specific plugin to provide access to your resources
+ * using /controller/id.json instead of the default /controller/view/id.json.
+ *
+ * If called with no arguments, all controllers in the main application will be mapped.
+ * If called with a valid plugin name all controllers in that plugin will be mapped.
+ * If combined both controllers from the application and the plugin(s) will be mapped.
+ *
+ * This function needs to be called from your application's /Config/bootstrap.php:
+ *     App::uses('ApiListener', 'Crud.Controller/Crud/Listener');
+ *
+ *     ApiListener::mapResources();
+ *     ApiListener::mapResources('DebugKit');
+ *     Router::setExtensions(array('json', 'xml'));
+ *     Router::parseExtensions();
+ *
+ * @param string $plugin
+ * @return void
  */
-	public static function mapResources(){
+	public static function mapResources($plugin = null){
+
+		if (empty($plugin)){
+			$key = 'Controller';
+		}else{
+			$key = $plugin . '.Controller';
+		}
+
 		$controllers = array();
-		foreach (App::objects('controller') as $controller) {
-			if ($controller != 'AppController') {
+		foreach (App::objects($key) as $controller) {
+			if ($controller !== $plugin . 'AppController') {
+				if (isset($plugin)){
+					$controller = $plugin . '.' . $controller;
+				}
 				array_push($controllers, str_replace('Controller', '', $controller));
 			}
 		}
