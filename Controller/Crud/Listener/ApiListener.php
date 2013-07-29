@@ -278,17 +278,15 @@ class ApiListener extends CrudListener {
  * @return void
  */
 	public static function mapResources($plugin = null){
-
-		if (empty($plugin)){
-			$key = 'Controller';
-		}else{
+		$key = 'Controller';
+		if ($plugin) {
 			$key = $plugin . '.Controller';
 		}
 
 		$controllers = array();
 		foreach (App::objects($key) as $controller) {
 			if ($controller !== $plugin . 'AppController') {
-				if (isset($plugin)){
+				if ($plugin) {
 					$controller = $plugin . '.' . $controller;
 				}
 				array_push($controllers, str_replace('Controller', '', $controller));
