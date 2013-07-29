@@ -26,6 +26,7 @@ class ApiListenerTest extends CakeTestCase {
 	public function tearDown() {
 		parent::tearDown();
 		Configure::write($this->_config);
+		CakePlugin::unload('TestPlugin');
 	}
 
 	public function testInitNotIsAPi() {
@@ -553,4 +554,104 @@ class ApiListenerTest extends CakeTestCase {
 		$this->assertFalse($stopped, 'Set flash event is expected not to be stopped');
 	}
 
+/**
+ * testMapResources
+ *
+ * Passing no argument, should map all of the app's controllers
+ */
+	public function testMapResources() {
+		$path = CAKE . 'Test' . DS . 'test_app' . DS . 'Controller' . DS;
+		App::build(array(
+			'Controller' => array($path)
+		), App::RESET);
+
+		Router::reload();
+		Router::$routes = array();
+
+		ApiListener::mapResources();
+
+		$expected = array(
+			'GET index /pages',
+			'GET view /pages/:id',
+			'POST add /pages',
+			'PUT edit /pages/:id',
+			'DELETE delete /pages/:id',
+			'POST edit /pages/:id',
+			'GET index /test_apps_error',
+			'GET view /test_apps_error/:id',
+			'POST add /test_apps_error',
+			'PUT edit /test_apps_error/:id',
+			'DELETE delete /test_apps_error/:id',
+			'POST edit /test_apps_error/:id',
+			'GET index /tests_apps',
+			'GET view /tests_apps/:id',
+			'POST add /tests_apps',
+			'PUT edit /tests_apps/:id',
+			'DELETE delete /tests_apps/:id',
+			'POST edit /tests_apps/:id',
+			'GET index /tests_apps_posts',
+			'GET view /tests_apps_posts/:id',
+			'POST add /tests_apps_posts',
+			'PUT edit /tests_apps_posts/:id',
+			'DELETE delete /tests_apps_posts/:id',
+			'POST edit /tests_apps_posts/:id'
+		);
+		$return = $this->_currentRoutes();
+
+		$this->assertSame($expected, $return, 'test_app contains Pages, TestAppsError, TestApps and TestsAppsPosts controllers - there should be rest routes for all of these');
+	}
+
+/**
+ * Passing a plugin name should map only for that plugin
+ *
+ */
+	public function testMapResourcesPlugin() {
+		$path = CAKE . 'Test' . DS . 'test_app' . DS . 'Plugin' . DS;
+		App::build(array(
+			'Plugin' => array($path)
+		), App::RESET);
+		CakePlugin::load('TestPlugin');
+
+		Router::reload();
+		Router::$routes = array();
+
+		ApiListener::mapResources('TestPlugin');
+
+		$expected = array(
+			'GET index /test_plugin/test_plugin',
+			'GET view /test_plugin/test_plugin/:id',
+			'POST add /test_plugin/test_plugin',
+			'PUT edit /test_plugin/test_plugin/:id',
+			'DELETE delete /test_plugin/test_plugin/:id',
+			'POST edit /test_plugin/test_plugin/:id',
+			'GET index /test_plugin/tests',
+			'GET view /test_plugin/tests/:id',
+			'POST add /test_plugin/tests',
+			'PUT edit /test_plugin/tests/:id',
+			'DELETE delete /test_plugin/tests/:id',
+			'POST edit /test_plugin/tests/:id',
+		);
+		$return = $this->_currentRoutes();
+
+		$this->assertSame($expected, $return, 'test plugin contains a test plugin and tests controller');
+	}
+
+/**
+ * _currentRoutes
+ *
+ * Return current route definitions in a very simple format for comparison purposes
+ *
+ * @return array
+ */
+	protected function _currentRoutes() {
+		$return = array();
+
+		foreach (Router::$routes as $route) {
+			$return[] = $route->defaults['[method]'] .
+				' ' . $route->defaults['action'] .
+				' ' . $route->template;
+		}
+
+		return $return;
+	}
 }
