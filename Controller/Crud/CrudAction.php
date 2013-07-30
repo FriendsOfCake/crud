@@ -441,20 +441,23 @@ abstract class CrudAction extends CrudBaseObject implements CakeEventListener {
  * @return void
  */
 	protected function _redirect($subject, $url = null) {
-		if (!empty($this->_request->data['redirect_url'])) {
-			$url = $this->_request->data['redirect_url'];
-		} elseif (!empty($this->_request->query['redirect_url'])) {
-			$url = $this->_request->query['redirect_url'];
+		$request = $this->_request();
+		if (!empty($request->data['redirect_url'])) {
+			$url = $request->data['redirect_url'];
+		} elseif (!empty($request->query['redirect_url'])) {
+			$url = $request->query['redirect_url'];
 		} elseif (empty($url)) {
 			$url = array('action' => 'index');
 		}
 
 		$subject->url = $url;
+		$subject->status = null;
+		$subject->exit = true;
 		$subject = $this->_trigger('beforeRedirect', $subject);
-		$url = $subject->url;
 
-		$this->_controller->redirect($url);
-		return $this->_controller->response;
+		$controller = $this->_controller();
+		$controller->redirect($subject->url, $subject->status, $subject->exit);
+		return $controller->response;
 	}
 
 /**
