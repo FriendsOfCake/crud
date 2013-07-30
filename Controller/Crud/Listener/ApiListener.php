@@ -260,7 +260,7 @@ class ApiListener extends CrudListener {
  * If called with a valid plugin name all controllers in that plugin will be mapped.
  * If combined both controllers from the application and the plugin(s) will be mapped.
  *
- * This function needs to be called from your application's /Config/bootstrap.php:
+ * This function needs to be called from your application's app/Config/routes.php:
  *
  * ```
  *     App::uses('ApiListener', 'Crud.Controller/Crud/Listener');
