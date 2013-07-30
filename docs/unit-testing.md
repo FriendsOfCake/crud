@@ -6,7 +6,7 @@ layout: default
 # Unit Testing with Crud
 
 To ease with unit testing of Crud Listeners and Crud Actions, it's recommended
-to use the proxy methods found in [CrudBaseObject](http://{{site.url}}/api/develop/class-CrudBaseObject.html).
+to use the proxy methods found in [CrudBaseObject]({{site.url}}/api/develop/class-CrudBaseObject.html).
 <br />
 <br />
 These methods are much easier to mock than the full `CrudComponent` object.
