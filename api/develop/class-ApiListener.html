@@ -532,9 +532,8 @@ mapped. If called with a valid plugin name all controllers in that plugin will
 be mapped. If combined both controllers from the application and the plugin(s)
 will be mapped.</p>
 
-<p>This function needs to be called from your application's
-/Config/bootstrap.php: App::uses('ApiListener',
-'Crud.Controller/Crud/Listener');<br />
+<p>This function needs to be called from your application's /Config/routes.php:
+App::uses('ApiListener', 'Crud.Controller/Crud/Listener');<br />
 ApiListener::mapResources(); ApiListener::mapResources('DebugKit');
 Router::setExtensions(array('json', 'xml')); Router::parseExtensions();</p>
 
