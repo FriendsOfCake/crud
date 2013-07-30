@@ -29,6 +29,7 @@ Relevant links: [PHP source code]({{ site.github_url }}/Controller/Crud/Action/E
 	{% include actions/event/after_find.md %}
 	{% include actions/event/not_found.md %}
 	{% include actions/event/before_render.md %}
+	{% include actions/event/before_redirect.md %}
 </tbody>
 </table>
 

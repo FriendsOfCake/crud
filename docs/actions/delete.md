@@ -32,6 +32,7 @@ Relevant links:
 	{% include actions/event/not_found.md %}
 	{% include actions/event/before_delete.md %}
 	{% include actions/event/after_delete.md %}
+	{% include actions/event/before_redirect.md %}
 </tbody>
 </table>
 
