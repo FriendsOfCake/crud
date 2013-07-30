@@ -106,7 +106,7 @@ class ScaffoldListener extends CrudListener {
 		$scaffoldFields = array_keys($modelSchema);
 		$associations = $this->_associations($model);
 
-		$_scaffoldFields = $subject->crud->config("actions.{$action}.scaffoldFields");
+		$_scaffoldFields = $this->_crud->action()->config('scaffoldFields');
 		if (!empty($_scaffoldFields)) {
 			$_scaffoldFields = (array)$_scaffoldFields;
 			$scaffoldFields = array_intersect($scaffoldFields, array_combine(
@@ -115,8 +115,8 @@ class ScaffoldListener extends CrudListener {
 			));
 		}
 
-		$className = $subject->crud->config("actions.{$action}.className");
-		$scaffoldFieldExclude = $subject->crud->config("actions.{$action}.scaffoldFieldExclude");
+		$className = $this->_crud->action()->config('className');
+		$scaffoldFieldExclude = $this->_crud->action()->config('scaffoldFieldExclude');
 		if (empty($scaffoldFieldExclude)) {
 			if ($className == 'Crud.Add' || $className == 'Crud.Edit') {
 				$scaffoldFieldExclude = array('created', 'modified', 'updated');
@@ -131,7 +131,7 @@ class ScaffoldListener extends CrudListener {
 		}
 
 		$scaffoldFilters = array();
-		$_scaffoldFilters = $subject->crud->config("actions.{$action}.scope");
+		$_scaffoldFilters = $this->_crud->action()->config('scope');
 		if (!empty($_scaffoldFilters)) {
 			$scaffoldFilters = (array)$_scaffoldFilters;
 			foreach ($scaffoldFilters as $_field => $scaffoldField) {

@@ -76,7 +76,7 @@ class SearchListener extends CrudListener {
 		if (!empty($request->query['_scope'])) {
 			$config = $this->config('scope.' . $request->query['_scope']);
 			if (empty($config)) {
-				$config = $e->subject->crud->config($_path . '.' . $request->query['_scope']);
+				$config = $this->_crud->action()->config('scope.' . $request->query['_scope']);
 			}
 			$query = $config['query'];
 
@@ -85,7 +85,7 @@ class SearchListener extends CrudListener {
 				$this->_setFilterArgs($model, $config['filter']);
 			}
 		} else {
-			$filterArgs = $e->subject->crud->config($_path);
+			$filterArgs = $this->_crud->action()->config('scope');
 			if (!empty($filterArgs)) {
 				$this->_setFilterArgs($this->_model, (array)$filterArgs);
 			}
