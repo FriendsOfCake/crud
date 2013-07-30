@@ -45,7 +45,7 @@ class ApiListener extends CrudListener {
 		$this->_setupDetectors();
 
 		// Don't do anything if we aren't in an API request
-		if (!$this->_request->is('api')) {
+		if (!$this->_request()->is('api')) {
 			return;
 		}
 
@@ -54,7 +54,7 @@ class ApiListener extends CrudListener {
 		Configure::write('Exception.renderer', 'Crud.CrudExceptionRenderer');
 
 		// Enforce a few REST rules before we do any heavy lifting
-		$this->_enforceRequestType($event->subject->action, $event->subject->request);
+		$this->_enforceRequestType($event->subject->action, $this->_request());
 	}
 
 /**
@@ -64,40 +64,33 @@ class ApiListener extends CrudListener {
  * @return void|CakeResponse
  */
 	public function afterSave(CakeEvent $event) {
-		// Don't do anything if we aren't in an API request
-		if (!$this->_request->is('api')) {
+		if (!$this->_request()->is('api')) {
 			return;
 		}
 
-		// Publish the success based on the CrudSubject's property
-		$this->_controller->set('success', $event->subject->success);
+		$model = $this->_model();
+		$controller = $this->_controller();
+		$controller->set('success', $event->subject->success);
 
-		$model = $event->subject->model;
-		// If we had an error in our save
 		if (!$event->subject->success) {
 			$event->subject->response->statusCode(400);
-			// Set the data to be the validationErrors from the model
-			$this->_controller->set('data', $model->validationErrors);
+			$controller->set('data', $model->validationErrors);
 			return;
 		}
 
-		// Push the model ID back as response body if it's not set already
-		if (empty($this->_controller->viewVars['data'])) {
-			$this->_controller->set('data', array($model->alias => array($model->primaryKey => $event->subject->id)));
+		if (empty($controller->viewVars['data'])) {
+			$controller->set('data', array($model->alias => array($model->primaryKey => $event->subject->id)));
 		}
 
-		// Render the view
 		$this->beforeRender($event);
-		$response = $this->_controller->render();
+		$response = $controller->render();
 
-		// REST says newly created objects should get a "201 Created" response code back
 		if ($event->subject->created) {
 			$response->statusCode(201);
 		} else {
 			$response->statusCode(301);
 		}
 
-		// Send a redirect header for the 'view' action
 		$response->header('Location', Router::url(array('action' => 'view', $event->subject->id), true));
 		return $response;
 	}
@@ -109,8 +102,7 @@ class ApiListener extends CrudListener {
  * @return void
  */
 	public function afterDelete(CakeEvent $event) {
-		// Don't do anything if we aren't in an API request
-		if (!$this->_request->is('api')) {
+		if (!$this->_request()->is('api')) {
 			return;
 		}
 
@@ -118,10 +110,11 @@ class ApiListener extends CrudListener {
 
 		$this->beforeRender($event);
 
-		$this->_controller->set('success', $event->subject->success);
-		$this->_controller->set('data', null);
+		$controller = $this->_controller();
+		$controller->set('success', $event->subject->success);
+		$controller->set('data', null);
 
-		return $this->_controller->render();
+		return $controller->render();
 	}
 
 /**
@@ -131,12 +124,11 @@ class ApiListener extends CrudListener {
  * @return void
  */
 	public function beforeRender(CakeEvent $event) {
-		if (!$this->_request->is('api')) {
+		if (!$this->_request()->is('api')) {
 			return;
 		}
 
-		// Copy the _serialize configuration from the CrudAction config
-		$action = $event->subject->crud->action();
+		$action = $this->_action();
 
 		$serialize = array();
 		$serialize[] = 'success';
@@ -148,13 +140,13 @@ class ApiListener extends CrudListener {
 
 		$serialize = array_merge($serialize, $action->config('serialize'));
 
-		$this->_controller->set('_serialize', $serialize);
+		$controller = $this->_controller();
+		$controller->set('_serialize', $serialize);
 
-		// Make sure to use Cruds own View renderer for json and xml
 		// @TODO: make the viewClassMap configurable
-		$this->_controller->RequestHandler->viewClassMap('json', 'Crud.CrudJson');
-		$this->_controller->RequestHandler->viewClassMap('xml', 'Crud.CrudXml');
-		$this->_controller->RequestHandler->renderAs($this->_controller, $this->_controller->RequestHandler->ext);
+		$controller->RequestHandler->viewClassMap('json', 'Crud.CrudJson');
+		$controller->RequestHandler->viewClassMap('xml', 'Crud.CrudXml');
+		$controller->RequestHandler->renderAs($controller, $controller->RequestHandler->ext);
 	}
 
 /**
@@ -165,7 +157,7 @@ class ApiListener extends CrudListener {
  * @param CakeEvent $event
  */
 	public function setFlash(CakeEvent $event) {
-		if (!$this->_request->is('api')) {
+		if (!$this->_request()->is('api')) {
 			return;
 		}
 
@@ -185,7 +177,9 @@ class ApiListener extends CrudListener {
  * @return void
  */
 	protected function _setupDetectors() {
-		$this->_request->addDetector('json', array('callback' => function(CakeRequest $request) {
+		$request = $this->_request();
+
+		$request->addDetector('json', array('callback' => function(CakeRequest $request) {
 			if (isset($request->params['ext']) && $request->params['ext'] === 'json') {
 				return true;
 			}
@@ -193,7 +187,7 @@ class ApiListener extends CrudListener {
 			return $request->accepts('application/json');
 		}));
 
-		$this->_request->addDetector('xml', array('callback' => function(CakeRequest $request) {
+		$request->addDetector('xml', array('callback' => function(CakeRequest $request) {
 			if (isset($request->params['ext']) && $request->params['ext'] === 'xml') {
 				return true;
 			}
@@ -201,7 +195,7 @@ class ApiListener extends CrudListener {
 			return $request->accepts('text/xml');
 		}));
 
-		$this->_request->addDetector('api', array('callback' => function(CakeRequest $request) {
+		$request->addDetector('api', array('callback' => function(CakeRequest $request) {
 			return $request->is('json') || $request->is('xml');
 		}));
 	}
@@ -266,18 +260,22 @@ class ApiListener extends CrudListener {
  * If called with a valid plugin name all controllers in that plugin will be mapped.
  * If combined both controllers from the application and the plugin(s) will be mapped.
  *
- * This function needs to be called from your application's /Config/routes.php:
+ * This function needs to be called from your application's app/Config/routes.php:
+ *
+ * ```
  *     App::uses('ApiListener', 'Crud.Controller/Crud/Listener');
  *
  *     ApiListener::mapResources();
  *     ApiListener::mapResources('DebugKit');
  *     Router::setExtensions(array('json', 'xml'));
  *     Router::parseExtensions();
+ * ```
  *
+ * @static
  * @param string $plugin
  * @return void
  */
-	public static function mapResources($plugin = null){
+	public static function mapResources($plugin = null) {
 		$key = 'Controller';
 		if ($plugin) {
 			$key = $plugin . '.Controller';
@@ -289,9 +287,11 @@ class ApiListener extends CrudListener {
 				if ($plugin) {
 					$controller = $plugin . '.' . $controller;
 				}
+
 				array_push($controllers, str_replace('Controller', '', $controller));
 			}
 		}
+
 		Router::mapResources($controllers);
 	}
 }

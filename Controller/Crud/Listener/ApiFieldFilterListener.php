@@ -10,17 +10,17 @@ App::uses('CrudListener', 'Crud.Controller/Crud');
  *
  * For a relation automatically to be joined, it has to be whitelisted first.
  * If no whitelist exist, no relations will be added automatically
- * `$this->_crud->action()->config('apiFieldFilter.models', array('list', 'of', 'models'))`
+ * `$this->_action()->config('apiFieldFilter.models', array('list', 'of', 'models'))`
  *
  * You can also whitelist fields, if no whitelist exist for fields, all fields are allowed
  * If whitelisting exist, only those fields will be allowed to be selected.
  * The fields must be in `Model.field` format
- * `$this->_crud->action()->config('apiFieldFilter.fields.whitelist', array('Model.id', 'Model.name', 'Model.created'))`
+ * `$this->_action()->config('apiFieldFilter.fields.whitelist', array('Model.id', 'Model.name', 'Model.created'))`
  *
  * You can also blacklist fields, if no blacklist exist, no blacklisting is done
  * If blacklisting exist, the field will be removed from the field list if present
  * The fields must be in `Model.field` format
- * `$this->_crud->action()->config('apiFieldFilter.fields.blacklist', array('Model.password', 'Model.auth_token', 'Model.created'))`
+ * `$this->_action()->config('apiFieldFilter.fields.blacklist', array('Model.password', 'Model.auth_token', 'Model.created'))`
  *
  * This is probably only useful if it's used in conjunction with the ApiListener
  *
@@ -63,7 +63,7 @@ class ApiFieldFilterListener extends CrudListener {
  * @return void
  */
 	public function beforeFind(CakeEvent $event) {
-		if (!$this->_request->is('api')) {
+		if (!$this->_request()->is('api')) {
 			return;
 		}
 
@@ -84,7 +84,7 @@ class ApiFieldFilterListener extends CrudListener {
  * @return void
  */
 	public function beforePaginate(CakeEvent $event) {
-		if (!$this->_request->is('api')) {
+		if (!$this->_request()->is('api')) {
 			return;
 		}
 
@@ -93,8 +93,9 @@ class ApiFieldFilterListener extends CrudListener {
 			return;
 		}
 
-		$this->_controller->paginate['fields'] = $fields;
-		$this->_controller->paginate['contain'] = $this->_relations;
+		$controller = $this->_controller();
+		$controller->paginate['fields'] = $fields;
+		$controller->paginate['contain'] = $this->_relations;
 	}
 
 /**
@@ -107,10 +108,10 @@ class ApiFieldFilterListener extends CrudListener {
  */
 	public function whitelistFields($fields = null, $action = null) {
 		if (empty($fields)) {
-			return $this->_crud->action($action)->config('apiFieldFilter.fields.whitelist');
+			return $this->_action($action)->config('apiFieldFilter.fields.whitelist');
 		}
 
-		$this->_crud->action($action)->config('apiFieldFilter.fields.whitelist', $fields);
+		$this->_action($action)->config('apiFieldFilter.fields.whitelist', $fields);
 	}
 
 /**
@@ -123,10 +124,10 @@ class ApiFieldFilterListener extends CrudListener {
  */
 	public function blacklistFields($fields = null, $action = null) {
 		if (empty($fields)) {
-			return $this->_crud->action($action)->config('apiFieldFilter.fields.blacklist');
+			return $this->_action($action)->config('apiFieldFilter.fields.blacklist');
 		}
 
-		$this->_crud->action($action)->config('apiFieldFilter.fields.blacklist', $fields);
+		$this->_action($action)->config('apiFieldFilter.fields.blacklist', $fields);
 	}
 
 /**
@@ -139,10 +140,10 @@ class ApiFieldFilterListener extends CrudListener {
  */
 	public function whitelistModels($models = null, $action = null) {
 		if (empty($models)) {
-			return $this->_crud->action($action)->config('apiFieldFilter.models.whitelist');
+			return $this->_action($action)->config('apiFieldFilter.models.whitelist');
 		}
 
-		$this->_crud->action($action)->config('apiFieldFilter.models.whitelist', $models);
+		$this->_action($action)->config('apiFieldFilter.models.whitelist', $models);
 	}
 
 /**
@@ -157,10 +158,10 @@ class ApiFieldFilterListener extends CrudListener {
  */
 	public function allowNoFilter($permit = null, $action = null) {
 		if (empty($permit)) {
-			return (bool)$this->_crud->action($action)->config('apiFieldFilter.allowNoFilter');
+			return (bool)$this->_action($action)->config('apiFieldFilter.allowNoFilter');
 		}
 
-		$this->_crud->action($action)->config('apiFieldFilter.allowNoFilter', (bool)$permit);
+		$this->_action($action)->config('apiFieldFilter.allowNoFilter', (bool)$permit);
 	}
 
 /**
@@ -172,10 +173,12 @@ class ApiFieldFilterListener extends CrudListener {
  */
 	protected function _getFields(CakeEvent $event) {
 		$this->_relations = array();
-		$fields = $this->_getFieldsForQuery($event->subject->model);
+
+		$fields = $this->_getFieldsForQuery($this->_model());
 		if (empty($fields) && !$this->allowNoFilter(null, $event->subject->action)) {
 			throw new CakeException('Please specify which fields you would like to select');
 		}
+
 		return $fields;
 	}
 
@@ -215,7 +218,7 @@ class ApiFieldFilterListener extends CrudListener {
  * @return array
  */
 	protected function _getFieldsFromRequest() {
-		$query = $this->_request->query;
+		$query = $this->_request()->query;
 		if (empty($query['fields'])) {
 			return;
 		}

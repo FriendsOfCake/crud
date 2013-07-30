@@ -68,6 +68,7 @@ class TranslationsShellTest extends CakeTestCase {
 	public function testGenerateTranslationsForAModel() {
 		$controller = new Controller(new CakeRequest());
 		$controller->Example = new StdClass(); // dummy
+		$controller->Example->name = 'Example';
 		$controller->modelClass = 'Example';
 		$controller->components = array(
 			'Crud.Crud' => array(
@@ -114,6 +115,7 @@ class TranslationsShellTest extends CakeTestCase {
 	public function testGenerateTranslationsForAModelActionDomain() {
 		$controller = new Controller(new CakeRequest());
 		$controller->Example = new StdClass(); // dummy
+		$controller->Example->name = 'Example';
 		$controller->modelClass = 'Example';
 		$controller->components = array(
 			'Crud.Crud' => array(
@@ -156,6 +158,7 @@ class TranslationsShellTest extends CakeTestCase {
 	public function testGenerateFile() {
 		$controller = new Controller(new CakeRequest());
 		$controller->Example = new StdClass(); // dummy
+		$controller->Example->name = 'Example';
 		$controller->modelClass = 'Example';
 		$controller->components = array(
 			'Crud.Crud' => array(
@@ -240,6 +243,7 @@ END;
 
 		$controller = new Controller(new CakeRequest());
 		$controller->Example = new StdClass(); // dummy
+		$controller->Example->name = 'Example';
 		$controller->modelClass = 'Example';
 		$controller->components = array(
 			'Crud.Crud' => array(

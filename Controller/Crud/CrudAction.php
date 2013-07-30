@@ -1,5 +1,6 @@
 <?php
 
+App::uses('CrudBaseObject', 'Crud.Controller/Crud');
 App::uses('CakeEventListener', 'Event');
 App::uses('Validation', 'Utility');
 
@@ -11,56 +12,7 @@ App::uses('Validation', 'Utility');
  *
  * @copyright Christian Winther, 2013
  */
-abstract class CrudAction implements CakeEventListener {
-
-/**
- * Action configuration
- *
- * @var array
- */
-	protected $_settings = array();
-
-/**
- * Reference to the Crud component
- *
- * @var CrudComponent
- */
-	protected $_crud;
-
-/**
- * Reference to the ComponentCollection
- *
- * @var ComponentCollection
- */
-	protected $_collection;
-
-/**
- * Reference to the CakeRequest
- *
- * @var CakeRequest
- */
-	protected $_request;
-
-/**
- * Reference to the controller
- *
- * @var Controller
- */
-	protected $_controller;
-
-/**
- * Reference to the model
- *
- * @var Model
- */
-	protected $_model;
-
-/**
- * The modelClass property from the Controller
- *
- * @var string
- */
-	protected $_modelClass;
+abstract class CrudAction extends CrudBaseObject implements CakeEventListener {
 
 /**
  * Constructor
@@ -70,19 +22,8 @@ abstract class CrudAction implements CakeEventListener {
  * @return void
  */
 	public function __construct(CrudSubject $subject, $defaults = array()) {
-		$this->_crud = $subject->crud;
-		$this->_request = $subject->request;
-		$this->_collection = $subject->controller->Components;
-		$this->_controller = $subject->controller;
-		$this->_model = $subject->model;
-		$this->_modelClass = $subject->modelClass;
-
-		// Mark that we will only handle this specific action if asked
+		parent::__construct($subject, $defaults);
 		$this->_settings['action'] = $subject->action;
-
-		if (!empty($defaults)) {
-			$this->config($defaults);
-		}
 	}
 
 /**
@@ -106,9 +47,6 @@ abstract class CrudAction implements CakeEventListener {
 			return false;
 		}
 
-		$this->_model = $subject->model;
-		$this->_modelClass = $subject->modelClass;
-
 		return call_user_func_array(array($this, '_handle'), $subject->args);
 	}
 
@@ -120,9 +58,10 @@ abstract class CrudAction implements CakeEventListener {
 	public function disable() {
 		$this->config('enabled', false);
 
-		$pos = array_search($this->_settings['action'], $this->_controller->methods);
+		$controller = $this->_controller();
+		$pos = array_search($this->_settings['action'], $controller->methods);
 		if (false !== $pos) {
-			unset($this->_controller->methods[$pos]);
+			unset($controller->methods[$pos]);
 		}
 	}
 
@@ -134,9 +73,10 @@ abstract class CrudAction implements CakeEventListener {
 	public function enable() {
 		$this->config('enabled', true);
 
-		$pos = array_search($this->_settings['action'], $this->_controller->methods);
+		$controller = $this->_controller();
+		$pos = array_search($this->_settings['action'], $controller->methods);
 		if (false === $pos) {
-			$this->_controller->methods[] = $this->_settings['action'];
+			$controller->methods[] = $this->_settings['action'];
 		}
 	}
 
@@ -170,9 +110,11 @@ abstract class CrudAction implements CakeEventListener {
 			throw new CakeException('Missing message type');
 		}
 
+		$crud = $this->_crud();
+
 		$config = $this->config('messages.' . $type);
 		if (empty($config)) {
-			$config = $this->_crud->config('messages.' . $type);
+			$config = $crud->config('messages.' . $type);
 			if (empty($config)) {
 				throw new CakeException(sprintf('Invalid message type "%s"', $type));
 			}
@@ -194,13 +136,11 @@ abstract class CrudAction implements CakeEventListener {
 			throw new CakeException(sprintf('Invalid message config for "%s" no text key found', $type));
 		}
 
-		$config['params']['original'] = ucfirst(
-			str_replace('{name}', $config['name'], $config['text'])
-		);
+		$config['params']['original'] = ucfirst(str_replace('{name}', $config['name'], $config['text']));
 
 		$domain = $this->config('messages.domain');
 		if (!$domain) {
-			$domain = $this->_crud->config('messages.domain') ?: 'crud';
+			$domain = $crud->config('messages.domain') ?: 'crud';
 		}
 
 		$config['text'] = __d($domain, $config['params']['original']);
@@ -212,7 +152,6 @@ abstract class CrudAction implements CakeEventListener {
 		);
 
 		$config['params']['class'] .= ' ' . $type;
-
 		return $config;
 	}
 
@@ -249,7 +188,7 @@ abstract class CrudAction implements CakeEventListener {
  */
 	public function view($view = null) {
 		if (empty($view)) {
-			return $this->config('view') ?: $this->_request->action;
+			return $this->config('view') ?: $this->_request()->action;
 		}
 
 		return $this->config('view', $view);
@@ -262,51 +201,6 @@ abstract class CrudAction implements CakeEventListener {
  */
 	public function implementedEvents() {
 		return array();
-	}
-
-/**
- * Sets a configuration variable into this action
- *
- * If called with no arguments, all configuration values are
- * returned.
- *
- * $key is interpreted with dot notation, like the one used for
- * Configure::write()
- *
- * If $key is string and $value is not passed, it will return the
- * value associated with such key.
- *
- * If $key is an array and $value is empty, then $key will
- * be interpreted as key => value dictionary of settings and
- * it will be merged directly with $this->settings
- *
- * If $key is a string, the value will be inserted in the specified
- * slot as indicated using the dot notation
- *
- * @param mixed $key
- * @param mixed $value
- * @return mixed|CrudAction
- */
-	public function config($key = null, $value = null) {
-		if (is_null($key) && is_null($value)) {
-			return $this->_settings;
-		}
-
-		if (is_null($value)) {
-			if (is_array($key)) {
-				$this->_settings = Hash::merge($this->_settings, $key);
-				return $this;
-			}
-
-			return Hash::get($this->_settings, $key);
-		}
-
-		if (is_array($value)) {
-			$value = $value + (array)Hash::get($this->_settings, $key);
-		}
-
-		$this->_settings = Hash::insert($this->_settings, $key, $value);
-		return $this;
 	}
 
 /**
@@ -333,12 +227,12 @@ abstract class CrudAction implements CakeEventListener {
 	public function setFlash($type) {
 		$config = $this->message($type);
 
-		$subject = $this->_crud->trigger('setFlash', $config);
+		$subject = $this->_trigger('setFlash', $config);
 		if (!empty($subject->stopped)) {
 			return;
 		}
 
-		$this->_crud->Session->setFlash($subject->text, $subject->element, $subject->params, $subject->key);
+		$this->_session()->setFlash($subject->text, $subject->element, $subject->params, $subject->key);
 	}
 
 /**
@@ -355,11 +249,10 @@ abstract class CrudAction implements CakeEventListener {
  */
 	public function detectPrimaryKeyFieldType($model = null) {
 		if (empty($model)) {
-			if (empty($this->_model)) {
+			$model = $this->_model();
+			if (empty($model)) {
 				throw new CakeException('Missing model object, cant detect primary key field type');
 			}
-
-			$model = $this->_model;
 		}
 
 		$fInfo = $model->schema($model->primaryKey);
@@ -388,7 +281,7 @@ abstract class CrudAction implements CakeEventListener {
  */
 	protected function _getResourceName() {
 		if (empty($this->_settings['name'])) {
-			$this->_settings['name'] = strtolower(Inflector::humanize(Inflector::underscore($this->_modelClass)));
+			$this->_settings['name'] = strtolower(Inflector::humanize(Inflector::underscore($this->_model()->name)));
 		}
 
 		return $this->_settings['name'];
@@ -425,7 +318,7 @@ abstract class CrudAction implements CakeEventListener {
 			return true;
 		}
 
-		$subject = $this->_crud->trigger('invalidId', compact('id'));
+		$subject = $this->_trigger('invalidId', compact('id'));
 
 		$message = $this->message('invalidId');
 		$exceptionClass = $message['class'];
@@ -439,21 +332,24 @@ abstract class CrudAction implements CakeEventListener {
  * @param array|null $url
  * @return void
  */
-	protected function _redirect($subject, $url = null) {
-		if (!empty($this->_request->data['redirect_url'])) {
-			$url = $this->_request->data['redirect_url'];
-		} elseif (!empty($this->_request->query['redirect_url'])) {
-			$url = $this->_request->query['redirect_url'];
+	protected function _redirect($subject, $url = null, $status = null, $exit = true) {
+		$request = $this->_request();
+		if (!empty($request->data['redirect_url'])) {
+			$url = $request->data['redirect_url'];
+		} elseif (!empty($request->query['redirect_url'])) {
+			$url = $request->query['redirect_url'];
 		} elseif (empty($url)) {
 			$url = array('action' => 'index');
 		}
 
 		$subject->url = $url;
-		$subject = $this->_crud->trigger('beforeRedirect', $subject);
-		$url = $subject->url;
+		$subject->status = $status;
+		$subject->exit = $exit;
+		$subject = $this->_trigger('beforeRedirect', $subject);
 
-		$this->_controller->redirect($url);
-		return $this->_controller->response;
+		$controller = $this->_controller();
+		$controller->redirect($subject->url, $subject->status, $subject->exit);
+		return $controller->response;
 	}
 
 /**
