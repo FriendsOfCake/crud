@@ -3,6 +3,7 @@
 App::uses('CakeEvent', 'Event');
 App::uses('Controller', 'Controller');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
+App::uses('CrudComponent', 'Crud.Controller/Component');
 App::uses('ScaffoldListener', 'Crud.Controller/Crud/Listener');
 
 require_once CAKE . DS . 'Test' . DS . 'Case' . DS . 'Model' . DS . 'models.php';
@@ -270,12 +271,18 @@ class ScaffoldListenerTest extends CakeTestCase {
 			$Controller->name = $test['controller'];
 			$Controller->modelClass = $test['model'];
 
+			$Collection = $this->getMock('ComponentCollection', null);
+			$Controller = $this->getMock('Controller');
+			$Controller->Components = $Collection;
+			$Crud = $this->getMock('CrudComponent', null, array($Collection));
+
 			$Model = new $test['model']();
 
 			$Subject = new CrudSubject();
 			$Subject->model = $Model;
 			$Subject->request = $Request;
 			$Subject->controller = $Controller;
+			$Subject->crud = $Crud;
 
 			$Event = new CakeEvent('Crud.beforeRender', $Subject);
 
