@@ -275,7 +275,7 @@ class ApiListener extends CrudListener {
  * @param string $plugin
  * @return void
  */
-	public static function mapResources($plugin = null){
+	public static function mapResources($plugin = null) {
 		$key = 'Controller';
 		if ($plugin) {
 			$key = $plugin . '.Controller';
