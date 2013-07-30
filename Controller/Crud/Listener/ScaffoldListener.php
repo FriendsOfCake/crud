@@ -49,7 +49,7 @@ class ScaffoldListener extends CrudListener {
 		}
 
 		$existing = $event->subject->query['contain'];
-		$associated = array_keys($event->subject->model->getAssociated());
+		$associated = array_keys($this->_model()->getAssociated());
 
 		$event->subject->query['contain'] = array_merge($existing, $associated);
 	}
@@ -68,14 +68,14 @@ class ScaffoldListener extends CrudListener {
  * @return void
  */
 	public function beforePaginate(CakeEvent $event) {
-		$Paginator = $event->subject->controller->Paginator;
+		$Paginator = $this->_controller()->Paginator;
 
 		if (!isset($Paginator->settings['contain'])) {
 			$Paginator->settings['contain'] = array();
 		}
 
 		$existing = $Paginator->settings['contain'];
-		$associated = array_keys($event->subject->model->getAssociated());
+		$associated = array_keys($this->_model()->getAssociated());
 
 		$Paginator->settings['contain'] = array_merge($existing, $associated);
 	}
@@ -88,10 +88,9 @@ class ScaffoldListener extends CrudListener {
  * @return void
  */
 	public function beforeRender(CakeEvent $event) {
-		$subject = $event->subject;
-		$model = $subject->model;
-		$request = $subject->request;
-		$controller = $subject->controller;
+		$model = $this->_model();
+		$request = $this->_request();
+		$controller = $this->_controller();
 
 		$scaffoldTitle = Inflector::humanize(Inflector::underscore($controller->viewPath));
 		$title = __d('cake', 'Scaffold :: ') . Inflector::humanize($request->action) . ' :: ' . $scaffoldTitle;

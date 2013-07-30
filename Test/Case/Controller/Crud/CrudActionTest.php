@@ -25,6 +25,8 @@ class CrudActionTest extends CakeTestCase {
 		$this->Controller = $this->getMock('Controller');
 		$this->Controller->Components = $this->Collection;
 		$this->Crud = $this->getMock('CrudComponent', null, array($this->Collection));
+		$this->Model = $this->getMock('Model');
+		$this->Model->name = '';
 		$this->action = 'add';
 
 		$this->Subject = new CrudSubject(array(
@@ -32,9 +34,8 @@ class CrudActionTest extends CakeTestCase {
 			'crud' => $this->Crud,
 			'controller' => $this->Controller,
 			'action' => $this->action,
-			'action' => $this->action,
-			'model' => null,
-			'modelClass' => null,
+			'model' => $this->Model,
+			'modelClass' => '',
 			'args' => array()
 		));
 

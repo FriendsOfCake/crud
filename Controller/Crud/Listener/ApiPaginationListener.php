@@ -34,11 +34,12 @@ class ApiPaginationListener extends CrudListener {
  * @return void
  */
 	public function beforeRender(CakeEvent $event) {
-		if (!$this->_request->is('api')) {
+		$request = $this->_request();
+		if (!$request->is('api')) {
 			return;
 		}
 
-		$_pagination = $this->_request->paging;
+		$_pagination = $request->paging;
 		if (empty($_pagination) || !array_key_exists($event->subject->modelClass, $_pagination)) {
 			return;
 		}
@@ -54,7 +55,7 @@ class ApiPaginationListener extends CrudListener {
 			'limit' => $_pagination['limit']
 		);
 
-		$this->_crud->action()->config('serialize.pagination', 'pagination');
-		$this->_controller->set('pagination', $pagination);
+		$this->_action()->config('serialize.pagination', 'pagination');
+		$this->_controller()->set('pagination', $pagination);
 	}
 }

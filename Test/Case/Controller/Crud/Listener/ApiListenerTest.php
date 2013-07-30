@@ -209,7 +209,6 @@ class ApiListenerTest extends CakeTestCase {
 			->method('action')
 			->with()
 			->will($this->returnValue($action));
-		$apiListener = new ApiListener($subject);
 
 		$subject->request
 			->expects($this->any())
@@ -263,6 +262,7 @@ class ApiListenerTest extends CakeTestCase {
 			->with('Location', Router::url(array('action' => 'view', 100), true));
 
 		$event = new CakeEvent('Crud.afterSave', $subject);
+		$apiListener = new ApiListener($subject);
 		$result = $apiListener->afterSave($event);
 		$this->assertSame($subject->response, $result);
 	}
@@ -277,7 +277,6 @@ class ApiListenerTest extends CakeTestCase {
 		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
 		$subject->controller = $this->getMock('Controller', array('set', 'render'), array($subject->request));
 		$subject->response = $this->getMock('CakeResponse');
-		$apiListener = new ApiListener($subject);
 
 		$subject->request->expects($this->once())
 			->method('is')
@@ -299,6 +298,8 @@ class ApiListenerTest extends CakeTestCase {
 
 		$subject->controller->expects($this->never())->method('render');
 		$event = new CakeEvent('Crud.afterSave', $subject);
+
+		$apiListener = new ApiListener($subject);
 		$this->assertNull($apiListener->afterSave($event));
 	}
 

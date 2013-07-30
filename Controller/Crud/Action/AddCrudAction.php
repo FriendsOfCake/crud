@@ -62,28 +62,27 @@ class AddCrudAction extends CrudAction {
  * @return void
  */
 	protected function _handle() {
-		if (!$this->_request->is('post')) {
-			$this->_model->create();
-			$this->_request->data = $this->_model->data;
-			$this->_crud->trigger('beforeRender', array('success' => false));
+		$request = $this->_request();
+		$model = $this->_model();
+
+		if (!$request->is('post')) {
+			$model->create();
+			$request->data = $model->data;
+			$this->_trigger('beforeRender', array('success' => false));
 			return;
 		}
 
-		$this->_crud->trigger('beforeSave');
-		if ($this->_model->saveAll($this->_request->data, $this->saveOptions())) {
+		$this->_trigger('beforeSave');
+		if ($model->saveAll($request->data, $this->saveOptions())) {
 			$this->setFlash('success');
-			$subject = $this->_crud->trigger('afterSave', array(
-				'success' => true,
-				'created' => true,
-				'id' => $this->_model->id
-			));
+			$subject = $this->_trigger('afterSave', array('success' => true, 'created' => true,	'id' => $model->id));
 			return $this->_redirect($subject, array('action' => 'index'));
 		}
 
 		$this->setFlash('error');
-		$this->_crud->trigger('afterSave', array('success' => false, 'created' => false));
-		$this->_request->data = Hash::merge($this->_request->data, $this->_model->data);
-		$this->_crud->trigger('beforeRender', array('success' => false));
+		$this->_trigger('afterSave', array('success' => false, 'created' => false));
+		$this->_request()->data = Hash::merge($request->data, $model->data);
+		$this->_trigger('beforeRender', array('success' => false));
 	}
 
 }

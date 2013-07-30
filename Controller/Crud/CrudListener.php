@@ -1,5 +1,6 @@
 <?php
 
+App::uses('CrudBaseObject', 'Crud.Controller/Crud');
 App::uses('CakeEventListener', 'Event');
 App::uses('Hash', 'Utility');
 
@@ -14,68 +15,7 @@ App::uses('Hash', 'Utility');
  *
  * @copyright Christian Winther, 2013
  */
-abstract class CrudListener extends Object implements CakeEventListener {
-
-/**
- * Reference to the CakeRequest
- *
- * @var CakeRequest
- */
-	protected $_request;
-
-/**
- * Reference to the Controller
- *
- * @var Controller
- */
-	protected $_controller;
-
-/**
- * Crud Component reference
- *
- * @var CrudComponent
- */
-	protected $_crud;
-
-/**
- * Crud Event subject
- *
- * @var CrudSubject
- */
-	protected $_subject;
-
-/**
- * Reference to the Model instance
- *
- * @var Model
- */
-	protected $_model;
-
-/**
- * Listener configuration
- *
- * @var array
- */
-	protected $_settings = array();
-
-/**
- * Class constructor
- *
- * @param string $prefix CRUD component events name prefix
- * @param array $models List of models to be fetched in beforeRenderEvent
- * @return void
- */
-	public function __construct(CrudSubject $subject, $defaults = null) {
-		$this->_crud = $subject->crud;
-		$this->_subject = $subject;
-		$this->_request = $subject->request;
-		$this->_controller = $subject->controller;
-		$this->_model = $subject->model;
-
-		if (!empty($defaults)) {
-			$this->config($defaults);
-		}
-	}
+abstract class CrudListener extends CrudBaseObject implements CakeEventListener {
 
 /**
  * Returns a list of all events that will fire in the controller during it's life cycle.
@@ -129,51 +69,6 @@ abstract class CrudListener extends Object implements CakeEventListener {
 		}
 
 		return $events;
-	}
-
-/**
- * Sets a configuration variable into this listener
- *
- * If called with no arguments, all configuration values are
- * returned.
- *
- * $key is interpreted with dot notation, like the one used for
- * Configure::write()
- *
- * If $key is string and $value is not passed, it will return the
- * value associated with such key.
- *
- * If $key is an array and $value is empty, then $key will
- * be interpreted as key => value dictionary of settings and
- * it will be merged directly with $this->settings
- *
- * If $key is a string, the value will be inserted in the specified
- * slot as indicated using the dot notation
- *
- * @param mixed $key
- * @param mixed $value
- * @return mixed|CrudAction
- */
-	public function config($key = null, $value = null) {
-		if (is_null($key) && is_null($value)) {
-			return $this->_settings;
-		}
-
-		if (is_null($value)) {
-			if (is_array($key)) {
-				$this->_settings = $key + $this->_settings;
-				return $this;
-			}
-
-			return Hash::get($this->_settings, $key);
-		}
-
-		if (is_array($value)) {
-			$value = $value + (array)Hash::get($this->_settings, $key);
-		}
-
-		$this->_settings = Hash::insert($this->_settings, $key, $value);
-		return $this;
 	}
 
 }

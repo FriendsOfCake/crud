@@ -57,14 +57,16 @@ class DeleteCrudAction extends CrudAction {
 			return false;
 		}
 
-		$validRequest = $this->_request->is('delete');
+		$request = $this->_request();
+
+		$validRequest = $request->is('delete');
 		if (!$validRequest) {
 			$permitPost = !$this->config('secureDelete');
-			$validRequest = ($this->_request->is('post') && $permitPost);
+			$validRequest = ($request->is('post') && $permitPost);
 		}
 
 		if (!$validRequest) {
-			$subject = $this->_crud->getSubject(compact('id'));
+			$subject = $this->_subject(compact('id'));
 
 			$methods = 'DELETE';
 			if ($permitPost) {
@@ -76,36 +78,39 @@ class DeleteCrudAction extends CrudAction {
 			throw new $exceptionClass($message['text'], $message['code']);
 		}
 
+		$model = $this->_model();
+		$controller = $this->_controller();
+
 		$query = array();
-		$query['conditions'] = array($this->_model->escapeField() => $id);
+		$query['conditions'] = array($model->escapeField() => $id);
 
 		$findMethod = $this->_getFindMethod('count');
-		$subject = $this->_crud->trigger('beforeFind', compact('id', 'query', 'findMethod'));
+		$subject = $this->_trigger('beforeFind', compact('id', 'query', 'findMethod'));
 		$query = $subject->query;
 
-		$count = $this->_model->find($subject->findMethod, $query);
+		$count = $model->find($subject->findMethod, $query);
 		if (empty($count)) {
-			$subject = $this->_crud->trigger('recordNotFound', compact('id'));
+			$subject = $this->_trigger('recordNotFound', compact('id'));
 
 			$message = $this->message('recordNotFound', array('id' => $subject->id));
 			$exceptionClass = $message['class'];
 			throw new $exceptionClass($message['text'], $message['code']);
 		}
 
-		$subject = $this->_crud->trigger('beforeDelete', compact('id'));
+		$subject = $this->_trigger('beforeDelete', compact('id'));
 		if ($subject->stopped) {
 			$this->setFlash('error');
-			return $this->_redirect($subject, $this->_controller->referer(array('action' => 'index')));
+			return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
 		}
 
-		if ($this->_model->delete($id)) {
+		if ($model->delete($id)) {
 			$this->setFlash('success');
-			$subject = $this->_crud->trigger('afterDelete', array('id' => $id, 'success' => true));
+			$subject = $this->_trigger('afterDelete', array('id' => $id, 'success' => true));
 		} else {
 			$this->setFlash('error');
-			$subject = $this->_crud->trigger('afterDelete', array('id' => $id, 'success' => false));
+			$subject = $this->_trigger('afterDelete', array('id' => $id, 'success' => false));
 		}
 
-		return $this->_redirect($subject, $this->_controller->referer(array('action' => 'index')));
+		return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
 	}
 }
