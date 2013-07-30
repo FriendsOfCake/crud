@@ -64,26 +64,31 @@ class SearchListener extends CrudListener {
  */
 	public function beforePaginate(CakeEvent $e) {
 		$this->_checkRequiredPlugin();
-		$this->_ensureComponent($this->_controller);
-		$this->_ensureBehavior($this->_model);
-		$this->_commonProcess($this->_controller, $this->_model->name);
 
-		$query = $this->_request->query;
-		if (!empty($this->_request->query['_scope'])) {
-			$config = $this->config('scope.' . $this->_request->query['_scope']);
+		$model = $this->_model();
+		$controller = $this->_controller();
+		$request = $this->_request;
+
+		$this->_ensureComponent($controller);
+		$this->_ensureBehavior($model);
+		$this->_commonProcess($controller, $model->name);
+
+		$query = $request->query;
+		if (!empty($request->query['_scope'])) {
+			$config = $this->config('scope.' . $request->query['_scope']);
 			$query = $config['query'];
 
 			if (!empty($config['filter'])) {
-				$this->_setFilterArgs($this->_model, $config['filter']);
+				$this->_setFilterArgs($model, $config['filter']);
 			}
 		}
 
 		// Avoid notice if there is no filterArgs
-		if (empty($this->_model->filterArgs)) {
-			$this->_setFilterArgs($this->_model, array());
+		if (empty($model->filterArgs)) {
+			$this->_setFilterArgs($model, array());
 		}
 
-		$this->_setPaginationOptions($this->_controller, $this->_model, $query);
+		$this->_setPaginationOptions($controller, $model, $query);
 	}
 
 /**

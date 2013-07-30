@@ -80,38 +80,41 @@ class EditCrudAction extends CrudAction {
 			return false;
 		}
 
-		if ($this->_request->is('put')) {
-			$this->_crud->trigger('beforeSave', compact('id'));
-			if ($this->_model->saveAll($this->_request->data, $this->saveOptions())) {
+		$request = $this->_request();
+		$model = $this->_model();
+
+		if ($request->is('put')) {
+			$this->_trigger('beforeSave', compact('id'));
+			if ($model->saveAll($request->data, $this->saveOptions())) {
 				$this->setFlash('success');
-				$subject = $this->_crud->trigger('afterSave', array('id' => $id, 'success' => true, 'created' => false));
+				$subject = $this->_trigger('afterSave', array('id' => $id, 'success' => true, 'created' => false));
 				return $this->_redirect($subject, array('action' => 'index'));
 			} else {
 				$this->setFlash('error');
-				$this->_crud->trigger('afterSave', array('id' => $id, 'success' => false, 'created' => false));
+				$this->_trigger('afterSave', array('id' => $id, 'success' => false, 'created' => false));
 			}
 		} else {
 			$query = array();
-			$query['conditions'] = array($this->_model->escapeField() => $id);
+			$query['conditions'] = array($model->escapeField() => $id);
 			$findMethod = $this->_getFindMethod('first');
-			$subject = $this->_crud->trigger('beforeFind', compact('query', 'findMethod'));
+			$subject = $this->_trigger('beforeFind', compact('query', 'findMethod'));
 			$query = $subject->query;
 
-			$this->_request->data = $this->_model->find($subject->findMethod, $query);
-			if (empty($this->_request->data)) {
-				$subject = $this->_crud->trigger('recordNotFound', compact('id'));
+			$request->data = $model->find($subject->findMethod, $query);
+			if (empty($request->data)) {
+				$subject = $this->_trigger('recordNotFound', compact('id'));
 
 				$message = $this->message('recordNotFound', array('id' => $subject->id));
 				$exceptionClass = $message['class'];
 				throw new $exceptionClass($message['text'], $message['code']);
 			}
 
-			$item = $this->_request->data;
-			$subject = $this->_crud->trigger('afterFind', compact('id', 'item'));
-			$this->_request->data = Hash::merge($this->_request->data, $this->_model->data, $subject->item);
+			$item = $request->data;
+			$subject = $this->_trigger('afterFind', compact('id', 'item'));
+			$request->data = Hash::merge($request->data, $model->data, $subject->item);
 		}
 
-		$this->_crud->trigger('beforeRender');
+		$this->_trigger('beforeRender');
 	}
 
 }

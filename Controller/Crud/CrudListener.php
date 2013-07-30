@@ -1,5 +1,6 @@
 <?php
 
+App::uses('CrudBaseObject', 'Crud.Controller/Crud');
 App::uses('CakeEventListener', 'Event');
 App::uses('Hash', 'Utility');
 
@@ -14,7 +15,7 @@ App::uses('Hash', 'Utility');
  *
  * @copyright Christian Winther, 2013
  */
-abstract class CrudListener extends Object implements CakeEventListener {
+abstract class CrudListener extends CrudBaseObject implements CakeEventListener {
 
 /**
  * Reference to the CakeRequest

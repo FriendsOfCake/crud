@@ -42,7 +42,7 @@ class ViewCrudAction extends CrudAction {
  */
 	public function viewVar($name = null) {
 		if (empty($name)) {
-			return $this->config('viewVar') ?: Inflector::variable($this->_model->name);
+			return $this->config('viewVar') ?: Inflector::variable($this->_model()->name);
 		}
 
 		return $this->config('viewVar', $name);
@@ -67,28 +67,30 @@ class ViewCrudAction extends CrudAction {
 			return false;
 		}
 
+		$model = $this->_model();
+
 		$query = array();
-		$query['conditions'] = array($this->_model->escapeField() => $id);
+		$query['conditions'] = array($model->escapeField() => $id);
 
 		$findMethod = $this->_getFindMethod('first');
-		$subject = $this->_crud->trigger('beforeFind', compact('id', 'query', 'findMethod'));
+		$subject = $this->_trigger('beforeFind', compact('id', 'query', 'findMethod'));
 		$query = $subject->query;
 
-		$item = $this->_model->find($subject->findMethod, $query);
+		$item = $model->find($subject->findMethod, $query);
 
 		if (empty($item)) {
-			$subject = $this->_crud->trigger('recordNotFound', compact('id'));
+			$subject = $this->_trigger('recordNotFound', compact('id'));
 
 			$message = $this->message('recordNotFound', array('id' => $subject->id));
 			$exceptionClass = $message['class'];
 			throw new $exceptionClass($message['text'], $message['code']);
 		}
 
-		$subject = $this->_crud->trigger('afterFind', compact('id', 'item'));
+		$subject = $this->_trigger('afterFind', compact('id', 'item'));
 		$item = $subject->item;
 
-		$this->_controller->set(array('success' => true, $this->viewVar() => $item));
-		$this->_crud->trigger('beforeRender', compact('id', 'item'));
+		$this->_controller()->set(array('success' => true, $this->viewVar() => $item));
+		$this->_trigger('beforeRender', compact('id', 'item'));
 	}
 
 }

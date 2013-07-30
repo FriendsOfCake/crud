@@ -1,5 +1,6 @@
 <?php
 
+App::uses('CrudBaseObject', 'Crud.Controller/Crud');
 App::uses('CakeEventListener', 'Event');
 App::uses('Validation', 'Utility');
 
@@ -11,7 +12,7 @@ App::uses('Validation', 'Utility');
  *
  * @copyright Christian Winther, 2013
  */
-abstract class CrudAction implements CakeEventListener {
+abstract class CrudAction extends CrudBaseObject implements CakeEventListener {
 
 /**
  * Action configuration
@@ -333,12 +334,12 @@ abstract class CrudAction implements CakeEventListener {
 	public function setFlash($type) {
 		$config = $this->message($type);
 
-		$subject = $this->_crud->trigger('setFlash', $config);
+		$subject = $this->_trigger('setFlash', $config);
 		if (!empty($subject->stopped)) {
 			return;
 		}
 
-		$this->_crud->Session->setFlash($subject->text, $subject->element, $subject->params, $subject->key);
+		$this->_session()->setFlash($subject->text, $subject->element, $subject->params, $subject->key);
 	}
 
 /**
@@ -425,7 +426,7 @@ abstract class CrudAction implements CakeEventListener {
 			return true;
 		}
 
-		$subject = $this->_crud->trigger('invalidId', compact('id'));
+		$subject = $this->_trigger('invalidId', compact('id'));
 
 		$message = $this->message('invalidId');
 		$exceptionClass = $message['class'];
@@ -449,7 +450,7 @@ abstract class CrudAction implements CakeEventListener {
 		}
 
 		$subject->url = $url;
-		$subject = $this->_crud->trigger('beforeRedirect', $subject);
+		$subject = $this->_trigger('beforeRedirect', $subject);
 		$url = $subject->url;
 
 		$this->_controller->redirect($url);

@@ -43,14 +43,14 @@ class ApiQueryLogListener extends CrudListener {
 			return;
 		}
 
-		if (!$this->_request->is('api')) {
+		if (!$this->_request()->is('api')) {
 			return;
 		}
 
-		$this->_crud->action()->config('serialize.queryLog', 'queryLog');
+		$this->_action()->config('serialize.queryLog', 'queryLog');
 
 		$queryLog = $this->_getQueryLogs();
-		$this->_controller->set('queryLog', $queryLog);
+		$this->_controller()->set('queryLog', $queryLog);
 	}
 
 /**

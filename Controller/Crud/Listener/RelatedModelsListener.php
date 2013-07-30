@@ -22,9 +22,7 @@ class RelatedModelsListener extends CrudListener {
  * @return array
  */
 	public function models($action = null) {
-		$actionClass = $this->_crud->action($action);
-
-		$settings = $actionClass->config('relatedModels');
+		$settings = $this->_action($action)->config('relatedModels');
 		if ($settings === true) {
 			return array_merge(
 				$this->_subject->model->getAssociated('belongsTo'),
@@ -59,8 +57,9 @@ class RelatedModelsListener extends CrudListener {
  * @return void
  */
 	public function beforeRender(CakeEvent $event) {
-		$component = $event->subject->crud;
-		$controller = $event->subject->controller;
+		$controller = $this->_controller();
+		$primaryModel = $this->_model();
+
 		$models = $this->models();
 
 		if (empty($models)) {
@@ -68,14 +67,14 @@ class RelatedModelsListener extends CrudListener {
 		}
 
 		foreach ($models as $m) {
-			$associationType = $this->_getAssociationType($m, $event->subject->model);
-			$model = $this->_getModelInstance($m, $event->subject->model, $controller, $associationType);
+			$associationType = $this->_getAssociationType($m, $primaryModel);
+			$model = $this->_getModelInstance($m, $primaryModel, $controller, $associationType);
 
 			$isTree = false;
 			$query = array();
 
 			if ($associationType == 'belongsTo') {
-				$query['conditions'] = $event->subject->model->belongsTo[$m]['conditions'];
+				$query['conditions'] = $primaryModel->belongsTo[$m]['conditions'];
 			}
 
 			if ($model->Behaviors->attached('Tree')) {
@@ -93,7 +92,7 @@ class RelatedModelsListener extends CrudListener {
 			}
 
 			$viewVar = Inflector::variable(Inflector::pluralize($model->alias));
-			$subject = $component->trigger('beforeRelatedModel', compact('model', 'query', 'viewVar'));
+			$subject = $this->_trigger('beforeRelatedModel', compact('model', 'query', 'viewVar'));
 
 			// If the viewVar is already set, don't overwrite it
 			if (array_key_exists($subject->viewVar, $controller->viewVars)) {
@@ -113,7 +112,7 @@ class RelatedModelsListener extends CrudListener {
 				$items = $model->find('list', $query);
 			}
 
-			$subject = $component->trigger('afterRelatedModel', compact('model', 'items', 'viewVar'));
+			$subject = $this->_trigger('afterRelatedModel', compact('model', 'items', 'viewVar'));
 			$controller->set($subject->viewVar, $subject->items);
 		}
 	}
