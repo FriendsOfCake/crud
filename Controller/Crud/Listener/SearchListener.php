@@ -67,7 +67,7 @@ class SearchListener extends CrudListener {
 
 		$model = $this->_model();
 		$controller = $this->_controller();
-		$request = $this->_request;
+		$request = $this->_request();
 
 		$this->_ensureComponent($controller);
 		$this->_ensureBehavior($model);

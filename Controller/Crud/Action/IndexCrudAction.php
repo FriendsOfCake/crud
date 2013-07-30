@@ -60,14 +60,14 @@ class IndexCrudAction extends CrudAction {
 		$controller = $this->_controller();
 		if (!isset($controller->Paginator)) {
 			$pagination = isset($controller->paginate) ? $controller->paginate : array();
-			$controller->Paginator = $this->_collection->load('Paginator', $pagination);
+			$controller->Paginator = $controller->Components->load('Paginator', $pagination);
 		}
 
 		$Paginator = $controller->Paginator;
 		$settings = &$Paginator->settings;
 
-		if (isset($settings[$this->_modelClass]) && empty($settings[$this->_modelClass]['findType'])) {
-			$settings[$this->_modelClass]['findType'] = $this->_getFindMethod('all');
+		if (isset($settings[$controller->modelClass]) && empty($settings[$controller->modelClass]['findType'])) {
+			$settings[$controller->modelClass]['findType'] = $this->_getFindMethod('all');
 		} elseif (empty($settings['findType'])) {
 			$settings['findType'] = $this->_getFindMethod('all');
 		}
@@ -92,7 +92,7 @@ class IndexCrudAction extends CrudAction {
 		$controller = $this->_controller();
 
 		$this->_trigger('beforePaginate', array('paginator' => $controller->Paginator));
-		$items = $controller->paginate($this->_model);
+		$items = $controller->paginate($this->_model());
 		$subject = $this->_trigger('afterPaginate', compact('items'));
 
 		$items = $subject->items;

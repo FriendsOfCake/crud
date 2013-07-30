@@ -24,9 +24,10 @@ class RelatedModelsListener extends CrudListener {
 	public function models($action = null) {
 		$settings = $this->_action($action)->config('relatedModels');
 		if ($settings === true) {
+			$model = $this->_model();
 			return array_merge(
-				$this->_subject->model->getAssociated('belongsTo'),
-				$this->_subject->model->getAssociated('hasAndBelongsToMany')
+				$model->getAssociated('belongsTo'),
+				$model->getAssociated('hasAndBelongsToMany')
 			);
 		}
 

@@ -146,7 +146,7 @@ class ApiListener extends CrudListener {
 		// @TODO: make the viewClassMap configurable
 		$controller->RequestHandler->viewClassMap('json', 'Crud.CrudJson');
 		$controller->RequestHandler->viewClassMap('xml', 'Crud.CrudXml');
-		$controller->RequestHandler->renderAs($this->_controller, $controller->RequestHandler->ext);
+		$controller->RequestHandler->renderAs($controller, $controller->RequestHandler->ext);
 	}
 
 /**

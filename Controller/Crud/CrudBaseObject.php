@@ -12,6 +12,81 @@
 abstract class CrudBaseObject extends Object {
 
 /**
+ * Container with reference to all objects
+ * needed within the CrudListener and CrudAction
+ *
+ * @var CrudSubject
+ */
+	protected $_container;
+
+/**
+ * Action configuration
+ *
+ * @var array
+ */
+	protected $_settings = array();
+
+/**
+ * Constructor
+ *
+ * @param CrudSubject $subject
+ * @param array $defaults Default settings
+ * @return void
+ */
+	public function __construct(CrudSubject $subject, $defaults = array()) {
+		$this->_container = $subject;
+
+		if (!empty($defaults)) {
+			$this->config($defaults);
+		}
+	}
+
+/**
+ * Sets a configuration variable into this action
+ *
+ * If called with no arguments, all configuration values are
+ * returned.
+ *
+ * $key is interpreted with dot notation, like the one used for
+ * Configure::write()
+ *
+ * If $key is string and $value is not passed, it will return the
+ * value associated with such key.
+ *
+ * If $key is an array and $value is empty, then $key will
+ * be interpreted as key => value dictionary of settings and
+ * it will be merged directly with $this->settings
+ *
+ * If $key is a string, the value will be inserted in the specified
+ * slot as indicated using the dot notation
+ *
+ * @param mixed $key
+ * @param mixed $value
+ * @return mixed|CrudAction
+ */
+	public function config($key = null, $value = null) {
+		if (is_null($key) && is_null($value)) {
+			return $this->_settings;
+		}
+
+		if (is_null($value)) {
+			if (is_array($key)) {
+				$this->_settings = Hash::merge($this->_settings, $key);
+				return $this;
+			}
+
+			return Hash::get($this->_settings, $key);
+		}
+
+		if (is_array($value)) {
+			$value = $value + (array)Hash::get($this->_settings, $key);
+		}
+
+		$this->_settings = Hash::insert($this->_settings, $key, $value);
+		return $this;
+	}
+
+/**
  * Proxy method for `$this->_crud->action()`
  *
  * Primary here to ease unit testing
@@ -21,7 +96,7 @@ abstract class CrudBaseObject extends Object {
  * @return CrudAction
  */
 	protected function _action($name = null) {
-		return $this->_crud->action($name);
+		return $this->_crud()->action($name);
 	}
 
 /**
@@ -35,7 +110,7 @@ abstract class CrudBaseObject extends Object {
  * @return CrudSubject
  */
 	protected function _trigger($eventName, $data = array()) {
-		return $this->_crud->trigger($eventName, $data);
+		return $this->_crud()->trigger($eventName, $data);
 	}
 
 /**
@@ -48,7 +123,7 @@ abstract class CrudBaseObject extends Object {
  * @return CrudListener
  */
 	protected function _listener($name) {
-		return $this->_crud->listener($name);
+		return $this->_crud()->listener($name);
 	}
 
 /**
@@ -60,7 +135,7 @@ abstract class CrudBaseObject extends Object {
  * @return SessionComponent
  */
 	protected function _session() {
-		return $this->_crud->Session;
+		return $this->_crud()->Session;
 	}
 
 /**
@@ -72,7 +147,7 @@ abstract class CrudBaseObject extends Object {
  * @return Controller
  */
 	protected function _controller() {
-		return $this->_controller;
+		return $this->_container->controller;
 	}
 
 /**
@@ -84,7 +159,7 @@ abstract class CrudBaseObject extends Object {
  * @return CakeRequest
  */
 	protected function _request() {
-		return $this->_request;
+		return $this->_container->request;
 	}
 
 /**
@@ -96,18 +171,27 @@ abstract class CrudBaseObject extends Object {
  * @return Model
  */
 	protected function _model() {
-		return $this->_model;
+		return $this->_container->model;
 	}
 
 /**
- * Proxy method for `$this->_crud->getSubject()`
+ * Proxy method for `$this->_initialSubject->getSubject()`
  *
  * @codeCoverageIgnore
  * @param array $additional
  * @return CrudSUbject
  */
 	protected function _subject($additional = array()) {
-		return $this->_crud->getSubject($additional);
+		return $this->_crud()->getSubject($additional);
+	}
+
+/**
+ * Proxy method for `$this->_crud`
+ *
+ * @return CrudComponent
+ */
+	protected function _crud() {
+		return $this->_container->crud;
 	}
 
 }
