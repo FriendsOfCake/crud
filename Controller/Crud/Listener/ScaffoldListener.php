@@ -102,7 +102,8 @@ class ScaffoldListener extends CrudListener {
 		$pluralVar = Inflector::variable($controller->name);
 		$singularHumanName = Inflector::humanize(Inflector::underscore($modelClass));
 		$pluralHumanName = Inflector::humanize(Inflector::underscore($controller->name));
-		$scaffoldFields = array_keys($model->schema());
+		$modelSchema = $model->schema();
+		$scaffoldFields = array_keys($modelSchema);
 		$associations = $this->_associations($model);
 
 		$_scaffoldFields = $subject->crud->config("actions.{$action}.scaffoldFields");
@@ -152,7 +153,7 @@ class ScaffoldListener extends CrudListener {
 		$controller->set(compact(
 			'modelClass', 'primaryKey', 'displayField', 'singularVar', 'pluralVar',
 			'singularHumanName', 'pluralHumanName', 'scaffoldFields', 'associations',
-			'scaffoldFilters', 'action', 'scaffoldFieldExclude'
+			'scaffoldFilters', 'action', 'scaffoldFieldExclude', 'modelSchema'
 		));
 
 		$controller->set('title_for_layout', $title);
