@@ -62,7 +62,16 @@ foreach (${$pluralVar} as ${$singularVar}):
         }
       }
       if ($isKey !== true) {
-        echo '<td>' . h(${$singularVar}[$modelClass][$_field]) . '</td>';
+        $type = Hash::get($modelSchema, "{$_field}.type");
+        if ($type == 'boolean') {
+          echo '<td>' . (!!${$singularVar}[$modelClass][$_field] ? 'Yes' : 'No') . '</td>';
+        } elseif (in_array($type, array('datetime', 'date', 'timestamp'))) {
+          echo '<td>' . $this->Time->timeAgoInWords(${$singularVar}[$modelClass][$_field]) . '</td>';
+        } elseif ($type == 'time') {
+          echo '<td>' . $this->Time->nice(${$singularVar}[$modelClass][$_field]) . '</td>';
+        } else {
+          echo '<td>' . h(${$singularVar}[$modelClass][$_field]) . '</td>';
+        }
       }
     }
 

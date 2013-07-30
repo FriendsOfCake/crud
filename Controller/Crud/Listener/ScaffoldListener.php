@@ -162,6 +162,9 @@ class ScaffoldListener extends CrudListener {
 			$controller->viewClass = 'Scaffold';
 		}
 
+		$controller->helpers = (array)$controller->helpers;
+		$controller->helpers[] = 'Time';
+
 		App::build(array(
 			'View' => array(
 				APP . 'View' . DS,
