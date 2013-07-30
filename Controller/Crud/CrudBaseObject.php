@@ -20,7 +20,7 @@ abstract class CrudBaseObject extends Object {
 	protected $_container;
 
 /**
- * Action configuration
+ * Instance configuration
  *
  * @var array
  */
@@ -87,7 +87,7 @@ abstract class CrudBaseObject extends Object {
 	}
 
 /**
- * Proxy method for `$this->_crud->action()`
+ * Proxy method for `$this->_crud()->action()`
  *
  * Primary here to ease unit testing
  *
@@ -100,7 +100,7 @@ abstract class CrudBaseObject extends Object {
 	}
 
 /**
- * Proxy method for `$this->_trigger()`
+ * Proxy method for `$this->_crud()->trigger()`
  *
  * Primary here to ease unit testing
  *
@@ -114,7 +114,7 @@ abstract class CrudBaseObject extends Object {
 	}
 
 /**
- * Proxy method for `$this->_crud->listener()`
+ * Proxy method for `$this->_crud()->listener()`
  *
  * Primary here to ease unit testing
  *
@@ -127,7 +127,7 @@ abstract class CrudBaseObject extends Object {
 	}
 
 /**
- * Proxy method for `$this->_crud->Session`
+ * Proxy method for `$this->_crud()->Session`
  *
  * Primary here to ease unit testing
  *
@@ -139,7 +139,7 @@ abstract class CrudBaseObject extends Object {
 	}
 
 /**
- * Proxy method for `$this->_controller`
+ * Proxy method for `$this->_container->_controller`
  *
  * Primary here to ease unit testing
  *
@@ -151,7 +151,7 @@ abstract class CrudBaseObject extends Object {
 	}
 
 /**
- * Proxy method for `$this->_request`
+ * Proxy method for `$this->_container->_request`
  *
  * Primary here to ease unit testing
  *
@@ -163,7 +163,7 @@ abstract class CrudBaseObject extends Object {
 	}
 
 /**
- * Proxy method for `$this->_model`
+ * Proxy method for `$this->_container->_model`
  *
  * Primary here to ease unit testing
  *
@@ -175,7 +175,7 @@ abstract class CrudBaseObject extends Object {
 	}
 
 /**
- * Proxy method for `$this->_initialSubject->getSubject()`
+ * Proxy method for `$this->_crud()->getSubject()`
  *
  * @codeCoverageIgnore
  * @param array $additional
@@ -186,7 +186,7 @@ abstract class CrudBaseObject extends Object {
 	}
 
 /**
- * Proxy method for `$this->_crud`
+ * Proxy method for `$this->_container->_crud`
  *
  * @return CrudComponent
  */
