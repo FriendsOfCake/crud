@@ -8,7 +8,7 @@
 	<title>File Controller/Crud/Listener/ApiPaginationListener.php | jippi/cakephp-crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?2429185786"></script>
+	<script type="text/javascript" src="elementlist.js?688975914"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -72,6 +72,7 @@
 				<li class="active"><a href="class-ApiPaginationListener.html">ApiPaginationListener</a></li>
 				<li><a href="class-ApiQueryLogListener.html">ApiQueryLogListener</a></li>
 				<li><a href="class-CrudAction.html">CrudAction</a></li>
+				<li><a href="class-CrudBaseObject.html">CrudBaseObject</a></li>
 				<li><a href="class-CrudComponent.html">CrudComponent</a></li>
 				<li><a href="class-CrudExceptionRenderer.html">CrudExceptionRenderer</a></li>
 				<li><a href="class-CrudJsonView.html">CrudJsonView</a></li>
@@ -142,31 +143,32 @@
 </span></span><span id="34" class="l"><a class="l" href="#34">34 </a><span class="php-comment"> * @return void
 </span></span><span id="35" class="l"><a class="l" href="#35">35 </a><span class="php-comment"> */</span>
 </span><span id="36" class="l"><a class="l" href="#36">36 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_beforeRender" href="#_beforeRender">beforeRender</a>(CakeEvent <span class="php-var">$event</span>) {
-</span><span id="37" class="l"><a class="l" href="#37">37 </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$this</span>-&gt;_request-&gt;is(<span class="php-quote">'api'</span>)) {
-</span><span id="38" class="l"><a class="l" href="#38">38 </a>            <span class="php-keyword1">return</span>;
-</span><span id="39" class="l"><a class="l" href="#39">39 </a>        }
-</span><span id="40" class="l"><a class="l" href="#40">40 </a>
-</span><span id="41" class="l"><a class="l" href="#41">41 </a>        <span class="php-var">$_pagination</span> = <span class="php-var">$this</span>-&gt;_request-&gt;paging;
-</span><span id="42" class="l"><a class="l" href="#42">42 </a>        <span class="php-keyword1">if</span> (<span class="php-keyword1">empty</span>(<span class="php-var">$_pagination</span>) || !<span class="php-keyword2">array_key_exists</span>(<span class="php-var">$event</span>-&gt;subject-&gt;modelClass, <span class="php-var">$_pagination</span>)) {
-</span><span id="43" class="l"><a class="l" href="#43">43 </a>            <span class="php-keyword1">return</span>;
-</span><span id="44" class="l"><a class="l" href="#44">44 </a>        }
-</span><span id="45" class="l"><a class="l" href="#45">45 </a>
-</span><span id="46" class="l"><a class="l" href="#46">46 </a>        <span class="php-var">$_pagination</span> = <span class="php-var">$_pagination</span>[<span class="php-var">$event</span>-&gt;subject-&gt;modelClass];
-</span><span id="47" class="l"><a class="l" href="#47">47 </a>
-</span><span id="48" class="l"><a class="l" href="#48">48 </a>        <span class="php-var">$pagination</span> = <span class="php-keyword1">array</span>(
-</span><span id="49" class="l"><a class="l" href="#49">49 </a>            <span class="php-quote">'page_count'</span> =&gt; <span class="php-var">$_pagination</span>[<span class="php-quote">'pageCount'</span>],
-</span><span id="50" class="l"><a class="l" href="#50">50 </a>            <span class="php-quote">'current_page'</span> =&gt; <span class="php-var">$_pagination</span>[<span class="php-quote">'page'</span>],
-</span><span id="51" class="l"><a class="l" href="#51">51 </a>            <span class="php-quote">'has_next_page'</span> =&gt; <span class="php-var">$_pagination</span>[<span class="php-quote">'nextPage'</span>],
-</span><span id="52" class="l"><a class="l" href="#52">52 </a>            <span class="php-quote">'has_prev_page'</span> =&gt; <span class="php-var">$_pagination</span>[<span class="php-quote">'prevPage'</span>],
-</span><span id="53" class="l"><a class="l" href="#53">53 </a>            <span class="php-quote">'count'</span> =&gt; <span class="php-var">$_pagination</span>[<span class="php-quote">'count'</span>],
-</span><span id="54" class="l"><a class="l" href="#54">54 </a>            <span class="php-quote">'limit'</span> =&gt; <span class="php-var">$_pagination</span>[<span class="php-quote">'limit'</span>]
-</span><span id="55" class="l"><a class="l" href="#55">55 </a>        );
-</span><span id="56" class="l"><a class="l" href="#56">56 </a>
-</span><span id="57" class="l"><a class="l" href="#57">57 </a>        <span class="php-var">$this</span>-&gt;_crud-&gt;action()-&gt;config(<span class="php-quote">'serialize.pagination'</span>, <span class="php-quote">'pagination'</span>);
-</span><span id="58" class="l"><a class="l" href="#58">58 </a>        <span class="php-var">$this</span>-&gt;_controller-&gt;set(<span class="php-quote">'pagination'</span>, <span class="php-var">$pagination</span>);
-</span><span id="59" class="l"><a class="l" href="#59">59 </a>    }
-</span><span id="60" class="l"><a class="l" href="#60">60 </a>}
-</span><span id="61" class="l"><a class="l" href="#61">61 </a></span></code></pre>
+</span><span id="37" class="l"><a class="l" href="#37">37 </a>        <span class="php-var">$request</span> = <span class="php-var">$this</span>-&gt;_request();
+</span><span id="38" class="l"><a class="l" href="#38">38 </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$request</span>-&gt;is(<span class="php-quote">'api'</span>)) {
+</span><span id="39" class="l"><a class="l" href="#39">39 </a>            <span class="php-keyword1">return</span>;
+</span><span id="40" class="l"><a class="l" href="#40">40 </a>        }
+</span><span id="41" class="l"><a class="l" href="#41">41 </a>
+</span><span id="42" class="l"><a class="l" href="#42">42 </a>        <span class="php-var">$_pagination</span> = <span class="php-var">$request</span>-&gt;paging;
+</span><span id="43" class="l"><a class="l" href="#43">43 </a>        <span class="php-keyword1">if</span> (<span class="php-keyword1">empty</span>(<span class="php-var">$_pagination</span>) || !<span class="php-keyword2">array_key_exists</span>(<span class="php-var">$event</span>-&gt;subject-&gt;modelClass, <span class="php-var">$_pagination</span>)) {
+</span><span id="44" class="l"><a class="l" href="#44">44 </a>            <span class="php-keyword1">return</span>;
+</span><span id="45" class="l"><a class="l" href="#45">45 </a>        }
+</span><span id="46" class="l"><a class="l" href="#46">46 </a>
+</span><span id="47" class="l"><a class="l" href="#47">47 </a>        <span class="php-var">$_pagination</span> = <span class="php-var">$_pagination</span>[<span class="php-var">$event</span>-&gt;subject-&gt;modelClass];
+</span><span id="48" class="l"><a class="l" href="#48">48 </a>
+</span><span id="49" class="l"><a class="l" href="#49">49 </a>        <span class="php-var">$pagination</span> = <span class="php-keyword1">array</span>(
+</span><span id="50" class="l"><a class="l" href="#50">50 </a>            <span class="php-quote">'page_count'</span> =&gt; <span class="php-var">$_pagination</span>[<span class="php-quote">'pageCount'</span>],
+</span><span id="51" class="l"><a class="l" href="#51">51 </a>            <span class="php-quote">'current_page'</span> =&gt; <span class="php-var">$_pagination</span>[<span class="php-quote">'page'</span>],
+</span><span id="52" class="l"><a class="l" href="#52">52 </a>            <span class="php-quote">'has_next_page'</span> =&gt; <span class="php-var">$_pagination</span>[<span class="php-quote">'nextPage'</span>],
+</span><span id="53" class="l"><a class="l" href="#53">53 </a>            <span class="php-quote">'has_prev_page'</span> =&gt; <span class="php-var">$_pagination</span>[<span class="php-quote">'prevPage'</span>],
+</span><span id="54" class="l"><a class="l" href="#54">54 </a>            <span class="php-quote">'count'</span> =&gt; <span class="php-var">$_pagination</span>[<span class="php-quote">'count'</span>],
+</span><span id="55" class="l"><a class="l" href="#55">55 </a>            <span class="php-quote">'limit'</span> =&gt; <span class="php-var">$_pagination</span>[<span class="php-quote">'limit'</span>]
+</span><span id="56" class="l"><a class="l" href="#56">56 </a>        );
+</span><span id="57" class="l"><a class="l" href="#57">57 </a>
+</span><span id="58" class="l"><a class="l" href="#58">58 </a>        <span class="php-var">$this</span>-&gt;_action()-&gt;config(<span class="php-quote">'serialize.pagination'</span>, <span class="php-quote">'pagination'</span>);
+</span><span id="59" class="l"><a class="l" href="#59">59 </a>        <span class="php-var">$this</span>-&gt;_controller()-&gt;set(<span class="php-quote">'pagination'</span>, <span class="php-var">$pagination</span>);
+</span><span id="60" class="l"><a class="l" href="#60">60 </a>    }
+</span><span id="61" class="l"><a class="l" href="#61">61 </a>}
+</span><span id="62" class="l"><a class="l" href="#62">62 </a></span></code></pre>
 	</div>
 
 	<div id="footer">
