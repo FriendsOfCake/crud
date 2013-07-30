@@ -103,53 +103,10 @@ class ScaffoldListener extends CrudListener {
 		$singularHumanName = Inflector::humanize(Inflector::underscore($modelClass));
 		$pluralHumanName = Inflector::humanize(Inflector::underscore($controller->name));
 		$modelSchema = $model->schema();
-		$scaffoldFields = array_keys($modelSchema);
 		$associations = $this->_associations($model);
-
-		$_scaffoldFields = $this->_crud->action()->config('scaffoldFields');
-		if (!empty($_scaffoldFields)) {
-			$_scaffoldFields = (array)$_scaffoldFields;
-			$scaffoldFields = array_intersect($scaffoldFields, array_combine(
-				$_scaffoldFields,
-				$_scaffoldFields
-			));
-		}
-
-		$className = $this->_crud->action()->config('className');
-		$scaffoldFieldExclude = $this->_crud->action()->config('scaffoldFieldExclude');
-		if (empty($scaffoldFieldExclude)) {
-			if ($className == 'Crud.Add' || $className == 'Crud.Edit') {
-				$scaffoldFieldExclude = array('created', 'modified', 'updated');
-				foreach ($scaffoldFields as $_field) {
-					if (substr($_field, -6) === '_count') {
-						$scaffoldFieldExclude[] = $_field;
-					}
-				}
-			} else {
-				$scaffoldFieldExclude = array();
-			}
-		}
-
-		$scaffoldFilters = array();
-		$_scaffoldFilters = $this->_crud->action()->config('scope');
-		if (!empty($_scaffoldFilters)) {
-			$scaffoldFilters = (array)$_scaffoldFilters;
-			foreach ($scaffoldFilters as $_field => $scaffoldField) {
-				$scaffoldFilters[$_field] = Hash::merge(array(
-					'type' => 'value',
-					'form' => array(
-						'label' => false,
-						'placeholder' => $_field,
-					),
-				), $scaffoldField);
-				$scaffoldFilters[$_field] = $scaffoldFilters[$_field]['form'];
-
-				if (!isset($scaffoldFilters[$_field]['value'])) {
-					$scaffoldFilters[$_field]['value'] = $request->query($_field);
-				}
-			}
-		}
-
+		$scaffoldFields = $this->_scaffoldFields($model);
+		$scaffoldFieldExclude = $this->_scaffoldFieldExclude($scaffoldFields);
+		$scaffoldFilters = $this->_scaffoldFilters($request);
 		$sidebarLinks = $this->_sidebarLinks();
 
 		$controller->set(compact(
@@ -175,6 +132,87 @@ class ScaffoldListener extends CrudListener {
 		));
 	}
 
+/**
+ * Returns fields to be displayed on scaffolded view
+ *
+ * @param Model $model
+ * @return array List of fields
+ */
+	protected function _scaffoldFields(Model $model) {
+		$modelSchema = $model->schema();
+		$scaffoldFields = array_keys($modelSchema);
+		$_scaffoldFields = $this->_crud->action()->config('scaffoldFields');
+		if (!empty($_scaffoldFields)) {
+			$_scaffoldFields = (array)$_scaffoldFields;
+			$scaffoldFields = array_intersect($scaffoldFields, array_combine(
+				$_scaffoldFields,
+				$_scaffoldFields
+			));
+		}
+
+		return $scaffoldFields;
+	}
+
+/**
+ * Returns fields to be excluded on scaffolded view
+ *
+ * @param array $scaffoldFields
+ * @return array List of fields
+ */
+	protected function _scaffoldFieldExclude($scaffoldFields) {
+		$className = $this->_crud->action()->config('className');
+		$scaffoldFieldExclude = $this->_crud->action()->config('scaffoldFieldExclude');
+
+		if (empty($scaffoldFieldExclude)) {
+			if ($className == 'Crud.Add' || $className == 'Crud.Edit') {
+				$scaffoldFieldExclude = array('created', 'modified', 'updated');
+				foreach ($scaffoldFields as $_field) {
+					if (substr($_field, -6) === '_count') {
+						$scaffoldFieldExclude[] = $_field;
+					}
+				}
+			} else {
+				$scaffoldFieldExclude = array();
+			}
+		}
+		return $scaffoldFieldExclude;
+	}
+
+/**
+ * Returns fields to be filtered upon in scaffolded view
+ *
+ * @param CakeRequest $request
+ * @return array Array of fields to show filters for
+ */
+	protected function _scaffoldFilters(CakeRequest $request) {
+		$scaffoldFilters = array();
+		$_scaffoldFilters = $this->_crud->action()->config('scope');
+		if (!empty($_scaffoldFilters)) {
+			$scaffoldFilters = (array)$_scaffoldFilters;
+			foreach ($scaffoldFilters as $_field => $scaffoldField) {
+				$scaffoldFilters[$_field] = Hash::merge(array(
+					'type' => 'value',
+					'form' => array(
+						'label' => false,
+						'placeholder' => $_field,
+					),
+				), $scaffoldField);
+				$scaffoldFilters[$_field] = $scaffoldFilters[$_field]['form'];
+
+				if (!isset($scaffoldFilters[$_field]['value'])) {
+					$scaffoldFilters[$_field]['value'] = $request->query($_field);
+				}
+			}
+		}
+		return $scaffoldFilters;
+	}
+
+
+/**
+ * Returns links to be shown in actions section of scaffolded view
+ *
+ * @return array Array of link
+ */
 	protected function _sidebarLinks() {
 		$sidebarLinks = $this->_crud->action()->config('sidebarLinks');
 		if ($sidebarLinks === null) {
