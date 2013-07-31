@@ -69,23 +69,37 @@ class AddCrudAction extends CrudAction {
 		$model = $this->_model();
 
 		if (!$request->is('post')) {
-			$model->create();
-			$request->data = $model->data;
-			$this->_trigger('beforeRender', array('success' => false));
-			return;
+			return $this->_handleAdd();
 		}
 
 		$this->_trigger('beforeSave');
 		if ($model->saveAll($request->data, $this->saveOptions())) {
 			$this->setFlash('success');
 			$subject = $this->_trigger('afterSave', array('success' => true, 'created' => true,	'id' => $model->id));
-			return $this->_redirect($subject, array('action' => 'index'));
+
+			if (!empty($request->data['_add'])) {
+				return $this->_handleAdd();
+			} elseif (!empty($request->data['_edit'])) {
+				return $this->_redirect($subject, array('action' => 'edit', $model->id));
+			} else {
+				return $this->_redirect($subject, array('action' => 'index'));
+			}
 		}
 
 		$this->setFlash('error');
 		$this->_trigger('afterSave', array('success' => false, 'created' => false));
 		$request->data = Hash::merge($request->data, $model->data);
 		$this->_trigger('beforeRender', array('success' => false));
+	}
+
+	protected function _handleAdd() {
+		$request = $this->_request();
+		$model = $this->_model();
+
+		$model->create();
+		$request->data = $model->data;
+		$this->_trigger('beforeRender', array('success' => false));
+		return;
 	}
 
 }

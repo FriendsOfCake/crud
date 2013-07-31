@@ -91,33 +91,45 @@ class EditCrudAction extends CrudAction {
 			if ($model->saveAll($request->data, $this->saveOptions())) {
 				$this->setFlash('success');
 				$subject = $this->_trigger('afterSave', array('id' => $id, 'success' => true, 'created' => false));
-				return $this->_redirect($subject, array('action' => 'index'));
+				if (!empty($this->_request->data['_add'])) {
+					return $this->_redirect($subject, array('action' => 'add'));
+				} elseif (!empty($this->_request->data['_edit'])) {
+					$this->_handleEdit($id);
+				} else {
+					return $this->_redirect($subject, array('action' => 'index'));
+				}
 			} else {
 				$this->setFlash('error');
 				$this->_trigger('afterSave', array('id' => $id, 'success' => false, 'created' => false));
 			}
 		} else {
-			$query = array();
-			$query['conditions'] = array($model->escapeField() => $id);
-			$findMethod = $this->_getFindMethod('first');
-			$subject = $this->_trigger('beforeFind', compact('query', 'findMethod'));
-			$query = $subject->query;
-
-			$request->data = $model->find($subject->findMethod, $query);
-			if (empty($request->data)) {
-				$subject = $this->_trigger('recordNotFound', compact('id'));
-
-				$message = $this->message('recordNotFound', array('id' => $id));
-				$exceptionClass = $message['class'];
-				throw new $exceptionClass($message['text'], $message['code']);
-			}
-
-			$item = $request->data;
-			$subject = $this->_trigger('afterFind', compact('id', 'item'));
-			$request->data = Hash::merge($request->data, $model->data, $subject->item);
+			$this->_handleEdit($id);
 		}
 
-		$this->_trigger('beforeRender');
+		$this->_crud->trigger('beforeRender');
+	}
+
+	protected function _handleEdit($id) {
+		$request = $this->_request();
+		$model = $this->_model();
+
+		$query = array();
+		$query['conditions'] = array($model->escapeField() => $id);
+		$findMethod = $this->_getFindMethod('first');
+		$subject = $this->_trigger('beforeFind', compact('query', 'findMethod'));
+		$query = $subject->query;
+
+		$request->data = $model->find($subject->findMethod, $query);
+		if (empty($request->data)) {
+			$subject = $this->_trigger('recordNotFound', compact('id'));
+			$message = $this->message('recordNotFound', array('id' => $subject->id));
+			$exceptionClass = $message['class'];
+			throw new $exceptionClass($message['text'], $message['code']);
+		}
+
+		$item = $request->data;
+		$subject = $this->_trigger('afterFind', compact('id', 'item'));
+		$request->data = Hash::merge($request->data, $model->data, $subject->item);
 	}
 
 }
