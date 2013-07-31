@@ -7,7 +7,7 @@
 	<title>Class CrudBaseObject | jippi/cakephp-crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?688975914"></script>
+	<script type="text/javascript" src="elementlist.js?3444470891"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -129,6 +129,8 @@ Object
 		<dd style="padding-left:30px">
 			<img src="resources/inherit.png" alt="Extended by" />
 <b><span>CrudBaseObject</span></b>			
+			 implements 
+<span>CakeEventListener</span>
 			
 			
 		</dd>
@@ -174,7 +176,7 @@ Object
 
 				<b>Copyright:</b>
 				Christian Winther, 2013<br />
-		<b>Located at</b> <a href="source-class-CrudBaseObject.html#2-197" title="Go to source code">Controller/Crud/CrudBaseObject.php</a><br />
+		<b>Located at</b> <a href="source-class-CrudBaseObject.html#6-223" title="Go to source code">Controller/Crud/CrudBaseObject.php</a><br />
 	</div>
 
 
@@ -192,7 +194,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#___construct">#</a>
-			<code><a href="source-class-CrudBaseObject.html#29-42" title="Go to source code">__construct</a>( <span><code><a href="class-CrudSubject.html">CrudSubject</a></code> <var>$subject</var></span>, <span>array <var>$defaults</var> = <span class="php-keyword1">array</span>()</span> )</code>
+			<code><a href="source-class-CrudBaseObject.html#33-46" title="Go to source code">__construct</a>( <span><code><a href="class-CrudSubject.html">CrudSubject</a></code> <var>$subject</var></span>, <span>array <var>$defaults</var> = <span class="php-keyword1">array</span>()</span> )</code>
 
 			<div class="description short">
 				
@@ -221,6 +223,44 @@ Object
 			</div>
 			</div></td>
 		</tr>
+		<tr data-order="initialize" id="_initialize">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_initialize">#</a>
+			<code><a href="source-class-CrudBaseObject.html#48-56" title="Go to source code">initialize</a>( <span>CakeEvent <var>$event</var></span> )</code>
+
+			<div class="description short">
+				
+<p>initialize callback</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>initialize callback</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$event</var></dt>
+						<dd><code>CakeEvent</code><br>$event</dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
 		<tr data-order="config" id="_config">
 
 			<td class="attributes"><code>
@@ -232,7 +272,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#_config">#</a>
-			<code><a href="source-class-CrudBaseObject.html#44-87" title="Go to source code">config</a>( <span>mixed <var>$key</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$value</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-CrudBaseObject.html#58-101" title="Go to source code">config</a>( <span>mixed <var>$key</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$value</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -280,6 +320,45 @@ indicated using the dot notation</p>
 			</div>
 			</div></td>
 		</tr>
+		<tr data-order="implementedEvents" id="_implementedEvents">
+
+			<td class="attributes"><code>
+				 public 
+				array
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_implementedEvents">#</a>
+			<code><a href="source-class-CrudBaseObject.html#103-113" title="Go to source code">implementedEvents</a>( )</code>
+
+			<div class="description short">
+				
+<p>Returns a list of all events that will fire during the objects lifecycle. You
+can override this function to add you own listener callbacks</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Returns a list of all events that will fire during the objects lifecycle. You
+can override this function to add you own listener callbacks</p>
+
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>array</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
 		<tr data-order="_action" id="__action">
 
 			<td class="attributes"><code>
@@ -291,7 +370,7 @@ indicated using the dot notation</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__action">#</a>
-			<code><a href="source-class-CrudBaseObject.html#89-100" title="Go to source code">_action</a>( <span>string <var>$name</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-CrudBaseObject.html#115-126" title="Go to source code">_action</a>( <span>string <var>$name</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -338,7 +417,7 @@ indicated using the dot notation</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__trigger">#</a>
-			<code><a href="source-class-CrudBaseObject.html#102-114" title="Go to source code">_trigger</a>( <span>string <var>$eventName</var></span>, <span>array <var>$data</var> = <span class="php-keyword1">array</span>()</span> )</code>
+			<code><a href="source-class-CrudBaseObject.html#128-140" title="Go to source code">_trigger</a>( <span>string <var>$eventName</var></span>, <span>array <var>$data</var> = <span class="php-keyword1">array</span>()</span> )</code>
 
 			<div class="description short">
 				
@@ -387,7 +466,7 @@ indicated using the dot notation</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__listener">#</a>
-			<code><a href="source-class-CrudBaseObject.html#116-127" title="Go to source code">_listener</a>( <span>string <var>$name</var></span> )</code>
+			<code><a href="source-class-CrudBaseObject.html#142-153" title="Go to source code">_listener</a>( <span>string <var>$name</var></span> )</code>
 
 			<div class="description short">
 				
@@ -434,7 +513,7 @@ indicated using the dot notation</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__session">#</a>
-			<code><a href="source-class-CrudBaseObject.html#129-139" title="Go to source code">_session</a>( )</code>
+			<code><a href="source-class-CrudBaseObject.html#155-165" title="Go to source code">_session</a>( )</code>
 
 			<div class="description short">
 				
@@ -476,7 +555,7 @@ indicated using the dot notation</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__controller">#</a>
-			<code><a href="source-class-CrudBaseObject.html#141-151" title="Go to source code">_controller</a>( )</code>
+			<code><a href="source-class-CrudBaseObject.html#167-177" title="Go to source code">_controller</a>( )</code>
 
 			<div class="description short">
 				
@@ -518,7 +597,7 @@ indicated using the dot notation</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__request">#</a>
-			<code><a href="source-class-CrudBaseObject.html#153-163" title="Go to source code">_request</a>( )</code>
+			<code><a href="source-class-CrudBaseObject.html#179-189" title="Go to source code">_request</a>( )</code>
 
 			<div class="description short">
 				
@@ -560,7 +639,7 @@ indicated using the dot notation</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__model">#</a>
-			<code><a href="source-class-CrudBaseObject.html#165-175" title="Go to source code">_model</a>( )</code>
+			<code><a href="source-class-CrudBaseObject.html#191-201" title="Go to source code">_model</a>( )</code>
 
 			<div class="description short">
 				
@@ -602,7 +681,7 @@ indicated using the dot notation</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__subject">#</a>
-			<code><a href="source-class-CrudBaseObject.html#177-186" title="Go to source code">_subject</a>( <span>array <var>$additional</var> = <span class="php-keyword1">array</span>()</span> )</code>
+			<code><a href="source-class-CrudBaseObject.html#203-212" title="Go to source code">_subject</a>( <span>array <var>$additional</var> = <span class="php-keyword1">array</span>()</span> )</code>
 
 			<div class="description short">
 				
@@ -647,7 +726,7 @@ indicated using the dot notation</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__crud">#</a>
-			<code><a href="source-class-CrudBaseObject.html#188-195" title="Go to source code">_crud</a>( )</code>
+			<code><a href="source-class-CrudBaseObject.html#214-221" title="Go to source code">_crud</a>( )</code>
 
 			<div class="description short">
 				
@@ -695,7 +774,7 @@ indicated using the dot notation</p>
 			</code></td>
 
 			<td class="name">
-					<a href="source-class-CrudBaseObject.html#14-20" title="Go to source code"><var>$_container</var></a>
+					<a href="source-class-CrudBaseObject.html#18-24" title="Go to source code"><var>$_container</var></a>
 			</td>
 			<td class="description"><div>
 				<a href="#$_container" class="anchor">#</a>
@@ -723,7 +802,7 @@ CrudAction</p>
 			</code></td>
 
 			<td class="name">
-					<a href="source-class-CrudBaseObject.html#22-27" title="Go to source code"><var>$_settings</var></a>
+					<a href="source-class-CrudBaseObject.html#26-31" title="Go to source code"><var>$_settings</var></a>
 			</td>
 			<td class="description"><div>
 				<a href="#$_settings" class="anchor">#</a>

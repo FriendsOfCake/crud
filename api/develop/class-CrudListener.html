@@ -7,7 +7,7 @@
 	<title>Class CrudListener | jippi/cakephp-crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?688975914"></script>
+	<script type="text/javascript" src="elementlist.js?3444470891"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -113,8 +113,6 @@
 	
 <p>The Base Crud Listener</p>
 
-<p>All callbacks are defined here for good measure</p>
-
 <p>Licensed under The MIT License Redistributions of files must retain the above
 copyright notice.</p>
 
@@ -130,14 +128,14 @@ Object
 			<img src="resources/inherit.png" alt="Extended by" />
 			<a href="class-CrudBaseObject.html"><span>CrudBaseObject</span></a>
 			
+			 implements 
+<span>CakeEventListener</span>
 			
 			
 		</dd>
 		<dd style="padding-left:60px">
 			<img src="resources/inherit.png" alt="Extended by" />
 <b><span>CrudListener</span></b>			
-			 implements 
-<span>CakeEventListener</span>
 			
 			
 		</dd>
@@ -171,7 +169,7 @@ Object
 
 				<b>Copyright:</b>
 				Christian Winther, 2013<br />
-		<b>Located at</b> <a href="source-class-CrudListener.html#7-74" title="Go to source code">Controller/Crud/CrudListener.php</a><br />
+		<b>Located at</b> <a href="source-class-CrudListener.html#5-65" title="Go to source code">Controller/Crud/CrudListener.php</a><br />
 	</div>
 
 
@@ -189,7 +187,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#_implementedEvents">#</a>
-			<code><a href="source-class-CrudListener.html#20-72" title="Go to source code">implementedEvents</a>( )</code>
+			<code><a href="source-class-CrudListener.html#15-63" title="Go to source code">implementedEvents</a>( )</code>
 
 			<div class="description short">
 				
@@ -204,8 +202,10 @@ life cycle. You can override this function to add you own listener callbacks</p>
 life cycle. You can override this function to add you own listener callbacks</p>
 
 <ul>
-	<li>init : Called before any other method in the decorator. Just set the
-	arguments as instance properties for easier access later</li>
+	<li>initialize : Called before Controller::beforeFilter</li>
+
+	<li>startup: Called after the Controller::beforeFilter() and before the Crud
+	action is invoked</li>
 
 	<li>recordNotFound : Called if a find() did not return any records</li>
 
@@ -215,9 +215,7 @@ life cycle. You can override this function to add you own listener callbacks</p>
 
 	<li>invalidId : Called if the ID format validation failed</li>
 
-	<li>setFlash : Called before any CakeSession::setFlash Subject contains the
-	following keys you can modify: - message - element = 'default', - params =
-	array() - key = 'flash'</li>
+	<li>setFlash : Called before any CakeSession::setFlash</li>
 </ul>
 
 
@@ -233,6 +231,8 @@ life cycle. You can override this function to add you own listener callbacks</p>
 					<div class="list">
 					</div>
 
+					<h4>Overrides</h4>
+					<div class="list"><code><a href="class-CrudBaseObject.html#_implementedEvents">CrudBaseObject::implementedEvents</a></code></div>
 
 			</div>
 			</div></td>
@@ -251,7 +251,8 @@ life cycle. You can override this function to add you own listener callbacks</p>
 			<code><a href="class-CrudBaseObject.html#__session">_session()</a></code>, 
 			<code><a href="class-CrudBaseObject.html#__subject">_subject()</a></code>, 
 			<code><a href="class-CrudBaseObject.html#__trigger">_trigger()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#_config">config()</a></code>
+			<code><a href="class-CrudBaseObject.html#_config">config()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#_initialize">initialize()</a></code>
 		</p>
 
 

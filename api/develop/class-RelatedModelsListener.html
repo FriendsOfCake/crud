@@ -7,7 +7,7 @@
 	<title>Class RelatedModelsListener | jippi/cakephp-crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?688975914"></script>
+	<script type="text/javascript" src="elementlist.js?3444470891"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -129,6 +129,8 @@ Object
 			<img src="resources/inherit.png" alt="Extended by" />
 			<a href="class-CrudBaseObject.html"><span>CrudBaseObject</span></a>
 			
+			 implements 
+<span>CakeEventListener</span>
 			
 			
 		</dd>
@@ -136,8 +138,6 @@ Object
 			<img src="resources/inherit.png" alt="Extended by" />
 			<a href="class-CrudListener.html"><span>CrudListener</span></a>
 			
-			 implements 
-<span>CakeEventListener</span>
 			
 			
 		</dd>
@@ -164,7 +164,7 @@ Object
 
 				<b>Copyright:</b>
 				Christian Winther, 2013<br />
-		<b>Located at</b> <a href="source-class-RelatedModelsListener.html#7-158" title="Go to source code">Controller/Crud/Listener/RelatedModelsListener.php</a><br />
+		<b>Located at</b> <a href="source-class-RelatedModelsListener.html#7-149" title="Go to source code">Controller/Crud/Listener/RelatedModelsListener.php</a><br />
 	</div>
 
 
@@ -213,45 +213,6 @@ Object
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="implementedEvents" id="_implementedEvents">
-
-			<td class="attributes"><code>
-				 public 
-				array
-				
-				</code>
-			</td>
-
-			<td class="name"><div>
-			<a class="anchor" href="#_implementedEvents">#</a>
-			<code><a href="source-class-RelatedModelsListener.html#45-52" title="Go to source code">implementedEvents</a>( )</code>
-
-			<div class="description short">
-				
-<p>List of events implemented by this class</p>
-
-			</div>
-
-			<div class="description detailed hidden">
-				
-<p>List of events implemented by this class</p>
-
-
-
-
-					<h4>Returns</h4>
-					<div class="list">
-						<code>array</code><br />
-					</div>
-
-
-
-					<h4>Overrides</h4>
-					<div class="list"><code><a href="class-CrudListener.html#_implementedEvents">CrudListener::implementedEvents</a></code></div>
-
-			</div>
-			</div></td>
-		</tr>
 		<tr data-order="beforeRender" id="_beforeRender">
 
 			<td class="attributes"><code>
@@ -263,7 +224,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#_beforeRender">#</a>
-			<code><a href="source-class-RelatedModelsListener.html#54-119" title="Go to source code">beforeRender</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<code><a href="source-class-RelatedModelsListener.html#45-110" title="Go to source code">beforeRender</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
@@ -301,7 +262,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#__getModelInstance">#</a>
-			<code><a href="source-class-RelatedModelsListener.html#121-144" title="Go to source code">_getModelInstance</a>( <span>string <var>$model</var></span>, <span>Model <var>$controllerModel</var></span>, <span>Controller <var>$controller</var></span>, <span>string <var>$associationType</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-RelatedModelsListener.html#112-135" title="Go to source code">_getModelInstance</a>( <span>string <var>$model</var></span>, <span>Model <var>$controllerModel</var></span>, <span>Controller <var>$controller</var></span>, <span>string <var>$associationType</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -349,7 +310,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#__getAssociationType">#</a>
-			<code><a href="source-class-RelatedModelsListener.html#146-156" title="Go to source code">_getAssociationType</a>( <span>string <var>$model</var></span>, <span>Model <var>$controllerModel</var></span> )</code>
+			<code><a href="source-class-RelatedModelsListener.html#137-147" title="Go to source code">_getAssociationType</a>( <span>string <var>$model</var></span>, <span>Model <var>$controllerModel</var></span> )</code>
 
 			<div class="description short">
 				
@@ -384,6 +345,10 @@ Object
 		</tr>
 		</table>
 
+		<h3>Methods inherited from <a href="class-CrudListener.html#methods">CrudListener</a></h3>
+		<p class="elementList">
+			<code><a href="class-CrudListener.html#_implementedEvents">implementedEvents()</a></code>
+		</p>
 		<h3>Methods inherited from <a href="class-CrudBaseObject.html#methods">CrudBaseObject</a></h3>
 		<p class="elementList">
 			<code><a href="class-CrudBaseObject.html#___construct">__construct()</a></code>, 
@@ -396,7 +361,8 @@ Object
 			<code><a href="class-CrudBaseObject.html#__session">_session()</a></code>, 
 			<code><a href="class-CrudBaseObject.html#__subject">_subject()</a></code>, 
 			<code><a href="class-CrudBaseObject.html#__trigger">_trigger()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#_config">config()</a></code>
+			<code><a href="class-CrudBaseObject.html#_config">config()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#_initialize">initialize()</a></code>
 		</p>
 
 
