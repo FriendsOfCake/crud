@@ -7,7 +7,7 @@
 	<title>Class CrudListener | jippi/cakephp-crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?2429185786"></script>
+	<script type="text/javascript" src="elementlist.js?688975914"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -70,6 +70,7 @@
 				<li><a href="class-ApiPaginationListener.html">ApiPaginationListener</a></li>
 				<li><a href="class-ApiQueryLogListener.html">ApiQueryLogListener</a></li>
 				<li><a href="class-CrudAction.html">CrudAction</a></li>
+				<li><a href="class-CrudBaseObject.html">CrudBaseObject</a></li>
 				<li><a href="class-CrudComponent.html">CrudComponent</a></li>
 				<li><a href="class-CrudExceptionRenderer.html">CrudExceptionRenderer</a></li>
 				<li><a href="class-CrudJsonView.html">CrudJsonView</a></li>
@@ -127,6 +128,13 @@ Object
 		</dd>
 		<dd style="padding-left:30px">
 			<img src="resources/inherit.png" alt="Extended by" />
+			<a href="class-CrudBaseObject.html"><span>CrudBaseObject</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:60px">
+			<img src="resources/inherit.png" alt="Extended by" />
 <b><span>CrudListener</span></b>			
 			 implements 
 <span>CakeEventListener</span>
@@ -163,53 +171,13 @@ Object
 
 				<b>Copyright:</b>
 				Christian Winther, 2013<br />
-		<b>Located at</b> <a href="source-class-CrudListener.html#6-179" title="Go to source code">Controller/Crud/CrudListener.php</a><br />
+		<b>Located at</b> <a href="source-class-CrudListener.html#7-74" title="Go to source code">Controller/Crud/CrudListener.php</a><br />
 	</div>
 
 
 
 		<h2>Methods summary</h2>
 		<table class="summary table table-bordered table-striped" id="methods">
-		<tr data-order="__construct" id="___construct">
-
-			<td class="attributes"><code>
-				 public 
-				
-				
-				</code>
-			</td>
-
-			<td class="name"><div>
-			<a class="anchor" href="#___construct">#</a>
-			<code><a href="source-class-CrudListener.html#61-78" title="Go to source code">__construct</a>( <span><code><a href="class-CrudSubject.html">CrudSubject</a></code> <var>$subject</var></span>, <span>array <var>$defaults</var> = <span class="php-keyword1">null</span></span> )</code>
-
-			<div class="description short">
-				
-<p>Class constructor</p>
-
-			</div>
-
-			<div class="description detailed hidden">
-				
-<p>Class constructor</p>
-
-
-
-					<h4>Parameters</h4>
-					<div class="list"><dl>
-						<dt><var>$subject</var></dt>
-						<dd><code>string</code><br>$prefix CRUD component events name prefix</dd>
-						<dt><var>$defaults</var></dt>
-						<dd><code>array</code><br>$models List of models to be fetched in beforeRenderEvent</dd>
-					</dl></div>
-
-
-
-
-
-			</div>
-			</div></td>
-		</tr>
 		<tr data-order="implementedEvents" id="_implementedEvents">
 
 			<td class="attributes"><code>
@@ -221,7 +189,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#_implementedEvents">#</a>
-			<code><a href="source-class-CrudListener.html#80-132" title="Go to source code">implementedEvents</a>( )</code>
+			<code><a href="source-class-CrudListener.html#20-72" title="Go to source code">implementedEvents</a>( )</code>
 
 			<div class="description short">
 				
@@ -269,67 +237,22 @@ life cycle. You can override this function to add you own listener callbacks</p>
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="config" id="_config">
-
-			<td class="attributes"><code>
-				 public 
-				mixed|<code><a href="class-CrudAction.html">CrudAction</a></code>
-				
-				</code>
-			</td>
-
-			<td class="name"><div>
-			<a class="anchor" href="#_config">#</a>
-			<code><a href="source-class-CrudListener.html#134-177" title="Go to source code">config</a>( <span>mixed <var>$key</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$value</var> = <span class="php-keyword1">null</span></span> )</code>
-
-			<div class="description short">
-				
-<p>Sets a configuration variable into this listener</p>
-
-			</div>
-
-			<div class="description detailed hidden">
-				
-<p>Sets a configuration variable into this listener</p>
-
-<p>If called with no arguments, all configuration values are returned.</p>
-
-<p>$key is interpreted with dot notation, like the one used for
-Configure::write()</p>
-
-<p>If $key is string and $value is not passed, it will return the value
-associated with such key.</p>
-
-<p>If $key is an array and $value is empty, then $key will be interpreted as key
-=&gt; value dictionary of settings and it will be merged directly with
-$this-&gt;settings</p>
-
-<p>If $key is a string, the value will be inserted in the specified slot as
-indicated using the dot notation</p>
-
-
-
-					<h4>Parameters</h4>
-					<div class="list"><dl>
-						<dt><var>$key</var></dt>
-						<dd><code>mixed</code><br>$key</dd>
-						<dt><var>$value</var></dt>
-						<dd><code>mixed</code><br>$value</dd>
-					</dl></div>
-
-					<h4>Returns</h4>
-					<div class="list">
-						<code>mixed|<code><a href="class-CrudAction.html">CrudAction</a></code></code><br />
-					</div>
-
-
-
-
-			</div>
-			</div></td>
-		</tr>
 		</table>
 
+		<h3>Methods inherited from <a href="class-CrudBaseObject.html#methods">CrudBaseObject</a></h3>
+		<p class="elementList">
+			<code><a href="class-CrudBaseObject.html#___construct">__construct()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__action">_action()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__controller">_controller()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__crud">_crud()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__listener">_listener()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__model">_model()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__request">_request()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__session">_session()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__subject">_subject()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__trigger">_trigger()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#_config">config()</a></code>
+		</p>
 
 
 		<h3>Magic methods summary</h3>
@@ -342,165 +265,12 @@ indicated using the dot notation</p>
 
 
 		<h2>Properties summary</h2>
-		<table class="summary table table-bordered table-striped" id="properties">
-		<tr data-order="_request" id="$_request">
-			<td class="attributes"><code>
-				protected  
-				CakeRequest
-			</code></td>
 
-			<td class="name">
-					<a href="source-class-CrudListener.html#19-24" title="Go to source code"><var>$_request</var></a>
-			</td>
-			<td class="description"><div>
-				<a href="#$_request" class="anchor">#</a>
-
-				<div class="description short">
-					
-<p>Reference to the CakeRequest</p>
-
-				</div>
-
-				<div class="description detailed hidden">
-					
-<p>Reference to the CakeRequest</p>
-
-
-				</div>
-			</div></td>
-		</tr>
-		<tr data-order="_controller" id="$_controller">
-			<td class="attributes"><code>
-				protected  
-				Controller
-			</code></td>
-
-			<td class="name">
-					<a href="source-class-CrudListener.html#26-31" title="Go to source code"><var>$_controller</var></a>
-			</td>
-			<td class="description"><div>
-				<a href="#$_controller" class="anchor">#</a>
-
-				<div class="description short">
-					
-<p>Reference to the Controller</p>
-
-				</div>
-
-				<div class="description detailed hidden">
-					
-<p>Reference to the Controller</p>
-
-
-				</div>
-			</div></td>
-		</tr>
-		<tr data-order="_crud" id="$_crud">
-			<td class="attributes"><code>
-				protected  
-				<code><a href="class-CrudComponent.html">CrudComponent</a></code>
-			</code></td>
-
-			<td class="name">
-					<a href="source-class-CrudListener.html#33-38" title="Go to source code"><var>$_crud</var></a>
-			</td>
-			<td class="description"><div>
-				<a href="#$_crud" class="anchor">#</a>
-
-				<div class="description short">
-					
-<p>Crud Component reference</p>
-
-				</div>
-
-				<div class="description detailed hidden">
-					
-<p>Crud Component reference</p>
-
-
-				</div>
-			</div></td>
-		</tr>
-		<tr data-order="_subject" id="$_subject">
-			<td class="attributes"><code>
-				protected  
-				<code><a href="class-CrudSubject.html">CrudSubject</a></code>
-			</code></td>
-
-			<td class="name">
-					<a href="source-class-CrudListener.html#40-45" title="Go to source code"><var>$_subject</var></a>
-			</td>
-			<td class="description"><div>
-				<a href="#$_subject" class="anchor">#</a>
-
-				<div class="description short">
-					
-<p>Crud Event subject</p>
-
-				</div>
-
-				<div class="description detailed hidden">
-					
-<p>Crud Event subject</p>
-
-
-				</div>
-			</div></td>
-		</tr>
-		<tr data-order="_model" id="$_model">
-			<td class="attributes"><code>
-				protected  
-				Model
-			</code></td>
-
-			<td class="name">
-					<a href="source-class-CrudListener.html#47-52" title="Go to source code"><var>$_model</var></a>
-			</td>
-			<td class="description"><div>
-				<a href="#$_model" class="anchor">#</a>
-
-				<div class="description short">
-					
-<p>Reference to the Model instance</p>
-
-				</div>
-
-				<div class="description detailed hidden">
-					
-<p>Reference to the Model instance</p>
-
-
-				</div>
-			</div></td>
-		</tr>
-		<tr data-order="_settings" id="$_settings">
-			<td class="attributes"><code>
-				protected  
-				array
-			</code></td>
-
-			<td class="name">
-					<a href="source-class-CrudListener.html#54-59" title="Go to source code"><var>$_settings</var></a>
-			</td>
-			<td class="description"><div>
-				<a href="#$_settings" class="anchor">#</a>
-
-				<div class="description short">
-					
-<p>Listener configuration</p>
-
-				</div>
-
-				<div class="description detailed hidden">
-					
-<p>Listener configuration</p>
-
-
-				</div>
-			</div></td>
-		</tr>
-		</table>
-
+		<h3>Properties inherited from <a href="class-CrudBaseObject.html#properties">CrudBaseObject</a></h3>
+		<p class="elementList">
+			<code><a href="class-CrudBaseObject.html#$_container"><var>$_container</var></a></code>, 
+			<code><a href="class-CrudBaseObject.html#$_settings"><var>$_settings</var></a></code>
+		</p>
 
 
 

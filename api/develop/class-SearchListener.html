@@ -7,7 +7,7 @@
 	<title>Class SearchListener | jippi/cakephp-crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?2429185786"></script>
+	<script type="text/javascript" src="elementlist.js?688975914"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -70,6 +70,7 @@
 				<li><a href="class-ApiPaginationListener.html">ApiPaginationListener</a></li>
 				<li><a href="class-ApiQueryLogListener.html">ApiQueryLogListener</a></li>
 				<li><a href="class-CrudAction.html">CrudAction</a></li>
+				<li><a href="class-CrudBaseObject.html">CrudBaseObject</a></li>
 				<li><a href="class-CrudComponent.html">CrudComponent</a></li>
 				<li><a href="class-CrudExceptionRenderer.html">CrudExceptionRenderer</a></li>
 				<li><a href="class-CrudJsonView.html">CrudJsonView</a></li>
@@ -125,6 +126,13 @@ Object
 		</dd>
 		<dd style="padding-left:30px">
 			<img src="resources/inherit.png" alt="Extended by" />
+			<a href="class-CrudBaseObject.html"><span>CrudBaseObject</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:60px">
+			<img src="resources/inherit.png" alt="Extended by" />
 			<a href="class-CrudListener.html"><span>CrudListener</span></a>
 			
 			 implements 
@@ -132,7 +140,7 @@ Object
 			
 			
 		</dd>
-		<dd style="padding-left:60px">
+		<dd style="padding-left:90px">
 			<img src="resources/inherit.png" alt="Extended by" />
 <b><span>SearchListener</span></b>			
 			
@@ -155,7 +163,7 @@ Object
 
 				<b>Copyright:</b>
 				Christian Winther, 2013<br />
-		<b>Located at</b> <a href="source-class-SearchListener.html#5-173" title="Go to source code">Controller/Crud/Listener/SearchListener.php</a><br />
+		<b>Located at</b> <a href="source-class-SearchListener.html#5-178" title="Go to source code">Controller/Crud/Listener/SearchListener.php</a><br />
 	</div>
 
 
@@ -262,7 +270,7 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_beforePaginate">#</a>
-			<code><a href="source-class-SearchListener.html#59-87" title="Go to source code">beforePaginate</a>( <span>CakeEvent <var>$e</var></span> )</code>
+			<code><a href="source-class-SearchListener.html#59-92" title="Go to source code">beforePaginate</a>( <span>CakeEvent <var>$e</var></span> )</code>
 
 			<div class="description short">
 				
@@ -300,7 +308,7 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__checkRequiredPlugin">#</a>
-			<code><a href="source-class-SearchListener.html#89-101" title="Go to source code">_checkRequiredPlugin</a>( )</code>
+			<code><a href="source-class-SearchListener.html#94-106" title="Go to source code">_checkRequiredPlugin</a>( )</code>
 
 			<div class="description short">
 				
@@ -337,7 +345,7 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__ensureComponent">#</a>
-			<code><a href="source-class-SearchListener.html#103-118" title="Go to source code">_ensureComponent</a>( <span>Controller <var>$controller</var></span> )</code>
+			<code><a href="source-class-SearchListener.html#108-123" title="Go to source code">_ensureComponent</a>( <span>Controller <var>$controller</var></span> )</code>
 
 			<div class="description short">
 				
@@ -375,7 +383,7 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__ensureBehavior">#</a>
-			<code><a href="source-class-SearchListener.html#120-133" title="Go to source code">_ensureBehavior</a>( <span>Model <var>$model</var></span> )</code>
+			<code><a href="source-class-SearchListener.html#125-138" title="Go to source code">_ensureBehavior</a>( <span>Model <var>$model</var></span> )</code>
 
 			<div class="description short">
 				
@@ -413,7 +421,7 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__commonProcess">#</a>
-			<code><a href="source-class-SearchListener.html#135-145" title="Go to source code">_commonProcess</a>( <span>Controller <var>$controller</var></span>, <span>string <var>$modelClass</var></span> )</code>
+			<code><a href="source-class-SearchListener.html#140-150" title="Go to source code">_commonProcess</a>( <span>Controller <var>$controller</var></span>, <span>string <var>$modelClass</var></span> )</code>
 
 			<div class="description short">
 				
@@ -456,7 +464,7 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__setPaginationOptions">#</a>
-			<code><a href="source-class-SearchListener.html#147-158" title="Go to source code">_setPaginationOptions</a>( <span>Controller <var>$controller</var></span>, <span>Model <var>$model</var></span>, <span>array <var>$query</var></span> )</code>
+			<code><a href="source-class-SearchListener.html#152-163" title="Go to source code">_setPaginationOptions</a>( <span>Controller <var>$controller</var></span>, <span>Model <var>$model</var></span>, <span>array <var>$query</var></span> )</code>
 
 			<div class="description short">
 				
@@ -501,7 +509,7 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__setFilterArgs">#</a>
-			<code><a href="source-class-SearchListener.html#160-171" title="Go to source code">_setFilterArgs</a>( <span>Model <var>$model</var></span>, <span>array <var>$filter</var></span> )</code>
+			<code><a href="source-class-SearchListener.html#165-176" title="Go to source code">_setFilterArgs</a>( <span>Model <var>$model</var></span>, <span>array <var>$filter</var></span> )</code>
 
 			<div class="description short">
 				
@@ -535,10 +543,19 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 		</tr>
 		</table>
 
-		<h3>Methods inherited from <a href="class-CrudListener.html#methods">CrudListener</a></h3>
+		<h3>Methods inherited from <a href="class-CrudBaseObject.html#methods">CrudBaseObject</a></h3>
 		<p class="elementList">
-			<code><a href="class-CrudListener.html#___construct">__construct()</a></code>, 
-			<code><a href="class-CrudListener.html#_config">config()</a></code>
+			<code><a href="class-CrudBaseObject.html#___construct">__construct()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__action">_action()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__controller">_controller()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__crud">_crud()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__listener">_listener()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__model">_model()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__request">_request()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__session">_session()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__subject">_subject()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__trigger">_trigger()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#_config">config()</a></code>
 		</p>
 
 
@@ -581,13 +598,9 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 		</tr>
 		</table>
 
-		<h3>Properties inherited from <a href="class-CrudListener.html#properties">CrudListener</a></h3>
+		<h3>Properties inherited from <a href="class-CrudBaseObject.html#properties">CrudBaseObject</a></h3>
 		<p class="elementList">
-			<code><a href="class-CrudListener.html#$_controller"><var>$_controller</var></a></code>, 
-			<code><a href="class-CrudListener.html#$_crud"><var>$_crud</var></a></code>, 
-			<code><a href="class-CrudListener.html#$_model"><var>$_model</var></a></code>, 
-			<code><a href="class-CrudListener.html#$_request"><var>$_request</var></a></code>, 
-			<code><a href="class-CrudListener.html#$_subject"><var>$_subject</var></a></code>
+			<code><a href="class-CrudBaseObject.html#$_container"><var>$_container</var></a></code>
 		</p>
 
 

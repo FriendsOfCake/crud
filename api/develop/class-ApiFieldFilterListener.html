@@ -7,7 +7,7 @@
 	<title>Class ApiFieldFilterListener | jippi/cakephp-crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?2429185786"></script>
+	<script type="text/javascript" src="elementlist.js?688975914"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -70,6 +70,7 @@
 				<li><a href="class-ApiPaginationListener.html">ApiPaginationListener</a></li>
 				<li><a href="class-ApiQueryLogListener.html">ApiQueryLogListener</a></li>
 				<li><a href="class-CrudAction.html">CrudAction</a></li>
+				<li><a href="class-CrudBaseObject.html">CrudBaseObject</a></li>
 				<li><a href="class-CrudComponent.html">CrudComponent</a></li>
 				<li><a href="class-CrudExceptionRenderer.html">CrudExceptionRenderer</a></li>
 				<li><a href="class-CrudJsonView.html">CrudJsonView</a></li>
@@ -118,19 +119,19 @@ list of fields.</p>
 
 <p>For a relation automatically to be joined, it has to be whitelisted first. If
 no whitelist exist, no relations will be added automatically
-<code>$this-&gt;_crud-&gt;action()-&gt;config('apiFieldFilter.models',
-array('list', 'of', 'models'))</code></p>
+<code>$this-&gt;_action()-&gt;config('apiFieldFilter.models', array('list',
+'of', 'models'))</code></p>
 
 <p>You can also whitelist fields, if no whitelist exist for fields, all fields
 are allowed If whitelisting exist, only those fields will be allowed to be
 selected. The fields must be in <code>Model.field</code> format
-<code>$this-&gt;_crud-&gt;action()-&gt;config('apiFieldFilter.fields.whitelist',
+<code>$this-&gt;_action()-&gt;config('apiFieldFilter.fields.whitelist',
 array('Model.id', 'Model.name', 'Model.created'))</code></p>
 
 <p>You can also blacklist fields, if no blacklist exist, no blacklisting is done
 If blacklisting exist, the field will be removed from the field list if present
 The fields must be in <code>Model.field</code> format
-<code>$this-&gt;_crud-&gt;action()-&gt;config('apiFieldFilter.fields.blacklist',
+<code>$this-&gt;_action()-&gt;config('apiFieldFilter.fields.blacklist',
 array('Model.password', 'Model.auth_token', 'Model.created'))</code></p>
 
 <p>This is probably only useful if it's used in conjunction with the
@@ -152,6 +153,13 @@ Object
 		</dd>
 		<dd style="padding-left:30px">
 			<img src="resources/inherit.png" alt="Extended by" />
+			<a href="class-CrudBaseObject.html"><span>CrudBaseObject</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:60px">
+			<img src="resources/inherit.png" alt="Extended by" />
 			<a href="class-CrudListener.html"><span>CrudListener</span></a>
 			
 			 implements 
@@ -159,7 +167,7 @@ Object
 			
 			
 		</dd>
-		<dd style="padding-left:60px">
+		<dd style="padding-left:90px">
 			<img src="resources/inherit.png" alt="Extended by" />
 <b><span>ApiFieldFilterListener</span></b>			
 			
@@ -182,7 +190,7 @@ Object
 
 				<b>Copyright:</b>
 				Christian Winther, 2013<br />
-		<b>Located at</b> <a href="source-class-ApiFieldFilterListener.html#5-346" title="Go to source code">Controller/Crud/Listener/ApiFieldFilterListener.php</a><br />
+		<b>Located at</b> <a href="source-class-ApiFieldFilterListener.html#5-349" title="Go to source code">Controller/Crud/Listener/ApiFieldFilterListener.php</a><br />
 	</div>
 
 
@@ -281,7 +289,7 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_beforePaginate">#</a>
-			<code><a href="source-class-ApiFieldFilterListener.html#79-98" title="Go to source code">beforePaginate</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<code><a href="source-class-ApiFieldFilterListener.html#79-99" title="Go to source code">beforePaginate</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
@@ -323,7 +331,7 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_whitelistFields">#</a>
-			<code><a href="source-class-ApiFieldFilterListener.html#100-114" title="Go to source code">whitelistFields</a>( <span>array <var>$fields</var> = <span class="php-keyword1">null</span></span>, <span>string <var>$action</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-ApiFieldFilterListener.html#101-115" title="Go to source code">whitelistFields</a>( <span>array <var>$fields</var> = <span class="php-keyword1">null</span></span>, <span>string <var>$action</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -369,7 +377,7 @@ fields</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_blacklistFields">#</a>
-			<code><a href="source-class-ApiFieldFilterListener.html#116-130" title="Go to source code">blacklistFields</a>( <span>array <var>$fields</var> = <span class="php-keyword1">null</span></span>, <span>string <var>$action</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-ApiFieldFilterListener.html#117-131" title="Go to source code">blacklistFields</a>( <span>array <var>$fields</var> = <span class="php-keyword1">null</span></span>, <span>string <var>$action</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -415,7 +423,7 @@ fields</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_whitelistModels">#</a>
-			<code><a href="source-class-ApiFieldFilterListener.html#132-146" title="Go to source code">whitelistModels</a>( <span>array <var>$models</var> = <span class="php-keyword1">null</span></span>, <span>string <var>$action</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-ApiFieldFilterListener.html#133-147" title="Go to source code">whitelistModels</a>( <span>array <var>$models</var> = <span class="php-keyword1">null</span></span>, <span>string <var>$action</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -461,7 +469,7 @@ list of fields</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_allowNoFilter">#</a>
-			<code><a href="source-class-ApiFieldFilterListener.html#148-164" title="Go to source code">allowNoFilter</a>( <span>boolean <var>$permit</var> = <span class="php-keyword1">null</span></span>, <span>string <var>$action</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-ApiFieldFilterListener.html#149-165" title="Go to source code">allowNoFilter</a>( <span>boolean <var>$permit</var> = <span class="php-keyword1">null</span></span>, <span>string <var>$action</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -509,7 +517,7 @@ returned?</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__getFields">#</a>
-			<code><a href="source-class-ApiFieldFilterListener.html#166-180" title="Go to source code">_getFields</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<code><a href="source-class-ApiFieldFilterListener.html#167-183" title="Go to source code">_getFields</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
@@ -555,7 +563,7 @@ returned?</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__getFieldsForQuery">#</a>
-			<code><a href="source-class-ApiFieldFilterListener.html#182-208" title="Go to source code">_getFieldsForQuery</a>( <span>Model <var>$model</var></span> )</code>
+			<code><a href="source-class-ApiFieldFilterListener.html#185-211" title="Go to source code">_getFieldsForQuery</a>( <span>Model <var>$model</var></span> )</code>
 
 			<div class="description short">
 				
@@ -599,7 +607,7 @@ GET requests fields</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__getFieldsFromRequest">#</a>
-			<code><a href="source-class-ApiFieldFilterListener.html#210-224" title="Go to source code">_getFieldsFromRequest</a>( )</code>
+			<code><a href="source-class-ApiFieldFilterListener.html#213-227" title="Go to source code">_getFieldsFromRequest</a>( )</code>
 
 			<div class="description short">
 				
@@ -638,7 +646,7 @@ GET requests fields</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__checkField">#</a>
-			<code><a href="source-class-ApiFieldFilterListener.html#226-271" title="Go to source code">_checkField</a>( <span>Model <var>$model</var></span>, <span>string <var>$field</var></span> )</code>
+			<code><a href="source-class-ApiFieldFilterListener.html#229-274" title="Go to source code">_checkField</a>( <span>Model <var>$model</var></span>, <span>string <var>$field</var></span> )</code>
 
 			<div class="description short">
 				
@@ -686,7 +694,7 @@ model</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__associatedModelHasField">#</a>
-			<code><a href="source-class-ApiFieldFilterListener.html#273-293" title="Go to source code">_associatedModelHasField</a>( <span>Model <var>$model</var></span>, <span>string <var>$modelName</var></span>, <span>string <var>$fieldName</var></span> )</code>
+			<code><a href="source-class-ApiFieldFilterListener.html#276-296" title="Go to source code">_associatedModelHasField</a>( <span>Model <var>$model</var></span>, <span>string <var>$modelName</var></span>, <span>string <var>$fieldName</var></span> )</code>
 
 			<div class="description short">
 				
@@ -734,7 +742,7 @@ exist and if it have the field in question</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__whitelistedAssociatedModel">#</a>
-			<code><a href="source-class-ApiFieldFilterListener.html#295-311" title="Go to source code">_whitelistedAssociatedModel</a>( <span>string <var>$modelName</var></span> )</code>
+			<code><a href="source-class-ApiFieldFilterListener.html#298-314" title="Go to source code">_whitelistedAssociatedModel</a>( <span>string <var>$modelName</var></span> )</code>
 
 			<div class="description short">
 				
@@ -780,7 +788,7 @@ demand or not</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__whitelistedField">#</a>
-			<code><a href="source-class-ApiFieldFilterListener.html#313-329" title="Go to source code">_whitelistedField</a>( <span>string <var>$fieldName</var></span> )</code>
+			<code><a href="source-class-ApiFieldFilterListener.html#316-332" title="Go to source code">_whitelistedField</a>( <span>string <var>$fieldName</var></span> )</code>
 
 			<div class="description short">
 				
@@ -825,7 +833,7 @@ selected</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__blacklistedField">#</a>
-			<code><a href="source-class-ApiFieldFilterListener.html#331-344" title="Go to source code">_blacklistedField</a>( <span>string <var>$fieldName</var></span> )</code>
+			<code><a href="source-class-ApiFieldFilterListener.html#334-347" title="Go to source code">_blacklistedField</a>( <span>string <var>$fieldName</var></span> )</code>
 
 			<div class="description short">
 				
@@ -858,10 +866,19 @@ selected</p>
 		</tr>
 		</table>
 
-		<h3>Methods inherited from <a href="class-CrudListener.html#methods">CrudListener</a></h3>
+		<h3>Methods inherited from <a href="class-CrudBaseObject.html#methods">CrudBaseObject</a></h3>
 		<p class="elementList">
-			<code><a href="class-CrudListener.html#___construct">__construct()</a></code>, 
-			<code><a href="class-CrudListener.html#_config">config()</a></code>
+			<code><a href="class-CrudBaseObject.html#___construct">__construct()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__action">_action()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__controller">_controller()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__crud">_crud()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__listener">_listener()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__model">_model()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__request">_request()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__session">_session()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__subject">_subject()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__trigger">_trigger()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#_config">config()</a></code>
 		</p>
 
 
@@ -904,14 +921,10 @@ selected</p>
 		</tr>
 		</table>
 
-		<h3>Properties inherited from <a href="class-CrudListener.html#properties">CrudListener</a></h3>
+		<h3>Properties inherited from <a href="class-CrudBaseObject.html#properties">CrudBaseObject</a></h3>
 		<p class="elementList">
-			<code><a href="class-CrudListener.html#$_controller"><var>$_controller</var></a></code>, 
-			<code><a href="class-CrudListener.html#$_crud"><var>$_crud</var></a></code>, 
-			<code><a href="class-CrudListener.html#$_model"><var>$_model</var></a></code>, 
-			<code><a href="class-CrudListener.html#$_request"><var>$_request</var></a></code>, 
-			<code><a href="class-CrudListener.html#$_settings"><var>$_settings</var></a></code>, 
-			<code><a href="class-CrudListener.html#$_subject"><var>$_subject</var></a></code>
+			<code><a href="class-CrudBaseObject.html#$_container"><var>$_container</var></a></code>, 
+			<code><a href="class-CrudBaseObject.html#$_settings"><var>$_settings</var></a></code>
 		</p>
 
 

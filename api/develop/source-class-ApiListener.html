@@ -8,7 +8,7 @@
 	<title>File Controller/Crud/Listener/ApiListener.php | jippi/cakephp-crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?2429185786"></script>
+	<script type="text/javascript" src="elementlist.js?688975914"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -72,6 +72,7 @@
 				<li><a href="class-ApiPaginationListener.html">ApiPaginationListener</a></li>
 				<li><a href="class-ApiQueryLogListener.html">ApiQueryLogListener</a></li>
 				<li><a href="class-CrudAction.html">CrudAction</a></li>
+				<li><a href="class-CrudBaseObject.html">CrudBaseObject</a></li>
 				<li><a href="class-CrudComponent.html">CrudComponent</a></li>
 				<li><a href="class-CrudExceptionRenderer.html">CrudExceptionRenderer</a></li>
 				<li><a href="class-CrudJsonView.html">CrudJsonView</a></li>
@@ -153,7 +154,7 @@
 </span><span id="45" class="l"><a class="l" href="#45"> 45 </a>        <span class="php-var">$this</span>-&gt;_setupDetectors();
 </span><span id="46" class="l"><a class="l" href="#46"> 46 </a>
 </span><span id="47" class="l"><a class="l" href="#47"> 47 </a>        <span class="php-comment">// Don't do anything if we aren't in an API request</span>
-</span><span id="48" class="l"><a class="l" href="#48"> 48 </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$this</span>-&gt;_request-&gt;is(<span class="php-quote">'api'</span>)) {
+</span><span id="48" class="l"><a class="l" href="#48"> 48 </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$this</span>-&gt;_request()-&gt;is(<span class="php-quote">'api'</span>)) {
 </span><span id="49" class="l"><a class="l" href="#49"> 49 </a>            <span class="php-keyword1">return</span>;
 </span><span id="50" class="l"><a class="l" href="#50"> 50 </a>        }
 </span><span id="51" class="l"><a class="l" href="#51"> 51 </a>
@@ -162,7 +163,7 @@
 </span><span id="54" class="l"><a class="l" href="#54"> 54 </a>        Configure::write(<span class="php-quote">'Exception.renderer'</span>, <span class="php-quote">'Crud.CrudExceptionRenderer'</span>);
 </span><span id="55" class="l"><a class="l" href="#55"> 55 </a>
 </span><span id="56" class="l"><a class="l" href="#56"> 56 </a>        <span class="php-comment">// Enforce a few REST rules before we do any heavy lifting</span>
-</span><span id="57" class="l"><a class="l" href="#57"> 57 </a>        <span class="php-var">$this</span>-&gt;_enforceRequestType(<span class="php-var">$event</span>-&gt;subject-&gt;action, <span class="php-var">$event</span>-&gt;subject-&gt;request);
+</span><span id="57" class="l"><a class="l" href="#57"> 57 </a>        <span class="php-var">$this</span>-&gt;_enforceRequestType(<span class="php-var">$event</span>-&gt;subject-&gt;action, <span class="php-var">$this</span>-&gt;_request());
 </span><span id="58" class="l"><a class="l" href="#58"> 58 </a>    }
 </span><span id="59" class="l"><a class="l" href="#59"> 59 </a>
 </span><span id="60" class="l"><a class="l" href="#60"> 60 </a><span class="php-comment">/**
@@ -172,234 +173,234 @@
 </span></span><span id="64" class="l"><a class="l" href="#64"> 64 </a><span class="php-comment"> * @return void|CakeResponse
 </span></span><span id="65" class="l"><a class="l" href="#65"> 65 </a><span class="php-comment"> */</span>
 </span><span id="66" class="l"><a class="l" href="#66"> 66 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_afterSave" href="#_afterSave">afterSave</a>(CakeEvent <span class="php-var">$event</span>) {
-</span><span id="67" class="l"><a class="l" href="#67"> 67 </a>        <span class="php-comment">// Don't do anything if we aren't in an API request</span>
-</span><span id="68" class="l"><a class="l" href="#68"> 68 </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$this</span>-&gt;_request-&gt;is(<span class="php-quote">'api'</span>)) {
-</span><span id="69" class="l"><a class="l" href="#69"> 69 </a>            <span class="php-keyword1">return</span>;
-</span><span id="70" class="l"><a class="l" href="#70"> 70 </a>        }
-</span><span id="71" class="l"><a class="l" href="#71"> 71 </a>
-</span><span id="72" class="l"><a class="l" href="#72"> 72 </a>        <span class="php-comment">// Publish the success based on the CrudSubject's property</span>
-</span><span id="73" class="l"><a class="l" href="#73"> 73 </a>        <span class="php-var">$this</span>-&gt;_controller-&gt;set(<span class="php-quote">'success'</span>, <span class="php-var">$event</span>-&gt;subject-&gt;success);
+</span><span id="67" class="l"><a class="l" href="#67"> 67 </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$this</span>-&gt;_request()-&gt;is(<span class="php-quote">'api'</span>)) {
+</span><span id="68" class="l"><a class="l" href="#68"> 68 </a>            <span class="php-keyword1">return</span>;
+</span><span id="69" class="l"><a class="l" href="#69"> 69 </a>        }
+</span><span id="70" class="l"><a class="l" href="#70"> 70 </a>
+</span><span id="71" class="l"><a class="l" href="#71"> 71 </a>        <span class="php-var">$model</span> = <span class="php-var">$this</span>-&gt;_model();
+</span><span id="72" class="l"><a class="l" href="#72"> 72 </a>        <span class="php-var">$controller</span> = <span class="php-var">$this</span>-&gt;_controller();
+</span><span id="73" class="l"><a class="l" href="#73"> 73 </a>        <span class="php-var">$controller</span>-&gt;set(<span class="php-quote">'success'</span>, <span class="php-var">$event</span>-&gt;subject-&gt;success);
 </span><span id="74" class="l"><a class="l" href="#74"> 74 </a>
-</span><span id="75" class="l"><a class="l" href="#75"> 75 </a>        <span class="php-var">$model</span> = <span class="php-var">$event</span>-&gt;subject-&gt;model;
-</span><span id="76" class="l"><a class="l" href="#76"> 76 </a>        <span class="php-comment">// If we had an error in our save</span>
-</span><span id="77" class="l"><a class="l" href="#77"> 77 </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$event</span>-&gt;subject-&gt;success) {
-</span><span id="78" class="l"><a class="l" href="#78"> 78 </a>            <span class="php-var">$event</span>-&gt;subject-&gt;response-&gt;statusCode(<span class="php-num">400</span>);
-</span><span id="79" class="l"><a class="l" href="#79"> 79 </a>            <span class="php-comment">// Set the data to be the validationErrors from the model</span>
-</span><span id="80" class="l"><a class="l" href="#80"> 80 </a>            <span class="php-var">$this</span>-&gt;_controller-&gt;set(<span class="php-quote">'data'</span>, <span class="php-var">$model</span>-&gt;validationErrors);
-</span><span id="81" class="l"><a class="l" href="#81"> 81 </a>            <span class="php-keyword1">return</span>;
-</span><span id="82" class="l"><a class="l" href="#82"> 82 </a>        }
-</span><span id="83" class="l"><a class="l" href="#83"> 83 </a>
-</span><span id="84" class="l"><a class="l" href="#84"> 84 </a>        <span class="php-comment">// Push the model ID back as response body if it's not set already</span>
-</span><span id="85" class="l"><a class="l" href="#85"> 85 </a>        <span class="php-keyword1">if</span> (<span class="php-keyword1">empty</span>(<span class="php-var">$this</span>-&gt;_controller-&gt;viewVars[<span class="php-quote">'data'</span>])) {
-</span><span id="86" class="l"><a class="l" href="#86"> 86 </a>            <span class="php-var">$this</span>-&gt;_controller-&gt;set(<span class="php-quote">'data'</span>, <span class="php-keyword1">array</span>(<span class="php-var">$model</span>-&gt;alias =&gt; <span class="php-keyword1">array</span>(<span class="php-var">$model</span>-&gt;primaryKey =&gt; <span class="php-var">$event</span>-&gt;subject-&gt;id)));
-</span><span id="87" class="l"><a class="l" href="#87"> 87 </a>        }
-</span><span id="88" class="l"><a class="l" href="#88"> 88 </a>
-</span><span id="89" class="l"><a class="l" href="#89"> 89 </a>        <span class="php-comment">// Render the view</span>
-</span><span id="90" class="l"><a class="l" href="#90"> 90 </a>        <span class="php-var">$this</span>-&gt;beforeRender(<span class="php-var">$event</span>);
-</span><span id="91" class="l"><a class="l" href="#91"> 91 </a>        <span class="php-var">$response</span> = <span class="php-var">$this</span>-&gt;_controller-&gt;render();
-</span><span id="92" class="l"><a class="l" href="#92"> 92 </a>
-</span><span id="93" class="l"><a class="l" href="#93"> 93 </a>        <span class="php-comment">// REST says newly created objects should get a &quot;201 Created&quot; response code back</span>
-</span><span id="94" class="l"><a class="l" href="#94"> 94 </a>        <span class="php-keyword1">if</span> (<span class="php-var">$event</span>-&gt;subject-&gt;created) {
-</span><span id="95" class="l"><a class="l" href="#95"> 95 </a>            <span class="php-var">$response</span>-&gt;statusCode(<span class="php-num">201</span>);
-</span><span id="96" class="l"><a class="l" href="#96"> 96 </a>        } <span class="php-keyword1">else</span> {
-</span><span id="97" class="l"><a class="l" href="#97"> 97 </a>            <span class="php-var">$response</span>-&gt;statusCode(<span class="php-num">301</span>);
-</span><span id="98" class="l"><a class="l" href="#98"> 98 </a>        }
-</span><span id="99" class="l"><a class="l" href="#99"> 99 </a>
-</span><span id="100" class="l"><a class="l" href="#100">100 </a>        <span class="php-comment">// Send a redirect header for the 'view' action</span>
-</span><span id="101" class="l"><a class="l" href="#101">101 </a>        <span class="php-var">$response</span>-&gt;<span class="php-keyword2">header</span>(<span class="php-quote">'Location'</span>, Router::url(<span class="php-keyword1">array</span>(<span class="php-quote">'action'</span> =&gt; <span class="php-quote">'view'</span>, <span class="php-var">$event</span>-&gt;subject-&gt;id), <span class="php-keyword1">true</span>));
-</span><span id="102" class="l"><a class="l" href="#102">102 </a>        <span class="php-keyword1">return</span> <span class="php-var">$response</span>;
-</span><span id="103" class="l"><a class="l" href="#103">103 </a>    }
-</span><span id="104" class="l"><a class="l" href="#104">104 </a>
-</span><span id="105" class="l"><a class="l" href="#105">105 </a><span class="php-comment">/**
-</span></span><span id="106" class="l"><a class="l" href="#106">106 </a><span class="php-comment"> * afterDelete
-</span></span><span id="107" class="l"><a class="l" href="#107">107 </a><span class="php-comment"> *
-</span></span><span id="108" class="l"><a class="l" href="#108">108 </a><span class="php-comment"> * @param CakeEvent $event
-</span></span><span id="109" class="l"><a class="l" href="#109">109 </a><span class="php-comment"> * @return void
-</span></span><span id="110" class="l"><a class="l" href="#110">110 </a><span class="php-comment"> */</span>
-</span><span id="111" class="l"><a class="l" href="#111">111 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_afterDelete" href="#_afterDelete">afterDelete</a>(CakeEvent <span class="php-var">$event</span>) {
-</span><span id="112" class="l"><a class="l" href="#112">112 </a>        <span class="php-comment">// Don't do anything if we aren't in an API request</span>
-</span><span id="113" class="l"><a class="l" href="#113">113 </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$this</span>-&gt;_request-&gt;is(<span class="php-quote">'api'</span>)) {
-</span><span id="114" class="l"><a class="l" href="#114">114 </a>            <span class="php-keyword1">return</span>;
-</span><span id="115" class="l"><a class="l" href="#115">115 </a>        }
+</span><span id="75" class="l"><a class="l" href="#75"> 75 </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$event</span>-&gt;subject-&gt;success) {
+</span><span id="76" class="l"><a class="l" href="#76"> 76 </a>            <span class="php-var">$event</span>-&gt;subject-&gt;response-&gt;statusCode(<span class="php-num">400</span>);
+</span><span id="77" class="l"><a class="l" href="#77"> 77 </a>            <span class="php-var">$controller</span>-&gt;set(<span class="php-quote">'data'</span>, <span class="php-var">$model</span>-&gt;validationErrors);
+</span><span id="78" class="l"><a class="l" href="#78"> 78 </a>            <span class="php-keyword1">return</span>;
+</span><span id="79" class="l"><a class="l" href="#79"> 79 </a>        }
+</span><span id="80" class="l"><a class="l" href="#80"> 80 </a>
+</span><span id="81" class="l"><a class="l" href="#81"> 81 </a>        <span class="php-keyword1">if</span> (<span class="php-keyword1">empty</span>(<span class="php-var">$controller</span>-&gt;viewVars[<span class="php-quote">'data'</span>])) {
+</span><span id="82" class="l"><a class="l" href="#82"> 82 </a>            <span class="php-var">$controller</span>-&gt;set(<span class="php-quote">'data'</span>, <span class="php-keyword1">array</span>(<span class="php-var">$model</span>-&gt;alias =&gt; <span class="php-keyword1">array</span>(<span class="php-var">$model</span>-&gt;primaryKey =&gt; <span class="php-var">$event</span>-&gt;subject-&gt;id)));
+</span><span id="83" class="l"><a class="l" href="#83"> 83 </a>        }
+</span><span id="84" class="l"><a class="l" href="#84"> 84 </a>
+</span><span id="85" class="l"><a class="l" href="#85"> 85 </a>        <span class="php-var">$this</span>-&gt;beforeRender(<span class="php-var">$event</span>);
+</span><span id="86" class="l"><a class="l" href="#86"> 86 </a>        <span class="php-var">$response</span> = <span class="php-var">$controller</span>-&gt;render();
+</span><span id="87" class="l"><a class="l" href="#87"> 87 </a>
+</span><span id="88" class="l"><a class="l" href="#88"> 88 </a>        <span class="php-keyword1">if</span> (<span class="php-var">$event</span>-&gt;subject-&gt;created) {
+</span><span id="89" class="l"><a class="l" href="#89"> 89 </a>            <span class="php-var">$response</span>-&gt;statusCode(<span class="php-num">201</span>);
+</span><span id="90" class="l"><a class="l" href="#90"> 90 </a>        } <span class="php-keyword1">else</span> {
+</span><span id="91" class="l"><a class="l" href="#91"> 91 </a>            <span class="php-var">$response</span>-&gt;statusCode(<span class="php-num">301</span>);
+</span><span id="92" class="l"><a class="l" href="#92"> 92 </a>        }
+</span><span id="93" class="l"><a class="l" href="#93"> 93 </a>
+</span><span id="94" class="l"><a class="l" href="#94"> 94 </a>        <span class="php-var">$response</span>-&gt;<span class="php-keyword2">header</span>(<span class="php-quote">'Location'</span>, Router::url(<span class="php-keyword1">array</span>(<span class="php-quote">'action'</span> =&gt; <span class="php-quote">'view'</span>, <span class="php-var">$event</span>-&gt;subject-&gt;id), <span class="php-keyword1">true</span>));
+</span><span id="95" class="l"><a class="l" href="#95"> 95 </a>        <span class="php-keyword1">return</span> <span class="php-var">$response</span>;
+</span><span id="96" class="l"><a class="l" href="#96"> 96 </a>    }
+</span><span id="97" class="l"><a class="l" href="#97"> 97 </a>
+</span><span id="98" class="l"><a class="l" href="#98"> 98 </a><span class="php-comment">/**
+</span></span><span id="99" class="l"><a class="l" href="#99"> 99 </a><span class="php-comment"> * afterDelete
+</span></span><span id="100" class="l"><a class="l" href="#100">100 </a><span class="php-comment"> *
+</span></span><span id="101" class="l"><a class="l" href="#101">101 </a><span class="php-comment"> * @param CakeEvent $event
+</span></span><span id="102" class="l"><a class="l" href="#102">102 </a><span class="php-comment"> * @return void
+</span></span><span id="103" class="l"><a class="l" href="#103">103 </a><span class="php-comment"> */</span>
+</span><span id="104" class="l"><a class="l" href="#104">104 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_afterDelete" href="#_afterDelete">afterDelete</a>(CakeEvent <span class="php-var">$event</span>) {
+</span><span id="105" class="l"><a class="l" href="#105">105 </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$this</span>-&gt;_request()-&gt;is(<span class="php-quote">'api'</span>)) {
+</span><span id="106" class="l"><a class="l" href="#106">106 </a>            <span class="php-keyword1">return</span>;
+</span><span id="107" class="l"><a class="l" href="#107">107 </a>        }
+</span><span id="108" class="l"><a class="l" href="#108">108 </a>
+</span><span id="109" class="l"><a class="l" href="#109">109 </a>        <span class="php-var">$event</span>-&gt;stopPropagation();
+</span><span id="110" class="l"><a class="l" href="#110">110 </a>
+</span><span id="111" class="l"><a class="l" href="#111">111 </a>        <span class="php-var">$this</span>-&gt;beforeRender(<span class="php-var">$event</span>);
+</span><span id="112" class="l"><a class="l" href="#112">112 </a>
+</span><span id="113" class="l"><a class="l" href="#113">113 </a>        <span class="php-var">$controller</span> = <span class="php-var">$this</span>-&gt;_controller();
+</span><span id="114" class="l"><a class="l" href="#114">114 </a>        <span class="php-var">$controller</span>-&gt;set(<span class="php-quote">'success'</span>, <span class="php-var">$event</span>-&gt;subject-&gt;success);
+</span><span id="115" class="l"><a class="l" href="#115">115 </a>        <span class="php-var">$controller</span>-&gt;set(<span class="php-quote">'data'</span>, <span class="php-keyword1">null</span>);
 </span><span id="116" class="l"><a class="l" href="#116">116 </a>
-</span><span id="117" class="l"><a class="l" href="#117">117 </a>        <span class="php-var">$event</span>-&gt;stopPropagation();
-</span><span id="118" class="l"><a class="l" href="#118">118 </a>
-</span><span id="119" class="l"><a class="l" href="#119">119 </a>        <span class="php-var">$this</span>-&gt;beforeRender(<span class="php-var">$event</span>);
-</span><span id="120" class="l"><a class="l" href="#120">120 </a>
-</span><span id="121" class="l"><a class="l" href="#121">121 </a>        <span class="php-var">$this</span>-&gt;_controller-&gt;set(<span class="php-quote">'success'</span>, <span class="php-var">$event</span>-&gt;subject-&gt;success);
-</span><span id="122" class="l"><a class="l" href="#122">122 </a>        <span class="php-var">$this</span>-&gt;_controller-&gt;set(<span class="php-quote">'data'</span>, <span class="php-keyword1">null</span>);
-</span><span id="123" class="l"><a class="l" href="#123">123 </a>
-</span><span id="124" class="l"><a class="l" href="#124">124 </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;_controller-&gt;render();
-</span><span id="125" class="l"><a class="l" href="#125">125 </a>    }
-</span><span id="126" class="l"><a class="l" href="#126">126 </a>
-</span><span id="127" class="l"><a class="l" href="#127">127 </a><span class="php-comment">/**
-</span></span><span id="128" class="l"><a class="l" href="#128">128 </a><span class="php-comment"> * Selects an specific Crud view class to render the output
-</span></span><span id="129" class="l"><a class="l" href="#129">129 </a><span class="php-comment"> *
-</span></span><span id="130" class="l"><a class="l" href="#130">130 </a><span class="php-comment"> * @param CakeEvent $event
-</span></span><span id="131" class="l"><a class="l" href="#131">131 </a><span class="php-comment"> * @return void
-</span></span><span id="132" class="l"><a class="l" href="#132">132 </a><span class="php-comment"> */</span>
-</span><span id="133" class="l"><a class="l" href="#133">133 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_beforeRender" href="#_beforeRender">beforeRender</a>(CakeEvent <span class="php-var">$event</span>) {
-</span><span id="134" class="l"><a class="l" href="#134">134 </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$this</span>-&gt;_request-&gt;is(<span class="php-quote">'api'</span>)) {
-</span><span id="135" class="l"><a class="l" href="#135">135 </a>            <span class="php-keyword1">return</span>;
-</span><span id="136" class="l"><a class="l" href="#136">136 </a>        }
-</span><span id="137" class="l"><a class="l" href="#137">137 </a>
-</span><span id="138" class="l"><a class="l" href="#138">138 </a>        <span class="php-comment">// Copy the _serialize configuration from the CrudAction config</span>
-</span><span id="139" class="l"><a class="l" href="#139">139 </a>        <span class="php-var">$action</span> = <span class="php-var">$event</span>-&gt;subject-&gt;crud-&gt;action();
+</span><span id="117" class="l"><a class="l" href="#117">117 </a>        <span class="php-keyword1">return</span> <span class="php-var">$controller</span>-&gt;render();
+</span><span id="118" class="l"><a class="l" href="#118">118 </a>    }
+</span><span id="119" class="l"><a class="l" href="#119">119 </a>
+</span><span id="120" class="l"><a class="l" href="#120">120 </a><span class="php-comment">/**
+</span></span><span id="121" class="l"><a class="l" href="#121">121 </a><span class="php-comment"> * Selects an specific Crud view class to render the output
+</span></span><span id="122" class="l"><a class="l" href="#122">122 </a><span class="php-comment"> *
+</span></span><span id="123" class="l"><a class="l" href="#123">123 </a><span class="php-comment"> * @param CakeEvent $event
+</span></span><span id="124" class="l"><a class="l" href="#124">124 </a><span class="php-comment"> * @return void
+</span></span><span id="125" class="l"><a class="l" href="#125">125 </a><span class="php-comment"> */</span>
+</span><span id="126" class="l"><a class="l" href="#126">126 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_beforeRender" href="#_beforeRender">beforeRender</a>(CakeEvent <span class="php-var">$event</span>) {
+</span><span id="127" class="l"><a class="l" href="#127">127 </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$this</span>-&gt;_request()-&gt;is(<span class="php-quote">'api'</span>)) {
+</span><span id="128" class="l"><a class="l" href="#128">128 </a>            <span class="php-keyword1">return</span>;
+</span><span id="129" class="l"><a class="l" href="#129">129 </a>        }
+</span><span id="130" class="l"><a class="l" href="#130">130 </a>
+</span><span id="131" class="l"><a class="l" href="#131">131 </a>        <span class="php-var">$action</span> = <span class="php-var">$this</span>-&gt;_action();
+</span><span id="132" class="l"><a class="l" href="#132">132 </a>
+</span><span id="133" class="l"><a class="l" href="#133">133 </a>        <span class="php-var">$serialize</span> = <span class="php-keyword1">array</span>();
+</span><span id="134" class="l"><a class="l" href="#134">134 </a>        <span class="php-var">$serialize</span>[] = <span class="php-quote">'success'</span>;
+</span><span id="135" class="l"><a class="l" href="#135">135 </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">method_exists</span>(<span class="php-var">$action</span>, <span class="php-quote">'viewVar'</span>)) {
+</span><span id="136" class="l"><a class="l" href="#136">136 </a>            <span class="php-var">$serialize</span>[<span class="php-quote">'data'</span>] = <span class="php-var">$action</span>-&gt;viewVar();
+</span><span id="137" class="l"><a class="l" href="#137">137 </a>        } <span class="php-keyword1">else</span> {
+</span><span id="138" class="l"><a class="l" href="#138">138 </a>            <span class="php-var">$serialize</span>[] = <span class="php-quote">'data'</span>;
+</span><span id="139" class="l"><a class="l" href="#139">139 </a>        }
 </span><span id="140" class="l"><a class="l" href="#140">140 </a>
-</span><span id="141" class="l"><a class="l" href="#141">141 </a>        <span class="php-var">$serialize</span> = <span class="php-keyword1">array</span>();
-</span><span id="142" class="l"><a class="l" href="#142">142 </a>        <span class="php-var">$serialize</span>[] = <span class="php-quote">'success'</span>;
-</span><span id="143" class="l"><a class="l" href="#143">143 </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">method_exists</span>(<span class="php-var">$action</span>, <span class="php-quote">'viewVar'</span>)) {
-</span><span id="144" class="l"><a class="l" href="#144">144 </a>            <span class="php-var">$serialize</span>[<span class="php-quote">'data'</span>] = <span class="php-var">$action</span>-&gt;viewVar();
-</span><span id="145" class="l"><a class="l" href="#145">145 </a>        } <span class="php-keyword1">else</span> {
-</span><span id="146" class="l"><a class="l" href="#146">146 </a>            <span class="php-var">$serialize</span>[] = <span class="php-quote">'data'</span>;
-</span><span id="147" class="l"><a class="l" href="#147">147 </a>        }
-</span><span id="148" class="l"><a class="l" href="#148">148 </a>
-</span><span id="149" class="l"><a class="l" href="#149">149 </a>        <span class="php-var">$serialize</span> = <span class="php-keyword2">array_merge</span>(<span class="php-var">$serialize</span>, <span class="php-var">$action</span>-&gt;config(<span class="php-quote">'serialize'</span>));
-</span><span id="150" class="l"><a class="l" href="#150">150 </a>
-</span><span id="151" class="l"><a class="l" href="#151">151 </a>        <span class="php-var">$this</span>-&gt;_controller-&gt;set(<span class="php-quote">'_serialize'</span>, <span class="php-var">$serialize</span>);
-</span><span id="152" class="l"><a class="l" href="#152">152 </a>
-</span><span id="153" class="l"><a class="l" href="#153">153 </a>        <span class="php-comment">// Make sure to use Cruds own View renderer for json and xml</span>
-</span><span id="154" class="l"><a class="l" href="#154">154 </a>        <span class="php-comment">// @TODO: make the viewClassMap configurable</span>
-</span><span id="155" class="l"><a class="l" href="#155">155 </a>        <span class="php-var">$this</span>-&gt;_controller-&gt;RequestHandler-&gt;viewClassMap(<span class="php-quote">'json'</span>, <span class="php-quote">'Crud.CrudJson'</span>);
-</span><span id="156" class="l"><a class="l" href="#156">156 </a>        <span class="php-var">$this</span>-&gt;_controller-&gt;RequestHandler-&gt;viewClassMap(<span class="php-quote">'xml'</span>, <span class="php-quote">'Crud.CrudXml'</span>);
-</span><span id="157" class="l"><a class="l" href="#157">157 </a>        <span class="php-var">$this</span>-&gt;_controller-&gt;RequestHandler-&gt;renderAs(<span class="php-var">$this</span>-&gt;_controller, <span class="php-var">$this</span>-&gt;_controller-&gt;RequestHandler-&gt;ext);
-</span><span id="158" class="l"><a class="l" href="#158">158 </a>    }
-</span><span id="159" class="l"><a class="l" href="#159">159 </a>
-</span><span id="160" class="l"><a class="l" href="#160">160 </a><span class="php-comment">/**
-</span></span><span id="161" class="l"><a class="l" href="#161">161 </a><span class="php-comment"> * setFlash
-</span></span><span id="162" class="l"><a class="l" href="#162">162 </a><span class="php-comment"> *
-</span></span><span id="163" class="l"><a class="l" href="#163">163 </a><span class="php-comment"> * An api request doesn't need flash messages - so stop them being processed
-</span></span><span id="164" class="l"><a class="l" href="#164">164 </a><span class="php-comment"> *
-</span></span><span id="165" class="l"><a class="l" href="#165">165 </a><span class="php-comment"> * @param CakeEvent $event
-</span></span><span id="166" class="l"><a class="l" href="#166">166 </a><span class="php-comment"> */</span>
-</span><span id="167" class="l"><a class="l" href="#167">167 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_setFlash" href="#_setFlash">setFlash</a>(CakeEvent <span class="php-var">$event</span>) {
-</span><span id="168" class="l"><a class="l" href="#168">168 </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$this</span>-&gt;_request-&gt;is(<span class="php-quote">'api'</span>)) {
-</span><span id="169" class="l"><a class="l" href="#169">169 </a>            <span class="php-keyword1">return</span>;
-</span><span id="170" class="l"><a class="l" href="#170">170 </a>        }
-</span><span id="171" class="l"><a class="l" href="#171">171 </a>
-</span><span id="172" class="l"><a class="l" href="#172">172 </a>        <span class="php-var">$event</span>-&gt;stopPropagation();
-</span><span id="173" class="l"><a class="l" href="#173">173 </a>    }
-</span><span id="174" class="l"><a class="l" href="#174">174 </a>
-</span><span id="175" class="l"><a class="l" href="#175">175 </a><span class="php-comment">/**
-</span></span><span id="176" class="l"><a class="l" href="#176">176 </a><span class="php-comment"> * Setup detectors for JSON and XML
-</span></span><span id="177" class="l"><a class="l" href="#177">177 </a><span class="php-comment"> *
-</span></span><span id="178" class="l"><a class="l" href="#178">178 </a><span class="php-comment"> * Both detects on two signals:
-</span></span><span id="179" class="l"><a class="l" href="#179">179 </a><span class="php-comment"> *  1) The extension in the request (e.g. /users/index.json)
-</span></span><span id="180" class="l"><a class="l" href="#180">180 </a><span class="php-comment"> *  2) The accepts header from the client
-</span></span><span id="181" class="l"><a class="l" href="#181">181 </a><span class="php-comment"> *
-</span></span><span id="182" class="l"><a class="l" href="#182">182 </a><span class="php-comment"> * There is a combined request detector for both 'json' and 'xml' called
-</span></span><span id="183" class="l"><a class="l" href="#183">183 </a><span class="php-comment"> * 'api'
-</span></span><span id="184" class="l"><a class="l" href="#184">184 </a><span class="php-comment"> *
-</span></span><span id="185" class="l"><a class="l" href="#185">185 </a><span class="php-comment"> * @return void
-</span></span><span id="186" class="l"><a class="l" href="#186">186 </a><span class="php-comment"> */</span>
-</span><span id="187" class="l"><a class="l" href="#187">187 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__setupDetectors" href="#__setupDetectors">_setupDetectors</a>() {
-</span><span id="188" class="l"><a class="l" href="#188">188 </a>        <span class="php-var">$this</span>-&gt;_request-&gt;addDetector(<span class="php-quote">'json'</span>, <span class="php-keyword1">array</span>(<span class="php-quote">'callback'</span> =&gt; <span class="php-keyword1">function</span>(CakeRequest <span class="php-var">$request</span>) {
-</span><span id="189" class="l"><a class="l" href="#189">189 </a>            <span class="php-keyword1">if</span> (<span class="php-keyword1">isset</span>(<span class="php-var">$request</span>-&gt;params[<span class="php-quote">'ext'</span>]) &amp;&amp; <span class="php-var">$request</span>-&gt;params[<span class="php-quote">'ext'</span>] === <span class="php-quote">'json'</span>) {
-</span><span id="190" class="l"><a class="l" href="#190">190 </a>                <span class="php-keyword1">return</span> <span class="php-keyword1">true</span>;
-</span><span id="191" class="l"><a class="l" href="#191">191 </a>            }
-</span><span id="192" class="l"><a class="l" href="#192">192 </a>
-</span><span id="193" class="l"><a class="l" href="#193">193 </a>            <span class="php-keyword1">return</span> <span class="php-var">$request</span>-&gt;accepts(<span class="php-quote">'application/json'</span>);
-</span><span id="194" class="l"><a class="l" href="#194">194 </a>        }));
-</span><span id="195" class="l"><a class="l" href="#195">195 </a>
-</span><span id="196" class="l"><a class="l" href="#196">196 </a>        <span class="php-var">$this</span>-&gt;_request-&gt;addDetector(<span class="php-quote">'xml'</span>, <span class="php-keyword1">array</span>(<span class="php-quote">'callback'</span> =&gt; <span class="php-keyword1">function</span>(CakeRequest <span class="php-var">$request</span>) {
-</span><span id="197" class="l"><a class="l" href="#197">197 </a>            <span class="php-keyword1">if</span> (<span class="php-keyword1">isset</span>(<span class="php-var">$request</span>-&gt;params[<span class="php-quote">'ext'</span>]) &amp;&amp; <span class="php-var">$request</span>-&gt;params[<span class="php-quote">'ext'</span>] === <span class="php-quote">'xml'</span>) {
-</span><span id="198" class="l"><a class="l" href="#198">198 </a>                <span class="php-keyword1">return</span> <span class="php-keyword1">true</span>;
-</span><span id="199" class="l"><a class="l" href="#199">199 </a>            }
-</span><span id="200" class="l"><a class="l" href="#200">200 </a>
-</span><span id="201" class="l"><a class="l" href="#201">201 </a>            <span class="php-keyword1">return</span> <span class="php-var">$request</span>-&gt;accepts(<span class="php-quote">'text/xml'</span>);
-</span><span id="202" class="l"><a class="l" href="#202">202 </a>        }));
-</span><span id="203" class="l"><a class="l" href="#203">203 </a>
-</span><span id="204" class="l"><a class="l" href="#204">204 </a>        <span class="php-var">$this</span>-&gt;_request-&gt;addDetector(<span class="php-quote">'api'</span>, <span class="php-keyword1">array</span>(<span class="php-quote">'callback'</span> =&gt; <span class="php-keyword1">function</span>(CakeRequest <span class="php-var">$request</span>) {
-</span><span id="205" class="l"><a class="l" href="#205">205 </a>            <span class="php-keyword1">return</span> <span class="php-var">$request</span>-&gt;is(<span class="php-quote">'json'</span>) || <span class="php-var">$request</span>-&gt;is(<span class="php-quote">'xml'</span>);
-</span><span id="206" class="l"><a class="l" href="#206">206 </a>        }));
-</span><span id="207" class="l"><a class="l" href="#207">207 </a>    }
-</span><span id="208" class="l"><a class="l" href="#208">208 </a>
-</span><span id="209" class="l"><a class="l" href="#209">209 </a><span class="php-comment">/**
-</span></span><span id="210" class="l"><a class="l" href="#210">210 </a><span class="php-comment"> * Enforce REST HTTP request types
+</span><span id="141" class="l"><a class="l" href="#141">141 </a>        <span class="php-var">$serialize</span> = <span class="php-keyword2">array_merge</span>(<span class="php-var">$serialize</span>, <span class="php-var">$action</span>-&gt;config(<span class="php-quote">'serialize'</span>));
+</span><span id="142" class="l"><a class="l" href="#142">142 </a>
+</span><span id="143" class="l"><a class="l" href="#143">143 </a>        <span class="php-var">$controller</span> = <span class="php-var">$this</span>-&gt;_controller();
+</span><span id="144" class="l"><a class="l" href="#144">144 </a>        <span class="php-var">$controller</span>-&gt;set(<span class="php-quote">'_serialize'</span>, <span class="php-var">$serialize</span>);
+</span><span id="145" class="l"><a class="l" href="#145">145 </a>
+</span><span id="146" class="l"><a class="l" href="#146">146 </a>        <span class="php-comment">// @TODO: make the viewClassMap configurable</span>
+</span><span id="147" class="l"><a class="l" href="#147">147 </a>        <span class="php-var">$controller</span>-&gt;RequestHandler-&gt;viewClassMap(<span class="php-quote">'json'</span>, <span class="php-quote">'Crud.CrudJson'</span>);
+</span><span id="148" class="l"><a class="l" href="#148">148 </a>        <span class="php-var">$controller</span>-&gt;RequestHandler-&gt;viewClassMap(<span class="php-quote">'xml'</span>, <span class="php-quote">'Crud.CrudXml'</span>);
+</span><span id="149" class="l"><a class="l" href="#149">149 </a>        <span class="php-var">$controller</span>-&gt;RequestHandler-&gt;renderAs(<span class="php-var">$controller</span>, <span class="php-var">$controller</span>-&gt;RequestHandler-&gt;ext);
+</span><span id="150" class="l"><a class="l" href="#150">150 </a>    }
+</span><span id="151" class="l"><a class="l" href="#151">151 </a>
+</span><span id="152" class="l"><a class="l" href="#152">152 </a><span class="php-comment">/**
+</span></span><span id="153" class="l"><a class="l" href="#153">153 </a><span class="php-comment"> * setFlash
+</span></span><span id="154" class="l"><a class="l" href="#154">154 </a><span class="php-comment"> *
+</span></span><span id="155" class="l"><a class="l" href="#155">155 </a><span class="php-comment"> * An api request doesn't need flash messages - so stop them being processed
+</span></span><span id="156" class="l"><a class="l" href="#156">156 </a><span class="php-comment"> *
+</span></span><span id="157" class="l"><a class="l" href="#157">157 </a><span class="php-comment"> * @param CakeEvent $event
+</span></span><span id="158" class="l"><a class="l" href="#158">158 </a><span class="php-comment"> */</span>
+</span><span id="159" class="l"><a class="l" href="#159">159 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_setFlash" href="#_setFlash">setFlash</a>(CakeEvent <span class="php-var">$event</span>) {
+</span><span id="160" class="l"><a class="l" href="#160">160 </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$this</span>-&gt;_request()-&gt;is(<span class="php-quote">'api'</span>)) {
+</span><span id="161" class="l"><a class="l" href="#161">161 </a>            <span class="php-keyword1">return</span>;
+</span><span id="162" class="l"><a class="l" href="#162">162 </a>        }
+</span><span id="163" class="l"><a class="l" href="#163">163 </a>
+</span><span id="164" class="l"><a class="l" href="#164">164 </a>        <span class="php-var">$event</span>-&gt;stopPropagation();
+</span><span id="165" class="l"><a class="l" href="#165">165 </a>    }
+</span><span id="166" class="l"><a class="l" href="#166">166 </a>
+</span><span id="167" class="l"><a class="l" href="#167">167 </a><span class="php-comment">/**
+</span></span><span id="168" class="l"><a class="l" href="#168">168 </a><span class="php-comment"> * Setup detectors for JSON and XML
+</span></span><span id="169" class="l"><a class="l" href="#169">169 </a><span class="php-comment"> *
+</span></span><span id="170" class="l"><a class="l" href="#170">170 </a><span class="php-comment"> * Both detects on two signals:
+</span></span><span id="171" class="l"><a class="l" href="#171">171 </a><span class="php-comment"> *  1) The extension in the request (e.g. /users/index.json)
+</span></span><span id="172" class="l"><a class="l" href="#172">172 </a><span class="php-comment"> *  2) The accepts header from the client
+</span></span><span id="173" class="l"><a class="l" href="#173">173 </a><span class="php-comment"> *
+</span></span><span id="174" class="l"><a class="l" href="#174">174 </a><span class="php-comment"> * There is a combined request detector for both 'json' and 'xml' called
+</span></span><span id="175" class="l"><a class="l" href="#175">175 </a><span class="php-comment"> * 'api'
+</span></span><span id="176" class="l"><a class="l" href="#176">176 </a><span class="php-comment"> *
+</span></span><span id="177" class="l"><a class="l" href="#177">177 </a><span class="php-comment"> * @return void
+</span></span><span id="178" class="l"><a class="l" href="#178">178 </a><span class="php-comment"> */</span>
+</span><span id="179" class="l"><a class="l" href="#179">179 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__setupDetectors" href="#__setupDetectors">_setupDetectors</a>() {
+</span><span id="180" class="l"><a class="l" href="#180">180 </a>        <span class="php-var">$request</span> = <span class="php-var">$this</span>-&gt;_request();
+</span><span id="181" class="l"><a class="l" href="#181">181 </a>
+</span><span id="182" class="l"><a class="l" href="#182">182 </a>        <span class="php-var">$request</span>-&gt;addDetector(<span class="php-quote">'json'</span>, <span class="php-keyword1">array</span>(<span class="php-quote">'callback'</span> =&gt; <span class="php-keyword1">function</span>(CakeRequest <span class="php-var">$request</span>) {
+</span><span id="183" class="l"><a class="l" href="#183">183 </a>            <span class="php-keyword1">if</span> (<span class="php-keyword1">isset</span>(<span class="php-var">$request</span>-&gt;params[<span class="php-quote">'ext'</span>]) &amp;&amp; <span class="php-var">$request</span>-&gt;params[<span class="php-quote">'ext'</span>] === <span class="php-quote">'json'</span>) {
+</span><span id="184" class="l"><a class="l" href="#184">184 </a>                <span class="php-keyword1">return</span> <span class="php-keyword1">true</span>;
+</span><span id="185" class="l"><a class="l" href="#185">185 </a>            }
+</span><span id="186" class="l"><a class="l" href="#186">186 </a>
+</span><span id="187" class="l"><a class="l" href="#187">187 </a>            <span class="php-keyword1">return</span> <span class="php-var">$request</span>-&gt;accepts(<span class="php-quote">'application/json'</span>);
+</span><span id="188" class="l"><a class="l" href="#188">188 </a>        }));
+</span><span id="189" class="l"><a class="l" href="#189">189 </a>
+</span><span id="190" class="l"><a class="l" href="#190">190 </a>        <span class="php-var">$request</span>-&gt;addDetector(<span class="php-quote">'xml'</span>, <span class="php-keyword1">array</span>(<span class="php-quote">'callback'</span> =&gt; <span class="php-keyword1">function</span>(CakeRequest <span class="php-var">$request</span>) {
+</span><span id="191" class="l"><a class="l" href="#191">191 </a>            <span class="php-keyword1">if</span> (<span class="php-keyword1">isset</span>(<span class="php-var">$request</span>-&gt;params[<span class="php-quote">'ext'</span>]) &amp;&amp; <span class="php-var">$request</span>-&gt;params[<span class="php-quote">'ext'</span>] === <span class="php-quote">'xml'</span>) {
+</span><span id="192" class="l"><a class="l" href="#192">192 </a>                <span class="php-keyword1">return</span> <span class="php-keyword1">true</span>;
+</span><span id="193" class="l"><a class="l" href="#193">193 </a>            }
+</span><span id="194" class="l"><a class="l" href="#194">194 </a>
+</span><span id="195" class="l"><a class="l" href="#195">195 </a>            <span class="php-keyword1">return</span> <span class="php-var">$request</span>-&gt;accepts(<span class="php-quote">'text/xml'</span>);
+</span><span id="196" class="l"><a class="l" href="#196">196 </a>        }));
+</span><span id="197" class="l"><a class="l" href="#197">197 </a>
+</span><span id="198" class="l"><a class="l" href="#198">198 </a>        <span class="php-var">$request</span>-&gt;addDetector(<span class="php-quote">'api'</span>, <span class="php-keyword1">array</span>(<span class="php-quote">'callback'</span> =&gt; <span class="php-keyword1">function</span>(CakeRequest <span class="php-var">$request</span>) {
+</span><span id="199" class="l"><a class="l" href="#199">199 </a>            <span class="php-keyword1">return</span> <span class="php-var">$request</span>-&gt;is(<span class="php-quote">'json'</span>) || <span class="php-var">$request</span>-&gt;is(<span class="php-quote">'xml'</span>);
+</span><span id="200" class="l"><a class="l" href="#200">200 </a>        }));
+</span><span id="201" class="l"><a class="l" href="#201">201 </a>    }
+</span><span id="202" class="l"><a class="l" href="#202">202 </a>
+</span><span id="203" class="l"><a class="l" href="#203">203 </a><span class="php-comment">/**
+</span></span><span id="204" class="l"><a class="l" href="#204">204 </a><span class="php-comment"> * Enforce REST HTTP request types
+</span></span><span id="205" class="l"><a class="l" href="#205">205 </a><span class="php-comment"> *
+</span></span><span id="206" class="l"><a class="l" href="#206">206 </a><span class="php-comment"> * &quot;index&quot; actions should only be accessible through HTTP GET
+</span></span><span id="207" class="l"><a class="l" href="#207">207 </a><span class="php-comment"> * &quot;view&quot; actions should only be accessible through HTTP GET
+</span></span><span id="208" class="l"><a class="l" href="#208">208 </a><span class="php-comment"> * &quot;add&quot; actions should only be accessible through HTTP POST
+</span></span><span id="209" class="l"><a class="l" href="#209">209 </a><span class="php-comment"> * &quot;edit&quot; actions should only be accessible through HTTP PUT
+</span></span><span id="210" class="l"><a class="l" href="#210">210 </a><span class="php-comment"> * &quot;delete&quot; actions should only be accessible through HTTP DELETE
 </span></span><span id="211" class="l"><a class="l" href="#211">211 </a><span class="php-comment"> *
-</span></span><span id="212" class="l"><a class="l" href="#212">212 </a><span class="php-comment"> * &quot;index&quot; actions should only be accessible through HTTP GET
-</span></span><span id="213" class="l"><a class="l" href="#213">213 </a><span class="php-comment"> * &quot;view&quot; actions should only be accessible through HTTP GET
-</span></span><span id="214" class="l"><a class="l" href="#214">214 </a><span class="php-comment"> * &quot;add&quot; actions should only be accessible through HTTP POST
-</span></span><span id="215" class="l"><a class="l" href="#215">215 </a><span class="php-comment"> * &quot;edit&quot; actions should only be accessible through HTTP PUT
-</span></span><span id="216" class="l"><a class="l" href="#216">216 </a><span class="php-comment"> * &quot;delete&quot; actions should only be accessible through HTTP DELETE
-</span></span><span id="217" class="l"><a class="l" href="#217">217 </a><span class="php-comment"> *
-</span></span><span id="218" class="l"><a class="l" href="#218">218 </a><span class="php-comment"> * Unknown actions will be ignored
-</span></span><span id="219" class="l"><a class="l" href="#219">219 </a><span class="php-comment"> *
-</span></span><span id="220" class="l"><a class="l" href="#220">220 </a><span class="php-comment"> * @TODO make this configurable on both HTTP verbs and actions
-</span></span><span id="221" class="l"><a class="l" href="#221">221 </a><span class="php-comment"> * @param string $action
-</span></span><span id="222" class="l"><a class="l" href="#222">222 </a><span class="php-comment"> * @param CakeRequest $request
-</span></span><span id="223" class="l"><a class="l" href="#223">223 </a><span class="php-comment"> * @return void
-</span></span><span id="224" class="l"><a class="l" href="#224">224 </a><span class="php-comment"> * @throws MethodNotAllowedException If method not allowed
-</span></span><span id="225" class="l"><a class="l" href="#225">225 </a><span class="php-comment"> */</span>
-</span><span id="226" class="l"><a class="l" href="#226">226 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__enforceRequestType" href="#__enforceRequestType">_enforceRequestType</a>(<span class="php-var">$action</span>, CakeRequest <span class="php-var">$request</span>) {
-</span><span id="227" class="l"><a class="l" href="#227">227 </a>        <span class="php-keyword1">switch</span> (<span class="php-var">$action</span>) {
-</span><span id="228" class="l"><a class="l" href="#228">228 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'index'</span>:
-</span><span id="229" class="l"><a class="l" href="#229">229 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'admin_index'</span>:
-</span><span id="230" class="l"><a class="l" href="#230">230 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'view'</span>:
-</span><span id="231" class="l"><a class="l" href="#231">231 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'admin_view'</span>:
-</span><span id="232" class="l"><a class="l" href="#232">232 </a>                <span class="php-keyword1">if</span> (!<span class="php-var">$request</span>-&gt;is(<span class="php-quote">'get'</span>)) {
-</span><span id="233" class="l"><a class="l" href="#233">233 </a>                    <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> MethodNotAllowedException();
-</span><span id="234" class="l"><a class="l" href="#234">234 </a>                }
-</span><span id="235" class="l"><a class="l" href="#235">235 </a>                <span class="php-keyword1">break</span>;
-</span><span id="236" class="l"><a class="l" href="#236">236 </a>
-</span><span id="237" class="l"><a class="l" href="#237">237 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'add'</span>:
-</span><span id="238" class="l"><a class="l" href="#238">238 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'admin_add'</span>:
-</span><span id="239" class="l"><a class="l" href="#239">239 </a>                <span class="php-keyword1">if</span> (!<span class="php-var">$request</span>-&gt;is(<span class="php-quote">'post'</span>)) {
-</span><span id="240" class="l"><a class="l" href="#240">240 </a>                    <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> MethodNotAllowedException();
-</span><span id="241" class="l"><a class="l" href="#241">241 </a>                }
-</span><span id="242" class="l"><a class="l" href="#242">242 </a>                <span class="php-keyword1">break</span>;
-</span><span id="243" class="l"><a class="l" href="#243">243 </a>
-</span><span id="244" class="l"><a class="l" href="#244">244 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'edit'</span>:
-</span><span id="245" class="l"><a class="l" href="#245">245 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'admin_edit'</span>:
-</span><span id="246" class="l"><a class="l" href="#246">246 </a>                <span class="php-keyword1">if</span> (!<span class="php-var">$request</span>-&gt;is(<span class="php-quote">'put'</span>)) {
-</span><span id="247" class="l"><a class="l" href="#247">247 </a>                    <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> MethodNotAllowedException();
-</span><span id="248" class="l"><a class="l" href="#248">248 </a>                }
-</span><span id="249" class="l"><a class="l" href="#249">249 </a>                <span class="php-keyword1">break</span>;
-</span><span id="250" class="l"><a class="l" href="#250">250 </a>
-</span><span id="251" class="l"><a class="l" href="#251">251 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'delete'</span>:
-</span><span id="252" class="l"><a class="l" href="#252">252 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'admin_delete'</span>:
-</span><span id="253" class="l"><a class="l" href="#253">253 </a>                <span class="php-keyword1">if</span> (!<span class="php-var">$request</span>-&gt;is(<span class="php-quote">'delete'</span>)) {
-</span><span id="254" class="l"><a class="l" href="#254">254 </a>                    <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> MethodNotAllowedException();
-</span><span id="255" class="l"><a class="l" href="#255">255 </a>                }
-</span><span id="256" class="l"><a class="l" href="#256">256 </a>                <span class="php-keyword1">break</span>;
-</span><span id="257" class="l"><a class="l" href="#257">257 </a>        }
-</span><span id="258" class="l"><a class="l" href="#258">258 </a>    }
-</span><span id="259" class="l"><a class="l" href="#259">259 </a>
-</span><span id="260" class="l"><a class="l" href="#260">260 </a><span class="php-comment">/**
-</span></span><span id="261" class="l"><a class="l" href="#261">261 </a><span class="php-comment"> * Automatically create REST resource routes for all controllers found in your main
-</span></span><span id="262" class="l"><a class="l" href="#262">262 </a><span class="php-comment"> * application or in a specific plugin to provide access to your resources
-</span></span><span id="263" class="l"><a class="l" href="#263">263 </a><span class="php-comment"> * using /controller/id.json instead of the default /controller/view/id.json.
+</span></span><span id="212" class="l"><a class="l" href="#212">212 </a><span class="php-comment"> * Unknown actions will be ignored
+</span></span><span id="213" class="l"><a class="l" href="#213">213 </a><span class="php-comment"> *
+</span></span><span id="214" class="l"><a class="l" href="#214">214 </a><span class="php-comment"> * @TODO make this configurable on both HTTP verbs and actions
+</span></span><span id="215" class="l"><a class="l" href="#215">215 </a><span class="php-comment"> * @param string $action
+</span></span><span id="216" class="l"><a class="l" href="#216">216 </a><span class="php-comment"> * @param CakeRequest $request
+</span></span><span id="217" class="l"><a class="l" href="#217">217 </a><span class="php-comment"> * @return void
+</span></span><span id="218" class="l"><a class="l" href="#218">218 </a><span class="php-comment"> * @throws MethodNotAllowedException If method not allowed
+</span></span><span id="219" class="l"><a class="l" href="#219">219 </a><span class="php-comment"> */</span>
+</span><span id="220" class="l"><a class="l" href="#220">220 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__enforceRequestType" href="#__enforceRequestType">_enforceRequestType</a>(<span class="php-var">$action</span>, CakeRequest <span class="php-var">$request</span>) {
+</span><span id="221" class="l"><a class="l" href="#221">221 </a>        <span class="php-keyword1">switch</span> (<span class="php-var">$action</span>) {
+</span><span id="222" class="l"><a class="l" href="#222">222 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'index'</span>:
+</span><span id="223" class="l"><a class="l" href="#223">223 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'admin_index'</span>:
+</span><span id="224" class="l"><a class="l" href="#224">224 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'view'</span>:
+</span><span id="225" class="l"><a class="l" href="#225">225 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'admin_view'</span>:
+</span><span id="226" class="l"><a class="l" href="#226">226 </a>                <span class="php-keyword1">if</span> (!<span class="php-var">$request</span>-&gt;is(<span class="php-quote">'get'</span>)) {
+</span><span id="227" class="l"><a class="l" href="#227">227 </a>                    <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> MethodNotAllowedException();
+</span><span id="228" class="l"><a class="l" href="#228">228 </a>                }
+</span><span id="229" class="l"><a class="l" href="#229">229 </a>                <span class="php-keyword1">break</span>;
+</span><span id="230" class="l"><a class="l" href="#230">230 </a>
+</span><span id="231" class="l"><a class="l" href="#231">231 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'add'</span>:
+</span><span id="232" class="l"><a class="l" href="#232">232 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'admin_add'</span>:
+</span><span id="233" class="l"><a class="l" href="#233">233 </a>                <span class="php-keyword1">if</span> (!<span class="php-var">$request</span>-&gt;is(<span class="php-quote">'post'</span>)) {
+</span><span id="234" class="l"><a class="l" href="#234">234 </a>                    <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> MethodNotAllowedException();
+</span><span id="235" class="l"><a class="l" href="#235">235 </a>                }
+</span><span id="236" class="l"><a class="l" href="#236">236 </a>                <span class="php-keyword1">break</span>;
+</span><span id="237" class="l"><a class="l" href="#237">237 </a>
+</span><span id="238" class="l"><a class="l" href="#238">238 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'edit'</span>:
+</span><span id="239" class="l"><a class="l" href="#239">239 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'admin_edit'</span>:
+</span><span id="240" class="l"><a class="l" href="#240">240 </a>                <span class="php-keyword1">if</span> (!<span class="php-var">$request</span>-&gt;is(<span class="php-quote">'put'</span>)) {
+</span><span id="241" class="l"><a class="l" href="#241">241 </a>                    <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> MethodNotAllowedException();
+</span><span id="242" class="l"><a class="l" href="#242">242 </a>                }
+</span><span id="243" class="l"><a class="l" href="#243">243 </a>                <span class="php-keyword1">break</span>;
+</span><span id="244" class="l"><a class="l" href="#244">244 </a>
+</span><span id="245" class="l"><a class="l" href="#245">245 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'delete'</span>:
+</span><span id="246" class="l"><a class="l" href="#246">246 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'admin_delete'</span>:
+</span><span id="247" class="l"><a class="l" href="#247">247 </a>                <span class="php-keyword1">if</span> (!<span class="php-var">$request</span>-&gt;is(<span class="php-quote">'delete'</span>)) {
+</span><span id="248" class="l"><a class="l" href="#248">248 </a>                    <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> MethodNotAllowedException();
+</span><span id="249" class="l"><a class="l" href="#249">249 </a>                }
+</span><span id="250" class="l"><a class="l" href="#250">250 </a>                <span class="php-keyword1">break</span>;
+</span><span id="251" class="l"><a class="l" href="#251">251 </a>        }
+</span><span id="252" class="l"><a class="l" href="#252">252 </a>    }
+</span><span id="253" class="l"><a class="l" href="#253">253 </a>
+</span><span id="254" class="l"><a class="l" href="#254">254 </a><span class="php-comment">/**
+</span></span><span id="255" class="l"><a class="l" href="#255">255 </a><span class="php-comment"> * Automatically create REST resource routes for all controllers found in your main
+</span></span><span id="256" class="l"><a class="l" href="#256">256 </a><span class="php-comment"> * application or in a specific plugin to provide access to your resources
+</span></span><span id="257" class="l"><a class="l" href="#257">257 </a><span class="php-comment"> * using /controller/id.json instead of the default /controller/view/id.json.
+</span></span><span id="258" class="l"><a class="l" href="#258">258 </a><span class="php-comment"> *
+</span></span><span id="259" class="l"><a class="l" href="#259">259 </a><span class="php-comment"> * If called with no arguments, all controllers in the main application will be mapped.
+</span></span><span id="260" class="l"><a class="l" href="#260">260 </a><span class="php-comment"> * If called with a valid plugin name all controllers in that plugin will be mapped.
+</span></span><span id="261" class="l"><a class="l" href="#261">261 </a><span class="php-comment"> * If combined both controllers from the application and the plugin(s) will be mapped.
+</span></span><span id="262" class="l"><a class="l" href="#262">262 </a><span class="php-comment"> *
+</span></span><span id="263" class="l"><a class="l" href="#263">263 </a><span class="php-comment"> * This function needs to be called from your application's app/Config/routes.php:
 </span></span><span id="264" class="l"><a class="l" href="#264">264 </a><span class="php-comment"> *
-</span></span><span id="265" class="l"><a class="l" href="#265">265 </a><span class="php-comment"> * If called with no arguments, all controllers in the main application will be mapped.
-</span></span><span id="266" class="l"><a class="l" href="#266">266 </a><span class="php-comment"> * If called with a valid plugin name all controllers in that plugin will be mapped.
-</span></span><span id="267" class="l"><a class="l" href="#267">267 </a><span class="php-comment"> * If combined both controllers from the application and the plugin(s) will be mapped.
-</span></span><span id="268" class="l"><a class="l" href="#268">268 </a><span class="php-comment"> *
-</span></span><span id="269" class="l"><a class="l" href="#269">269 </a><span class="php-comment"> * This function needs to be called from your application's /Config/routes.php:
-</span></span><span id="270" class="l"><a class="l" href="#270">270 </a><span class="php-comment"> *     App::uses('ApiListener', 'Crud.Controller/Crud/Listener');
-</span></span><span id="271" class="l"><a class="l" href="#271">271 </a><span class="php-comment"> *
-</span></span><span id="272" class="l"><a class="l" href="#272">272 </a><span class="php-comment"> *     ApiListener::mapResources();
-</span></span><span id="273" class="l"><a class="l" href="#273">273 </a><span class="php-comment"> *     ApiListener::mapResources('DebugKit');
-</span></span><span id="274" class="l"><a class="l" href="#274">274 </a><span class="php-comment"> *     Router::setExtensions(array('json', 'xml'));
-</span></span><span id="275" class="l"><a class="l" href="#275">275 </a><span class="php-comment"> *     Router::parseExtensions();
-</span></span><span id="276" class="l"><a class="l" href="#276">276 </a><span class="php-comment"> *
-</span></span><span id="277" class="l"><a class="l" href="#277">277 </a><span class="php-comment"> * @param string $plugin
-</span></span><span id="278" class="l"><a class="l" href="#278">278 </a><span class="php-comment"> * @return void
-</span></span><span id="279" class="l"><a class="l" href="#279">279 </a><span class="php-comment"> */</span>
-</span><span id="280" class="l"><a class="l" href="#280">280 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_mapResources" href="#_mapResources">mapResources</a>(<span class="php-var">$plugin</span> = <span class="php-keyword1">null</span>){
-</span><span id="281" class="l"><a class="l" href="#281">281 </a>        <span class="php-var">$key</span> = <span class="php-quote">'Controller'</span>;
-</span><span id="282" class="l"><a class="l" href="#282">282 </a>        <span class="php-keyword1">if</span> (<span class="php-var">$plugin</span>) {
-</span><span id="283" class="l"><a class="l" href="#283">283 </a>            <span class="php-var">$key</span> = <span class="php-var">$plugin</span> . <span class="php-quote">'.Controller'</span>;
-</span><span id="284" class="l"><a class="l" href="#284">284 </a>        }
-</span><span id="285" class="l"><a class="l" href="#285">285 </a>
-</span><span id="286" class="l"><a class="l" href="#286">286 </a>        <span class="php-var">$controllers</span> = <span class="php-keyword1">array</span>();
-</span><span id="287" class="l"><a class="l" href="#287">287 </a>        <span class="php-keyword1">foreach</span> (App::objects(<span class="php-var">$key</span>) <span class="php-keyword1">as</span> <span class="php-var">$controller</span>) {
-</span><span id="288" class="l"><a class="l" href="#288">288 </a>            <span class="php-keyword1">if</span> (<span class="php-var">$controller</span> !== <span class="php-var">$plugin</span> . <span class="php-quote">'AppController'</span>) {
-</span><span id="289" class="l"><a class="l" href="#289">289 </a>                <span class="php-keyword1">if</span> (<span class="php-var">$plugin</span>) {
-</span><span id="290" class="l"><a class="l" href="#290">290 </a>                    <span class="php-var">$controller</span> = <span class="php-var">$plugin</span> . <span class="php-quote">'.'</span> . <span class="php-var">$controller</span>;
-</span><span id="291" class="l"><a class="l" href="#291">291 </a>                }
-</span><span id="292" class="l"><a class="l" href="#292">292 </a>                <span class="php-keyword2">array_push</span>(<span class="php-var">$controllers</span>, <span class="php-keyword2">str_replace</span>(<span class="php-quote">'Controller'</span>, <span class="php-quote">''</span>, <span class="php-var">$controller</span>));
-</span><span id="293" class="l"><a class="l" href="#293">293 </a>            }
-</span><span id="294" class="l"><a class="l" href="#294">294 </a>        }
+</span></span><span id="265" class="l"><a class="l" href="#265">265 </a><span class="php-comment"> * ```
+</span></span><span id="266" class="l"><a class="l" href="#266">266 </a><span class="php-comment"> *     App::uses('ApiListener', 'Crud.Controller/Crud/Listener');
+</span></span><span id="267" class="l"><a class="l" href="#267">267 </a><span class="php-comment"> *
+</span></span><span id="268" class="l"><a class="l" href="#268">268 </a><span class="php-comment"> *     ApiListener::mapResources();
+</span></span><span id="269" class="l"><a class="l" href="#269">269 </a><span class="php-comment"> *     ApiListener::mapResources('DebugKit');
+</span></span><span id="270" class="l"><a class="l" href="#270">270 </a><span class="php-comment"> *     Router::setExtensions(array('json', 'xml'));
+</span></span><span id="271" class="l"><a class="l" href="#271">271 </a><span class="php-comment"> *     Router::parseExtensions();
+</span></span><span id="272" class="l"><a class="l" href="#272">272 </a><span class="php-comment"> * ```
+</span></span><span id="273" class="l"><a class="l" href="#273">273 </a><span class="php-comment"> *
+</span></span><span id="274" class="l"><a class="l" href="#274">274 </a><span class="php-comment"> * @static
+</span></span><span id="275" class="l"><a class="l" href="#275">275 </a><span class="php-comment"> * @param string $plugin
+</span></span><span id="276" class="l"><a class="l" href="#276">276 </a><span class="php-comment"> * @return void
+</span></span><span id="277" class="l"><a class="l" href="#277">277 </a><span class="php-comment"> */</span>
+</span><span id="278" class="l"><a class="l" href="#278">278 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_mapResources" href="#_mapResources">mapResources</a>(<span class="php-var">$plugin</span> = <span class="php-keyword1">null</span>) {
+</span><span id="279" class="l"><a class="l" href="#279">279 </a>        <span class="php-var">$key</span> = <span class="php-quote">'Controller'</span>;
+</span><span id="280" class="l"><a class="l" href="#280">280 </a>        <span class="php-keyword1">if</span> (<span class="php-var">$plugin</span>) {
+</span><span id="281" class="l"><a class="l" href="#281">281 </a>            <span class="php-var">$key</span> = <span class="php-var">$plugin</span> . <span class="php-quote">'.Controller'</span>;
+</span><span id="282" class="l"><a class="l" href="#282">282 </a>        }
+</span><span id="283" class="l"><a class="l" href="#283">283 </a>
+</span><span id="284" class="l"><a class="l" href="#284">284 </a>        <span class="php-var">$controllers</span> = <span class="php-keyword1">array</span>();
+</span><span id="285" class="l"><a class="l" href="#285">285 </a>        <span class="php-keyword1">foreach</span> (App::objects(<span class="php-var">$key</span>) <span class="php-keyword1">as</span> <span class="php-var">$controller</span>) {
+</span><span id="286" class="l"><a class="l" href="#286">286 </a>            <span class="php-keyword1">if</span> (<span class="php-var">$controller</span> !== <span class="php-var">$plugin</span> . <span class="php-quote">'AppController'</span>) {
+</span><span id="287" class="l"><a class="l" href="#287">287 </a>                <span class="php-keyword1">if</span> (<span class="php-var">$plugin</span>) {
+</span><span id="288" class="l"><a class="l" href="#288">288 </a>                    <span class="php-var">$controller</span> = <span class="php-var">$plugin</span> . <span class="php-quote">'.'</span> . <span class="php-var">$controller</span>;
+</span><span id="289" class="l"><a class="l" href="#289">289 </a>                }
+</span><span id="290" class="l"><a class="l" href="#290">290 </a>
+</span><span id="291" class="l"><a class="l" href="#291">291 </a>                <span class="php-keyword2">array_push</span>(<span class="php-var">$controllers</span>, <span class="php-keyword2">str_replace</span>(<span class="php-quote">'Controller'</span>, <span class="php-quote">''</span>, <span class="php-var">$controller</span>));
+</span><span id="292" class="l"><a class="l" href="#292">292 </a>            }
+</span><span id="293" class="l"><a class="l" href="#293">293 </a>        }
+</span><span id="294" class="l"><a class="l" href="#294">294 </a>
 </span><span id="295" class="l"><a class="l" href="#295">295 </a>        Router::mapResources(<span class="php-var">$controllers</span>);
 </span><span id="296" class="l"><a class="l" href="#296">296 </a>    }
 </span><span id="297" class="l"><a class="l" href="#297">297 </a>}
