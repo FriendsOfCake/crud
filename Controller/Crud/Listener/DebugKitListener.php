@@ -21,7 +21,7 @@ class DebugKitListener extends CrudListener {
  */
 	public function implementedEvents() {
 		return array(
-			'Crud.init' => array('callable' => 'init', 'priority' => 1),
+			'Crud.initialize' => array('callable' => 'initialize', 'priority' => 1),
 			'Crud.beforeRender' => array('callable' => 'beforeRender', 'priority' => 5000),
 
 			'Crud.beforePaginate' => array('callable' => 'beforePaginate', 'priority' => 1),
@@ -44,8 +44,10 @@ class DebugKitListener extends CrudListener {
  * @param CakeEvent $event
  * @return void
  */
-	public function init(CakeEvent $event) {
-		DebugTimer::start('Event: Crud.init');
+	public function initialize(CakeEvent $event) {
+		parent::initialize($event);
+
+		DebugTimer::start('Event: Crud.initialize');
 	}
 
 /**
@@ -55,7 +57,7 @@ class DebugKitListener extends CrudListener {
  * @return void
  */
 	public function beforeRender(CakeEvent $event) {
-		DebugTimer::stop('Event: Crud.init');
+		DebugTimer::stop('Event: Crud.initialize');
 	}
 
 /**
@@ -69,7 +71,7 @@ class DebugKitListener extends CrudListener {
 	}
 
 /**
- * Stop timer for Crud.init
+ * Stop timer for Crud.Paginate
  *
  * @param CakeEvent $event
  * @return void

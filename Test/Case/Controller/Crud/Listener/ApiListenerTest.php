@@ -34,9 +34,12 @@ class ApiListenerTest extends CakeTestCase {
 		$subject->request = $this->getMock('CakeRequest', array('accepts'));
 		$subject->response = $this->getMock('CakeResponse');
 		$apiListener = new ApiListener($subject);
-		$event = new CakeEvent('Crud.init', $subject);
 
-		$apiListener->init($event);
+		$event = new CakeEvent('Crud.startup', $subject);
+		$apiListener->startup($event);
+
+		$event = new CakeEvent('Crud.init', $subject);
+		$apiListener->initialize($event);
 
 		//Testing detectors
 		$subject->request->expects($this->at(0))
@@ -118,7 +121,7 @@ class ApiListenerTest extends CakeTestCase {
 			->method('is')
 			->with($method)
 			->will($this->returnValue(true));
-		$apiListener->init($event);
+		$apiListener->initialize($event);
 		$this->assertEquals('Crud.CrudExceptionRenderer', Configure::read('Exception.renderer'));
 		$this->assertTrue(class_exists('CrudExceptionRenderer'));
 	}
@@ -148,7 +151,7 @@ class ApiListenerTest extends CakeTestCase {
 			->method('is')
 			->with($method)
 			->will($this->returnValue(false));
-		$apiListener->init($event);
+		$apiListener->initialize($event);
 	}
 
 /**
@@ -500,7 +503,8 @@ class ApiListenerTest extends CakeTestCase {
 		$subject = $this->getMock('CrudSubject');
 		$apiListener = new ApiListener($subject);
 		$expected = array(
-			'Crud.init' => array('callable' => 'init', 'priority' => 10),
+			'Crud.initialize' => array('callable' => 'initialize', 'priority' => 10),
+			'Crud.startup' => array('callable' => 'startup', 'priority' => 5),
 			'Crud.beforeRender' => array('callable' => 'beforeRender', 'priority' => 100),
 			'Crud.afterSave' => array('callable' => 'afterSave', 'priority' => 100),
 			'Crud.afterDelete' => array('callable' => 'afterDelete', 'priority' => 100),
