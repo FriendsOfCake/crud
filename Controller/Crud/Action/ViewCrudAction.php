@@ -52,7 +52,7 @@ class ViewCrudAction extends CrudAction {
  * Generic view action
  *
  * Triggers the following callbacks
- *	- Crud.init
+ *	- Crud.initialize
  *	- Crud.beforeFind
  *	- Crud.recordNotFound
  *	- Crud.afterFind

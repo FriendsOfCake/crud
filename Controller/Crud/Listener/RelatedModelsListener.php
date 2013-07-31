@@ -43,15 +43,6 @@ class RelatedModelsListener extends CrudListener {
 	}
 
 /**
- * List of events implemented by this class
- *
- * @return array
- */
-	public function implementedEvents() {
-		return array('Crud.beforeRender' => 'beforeRender');
-	}
-
-/**
  * Fetches related models' list and sets them to a variable for the view
  *
  * @param CakeEvent

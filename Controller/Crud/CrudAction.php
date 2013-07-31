@@ -1,7 +1,6 @@
 <?php
 
 App::uses('CrudBaseObject', 'Crud.Controller/Crud');
-App::uses('CakeEventListener', 'Event');
 App::uses('Validation', 'Utility');
 
 /**
@@ -12,13 +11,15 @@ App::uses('Validation', 'Utility');
  *
  * @copyright Christian Winther, 2013
  */
-abstract class CrudAction extends CrudBaseObject implements CakeEventListener {
+abstract class CrudAction extends CrudBaseObject {
 
 /**
- * Constructor
+ * Startup method
+ *
+ * Called when the action is loaded
  *
  * @param CrudSubject $subject
- * @param array $defaults Default settings
+ * @param array $defaults
  * @return void
  */
 	public function __construct(CrudSubject $subject, $defaults = array()) {

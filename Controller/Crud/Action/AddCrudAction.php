@@ -54,7 +54,7 @@ class AddCrudAction extends CrudAction {
  * Generic add action
  *
  * Triggers the following callbacks
- *	- Crud.init
+ *	- Crud.initialize
  *	- Crud.beforeSave
  *	- Crud.afterSave
  *	- Crud.beforeRender

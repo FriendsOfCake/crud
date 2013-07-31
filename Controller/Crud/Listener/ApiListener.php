@@ -24,7 +24,8 @@ class ApiListener extends CrudListener {
  */
 	public function implementedEvents() {
 		return array(
-			'Crud.init' => array('callable' => 'init', 'priority' => 10),
+			'Crud.startup' => array('callable' => 'startup', 'priority' => 5),
+			'Crud.initialize' => array('callable' => 'initialize', 'priority' => 10),
 			'Crud.beforeRender' => array('callable' => 'beforeRender', 'priority' => 100),
 			'Crud.afterSave' => array('callable' => 'afterSave', 'priority' => 100),
 			'Crud.afterDelete' => array('callable' => 'afterDelete', 'priority' => 100),
@@ -33,18 +34,27 @@ class ApiListener extends CrudListener {
 	}
 
 /**
- * Init
- *
- * Called when the listener is started
+ * Called when all listeners has been loaded,
+ * and before the crud action is actually executed
  *
  * @param CakeEvent $event
  * @return void
  */
-	public function init(CakeEvent $event) {
-		// Configure a few useful CakeRequest detectors
+	public function startup(CakeEvent $event) {
 		$this->_setupDetectors();
+	}
 
-		// Don't do anything if we aren't in an API request
+/**
+ * initialize
+ *
+ * Called before the crud action is executed
+ *
+ * @param CakeEvent $event
+ * @return void
+ */
+	public function initialize(CakeEvent $event) {
+		parent::initialize($event);
+
 		if (!$this->_request()->is('api')) {
 			return;
 		}
