@@ -1,4 +1,8 @@
 <?php
+
+App::uses('CakeEventListener', 'Event');
+App::uses('Hash', 'Utility');
+
 /**
  * Crud Base Class
  *
@@ -9,7 +13,7 @@
  *
  * @copyright Christian Winther, 2013
  */
-abstract class CrudBaseObject extends Object {
+abstract class CrudBaseObject extends Object implements CakeEventListener {
 
 /**
  * Container with reference to all objects
@@ -39,6 +43,16 @@ abstract class CrudBaseObject extends Object {
 		if (!empty($defaults)) {
 			$this->config($defaults);
 		}
+	}
+
+/**
+ * initialize callback
+ *
+ * @param CakeEvent $event
+ * @return void
+ */
+	public function initialize(CakeEvent $event) {
+		$this->_container = $event->subject;
 	}
 
 /**
@@ -84,6 +98,18 @@ abstract class CrudBaseObject extends Object {
 
 		$this->_settings = Hash::insert($this->_settings, $key, $value);
 		return $this;
+	}
+
+/**
+ * Returns a list of all events that will fire during the objects lifecycle.
+ * You can override this function to add you own listener callbacks
+ *
+ * @return array
+ */
+	public function implementedEvents() {
+		return array(
+			'Crud.initialize' => 'initialize'
+		);
 	}
 
 /**

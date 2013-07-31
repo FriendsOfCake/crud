@@ -79,7 +79,7 @@ class IndexCrudAction extends CrudAction {
  * Generic index action
  *
  * Triggers the following callbacks
- *	- Crud.init
+ *	- Crud.initialize
  *	- Crud.beforePaginate
  *	- Crud.afterPaginate
  *	- Crud.beforeRender

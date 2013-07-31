@@ -157,16 +157,25 @@ class CrudComponent extends Component {
 	}
 
 /**
+ * Called after the Controller::beforeFilter() and before the controller action
+ *
+ * @param Controller $controller Controller with components to startup
+ * @return void
+ */
+	public function startup(Controller $controller) {
+		$this->_loadListeners();
+		$this->trigger('startup');
+	}
+
+/**
  * Initialize action
  *
  * @param string $controllerAction Override the controller action to execute as
  */
 	public function initAction($controllerAction = null) {
 		$this->_action = $controllerAction ?: $this->_action;
-
-		$this->_setModelProperties();
 		$this->_loadListeners();
-		$this->trigger('init');
+		$this->trigger('initialize');
 	}
 
 /**

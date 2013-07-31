@@ -63,7 +63,7 @@ class EditCrudAction extends CrudAction {
  * Generic edit action
  *
  * Triggers the following callbacks
- *	- Crud.init
+ *	- Crud.initialize
  *	- Crud.beforeSave
  *	- Crud.afterSave
  *	- Crud.beforeFind
