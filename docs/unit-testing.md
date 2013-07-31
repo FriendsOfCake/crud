@@ -45,7 +45,7 @@ These methods are available in all `CrudAction` and `CrudListener` objects.
 	</tr>
 	<tr>
 		<td><code>$this->_listener($name)</code></td>
-		<td><code>$this->_crud()->_listener($name)</code></td>
+		<td><code>$this->_crud()->listener($name)</code></td>
 		<td>Get a <a href="{{site.url}}/docs/listeners/intro.html">Crud Listener</a> by its name</td>
 	</tr>
 	<tr>
