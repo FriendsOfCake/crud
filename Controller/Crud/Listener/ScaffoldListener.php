@@ -141,7 +141,7 @@ class ScaffoldListener extends CrudListener {
 	protected function _scaffoldFields(Model $model) {
 		$modelSchema = $model->schema();
 		$scaffoldFields = array_keys($modelSchema);
-		$_scaffoldFields = $this->_crud->action()->config('scaffoldFields');
+		$_scaffoldFields = $this->_action()->config('scaffoldFields');
 		if (!empty($_scaffoldFields)) {
 			$_scaffoldFields = (array)$_scaffoldFields;
 			$scaffoldFields = array_intersect($scaffoldFields, array_combine(
@@ -160,8 +160,8 @@ class ScaffoldListener extends CrudListener {
  * @return array List of fields
  */
 	protected function _scaffoldFieldExclude($scaffoldFields) {
-		$className = $this->_crud->action()->config('className');
-		$scaffoldFieldExclude = $this->_crud->action()->config('scaffoldFieldExclude');
+		$className = $this->_action()->config('className');
+		$scaffoldFieldExclude = $this->_action()->config('scaffoldFieldExclude');
 
 		if (empty($scaffoldFieldExclude)) {
 			if ($className == 'Crud.Add' || $className == 'Crud.Edit') {
@@ -186,7 +186,7 @@ class ScaffoldListener extends CrudListener {
  */
 	protected function _scaffoldFilters(CakeRequest $request) {
 		$scaffoldFilters = array();
-		$_scaffoldFilters = $this->_crud->action()->config('scope');
+		$_scaffoldFilters = $this->_action()->config('scope');
 		if (!empty($_scaffoldFilters)) {
 			$scaffoldFilters = (array)$_scaffoldFilters;
 			foreach ($scaffoldFilters as $_field => $scaffoldField) {
@@ -214,7 +214,7 @@ class ScaffoldListener extends CrudListener {
  * @return array Array of link
  */
 	protected function _sidebarActions() {
-		$sidebarActions = $this->_crud->action()->config('sidebarActions');
+		$sidebarActions = $this->_action()->config('sidebarActions');
 		if ($sidebarActions === null) {
 			return true;
 		}

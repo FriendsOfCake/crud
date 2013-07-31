@@ -106,7 +106,7 @@ class EditCrudAction extends CrudAction {
 			$this->_handleEdit($id);
 		}
 
-		$this->_crud->trigger('beforeRender');
+		$this->_trigger('beforeRender');
 	}
 
 	protected function _handleEdit($id) {
