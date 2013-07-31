@@ -209,3 +209,31 @@ In case a `ìd` is provided to a crud action and the id does not exist in the da
 
 In case a `ìd` is provided to a crud action and the id is not valid according to the database type
 a `500` `BadRequestException` will be thrown
+
+# REST resource routes
+
+The default behavior will only allow access to an Api resource using /controller/view/id.format
+
+However, access using REST resource routes can easily be added using the Api listener mapResources() method
+so that you can also access them using /controller/id.format
+
+[Please also see the CakePHP documentation on REST](http://book.cakephp.org/2.0/en/views/json-and-xml-views.html#enabling-data-views-in-your-application)
+
+Calling mapResources() without arguments will create REST resource routes for all controllers found in your main application
+
+Calling mapResources() with a valid plugin name will create REST resource routes for all controllers found in that plugin
+
+Any combination of the above will also work
+
+Enable by adding App::uses and one or more mapResources() to your `/Config/routes.php` file
+
+{% highlight php %}
+<?php
+App::uses('ApiListener', 'Crud.Controller/Crud/Listener');
+
+ApiListener::mapResources();
+ApiListener::mapResources('DebugKit');
+Router::setExtensions(array('json', 'xml'));
+Router::parseExtensions();
+?>
+{% endhighlight %}
