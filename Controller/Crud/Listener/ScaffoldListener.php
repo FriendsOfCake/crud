@@ -216,21 +216,21 @@ class ScaffoldListener extends CrudListener {
 	protected function _sidebarLinks() {
 		$sidebarLinks = $this->_crud->action()->config('sidebarLinks');
 		if ($sidebarLinks === null) {
-			$sidebarLinks = true;
-		} elseif (is_array($sidebarLinks)) {
-			foreach ($sidebarLinks as $i => $sidebarLink) {
-				$sidebarLinks[$i] = array_merge(array(
-					'title' => null,
-					'url' => null,
-					'options' => array(),
-					'confirmMessage' => false,
-					'type' => 'link',
-				), $sidebarLinks[$i]);
+			return true;
+		}
 
-				$sidebarLinks[$i]['type'] = strtolower($sidebarLinks[$i]['type']);
-				if (!in_array($sidebarLinks[$i]['type'], array('link', 'post'))) {
-					$sidebarLinks[$i]['type'] = 'link';
-				}
+		foreach ($sidebarLinks as $i => $sidebarLink) {
+			$sidebarLinks[$i] = array_merge(array(
+				'title' => null,
+				'url' => null,
+				'options' => array(),
+				'confirmMessage' => false,
+				'type' => 'link',
+			), $sidebarLinks[$i]);
+
+			$sidebarLinks[$i]['type'] = strtolower($sidebarLinks[$i]['type']);
+			if (!in_array($sidebarLinks[$i]['type'], array('link', 'post'))) {
+				$sidebarLinks[$i]['type'] = 'link';
 			}
 		}
 		return $sidebarLinks;
