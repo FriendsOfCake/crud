@@ -391,7 +391,7 @@ public function beforeFilter() {
 
 # Configure related model data for add / edit views
 
-Please see the [related data documentation]({{site.url}}/docs/listeners/related-data.html)
+Please see the [related models documentation]({{site.url}}/docs/listeners/related-models.html)
 
 # Change save options
 
