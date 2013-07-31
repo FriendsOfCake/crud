@@ -107,12 +107,12 @@ class ScaffoldListener extends CrudListener {
 		$scaffoldFields = $this->_scaffoldFields($model);
 		$scaffoldFieldExclude = $this->_scaffoldFieldExclude($scaffoldFields);
 		$scaffoldFilters = $this->_scaffoldFilters($request);
-		$sidebarLinks = $this->_sidebarLinks();
+		$sidebarActions = $this->_sidebarActions();
 
 		$controller->set(compact(
 			'modelClass', 'primaryKey', 'displayField', 'singularVar', 'pluralVar',
 			'singularHumanName', 'pluralHumanName', 'scaffoldFields', 'associations',
-			'scaffoldFilters', 'action', 'scaffoldFieldExclude', 'modelSchema', 'sidebarLinks'
+			'scaffoldFilters', 'action', 'scaffoldFieldExclude', 'modelSchema', 'sidebarActions'
 		));
 
 		$controller->set('title_for_layout', $title);
@@ -213,27 +213,27 @@ class ScaffoldListener extends CrudListener {
  *
  * @return array Array of link
  */
-	protected function _sidebarLinks() {
-		$sidebarLinks = $this->_crud->action()->config('sidebarLinks');
-		if ($sidebarLinks === null) {
+	protected function _sidebarActions() {
+		$sidebarActions = $this->_crud->action()->config('sidebarActions');
+		if ($sidebarActions === null) {
 			return true;
 		}
 
-		foreach ($sidebarLinks as $i => $sidebarLink) {
-			$sidebarLinks[$i] = array_merge(array(
+		foreach ($sidebarActions as $i => $sidebarAction) {
+			$sidebarActions[$i] = array_merge(array(
 				'title' => null,
 				'url' => null,
 				'options' => array(),
 				'confirmMessage' => false,
 				'type' => 'link',
-			), $sidebarLinks[$i]);
+			), $sidebarActions[$i]);
 
-			$sidebarLinks[$i]['type'] = strtolower($sidebarLinks[$i]['type']);
-			if (!in_array($sidebarLinks[$i]['type'], array('link', 'post'))) {
-				$sidebarLinks[$i]['type'] = 'link';
+			$sidebarActions[$i]['type'] = strtolower($sidebarActions[$i]['type']);
+			if (!in_array($sidebarActions[$i]['type'], array('link', 'post'))) {
+				$sidebarActions[$i]['type'] = 'link';
 			}
 		}
-		return $sidebarLinks;
+		return $sidebarActions;
 	}
 
 /**
