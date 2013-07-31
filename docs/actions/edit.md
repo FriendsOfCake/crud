@@ -22,7 +22,8 @@ Relevant links: [PHP source code]({{ site.github_url }}/Controller/Crud/Action/E
 	</tr>
 </thead>
 <tbody>
-	{% include actions/event/init.md %}
+	{% include actions/event/startup.md %}
+	{% include actions/event/initialize.md %}
 	{% include actions/event/before_save.md %}
 	{% include actions/event/after_save.md %}
 	{% include actions/event/before_find.md %}

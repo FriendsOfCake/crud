@@ -26,7 +26,8 @@ Relevant links:
 	</tr>
 </thead>
 <tbody>
-	{% include actions/event/init.md %}
+	{% include actions/event/startup.md %}
+	{% include actions/event/initialize.md %}
 	{% include actions/event/before_find.md %}
 	{% include actions/event/after_find.md %}
 	{% include actions/event/not_found.md %}
