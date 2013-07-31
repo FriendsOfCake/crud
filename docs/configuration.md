@@ -391,7 +391,7 @@ public function beforeFilter() {
 
 # Configure related model data for add / edit views
 
-Please see the [related data documentation]({{site.url}}/docs/listeners/related-data.html)
+Please see the [related models documentation]({{site.url}}/docs/listeners/related-models.html)
 
 # Change save options
 
@@ -419,7 +419,7 @@ reserved, and can only be used inside the Crud plugin.
 
 You own CrudActions can be called anything but these class names
 
-Please see the [custom crud action documentationn]({{site.url}}/docs/actions/custom.html) for more
+Please see the [custom crud action documentation]({{site.url}}/docs/actions/custom.html) for more
 information
 
 ## Through component configuration
