@@ -212,16 +212,16 @@ a `500` `BadRequestException` will be thrown
 
 # REST resource routes
 
-The default behavior will only allow access to an Api resource using /controller/view/id.format
+The default behavior will only allow access to an Api resource using `http://example.com/controller/{action}/{id}.{format}`
 
-However, access using REST resource routes can easily be added using the Api listener mapResources() method
-so that you can also access them using /controller/id.format
+However, access using REST resource routes can easily be added by using the Api listener `mapResources()` method
+so that you can also access them using `http://example.com/controller/{id}.{format}`
 
-[Please also see the CakePHP documentation on REST](http://book.cakephp.org/2.0/en/views/json-and-xml-views.html#enabling-data-views-in-your-application)
+[Please also see the CakePHP documentation on REST](http://book.cakephp.org/2.0/en/development/rest.html)
 
-Calling mapResources() without arguments will create REST resource routes for all controllers found in your main application
+Calling `mapResources()` without arguments will create REST resource routes for all controllers found in your main application
 
-Calling mapResources() with a valid plugin name will create REST resource routes for all controllers found in that plugin
+Calling `mapResources()` with a valid plugin name will create REST resource routes for all controllers found in that plugin
 
 Any combination of the above will also work
 
