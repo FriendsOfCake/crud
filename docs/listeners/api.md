@@ -202,7 +202,7 @@ No special HTTP codes is sent
 
 ## Not Found (view / edit / delete)
 
-In case a `ìd` is provided to a crud action and the id does not exist in the database, a `404`
+In case a `id` is provided to a crud action and the id does not exist in the database, a `404`
 `NotFoundException` will be thrown
 
 ## Invalid id (view / edit / delete)
