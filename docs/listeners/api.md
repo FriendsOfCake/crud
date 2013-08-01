@@ -91,6 +91,21 @@ All it's callbacks will simply return NULL and don't get in your way.
 The Api listener overrides the `Exception.renderer` for `api` requests, so in case of an error, a
 standardized error will be returned, in either `json` or `xml` - according to the API request type.
 
+# Custom view classes
+
+By default the Api Listener will override the `ReqeustHandler` viewClass for `json` and `xml`
+
+For `xml` the `Crud.CrudXml` view class will be used, and for `json` the `Crud.CrudJson` view will be used.
+
+These view classes currently doesn't provide any unique functionality to the View, other than [backporting
+a view alias feature](https://github.com/cakephp/cakephp/pull/1405) from CakePHP 2.4 to earlier versions.
+
+You can call [injectViewClasses]({{site.url}}/api/develop/class-ApiListener.html#_injectViewClasses) manually to
+inject these views into the RequestHandler if you don't need the full ApiListener class or functionality.
+
+Use [viewClass]({{site.url}}/api/develop/class-ApiListener.html#_viewClass) to read or change the mapping
+between a response type and it's view class.
+
 # Request type enforcing
 
 The Api listener will try to enforce some best practices on how an API should behave.
