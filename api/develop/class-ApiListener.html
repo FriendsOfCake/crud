@@ -7,7 +7,7 @@
 	<title>Class ApiListener | jippi/cakephp-crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?3444470891"></script>
+	<script type="text/javascript" src="elementlist.js?1248831092"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -166,7 +166,7 @@ Object
 
 				<b>Copyright:</b>
 				Christian Winther, 2013<br />
-		<b>Located at</b> <a href="source-class-ApiListener.html#5-307" title="Go to source code">Controller/Crud/Listener/ApiListener.php</a><br />
+		<b>Located at</b> <a href="source-class-ApiListener.html#5-354" title="Go to source code">Controller/Crud/Listener/ApiListener.php</a><br />
 	</div>
 
 
@@ -184,7 +184,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#_implementedEvents">#</a>
-			<code><a href="source-class-ApiListener.html#17-34" title="Go to source code">implementedEvents</a>( )</code>
+			<code><a href="source-class-ApiListener.html#29-46" title="Go to source code">implementedEvents</a>( )</code>
 
 			<div class="description short">
 				
@@ -227,7 +227,7 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_startup">#</a>
-			<code><a href="source-class-ApiListener.html#36-45" title="Go to source code">startup</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<code><a href="source-class-ApiListener.html#48-57" title="Go to source code">startup</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
@@ -267,7 +267,7 @@ actually executed</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_initialize">#</a>
-			<code><a href="source-class-ApiListener.html#47-68" title="Go to source code">initialize</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<code><a href="source-class-ApiListener.html#59-80" title="Go to source code">initialize</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
@@ -309,7 +309,7 @@ actually executed</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_afterSave">#</a>
-			<code><a href="source-class-ApiListener.html#70-106" title="Go to source code">afterSave</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<code><a href="source-class-ApiListener.html#82-119" title="Go to source code">afterSave</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
@@ -351,7 +351,7 @@ actually executed</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_afterDelete">#</a>
-			<code><a href="source-class-ApiListener.html#108-128" title="Go to source code">afterDelete</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<code><a href="source-class-ApiListener.html#121-141" title="Go to source code">afterDelete</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
@@ -389,7 +389,7 @@ actually executed</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_beforeRender">#</a>
-			<code><a href="source-class-ApiListener.html#130-160" title="Go to source code">beforeRender</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<code><a href="source-class-ApiListener.html#143-171" title="Go to source code">beforeRender</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
@@ -416,6 +416,100 @@ actually executed</p>
 			</div>
 			</div></td>
 		</tr>
+		<tr data-order="injectViewClasses" id="_injectViewClasses">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_injectViewClasses">#</a>
+			<code><a href="source-class-ApiListener.html#173-184" title="Go to source code">injectViewClasses</a>( )</code>
+
+			<div class="description short">
+				
+<p>Inject view classes into RequestHandler</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Inject view classes into RequestHandler</p>
+
+
+
+
+
+
+					<h4>See</h4>
+					<div class="list">
+							<a
+href="http://book.cakephp.org/2.0/en/core-libraries/components/request-handling.html#using-custom-viewclasses">http://book.cakephp.org/2.0/en/core-libraries/components/request-handling.html#using-custom-viewclasses</a><br />
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="viewClass" id="_viewClass">
+
+			<td class="attributes"><code>
+				 public 
+				mixed
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_viewClass">#</a>
+			<code><a href="source-class-ApiListener.html#186-207" title="Go to source code">viewClass</a>( <span>string <var>$type</var></span>, <span>string <var>$class</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Get or set a viewClass</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Get or set a viewClass</p>
+
+<p><code>$type</code> could be <code>json</code>, <code>xml</code> or any other
+valid type defined by the <code>RequestHandler</code></p>
+
+<p><code>$class</code> could be any View class capable of handling the response
+format for the <code>$type</code>. Normal CakePHP plugin "dot" notation is
+supported</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$type</var></dt>
+						<dd><code>string</code><br>$type</dd>
+						<dt><var>$class</var></dt>
+						<dd><code>string</code><br>$class</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>mixed</code><br />
+					</div>
+
+
+					<h4>See</h4>
+					<div class="list">
+							<a
+href="http://book.cakephp.org/2.0/en/core-libraries/components/request-handling.html#using-custom-viewclasses">http://book.cakephp.org/2.0/en/core-libraries/components/request-handling.html#using-custom-viewclasses</a><br />
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
 		<tr data-order="setFlash" id="_setFlash">
 
 			<td class="attributes"><code>
@@ -427,7 +521,7 @@ actually executed</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_setFlash">#</a>
-			<code><a href="source-class-ApiListener.html#162-175" title="Go to source code">setFlash</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<code><a href="source-class-ApiListener.html#209-222" title="Go to source code">setFlash</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
@@ -467,7 +561,7 @@ actually executed</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__setupDetectors">#</a>
-			<code><a href="source-class-ApiListener.html#177-211" title="Go to source code">_setupDetectors</a>( )</code>
+			<code><a href="source-class-ApiListener.html#224-258" title="Go to source code">_setupDetectors</a>( )</code>
 
 			<div class="description short">
 				
@@ -506,7 +600,7 @@ actually executed</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__enforceRequestType">#</a>
-			<code><a href="source-class-ApiListener.html#213-262" title="Go to source code">_enforceRequestType</a>( <span>string <var>$action</var></span>, <span>CakeRequest <var>$request</var></span> )</code>
+			<code><a href="source-class-ApiListener.html#260-309" title="Go to source code">_enforceRequestType</a>( <span>string <var>$action</var></span>, <span>CakeRequest <var>$request</var></span> )</code>
 
 			<div class="description short">
 				
@@ -561,7 +655,7 @@ HTTP PUT "delete" actions should only be accessible through HTTP DELETE</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_mapResources">#</a>
-			<code><a href="source-class-ApiListener.html#264-306" title="Go to source code">mapResources</a>( <span>string <var>$plugin</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-ApiListener.html#311-353" title="Go to source code">mapResources</a>( <span>string <var>$plugin</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -634,11 +728,38 @@ Router::setExtensions(array('json', 'xml')); Router::parseExtensions();
 
 
 		<h2>Properties summary</h2>
+		<table class="summary table table-bordered table-striped" id="properties">
+		<tr data-order="_settings" id="$_settings">
+			<td class="attributes"><code>
+				protected  
+				array
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-ApiListener.html#17-27" title="Go to source code"><var>$_settings</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$_settings" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>Default configuration</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>Default configuration</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		</table>
 
 		<h3>Properties inherited from <a href="class-CrudBaseObject.html#properties">CrudBaseObject</a></h3>
 		<p class="elementList">
-			<code><a href="class-CrudBaseObject.html#$_container"><var>$_container</var></a></code>, 
-			<code><a href="class-CrudBaseObject.html#$_settings"><var>$_settings</var></a></code>
+			<code><a href="class-CrudBaseObject.html#$_container"><var>$_container</var></a></code>
 		</p>
 
 
