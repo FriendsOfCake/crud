@@ -60,7 +60,7 @@ to work
 
 ## >= PHP 5.4
 
-Add an App::uses in the top of you `AppController.php` file
+Add an App::uses in the top of your `AppController.php` file
 
 {% highlight php %}
 <?php
