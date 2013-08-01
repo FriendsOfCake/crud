@@ -4,6 +4,7 @@ App::uses('CakeEvent', 'Event');
 App::uses('CakeRequest', 'Network');
 App::uses('CakeResponse', 'Network');
 App::uses('Controller', 'Controller');
+App::uses('RequestHandler', 'Controller/Component');
 App::uses('ApiListener', 'Crud.Controller/Crud/Listener');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
 
@@ -659,4 +660,64 @@ class ApiListenerTest extends CakeTestCase {
 
 		return $return;
 	}
+
+/**
+ * testViewClass
+ *
+ * Test that both set and get works
+ *
+ * @covers ApiListener::viewClass
+ * @return void
+ */
+	public function testViewClass() {
+		$apiListener = new ApiListener(new CrudSubject());
+
+		$result = $apiListener->viewClass('json', 'Sample.ViewClass');
+		$this->assertEqual($result, $apiListener, 'Setting a viewClass did not return the listener itself');
+
+		$result = $apiListener->viewClass('json');
+		$this->assertEqual($result, 'Sample.ViewClass', 'The changed viewClass was not returned');
+	}
+
+/**
+ * testViewClassDefaults
+ *
+ * Test that the default viewClasses are as expected
+ *
+ * @covers ApiListener::viewClass
+ * @return void
+ */
+	public function testViewClassDefaults() {
+		$apiListener = new ApiListener(new CrudSubject());
+
+		$result = $apiListener->config('viewClasses');
+		$expected = array(
+			'json' => 'Crud.CrudJson',
+			'xml' => 'Crud.CrudXml'
+		);
+		$this->assertEqual($result, $expected, 'The default viewClasses setting has changed');
+	}
+
+/**
+ * testInjectViewClasses
+ *
+ * @covers ApiListener::injectViewClasses
+ * @return void
+ */
+	public function testInjectViewClasses() {
+		$controller = $this
+			->getMockBuilder('Controller')
+			->setMethods(array('foo')) // need to mock *something* to make Controller::__set work
+			->disableOriginalConstructor()
+			->getMock();
+
+		$controller->RequestHandler = $this->getMock('RequestHandler', array('viewClassMap'));
+		$controller->RequestHandler->expects($this->at(0))->method('viewClassMap')->with('json', 'Crud.CrudJson');
+		$controller->RequestHandler->expects($this->at(1))->method('viewClassMap')->with('xml', 'Crud.CrudXml');
+
+		$apiListener = $this->getMock('ApiListener', array('_controller'), array(new CrudSubject()));
+		$apiListener->expects($this->once())->method('_controller')->will($this->returnValue($controller));
+		$apiListener->injectViewClasses();
+	}
+
 }

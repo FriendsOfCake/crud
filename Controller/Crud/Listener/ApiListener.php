@@ -15,6 +15,18 @@ App::uses('CrudListener', 'Crud.Controller/Crud');
 class ApiListener extends CrudListener {
 
 /**
+ * Default configuration
+ *
+ * @var array
+ */
+	protected $_settings = array(
+		'viewClasses' => array(
+			'json' => 'Crud.CrudJson',
+			'xml' => 'Crud.CrudXml'
+		)
+	);
+
+/**
  * Returns a list of all events that will fire in the controller during it's lifecycle.
  * You can override this function to add you own listener callbacks
  *
@@ -78,17 +90,18 @@ class ApiListener extends CrudListener {
 			return;
 		}
 
-		$model = $this->_model();
 		$controller = $this->_controller();
 		$controller->set('success', $event->subject->success);
 
 		if (!$event->subject->success) {
 			$event->subject->response->statusCode(400);
+			$model = $this->_model();
 			$controller->set('data', $model->validationErrors);
 			return;
 		}
 
 		if (empty($controller->viewVars['data'])) {
+			$model = $this->_model();
 			$controller->set('data', array($model->alias => array($model->primaryKey => $event->subject->id)));
 		}
 
@@ -150,13 +163,47 @@ class ApiListener extends CrudListener {
 
 		$serialize = array_merge($serialize, $action->config('serialize'));
 
+		$this->injectViewClasses();
+
 		$controller = $this->_controller();
 		$controller->set('_serialize', $serialize);
-
-		// @TODO: make the viewClassMap configurable
-		$controller->RequestHandler->viewClassMap('json', 'Crud.CrudJson');
-		$controller->RequestHandler->viewClassMap('xml', 'Crud.CrudXml');
 		$controller->RequestHandler->renderAs($controller, $controller->RequestHandler->ext);
+	}
+
+/**
+ * Inject view classes into RequestHandler
+ *
+ * @see http://book.cakephp.org/2.0/en/core-libraries/components/request-handling.html#using-custom-viewclasses
+ * @return void
+ */
+	public function injectViewClasses() {
+		$controller = $this->_controller();
+		foreach ($this->config('viewClasses') as $type => $class) {
+			$controller->RequestHandler->viewClassMap($type, $class);
+		}
+	}
+
+/**
+ * Get or set a viewClass
+ *
+ * `$type` could be `json`, `xml` or any other valid type
+ * 		defined by the `RequestHandler`
+ *
+ * `$class` could be any View class capable of handling
+ * 		the response format for the `$type`. Normal
+ * 		CakePHP plugin "dot" notation is supported
+ *
+ * @see http://book.cakephp.org/2.0/en/core-libraries/components/request-handling.html#using-custom-viewclasses
+ * @param string $type
+ * @param string $class
+ * @return mixed
+ */
+	public function viewClass($type, $class = null) {
+		if (is_null($class)) {
+			return $this->config('viewClasses.' . $type);
+		}
+
+		return $this->config('viewClasses.' . $type, $class);
 	}
 
 /**
