@@ -7,6 +7,7 @@ App::uses('Controller', 'Controller');
 App::uses('RequestHandler', 'Controller/Component');
 App::uses('ApiListener', 'Crud.Controller/Crud/Listener');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
+App::uses('IndexCrudAction', 'Crud.Controller/Crud/Action');
 
 /**
  *
@@ -79,80 +80,84 @@ class ApiListenerTest extends CakeTestCase {
 	}
 
 /**
- * Returns a list of actions and their http method
+ * Tests initialization in API request
  *
+ * @covers ApiListener::initialize
  * @return void
  */
-	public function actionsProvider() {
-		return array(
-			array('index', 'get'),
-			array('view', 'get'),
-			array('admin_index', 'get'),
-			array('admin_view', 'get'),
-			array('add', 'post'),
-			array('admin_add', 'post'),
-			array('edit', 'put'),
-			array('admin_edit', 'put'),
-			array('delete', 'delete'),
-			array('admin_delete', 'delete')
-		);
+	public function testInitialize() {
+		$request = $this->getMock('CakeRequest', array('is'));
+		$request->expects($this->once())->method('is')->with('api')->will($this->returnValue(true));
+
+		$mockMethods = array('_request', 'registerExceptionHandler', 'enforceRequestType');
+		$listener = $this->getMock('ApiListener', $mockMethods, array(new CrudSubject()));
+		$listener->expects($this->once())->method('_request')->with()->will($this->returnValue($request));
+		$listener->expects($this->once())->method('registerExceptionHandler')->with();
+		$listener->expects($this->once())->method('enforceRequestType')->with();
+		$listener->initialize(new CakeEvent('Crud.init'));
 	}
 
 /**
- * Tests initialization and expect no error
+ * Tests initialization in non-API request
  *
- * @dataProvider actionsProvider
+ * @covers ApiListener::initialize
  * @return void
  */
-	public function testIniIsAPI($action, $method) {
-		$subject = $this->getMock('CrudSubject');
-		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
-		$subject->response = $this->getMock('CakeResponse');
-		$subject->action = $subject->request->action = $action;
+	public function testInitializeNotRequest() {
+		$request = $this->getMock('CakeRequest', array('is'));
+		$request->expects($this->once())->method('is')->with('api')->will($this->returnValue(false));
 
-		$apiListener = new ApiListener($subject);
-		$event = new CakeEvent('Crud.init', $subject);
-
-		$subject->request->expects($this->at(0))
-			->method('is')
-			->with('api')
-			->will($this->returnValue(true));
-
-		$subject->request->expects($this->at(1))
-			->method('is')
-			->with($method)
-			->will($this->returnValue(true));
-		$apiListener->initialize($event);
-		$this->assertEquals('Crud.CrudExceptionRenderer', Configure::read('Exception.renderer'));
-		$this->assertTrue(class_exists('CrudExceptionRenderer'));
+		$mockMethods = array('_request', 'registerExceptionHandler', 'enforceRequestType');
+		$listener = $this->getMock('ApiListener', $mockMethods, array(new CrudSubject()));
+		$listener->expects($this->once())->method('_request')->with()->will($this->returnValue($request));
+		$listener->expects($this->never())->method('registerExceptionHandler');
+		$listener->expects($this->never())->method('enforceRequestType');
+		$listener->initialize(new CakeEvent('Crud.init'));
 	}
 
 /**
- * Tests initialization with worng match of action and method
+ * testEnforceRequestType
  *
- * @dataProvider actionsProvider
+ * Test that requesting an action with an valid action does not throw an exception
+ *
+ * @covers ApiListener::enforceRequestType
+ * @return void
+ */
+	public function testEnforceRequestType() {
+		$request = $this->getMock('CakeRequest', array('is'));
+		$request->expects($this->at(0))->method('is')->with('get')->will($this->returnValue(false));
+		$request->expects($this->at(1))->method('is')->with('post')->will($this->returnValue(true));
+
+		$action = $this->getMock('IndexCrudAction', array('requestMethods'), array(new CrudSubject()));
+		$action->expects($this->once())->method('requestMethods')->will($this->returnValue(array('get', 'post')));
+
+		$listener = $this->getMock('ApiListener', array('_request', '_action'), array(new CrudSubject()));
+		$listener->expects($this->once())->method('_request')->with()->will($this->returnValue($request));
+		$listener->expects($this->once())->method('_action')->with()->will($this->returnValue($action));
+		$listener->enforceRequestType();
+	}
+
+/**
+ * testEnforceRequestTypeInvalidRequestType
+ *
+ * Test that requesting an action with an invalid action throws an exception
+ *
+ * @covers ApiListener::enforceRequestType
  * @expectedException MethodNotAllowedException
  * @return void
  */
-	public function testIniError($action, $method) {
-		$subject = $this->getMock('CrudSubject');
-		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
-		$subject->response = $this->getMock('CakeResponse');
-		$subject->action = $subject->request->action = $action;
+	public function testEnforceRequestTypeInvalidRequestType() {
+		$request = $this->getMock('CakeRequest', array('is'));
+		$request->expects($this->at(0))->method('is')->with('get')->will($this->returnValue(false));
+		$request->expects($this->at(1))->method('is')->with('post')->will($this->returnValue(false));
 
-		$apiListener = new ApiListener($subject);
-		$event = new CakeEvent('Crud.init', $subject);
+		$action = $this->getMock('IndexCrudAction', array('requestMethods'), array(new CrudSubject()));
+		$action->expects($this->once())->method('requestMethods')->will($this->returnValue(array('get', 'post')));
 
-		$subject->request->expects($this->at(0))
-			->method('is')
-			->with('api')
-			->will($this->returnValue(true));
-
-		$subject->request->expects($this->at(1))
-			->method('is')
-			->with($method)
-			->will($this->returnValue(false));
-		$apiListener->initialize($event);
+		$listener = $this->getMock('ApiListener', array('_request', '_action'), array(new CrudSubject()));
+		$listener->expects($this->once())->method('_request')->with()->will($this->returnValue($request));
+		$listener->expects($this->once())->method('_action')->with()->will($this->returnValue($action));
+		$listener->enforceRequestType();
 	}
 
 /**

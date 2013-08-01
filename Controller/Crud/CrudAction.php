@@ -24,6 +24,11 @@ abstract class CrudAction extends CrudBaseObject {
  */
 	public function __construct(CrudSubject $subject, $defaults = array()) {
 		parent::__construct($subject, $defaults);
+
+		if (isset($defaults['requestMethods'])) {
+			$this->requestMethods($defaults['requestMethods']);
+		}
+
 		$this->_settings['action'] = $subject->action;
 	}
 
@@ -79,6 +84,20 @@ abstract class CrudAction extends CrudBaseObject {
 		if (false === $pos) {
 			$controller->methods[] = $this->_settings['action'];
 		}
+	}
+
+/**
+ * Get or set a list of request methods allowed for this action
+ *
+ * @param array $methods
+ * @return array
+ */
+	public function requestMethods($methods = null) {
+		if (is_null($methods)) {
+			return (array)$this->config('requestMethods');
+		}
+
+		return $this->_settings['requestMethods'] = (array)$methods;
 	}
 
 /**

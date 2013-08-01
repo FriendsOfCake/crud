@@ -71,12 +71,13 @@ class ApiListener extends CrudListener {
 			return;
 		}
 
-		// Make sure that exceptions output in standard Crud format
+		$this->registerExceptionHandler();
+		$this->enforceRequestType();
+	}
+
+	public function registerExceptionHandler() {
 		App::uses('CrudExceptionRenderer', 'Crud.Error');
 		Configure::write('Exception.renderer', 'Crud.CrudExceptionRenderer');
-
-		// Enforce a few REST rules before we do any heavy lifting
-		$this->_enforceRequestType($event->subject->action, $this->_request());
 	}
 
 /**
@@ -260,52 +261,21 @@ class ApiListener extends CrudListener {
 /**
  * Enforce REST HTTP request types
  *
- * "index" actions should only be accessible through HTTP GET
- * "view" actions should only be accessible through HTTP GET
- * "add" actions should only be accessible through HTTP POST
- * "edit" actions should only be accessible through HTTP PUT
- * "delete" actions should only be accessible through HTTP DELETE
- *
- * Unknown actions will be ignored
- *
- * @TODO make this configurable on both HTTP verbs and actions
- * @param string $action
- * @param CakeRequest $request
- * @return void
  * @throws MethodNotAllowedException If method not allowed
+ * @return void
  */
-	protected function _enforceRequestType($action, CakeRequest $request) {
-		switch ($action) {
-			case 'index':
-			case 'admin_index':
-			case 'view':
-			case 'admin_view':
-				if (!$request->is('get')) {
-					throw new MethodNotAllowedException();
-				}
-				break;
+	public function enforceRequestType() {
+		$action = $this->_action();
+		$request = $this->_request();
+		$methods = $action->requestMethods();
 
-			case 'add':
-			case 'admin_add':
-				if (!$request->is('post')) {
-					throw new MethodNotAllowedException();
-				}
-				break;
-
-			case 'edit':
-			case 'admin_edit':
-				if (!$request->is('put')) {
-					throw new MethodNotAllowedException();
-				}
-				break;
-
-			case 'delete':
-			case 'admin_delete':
-				if (!$request->is('delete')) {
-					throw new MethodNotAllowedException();
-				}
-				break;
+		foreach ($methods as $method) {
+			if ($request->is($method)) {
+				return true;
+			}
 		}
+
+		throw new MethodNotAllowedException();
 	}
 
 /**
