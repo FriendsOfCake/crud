@@ -104,15 +104,15 @@ class ScaffoldListener extends CrudListener {
 		$pluralHumanName = Inflector::humanize(Inflector::underscore($controller->name));
 		$modelSchema = $model->schema();
 		$associations = $this->_associations($model);
-		$scaffoldFields = $this->_scaffoldFields($model);
-		$scaffoldFieldExclude = $this->_scaffoldFieldExclude($scaffoldFields);
+		$scaffoldFields = $this->_scaffoldFields();
+		$scaffoldFields = $this->_scaffoldFieldExclude($scaffoldFields);
 		$scaffoldFilters = $this->_scaffoldFilters($request);
 		$sidebarActions = $this->_sidebarActions();
 
 		$controller->set(compact(
 			'modelClass', 'primaryKey', 'displayField', 'singularVar', 'pluralVar',
 			'singularHumanName', 'pluralHumanName', 'scaffoldFields', 'associations',
-			'scaffoldFilters', 'action', 'scaffoldFieldExclude', 'modelSchema', 'sidebarActions'
+			'scaffoldFilters', 'action', 'modelSchema', 'sidebarActions'
 		));
 
 		$controller->set('title_for_layout', $title);
@@ -138,44 +138,132 @@ class ScaffoldListener extends CrudListener {
  * @param Model $model
  * @return array List of fields
  */
-	protected function _scaffoldFields(Model $model) {
+	protected function _scaffoldFields() {
+		$model = $this->_model();
+		$request = $this->_request();
 		$modelSchema = $model->schema();
+
+		$_fields = array();
 		$scaffoldFields = array_keys($modelSchema);
+		foreach ($scaffoldFields as $scaffoldField) {
+			$_fields[$scaffoldField] = array();
+		}
+		$scaffoldFields = $_fields;
+
 		$_scaffoldFields = $this->_action()->config('scaffoldFields');
 		if (!empty($_scaffoldFields)) {
+			$_fields = array();
 			$_scaffoldFields = (array)$_scaffoldFields;
-			$scaffoldFields = array_intersect($scaffoldFields, array_combine(
-				$_scaffoldFields,
-				$_scaffoldFields
-			));
+			foreach ($_scaffoldFields as $name => $options) {
+				if (is_numeric($name) && !is_array($options)) {
+					$name = $options;
+					$options = array();
+				}
+				$_fields[$name] = $options;
+			}
+
+			$scaffoldFields = array_intersect_key($scaffoldFields, $_fields);
+		}
+
+		$singularTable = Inflector::singularize($model->table);
+
+		foreach ($scaffoldFields as $_field => $_options) {
+			$entity = explode('.', $_field);
+			$scaffoldFields[$_field]['__field__'] = $_field;
+			$scaffoldFields[$_field]['__display_field__'] = false;
+			$scaffoldFields[$_field]['__schema__'] = null;
+			if (count($entity) == 1 || current($entity) == $model->alias) {
+				$scaffoldFields[$_field]['__display_field__'] = in_array(end($entity), array(
+					$model->displayField,
+					$singularTable,
+				));
+				$scaffoldFields[$_field]['__schema__'] = $modelSchema[end($entity)]['type'];
+			}
 		}
 
 		return $scaffoldFields;
 	}
 
 /**
- * Returns fields to be excluded on scaffolded view
+ * Returns fields to be allowed for display on scaffolded view
  *
  * @param array $scaffoldFields
  * @return array List of fields
  */
 	protected function _scaffoldFieldExclude($scaffoldFields) {
+		$model = $this->_model();
+		$modelSchema = $model->schema();
 		$className = $this->_action()->config('className');
-		$scaffoldFieldExclude = $this->_action()->config('scaffoldFieldExclude');
+		$blacklist = $this->_action()->config('scaffoldFieldExclude');
 
-		if (empty($scaffoldFieldExclude)) {
+		if (empty($blacklist)) {
 			if ($className == 'Crud.Add' || $className == 'Crud.Edit') {
-				$scaffoldFieldExclude = array('created', 'modified', 'updated');
-				foreach ($scaffoldFields as $_field) {
+				$blacklist = array('created', 'modified', 'updated');
+				foreach ($scaffoldFields as $_field => $_options) {
 					if (substr($_field, -6) === '_count') {
-						$scaffoldFieldExclude[] = $_field;
+						$blacklist[] = $_field;
 					}
 				}
 			} else {
-				$scaffoldFieldExclude = array();
+				$blacklist = array();
 			}
 		}
-		return $scaffoldFieldExclude;
+
+		$scaffoldFields = array_diff_key($scaffoldFields, array_combine(
+			$blacklist, $blacklist
+		));
+
+		uasort($scaffoldFields, array('ScaffoldListener', '_compareFields'));
+		$scaffoldFields = array_reverse($scaffoldFields, true);
+		return $scaffoldFields;
+	}
+
+	protected static function _compareFields($one, $two) {
+		$_primary = 10;
+		$_displayField = 9;
+		$_select = 8;
+		$_other = 5;
+		$_boolean = 2;
+		$_count = 1;
+		$_date = 0;
+
+		$a = $_other;
+		$b = $_other;
+
+		if ($one['__field__'] == 'id') {
+			$a = $_primary;
+		} elseif ($one['__display_field__']) {
+			$a = $_displayField;
+		} elseif (substr($one['__field__'], -3) === '_id') {
+			$a = $_select;
+		} elseif ($one['__schema__'] == 'boolean') {
+			$a = $_boolean;
+		} elseif (substr($one['__field__'], -6) === '_count') {
+			$a = $_count;
+		} elseif (in_array($one['__schema__'], array('date', 'datetime', 'timestamp', 'time'))) {
+			$a = $_date;
+		}
+
+		if ($two['__field__'] == 'id') {
+			$b = $_primary;
+		} elseif ($two['__display_field__']) {
+			$b = $_displayField;
+		} elseif (substr($two['__field__'], -3) === '_id') {
+			$b = $_select;
+		} elseif ($two['__schema__'] == 'boolean') {
+			$b = $_boolean;
+		} elseif (substr($two['__field__'], -6) === '_count') {
+			$b = $_count;
+		} elseif (in_array($two['__schema__'], array('date', 'datetime', 'timestamp', 'time'))) {
+			$b = $_date;
+		}
+
+		if ($a == $b) {
+			$r = array($one['__field__'], $two['__field__']);
+			sort($r);
+			return ($r[0] == $one['__field__']) ? 1 : -1;
+		}
+		return ($a < $b) ? -1 : 1;
 	}
 
 /**
@@ -204,6 +292,7 @@ class ScaffoldListener extends CrudListener {
 				}
 			}
 		}
+
 		return $scaffoldFilters;
 	}
 
@@ -233,6 +322,7 @@ class ScaffoldListener extends CrudListener {
 				$sidebarActions[$i]['type'] = 'link';
 			}
 		}
+
 		return $sidebarActions;
 	}
 

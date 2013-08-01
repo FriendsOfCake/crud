@@ -22,7 +22,7 @@
   <dl>
 <?php
 $i = 0;
-foreach ($scaffoldFields as $_field) {
+foreach ($scaffoldFields as $_field => $_options) {
   $isKey = false;
   if (!empty($associations['belongsTo'])) {
     foreach ($associations['belongsTo'] as $_alias => $_details) {

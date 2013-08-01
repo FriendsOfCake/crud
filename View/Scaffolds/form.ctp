@@ -19,11 +19,8 @@
 ?>
 <div class="<?php echo $pluralVar; ?> form">
 <?php
-  if (empty($scaffoldFieldExclude)) {
-    $scaffoldFieldExclude = array('created', 'modified', 'updated');
-  }
   echo $this->Form->create();
-  echo $this->Form->inputs($scaffoldFields, $scaffoldFieldExclude);
+  echo $this->Form->inputs($scaffoldFields);
   ?>
   <div class="submit">
   <?php
