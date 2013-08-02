@@ -8,6 +8,7 @@ App::uses('CrudAction', 'Crud.Controller/Crud');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
 App::uses('CrudComponent', 'Crud.Controller/Component');
 App::uses('IndexCrudAction', 'Crud.Controller/Crud/Action');
+App::uses('CrudTestCase', 'Crud.Test/Support');
 
 /**
  *
@@ -16,7 +17,7 @@ App::uses('IndexCrudAction', 'Crud.Controller/Crud/Action');
  *
  * @copyright Christian Winther, 2013
  */
-class CrudActionTest extends CakeTestCase {
+class CrudActionTest extends CrudTestCase {
 
 	public function setUp() {
 		parent::setUp();
@@ -152,35 +153,6 @@ class CrudActionTest extends CakeTestCase {
 		$expected = true;
 		$actual = $Action->handle($this->Subject);
 		$this->assertSame($expected, $actual, 'Calling handle on a disabled action did not return null');
-	}
-
-/**
- * Test that an enabled action will call _handle
- *
- * @return void
- */
-	public function testHandleReturnsFalseIfactionDoesntMatchRequestAction() {
-		$this->ActionClass = $this->getMock('CrudAction', array('config', '_handle'), array($this->Subject));
-		$this->ActionClass
-			->expects($this->never())
-			->method('_handle', '_handle was called');
-		$this->ActionClass
-			->expects($this->at(0))
-			->method('config', 'the action never checked if the action is enabled')
-			->with('enabled')
-			->will($this->returnValue(true));
-		$this->ActionClass
-			->expects($this->at(1))
-			->method('config', 'the action didn\'t ask for the action property')
-			->with('action')
-			->will($this->returnValue('admin'));
-
-		// Make sure the action in the request isn't the same as action propety
-		$this->Subject->action = 'admin_add';
-
-		$expected = false;
-		$actual = $this->ActionClass->handle($this->Subject);
-		$this->assertSame($expected, $actual);
 	}
 
 /**
@@ -784,4 +756,69 @@ class CrudActionTest extends CakeTestCase {
 		$action->expects($this->once())->method('requestMethods')->will($this->returnValue(array('get', 'post')));
 		$action->enforceRequestType();
 	}
+
+/**
+ * testHandle
+ *
+ * Test that calling handle will invoke _handle
+ * when the action is enabbled
+ *
+ * @covers CrudAction::handle
+ * @return void
+ */
+	public function testHandle() {
+		$Action = $this
+			->getMockBuilder('CrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array('config', 'enforceRequestType', '_handle'))
+			->getMock();
+
+		$i = 0;
+		$Action
+			->expects($this->at($i++))
+			->method('config')
+			->with('enabled')
+			->will($this->returnValue(true));
+		$Action
+			->expects($this->at($i++))
+			->method('enforceRequestType');
+		$Action
+			->expects($this->at($i++))
+			->method('_handle');
+
+		$Action->handle(new CrudSubject(array('args' => array())));
+	}
+
+/**
+ * testHandleDisabled
+ *
+ * Test that calling handle will not invoke _handle
+ * when the action is disabled
+ *
+ * @covers CrudAction::handle
+ * @return void
+ */
+	public function testHandleDisabled() {
+		$Action = $this
+			->getMockBuilder('CrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array('config', 'enforceRequestType', '_handle'))
+			->getMock();
+
+		$i = 0;
+		$Action
+			->expects($this->at($i++))
+			->method('config')
+			->with('enabled')
+			->will($this->returnValue(false));
+		$Action
+			->expects($this->never())
+			->method('enforceRequestType');
+		$Action
+			->expects($this->never())
+			->method('_handle');
+
+		$Action->handle(new CrudSubject(array('args' => array())));
+	}
+
 }

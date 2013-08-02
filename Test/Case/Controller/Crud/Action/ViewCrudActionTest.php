@@ -17,49 +17,6 @@ App::uses('CrudTestCase', 'Crud.Test/Support');
 class ViewCrudActionTest extends CrudTestCase {
 
 /**
- * testHandleFromCrudAction
- *
- * Test that calling handle will invoke _handle
- *
- * @covers CrudAction::handle
- * @return void
- */
-	public function testHandleFromCrudAction() {
-		$Request = new CakeRequest();
-    $Request->params = array('action' => 'view');
-
-    $Action = $this
-      ->getMockBuilder('ViewCrudAction')
-      ->disableOriginalConstructor()
-      ->setMethods(array('config', '_request', 'enforceRequestType', '_handle'))
-      ->getMock();
-
-    $i = 0;
-    $Action
-      ->expects($this->at($i++))
-      ->method('config')
-      ->with('enabled')
-      ->will($this->returnValue(true));
-    $Action
-      ->expects($this->at($i++))
-      ->method('_request')
-      ->will($this->returnValue($Request));
-    $Action
-      ->expects($this->at($i++))
-      ->method('config')
-      ->with('action')
-      ->will($this->returnValue('view'));
-    $Action
-      ->expects($this->at($i++))
-      ->method('enforceRequestType');
-    $Action
-      ->expects($this->at($i++))
-      ->method('_handle');
-
-    $Action->handle(new CrudSubject(array('args' => array())));
-	}
-
-/**
  * test_handleGet
  *
  * Test that calling HTTP GET on an view action

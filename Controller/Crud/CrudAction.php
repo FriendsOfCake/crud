@@ -51,10 +51,6 @@ abstract class CrudAction extends CrudBaseObject {
 			return false;
 		}
 
-		if ($this->_request()->action !== $this->config('action')) {
-			return false;
-		}
-
 		$this->enforceRequestType();
 
 		return call_user_func_array(array($this, '_handle'), $subject->args);

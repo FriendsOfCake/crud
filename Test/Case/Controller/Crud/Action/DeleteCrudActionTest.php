@@ -17,47 +17,6 @@ App::uses('CrudTestCase', 'Crud.Test/Support');
 class DeleteCrudActionTest extends CrudTestCase {
 
 /**
- * Test that calling handle will invoke _handle
- *
- * @covers CrudAction::handle
- * @return void
- */
-	public function testThatCrudActionWillHandle() {
-		$Request = new CakeRequest();
-		$Request->params = array('action' => 'delete');
-
-		$Action = $this
-			->getMockBuilder('AddCrudAction')
-			->disableOriginalConstructor()
-			->setMethods(array('config', '_request', 'enforceRequestType', '_handle'))
-			->getMock();
-
-		$i = 0;
-		$Action
-			->expects($this->at($i++))
-			->method('config')
-			->with('enabled')
-			->will($this->returnValue(true));
-		$Action
-			->expects($this->at($i++))
-			->method('_request')
-			->will($this->returnValue($Request));
-		$Action
-			->expects($this->at($i++))
-			->method('config')
-			->with('action')
-			->will($this->returnValue('delete'));
-		$Action
-			->expects($this->at($i++))
-			->method('enforceRequestType');
-		$Action
-			->expects($this->at($i++))
-			->method('_handle');
-
-		$Action->handle(new CrudSubject(array('args' => array())));
-	}
-
-/**
  * test_handle
  *
  * test the best-case flow
