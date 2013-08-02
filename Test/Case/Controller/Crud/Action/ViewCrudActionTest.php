@@ -265,7 +265,6 @@ class ViewCrudActionTest extends CrudTestCase {
     $this->callProtectedMethod('_handle', array(1), $Action);
 	}
 
-
 /**
  * test_handleGetNotFound
  *

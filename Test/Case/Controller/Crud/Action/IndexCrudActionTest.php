@@ -137,6 +137,7 @@ class IndexCrudActionTest extends CrudTestCase {
 /**
  * Tests that iterators are casted to arrays
  *
+ * @covers IndexCrudAction::_handle
  * @return void
  */
 	public function testPaginatorReturningIterator() {

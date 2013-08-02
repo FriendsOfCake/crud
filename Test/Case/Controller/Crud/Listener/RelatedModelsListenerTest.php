@@ -17,7 +17,7 @@ class RelatedModelListenerTest extends CakeTestCase {
 /**
  * testModels
  *
- * @covers RelatedModels::models
+ * @covers RelatedModelsListener::models
  * @return void
  */
 	public function testModels() {
@@ -50,7 +50,7 @@ class RelatedModelListenerTest extends CakeTestCase {
  *
  * Test behavior when 'relatedModels' is empty
  *
- * @covers RelatedModels::models
+ * @covers RelatedModelsListener::models
  * @return void
  */
 	public function testModelsEmpty() {
@@ -83,7 +83,7 @@ class RelatedModelListenerTest extends CakeTestCase {
  *
  * Test behavior when 'relatedModels' is a string
  *
- * @covers RelatedModels::models
+ * @covers RelatedModelsListener::models
  * @return void
  */
 	public function testModelsString() {
@@ -116,7 +116,7 @@ class RelatedModelListenerTest extends CakeTestCase {
  *
  * Test behavior when 'relatedModels' is true
  *
- * @covers RelatedModels::models
+ * @covers RelatedModelsListener::models
  * @return void
  */
 	public function testModelsTrue() {
