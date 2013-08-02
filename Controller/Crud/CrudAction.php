@@ -64,10 +64,12 @@ abstract class CrudAction extends CrudBaseObject {
 	public function disable() {
 		$this->config('enabled', false);
 
-		$controller = $this->_controller();
-		$pos = array_search($this->_settings['action'], $controller->methods);
+		$Controller = $this->_controller();
+		$actionName = $this->config('action');
+
+		$pos = array_search($actionName, $Controller->methods);
 		if (false !== $pos) {
-			unset($controller->methods[$pos]);
+			unset($Controller->methods[$pos]);
 		}
 	}
 
@@ -79,10 +81,12 @@ abstract class CrudAction extends CrudBaseObject {
 	public function enable() {
 		$this->config('enabled', true);
 
-		$controller = $this->_controller();
-		$pos = array_search($this->_settings['action'], $controller->methods);
+		$Controller = $this->_controller();
+		$actionName = $this->config('action');
+
+		$pos = array_search($actionName, $Controller->methods);
 		if (false === $pos) {
-			$controller->methods[] = $this->_settings['action'];
+			$Controller->methods[] = $actionName;
 		}
 	}
 

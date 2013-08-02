@@ -156,86 +156,138 @@ class CrudActionTest extends CrudTestCase {
 	}
 
 /**
+ * testDisable
+ *
  * Test that calling disable() on the action object
  * disables the action and makes the handle method return false
  *
+ * @covers CrudAction::disable
  * @return void
  */
-	public function testDisableWorks() {
-		$this->Controller->methods[] = 'add';
+	public function testDisable() {
+		$Controller = $this
+			->getMockBuilder('Controller')
+			->setMethods(array('foo'))
+			->disableOriginalConstructor()
+			->getMock();
+		$Controller->methods = array('add', 'index', 'delete');
 
-		$this->Subject->set(array('action' => 'add'));
-		$this->ActionClass = $this->getMock('CrudAction', array('config', '_handle'), array($this->Subject));
-		$this->ActionClass
-			->expects($this->never())
-			->method('_handle', '_handle should never be called on a disabled action');
-		$this->ActionClass
-			->expects($this->once())
+		$i = 0;
+
+		$Action = $this
+			->getMockBuilder('CrudAction')
+			->setMethods(array('config', '_controller', '_handle'))
+			->disableOriginalConstructor()
+			->getMock();
+		$Action
+			->expects($this->at($i++))
 			->method('config', 'enabled was not changed to false by config()')
 			->with('enabled', false);
+		$Action
+			->expects($this->at($i++))
+			->method('_controller')
+			->with()
+			->will($this->returnValue($Controller));
+		$Action
+			->expects($this->at($i++))
+			->method('config')
+			->with('action')
+			->will($this->returnValue('add'));
 
-		$this->ActionClass->disable();
+		$Action->disable();
 
-		$actual = array_search('add', $this->Controller->methods);
+		$actual = array_search('add', $Controller->methods);
 		$this->assertFalse($actual, '"add" was not removed from the controller::$methods array');
 	}
 
 /**
+ * testEnable
+ *
  * Test that calling enable() on the action object
  * enables the action
  *
+ * @covers CrudAction::enable
  * @return void
  */
-	public function testEnableWorks() {
-		$this->Subject->set(array('action' => 'add'));
-		$this->ActionClass = $this->getMock('CrudAction', array('config', '_handle'), array($this->Subject));
-		$this->ActionClass
-			->expects($this->never())
-			->method('_handle', '_handle should never be called on a disabled action');
-		$this->ActionClass
-			->expects($this->once())
+	public function testEnable() {
+		$Controller = $this
+			->getMockBuilder('Controller')
+			->setMethods(array('foo'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$i = 0;
+
+		$Action = $this
+			->getMockBuilder('CrudAction')
+			->setMethods(array('config', '_controller', '_handle'))
+			->disableOriginalConstructor()
+			->getMock();
+		$Action
+			->expects($this->at($i++))
 			->method('config', 'enabled was not changed to false by config()')
 			->with('enabled', true);
+		$Action
+			->expects($this->at($i++))
+			->method('_controller')
+			->with()
+			->will($this->returnValue($Controller));
+		$Action
+			->expects($this->at($i++))
+			->method('config')
+			->with('action')
+			->will($this->returnValue('add'));
 
-		$this->ActionClass->enable();
+		$Action->enable();
 
-		$actual = array_search('add', $this->Controller->methods);
-		$this->assertNotEmpty($actual, '"add" was not added to the controller::$methods array');
+		$actual = array_search('add', $Controller->methods);
+		$this->assertTrue($actual !== false, '"add" was not added to the controller::$methods array');
 	}
 
 /**
  * Test that getting the findMethod will execute config()
  *
+ * @covers CrudAction::findMethod
  * @return void
  */
 	public function testFindMethodGet() {
-		$this->ActionClass = $this->getMock('CrudAction', array('config', '_handle'), array($this->Subject));
-		$this->ActionClass
+		$Action = $this
+			->getMockBuilder('CrudAction')
+			->setMethods(array('config', '_handle'))
+			->setConstructorArgs(array($this->Subject))
+			->getMock();
+		$Action
 			->expects($this->once())
 			->method('config')
 			->with('findMethod');
 
-		$this->ActionClass->findMethod();
+		$Action->findMethod();
 	}
 
 /**
  * Test that setting the findMethod will execute config()
  *
+ * @covers CrudAction::findMethod
  * @return void
  */
 	public function testFindMethodSet() {
-		$this->ActionClass = $this->getMock('CrudAction', array('config', '_handle'), array($this->Subject));
-		$this->ActionClass
+		$Action = $this
+			->getMockBuilder('CrudAction')
+			->setMethods(array('config', '_handle'))
+			->setConstructorArgs(array($this->Subject))
+			->getMock();
+		$Action
 			->expects($this->once())
 			->method('config')
 			->with('findMethod', 'my_first');
 
-		$this->ActionClass->findMethod('my_first');
+		$Action->findMethod('my_first');
 	}
 
 /**
  * Test that getting the saveOptions will execute config()
  *
+ * @covers CrudAction::saveOptions
  * @return void
  */
 	public function testSaveOptionsGet() {
@@ -251,6 +303,7 @@ class CrudActionTest extends CrudTestCase {
 /**
  * Test that setting the saveOptions will execute config()
  *
+ * @covers CrudAction::saveOptions
  * @return void
  */
 	public function testSaveOptionsSet() {
@@ -269,6 +322,7 @@ class CrudActionTest extends CrudTestCase {
  * Since there is no view configured, it will call config('action')
  * and use the return value as the view name.
  *
+ * @covers CrudAction::view
  * @return void
  */
 	public function testViewGetWithoutConfiguredView() {
@@ -290,6 +344,7 @@ class CrudActionTest extends CrudTestCase {
  * Since a view has been configured, the view value will be
  * returned and it won't use action
  *
+ * @covers CrudAction::view
  * @return void
  */
 	public function testViewGetWithConfiguredView() {
@@ -308,6 +363,7 @@ class CrudActionTest extends CrudTestCase {
 /**
  * Test that setting the saveOptions will execute config()
  *
+ * @covers CrudAction::view
  * @return void
  */
 	public function testViewSet() {
@@ -323,6 +379,7 @@ class CrudActionTest extends CrudTestCase {
 /**
  * Test that setFlash triggers the correct methods
  *
+ * @covers CrudAction::setFlash
  * @return void
  */
 	public function testSetFlash() {
@@ -362,6 +419,7 @@ class CrudActionTest extends CrudTestCase {
  * Test that detecting the correct validation strategy for validateId
  * works as expected
  *
+ * @covers CrudAction::detectPrimaryKeyFieldType
  * @return void
  */
 	public function testDetectPrimaryKeyFieldType() {
@@ -399,6 +457,7 @@ class CrudActionTest extends CrudTestCase {
 /**
  * Test default saveAll options works when modified
  *
+ * @covers CrudAction::saveOptions
  * @return void
  */
 	public function testGetSaveAllOptionsDefaults() {
@@ -435,6 +494,7 @@ class CrudActionTest extends CrudTestCase {
  * Test that defining specific action configuration for saveAll takes
  * precedence over default configurations
  *
+ * @covers CrudAction::saveOptions
  * @return void
  */
 	public function testGetSaveAllOptionsCustomAction() {
@@ -451,6 +511,7 @@ class CrudActionTest extends CrudTestCase {
 /**
  * testEmptyMessage
  *
+ * @covers CrudAction::message
  * @expectedException CakeException
  * @expectedExceptionMessage Missing message type
  */
@@ -461,6 +522,7 @@ class CrudActionTest extends CrudTestCase {
 /**
  * testUndefinedMessage
  *
+ * @covers CrudAction::message
  * @expectedException CakeException
  * @expectedExceptionMessage Invalid message type "not defined"
  */
@@ -471,6 +533,7 @@ class CrudActionTest extends CrudTestCase {
 /**
  * testBadMessageConfig
  *
+ * @covers CrudAction::message
  * @expectedException CakeException
  * @expectedExceptionMessage Invalid message config for "badConfig" no text key found
  */
@@ -505,6 +568,7 @@ class CrudActionTest extends CrudTestCase {
 /**
  * testOverridenSimpleMessage
  *
+ * @covers CrudAction::message
  * @return void
  */
 	public function testOverridenSimpleMessage() {
@@ -529,6 +593,7 @@ class CrudActionTest extends CrudTestCase {
 /**
  * testSimpleMessage
  *
+ * @covers CrudAction::message
  * @return void
  */
 	public function testSimpleMessage() {
@@ -552,6 +617,7 @@ class CrudActionTest extends CrudTestCase {
 /**
  * testSimpleMessageWithPlaceholders
  *
+ * @covers CrudAction::message
  * @return void
  */
 	public function testSimpleMessageWithPlaceholders() {
@@ -575,6 +641,7 @@ class CrudActionTest extends CrudTestCase {
 /**
  * testInvalidIdMessage
  *
+ * @covers CrudAction::message
  * @return void
  */
 	public function testInvalidIdMessage() {
@@ -595,6 +662,12 @@ class CrudActionTest extends CrudTestCase {
 		$this->assertEqual($expected, $actual);
 	}
 
+/**
+ * testMessageNotFound
+ *
+ * @covers CrudAction::message
+ * @return void
+ */
 	public function testRecordNotFoundMessage() {
 		$expected = array(
 			'code' => 404,
@@ -616,6 +689,7 @@ class CrudActionTest extends CrudTestCase {
 /**
  * testBadRequestMethodMessage
  *
+ * @covers CrudAction::message
  * @return void
  */
 	public function testBadRequestMethodMessage() {
@@ -634,30 +708,6 @@ class CrudActionTest extends CrudTestCase {
 		);
 		$actual = $this->ActionClass->message('badRequestMethod', array('methods' => 'THESE ONES'));
 		$this->assertEqual($expected, $actual);
-	}
-
-/**
- * Test that it's possible to change just one sub key
- * by providing all the parents, without loosing any
- * default settings
- *
- * @return void
- */
-	public function testConfigMergeWorks() {
-		$this->ActionClass->config('messages.invalidId', array(
-			'code' => 400,
-			'class' => 'BadRequestException',
-			'text' => 'Invalid id'
-		));
-		$this->ActionClass->config(array('messages' => array('invalidId' => array('code' => 500))));
-
-		$expected = array(
-			'code' => 500,
-			'class' => 'BadRequestException',
-			'text' => 'Invalid id'
-		);
-		$result = $this->ActionClass->config('messages.invalidId');
-		$this->assertEqual($result, $expected);
 	}
 
 /**
