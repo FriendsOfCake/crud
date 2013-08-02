@@ -292,6 +292,7 @@ class ScaffoldListenerTest extends CakeTestCase {
 /**
  * test that the proper names and variable values are set by Scaffold
  *
+ * @covers ScaffoldListener::beforeRender
  * @dataProvider beforeRenderProvider
  * @param CrudListener $Listener
  * @param CakeEvent $Event
@@ -306,6 +307,7 @@ class ScaffoldListenerTest extends CakeTestCase {
 /**
  * Test that implementedEvents return the correct events
  *
+ * @covers ScaffoldListener::implementedEvents
  * @return void
  */
 	public function testImplementedEvents() {

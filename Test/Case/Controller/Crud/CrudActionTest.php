@@ -111,6 +111,7 @@ class CrudActionTest extends CrudTestCase {
 /**
  * Test that we get the expected events
  *
+ * @covers CrudAction::implementedEvents
  * @return void
  */
 	public function testImplementedEvents() {
@@ -122,6 +123,7 @@ class CrudActionTest extends CrudTestCase {
 /**
  * Test that an enabled action will call _handle
  *
+ * @covers CrudAction::handle
  * @return void
  */
 	public function testEnabledActionWorks() {

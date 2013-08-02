@@ -18,6 +18,7 @@ class ApiPaginationListenerTest extends CakeTestCase {
 /**
  * Test implemented events
  *
+ * @covers ApiPaginationListener::implementedEvents
  * @return void
  */
 	public function testImplementedEvents() {
@@ -30,6 +31,7 @@ class ApiPaginationListenerTest extends CakeTestCase {
 /**
  * Test that non-API requests don't get processed
  *
+ * @covers ApiPaginationListener::beforeRender
  * @return void
  */
 	public function testBeforeRenderNotApi() {
@@ -53,6 +55,7 @@ class ApiPaginationListenerTest extends CakeTestCase {
  * Test that API requests do not get processed
  * if there is no pagination data
  *
+ * @covers ApiPaginationListener::beforeRender
  * @return void
  */
 	public function testBeforeRenderNoPaginationData() {
@@ -79,6 +82,7 @@ class ApiPaginationListenerTest extends CakeTestCase {
  * Test that API requests do not get processed
  * if there if pagination data is NULL
  *
+ * @covers ApiPaginationListener::beforeRender
  * @return void
  */
 	public function testBeforeRenderPaginationDataIsNull() {
@@ -105,6 +109,7 @@ class ApiPaginationListenerTest extends CakeTestCase {
  * Test that API requests do get processed
  * if there is pagination data
  *
+ * @covers ApiPaginationListener::beforeRender
  * @return void
  */
 	public function testBeforeRenderWithPaginationData() {

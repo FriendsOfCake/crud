@@ -35,6 +35,7 @@ class SearchListenerTest extends CakeTestCase {
 /**
  * Test implemented events
  *
+ * @covers SearchListener::implementedEvents
  * @return void
  */
 	public function testImplementedEvents() {
@@ -45,18 +46,9 @@ class SearchListenerTest extends CakeTestCase {
 	}
 
 /**
- * Test that CakeDC/Search is loaded
- *
- * @return void
- */
-	public function testSearchPluginIsLoaded() {
-		$bool = CakePlugin::loaded('Search');
-		$this->assertTrue($bool, "CakeDC/Search is not installed");
-	}
-
-/**
  * Test that scope returns instance of it self for chaining
  *
+ * @covers SearchListener::scope
  * @return void
  */
 	public function testScopeReturnsSelf() {
@@ -68,6 +60,7 @@ class SearchListenerTest extends CakeTestCase {
 /**
  * Test that scope without filter works
  *
+ * @covers SearchListener::scope
  * @return void
  */
 	public function testScopeWithoutFilter() {
@@ -82,6 +75,7 @@ class SearchListenerTest extends CakeTestCase {
 /**
  * Test that scope with filter works
  *
+ * @covers SearchListener::scope
  * @return void
  */
 	public function testScopeWithFilter() {
@@ -98,6 +92,7 @@ class SearchListenerTest extends CakeTestCase {
  *
  * All clean, no configuration and nothing loaded
  *
+ * @covers SearchListener::beforePaginate
  * @return void
  */
 	public function testBeforePaginate() {
@@ -152,6 +147,7 @@ class SearchListenerTest extends CakeTestCase {
  *
  * All clean, no configuration and nothing loaded
  *
+ * @covers SearchListener::beforePaginate
  * @return void
  */
 	public function testBeforePaginateWithModelFilterArgs() {
@@ -207,6 +203,7 @@ class SearchListenerTest extends CakeTestCase {
  * Test that query scope works without a defined
  * query scope in the listener
  *
+ * @covers SearchListener::beforePaginate
  * @return void
  */
 	public function testBeforePaginateWithUndefinedQueryScope() {
@@ -263,6 +260,7 @@ class SearchListenerTest extends CakeTestCase {
  * Test that query scope works with a defined
  * query scope in the listener
  *
+ * @covers SearchListener::beforePaginate
  * @return void
  */
 	public function testBeforePaginateWithDefinedQueryScope() {
@@ -320,6 +318,7 @@ class SearchListenerTest extends CakeTestCase {
  * Test that query scope works with a defined
  * query scope in the listener and a filter
  *
+ * @covers SearchListener::beforePaginate
  * @return void
  */
 	public function testBeforePaginateWithDefinedQueryScopeAndFilter() {
@@ -375,6 +374,7 @@ class SearchListenerTest extends CakeTestCase {
 /**
  * Test that _checkRequiredPlugin doesn't throw an exception
  *
+ * @covers SearchListener::_checkRequiredPlugin
  * @return void
  */
 	public function testCheckRequiredPlugins() {
@@ -423,6 +423,7 @@ class SearchListenerTest extends CakeTestCase {
 /**
  * Test that _checkRequiredPlugin doesn't throw an exception
  *
+ * @covers SearchListener::_checkRequiredPlugin
  * @return void
  */
 	public function testCheckRequiredPluginsWithoutPlugin() {
@@ -475,6 +476,7 @@ class SearchListenerTest extends CakeTestCase {
  * Test that the Prg component is automatically initialized
  * if its not loaded by the controller directly
  *
+ * @covers SearchListener::_ensureComponent
  * @return void
  */
 	public function testEnsureComponent() {
@@ -512,6 +514,7 @@ class SearchListenerTest extends CakeTestCase {
 /**
  * Test that nothing is done if the Prg component is already loaded
  *
+ * @covers SearchListener::_ensureComponent
  * @return void
  */
 	public function testEnsureComponentAlreadyLoaded() {
@@ -537,6 +540,7 @@ class SearchListenerTest extends CakeTestCase {
  * Test that the Searchable behavior is automatically initialized
  * if its not loaded by the model directly
  *
+ * @covers SearchListener::_ensureBehavior
  * @return void
  */
 	public function testEnsureBehavior() {
@@ -570,6 +574,7 @@ class SearchListenerTest extends CakeTestCase {
 /**
  * Test that nothing is done if the Searchable behavior is already loaded
  *
+ * @covers SearchListener::_ensureBehavior
  * @return void
  */
 	public function testEnsureBehaviorAlreadyLoaded() {
