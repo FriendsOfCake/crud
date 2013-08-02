@@ -33,7 +33,12 @@ class CrudJsonView extends JsonView {
 			$data = isset($this->viewVars[$serialize]) ? $this->viewVars[$serialize] : null;
 		}
 
-		return json_encode($data);
+		$options = 0;
+		if (version_compare(PHP_VERSION, '5.4.0', '>=') && Configure::read('debug')) {
+			$options = $options | JSON_PRETTY_PRINT;
+		}
+
+		return json_encode($data, $options);
 	}
 
 }
