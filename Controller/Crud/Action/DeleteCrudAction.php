@@ -19,15 +19,11 @@ class DeleteCrudAction extends CrudAction {
  *
  * `findMethod` The default `Model::find()` method for reading data
  *
- * `secureDelete` delete() can only be called with the HTTP DELETE verb, not POST when `true`.
- * If set to `false` HTTP POST is also acceptable
- *
  * @var array
  */
 	protected $_settings = array(
 		'enabled' => true,
 		'findMethod' => 'count',
-		'secureDelete' => true,
 		'requestType' => 'default',
 		'requestMethods' => array(
 			'default' => array('delete'),
