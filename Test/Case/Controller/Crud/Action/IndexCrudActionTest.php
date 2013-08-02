@@ -2,6 +2,8 @@
 
 App::uses('Model', 'Model');
 App::uses('CakeRequest', 'Network');
+App::uses('PaginatorComponent', 'Controller/Component');
+App::uses('ComponentCollection', 'Controller');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
 App::uses('IndexCrudAction', 'Crud.Controller/Crud/Action');
 App::uses('CrudTestCase', 'Crud.Test/Support');
@@ -223,7 +225,7 @@ class IndexCrudActionTest extends CrudTestCase {
 			->disableOriginalConstructor()
 			->getMock();
 		$Controller->Components = $this
-			->getMockBuilder('ComponentsCollection')
+			->getMockBuilder('ComponentCollection')
 			->disableOriginalConstructor()
 			->setMethods(array('load'))
 			->getMock();
