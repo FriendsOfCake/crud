@@ -159,7 +159,13 @@ class SearchListener extends CrudListener {
  * @return void
  */
 	protected function _setPaginationOptions(Controller $controller, Model $model, $query) {
-		$controller->Paginator->settings['conditions'] = $model->parseCriteria($query);
+		if (!isset($controller->Paginator->settings['conditions'])) {
+			$controller->Paginator->settings['conditions'] = array();
+		}
+		$controller->Paginator->settings['conditions'] = array_merge(
+			$controller->Paginator->settings['conditions'],
+			$model->parseCriteria($query)
+		);
 	}
 
 /**
