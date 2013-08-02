@@ -53,11 +53,11 @@ Api Pagination adds instant query string pagination support to your api which wi
 api-requesters the possibility to create custom data collections using GET parameters
 in the URL (e.g. `http://example.com/controller.{format}?key=value`)
 
-The following query string pagination parameters are supported
+The following query string pagination parameters are available
 
 - **limit**: an integer limiting the number of results
 - **sort**: the string value of a fieldname to sort the results by
-- **direction**: either `asc` or `desc` (works only in combination with the `sort` parameter
+- **direction**: either `asc` or `desc` (only works in combination with the `sort` parameter)
 - **page**: an integer pointing to a specific data collection page
 
 [Please also see the CakePHP documentation on out of range `page` requests](http://book.cakephp.org/2.0/en/core-libraries/components/pagination.html#out-of-range-page-requests)
