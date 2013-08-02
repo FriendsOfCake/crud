@@ -79,6 +79,7 @@ class RelatedModelsListener extends CrudListener {
 /**
  * Fetches related models' list and sets them to a variable for the view
  *
+ * @codeCoverageIgnore
  * @param CakeEvent $event
  * @return void
  */
@@ -95,7 +96,7 @@ class RelatedModelsListener extends CrudListener {
  */
 	protected function _findRelatedItems(Model $Model, $query) {
 		if ($this->_hasTreeBehavior($Model)) {
-			return $ModelInstance->generateTreeList(
+			return $Model->generateTreeList(
 				$query['conditions'],
 				$query['keyPath'],
 				$query['valuePath'],
@@ -104,7 +105,7 @@ class RelatedModelsListener extends CrudListener {
 			);
 		}
 
-		return $ModelInstance->find('list', $query);
+		return $Model->find('list', $query);
 	}
 
 /**

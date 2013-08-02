@@ -1,9 +1,11 @@
 <?php
 
 App::uses('CakeEvent', 'Event');
+App::uses('Model', 'Model');
 App::uses('CrudAction', 'Crud.Controller/Crud');
 App::uses('RelatedModelsListener', 'Crud.Controller/Crud/Listener');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
+App::uses('CrudTestCase', 'Crud.Test/Support');
 
 /**
  *
@@ -12,7 +14,7 @@ App::uses('CrudSubject', 'Crud.Controller/Crud');
  *
  * @copyright Christian Winther, 2013
  */
-class RelatedModelListenerTest extends CakeTestCase {
+class RelatedModelListenerTest extends CrudTestCase {
 
 /**
  * testModels
@@ -162,6 +164,102 @@ class RelatedModelListenerTest extends CakeTestCase {
 
 		$result = $Listener->models();
 		$expected = array('Post', 'Tag');
+		$this->assertEqual($result, $expected);
+	}
+
+/**
+ * test_findRelatedItems
+ *
+ * Test behavior for a model without a TreeBehavior
+ *
+ * @covers RelatedModelsListener::_findRelatedItems
+ * @return void
+ */
+	public function test_findRelatedItems() {
+		$Model = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->setMethods(array('find'))
+			->getMock();
+
+		$Listener = $this
+			->getMockBuilder('RelatedModelsListener')
+			->disableOriginalConstructor()
+			->setMethods(array('_hasTreeBehavior'))
+			->getMock();
+
+		$query = array(
+			'conditions' => array('Model.is_active' => true)
+		);
+
+		$data = array(
+			array('Model' => array('id' => 1))
+		);
+
+		$Listener
+			->expects($this->once())
+			->method('_hasTreeBehavior')
+			->with($Model)
+			->will($this->returnValue(false));
+		$Model
+			->expects($this->once())
+			->method('find')
+			->with('list', $query)
+			->will($this->returnValue($data));
+
+		$this->setReflectionClassInstance($Listener);
+		$result = $this->callProtectedMethod('_findRelatedItems', array($Model, $query), $Listener);
+		$expected = $data;
+		$this->assertEqual($result, $expected);
+	}
+
+/**
+ * test_findRelatedItemsTreeBehavior
+ *
+ * Test behavior for a model with TreeBehavior
+ *
+ * @covers RelatedModelsListener::_findRelatedItems
+ * @return void
+ */
+	public function test_findRelatedItemsTreeBehavior() {
+		$Model = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->setMethods(array('generateTreeList'))
+			->getMock();
+
+		$Listener = $this
+			->getMockBuilder('RelatedModelsListener')
+			->disableOriginalConstructor()
+			->setMethods(array('_hasTreeBehavior'))
+			->getMock();
+
+		$query = array(
+			'conditions' => array(),
+			'keyPath' => 'id',
+			'valuePath' => 'name',
+			'spacer' => '_',
+			'recursive' => -1
+		);
+
+		$data = array(
+			array('Model' => array('id' => 1))
+		);
+
+		$Listener
+			->expects($this->once())
+			->method('_hasTreeBehavior')
+			->with($Model)
+			->will($this->returnValue(true));
+		$Model
+			->expects($this->once())
+			->method('generateTreeList')
+			->with(array(), 'id', 'name', '_', -1)
+			->will($this->returnValue($data));
+
+		$this->setReflectionClassInstance($Listener);
+		$result = $this->callProtectedMethod('_findRelatedItems', array($Model, $query), $Listener);
+		$expected = $data;
 		$this->assertEqual($result, $expected);
 	}
 
