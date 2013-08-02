@@ -53,7 +53,7 @@ Api Pagination adds instant query string pagination support to your api which wi
 api-requesters the possibility to create custom data collections using GET parameters
 in the URL (e.g. `http://example.com/controller.{format}?key=value`)
 
-The following query string pagination parameters are available
+The following query string pagination parameters will become available:
 
 - **limit**: an integer limiting the number of results
 - **sort**: the string value of a fieldname to sort the results by
