@@ -142,11 +142,16 @@
 </span><span id="33" class="l"><a class="l" href="#33">33 </a>            <span class="php-var">$data</span> = <span class="php-keyword1">isset</span>(<span class="php-var">$this</span>-&gt;viewVars[<span class="php-var">$serialize</span>]) ? <span class="php-var">$this</span>-&gt;viewVars[<span class="php-var">$serialize</span>] : <span class="php-keyword1">null</span>;
 </span><span id="34" class="l"><a class="l" href="#34">34 </a>        }
 </span><span id="35" class="l"><a class="l" href="#35">35 </a>
-</span><span id="36" class="l"><a class="l" href="#36">36 </a>        <span class="php-keyword1">return</span> <span class="php-keyword2">json_encode</span>(<span class="php-var">$data</span>);
-</span><span id="37" class="l"><a class="l" href="#37">37 </a>    }
-</span><span id="38" class="l"><a class="l" href="#38">38 </a>
-</span><span id="39" class="l"><a class="l" href="#39">39 </a>}
-</span><span id="40" class="l"><a class="l" href="#40">40 </a></span></code></pre>
+</span><span id="36" class="l"><a class="l" href="#36">36 </a>        <span class="php-var">$options</span> = <span class="php-num">0</span>;
+</span><span id="37" class="l"><a class="l" href="#37">37 </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">version_compare</span>(PHP_VERSION, <span class="php-quote">'5.4.0'</span>, <span class="php-quote">'&gt;='</span>) &amp;&amp; Configure::read(<span class="php-quote">'debug'</span>)) {
+</span><span id="38" class="l"><a class="l" href="#38">38 </a>            <span class="php-var">$options</span> = <span class="php-var">$options</span> | JSON_PRETTY_PRINT;
+</span><span id="39" class="l"><a class="l" href="#39">39 </a>        }
+</span><span id="40" class="l"><a class="l" href="#40">40 </a>
+</span><span id="41" class="l"><a class="l" href="#41">41 </a>        <span class="php-keyword1">return</span> <span class="php-keyword2">json_encode</span>(<span class="php-var">$data</span>, <span class="php-var">$options</span>);
+</span><span id="42" class="l"><a class="l" href="#42">42 </a>    }
+</span><span id="43" class="l"><a class="l" href="#43">43 </a>
+</span><span id="44" class="l"><a class="l" href="#44">44 </a>}
+</span><span id="45" class="l"><a class="l" href="#45">45 </a></span></code></pre>
 	</div>
 
 	<div id="footer">
