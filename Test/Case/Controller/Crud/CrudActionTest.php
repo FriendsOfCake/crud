@@ -7,6 +7,7 @@ App::uses('SessionComponent', 'Controller/Component');
 App::uses('CrudAction', 'Crud.Controller/Crud');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
 App::uses('CrudComponent', 'Crud.Controller/Component');
+App::uses('IndexCrudAction', 'Crud.Controller/Crud/Action');
 
 /**
  *
@@ -668,6 +669,53 @@ class CrudActionTest extends CakeTestCase {
 			'text' => 'Invalid id'
 		);
 		$result = $this->ActionClass->config('messages.invalidId');
+		$this->assertEqual($result, $expected);
+	}
+
+/**
+ * testRequestMethods
+ *
+ * @covers CrudAction::requestMethods
+ * @return void
+ */
+	public function testRequestMethods() {
+		$this->ActionClass->requestMethods(array('get', 'post', 'put', 'delete'));
+		$result = $this->ActionClass->requestMethods();
+		$expected = array('get', 'post', 'put', 'delete');
+		$this->assertEqual($result, $expected);
+	}
+
+/**
+ * testRequestMethodsDefaults
+ *
+ * @covers CrudAction::requestMethods
+ * @return void
+ */
+	public function testRequestMethodsDefaults() {
+		$this->ActionClass = new $this->actionClassName($this->Subject, array('requestMethods' => array('get', 'put')));
+
+		$result = $this->ActionClass->requestMethods();
+		$expected = array('get', 'put');
+		$this->assertEqual($result, $expected);
+	}
+
+/**
+ * testRequestMethodDefaultOverride
+ *
+ * Test that providing defaults override crud action defaults
+ *
+ * @covers CrudAction::requestMethods
+ * @return void
+ */
+	public function testRequestMethodDefaultOverride() {
+		$this->ActionClass = $this->getMock('IndexCrudAction', array('foo'), array($this->Subject, array('requestMethods' => array('put'))));
+
+		$result = $this->ActionClass->requestMethods();
+		$expected = array('put');
+		$this->assertEqual($result, $expected);
+
+		$result = $this->ActionClass->requestMethods(array('get'));
+		$expected = array('get');
 		$this->assertEqual($result, $expected);
 	}
 
