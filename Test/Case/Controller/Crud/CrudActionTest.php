@@ -751,7 +751,7 @@ class CrudActionTest extends CakeTestCase {
  *
  * Test that requesting an action with an valid action does not throw an exception
  *
- * @covers ApiListener::enforceRequestType
+ * @covers CrudAction::enforceRequestType
  * @return void
  */
 	public function testEnforceRequestType() {
@@ -770,7 +770,7 @@ class CrudActionTest extends CakeTestCase {
  *
  * Test that requesting an action with an invalid action throws an exception
  *
- * @covers ApiListener::enforceRequestType
+ * @covers CrudAction::enforceRequestType
  * @expectedException MethodNotAllowedException
  * @return void
  */
