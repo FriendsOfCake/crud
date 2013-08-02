@@ -47,9 +47,34 @@ class SamplesController extends AppController {
 ?>
 {% endhighlight %}
 
+## Enable query string parameters (optional)
+
+Api Pagination will add instant query string pagination support to your api which will give
+the api-requester the possibility to create custom data collections using GET parameters
+in the URL (e.g. `http://example.com/controller.{format}?key=value`)
+
+The following query string pagination parameters are supported
+
+- **limit**: an integer limiting the number of results
+- **sort**: the string value of a fieldname to sort the results by
+- **direction**: either `asc` or `desc` (works only in combination with the `sort` parameter
+- **page**: an integer pointing to a specific data collection page
+
+[Please also see the CakePHP documentation on out of range `page` requests](http://book.cakephp.org/2.0/en/core-libraries/components/pagination.html#out-of-range-page-requests)
+
+Enable query string pagination by adding this to your `/Controller/AppController.php` file
+
+{% highlight php %}
+<?php
+  public $paginate = array(
+    'paramType' => 'querystring'
+  );
+?>
+{% endhighlight %}
+
 # Configuration
 
-The listener do not have any configuration options
+The listener does not have any configuration options
 
 # Example output
 
