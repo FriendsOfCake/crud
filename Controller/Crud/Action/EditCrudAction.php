@@ -48,7 +48,11 @@ class EditCrudAction extends CrudAction {
 			'validate' => 'first',
 			'atomic' => true
 		),
-		'requestMethods' => array('get', 'put'),
+		'requestType' => 'default',
+		'requestMethods' => array(
+			'default' => array('get', 'post', 'put'),
+			'api' => array('put')
+		),
 		'messages' => array(
 			'success' => array(
 				'text' => 'Successfully updated {name}'

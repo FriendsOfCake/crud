@@ -76,16 +76,24 @@ abstract class CrudBaseObject extends Object implements CakeEventListener {
  *
  * @param mixed $key
  * @param mixed $value
+ * @param boolean $merge
  * @return mixed|CrudAction
  */
-	public function config($key = null, $value = null) {
+	public function config($key = null, $value = null, $merge = true) {
 		if (is_null($key) && is_null($value)) {
 			return $this->_settings;
 		}
 
 		if (is_null($value)) {
 			if (is_array($key)) {
-				$this->_settings = Hash::merge($this->_settings, $key);
+				if ($merge) {
+					$this->_settings = Hash::merge($this->_settings, $key);
+				} else {
+					foreach (Hash::flatten($key) as $k => $v) {
+						$this->_settings = Hash::insert($this->_settings, $k, $v);
+					}
+				}
+
 				return $this;
 			}
 
@@ -93,7 +101,7 @@ abstract class CrudBaseObject extends Object implements CakeEventListener {
 		}
 
 		if (is_array($value)) {
-			$value = $value + (array)Hash::get($this->_settings, $key);
+			$value = array_merge((array)Hash::get($this->_settings, $key), $value);
 		}
 
 		$this->_settings = Hash::insert($this->_settings, $key, $value);

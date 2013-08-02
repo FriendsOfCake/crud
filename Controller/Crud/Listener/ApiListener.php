@@ -72,7 +72,6 @@ class ApiListener extends CrudListener {
 		}
 
 		$this->registerExceptionHandler();
-		$this->enforceRequestType();
 	}
 
 	public function registerExceptionHandler() {
@@ -256,26 +255,6 @@ class ApiListener extends CrudListener {
 		$request->addDetector('api', array('callback' => function(CakeRequest $request) {
 			return $request->is('json') || $request->is('xml');
 		}));
-	}
-
-/**
- * Enforce REST HTTP request types
- *
- * @throws MethodNotAllowedException If method not allowed
- * @return void
- */
-	public function enforceRequestType() {
-		$action = $this->_action();
-		$request = $this->_request();
-		$methods = $action->requestMethods();
-
-		foreach ($methods as $method) {
-			if ($request->is($method)) {
-				return true;
-			}
-		}
-
-		throw new MethodNotAllowedException();
 	}
 
 /**

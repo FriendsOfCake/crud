@@ -28,7 +28,12 @@ class DeleteCrudAction extends CrudAction {
 		'enabled' => true,
 		'findMethod' => 'count',
 		'secureDelete' => true,
-		'requestMethods' => array('delete', 'post'),
+		'requestType' => 'default',
+		'requestMethods' => array(
+			'default' => array('delete'),
+			'api' => array('delete')
+		),
+
 		'messages' => array(
 			'success' => array(
 				'text' => 'Successfully deleted {name}'

@@ -25,10 +25,6 @@ abstract class CrudAction extends CrudBaseObject {
 	public function __construct(CrudSubject $subject, $defaults = array()) {
 		parent::__construct($subject, $defaults);
 
-		if (isset($defaults['requestMethods'])) {
-			$this->requestMethods($defaults['requestMethods']);
-		}
-
 		$this->_settings['action'] = $subject->action;
 	}
 
@@ -49,9 +45,11 @@ abstract class CrudAction extends CrudBaseObject {
 			return false;
 		}
 
-		if ($subject->action !== $this->config('action')) {
+		if ($this->_request()->action !== $this->config('action')) {
 			return false;
 		}
+
+		$this->enforceRequestType();
 
 		return call_user_func_array(array($this, '_handle'), $subject->args);
 	}
@@ -89,15 +87,38 @@ abstract class CrudAction extends CrudBaseObject {
 /**
  * Get or set a list of request methods allowed for this action
  *
+ * @param string $requestType
  * @param array $methods
  * @return array
  */
-	public function requestMethods($methods = null) {
+	public function requestMethods($requestType, $methods = null) {
 		if (is_null($methods)) {
-			return (array)$this->config('requestMethods');
+			return (array)$this->config('requestMethods.' . $requestType);
 		}
 
-		return $this->_settings['requestMethods'] = (array)$methods;
+		return $this->config('requestMethods.' . $requestType, $methods, false);
+	}
+
+/**
+ * Enforce HTTP request types
+ *
+ * @throws MethodNotAllowedException If method not allowed
+ * @param string $requestType The request type
+ * @return void
+ */
+	public function enforceRequestType($requestType = null) {
+		if (empty($requestType)) {
+			$requestType = $this->config('requestType');
+		}
+
+		$request = $this->_request();
+		foreach ($this->requestMethods($requestType) as $method) {
+			if ($request->is($method)) {
+				return;
+			}
+		}
+
+		throw new MethodNotAllowedException();
 	}
 
 /**
