@@ -313,7 +313,11 @@ class IndexCrudActionTest extends CrudTestCase {
     	'MyModel' => array(
     		'limit' => 5,
     		'findType' => 'another'
-    	)
+    	),
+    	'page' => 1,
+    	'limit' => 20,
+    	'maxLimit' => 100,
+    	'paramType' => 'named'
     );
     $this->assertEqual($result, $expected);
 	}
