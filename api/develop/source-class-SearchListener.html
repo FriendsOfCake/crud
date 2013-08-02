@@ -268,24 +268,30 @@
 </span></span><span id="159" class="l"><a class="l" href="#159">159 </a><span class="php-comment"> * @return void
 </span></span><span id="160" class="l"><a class="l" href="#160">160 </a><span class="php-comment"> */</span>
 </span><span id="161" class="l"><a class="l" href="#161">161 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__setPaginationOptions" href="#__setPaginationOptions">_setPaginationOptions</a>(Controller <span class="php-var">$controller</span>, Model <span class="php-var">$model</span>, <span class="php-var">$query</span>) {
-</span><span id="162" class="l"><a class="l" href="#162">162 </a>        <span class="php-var">$controller</span>-&gt;Paginator-&gt;settings[<span class="php-quote">'conditions'</span>] = <span class="php-var">$model</span>-&gt;parseCriteria(<span class="php-var">$query</span>);
-</span><span id="163" class="l"><a class="l" href="#163">163 </a>    }
-</span><span id="164" class="l"><a class="l" href="#164">164 </a>
-</span><span id="165" class="l"><a class="l" href="#165">165 </a><span class="php-comment">/**
-</span></span><span id="166" class="l"><a class="l" href="#166">166 </a><span class="php-comment"> * Set the model filter args
-</span></span><span id="167" class="l"><a class="l" href="#167">167 </a><span class="php-comment"> *
-</span></span><span id="168" class="l"><a class="l" href="#168">168 </a><span class="php-comment"> * @codeCoverageIgnore
-</span></span><span id="169" class="l"><a class="l" href="#169">169 </a><span class="php-comment"> * @param Model $model
-</span></span><span id="170" class="l"><a class="l" href="#170">170 </a><span class="php-comment"> * @param array $filter
-</span></span><span id="171" class="l"><a class="l" href="#171">171 </a><span class="php-comment"> * @return void
-</span></span><span id="172" class="l"><a class="l" href="#172">172 </a><span class="php-comment"> */</span>
-</span><span id="173" class="l"><a class="l" href="#173">173 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__setFilterArgs" href="#__setFilterArgs">_setFilterArgs</a>(Model <span class="php-var">$model</span>, <span class="php-var">$filter</span>) {
-</span><span id="174" class="l"><a class="l" href="#174">174 </a>        <span class="php-var">$model</span>-&gt;filterArgs = <span class="php-var">$filter</span>;
-</span><span id="175" class="l"><a class="l" href="#175">175 </a>        <span class="php-var">$model</span>-&gt;Behaviors-&gt;Searchable-&gt;setup(<span class="php-var">$model</span>);
-</span><span id="176" class="l"><a class="l" href="#176">176 </a>    }
-</span><span id="177" class="l"><a class="l" href="#177">177 </a>
-</span><span id="178" class="l"><a class="l" href="#178">178 </a>}
-</span><span id="179" class="l"><a class="l" href="#179">179 </a></span></code></pre>
+</span><span id="162" class="l"><a class="l" href="#162">162 </a>        <span class="php-keyword1">if</span> (!<span class="php-keyword1">isset</span>(<span class="php-var">$controller</span>-&gt;Paginator-&gt;settings[<span class="php-quote">'conditions'</span>])) {
+</span><span id="163" class="l"><a class="l" href="#163">163 </a>            <span class="php-var">$controller</span>-&gt;Paginator-&gt;settings[<span class="php-quote">'conditions'</span>] = <span class="php-keyword1">array</span>();
+</span><span id="164" class="l"><a class="l" href="#164">164 </a>        }
+</span><span id="165" class="l"><a class="l" href="#165">165 </a>        <span class="php-var">$controller</span>-&gt;Paginator-&gt;settings[<span class="php-quote">'conditions'</span>] = <span class="php-keyword2">array_merge</span>(
+</span><span id="166" class="l"><a class="l" href="#166">166 </a>            <span class="php-var">$controller</span>-&gt;Paginator-&gt;settings[<span class="php-quote">'conditions'</span>],
+</span><span id="167" class="l"><a class="l" href="#167">167 </a>            <span class="php-var">$model</span>-&gt;parseCriteria(<span class="php-var">$query</span>)
+</span><span id="168" class="l"><a class="l" href="#168">168 </a>        );
+</span><span id="169" class="l"><a class="l" href="#169">169 </a>    }
+</span><span id="170" class="l"><a class="l" href="#170">170 </a>
+</span><span id="171" class="l"><a class="l" href="#171">171 </a><span class="php-comment">/**
+</span></span><span id="172" class="l"><a class="l" href="#172">172 </a><span class="php-comment"> * Set the model filter args
+</span></span><span id="173" class="l"><a class="l" href="#173">173 </a><span class="php-comment"> *
+</span></span><span id="174" class="l"><a class="l" href="#174">174 </a><span class="php-comment"> * @codeCoverageIgnore
+</span></span><span id="175" class="l"><a class="l" href="#175">175 </a><span class="php-comment"> * @param Model $model
+</span></span><span id="176" class="l"><a class="l" href="#176">176 </a><span class="php-comment"> * @param array $filter
+</span></span><span id="177" class="l"><a class="l" href="#177">177 </a><span class="php-comment"> * @return void
+</span></span><span id="178" class="l"><a class="l" href="#178">178 </a><span class="php-comment"> */</span>
+</span><span id="179" class="l"><a class="l" href="#179">179 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__setFilterArgs" href="#__setFilterArgs">_setFilterArgs</a>(Model <span class="php-var">$model</span>, <span class="php-var">$filter</span>) {
+</span><span id="180" class="l"><a class="l" href="#180">180 </a>        <span class="php-var">$model</span>-&gt;filterArgs = <span class="php-var">$filter</span>;
+</span><span id="181" class="l"><a class="l" href="#181">181 </a>        <span class="php-var">$model</span>-&gt;Behaviors-&gt;Searchable-&gt;setup(<span class="php-var">$model</span>);
+</span><span id="182" class="l"><a class="l" href="#182">182 </a>    }
+</span><span id="183" class="l"><a class="l" href="#183">183 </a>
+</span><span id="184" class="l"><a class="l" href="#184">184 </a>}
+</span><span id="185" class="l"><a class="l" href="#185">185 </a></span></code></pre>
 	</div>
 
 	<div id="footer">
