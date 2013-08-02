@@ -111,6 +111,7 @@ class RelatedModelsListener extends CrudListener {
 /**
  * Check if a model has the Tree behavior attached or not
  *
+ * @codeCoverageIgnore
  * @param Model $Model
  * @return boolean
  */
@@ -122,14 +123,14 @@ class RelatedModelsListener extends CrudListener {
  * Get the query to find the related items for an associated model
  *
  * @param Model $AssociatedModel
- * @param Model $PrimaryModel
  * @param string $associationType
  * @return array
  */
-	protected function _getQuery(Model $AssociatedModel, Model $PrimaryModel, $associationType) {
+	protected function _getQuery(Model $AssociatedModel, $associationType) {
 		$query = array();
 
 		if ($associationType === 'belongsTo') {
+			$PrimaryModel = $this->_model();
 			$query['conditions'] = $PrimaryModel->belongsTo[$AssociatedModel->alias]['conditions'];
 		}
 

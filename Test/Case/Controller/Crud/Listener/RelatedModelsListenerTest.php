@@ -263,6 +263,49 @@ class RelatedModelListenerTest extends CrudTestCase {
 		$this->assertEqual($result, $expected);
 	}
 
+/**
+ * test_getAssociationType
+ *
+ * @covers RelatedModelsListener::_getAssociationType
+ * @return void
+ */
+	public function test_getAssociationType() {
+		$Model = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->setMethods(array('getAssociated'))
+			->getMock();
+
+		$Listener = $this
+			->getMockBuilder('RelatedModelsListener')
+			->disableOriginalConstructor()
+			->setMethods(array('_model'))
+			->getMock();
+		$Listener
+			->expects($this->any())
+			->method('_model')
+			->with()
+			->will($this->returnValue($Model));
+		$Model
+			->expects($this->any())
+			->method('getAssociated')
+			->with()
+			->will($this->returnValue(array('Post' => 'belongsTo', 'Tag' => 'hasMany')));
+
+		$this->setReflectionClassInstance($Listener);
+		$result = $this->callProtectedMethod('_getAssociationType', array('Post'), $Listener);
+		$expected = 'belongsTo';
+		$this->assertEqual($result, $expected);
+
+		$result = $this->callProtectedMethod('_getAssociationType', array('Tag'), $Listener);
+		$expected = 'hasMany';
+		$this->assertEqual($result, $expected);
+
+		$result = $this->callProtectedMethod('_getAssociationType', array('Comment'), $Listener);
+		$expected = null;
+		$this->assertEqual($result, $expected);
+	}
+
 // ---
 
 /**
