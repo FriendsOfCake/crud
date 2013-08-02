@@ -598,4 +598,85 @@ class SearchListenerTest extends CakeTestCase {
 		$Method->invoke($Instance, $Model);
 	}
 
+	public function test_setPaginationOptions() {
+		$Controller = new Controller();
+		$Controller->Paginator = new StdClass();
+		$Controller->Paginator->settings = array();
+		$Model = $this->getMock('Model', array('parseCriteria'));
+
+		$Model
+			->expects($this->once())
+			->method('parseCriteria')
+			->will($this->returnValue(array('some' => 'conditions')));
+
+		$Instance = new SearchListener(new CrudSubject());
+
+		$Method = new ReflectionMethod('SearchListener', '_setPaginationOptions');
+		$Method->setAccessible(true);
+		$Method->invoke($Instance, $Controller, $Model, array());
+
+		$expected = array(
+			'some' => 'conditions'
+		);
+		$result = $Controller->Paginator->settings['conditions'];
+		$this->assertSame($expected, $result, 'Conditions should match what the model says');
+	}
+
+	public function test_setPaginationOptionsMerge() {
+		$Controller = new Controller();
+		$Controller->Paginator = new StdClass();
+		$Controller->Paginator->settings = array(
+			'conditions' => array(
+				'existing' => 'conditions'
+			)
+		);
+		$Model = $this->getMock('Model', array('parseCriteria'));
+
+		$Model
+			->expects($this->once())
+			->method('parseCriteria')
+			->will($this->returnValue(array('some' => 'conditions')));
+
+		$Instance = new SearchListener(new CrudSubject());
+
+		$Method = new ReflectionMethod('SearchListener', '_setPaginationOptions');
+		$Method->setAccessible(true);
+		$Method->invoke($Instance, $Controller, $Model, array());
+
+		$expected = array(
+			'existing' => 'conditions',
+			'some' => 'conditions'
+		);
+		$result = $Controller->Paginator->settings['conditions'];
+		$this->assertSame($expected, $result, 'Existing conditions should not be removed');
+	}
+
+	public function test_setPaginationOptionsClobber() {
+		$Controller = new Controller();
+		$Controller->Paginator = new StdClass();
+		$Controller->Paginator->settings = array(
+			'conditions' => array(
+				'some' => 'other conditions'
+			)
+		);
+		$Model = $this->getMock('Model', array('parseCriteria'));
+
+		$Model
+			->expects($this->once())
+			->method('parseCriteria')
+			->will($this->returnValue(array('some' => 'conditions')));
+
+		$Instance = new SearchListener(new CrudSubject());
+
+		$Method = new ReflectionMethod('SearchListener', '_setPaginationOptions');
+		$Method->setAccessible(true);
+		$Method->invoke($Instance, $Controller, $Model, array());
+
+		$expected = array(
+			'some' => 'conditions'
+		);
+		$result = $Controller->Paginator->settings['conditions'];
+		$this->assertSame($expected, $result, 'Existing conditions should be overwritten');
+	}
+
 }
