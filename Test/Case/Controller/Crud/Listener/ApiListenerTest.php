@@ -5,6 +5,7 @@ App::uses('CakeRequest', 'Network');
 App::uses('CakeResponse', 'Network');
 App::uses('Controller', 'Controller');
 App::uses('RequestHandler', 'Controller/Component');
+App::uses('CrudComponent', 'Crud.Controller/Component');
 App::uses('ApiListener', 'Crud.Controller/Crud/Listener');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
 App::uses('IndexCrudAction', 'Crud.Controller/Crud/Action');
@@ -259,12 +260,14 @@ class ApiListenerTest extends CakeTestCase {
 		$subject->model->validationErrors = array('field' => 'An error');
 		$subject->controller->expects($this->at(1))
 			->method('set')
-			->with('data', $subject->model->validationErrors);
+			->with('data', array('Thing' => $subject->model->validationErrors));
 
 		$subject->controller->expects($this->never())->method('render');
 		$event = new CakeEvent('Crud.afterSave', $subject);
 
+		$subject->crud = new CrudComponent(new ComponentCollection());
 		$apiListener = new ApiListener($subject);
+
 		$this->assertNull($apiListener->afterSave($event));
 	}
 

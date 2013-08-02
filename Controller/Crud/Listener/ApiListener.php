@@ -95,8 +95,8 @@ class ApiListener extends CrudListener {
 
 		if (!$event->subject->success) {
 			$event->subject->response->statusCode(400);
-			$model = $this->_model();
-			$controller->set('data', $model->validationErrors);
+			$crud = $this->_crud();
+			$controller->set('data', $crud->validationErrors());
 			return;
 		}
 
