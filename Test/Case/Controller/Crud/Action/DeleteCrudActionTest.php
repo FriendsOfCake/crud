@@ -89,7 +89,7 @@ class DeleteCrudActionTest extends CrudTestCase {
 			->disableOriginalConstructor()
 			->setMethods(array(
 				'_model', '_validateId', '_getFindMethod',
-				'_trigger', 'setFlash', '_redirect'
+				'_trigger', 'setFlash', '_redirect', '_controller'
 			))
 			->getMock();
 		$Action
@@ -142,7 +142,7 @@ class DeleteCrudActionTest extends CrudTestCase {
 			->with('afterDelete', array('id' => 1, 'success' => true))
 			->will($this->returnValue($CrudSubject));
 		$Action
-			->expects($this->once())
+			->expects($this->at($i++))
 			->method('_controller')
 			->with()
 			->will($this->returnValue($Controller));
@@ -237,9 +237,6 @@ class DeleteCrudActionTest extends CrudTestCase {
 			->method('message')
 			->with('recordNotFound', array('id' => 1))
 			->will($this->returnValue(array('class' => 'NotFoundException', 'text' => 'Not Found', 'code' => 404)));
-		$Action
-			->expects($this->never())
-			->method('_trigger');
 		$Model
 			->expects($this->never())
 			->method('delete');
@@ -280,7 +277,7 @@ class DeleteCrudActionTest extends CrudTestCase {
 			->disableOriginalConstructor()
 			->setMethods(array(
 				'_model', '_validateId', '_getFindMethod',
-				'_trigger', 'setFlash', '_redirect'
+				'_trigger', 'setFlash', '_redirect', '_controller'
 			))
 			->getMock();
 		$Action
@@ -333,7 +330,7 @@ class DeleteCrudActionTest extends CrudTestCase {
 			->with('afterDelete', array('id' => 1, 'success' => false))
 			->will($this->returnValue($CrudSubject));
 		$Action
-			->expects($this->once())
+			->expects($this->at($i++))
 			->method('_controller')
 			->with()
 			->will($this->returnValue($Controller));
@@ -384,23 +381,13 @@ class DeleteCrudActionTest extends CrudTestCase {
 			->disableOriginalConstructor()
 			->setMethods(array(
 				'_model', '_validateId', '_getFindMethod',
-				'_trigger', 'setFlash', '_redirect'
+				'_trigger', 'setFlash', '_redirect', '_controller'
 			))
 			->getMock();
 		$Action
 			->expects($this->at($i++))
 			->method('_validateId')
 			->with(1)
-			->will($this->returnValue(true));
-		$Action
-			->expects($this->at($i++))
-			->method('_request')
-			->with()
-			->will($this->returnValue($Request));
-		$Request
-			->expects($this->once())
-			->method('is')
-			->with('delete')
 			->will($this->returnValue(true));
 		$Action
 			->expects($this->at($i++))
@@ -440,7 +427,7 @@ class DeleteCrudActionTest extends CrudTestCase {
 			->method('setFlash')
 			->with('error');
 		$Action
-			->expects($this->once())
+			->expects($this->at($i++))
 			->method('_controller')
 			->with()
 			->will($this->returnValue($Controller));
@@ -449,6 +436,7 @@ class DeleteCrudActionTest extends CrudTestCase {
 			->method('referer')
 			->with(array('action' => 'index'))
 			->will($this->returnValue(array('action' => 'index')));
+		$CrudSubject->stopped = true;
 		$Action
 			->expects($this->at($i++))
 			->method('_redirect')
