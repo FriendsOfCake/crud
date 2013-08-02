@@ -40,7 +40,12 @@ class CrudXmlView extends XmlView {
 			}
 		}
 
-		return Xml::fromArray($data)->asXML();
+		$options = array();
+		if (Configure::read('debug')) {
+			$options['pretty'] = true;
+		}
+
+		return Xml::fromArray($data, $options)->asXML();
 	}
 
 }
