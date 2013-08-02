@@ -104,7 +104,7 @@ class RelatedModelsListener extends CrudListener {
 			);
 		}
 
-		return $items = $ModelInstance->find('list', $query);;
+		return $ModelInstance->find('list', $query);
 	}
 
 /**
