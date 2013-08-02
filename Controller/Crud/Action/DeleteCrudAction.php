@@ -63,29 +63,7 @@ class DeleteCrudAction extends CrudAction {
 			return false;
 		}
 
-		$request = $this->_request();
-
-		$validRequest = $request->is('delete');
-		if (!$validRequest) {
-			$permitPost = !$this->config('secureDelete');
-			$validRequest = ($request->is('post') && $permitPost);
-		}
-
-		if (!$validRequest) {
-			$subject = $this->_subject(compact('id'));
-
-			$methods = 'DELETE';
-			if ($permitPost) {
-				$methods .= 'or POST';
-			}
-
-			$message = $this->message('badRequestMethod', array('id' => $subject->id, 'methods' => $methods));
-			$exceptionClass = $message['class'];
-			throw new $exceptionClass($message['text'], $message['code']);
-		}
-
 		$model = $this->_model();
-		$controller = $this->_controller();
 
 		$query = array();
 		$query['conditions'] = array($model->escapeField() => $id);
@@ -96,9 +74,9 @@ class DeleteCrudAction extends CrudAction {
 
 		$count = $model->find($subject->findMethod, $query);
 		if (empty($count)) {
-			$subject = $this->_trigger('recordNotFound', compact('id'));
+			$this->_trigger('recordNotFound', compact('id'));
 
-			$message = $this->message('recordNotFound', array('id' => $subject->id));
+			$message = $this->message('recordNotFound', array('id' => $id));
 			$exceptionClass = $message['class'];
 			throw new $exceptionClass($message['text'], $message['code']);
 		}
@@ -106,6 +84,7 @@ class DeleteCrudAction extends CrudAction {
 		$subject = $this->_trigger('beforeDelete', compact('id'));
 		if ($subject->stopped) {
 			$this->setFlash('error');
+			$controller = $this->_controller();
 			return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
 		}
 
@@ -117,6 +96,7 @@ class DeleteCrudAction extends CrudAction {
 			$subject = $this->_trigger('afterDelete', array('id' => $id, 'success' => false));
 		}
 
+		$controller = $this->_controller();
 		return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
 	}
 }
