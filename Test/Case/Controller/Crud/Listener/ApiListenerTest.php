@@ -89,11 +89,10 @@ class ApiListenerTest extends CakeTestCase {
 		$request = $this->getMock('CakeRequest', array('is'));
 		$request->expects($this->once())->method('is')->with('api')->will($this->returnValue(true));
 
-		$mockMethods = array('_request', 'registerExceptionHandler', 'enforceRequestType');
+		$mockMethods = array('_request', 'registerExceptionHandler');
 		$listener = $this->getMock('ApiListener', $mockMethods, array(new CrudSubject()));
 		$listener->expects($this->once())->method('_request')->with()->will($this->returnValue($request));
 		$listener->expects($this->once())->method('registerExceptionHandler')->with();
-		$listener->expects($this->once())->method('enforceRequestType')->with();
 		$listener->initialize(new CakeEvent('Crud.init'));
 	}
 
@@ -107,57 +106,11 @@ class ApiListenerTest extends CakeTestCase {
 		$request = $this->getMock('CakeRequest', array('is'));
 		$request->expects($this->once())->method('is')->with('api')->will($this->returnValue(false));
 
-		$mockMethods = array('_request', 'registerExceptionHandler', 'enforceRequestType');
+		$mockMethods = array('_request', 'registerExceptionHandler');
 		$listener = $this->getMock('ApiListener', $mockMethods, array(new CrudSubject()));
 		$listener->expects($this->once())->method('_request')->with()->will($this->returnValue($request));
 		$listener->expects($this->never())->method('registerExceptionHandler');
-		$listener->expects($this->never())->method('enforceRequestType');
 		$listener->initialize(new CakeEvent('Crud.init'));
-	}
-
-/**
- * testEnforceRequestType
- *
- * Test that requesting an action with an valid action does not throw an exception
- *
- * @covers ApiListener::enforceRequestType
- * @return void
- */
-	public function testEnforceRequestType() {
-		$request = $this->getMock('CakeRequest', array('is'));
-		$request->expects($this->at(0))->method('is')->with('get')->will($this->returnValue(false));
-		$request->expects($this->at(1))->method('is')->with('post')->will($this->returnValue(true));
-
-		$action = $this->getMock('IndexCrudAction', array('requestMethods'), array(new CrudSubject()));
-		$action->expects($this->once())->method('requestMethods')->will($this->returnValue(array('get', 'post')));
-
-		$listener = $this->getMock('ApiListener', array('_request', '_action'), array(new CrudSubject()));
-		$listener->expects($this->once())->method('_request')->with()->will($this->returnValue($request));
-		$listener->expects($this->once())->method('_action')->with()->will($this->returnValue($action));
-		$listener->enforceRequestType();
-	}
-
-/**
- * testEnforceRequestTypeInvalidRequestType
- *
- * Test that requesting an action with an invalid action throws an exception
- *
- * @covers ApiListener::enforceRequestType
- * @expectedException MethodNotAllowedException
- * @return void
- */
-	public function testEnforceRequestTypeInvalidRequestType() {
-		$request = $this->getMock('CakeRequest', array('is'));
-		$request->expects($this->at(0))->method('is')->with('get')->will($this->returnValue(false));
-		$request->expects($this->at(1))->method('is')->with('post')->will($this->returnValue(false));
-
-		$action = $this->getMock('IndexCrudAction', array('requestMethods'), array(new CrudSubject()));
-		$action->expects($this->once())->method('requestMethods')->will($this->returnValue(array('get', 'post')));
-
-		$listener = $this->getMock('ApiListener', array('_request', '_action'), array(new CrudSubject()));
-		$listener->expects($this->once())->method('_request')->with()->will($this->returnValue($request));
-		$listener->expects($this->once())->method('_action')->with()->will($this->returnValue($action));
-		$listener->enforceRequestType();
 	}
 
 /**
