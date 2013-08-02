@@ -49,8 +49,8 @@ class SamplesController extends AppController {
 
 ## Enable query string parameters (optional)
 
-Api Pagination will add instant query string pagination support to your api which will give
-the api-requester the possibility to create custom data collections using GET parameters
+Api Pagination adds instant query string pagination support to your api which will give
+api-requesters the possibility to create custom data collections using GET parameters
 in the URL (e.g. `http://example.com/controller.{format}?key=value`)
 
 The following query string pagination parameters are supported
