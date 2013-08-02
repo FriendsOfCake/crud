@@ -101,7 +101,13 @@ abstract class CrudBaseObject extends Object implements CakeEventListener {
 		}
 
 		if (is_array($value)) {
-			$value = array_merge((array)Hash::get($this->_settings, $key), $value);
+			if ($merge) {
+				$value = array_merge((array)Hash::get($this->_settings, $key), $value);
+			} else {
+				foreach ($value as $k => $v) {
+					$this->_settings = Hash::insert($this->_settings, $k, $v);
+				}
+			}
 		}
 
 		$this->_settings = Hash::insert($this->_settings, $key, $value);

@@ -25,6 +25,12 @@ abstract class CrudAction extends CrudBaseObject {
 	public function __construct(CrudSubject $subject, $defaults = array()) {
 		parent::__construct($subject, $defaults);
 
+		if (isset($defaults['requestMethods'])) {
+			foreach ($defaults['requestMethods'] as $type => $config) {
+				$this->requestMethods($type, $config);
+			}
+		}
+
 		$this->_settings['action'] = $subject->action;
 	}
 

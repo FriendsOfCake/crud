@@ -124,17 +124,33 @@ class CrudActionTest extends CakeTestCase {
  * @return void
  */
 	public function testEnabledActionWorks() {
-		$this->ActionClass
+		$Request = new CakeRequest();
+		$Request->action = 'add';
+
+		$Action = $this
+			->getMockBuilder('CrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array('_request', '_handle', 'enforceRequestType'))
+			->getMock();
+		$Action
+			->expects($this->any())
+			->method('_request')
+			->with()
+			->will($this->returnValue($Request));
+		$Action
 			->expects($this->once())
 			->method('_handle', '_handle was never called on a enabled action')
 			->will($this->returnValue(true));
 
+		$this->_configureAction($Action);
+		$Action->config('action', 'add');
+
 		$expected = true;
-		$actual = $this->ActionClass->config('enabled');
+		$actual = $Action->config('enabled');
 		$this->assertSame($expected, $actual, 'The action is not enabled by default');
 
 		$expected = true;
-		$actual = $this->ActionClass->handle($this->Subject);
+		$actual = $Action->handle($this->Subject);
 		$this->assertSame($expected, $actual, 'Calling handle on a disabled action did not return null');
 	}
 
@@ -679,8 +695,8 @@ class CrudActionTest extends CakeTestCase {
  * @return void
  */
 	public function testRequestMethods() {
-		$this->ActionClass->requestMethods(array('get', 'post', 'put', 'delete'));
-		$result = $this->ActionClass->requestMethods();
+		$this->ActionClass->requestMethods('default', array('get', 'post', 'put', 'delete'));
+		$result = $this->ActionClass->requestMethods('default');
 		$expected = array('get', 'post', 'put', 'delete');
 		$this->assertEqual($result, $expected);
 	}
@@ -692,9 +708,10 @@ class CrudActionTest extends CakeTestCase {
  * @return void
  */
 	public function testRequestMethodsDefaults() {
-		$this->ActionClass = new $this->actionClassName($this->Subject, array('requestMethods' => array('get', 'put')));
+		$defaults = array('requestMethods' => array('default' => array('get', 'put')));
+		$this->ActionClass = new $this->actionClassName($this->Subject, $defaults);
 
-		$result = $this->ActionClass->requestMethods();
+		$result = $this->ActionClass->requestMethods('default');
 		$expected = array('get', 'put');
 		$this->assertEqual($result, $expected);
 	}
@@ -708,15 +725,63 @@ class CrudActionTest extends CakeTestCase {
  * @return void
  */
 	public function testRequestMethodDefaultOverride() {
-		$this->ActionClass = $this->getMock('IndexCrudAction', array('foo'), array($this->Subject, array('requestMethods' => array('put'))));
+		$defaults = array(
+			'requestMethods' => array(
+				'default' => array('put')
+			)
+		);
 
-		$result = $this->ActionClass->requestMethods();
+		$this->ActionClass = $this->getMock('IndexCrudAction', array('foo'), array($this->Subject, $defaults));
+
+		$result = $this->ActionClass->requestMethods('default');
 		$expected = array('put');
 		$this->assertEqual($result, $expected);
 
-		$result = $this->ActionClass->requestMethods(array('get'));
+		$result = $this->ActionClass->requestMethods('default', array('get'));
+		$expected = $this->ActionClass;
+		$this->assertEqual($result, $expected);
+
+		$result = $this->ActionClass->requestMethods('default');
 		$expected = array('get');
 		$this->assertEqual($result, $expected);
 	}
 
+/**
+ * testEnforceRequestType
+ *
+ * Test that requesting an action with an valid action does not throw an exception
+ *
+ * @covers ApiListener::enforceRequestType
+ * @return void
+ */
+	public function testEnforceRequestType() {
+		$request = $this->getMock('CakeRequest', array('is'));
+		$request->expects($this->at(0))->method('is')->with('get')->will($this->returnValue(false));
+		$request->expects($this->at(1))->method('is')->with('post')->will($this->returnValue(true));
+
+		$action = $this->getMock('IndexCrudAction', array('_request', 'requestMethods'), array(new CrudSubject()));
+		$action->expects($this->once())->method('requestMethods')->will($this->returnValue(array('get', 'post')));
+		$action->expects($this->once())->method('_request')->with()->will($this->returnValue($request));
+		$action->enforceRequestType();
+	}
+
+/**
+ * testEnforceRequestTypeInvalidRequestType
+ *
+ * Test that requesting an action with an invalid action throws an exception
+ *
+ * @covers ApiListener::enforceRequestType
+ * @expectedException MethodNotAllowedException
+ * @return void
+ */
+	public function testEnforceRequestTypeInvalidRequestType() {
+		$request = $this->getMock('CakeRequest', array('is'));
+		$request->expects($this->at(0))->method('is')->with('get')->will($this->returnValue(false));
+		$request->expects($this->at(1))->method('is')->with('post')->will($this->returnValue(false));
+
+		$action = $this->getMock('IndexCrudAction', array('_request', 'requestMethods'), array(new CrudSubject()));
+		$action->expects($this->once())->method('_request')->with()->will($this->returnValue($request));
+		$action->expects($this->once())->method('requestMethods')->will($this->returnValue(array('get', 'post')));
+		$action->enforceRequestType();
+	}
 }
