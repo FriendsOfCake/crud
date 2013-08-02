@@ -280,7 +280,6 @@ class CrudComponentTest extends ControllerTestCase {
 /**
  * testEnable
  *
- * @covers CrudComponent::enable
  */
 	public function testEnable() {
 		$this->Crud->mapAction('puppies', 'view', false);
@@ -293,7 +292,6 @@ class CrudComponentTest extends ControllerTestCase {
 /**
  * testDisableAction
  *
- * @covers CrudComponent::disable
  */
 	public function testDisableAction() {
 		$this->Crud->disable('view');
@@ -305,7 +303,6 @@ class CrudComponentTest extends ControllerTestCase {
 /**
  * testMapAction
  *
- * @covers CrudComponent::mapAction
  */
 	public function testMapAction() {
 		$this->Crud->mapAction('puppies', 'view');
@@ -331,7 +328,6 @@ class CrudComponentTest extends ControllerTestCase {
 /**
  * testView
  *
- * @covers CrudComponent::view
  */
 	public function testiew() {
 		$this->controller
@@ -345,7 +341,6 @@ class CrudComponentTest extends ControllerTestCase {
 /**
  * testIsActionMappedYes
  *
- * @covers CrudComponent::isActionMapped
  */
 	public function testIsActionMappedYes() {
 		$result = $this->Crud->isActionMapped('index');
@@ -360,7 +355,6 @@ class CrudComponentTest extends ControllerTestCase {
 /**
  * testIsActionMappedNo
  *
- * @covers CrudComponent::isActionMapped
  */
 	public function testIsActionMappedNo() {
 		$result = $this->Crud->isActionMapped('puppies');
@@ -375,7 +369,6 @@ class CrudComponentTest extends ControllerTestCase {
 /**
  * Tests on method registers an event
  *
- * @covers CrudComponent::on
  */
 	public function testOn() {
 		$this->Crud->on('event', 'fakeCallback');
@@ -394,7 +387,6 @@ class CrudComponentTest extends ControllerTestCase {
 /**
  * tests on method registers an event with extra params
  *
- * @covers CrudComponent::on
  */
 	public function testOnWithPriPriorityy() {
 		$this->Crud->on('event', 'fakeCallback');
@@ -423,7 +415,6 @@ class CrudComponentTest extends ControllerTestCase {
 /**
  * Test if crud complains about unmapped actions
  *
- * @covers CrudComponent::executeAction
  * @expectedException CakeException
  * @return void
  */
@@ -434,7 +425,6 @@ class CrudComponentTest extends ControllerTestCase {
 /**
  * Test if view with array yields the expected result
  *
- * @covers CrudComponent::view
  * @return void
  */
 	public function testViewWithArrayNewAction() {
@@ -452,7 +442,6 @@ class CrudComponentTest extends ControllerTestCase {
 /**
  * Test if view with array yields the expected result
  *
- * @covers CrudComponent::view
  * @return void
  */
 	public function testViewWithArrayIndexAction() {
@@ -471,7 +460,6 @@ class CrudComponentTest extends ControllerTestCase {
  * Test that having no mapped model for an action,
  * just use the modelClass from the controller
  *
- * @covers CrudComponent::setModelProperties
  * @return void
  */
 	public function testSetModelPropertiesDefault() {
@@ -484,7 +472,6 @@ class CrudComponentTest extends ControllerTestCase {
  * Test that having mapped a custom model for an action,
  * the modelName will be as configured
  *
- * @covers CrudComponent::setModelProperties
  * @return void
  */
 	public function testSetModelPropertiesChangeModelForAction() {
@@ -501,7 +488,6 @@ class CrudComponentTest extends ControllerTestCase {
  * Test that having mapped a custom model for an action,
  * but the custom model isn't loaded, will throw an exception
  *
- * @covers CrudComponent::setModelProperties
  * @expectedException CakeException
  * @expectedExceptionMessage No model loaded in the Controller by the name "Donkey". Please add it to $uses.
  */
@@ -517,7 +503,6 @@ class CrudComponentTest extends ControllerTestCase {
  * Test that the build in action names can't be used
  * within other plugins
  *
- * @covers CrudComponent::mapAction
  * @expectedException CakeException
  * @expectedExceptionMessage The build-in CrudActions (Index, View, Add, Edit and Delete) must be loaded from the Crud plugin
  * @return void
@@ -530,7 +515,6 @@ class CrudComponentTest extends ControllerTestCase {
  * Test that the build in action names can't be used
  * within other plugins
  *
- * @covers CrudComponent::mapAction
  * @expectedException CakeException
  * @expectedExceptionMessage The build-in CrudActions (Index, View, Add, Edit and Delete) must be loaded from the Crud plugin
  * @return void
@@ -543,7 +527,6 @@ class CrudComponentTest extends ControllerTestCase {
  * Test that the build in action names can't be used
  * within other plugins
  *
- * @covers CrudComponent::mapAction
  * @expectedException CakeException
  * @expectedExceptionMessage The build-in CrudActions (Index, View, Add, Edit and Delete) must be loaded from the Crud plugin
  * @return void
@@ -556,7 +539,6 @@ class CrudComponentTest extends ControllerTestCase {
  * Test that the build in action names can't be used
  * within other plugins
  *
- * @covers CrudComponent::mapAction
  * @expectedException CakeException
  * @expectedExceptionMessage The build-in CrudActions (Index, View, Add, Edit and Delete) must be loaded from the Crud plugin
  * @return void
@@ -569,7 +551,6 @@ class CrudComponentTest extends ControllerTestCase {
  * Test that the build in action names can't be used
  * within other plugins
  *
- * @covers CrudComponent::mapAction
  * @expectedException CakeException
  * @expectedExceptionMessage The build-in CrudActions (Index, View, Add, Edit and Delete) must be loaded from the Crud plugin
  * @return void
@@ -587,7 +568,6 @@ class CrudComponentTest extends ControllerTestCase {
  * the App::uses() where the warning is raised is *after*
  * the check for the above build-in class names
  *
- * @covers CrudComponent::mapAction
  * @expectedException CakeException
  * @expectedExceptionMessage Plugin CrudSample could not be found.
  * @return void
@@ -617,8 +597,6 @@ class CrudComponentTest extends ControllerTestCase {
 /**
  * Test the default configuration for CrudComponent
  *
- * @covers CrudComponent::config
- * @covers CrudComponent::_mergeConfig
  * @return void
  */
 	public function testDefaultConfig() {
@@ -660,8 +638,6 @@ class CrudComponentTest extends ControllerTestCase {
  * listener in the Crud setting should preserve
  * the defaults and add the new listener to the array
  *
- * @covers CrudComponent::config
- * @covers CrudComponent::_mergeConfig
  * @return void
  */
 	public function testConstructMerging() {
@@ -709,8 +685,6 @@ class CrudComponentTest extends ControllerTestCase {
  * listener in the Crud setting should preserve
  * the defaults and add the new listener to the array
  *
- * @covers CrudComponent::config
- * @covers CrudComponent::_mergeConfig
  * @return void
  */
 	public function testConstructMerging2() {
@@ -755,7 +729,6 @@ class CrudComponentTest extends ControllerTestCase {
  * Test that addListener works - without listener
  * default config
  *
- * @covers CrudComponent::addListener
  * @return void
  */
 	public function testAddListenerWithoutDefaults() {
@@ -782,7 +755,6 @@ class CrudComponentTest extends ControllerTestCase {
  * Test that addListener works - with listener
  * default config
  *
- * @covers CrudComponent::addListener
  * @return void
  */
 	public function testAddListenerWithDefaults() {
@@ -811,7 +783,6 @@ class CrudComponentTest extends ControllerTestCase {
 /**
  * Test that removeListener works
  *
- * @covers CrudComponent::removeListener
  * @return void
  */
 	public function testRemoveListener() {
@@ -837,7 +808,6 @@ class CrudComponentTest extends ControllerTestCase {
  * Test removing a listener that doesn't exist
  * should return false
  *
- * @covers CrudComponent::removeListener
  * @return void
  */
 	public function testRemoveListenerNoExist() {
@@ -851,7 +821,6 @@ class CrudComponentTest extends ControllerTestCase {
  *
  * Also ensure that the listener is detached from EventManager
  *
- * @covers CrudComponent::removeListener
  * @return void
  */
 	public function testRemoveListenerAttached() {
@@ -879,7 +848,6 @@ class CrudComponentTest extends ControllerTestCase {
 /**
  * Test changing view var for one action works
  *
- * @covers CrudComponent::viewVar
  * @return void
  */
 	public function testViewVarSingleAction() {
@@ -893,7 +861,6 @@ class CrudComponentTest extends ControllerTestCase {
 /**
  * Test changing view var for multiple actions works
  *
- * @covers CrudComponent::viewVar
  * @return void
  */
 	public function testViewVarMultipleActions() {
@@ -911,7 +878,6 @@ class CrudComponentTest extends ControllerTestCase {
 /**
  * Test changing view var for multiple actions works
  *
- * @covers CrudComponent::findMethod
  * @return void
  */
 	public function testFindMethodMultipleActions() {
@@ -929,7 +895,6 @@ class CrudComponentTest extends ControllerTestCase {
 /**
  * Test setting defaults for one action works
  *
- * @covers CrudComponent::defaults
  * @return void
  */
 	public function testDefaultsOnAction() {
@@ -942,7 +907,6 @@ class CrudComponentTest extends ControllerTestCase {
 /**
  * Test setting defaults for multiple actions work
  *
- * @covers CrudComponent::defaults
  * @return void
  */
 	public function testDefaultsMultipleActions() {
@@ -958,7 +922,6 @@ class CrudComponentTest extends ControllerTestCase {
 /**
  * Test setting defaults for one listener works
  *
- * @covers CrudComponent::defaults
  * @return void
  */
 	public function testDefaultsOneListener() {
@@ -971,7 +934,6 @@ class CrudComponentTest extends ControllerTestCase {
 /**
  * Test setting defaults for multiple actions work
  *
- * @covers CrudComponent::defaults
  * @return void
  */
 	public function testDefaultsMultipleListeners() {
@@ -989,7 +951,6 @@ class CrudComponentTest extends ControllerTestCase {
  *
  * This proves that not setting 'className' doesn't break
  *
- * @covers CrudComponent::defaults
  * @return void
  */
 	public function testDefaultsListenerNotAlreadyLoaded() {
@@ -1003,7 +964,6 @@ class CrudComponentTest extends ControllerTestCase {
  *
  * By only providing a name, it should default to Crud plugin
  *
- * @covers CrudComponent::addListener
  * @return void
  */
 	public function testAddListenerOnlyNameNoClassName() {
@@ -1020,7 +980,6 @@ class CrudComponentTest extends ControllerTestCase {
  *
  * This allow developers to put listeners in app/Controller/Crud
  *
- * @covers CrudComponent::addListener
  * @return void
  */
 	public function testAddListenerOnlyNameClassName() {
@@ -1033,7 +992,6 @@ class CrudComponentTest extends ControllerTestCase {
  * Test adding a listener only by its name, with plugin dot syntax
  * works
  *
- * @covers CrudComponent::addListener
  * @return void
  */
 	public function testAddListenerOnlyNameWithPlugin() {
@@ -1046,7 +1004,6 @@ class CrudComponentTest extends ControllerTestCase {
  * Test adding a listener only by its name, with plugin dot syntax
  * works
  *
- * @covers CrudComponent::addListener
  * @return void
  */
 	public function testAddListenerOnlyNameWithPluginLowercase() {
@@ -1059,7 +1016,6 @@ class CrudComponentTest extends ControllerTestCase {
  * Test the Crud sets model and modelClass to NULL
  * if there is no model defined in the controller
  *
- * @covers CrudComponent::initAction
  * @return void
  */
 	public function testControllerWithEmptyUses() {
@@ -1079,7 +1035,6 @@ class CrudComponentTest extends ControllerTestCase {
  * by providing all the parents, without loosing any
  * default settings
  *
- * @covers CrudComponent::config
  * @return void
  */
 	public function testConfigMergeWorks() {
