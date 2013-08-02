@@ -62,11 +62,11 @@ class RelatedModelsListener extends CrudListener {
 			$AssociatedModel = $this->_getModelInstance($model, $associationType);
 
 			$viewVar = Inflector::variable(Inflector::pluralize($AssociatedModel->alias));
-			if (array_key_exists($subject->viewVar, $Controller->viewVars)) {
+			if (array_key_exists($viewVar, $Controller->viewVars)) {
 				continue;
 			}
 
-			$query = $this->_getQuery($AssociatedModel, $associationType);
+			$query = $this->_getBaseQuery($AssociatedModel, $associationType);
 
 			$subject = $this->_trigger('beforeRelatedModel', compact('model', 'query', 'viewVar'));
 			$items = $this->_findRelatedItems($AssociatedModel, $subject->query);
@@ -109,24 +109,13 @@ class RelatedModelsListener extends CrudListener {
 	}
 
 /**
- * Check if a model has the Tree behavior attached or not
- *
- * @codeCoverageIgnore
- * @param Model $Model
- * @return boolean
- */
-	protected function _hasTreeBehavior(Model $Model) {
-		return $Model->Behaviors->attached('Tree');
-	}
-
-/**
- * Get the query to find the related items for an associated model
+ * Get the base query to find the related items for an associated model
  *
  * @param Model $AssociatedModel
  * @param string $associationType
  * @return array
  */
-	protected function _getQuery(Model $AssociatedModel, $associationType) {
+	protected function _getBaseQuery(Model $AssociatedModel, $associationType = null) {
 		$query = array();
 
 		if ($associationType === 'belongsTo') {
@@ -135,15 +124,16 @@ class RelatedModelsListener extends CrudListener {
 		}
 
 		if ($this->_hasTreeBehavior($AssociatedModel)) {
+			$TreeBehavior = $this->_getTreeBehavior($AssociatedModel);
 			$query = array(
 				'keyPath' => null,
 				'valuePath' => null,
 				'spacer' => '_',
-				'recursive' => $AssociatedModel->Behaviors->Tree->settings[$AssociatedModel->alias]['recursive']
+				'recursive' => $TreeBehavior->settings[$AssociatedModel->alias]['recursive']
 			);
 
 			if (empty($query['conditions'])) {
-				$query['conditions'] = $AssociatedModel->Behaviors->Tree->settings[$AssociatedModel->alias]['scope'];
+				$query['conditions'] = $TreeBehavior->settings[$AssociatedModel->alias]['scope'];
 			}
 		}
 
@@ -170,10 +160,10 @@ class RelatedModelsListener extends CrudListener {
 		}
 
 		if ($associationType && !empty($PrimaryModel->{$associationType}[$modelName]['className'])) {
-			return ClassRegistry::init($PrimaryModel->{$associationType}[$modelName]['className']);
+			return $this->_classRegistryInit($PrimaryModel->{$associationType}[$modelName]['className']);
 		}
 
-		return ClassRegistry::init($modelName);
+		return $this->_classRegistryInit($modelName);
 	}
 
 /**
@@ -185,6 +175,38 @@ class RelatedModelsListener extends CrudListener {
 	protected function _getAssociationType($modelName) {
 		$associated = $this->_model()->getAssociated();
 		return isset($associated[$modelName]) ? $associated[$modelName] : null;
+	}
+
+/**
+ * Check if a model has the Tree behavior attached or not
+ *
+ * @codeCoverageIgnore
+ * @param Model $Model
+ * @return boolean
+ */
+	protected function _hasTreeBehavior(Model $Model) {
+		return $Model->Behaviors->attached('Tree');
+	}
+
+/**
+ * Get the TreeBehavior from a model
+ *
+ * @codeCoverageIgnore
+ * @param Model $Model
+ * @return TreeBehavior
+ */
+	protected function _getTreeBehavior(Model $Model) {
+		return $Model->Behaviors->Tree;
+	}
+
+/**
+ * Wrapper for ClassRegistry::init for easier testing
+ *
+ * @codeCoverageIgnore
+ * @return Model
+ */
+	protected function _classRegistryInit($modelName) {
+		return ClassRegistry::init($modelName);
 	}
 
 }

@@ -1,7 +1,8 @@
 <?php
 
-App::uses('CakeEvent', 'Event');
 App::uses('Model', 'Model');
+App::uses('Controller', 'Controller');
+App::uses('TreeBehavior', 'Model/Behavior');
 App::uses('CrudAction', 'Crud.Controller/Crud');
 App::uses('RelatedModelsListener', 'Crud.Controller/Crud/Listener');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
@@ -306,295 +307,522 @@ class RelatedModelListenerTest extends CrudTestCase {
 		$this->assertEqual($result, $expected);
 	}
 
-// ---
-
 /**
- * Tests that by default Crud component will fetch related associations on add and edit actions
+ * test_getModelInstance
  *
+ * Test that the associated model exist in the Primary Model
+ *
+ * @covers RelatedModelsListener::_getModelInstance
  * @return void
  */
-	public function _testFetchRelatedDefaults() {
-		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')), false);
-		$expectedTags = array(1 => '1', 2 => '2', 3 => '3');
-		$expectedAuthors = array(1 => '1', 2 => '2', 3 => '3', 4 => '4');
+	public function test_getModelInstance() {
+		$Model = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->getMock();
+		$Model->Post = 'PostModel';
 
-		$this->Crud->executeAction('add');
-		$vars = $this->controller->viewVars;
-		$this->assertEquals($expectedTags, $vars['tags']);
-		$this->assertEquals($expectedAuthors, $vars['authors']);
-		$this->controller->viewVars = array();
+		$Listener = $this
+			->getMockBuilder('RelatedModelsListener')
+			->disableOriginalConstructor()
+			->setMethods(array('_model', '_controller'))
+			->getMock();
+		$Listener
+			->expects($this->once())
+			->method('_model')
+			->with()
+			->will($this->returnValue($Model));
+		$Listener
+			->expects($this->never())
+			->method('_controller');
 
-		$this->Crud->executeAction('edit', array('1'));
-		$vars = $this->controller->viewVars;
-		$this->assertEquals($expectedTags, $vars['tags']);
-		$this->assertEquals($expectedAuthors, $vars['authors']);
-		$this->controller->viewVars = array();
+		$this->setReflectionClassInstance($Listener);
+		$result = $this->callProtectedMethod('_getModelInstance', array('Post'), $Listener);
+		$expected = 'PostModel';
+		$this->assertEqual($result, $expected);
 	}
 
 /**
- * Tests that by default Crud can select some models for each action to fetch related lists
+ * test_getModelInstanceThroughController
  *
+ * Get the model from the controller
+ *
+ * @covers RelatedModelsListener::_getModelInstance
  * @return void
  */
-	public function _testFetchRelatedMapped() {
-		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')), false);
-		$this->Crud->action('add')->config('relatedModels', array('Author'));
+	public function test_getModelInstanceThroughController() {
+		$Model = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->getMock();
 
-		$expectedAuthors = array(1 => '1', 2 => '2', 3 => '3', 4 => '4');
+		$PostModel = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->getMock();
 
-		$this->Crud->executeAction('add');
-		$vars = $this->controller->viewVars;
-		$this->assertEquals($expectedAuthors, $vars['authors']);
-		$this->assertFalse(isset($vars['tags']));
-		$this->controller->viewVars = array();
+		$Controller = $this
+			->getMockBuilder('Controller')
+			->disableOriginalConstructor()
+			->setMethods(array('food'))
+			->getMock();
+		$Controller->Post = $PostModel;
+
+		$Listener = $this
+			->getMockBuilder('RelatedModelsListener')
+			->disableOriginalConstructor()
+			->setMethods(array('_model', '_controller', '_classRegistryInit'))
+			->getMock();
+		$Listener
+			->expects($this->once())
+			->method('_model')
+			->with()
+			->will($this->returnValue($Model));
+		$Listener
+			->expects($this->once())
+			->method('_controller')
+			->with()
+			->will($this->returnValue($Controller));
+		$Listener
+			->expects($this->never())
+			->method('_classRegistryInit');
+
+		$this->setReflectionClassInstance($Listener);
+		$result = $this->callProtectedMethod('_getModelInstance', array('Post'), $Listener);
+		$expected = $PostModel;
+		$this->assertEqual($result, $expected);
 	}
 
 /**
- * Tests that by default Crud can select some models for each action to fetch related lists
- * using relatedModels
+ * test_getModelInstanceThroughModelAssociation
  *
+ * Get the model through ClassRegistry from associated
+ * model className
+ *
+ * @covers RelatedModelsListener::_getModelInstance
  * @return void
  */
-	public function _testFetchRelatedMappedMethod() {
-		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
-		$this->Crud->action('add')->config('relatedModels', array('Tag'));
-		$expectedTags = array(1 => '1', 2 => '2', 3 => '3');
+	public function test_getModelInstanceThroughModelAssociation() {
+		$Model = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->getMock();
+		$Model->belongsTo = array(
+			'Post' => array(
+				'className' => 'MyPlugin.Post'
+			)
+		);
 
-		$this->Crud->executeAction('add');
-		$vars = $this->controller->viewVars;
-		$this->assertEquals($expectedTags, $vars['tags']);
-		$this->assertFalse(isset($vars['authors']));
-		$this->controller->viewVars = array();
+		$PostModel = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->getMock();
+
+		$Controller = $this
+			->getMockBuilder('Controller')
+			->disableOriginalConstructor()
+			->setMethods(array('food'))
+			->getMock();
+
+		$Listener = $this
+			->getMockBuilder('RelatedModelsListener')
+			->disableOriginalConstructor()
+			->setMethods(array('_model', '_controller', '_classRegistryInit'))
+			->getMock();
+		$Listener
+			->expects($this->once())
+			->method('_model')
+			->with()
+			->will($this->returnValue($Model));
+		$Listener
+			->expects($this->once())
+			->method('_controller')
+			->with()
+			->will($this->returnValue($Controller));
+		$Listener
+			->expects($this->once())
+			->method('_classRegistryInit')
+			->with('MyPlugin.Post')
+			->will($this->returnValue($PostModel));
+
+		$this->setReflectionClassInstance($Listener);
+		$result = $this->callProtectedMethod('_getModelInstance', array('Post', 'belongsTo'), $Listener);
+		$expected = $PostModel;
+		$this->assertEqual($result, $expected);
 	}
 
 /**
- * Tests that by default Crud can select some models for each action to fetch related lists
- * using relatedModels with an 'all' default
+ * test_getModelInstanceThroughClassRegistry
  *
+ * Get the model directly from ClassRegistry
+ *
+ * @covers RelatedModelsListener::_getModelInstance
  * @return void
  */
-	public function _testFetchRelatedMappedAll() {
-		$this->model->bindModel(array('belongsTo' => array('Author')));
-		$this->Crud->action('edit')->config('relatedModels', array('Tag'));
-		$expectedTags = array(1 => '1', 2 => '2', 3 => '3');
+	public function test_getModelInstanceThroughClassRegistry() {
+		$Model = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->getMock();
 
-		$this->controller->Tag = ClassRegistry::init('Tag');
-		$this->Crud->executeAction('edit', array('1'));
-		$vars = $this->controller->viewVars;
-		$this->assertEquals($expectedTags, $vars['tags']);
-		$this->assertFalse(isset($vars['authors']));
+		$PostModel = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->getMock();
+
+		$Controller = $this
+			->getMockBuilder('Controller')
+			->disableOriginalConstructor()
+			->setMethods(array('food'))
+			->getMock();
+
+		$Listener = $this
+			->getMockBuilder('RelatedModelsListener')
+			->disableOriginalConstructor()
+			->setMethods(array('_model', '_controller', '_classRegistryInit'))
+			->getMock();
+		$Listener
+			->expects($this->once())
+			->method('_model')
+			->with()
+			->will($this->returnValue($Model));
+		$Listener
+			->expects($this->once())
+			->method('_controller')
+			->with()
+			->will($this->returnValue($Controller));
+		$Listener
+			->expects($this->once())
+			->method('_classRegistryInit')
+			->with('Post')
+			->will($this->returnValue($PostModel));
+
+		$this->setReflectionClassInstance($Listener);
+		$result = $this->callProtectedMethod('_getModelInstance', array('Post'), $Listener);
+		$expected = $PostModel;
+		$this->assertEqual($result, $expected);
 	}
 
 /**
- * Tests that all default for mapped lists will not apply to not enabled actions
+ * test_getBaseQuery
  *
+ * Test a belongsTo relation
+ *
+ * @covers RelatedModelsListener::_getBaseQuery
  * @return void
  */
-	public function _testFetchRelatedMappedAllNotEnabled() {
-		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
-		$this->Crud->action('delete')->config('relatedModels', array('Tag'));
+	public function test_getBaseQuery() {
+		$Model = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->getMock();
+		$Model->belongsTo = array('Post' => array('conditions' => array('is_active' => true)));
 
-		try {
-			$this->Crud->executeAction('delete', array('1'));
-		} catch (Exception $e) {
-			$class = get_class($e);
-			$this->assertTrue($e instanceof MethodNotAllowedException, "Exception of class $class, is not a MethodNotAllowedException");
-		}
+		$Associated = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->getMock();
+		$Associated->alias = 'Post';
 
-		$vars = $this->controller->viewVars;
-		$this->assertFalse(isset($vars['tags']));
-		$this->assertFalse(isset($vars['authors']));
+		$Listener = $this
+			->getMockBuilder('RelatedModelsListener')
+			->disableOriginalConstructor()
+			->setMethods(array('_model', '_hasTreeBehavior'))
+			->getMock();
+		$Listener
+			->expects($this->once())
+			->method('_model')
+			->with()
+			->will($this->returnValue($Model));
+		$Listener
+			->expects($this->once())
+			->method('_hasTreeBehavior')
+			->with($Associated)
+			->will($this->returnValue(false));
+
+		$this->setReflectionClassInstance($Listener);
+		$result = $this->callProtectedMethod('_getBaseQuery', array($Associated, 'belongsTo'), $Listener);
+		$expected = array('conditions' => array('is_active' => true));
+		$this->assertEqual($result, $expected);
 	}
 
 /**
- * Tests that relatedModels will not overwrite existing variables
+ * test_getBaseQueryHasMany
  *
+ * Test a hasMany relation that no conditions
+ * will be added by default
+ *
+ * @covers RelatedModelsListener::_getBaseQuery
  * @return void
  */
-	public function _testFetchRelatedNoOverwrite() {
-		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
-		$this->Crud->action('edit')->config('relatedModels', array('Tag'));
-		$expectedTags = array('mine', 'tag');
+	public function test_getBaseQueryHasMany() {
+		$Model = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->getMock();
 
-		$this->controller->viewVars['tags'] = $expectedTags;
-		$this->Crud->executeAction('edit', array('1'));
-		$vars = $this->controller->viewVars;
-		$this->assertEquals($expectedTags, $vars['tags']);
-		$this->assertFalse(isset($vars['authors']));
+		$Associated = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->getMock();
+		$Associated->alias = 'Post';
+
+		$Listener = $this
+			->getMockBuilder('RelatedModelsListener')
+			->disableOriginalConstructor()
+			->setMethods(array('_model', '_hasTreeBehavior'))
+			->getMock();
+		$Listener
+			->expects($this->never())
+			->method('_model');
+		$Listener
+			->expects($this->once())
+			->method('_hasTreeBehavior')
+			->with($Associated)
+			->will($this->returnValue(false));
+
+		$this->setReflectionClassInstance($Listener);
+		$result = $this->callProtectedMethod('_getBaseQuery', array($Associated, 'hasMany'), $Listener);
+		$expected = array();
+		$this->assertEqual($result, $expected);
 	}
 
 /**
- * Tests beforeRelatedModel and afterRelatedModel events
+ * test_getBaseQueryTreeBehavior
  *
+ * Test a relation where associated model has
+ * TreeBehavior bound
+ *
+ * @covers RelatedModelsListener::_getBaseQuery
  * @return void
  */
-	public function _testFetchRelatedEvents() {
-		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
-		$this->Crud->action('add')->config('relatedModels', array('Tag'));
-		$expectedTags = array(1 => '1', 2 => '2', 'foo' => 'bar');
-		$self = $this;
+	public function test_getBaseQueryTreeBehavior() {
+		$Model = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->getMock();
 
-		$this->controller->getEventManager()->attach(function($event) use($self) {
-			$event->subject->query['limit'] = 2;
-		}, 'Crud.beforeRelatedModel');
+		$Associated = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->getMock();
+		$Associated->alias = 'Post';
 
-		$this->controller->getEventManager()->attach(function($event) use($self) {
-			$self->assertEquals('tags', $event->subject->viewVar);
-			$event->subject->viewVar = 'labels';
+		$Behavior = $this
+			->getMockBuilder('TreeBehavior')
+			->disableOriginalConstructor()
+			->getMock();
+		$Behavior->settings['Post'] = array(
+			'recursive' => -1,
+			'scope' => array('is_active' => true)
+		);
 
-			$event->subject->items += array('foo' => 'bar');
-		}, 'Crud.afterRelatedModel');
+		$Listener = $this
+			->getMockBuilder('RelatedModelsListener')
+			->disableOriginalConstructor()
+			->setMethods(array('_model', '_hasTreeBehavior', '_getTreeBehavior'))
+			->getMock();
+		$Listener
+			->expects($this->never())
+			->method('_model');
+		$Listener
+			->expects($this->once())
+			->method('_hasTreeBehavior')
+			->with($Associated)
+			->will($this->returnValue(true));
+		$Listener
+			->expects($this->once())
+			->method('_getTreeBehavior')
+			->with($Associated)
+			->will($this->returnValue($Behavior));
 
-		$this->Crud->executeAction('add');
-		$vars = $this->controller->viewVars;
-		$this->assertEquals($expectedTags, $vars['labels']);
+		$this->setReflectionClassInstance($Listener);
+		$result = $this->callProtectedMethod('_getBaseQuery', array($Associated), $Listener);
+		$expected = array(
+			'keyPath' => null,
+			'valuePath' => null,
+			'spacer' => '_',
+			'recursive' => -1,
+			'conditions' => array('is_active' => true)
+		);
+		$this->assertEqual($result, $expected);
 	}
 
 /**
- * Test relatedModels with default config to 'false' for the add action
+ * testPublishRelatedModels
  *
+ * @covers RelatedModelsListener::publishRelatedModels
  * @return void
  */
-	public function _testRelatedModelsDefaultFalseAdd() {
-		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
+	public function testPublishRelatedModels() {
+		$Controller = $this
+			->getMockBuilder('Controller')
+			->disableOriginalConstructor()
+			->setMethods(array('set'))
+			->getMock();
 
-		$this->Crud->action('add')->config('relatedModels', false);
-		$this->assertEquals(array(), $this->Crud->listener('RelatedModels')->models('add'));
+		$Post = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->getMock();
+		$Post->alias = 'Post';
 
-		$this->Crud->executeAction('add');
-		$vars = $this->controller->viewVars;
-		$this->assertTrue(empty($vars['tags']));
-		$this->assertTrue(empty($vars['authors']));
+		$postQuery = array('conditions' => array('is_active' => true));
+
+		$i = 0;
+
+		$Listener = $this
+			->getMockBuilder('RelatedModelsListener')
+			->disableOriginalConstructor()
+			->setMethods(array(
+				'models', '_controller', '_getAssociationType', '_getModelInstance',
+				'_getBaseQuery', '_trigger', '_findRelatedItems'
+			))
+			->getMock();
+		$Listener
+			->expects($this->at($i++))
+			->method('models')
+			->with(NULL)
+			->will($this->returnValue(array('Post')));
+		$Listener
+			->expects($this->at($i++))
+			->method('_controller')
+			->with()
+			->will($this->returnValue($Controller));
+		$Listener
+			->expects($this->at($i++))
+			->method('_getAssociationType')
+			->with('Post')
+			->will($this->returnValue('belongsTo'));
+		$Listener
+			->expects($this->at($i++))
+			->method('_getModelInstance')
+			->with('Post', 'belongsTo')
+			->will($this->returnValue($Post));
+		$Listener
+			->expects($this->at($i++))
+			->method('_getBaseQuery')
+			->with($Post, 'belongsTo')
+			->will($this->returnValue($postQuery));
+		$Listener
+			->expects($this->at($i++))
+			->method('_trigger')
+			->with('beforeRelatedModel', array('model' => 'Post', 'query' => $postQuery, 'viewVar' => 'posts'))
+			->will($this->returnValue(new CrudSubject(array('query' => $postQuery + array('_callback' => true)))));
+		$Listener
+			->expects($this->at($i++))
+			->method('_findRelatedItems')
+			->with($Post, $postQuery + array('_callback' => true))
+			->will($this->returnValue(array(1, 2, 3)));
+		$Listener
+			->expects($this->at($i++))
+			->method('_trigger')
+			->with('afterRelatedModel', array('model' => 'Post', 'items' => array(1, 2, 3), 'viewVar' => 'posts'))
+			->will($this->returnValue(new CrudSubject(array('items' => array(1, 2, 3), 'viewVar' => 'posts'))));
+		$Controller
+			->expects($this->once())
+			->method('set')
+			->with('posts', array(1, 2, 3));
+
+		$Listener->publishRelatedModels();
 	}
 
 /**
- * Test relatedModels with default config to 'false' for the edit action
+ * testPublishRelatedModelsNoModels
  *
+ * Test that nothing happens if the related models
+ * array is empty
+ *
+ * @covers RelatedModelsListener::publishRelatedModels
  * @return void
  */
-	public function _testRelatedModelsDefaultFalseEdit() {
-		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
+	public function testPublishRelatedModelsNoModels() {
+		$Listener = $this
+			->getMockBuilder('RelatedModelsListener')
+			->disableOriginalConstructor()
+			->setMethods(array('models', '_controller'))
+			->getMock();
+		$Listener
+			->expects($this->once())
+			->method('models')
+			->with(NULL)
+			->will($this->returnValue(false));
+		$Listener
+			->expects($this->never())
+			->method('_controller');
 
-		$this->Crud->action('edit')->config('relatedModels', false);
-		$this->assertEquals(array(), $this->Crud->listener('RelatedModels')->models('edit'));
-
-		$this->Crud->executeAction('edit', array(1));
-		$vars = $this->controller->viewVars;
-		$this->assertTrue(empty($vars['tags']));
-		$this->assertTrue(empty($vars['authors']));
+		$Listener->publishRelatedModels();
 	}
 
 /**
- * Test relatedModels with default config to 'true' for the add action
+ * testPublishRelatedModelsViewVarExists
  *
+ * Test that nothing will be done if the related models
+ * viewVar already exists in Controller::$viewVars
+ *
+ * @covers RelatedModelsListener::publishRelatedModels
  * @return void
  */
-	public function _testRelatedModelsDefaultTrueAdd() {
-		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')));
+	public function testPublishRelatedModelsViewVarExists() {
+		$Controller = $this
+			->getMockBuilder('Controller')
+			->disableOriginalConstructor()
+			->setMethods(array('set'))
+			->getMock();
+		$Controller->viewVars['posts'] = array(1, 2, 3);
 
-		$this->Crud->action('add')->config('relatedModels', true);
-		$this->assertEquals(array('Author', 'Tag'), $this->Crud->listener('RelatedModels')->models('add'));
+		$Post = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->getMock();
+		$Post->alias = 'Post';
 
-		$this->Crud->executeAction('add');
-		$vars = $this->controller->viewVars;
-		$expectedVars = array('tags' => array(1 => '1', 2 => '2', '3' => '3'), 'authors' => array(1 => '1', 2 => '2', '3' => '3', '4' => '4'));
-		$this->assertEquals($expectedVars, $vars);
-	}
+		$postQuery = array('conditions' => array('is_active' => true));
 
-/**
- * Test relatedModels with default config to 'true' for the edit action
- *
- * @return void
- */
-	public function _testRelatedModelsDefaultTrueEdit() {
-		$this->Crud->settings['validateId'] = 'integer';
-		$this->model->bindModel(array('belongsTo' => array('Author'), 'hasAndBelongsToMany' => array('Tag')), false);
+		$i = 0;
 
-		$this->Crud->action('edit')->config('relatedModels', true);
-		$this->assertEquals(array('Author', 'Tag'), $this->Crud->listener('RelatedModels')->models('edit'));
+		$Listener = $this
+			->getMockBuilder('RelatedModelsListener')
+			->disableOriginalConstructor()
+			->setMethods(array(
+				'models', '_controller', '_getAssociationType', '_getModelInstance',
+				'_getBaseQuery', '_trigger', '_findRelatedItems'
+			))
+			->getMock();
+		$Listener
+			->expects($this->at($i++))
+			->method('models')
+			->with(NULL)
+			->will($this->returnValue(array('Post')));
+		$Listener
+			->expects($this->at($i++))
+			->method('_controller')
+			->with()
+			->will($this->returnValue($Controller));
+		$Listener
+			->expects($this->at($i++))
+			->method('_getAssociationType')
+			->with('Post')
+			->will($this->returnValue('belongsTo'));
+		$Listener
+			->expects($this->at($i++))
+			->method('_getModelInstance')
+			->with('Post', 'belongsTo')
+			->will($this->returnValue($Post));
+		$Listener
+			->expects($this->never())
+			->method('_getBaseQuery');
+		$Listener
+			->expects($this->never())
+			->method('_trigger');
+		$Listener
+			->expects($this->never())
+			->method('_findRelatedItems');
+		$Controller
+			->expects($this->never())
+			->method('set');
 
-		$this->Crud->executeAction('edit', array(3));
-
-		$vars = $this->controller->viewVars;
-		$expectedVars = array('tags' => array(1 => '1', 2 => '2', '3' => '3'), 'authors' => array(1 => '1', 2 => '2', '3' => '3', '4' => '4'));
-		$this->assertEquals($expectedVars, $vars);
-	}
-
-/**
- * Test relatedModels with association condtions
- *
- * @return void
- */
-	public function _testRelatedModelsConditions() {
-		$this->model->bindModel(array('belongsTo' => array('Author')));
-
-		$this->Crud->executeAction('add');
-		$vars = $this->controller->viewVars;
-		$expectedVars = array('authors' => array('1' => '1', '2' => '2', '3' => '3', '4' => '4'));
-		$this->assertEquals($expectedVars, $vars);
-
-		$this->model->bindModel(array('belongsTo' => array(
-			'Author' => array('conditions' => array('Author.user' => 'garrett'))
-		)));
-		$this->controller->viewVars = array();
-
-		$this->Crud->executeAction('add');
-		$vars = $this->controller->viewVars;
-		$expectedVars = array('authors' => array('4' => '4'));
-		$this->assertEquals($expectedVars, $vars);
-	}
-
-/**
- * Test relatedModels by default gets lists only for belongsTo and HABTM assocaited models
- *
- * @return void
- */
-	public function _testRelatedModelsDefaultModels() {
-		$this->model->bindModel(array(
-			'belongsTo' => array('Author'),
-			'hasAndBelongsToMany' => array('Tag'),
-			'hasMany' => array('Comment' => array('foreignKey' => 'article_id'))
-		));
-
-		$this->Crud->action('add')->config('relatedModels', true);
-		$this->assertEquals(array('Author', 'Tag'), $this->Crud->listener('RelatedModels')->models('add'));
-	}
-
-/**
- * Test relatedModels with Tree Behavior attached
- *
- * @return void
- */
-	public function _testRelatedModelsWithTree() {
-		$FlagTree = ClassRegistry::init('FlagTree');
-		$FlagTree->Behaviors->attach('Tree', array('scope' => array('FlagTree.flag' => 0)));
-		$FlagTree->save(array('name' => 'Node 1.1', 'flag' => 0));
-		$FlagTree->create();
-		$FlagTree->save(array('name' => 'Node 1.2', 'parent_id' => 1, 'flag' => 0));
-		$list = $FlagTree->generateTreeList();
-
-		$this->model->bindModel(array('belongsTo' => array('FlagTree')));
-
-		$this->Crud->action('add')->config('relatedModels', true);
-		$this->Crud->executeAction('add');
-		$vars = $this->controller->viewVars;
-		$expectedVars = array('flagTrees' => $list);
-		$this->assertEquals($expectedVars, $vars);
-
-		$FlagTree->Behaviors->detach('Tree');
-		$FlagTree->Behaviors->attach('Tree', array('scope' => array('FlagTree.flag' => 1)));
-		$FlagTree->create();
-		$FlagTree->save(array('name' => 'Node 2.1', 'flag' => 1));
-		$FlagTree->create();
-		$FlagTree->save(array('name' => 'Node 2.2', 'parent_id' => 3, 'flag' => 1));
-		$list = $FlagTree->generateTreeList(array('FlagTree.flag' => 1));
-		$this->assertEquals(array('3' => 'Node 2.1', '4' => '_Node 2.2'), $list);
-
-		$this->controller->viewVars = array();
-		$this->Crud->executeAction('add');
-		$vars = $this->controller->viewVars;
-		$expectedVars = array('flagTrees' => $list);
-		$this->assertEquals($expectedVars, $vars);
+		$Listener->publishRelatedModels();
 	}
 
 }
