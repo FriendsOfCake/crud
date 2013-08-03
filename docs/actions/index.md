@@ -73,3 +73,32 @@ For a full list please see the [full API documentation]({{site.api_url}}/class-A
 	{% include actions/method/find_method.md %}
 </tbody>
 </table>
+
+# Query string parameters
+
+You can easily add support for query string pagination to your index actions by adding
+Api Pagination and enabling query strings. This will give api-requesters the the possibility
+to create custom data collections using GET parameters in the URL
+(e.g. `http://example.com/controller.{format}?key=value`)
+
+The following query string pagination parameters will automatically become available:
+
+- **limit**: an integer limiting the number of results
+- **sort**: the string value of a fieldname to sort the results by
+- **direction**: either `asc` or `desc` (only works in combination with the `sort` parameter)
+- **page**: an integer pointing to a specific data collection page
+
+[Please also see the CakePHP documentation on Pagination](http://book.cakephp.org/2.0/en/core-libraries/components/pagination.html)
+[Please also see the CakePHP documentation on out of range `page` requests](http://book.cakephp.org/2.0/en/core-libraries/components/pagination.html#out-of-range-page-requests)
+
+Setup by enabling Api Pagination as described [here]({{site.url}}/docs/listeners/api-pagination.html#setup)
+
+Then enable query string pagination by adding this to your `/Controller/AppController.php` file
+
+{% highlight php %}
+<?php
+  public $paginate = array(
+    'paramType' => 'querystring'
+  );
+?>
+{% endhighlight %}
