@@ -77,7 +77,7 @@ For a full list please see the [full API documentation]({{site.api_url}}/class-A
 # Query string parameters
 
 You can easily add query string pagination to your Api `index` actions by adding
-Api Pagination and enabling query strings. This will give api-requesters the the possibility
+Api Pagination and enabling query strings. This will give api-requesters the possibility
 to create custom data collections using GET parameters in the URL
 (e.g. `http://example.com/controller.{format}?key=value`)
 
