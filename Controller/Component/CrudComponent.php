@@ -721,11 +721,12 @@ class CrudComponent extends Component {
 /**
  * Set internal model properties from the controller
  *
+ * REMINDER: modelMap not documented?
+ *
  * @return void
  * @throws CakeException If unable to get model instance
  */
 	protected function _setModelProperties() {
-		// TODO: modelMap not documented?
 		$configKey = 'modelMap.' . $this->_action;
 		if (!$this->_modelName = $this->config($configKey)) {
 			$this->_modelName = $this->_controller->modelClass;
