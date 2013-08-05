@@ -194,9 +194,7 @@ class CrudComponent extends Component {
 		}
 
 		try {
-			// Execute the default action, inside this component
 			$response = $this->action($action)->handle($this->getSubject(compact('args')));
-
 			if ($response instanceof CakeResponse) {
 				return $response;
 			}
@@ -727,6 +725,7 @@ class CrudComponent extends Component {
  * @throws CakeException If unable to get model instance
  */
 	protected function _setModelProperties() {
+		// TODO: modelMap not documented?
 		$configKey = 'modelMap.' . $this->_action;
 		if (!$this->_modelName = $this->config($configKey)) {
 			$this->_modelName = $this->_controller->modelClass;

@@ -62,7 +62,7 @@ class AddCrudAction extends CrudAction {
  *	- Crud.initialize
  *	- Crud.beforeSave
  *	- Crud.afterSave
- *	- Crud.beforeRenderf
+ *	- Crud.beforeRender
  *
  * @return void
  */

@@ -123,7 +123,6 @@ class ApiFieldFilterListenerTest extends CakeTestCase {
  * Test that the listener listen to the correct
  * events with the correct priority
  *
- * @covers ApiFieldFilterListener::implementedEvents
  * @return void
  */
 	public function testImplementedEvents() {
@@ -142,12 +141,11 @@ class ApiFieldFilterListenerTest extends CakeTestCase {
  * Test that a beforeFind with no fields in the query
  * will not inject any fields or contain into the query
  *
- * @covers ApiFieldFilterListener::beforeFind
  * @return void
  */
 	public function testRequestWithoutFieldsWithNoFilterOn() {
 		extract($this->_mockClasses());
-		$Action->config('apiFieldFilter.allowNoFilter', true);
+		$Listener->allowNoFilter(true);
 		$Listener->beforeFind($Event);
 
 		$this->assertNull($CrudSubject->query['fields']);
@@ -157,7 +155,6 @@ class ApiFieldFilterListenerTest extends CakeTestCase {
  * Test that a beforeFind with no fields in the query
  * will throw an exception by default
  *
- * @covers ApiFieldFilterListener::beforeFind
  * @expectedException CakeException
  * @expectedExceptionMessage Please specify which fields you would like to select
  * @return void
@@ -173,7 +170,6 @@ class ApiFieldFilterListenerTest extends CakeTestCase {
  * Test that a beforeFind with no fields in the query
  * will throw an exception if 'allowNofilter' is set to false
  *
- * @covers ApiFieldFilterListener::beforeFind
  * @expectedException CakeException
  * @expectedExceptionMessage Please specify which fields you would like to select
  * @return void
@@ -190,7 +186,6 @@ class ApiFieldFilterListenerTest extends CakeTestCase {
  * Test that a beforeFind with 3 fields
  * will inject them into the fields array
  *
- * @covers ApiFieldFilterListener::beforeFind
  * @return void
  */
 	public function testRequestWithFields() {
@@ -211,7 +206,6 @@ class ApiFieldFilterListenerTest extends CakeTestCase {
  * since they exist in the model, but the 3rd
  * field (password) will be removed
  *
- * @covers ApiFieldFilterListener::beforeFind
  * @return void
  */
 	public function testGetFieldsIncludeFieldNotInModel() {
@@ -234,7 +228,6 @@ class ApiFieldFilterListenerTest extends CakeTestCase {
  * Password exist as a column, but is not
  * whitelisted, and thus should be removed
  *
- * @covers ApiFieldFilterListener::beforeFind
  * @return void
  */
 	public function testWhitelistFields() {
@@ -258,7 +251,6 @@ class ApiFieldFilterListenerTest extends CakeTestCase {
  * Password exist as a column, but is
  * blacklisted, and thus should be removed
  *
- * @covers ApiFieldFilterListener::beforeFind
  * @return void
  */
 	public function testBlacklistFields() {
@@ -279,7 +271,6 @@ class ApiFieldFilterListenerTest extends CakeTestCase {
  * Test that the field Sample.my_fk gets rejected since there is no
  * whitelist for the associated model "Sample"
  *
- * @covers ApiFieldFilterListener::beforeFind
  * @return void
  */
 	public function testAssociatedModelGetsRejectedByDefault() {
@@ -298,8 +289,6 @@ class ApiFieldFilterListenerTest extends CakeTestCase {
  * Test that the field Sample.my_fk gets rejected since there is no
  * whitelist for the associated model "Sample"
  *
- * @covers ApiFieldFilterListener::whitelistModels
- * @covers ApiFieldFilterListener::beforeFind
  * @return void
  */
 	public function testAssociatedModelWhitelist() {
@@ -329,9 +318,6 @@ class ApiFieldFilterListenerTest extends CakeTestCase {
  * If a field is both white and blacklisted
  * it will end up being removed
  *
- * @covers ApiFieldFilterListener::whitelistFields
- * @covers ApiFieldFilterListener::blacklistFields
- * @covers ApiFieldFilterListener::beforeFind
  * @return void
  */
 	public function testBlacklistingWinOverWhitelist() {
