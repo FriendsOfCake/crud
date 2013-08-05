@@ -1,11 +1,10 @@
 <?php
 
 App::uses('Model', 'Model');
-App::uses('Controller', 'Controller');
 App::uses('CakeRequest', 'Network');
+App::uses('CrudTestCase', 'Crud.Test/Support');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
 App::uses('AddCrudAction', 'Crud.Controller/Crud/Action');
-App::uses('CrudComponent', 'Crud.Controlller/Component');
 
 /**
  *
@@ -14,326 +13,182 @@ App::uses('CrudComponent', 'Crud.Controlller/Component');
  *
  * @copyright Christian Winther, 2013
  */
-class AddCrudActionTest extends CakeTestCase {
-
-// @codingStandardsIgnoreStart
-	protected $ModelMock;
-
-	protected $ControllerMock;
-
-	protected $ActionMock;
-
-	protected $RequestMock;
-
-	protected $CrudMock;
-// @codingStandardsIgnoreEnd
-
-	public function setUp() {
-		parent::setUp();
-
-		$this->ModelMock = $this->getMockBuilder('Model');
-		$this->ControllerMock = $this->getMockBuilder('Controller');
-		$this->ActionMock = $this->getMockBuilder('AddCrudAction');
-		$this->RequestMock = $this->getMockBuilder('CakeRequest');
-		$this->CrudMock = $this->getMockBuilder('CrudComponent');
-	}
-
-	public function tearDown() {
-		parent::tearDown();
-
-		unset(
-			$this->ModelMock,
-			$this->ControllerMock,
-			$this->ActionMock,
-			$this->RequestMock,
-			$this->CrudMock
-		);
-	}
+class AddCrudActionTest extends CrudTestCase {
 
 /**
- * Returns a list of mocked classes that are related to the execution of the
- * action
+ * Test the normal HTTP GET flow of _handle
  *
- * @return void
- */
-	protected function _mockClasses() {
-		$CrudSubject = new CrudSubject();
-
-		$Crud = $this->CrudMock
-			->disableOriginalConstructor()
-			->setMethods(array('trigger'))
-			->getMock();
-
-		$Model = $this->ModelMock
-			->disableOriginalConstructor()
-			->setMethods(array('create', 'escapeField', 'find', 'saveAll'))
-			->getMock();
-
-		$Controller = $this->ControllerMock
-			->disableOriginalConstructor()
-			->setMethods(array('set'))
-			->getMock();
-
-		$Request = $this->RequestMock
-			->setMethods(array('is'))
-			->getMock();
-
-		$CrudSubject->set(array(
-			'crud' => $Crud,
-			'request' => $Request,
-			'controller' => $Controller,
-			'action' => 'add',
-			'action' => 'add',
-			'model' => $Model,
-			'modelClass' => $Model->name,
-			'args' => array(1)
-		));
-
-		$Action = $this->ActionMock
-			->setConstructorArgs(array($CrudSubject))
-			->setMethods(array('enabled', 'config', '_validateId', 'setFlash', '_redirect'))
-			->getMock();
-
-		return compact('Crud', 'Model', 'Controller', 'Request', 'CrudSubject', 'Action');
-	}
-
-/**
- * Test that calling handle will invoke _handle
- *
- * @return void
- */
-	public function testThatCrudActionWillHandle() {
-		extract($this->_mockClasses());
-
-		$Action = $this->ActionMock
-			->setConstructorArgs(array($CrudSubject))
-			->setMethods(array('enabled', 'config', '_validateId', 'setFlash', '_redirect', '_handle'))
-			->getMock();
-
-		$Action
-			->expects($this->at(0))
-			->method('config')
-			->with('enabled')
-			->will($this->returnValue(true));
-		$Action
-			->expects($this->at(1))
-			->method('config')
-			->with('action')
-			->will($this->returnValue('add'));
-		$Action
-			->expects($this->once())
-			->method('_handle');
-
-		$Action->handle($CrudSubject);
-	}
-
-/**
- * Test that calling HTTP GET on an add action
- * will only trigger beforeRender()
- *
+ * @covers AddCrudAction::_handle
  * @return void
  */
 	public function testActionGet() {
-		extract($this->_mockClasses());
-
-		$Action
-			->expects($this->at(0))
-			->method('config')
-			->with('enabled')
-			->will($this->returnValue(true));
-		$Action
-			->expects($this->at(1))
-			->method('config')
-			->with('action')
-			->will($this->returnValue('add'));
-
+		$Request = $this->getMock('CakeRequest', array('is'));
 		$Request
-			->expects($this->at(0))
+			->expects($this->once())
 			->method('is')
 			->with('post')
 			->will($this->returnValue(false));
 
+		$Model = $this->getMock('Model', array('create'));
 		$Model
 			->expects($this->once())
 			->method('create');
 
-		$Crud
-			->expects($this->at(0))
-			->method('trigger')
+		$Action = $this
+			->getMockBuilder('AddCrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array('_request', '_model', '_trigger'))
+			->getMock();
+
+		$i = 0;
+		$Action
+			->expects($this->at($i++))
+			->method('_request')
+			->will($this->returnValue($Request));
+		$Action
+			->expects($this->at($i++))
+			->method('_model')
+			->will($this->returnValue($Model));
+		$Action
+			->expects($this->at($i++))
+			->method('_trigger')
 			->with('beforeRender', array('success' => false));
 
-		$Action->handle($CrudSubject);
+		$this->setReflectionClassInstance($Action);
+		$this->callProtectedMethod('_handle', array(), $Action);
 	}
 
 /**
  * Test that calling HTTP POST on an add action
  * will trigger multiple events on success
  *
+ * @covers AddCrudAction::_handle
  * @return void
  */
 	public function testActionPostSuccess() {
-		extract($this->_mockClasses());
-
+		$Request = $this->getMock('CakeRequest', array('is'));
+		$Request->data = array('Post' => array('name' => 'Hello World'));
 		$Request
-			->expects($this->at(0))
+			->expects($this->once())
 			->method('is')
 			->with('post')
 			->will($this->returnValue(true));
 
-		$Model->id = 1;
+		$Model = $this->getMock('Model', array('saveAll'));
 		$Model
 			->expects($this->once())
 			->method('saveAll')
 			->with($Request->data)
-			->will($this->returnValue(true));
+			->will($this->returnCallback(function() use ($Model) {
+				$Model->id = 1;
+				return true;
+			}));
 
-		$Crud
-			->expects($this->at(0))
-			->method('trigger')
+		$Action = $this
+			->getMockBuilder('AddCrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array('_request', '_model', '_trigger', 'setFlash', '_redirect'))
+			->getMock();
+
+		$AfterSaveSubject = new CrudSubject();
+
+		$i = 0;
+		$Action
+			->expects($this->at($i++))
+			->method('_request')
+			->will($this->returnValue($Request));
+		$Action
+			->expects($this->at($i++))
+			->method('_model')
+			->will($this->returnValue($Model));
+		$Action
+			->expects($this->at($i++))
+			->method('_trigger')
 			->with('beforeSave');
-		$Crud
-			->expects($this->at(1))
-			->method('trigger')
-			->with('afterSave', array('success' => true, 'created' => true, 'id' => $Model->id))
-			->will($this->returnValue($CrudSubject));
-
 		$Action
-			->expects($this->at(0))
-			->method('config')
-			->with('enabled')
-			->will($this->returnValue(true));
-		$Action
-			->expects($this->at(1))
-			->method('config')
-			->with('action')
-			->will($this->returnValue('add'));
-		$Action
-			->expects($this->once())
+			->expects($this->at($i++))
 			->method('setFlash')
 			->with('success');
 		$Action
-			->expects($this->once())
+			->expects($this->at($i++))
+			->method('_trigger')
+			->with('afterSave', array('success' => true, 'created' => true, 'id' => 1))
+			->will($this->returnValue($AfterSaveSubject));
+		$Action
+			->expects($this->at($i++))
 			->method('_redirect')
-			->with($CrudSubject, array('action' => 'index'));
+			->with($AfterSaveSubject, array('action' => 'index'));
 
-		$Action->handle($CrudSubject);
+		$this->setReflectionClassInstance($Action);
+		$this->callProtectedMethod('_handle', array(), $Action);
 	}
 
 /**
  * Test that calling HTTP POST on an add action
  * will trigger multiple events on error
  *
+ * @covers AddCrudAction::_handle
  * @return void
  */
 	public function testActionPostError() {
-		extract($this->_mockClasses());
-
+		$Request = $this->getMock('CakeRequest', array('is'));
+		$Request->data = array('Post' => array('name' => 'Hello World'));
 		$Request
-			->expects($this->at(0))
+			->expects($this->once())
 			->method('is')
 			->with('post')
 			->will($this->returnValue(true));
 
-		$Model->id = null;
+		$Model = $this->getMock('Model', array('saveAll'));
+		$Model->data = array('model' => true);
 		$Model
 			->expects($this->once())
 			->method('saveAll')
 			->with($Request->data)
 			->will($this->returnValue(false));
 
-		$Crud
-			->expects($this->at(0))
-			->method('trigger')
+		$Action = $this
+			->getMockBuilder('AddCrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array('_request', '_model', '_trigger', 'setFlash'))
+			->getMock();
+
+		$AfterSaveSubject = new CrudSubject();
+
+		$i = 0;
+		$Action
+			->expects($this->at($i++))
+			->method('_request')
+			->will($this->returnValue($Request));
+		$Action
+			->expects($this->at($i++))
+			->method('_model')
+			->will($this->returnValue($Model));
+		$Action
+			->expects($this->at($i++))
+			->method('_trigger')
 			->with('beforeSave');
-
-		$Crud
-			->expects($this->at(1))
-			->method('trigger')
-			->with('afterSave', array('success' => false, 'created' => false))
-			->will($this->returnValue($CrudSubject));
-
 		$Action
-			->expects($this->at(0))
-			->method('config')
-			->with('enabled')
-			->will($this->returnValue(true));
-
-		$Action
-			->expects($this->at(1))
-			->method('config')
-			->with('action')
-			->will($this->returnValue('add'));
-
-		$Action
-			->expects($this->once())
-			->method('setFlash')
-			->with('error');
-
-		$Action
-			->expects($this->never())
-			->method('_redirect');
-
-		$Action->handle($CrudSubject);
-	}
-
-/**
- * Test that calling HTTP POST on an add action
- * will trigger multiple events on error and merge
- * the model data with the post data
- *
- * @return void
- */
-	public function testActionPostErrorAndMergeData() {
-		extract($this->_mockClasses());
-
-		$Request->data = array('request_data' => true);
-		$Request
-			->expects($this->at(0))
-			->method('is')
-			->with('post')
-			->will($this->returnValue(true));
-
-		$Model->id = null;
-		$Model->data = array('model_data' => true);
-		$Model
-			->expects($this->once())
-			->method('saveAll')
-			->with($Request->data)
-			->will($this->returnValue(false));
-
-		$Crud
-			->expects($this->at(0))
-			->method('trigger')
-			->with('beforeSave');
-		$Crud
-			->expects($this->at(1))
-			->method('trigger')
-			->with('afterSave', array('success' => false, 'created' => false))
-			->will($this->returnValue($CrudSubject));
-
-		$Action
-			->expects($this->at(0))
-			->method('config')
-			->with('enabled')
-			->will($this->returnValue(true));
-		$Action
-			->expects($this->at(1))
-			->method('config')
-			->with('action')
-			->will($this->returnValue('add'));
-		$Action
-			->expects($this->once())
+			->expects($this->at($i++))
 			->method('setFlash')
 			->with('error');
 		$Action
-			->expects($this->never())
-			->method('_redirect');
+			->expects($this->at($i++))
+			->method('_trigger')
+			->with('afterSave', array('success' => false, 'created' =>false))
+			->will($this->returnValue($AfterSaveSubject));
+		$Action
+			->expects($this->at($i++))
+			->method('_trigger')
+			->with('beforeRender', array('success' => false));
 
-		$Action->handle($CrudSubject);
+		$this->setReflectionClassInstance($Action);
+		$this->callProtectedMethod('_handle', array(), $Action);
 
-		$expects = array('request_data' => true, 'model_data' => true);
-		$actual = $Request->data;
-		$this->assertSame($expects, $actual, 'The request and model data was not merged');
+		$result = $Request->data;
+		$expected = $Request->data;
+		$expected['model'] = true;
+		$this->assertEqual($result, $expected, 'The Request::$data and Model::$data was not merged');
 	}
 
 }

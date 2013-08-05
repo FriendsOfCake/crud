@@ -2,7 +2,6 @@
 
 App::uses('CakeEventListener', 'Event');
 App::uses('CrudListener', 'Crud.Controller/Crud');
-App::uses('CrudSubject', 'Crud.Controller/Crud');
 
 /**
  * Implements beforeRender event listener to set related models' lists to
@@ -24,10 +23,10 @@ class RelatedModelsListener extends CrudListener {
 	public function models($action = null) {
 		$settings = $this->_action($action)->config('relatedModels');
 		if ($settings === true) {
-			$model = $this->_model();
+			$ModelInstance = $this->_model();
 			return array_merge(
-				$model->getAssociated('belongsTo'),
-				$model->getAssociated('hasAndBelongsToMany')
+				$ModelInstance->getAssociated('belongsTo'),
+				$ModelInstance->getAssociated('hasAndBelongsToMany')
 			);
 		}
 
@@ -43,107 +42,171 @@ class RelatedModelsListener extends CrudListener {
 	}
 
 /**
- * Fetches related models' list and sets them to a variable for the view
+ * Find and publish all related models to the view
+ * for an action
  *
- * @param CakeEvent
+ * @param NULL|string $action If NULL the current action will be used
  * @return void
  */
-	public function beforeRender(CakeEvent $event) {
-		$controller = $this->_controller();
-		$primaryModel = $this->_model();
-
-		$models = $this->models();
+	public function publishRelatedModels($action = null) {
+		$models = $this->models($action);
 
 		if (empty($models)) {
 			return;
 		}
 
-		foreach ($models as $m) {
-			$associationType = $this->_getAssociationType($m, $primaryModel);
-			$model = $this->_getModelInstance($m, $primaryModel, $controller, $associationType);
+		$Controller = $this->_controller();
 
-			$isTree = false;
-			$query = array();
+		foreach ($models as $model) {
+			$associationType = $this->_getAssociationType($model);
+			$AssociatedModel = $this->_getModelInstance($model, $associationType);
 
-			if ($associationType == 'belongsTo') {
-				$query['conditions'] = $primaryModel->belongsTo[$m]['conditions'];
-			}
-
-			if ($model->Behaviors->attached('Tree')) {
-				$isTree = true;
-				$query = array(
-					'keyPath' => null,
-					'valuePath' => null,
-					'spacer' => '_',
-					'recursive' => $model->Behaviors->Tree->settings[$model->alias]['recursive']
-				);
-
-				if (empty($query['conditions'])) {
-					$query['conditions'] = $model->Behaviors->Tree->settings[$model->alias]['scope'];
-				}
-			}
-
-			$viewVar = Inflector::variable(Inflector::pluralize($model->alias));
-			$subject = $this->_trigger('beforeRelatedModel', compact('model', 'query', 'viewVar'));
-
-			// If the viewVar is already set, don't overwrite it
-			if (array_key_exists($subject->viewVar, $controller->viewVars)) {
+			$viewVar = Inflector::variable(Inflector::pluralize($AssociatedModel->alias));
+			if (array_key_exists($viewVar, $Controller->viewVars)) {
 				continue;
 			}
 
-			$query = $subject->query;
-			if ($isTree) {
-				$items = $model->generateTreeList(
-					$query['conditions'],
-					$query['keyPath'],
-					$query['valuePath'],
-					$query['spacer'],
-					$query['recursive']
-				);
-			} else {
-				$items = $model->find('list', $query);
-			}
+			$query = $this->_getBaseQuery($AssociatedModel, $associationType);
 
+			$subject = $this->_trigger('beforeRelatedModel', compact('model', 'query', 'viewVar'));
+			$items = $this->_findRelatedItems($AssociatedModel, $subject->query);
 			$subject = $this->_trigger('afterRelatedModel', compact('model', 'items', 'viewVar'));
-			$controller->set($subject->viewVar, $subject->items);
+
+			$Controller->set($subject->viewVar, $subject->items);
 		}
+	}
+
+/**
+ * Fetches related models' list and sets them to a variable for the view
+ *
+ * @codeCoverageIgnore
+ * @param CakeEvent $event
+ * @return void
+ */
+	public function beforeRender(CakeEvent $event) {
+		$this->publishRelatedModels();
+	}
+
+/**
+ * Execute the DB query to find the related items
+ *
+ * @param Model $Model
+ * @param array $query
+ * @return array
+ */
+	protected function _findRelatedItems(Model $Model, $query) {
+		if ($this->_hasTreeBehavior($Model)) {
+			return $Model->generateTreeList(
+				$query['conditions'],
+				$query['keyPath'],
+				$query['valuePath'],
+				$query['spacer'],
+				$query['recursive']
+			);
+		}
+
+		return $Model->find('list', $query);
+	}
+
+/**
+ * Get the base query to find the related items for an associated model
+ *
+ * @param Model $AssociatedModel
+ * @param string $associationType
+ * @return array
+ */
+	protected function _getBaseQuery(Model $AssociatedModel, $associationType = null) {
+		$query = array();
+
+		if ($associationType === 'belongsTo') {
+			$PrimaryModel = $this->_model();
+			$query['conditions'] = $PrimaryModel->belongsTo[$AssociatedModel->alias]['conditions'];
+		}
+
+		if ($this->_hasTreeBehavior($AssociatedModel)) {
+			$TreeBehavior = $this->_getTreeBehavior($AssociatedModel);
+			$query = array(
+				'keyPath' => null,
+				'valuePath' => null,
+				'spacer' => '_',
+				'recursive' => $TreeBehavior->settings[$AssociatedModel->alias]['recursive']
+			);
+
+			if (empty($query['conditions'])) {
+				$query['conditions'] = $TreeBehavior->settings[$AssociatedModel->alias]['scope'];
+			}
+		}
+
+		return $query;
 	}
 
 /**
  * Returns model instance based on its name
  *
- * @param string $model name of the model
- * @param Model $controllerModel default model instance for controller
- * @param Controller $controller instance to do a first look on it
- * @param string $associationType Association types
+ * @param string $modelName
+ * @param string $associationType
  * @return Model
  */
-	protected function _getModelInstance($model, $controllerModel, $controller, $associationType = null) {
-		if (isset($controllerModel->{$model})) {
-			return $controllerModel->{$model};
+	protected function _getModelInstance($modelName, $associationType = null) {
+		$PrimaryModel = $this->_model();
+
+		if (isset($PrimaryModel->{$modelName})) {
+			return $PrimaryModel->{$modelName};
 		}
 
-		if (isset($controller->{$model}) && $controller->{$model} instanceOf Model) {
-			return $controller->{$model};
+		$Controller = $this->_controller();
+		if (isset($Controller->{$modelName}) && $Controller->{$modelName} instanceOf Model) {
+			return $Controller->{$modelName};
 		}
 
-		if ($associationType && !empty($controllerModel->{$associationType}[$model]['className'])) {
-			return ClassRegistry::init($controllerModel->{$associationType}[$model]['className']);
+		if ($associationType && !empty($PrimaryModel->{$associationType}[$modelName]['className'])) {
+			return $this->_classRegistryInit($PrimaryModel->{$associationType}[$modelName]['className']);
 		}
 
-		return ClassRegistry::init($model);
+		return $this->_classRegistryInit($modelName);
 	}
 
 /**
  * Returns model's association type with controller's model
  *
- * @param string $model name of the model
- * @param Model $controllerModel default model instance for controller
+ * @param string $modelName
  * @return string|null Association type if found else null
  */
-	protected function _getAssociationType($model, $controllerModel) {
-		$associated = $controllerModel->getAssociated();
-		return isset($associated[$model]) ? $associated[$model] : null;
+	protected function _getAssociationType($modelName) {
+		$associated = $this->_model()->getAssociated();
+		return isset($associated[$modelName]) ? $associated[$modelName] : null;
+	}
+
+/**
+ * Check if a model has the Tree behavior attached or not
+ *
+ * @codeCoverageIgnore
+ * @param Model $Model
+ * @return boolean
+ */
+	protected function _hasTreeBehavior(Model $Model) {
+		return $Model->Behaviors->attached('Tree');
+	}
+
+/**
+ * Get the TreeBehavior from a model
+ *
+ * @codeCoverageIgnore
+ * @param Model $Model
+ * @return TreeBehavior
+ */
+	protected function _getTreeBehavior(Model $Model) {
+		return $Model->Behaviors->Tree;
+	}
+
+/**
+ * Wrapper for ClassRegistry::init for easier testing
+ *
+ * @codeCoverageIgnore
+ * @return Model
+ */
+	protected function _classRegistryInit($modelName) {
+		return ClassRegistry::init($modelName);
 	}
 
 }

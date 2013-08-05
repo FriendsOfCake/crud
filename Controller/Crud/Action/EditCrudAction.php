@@ -48,6 +48,11 @@ class EditCrudAction extends CrudAction {
 			'validate' => 'first',
 			'atomic' => true
 		),
+		'requestType' => 'default',
+		'requestMethods' => array(
+			'default' => array('get', 'post', 'put'),
+			'api' => array('put')
+		),
 		'messages' => array(
 			'success' => array(
 				'text' => 'Successfully updated {name}'
@@ -104,7 +109,7 @@ class EditCrudAction extends CrudAction {
 			if (empty($request->data)) {
 				$subject = $this->_trigger('recordNotFound', compact('id'));
 
-				$message = $this->message('recordNotFound', array('id' => $subject->id));
+				$message = $this->message('recordNotFound', array('id' => $id));
 				$exceptionClass = $message['class'];
 				throw new $exceptionClass($message['text'], $message['code']);
 			}

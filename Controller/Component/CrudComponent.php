@@ -194,9 +194,7 @@ class CrudComponent extends Component {
 		}
 
 		try {
-			// Execute the default action, inside this component
 			$response = $this->action($action)->handle($this->getSubject(compact('args')));
-
 			if ($response instanceof CakeResponse) {
 				return $response;
 			}
@@ -722,6 +720,8 @@ class CrudComponent extends Component {
 
 /**
  * Set internal model properties from the controller
+ *
+ * REMINDER: modelMap not documented?
  *
  * @return void
  * @throws CakeException If unable to get model instance

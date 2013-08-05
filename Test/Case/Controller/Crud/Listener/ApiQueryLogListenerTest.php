@@ -30,6 +30,7 @@ class ApiQueryLogListenerTest extends CakeTestCase {
 /**
  * Test implemented events
  *
+ * @covers ApiQueryLogListener::implementedEvents
  * @return void
  */
 	public function testImplementedEvents() {
@@ -43,6 +44,7 @@ class ApiQueryLogListenerTest extends CakeTestCase {
  * Test that calling beforeRender with debug 0
  * will not ask for request type
  *
+ * @covers ApiQueryLogListener::beforeRender
  * @return void
  */
 	public function testBeforeRenderDebugZero() {
@@ -61,6 +63,7 @@ class ApiQueryLogListenerTest extends CakeTestCase {
  * Test that calling beforeRender with debug 1
  * will not ask for request type
  *
+ * @covers ApiQueryLogListener::beforeRender
  * @return void
  */
 	public function testBeforeRenderDebugOne() {
@@ -80,6 +83,7 @@ class ApiQueryLogListenerTest extends CakeTestCase {
  * will ask for request type but won't ask for serialize configuration
  * since it's not API request
  *
+ * @covers ApiQueryLogListener::beforeRender
  * @return void
  */
 	public function testBeforeRenderDebugTwo() {
@@ -105,6 +109,7 @@ class ApiQueryLogListenerTest extends CakeTestCase {
  * will ask for request type and set the serialize configuration
  * since it's an API request
  *
+ * @covers ApiQueryLogListener::beforeRender
  * @return void
  */
 	public function testBeforeRenderDebugTwoAsApi() {
@@ -147,6 +152,7 @@ class ApiQueryLogListenerTest extends CakeTestCase {
 /**
  * Check if get query logs method works as expected
  *
+ * @covers ApiQueryLogListener::_getQueryLogs
  * @return void
  */
 	public function testGetQueryLogs() {

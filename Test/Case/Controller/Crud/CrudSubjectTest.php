@@ -28,6 +28,7 @@ class CrudSubjectTest extends CakeTestCase {
  *
  * Our action is "index"
  *
+ * @covers CrudSubject::shouldProcess
  * @return void
  */
 	public function testShouldProcess() {
@@ -44,6 +45,9 @@ class CrudSubjectTest extends CakeTestCase {
 	}
 
 /**
+ * testInvalidMode
+ *
+ * @covers CrudSubject::shouldProcess
  * @expectedException CakeException
  * @expectedExceptionMessage Invalid mode
  * @return void

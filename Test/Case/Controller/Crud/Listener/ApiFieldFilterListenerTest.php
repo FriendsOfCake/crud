@@ -145,7 +145,7 @@ class ApiFieldFilterListenerTest extends CakeTestCase {
  */
 	public function testRequestWithoutFieldsWithNoFilterOn() {
 		extract($this->_mockClasses());
-		$Action->config('apiFieldFilter.allowNoFilter', true);
+		$Listener->allowNoFilter(true);
 		$Listener->beforeFind($Event);
 
 		$this->assertNull($CrudSubject->query['fields']);

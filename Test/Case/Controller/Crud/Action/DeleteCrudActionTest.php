@@ -5,8 +5,7 @@ App::uses('Controller', 'Controller');
 App::uses('CakeRequest', 'Network');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
 App::uses('DeleteCrudAction', 'Crud.Controller/Crud/Action');
-App::uses('CrudComponent', 'Crud.Controller/Component');
-App::uses('ComponentCollection', 'Controller');
+App::uses('CrudTestCase', 'Crud.Test/Support');
 
 /**
  *
@@ -15,185 +14,422 @@ App::uses('ComponentCollection', 'Controller');
  *
  * @copyright Christian Winther, 2013
  */
-class DeleteCrudActionText extends CakeTestCase {
+class DeleteCrudActionTest extends CrudTestCase {
 
-// @codingStandardsIgnoreStart
-	protected $ModelMock;
-
-	protected $ControllerMock;
-
-	protected $ActionMock;
-
-	protected $RequestMock;
-
-	protected $CrudMock;
-// @codingStandardsIgnoreEnd
-
-	public function setUp() {
-		parent::setUp();
-
-		$this->ModelMock = $this->getMockBuilder('Model');
-		$this->ControllerMock = $this->getMockBuilder('Controller');
-		$this->ActionMock = $this->getMockBuilder('DeleteCrudAction');
-		$this->RequestMock = $this->getMockBuilder('CakeRequest');
-		$this->CrudMock = $this->getMockBuilder('CrudComponent');
-	}
-
-	public function tearDown() {
-		parent::tearDown();
-
-		unset(
-			$this->ModelMock,
-			$this->Controller,
-			$this->ActionMock,
-			$this->RequestMock,
-			$this->CrudMock
-		);
-	}
-
-	protected function _mockClasses() {
-		$Request = $this->RequestMock
-			->setMethods(null)
+/**
+ * test_handle
+ *
+ * test the best-case flow
+ *
+ * @covers DeleteCrudAction::_handle
+ * @return void
+ */
+	public function test_handle() {
+		$Model = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->setMethods(array('escapeField', 'find', 'delete'))
 			->getMock();
-		$Request->params['pass'][0] = 1;
+
+		$Controller = $this
+			->getMockBuilder('Controller')
+			->disableOriginalConstructor()
+			->setMethods(array('referer'))
+			->getMock();
+
+		$query = array('conditions' => array('Model.id' => 1));
 
 		$CrudSubject = new CrudSubject();
 
-		$Component = $this->getMock('ComponentCollection', null);
+		$i = 0;
 
-		$Controller = $this->ControllerMock
+		$Action = $this
+			->getMockBuilder('DeleteCrudAction')
 			->disableOriginalConstructor()
-			->setMethods(array('set'))
+			->setMethods(array(
+				'_model', '_validateId', '_getFindMethod',
+				'_trigger', 'setFlash', '_redirect', '_controller'
+			))
 			->getMock();
-		$Controller->modelClass = 'Model';
-		$Controller->Components = $Component;
-		$Controller->request = $Request;
-		$Controller->response = new CakeResponse();
-
-		$Crud = $this->CrudMock
-			->setConstructorArgs(array($Component))
-			->setMethods(null)
-			->getMock();
-
-		$Crud->initialize($Controller);
-
-		// $Crud->Session = $this->getMock('stdClass', array('setFlash'));
-
-		$Model = $this->ModelMock
-			->disableOriginalConstructor()
-			->setMethods(array('escapeField', 'find', 'schema', 'delete'))
-			->getMock();
-
-		$CrudSubject->set(array(
-			'crud' => $Crud,
-			'request' => $Request,
-			'controller' => $Controller,
-			'action' => 'delete',
-			'model' => $Model,
-			'modelClass' => $Model->name,
-			'args' => $Request->params['pass']
-		));
-
-		$Action = $this->ActionMock
-			->setConstructorArgs(array($CrudSubject))
-			->setMethods(array('setFlash', '_redirect'))
-			->getMock();
-
-		return compact('Crud', 'Model', 'Controller', 'Request', 'CrudSubject', 'Action');
-	}
-
-/**
- * Test that calling handle will invoke _handle
- *
- * @return void
- */
-	public function testThatCrudActionWillHandle() {
-		extract($this->_mockClasses());
-
-		$Action = $this->ActionMock
-			->setConstructorArgs(array($CrudSubject))
-			->setMethods(array('_handle'))
-			->getMock();
-
 		$Action
+			->expects($this->at($i++))
+			->method('_validateId')
+			->with(1)
+			->will($this->returnValue(true));
+		$Action
+			->expects($this->at($i++))
+			->method('_model')
+			->with()
+			->will($this->returnValue($Model));
+		$Model
 			->expects($this->once())
-			->method('_handle');
-
-		$Action->handle($CrudSubject);
-	}
-
-/**
- * Test that the Crud.beforeDelete method can stop a delete
- *
- * @return void
- */
-	public function testDeleteCanBeStoppedFromEvent() {
-		extract($this->_mockClasses());
-
-		$Request->addDetector('delete', array('callback' => function() {
-			return true;
-		}));
-
-		$Crud->on('Crud.beforeDelete', function(CakeEvent $event) {
-			$event->stopPropagation();
-			return false;
-		});
-
+			->method('escapeField')
+			->with()
+			->will($this->returnValue('Model.id'));
+		$Action
+			->expects($this->at($i++))
+			->method('_getFindMethod')
+			->with('count')
+			->will($this->returnValue('count'));
+		$Action
+			->expects($this->at($i++))
+			->method('_trigger')
+			->with('beforeFind', array('id' => 1, 'query' => $query, 'findMethod' => 'count'))
+			->will($this->returnValue(new CrudSubject(array('query' => $query, 'findMethod' => 'count'))));
 		$Model
 			->expects($this->once())
 			->method('find')
-			->with('count')
+			->with('count', $query)
 			->will($this->returnValue(1));
+		$Action
+			->expects($this->at($i++))
+			->method('_trigger')
+			->with('beforeDelete', array('id' => 1))
+			->will($this->returnValue(new CrudSubject(array('stopped' => false))));
+		$Model
+			->expects($this->once())
+			->method('delete')
+			->with()
+			->will($this->returnValue(true));
+		$Action
+			->expects($this->at($i++))
+			->method('setFlash')
+			->with('success');
+		$Action
+			->expects($this->at($i++))
+			->method('_trigger')
+			->with('afterDelete', array('id' => 1, 'success' => true))
+			->will($this->returnValue($CrudSubject));
+		$Action
+			->expects($this->at($i++))
+			->method('_controller')
+			->with()
+			->will($this->returnValue($Controller));
+		$Controller
+			->expects($this->once())
+			->method('referer')
+			->with(array('action' => 'index'))
+			->will($this->returnValue(array('action' => 'index')));
+		$Action
+			->expects($this->at($i++))
+			->method('_redirect')
+			->with($CrudSubject, array('action' => 'index'));
 
+		$this->setReflectionClassInstance($Action);
+		$this->callProtectedMethod('_handle', array(1), $Action);
+	}
+
+/**
+ * test_handleNotFound
+ *
+ * Test the behavior when a record is not found in the database
+ *
+ * @covers DeleteCrudAction::_handle
+ * @expectedException NotFoundException
+ * @expectedExceptionMessage Not Found
+ * @expectedExceptionCode 404
+ * @return void
+ */
+	public function test_handleNotFound() {
+		$Model = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->setMethods(array('escapeField', 'find', 'delete'))
+			->getMock();
+
+		$Controller = $this
+			->getMockBuilder('Controller')
+			->disableOriginalConstructor()
+			->setMethods(array('referer'))
+			->getMock();
+
+		$query = array('conditions' => array('Model.id' => 1));
+
+		$CrudSubject = new CrudSubject();
+
+		$i = 0;
+
+		$Action = $this
+			->getMockBuilder('DeleteCrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array(
+				'_model', '_validateId', '_getFindMethod',
+				'_trigger', 'setFlash', '_redirect', 'message'
+			))
+			->getMock();
+		$Action
+			->expects($this->at($i++))
+			->method('_validateId')
+			->with(1)
+			->will($this->returnValue(true));
+		$Action
+			->expects($this->at($i++))
+			->method('_model')
+			->with()
+			->will($this->returnValue($Model));
+		$Model
+			->expects($this->once())
+			->method('escapeField')
+			->with()
+			->will($this->returnValue('Model.id'));
+		$Action
+			->expects($this->at($i++))
+			->method('_getFindMethod')
+			->with('count')
+			->will($this->returnValue('count'));
+		$Action
+			->expects($this->at($i++))
+			->method('_trigger')
+			->with('beforeFind', array('id' => 1, 'query' => $query, 'findMethod' => 'count'))
+			->will($this->returnValue(new CrudSubject(array('query' => $query, 'findMethod' => 'count'))));
+		$Model
+			->expects($this->once())
+			->method('find')
+			->with('count', $query)
+			->will($this->returnValue(0));
+		$Action
+			->expects($this->at($i++))
+			->method('_trigger')
+			->with('recordNotFound', array('id' => 1));
+		$Action
+			->expects($this->at($i++))
+			->method('message')
+			->with('recordNotFound', array('id' => 1))
+			->will($this->returnValue(array('class' => 'NotFoundException', 'text' => 'Not Found', 'code' => 404)));
 		$Model
 			->expects($this->never())
 			->method('delete');
 
-		$Action
-			->expects($this->once())
-			->method('setFlash')
-			->with('error');
-
-		$Action
-			->expects($this->once())
-			->method('_redirect');
-
-		$Action->handle($CrudSubject);
+		$this->setReflectionClassInstance($Action);
+		$this->callProtectedMethod('_handle', array(1), $Action);
 	}
 
 /**
- * Test that the Crud.beforeDelete method can stop a delete
+ * test_handleDeleteFailed
  *
+ * test the behavior of delete() failing
+ *
+ * @covers DeleteCrudAction::_handle
  * @return void
  */
-	public function testAfterDeleteIsCalledOnFailure() {
-		extract($this->_mockClasses());
+	public function test_handleDeleteFailed() {
+		$Model = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->setMethods(array('escapeField', 'find', 'delete'))
+			->getMock();
 
-		$Request->addDetector('delete', array('callback' => function() {
-			return true;
-		}));
+		$Controller = $this
+			->getMockBuilder('Controller')
+			->disableOriginalConstructor()
+			->setMethods(array('referer'))
+			->getMock();
 
+		$query = array('conditions' => array('Model.id' => 1));
+
+		$CrudSubject = new CrudSubject();
+
+		$i = 0;
+
+		$Action = $this
+			->getMockBuilder('DeleteCrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array(
+				'_model', '_validateId', '_getFindMethod',
+				'_trigger', 'setFlash', '_redirect', '_controller'
+			))
+			->getMock();
+		$Action
+			->expects($this->at($i++))
+			->method('_validateId')
+			->with(1)
+			->will($this->returnValue(true));
+		$Action
+			->expects($this->at($i++))
+			->method('_model')
+			->with()
+			->will($this->returnValue($Model));
+		$Model
+			->expects($this->once())
+			->method('escapeField')
+			->with()
+			->will($this->returnValue('Model.id'));
+		$Action
+			->expects($this->at($i++))
+			->method('_getFindMethod')
+			->with('count')
+			->will($this->returnValue('count'));
+		$Action
+			->expects($this->at($i++))
+			->method('_trigger')
+			->with('beforeFind', array('id' => 1, 'query' => $query, 'findMethod' => 'count'))
+			->will($this->returnValue(new CrudSubject(array('query' => $query, 'findMethod' => 'count'))));
 		$Model
 			->expects($this->once())
 			->method('find')
-			->with('count')
+			->with('count', $query)
 			->will($this->returnValue(1));
-
+		$Action
+			->expects($this->at($i++))
+			->method('_trigger')
+			->with('beforeDelete', array('id' => 1))
+			->will($this->returnValue(new CrudSubject(array('stopped' => false))));
 		$Model
 			->expects($this->once())
 			->method('delete')
-			->with(1)
+			->with()
 			->will($this->returnValue(false));
-
 		$Action
-			->expects($this->once())
+			->expects($this->at($i++))
 			->method('setFlash')
 			->with('error');
+		$Action
+			->expects($this->at($i++))
+			->method('_trigger')
+			->with('afterDelete', array('id' => 1, 'success' => false))
+			->will($this->returnValue($CrudSubject));
+		$Action
+			->expects($this->at($i++))
+			->method('_controller')
+			->with()
+			->will($this->returnValue($Controller));
+		$Controller
+			->expects($this->once())
+			->method('referer')
+			->with(array('action' => 'index'))
+			->will($this->returnValue(array('action' => 'index')));
+		$Action
+			->expects($this->at($i++))
+			->method('_redirect')
+			->with($CrudSubject, array('action' => 'index'));
 
+		$this->setReflectionClassInstance($Action);
+		$this->callProtectedMethod('_handle', array(1), $Action);
+	}
+
+/**
+ * test_handleDeleteStoppedByEvent
+ *
+ * test the behavior when the beforeDelete callback
+ * stops the event
+ *
+ * @covers DeleteCrudAction::_handle
+ * @return void
+ */
+	public function test_handleDeleteStoppedByEvent() {
+		$Model = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->setMethods(array('escapeField', 'find', 'delete'))
+			->getMock();
+
+		$Controller = $this
+			->getMockBuilder('Controller')
+			->disableOriginalConstructor()
+			->setMethods(array('referer'))
+			->getMock();
+
+		$query = array('conditions' => array('Model.id' => 1));
+
+		$CrudSubject = new CrudSubject();
+
+		$i = 0;
+
+		$Action = $this
+			->getMockBuilder('DeleteCrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array(
+				'_model', '_validateId', '_getFindMethod',
+				'_trigger', 'setFlash', '_redirect', '_controller'
+			))
+			->getMock();
+		$Action
+			->expects($this->at($i++))
+			->method('_validateId')
+			->with(1)
+			->will($this->returnValue(true));
+		$Action
+			->expects($this->at($i++))
+			->method('_model')
+			->with()
+			->will($this->returnValue($Model));
+		$Model
+			->expects($this->once())
+			->method('escapeField')
+			->with()
+			->will($this->returnValue('Model.id'));
+		$Action
+			->expects($this->at($i++))
+			->method('_getFindMethod')
+			->with('count')
+			->will($this->returnValue('count'));
+		$Action
+			->expects($this->at($i++))
+			->method('_trigger')
+			->with('beforeFind', array('id' => 1, 'query' => $query, 'findMethod' => 'count'))
+			->will($this->returnValue(new CrudSubject(array('query' => $query, 'findMethod' => 'count'))));
+		$Model
+			->expects($this->once())
+			->method('find')
+			->with('count', $query)
+			->will($this->returnValue(1));
+		$Action
+			->expects($this->at($i++))
+			->method('_trigger')
+			->with('beforeDelete', array('id' => 1))
+			->will($this->returnValue(new CrudSubject(array('stopped' => true))));
+		$Model
+			->expects($this->never())
+			->method('delete');
+		$Action
+			->expects($this->at($i++))
+			->method('setFlash')
+			->with('error');
+		$Action
+			->expects($this->at($i++))
+			->method('_controller')
+			->with()
+			->will($this->returnValue($Controller));
+		$Controller
+			->expects($this->once())
+			->method('referer')
+			->with(array('action' => 'index'))
+			->will($this->returnValue(array('action' => 'index')));
+		$CrudSubject->stopped = true;
+		$Action
+			->expects($this->at($i++))
+			->method('_redirect')
+			->with($CrudSubject, array('action' => 'index'));
+
+		$this->setReflectionClassInstance($Action);
+		$this->callProtectedMethod('_handle', array(1), $Action);
+	}
+
+/**
+ * test_handleInvalidId
+ *
+ * Test the behavior when the ID is invalid
+ *
+ * @covers DeleteCrudAction::_handle
+ * @return void
+ */
+	public function test_handleInvalidId() {
+		$Action = $this
+			->getMockBuilder('DeleteCrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array('_model', '_validateId'))
+			->getMock();
 		$Action
 			->expects($this->once())
-			->method('_redirect');
+			->method('_validateId')
+			->with(1)
+			->will($this->returnValue(false));
+		$Action
+			->expects($this->never())
+			->method('_model');
 
-		$Action->handle($CrudSubject);
+		$this->setReflectionClassInstance($Action);
+		$this->callProtectedMethod('_handle', array(1), $Action);
 	}
+
 }
