@@ -106,6 +106,12 @@ class ScaffoldListener extends CrudListener {
 		$associations = $this->_associations($model);
 		$scaffoldFilters = $this->_scaffoldFilters($request);
 		$sidebarActions = $this->_sidebarActions();
+		$scaffoldRelatedActions = $this->_action()->config('scaffoldRelatedActions');
+		if ($scaffoldRelatedActions === null) {
+			$scaffoldRelatedActions = true;
+		} else {
+			$scaffoldRelatedActions = (bool)$scaffoldRelatedActions;
+		}
 
 		$_sort = $this->_action()->config('scaffoldFields');
 		$_sort = empty($_sort);
@@ -115,7 +121,8 @@ class ScaffoldListener extends CrudListener {
 		$controller->set(compact(
 			'modelClass', 'primaryKey', 'displayField', 'singularVar', 'pluralVar',
 			'singularHumanName', 'pluralHumanName', 'scaffoldFields', 'associations',
-			'scaffoldFilters', 'action', 'modelSchema', 'sidebarActions'
+			'scaffoldFilters', 'action', 'modelSchema', 'sidebarActions',
+			'scaffoldRelatedActions'
 		));
 
 		$controller->set('title_for_layout', $title);
