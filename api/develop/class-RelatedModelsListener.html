@@ -7,7 +7,7 @@
 	<title>Class RelatedModelsListener | jippi/cakephp-crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?1248831092"></script>
+	<script type="text/javascript" src="elementlist.js?3697885228"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -164,7 +164,7 @@ Object
 
 				<b>Copyright:</b>
 				Christian Winther, 2013<br />
-		<b>Located at</b> <a href="source-class-RelatedModelsListener.html#7-149" title="Go to source code">Controller/Crud/Listener/RelatedModelsListener.php</a><br />
+		<b>Located at</b> <a href="source-class-RelatedModelsListener.html#6-212" title="Go to source code">Controller/Crud/Listener/RelatedModelsListener.php</a><br />
 	</div>
 
 
@@ -182,7 +182,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#_models">#</a>
-			<code><a href="source-class-RelatedModelsListener.html#18-43" title="Go to source code">models</a>( <span>string <var>$action</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-RelatedModelsListener.html#17-42" title="Go to source code">models</a>( <span>string <var>$action</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -213,6 +213,44 @@ Object
 			</div>
 			</div></td>
 		</tr>
+		<tr data-order="publishRelatedModels" id="_publishRelatedModels">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_publishRelatedModels">#</a>
+			<code><a href="source-class-RelatedModelsListener.html#44-77" title="Go to source code">publishRelatedModels</a>( <span>null|string <var>$action</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Find and publish all related models to the view for an action</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Find and publish all related models to the view for an action</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$action</var></dt>
+						<dd><code>null|string</code><br>$action If NULL the current action will be used</dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
 		<tr data-order="beforeRender" id="_beforeRender">
 
 			<td class="attributes"><code>
@@ -224,7 +262,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#_beforeRender">#</a>
-			<code><a href="source-class-RelatedModelsListener.html#45-110" title="Go to source code">beforeRender</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<code><a href="source-class-RelatedModelsListener.html#79-88" title="Go to source code">beforeRender</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
@@ -241,9 +279,100 @@ Object
 					<h4>Parameters</h4>
 					<div class="list"><dl>
 						<dt><var>$event</var></dt>
-						<dd><code>CakeEvent</code></dd>
+						<dd><code>CakeEvent</code><br>$event</dd>
 					</dl></div>
 
+
+
+					<h4>CodeCoverageIgnore</h4>
+					<div class="list">
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_findRelatedItems" id="__findRelatedItems">
+
+			<td class="attributes"><code>
+				 protected 
+				array
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__findRelatedItems">#</a>
+			<code><a href="source-class-RelatedModelsListener.html#90-109" title="Go to source code">_findRelatedItems</a>( <span>Model <var>$Model</var></span>, <span>array <var>$query</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Execute the DB query to find the related items</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Execute the DB query to find the related items</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$Model</var></dt>
+						<dd><code>Model</code><br>$Model</dd>
+						<dt><var>$query</var></dt>
+						<dd><code>array</code><br>$query</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>array</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_getBaseQuery" id="__getBaseQuery">
+
+			<td class="attributes"><code>
+				 protected 
+				array
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__getBaseQuery">#</a>
+			<code><a href="source-class-RelatedModelsListener.html#111-141" title="Go to source code">_getBaseQuery</a>( <span>Model <var>$AssociatedModel</var></span>, <span>string <var>$associationType</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Get the base query to find the related items for an associated model</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Get the base query to find the related items for an associated model</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$AssociatedModel</var></dt>
+						<dd><code>Model</code><br>$AssociatedModel</dd>
+						<dt><var>$associationType</var></dt>
+						<dd><code>string</code><br>$associationType</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>array</code><br />
+					</div>
 
 
 
@@ -262,7 +391,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#__getModelInstance">#</a>
-			<code><a href="source-class-RelatedModelsListener.html#112-135" title="Go to source code">_getModelInstance</a>( <span>string <var>$model</var></span>, <span>Model <var>$controllerModel</var></span>, <span>Controller <var>$controller</var></span>, <span>string <var>$associationType</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-RelatedModelsListener.html#143-167" title="Go to source code">_getModelInstance</a>( <span>string <var>$modelName</var></span>, <span>string <var>$associationType</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -278,14 +407,10 @@ Object
 
 					<h4>Parameters</h4>
 					<div class="list"><dl>
-						<dt><var>$model</var></dt>
-						<dd><code>string</code><br>$model name of the model</dd>
-						<dt><var>$controllerModel</var></dt>
-						<dd><code>Model</code><br>$controllerModel default model instance for controller</dd>
-						<dt><var>$controller</var></dt>
-						<dd><code>Controller</code><br>$controller instance to do a first look on it</dd>
+						<dt><var>$modelName</var></dt>
+						<dd><code>string</code><br>$modelName</dd>
 						<dt><var>$associationType</var></dt>
-						<dd><code>string</code><br>$associationType Association types</dd>
+						<dd><code>string</code><br>$associationType</dd>
 					</dl></div>
 
 					<h4>Returns</h4>
@@ -310,7 +435,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#__getAssociationType">#</a>
-			<code><a href="source-class-RelatedModelsListener.html#137-147" title="Go to source code">_getAssociationType</a>( <span>string <var>$model</var></span>, <span>Model <var>$controllerModel</var></span> )</code>
+			<code><a href="source-class-RelatedModelsListener.html#169-178" title="Go to source code">_getAssociationType</a>( <span>string <var>$modelName</var></span> )</code>
 
 			<div class="description short">
 				
@@ -326,10 +451,8 @@ Object
 
 					<h4>Parameters</h4>
 					<div class="list"><dl>
-						<dt><var>$model</var></dt>
-						<dd><code>string</code><br>$model name of the model</dd>
-						<dt><var>$controllerModel</var></dt>
-						<dd><code>Model</code><br>$controllerModel default model instance for controller</dd>
+						<dt><var>$modelName</var></dt>
+						<dd><code>string</code><br>$modelName</dd>
 					</dl></div>
 
 					<h4>Returns</h4>
@@ -338,6 +461,136 @@ Object
 					</div>
 
 
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_hasTreeBehavior" id="__hasTreeBehavior">
+
+			<td class="attributes"><code>
+				 protected 
+				boolean
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__hasTreeBehavior">#</a>
+			<code><a href="source-class-RelatedModelsListener.html#180-189" title="Go to source code">_hasTreeBehavior</a>( <span>Model <var>$Model</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Check if a model has the Tree behavior attached or not</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Check if a model has the Tree behavior attached or not</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$Model</var></dt>
+						<dd><code>Model</code><br>$Model</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>boolean</code><br />
+					</div>
+
+
+					<h4>CodeCoverageIgnore</h4>
+					<div class="list">
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_getTreeBehavior" id="__getTreeBehavior">
+
+			<td class="attributes"><code>
+				 protected 
+				TreeBehavior
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__getTreeBehavior">#</a>
+			<code><a href="source-class-RelatedModelsListener.html#191-200" title="Go to source code">_getTreeBehavior</a>( <span>Model <var>$Model</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Get the TreeBehavior from a model</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Get the TreeBehavior from a model</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$Model</var></dt>
+						<dd><code>Model</code><br>$Model</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>TreeBehavior</code><br />
+					</div>
+
+
+					<h4>CodeCoverageIgnore</h4>
+					<div class="list">
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_classRegistryInit" id="__classRegistryInit">
+
+			<td class="attributes"><code>
+				 protected 
+				Model
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__classRegistryInit">#</a>
+			<code><a href="source-class-RelatedModelsListener.html#202-210" title="Go to source code">_classRegistryInit</a>( <span>mixed <var>$modelName</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Wrapper for ClassRegistry::init for easier testing</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Wrapper for ClassRegistry::init for easier testing</p>
+
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>Model</code><br />
+					</div>
+
+
+					<h4>CodeCoverageIgnore</h4>
+					<div class="list">
+					</div>
 
 
 			</div>

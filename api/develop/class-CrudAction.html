@@ -7,7 +7,7 @@
 	<title>Class CrudAction | jippi/cakephp-crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?1248831092"></script>
+	<script type="text/javascript" src="elementlist.js?3697885228"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -166,7 +166,7 @@ Object
 
 				<b>Copyright:</b>
 				Christian Winther, 2013<br />
-		<b>Located at</b> <a href="source-class-CrudAction.html#6-364" title="Go to source code">Controller/Crud/CrudAction.php</a><br />
+		<b>Located at</b> <a href="source-class-CrudAction.html#6-410" title="Go to source code">Controller/Crud/CrudAction.php</a><br />
 	</div>
 
 
@@ -184,7 +184,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#___construct">#</a>
-			<code><a href="source-class-CrudAction.html#16-28" title="Go to source code">__construct</a>( <span><code><a href="class-CrudSubject.html">CrudSubject</a></code> <var>$subject</var></span>, <span>array <var>$defaults</var> = <span class="php-keyword1">array</span>()</span> )</code>
+			<code><a href="source-class-CrudAction.html#16-35" title="Go to source code">__construct</a>( <span><code><a href="class-CrudSubject.html">CrudSubject</a></code> <var>$subject</var></span>, <span>array <var>$defaults</var> = <span class="php-keyword1">array</span>()</span> )</code>
 
 			<div class="description short">
 				
@@ -228,7 +228,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#_handle">#</a>
-			<code><a href="source-class-CrudAction.html#30-52" title="Go to source code">handle</a>( <span><code><a href="class-CrudSubject.html">CrudSubject</a></code> <var>$subject</var></span> )</code>
+			<code><a href="source-class-CrudAction.html#37-57" title="Go to source code">handle</a>( <span><code><a href="class-CrudSubject.html">CrudSubject</a></code> <var>$subject</var></span> )</code>
 
 			<div class="description short">
 				
@@ -276,7 +276,7 @@ continues</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_disable">#</a>
-			<code><a href="source-class-CrudAction.html#54-67" title="Go to source code">disable</a>( )</code>
+			<code><a href="source-class-CrudAction.html#59-74" title="Go to source code">disable</a>( )</code>
 
 			<div class="description short">
 				
@@ -309,7 +309,7 @@ continues</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_enable">#</a>
-			<code><a href="source-class-CrudAction.html#69-82" title="Go to source code">enable</a>( )</code>
+			<code><a href="source-class-CrudAction.html#76-91" title="Go to source code">enable</a>( )</code>
 
 			<div class="description short">
 				
@@ -331,6 +331,92 @@ continues</p>
 			</div>
 			</div></td>
 		</tr>
+		<tr data-order="requestMethods" id="_requestMethods">
+
+			<td class="attributes"><code>
+				 public 
+				array
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_requestMethods">#</a>
+			<code><a href="source-class-CrudAction.html#93-106" title="Go to source code">requestMethods</a>( <span>string <var>$requestType</var></span>, <span>array <var>$methods</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Get or set a list of request methods allowed for this action</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Get or set a list of request methods allowed for this action</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$requestType</var></dt>
+						<dd><code>string</code><br>$requestType</dd>
+						<dt><var>$methods</var></dt>
+						<dd><code>array</code><br>$methods</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>array</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="enforceRequestType" id="_enforceRequestType">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_enforceRequestType">#</a>
+			<code><a href="source-class-CrudAction.html#108-128" title="Go to source code">enforceRequestType</a>( <span>string <var>$requestType</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Enforce HTTP request types</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Enforce HTTP request types</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$requestType</var></dt>
+						<dd><code>string</code><br>$requestType The request type</dd>
+					</dl></div>
+
+
+					<h4>Throws</h4>
+					<div class="list">
+						<code>MethodNotAllowedException</code><br>If method not allowed<br />
+					</div>
+
+
+
+			</div>
+			</div></td>
+		</tr>
 		<tr data-order="findMethod" id="_findMethod">
 
 			<td class="attributes"><code>
@@ -342,7 +428,7 @@ continues</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_findMethod">#</a>
-			<code><a href="source-class-CrudAction.html#84-99" title="Go to source code">findMethod</a>( <span>mixed <var>$method</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-CrudAction.html#130-145" title="Go to source code">findMethod</a>( <span>mixed <var>$method</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -387,7 +473,7 @@ continues</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_message">#</a>
-			<code><a href="source-class-CrudAction.html#101-157" title="Go to source code">message</a>( <span>string <var>$type</var></span>, <span>array <var>$replacements</var> = <span class="php-keyword1">array</span>()</span> )</code>
+			<code><a href="source-class-CrudAction.html#147-203" title="Go to source code">message</a>( <span>string <var>$type</var></span>, <span>array <var>$replacements</var> = <span class="php-keyword1">array</span>()</span> )</code>
 
 			<div class="description short">
 				
@@ -435,7 +521,7 @@ continues</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_saveOptions">#</a>
-			<code><a href="source-class-CrudAction.html#159-176" title="Go to source code">saveOptions</a>( <span>mixed <var>$config</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-CrudAction.html#205-222" title="Go to source code">saveOptions</a>( <span>mixed <var>$config</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -482,7 +568,7 @@ continues</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_view">#</a>
-			<code><a href="source-class-CrudAction.html#178-196" title="Go to source code">view</a>( <span>mixed <var>$view</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-CrudAction.html#224-242" title="Go to source code">view</a>( <span>mixed <var>$view</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -530,7 +616,7 @@ object</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_implementedEvents">#</a>
-			<code><a href="source-class-CrudAction.html#198-205" title="Go to source code">implementedEvents</a>( )</code>
+			<code><a href="source-class-CrudAction.html#244-251" title="Go to source code">implementedEvents</a>( )</code>
 
 			<div class="description short">
 				
@@ -569,7 +655,7 @@ object</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__getFindMethod">#</a>
-			<code><a href="source-class-CrudAction.html#207-220" title="Go to source code">_getFindMethod</a>( <span>string|null <var>$default</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-CrudAction.html#253-266" title="Go to source code">_getFindMethod</a>( <span>string|null <var>$default</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -611,7 +697,7 @@ object</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_setFlash">#</a>
-			<code><a href="source-class-CrudAction.html#222-237" title="Go to source code">setFlash</a>( <span>string <var>$type</var></span> )</code>
+			<code><a href="source-class-CrudAction.html#268-283" title="Go to source code">setFlash</a>( <span>string <var>$type</var></span> )</code>
 
 			<div class="description short">
 				
@@ -649,7 +735,7 @@ object</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_detectPrimaryKeyFieldType">#</a>
-			<code><a href="source-class-CrudAction.html#239-273" title="Go to source code">detectPrimaryKeyFieldType</a>( <span>null|Model <var>$model</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-CrudAction.html#285-319" title="Go to source code">detectPrimaryKeyFieldType</a>( <span>null|Model <var>$model</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -700,7 +786,7 @@ primary key is a number, integer validation will be used</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__getResourceName">#</a>
-			<code><a href="source-class-CrudAction.html#275-289" title="Go to source code">_getResourceName</a>( )</code>
+			<code><a href="source-class-CrudAction.html#321-335" title="Go to source code">_getResourceName</a>( )</code>
 
 			<div class="description short">
 				
@@ -740,7 +826,7 @@ configuration property</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__validateId">#</a>
-			<code><a href="source-class-CrudAction.html#291-327" title="Go to source code">_validateId</a>( <span>mixed <var>$id</var></span> )</code>
+			<code><a href="source-class-CrudAction.html#337-373" title="Go to source code">_validateId</a>( <span>mixed <var>$id</var></span> )</code>
 
 			<div class="description short">
 				
@@ -791,7 +877,7 @@ incremental ids from MySQL</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__redirect">#</a>
-			<code><a href="source-class-CrudAction.html#329-354" title="Go to source code">_redirect</a>( <span><code><a href="class-CrudSubject.html">CrudSubject</a></code> <var>$subject</var></span>, <span>array|null <var>$url</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$status</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$exit</var> = <span class="php-keyword1">true</span></span> )</code>
+			<code><a href="source-class-CrudAction.html#375-400" title="Go to source code">_redirect</a>( <span><code><a href="class-CrudSubject.html">CrudSubject</a></code> <var>$subject</var></span>, <span>array|null <var>$url</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$status</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$exit</var> = <span class="php-keyword1">true</span></span> )</code>
 
 			<div class="description short">
 				
@@ -835,7 +921,7 @@ incremental ids from MySQL</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__handle">#</a>
-			<code><a href="source-class-CrudAction.html#356-362" title="Go to source code">_handle</a>( )</code>
+			<code><a href="source-class-CrudAction.html#402-408" title="Go to source code">_handle</a>( )</code>
 
 			<div class="description short">
 				

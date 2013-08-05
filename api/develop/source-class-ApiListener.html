@@ -8,7 +8,7 @@
 	<title>File Controller/Crud/Listener/ApiListener.php | jippi/cakephp-crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?1248831092"></script>
+	<script type="text/javascript" src="elementlist.js?3697885228"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -180,12 +180,12 @@
 </span><span id="71" class="l"><a class="l" href="#71"> 71 </a>            <span class="php-keyword1">return</span>;
 </span><span id="72" class="l"><a class="l" href="#72"> 72 </a>        }
 </span><span id="73" class="l"><a class="l" href="#73"> 73 </a>
-</span><span id="74" class="l"><a class="l" href="#74"> 74 </a>        <span class="php-comment">// Make sure that exceptions output in standard Crud format</span>
-</span><span id="75" class="l"><a class="l" href="#75"> 75 </a>        App::uses(<span class="php-quote">'CrudExceptionRenderer'</span>, <span class="php-quote">'Crud.Error'</span>);
-</span><span id="76" class="l"><a class="l" href="#76"> 76 </a>        Configure::write(<span class="php-quote">'Exception.renderer'</span>, <span class="php-quote">'Crud.CrudExceptionRenderer'</span>);
-</span><span id="77" class="l"><a class="l" href="#77"> 77 </a>
-</span><span id="78" class="l"><a class="l" href="#78"> 78 </a>        <span class="php-comment">// Enforce a few REST rules before we do any heavy lifting</span>
-</span><span id="79" class="l"><a class="l" href="#79"> 79 </a>        <span class="php-var">$this</span>-&gt;_enforceRequestType(<span class="php-var">$event</span>-&gt;subject-&gt;action, <span class="php-var">$this</span>-&gt;_request());
+</span><span id="74" class="l"><a class="l" href="#74"> 74 </a>        <span class="php-var">$this</span>-&gt;registerExceptionHandler();
+</span><span id="75" class="l"><a class="l" href="#75"> 75 </a>    }
+</span><span id="76" class="l"><a class="l" href="#76"> 76 </a>
+</span><span id="77" class="l"><a class="l" href="#77"> 77 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_registerExceptionHandler" href="#_registerExceptionHandler">registerExceptionHandler</a>() {
+</span><span id="78" class="l"><a class="l" href="#78"> 78 </a>        App::uses(<span class="php-quote">'CrudExceptionRenderer'</span>, <span class="php-quote">'Crud.Error'</span>);
+</span><span id="79" class="l"><a class="l" href="#79"> 79 </a>        Configure::write(<span class="php-quote">'Exception.renderer'</span>, <span class="php-quote">'Crud.CrudExceptionRenderer'</span>);
 </span><span id="80" class="l"><a class="l" href="#80"> 80 </a>    }
 </span><span id="81" class="l"><a class="l" href="#81"> 81 </a>
 </span><span id="82" class="l"><a class="l" href="#82"> 82 </a><span class="php-comment">/**
@@ -367,101 +367,50 @@
 </span><span id="258" class="l"><a class="l" href="#258">258 </a>    }
 </span><span id="259" class="l"><a class="l" href="#259">259 </a>
 </span><span id="260" class="l"><a class="l" href="#260">260 </a><span class="php-comment">/**
-</span></span><span id="261" class="l"><a class="l" href="#261">261 </a><span class="php-comment"> * Enforce REST HTTP request types
-</span></span><span id="262" class="l"><a class="l" href="#262">262 </a><span class="php-comment"> *
-</span></span><span id="263" class="l"><a class="l" href="#263">263 </a><span class="php-comment"> * &quot;index&quot; actions should only be accessible through HTTP GET
-</span></span><span id="264" class="l"><a class="l" href="#264">264 </a><span class="php-comment"> * &quot;view&quot; actions should only be accessible through HTTP GET
-</span></span><span id="265" class="l"><a class="l" href="#265">265 </a><span class="php-comment"> * &quot;add&quot; actions should only be accessible through HTTP POST
-</span></span><span id="266" class="l"><a class="l" href="#266">266 </a><span class="php-comment"> * &quot;edit&quot; actions should only be accessible through HTTP PUT
-</span></span><span id="267" class="l"><a class="l" href="#267">267 </a><span class="php-comment"> * &quot;delete&quot; actions should only be accessible through HTTP DELETE
+</span></span><span id="261" class="l"><a class="l" href="#261">261 </a><span class="php-comment"> * Automatically create REST resource routes for all controllers found in your main
+</span></span><span id="262" class="l"><a class="l" href="#262">262 </a><span class="php-comment"> * application or in a specific plugin to provide access to your resources
+</span></span><span id="263" class="l"><a class="l" href="#263">263 </a><span class="php-comment"> * using /controller/id.json instead of the default /controller/view/id.json.
+</span></span><span id="264" class="l"><a class="l" href="#264">264 </a><span class="php-comment"> *
+</span></span><span id="265" class="l"><a class="l" href="#265">265 </a><span class="php-comment"> * If called with no arguments, all controllers in the main application will be mapped.
+</span></span><span id="266" class="l"><a class="l" href="#266">266 </a><span class="php-comment"> * If called with a valid plugin name all controllers in that plugin will be mapped.
+</span></span><span id="267" class="l"><a class="l" href="#267">267 </a><span class="php-comment"> * If combined both controllers from the application and the plugin(s) will be mapped.
 </span></span><span id="268" class="l"><a class="l" href="#268">268 </a><span class="php-comment"> *
-</span></span><span id="269" class="l"><a class="l" href="#269">269 </a><span class="php-comment"> * Unknown actions will be ignored
+</span></span><span id="269" class="l"><a class="l" href="#269">269 </a><span class="php-comment"> * This function needs to be called from your application's app/Config/routes.php:
 </span></span><span id="270" class="l"><a class="l" href="#270">270 </a><span class="php-comment"> *
-</span></span><span id="271" class="l"><a class="l" href="#271">271 </a><span class="php-comment"> * @TODO make this configurable on both HTTP verbs and actions
-</span></span><span id="272" class="l"><a class="l" href="#272">272 </a><span class="php-comment"> * @param string $action
-</span></span><span id="273" class="l"><a class="l" href="#273">273 </a><span class="php-comment"> * @param CakeRequest $request
-</span></span><span id="274" class="l"><a class="l" href="#274">274 </a><span class="php-comment"> * @return void
-</span></span><span id="275" class="l"><a class="l" href="#275">275 </a><span class="php-comment"> * @throws MethodNotAllowedException If method not allowed
-</span></span><span id="276" class="l"><a class="l" href="#276">276 </a><span class="php-comment"> */</span>
-</span><span id="277" class="l"><a class="l" href="#277">277 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__enforceRequestType" href="#__enforceRequestType">_enforceRequestType</a>(<span class="php-var">$action</span>, CakeRequest <span class="php-var">$request</span>) {
-</span><span id="278" class="l"><a class="l" href="#278">278 </a>        <span class="php-keyword1">switch</span> (<span class="php-var">$action</span>) {
-</span><span id="279" class="l"><a class="l" href="#279">279 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'index'</span>:
-</span><span id="280" class="l"><a class="l" href="#280">280 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'admin_index'</span>:
-</span><span id="281" class="l"><a class="l" href="#281">281 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'view'</span>:
-</span><span id="282" class="l"><a class="l" href="#282">282 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'admin_view'</span>:
-</span><span id="283" class="l"><a class="l" href="#283">283 </a>                <span class="php-keyword1">if</span> (!<span class="php-var">$request</span>-&gt;is(<span class="php-quote">'get'</span>)) {
-</span><span id="284" class="l"><a class="l" href="#284">284 </a>                    <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> MethodNotAllowedException();
-</span><span id="285" class="l"><a class="l" href="#285">285 </a>                }
-</span><span id="286" class="l"><a class="l" href="#286">286 </a>                <span class="php-keyword1">break</span>;
-</span><span id="287" class="l"><a class="l" href="#287">287 </a>
-</span><span id="288" class="l"><a class="l" href="#288">288 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'add'</span>:
-</span><span id="289" class="l"><a class="l" href="#289">289 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'admin_add'</span>:
-</span><span id="290" class="l"><a class="l" href="#290">290 </a>                <span class="php-keyword1">if</span> (!<span class="php-var">$request</span>-&gt;is(<span class="php-quote">'post'</span>)) {
-</span><span id="291" class="l"><a class="l" href="#291">291 </a>                    <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> MethodNotAllowedException();
-</span><span id="292" class="l"><a class="l" href="#292">292 </a>                }
-</span><span id="293" class="l"><a class="l" href="#293">293 </a>                <span class="php-keyword1">break</span>;
-</span><span id="294" class="l"><a class="l" href="#294">294 </a>
-</span><span id="295" class="l"><a class="l" href="#295">295 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'edit'</span>:
-</span><span id="296" class="l"><a class="l" href="#296">296 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'admin_edit'</span>:
-</span><span id="297" class="l"><a class="l" href="#297">297 </a>                <span class="php-keyword1">if</span> (!<span class="php-var">$request</span>-&gt;is(<span class="php-quote">'put'</span>)) {
-</span><span id="298" class="l"><a class="l" href="#298">298 </a>                    <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> MethodNotAllowedException();
-</span><span id="299" class="l"><a class="l" href="#299">299 </a>                }
-</span><span id="300" class="l"><a class="l" href="#300">300 </a>                <span class="php-keyword1">break</span>;
-</span><span id="301" class="l"><a class="l" href="#301">301 </a>
-</span><span id="302" class="l"><a class="l" href="#302">302 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'delete'</span>:
-</span><span id="303" class="l"><a class="l" href="#303">303 </a>            <span class="php-keyword1">case</span> <span class="php-quote">'admin_delete'</span>:
-</span><span id="304" class="l"><a class="l" href="#304">304 </a>                <span class="php-keyword1">if</span> (!<span class="php-var">$request</span>-&gt;is(<span class="php-quote">'delete'</span>)) {
-</span><span id="305" class="l"><a class="l" href="#305">305 </a>                    <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> MethodNotAllowedException();
-</span><span id="306" class="l"><a class="l" href="#306">306 </a>                }
-</span><span id="307" class="l"><a class="l" href="#307">307 </a>                <span class="php-keyword1">break</span>;
-</span><span id="308" class="l"><a class="l" href="#308">308 </a>        }
-</span><span id="309" class="l"><a class="l" href="#309">309 </a>    }
-</span><span id="310" class="l"><a class="l" href="#310">310 </a>
-</span><span id="311" class="l"><a class="l" href="#311">311 </a><span class="php-comment">/**
-</span></span><span id="312" class="l"><a class="l" href="#312">312 </a><span class="php-comment"> * Automatically create REST resource routes for all controllers found in your main
-</span></span><span id="313" class="l"><a class="l" href="#313">313 </a><span class="php-comment"> * application or in a specific plugin to provide access to your resources
-</span></span><span id="314" class="l"><a class="l" href="#314">314 </a><span class="php-comment"> * using /controller/id.json instead of the default /controller/view/id.json.
-</span></span><span id="315" class="l"><a class="l" href="#315">315 </a><span class="php-comment"> *
-</span></span><span id="316" class="l"><a class="l" href="#316">316 </a><span class="php-comment"> * If called with no arguments, all controllers in the main application will be mapped.
-</span></span><span id="317" class="l"><a class="l" href="#317">317 </a><span class="php-comment"> * If called with a valid plugin name all controllers in that plugin will be mapped.
-</span></span><span id="318" class="l"><a class="l" href="#318">318 </a><span class="php-comment"> * If combined both controllers from the application and the plugin(s) will be mapped.
-</span></span><span id="319" class="l"><a class="l" href="#319">319 </a><span class="php-comment"> *
-</span></span><span id="320" class="l"><a class="l" href="#320">320 </a><span class="php-comment"> * This function needs to be called from your application's app/Config/routes.php:
-</span></span><span id="321" class="l"><a class="l" href="#321">321 </a><span class="php-comment"> *
-</span></span><span id="322" class="l"><a class="l" href="#322">322 </a><span class="php-comment"> * ```
-</span></span><span id="323" class="l"><a class="l" href="#323">323 </a><span class="php-comment"> *     App::uses('ApiListener', 'Crud.Controller/Crud/Listener');
-</span></span><span id="324" class="l"><a class="l" href="#324">324 </a><span class="php-comment"> *
-</span></span><span id="325" class="l"><a class="l" href="#325">325 </a><span class="php-comment"> *     ApiListener::mapResources();
-</span></span><span id="326" class="l"><a class="l" href="#326">326 </a><span class="php-comment"> *     ApiListener::mapResources('DebugKit');
-</span></span><span id="327" class="l"><a class="l" href="#327">327 </a><span class="php-comment"> *     Router::setExtensions(array('json', 'xml'));
-</span></span><span id="328" class="l"><a class="l" href="#328">328 </a><span class="php-comment"> *     Router::parseExtensions();
-</span></span><span id="329" class="l"><a class="l" href="#329">329 </a><span class="php-comment"> * ```
-</span></span><span id="330" class="l"><a class="l" href="#330">330 </a><span class="php-comment"> *
-</span></span><span id="331" class="l"><a class="l" href="#331">331 </a><span class="php-comment"> * @static
-</span></span><span id="332" class="l"><a class="l" href="#332">332 </a><span class="php-comment"> * @param string $plugin
-</span></span><span id="333" class="l"><a class="l" href="#333">333 </a><span class="php-comment"> * @return void
-</span></span><span id="334" class="l"><a class="l" href="#334">334 </a><span class="php-comment"> */</span>
-</span><span id="335" class="l"><a class="l" href="#335">335 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_mapResources" href="#_mapResources">mapResources</a>(<span class="php-var">$plugin</span> = <span class="php-keyword1">null</span>) {
-</span><span id="336" class="l"><a class="l" href="#336">336 </a>        <span class="php-var">$key</span> = <span class="php-quote">'Controller'</span>;
-</span><span id="337" class="l"><a class="l" href="#337">337 </a>        <span class="php-keyword1">if</span> (<span class="php-var">$plugin</span>) {
-</span><span id="338" class="l"><a class="l" href="#338">338 </a>            <span class="php-var">$key</span> = <span class="php-var">$plugin</span> . <span class="php-quote">'.Controller'</span>;
-</span><span id="339" class="l"><a class="l" href="#339">339 </a>        }
-</span><span id="340" class="l"><a class="l" href="#340">340 </a>
-</span><span id="341" class="l"><a class="l" href="#341">341 </a>        <span class="php-var">$controllers</span> = <span class="php-keyword1">array</span>();
-</span><span id="342" class="l"><a class="l" href="#342">342 </a>        <span class="php-keyword1">foreach</span> (App::objects(<span class="php-var">$key</span>) <span class="php-keyword1">as</span> <span class="php-var">$controller</span>) {
-</span><span id="343" class="l"><a class="l" href="#343">343 </a>            <span class="php-keyword1">if</span> (<span class="php-var">$controller</span> !== <span class="php-var">$plugin</span> . <span class="php-quote">'AppController'</span>) {
-</span><span id="344" class="l"><a class="l" href="#344">344 </a>                <span class="php-keyword1">if</span> (<span class="php-var">$plugin</span>) {
-</span><span id="345" class="l"><a class="l" href="#345">345 </a>                    <span class="php-var">$controller</span> = <span class="php-var">$plugin</span> . <span class="php-quote">'.'</span> . <span class="php-var">$controller</span>;
-</span><span id="346" class="l"><a class="l" href="#346">346 </a>                }
-</span><span id="347" class="l"><a class="l" href="#347">347 </a>
-</span><span id="348" class="l"><a class="l" href="#348">348 </a>                <span class="php-keyword2">array_push</span>(<span class="php-var">$controllers</span>, <span class="php-keyword2">str_replace</span>(<span class="php-quote">'Controller'</span>, <span class="php-quote">''</span>, <span class="php-var">$controller</span>));
-</span><span id="349" class="l"><a class="l" href="#349">349 </a>            }
-</span><span id="350" class="l"><a class="l" href="#350">350 </a>        }
-</span><span id="351" class="l"><a class="l" href="#351">351 </a>
-</span><span id="352" class="l"><a class="l" href="#352">352 </a>        Router::mapResources(<span class="php-var">$controllers</span>);
-</span><span id="353" class="l"><a class="l" href="#353">353 </a>    }
-</span><span id="354" class="l"><a class="l" href="#354">354 </a>}
-</span><span id="355" class="l"><a class="l" href="#355">355 </a></span></code></pre>
+</span></span><span id="271" class="l"><a class="l" href="#271">271 </a><span class="php-comment"> * ```
+</span></span><span id="272" class="l"><a class="l" href="#272">272 </a><span class="php-comment"> *     App::uses('ApiListener', 'Crud.Controller/Crud/Listener');
+</span></span><span id="273" class="l"><a class="l" href="#273">273 </a><span class="php-comment"> *
+</span></span><span id="274" class="l"><a class="l" href="#274">274 </a><span class="php-comment"> *     ApiListener::mapResources();
+</span></span><span id="275" class="l"><a class="l" href="#275">275 </a><span class="php-comment"> *     ApiListener::mapResources('DebugKit');
+</span></span><span id="276" class="l"><a class="l" href="#276">276 </a><span class="php-comment"> *     Router::setExtensions(array('json', 'xml'));
+</span></span><span id="277" class="l"><a class="l" href="#277">277 </a><span class="php-comment"> *     Router::parseExtensions();
+</span></span><span id="278" class="l"><a class="l" href="#278">278 </a><span class="php-comment"> * ```
+</span></span><span id="279" class="l"><a class="l" href="#279">279 </a><span class="php-comment"> *
+</span></span><span id="280" class="l"><a class="l" href="#280">280 </a><span class="php-comment"> * @static
+</span></span><span id="281" class="l"><a class="l" href="#281">281 </a><span class="php-comment"> * @param string $plugin
+</span></span><span id="282" class="l"><a class="l" href="#282">282 </a><span class="php-comment"> * @return void
+</span></span><span id="283" class="l"><a class="l" href="#283">283 </a><span class="php-comment"> */</span>
+</span><span id="284" class="l"><a class="l" href="#284">284 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_mapResources" href="#_mapResources">mapResources</a>(<span class="php-var">$plugin</span> = <span class="php-keyword1">null</span>) {
+</span><span id="285" class="l"><a class="l" href="#285">285 </a>        <span class="php-var">$key</span> = <span class="php-quote">'Controller'</span>;
+</span><span id="286" class="l"><a class="l" href="#286">286 </a>        <span class="php-keyword1">if</span> (<span class="php-var">$plugin</span>) {
+</span><span id="287" class="l"><a class="l" href="#287">287 </a>            <span class="php-var">$key</span> = <span class="php-var">$plugin</span> . <span class="php-quote">'.Controller'</span>;
+</span><span id="288" class="l"><a class="l" href="#288">288 </a>        }
+</span><span id="289" class="l"><a class="l" href="#289">289 </a>
+</span><span id="290" class="l"><a class="l" href="#290">290 </a>        <span class="php-var">$controllers</span> = <span class="php-keyword1">array</span>();
+</span><span id="291" class="l"><a class="l" href="#291">291 </a>        <span class="php-keyword1">foreach</span> (App::objects(<span class="php-var">$key</span>) <span class="php-keyword1">as</span> <span class="php-var">$controller</span>) {
+</span><span id="292" class="l"><a class="l" href="#292">292 </a>            <span class="php-keyword1">if</span> (<span class="php-var">$controller</span> !== <span class="php-var">$plugin</span> . <span class="php-quote">'AppController'</span>) {
+</span><span id="293" class="l"><a class="l" href="#293">293 </a>                <span class="php-keyword1">if</span> (<span class="php-var">$plugin</span>) {
+</span><span id="294" class="l"><a class="l" href="#294">294 </a>                    <span class="php-var">$controller</span> = <span class="php-var">$plugin</span> . <span class="php-quote">'.'</span> . <span class="php-var">$controller</span>;
+</span><span id="295" class="l"><a class="l" href="#295">295 </a>                }
+</span><span id="296" class="l"><a class="l" href="#296">296 </a>
+</span><span id="297" class="l"><a class="l" href="#297">297 </a>                <span class="php-keyword2">array_push</span>(<span class="php-var">$controllers</span>, <span class="php-keyword2">str_replace</span>(<span class="php-quote">'Controller'</span>, <span class="php-quote">''</span>, <span class="php-var">$controller</span>));
+</span><span id="298" class="l"><a class="l" href="#298">298 </a>            }
+</span><span id="299" class="l"><a class="l" href="#299">299 </a>        }
+</span><span id="300" class="l"><a class="l" href="#300">300 </a>
+</span><span id="301" class="l"><a class="l" href="#301">301 </a>        Router::mapResources(<span class="php-var">$controllers</span>);
+</span><span id="302" class="l"><a class="l" href="#302">302 </a>    }
+</span><span id="303" class="l"><a class="l" href="#303">303 </a>}
+</span><span id="304" class="l"><a class="l" href="#304">304 </a></span></code></pre>
 	</div>
 
 	<div id="footer">
