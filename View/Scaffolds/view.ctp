@@ -1,5 +1,5 @@
 <div class="<?php echo $pluralVar; ?> view">
-<h2><?php echo __d('cake', 'View %s', $singularHumanName); ?></h2>
+<h2><?php echo __d('crud', 'View %s', $singularHumanName); ?></h2>
   <dl>
 <?php
 $i = 0;
@@ -40,7 +40,7 @@ foreach ($scaffoldFields as $_field => $_options) {
   if (!empty($associations['hasOne'])) :
   foreach ($associations['hasOne'] as $_alias => $_details): ?>
   <div class="related">
-    <h3><?php echo __d('cake', "Related %s", Inflector::humanize($_details['controller'])); ?></h3>
+    <h3><?php echo __d('crud', "Related %s", Inflector::humanize($_details['controller'])); ?></h3>
   <?php if (!empty(${$singularVar}[$_alias])): ?>
     <dl>
   <?php
@@ -57,7 +57,7 @@ foreach ($scaffoldFields as $_field => $_options) {
       <ul>
       <li><?php
         echo $this->Html->link(
-          __d('cake', 'Edit %s', Inflector::humanize(Inflector::underscore($_alias))),
+          __d('crud', 'Edit %s', Inflector::humanize(Inflector::underscore($_alias))),
           array('plugin' => $_details['plugin'], 'controller' => $_details['controller'], 'action' => 'edit', ${$singularVar}[$_alias][$_details['primaryKey']])
         );
         echo "</li>\n";
@@ -81,7 +81,7 @@ foreach ($scaffoldFields as $_field => $_options) {
   $otherSingularVar = Inflector::variable($_alias);
   ?>
   <div class="related">
-    <h3><?php echo __d('cake', "Related %s", Inflector::humanize($_details['controller'])); ?></h3>
+    <h3><?php echo __d('crud', "Related %s", Inflector::humanize($_details['controller'])); ?></h3>
   <?php if (!empty(${$singularVar}[$_alias])): ?>
     <table cellpadding="0" cellspacing="0">
     <tr>
@@ -109,22 +109,22 @@ foreach ($scaffoldFields as $_field => $_options) {
         echo "\t\t\t<td class=\"actions\">\n";
         echo "\t\t\t\t";
         echo $this->Html->link(
-          __d('cake', 'View'),
+          __d('crud', 'View'),
           array('plugin' => $_details['plugin'], 'controller' => $_details['controller'], 'action' => 'view', ${$otherSingularVar}[$_details['primaryKey']])
         );
         echo "\n";
         echo "\t\t\t\t";
         echo $this->Html->link(
-          __d('cake', 'Edit'),
+          __d('crud', 'Edit'),
           array('plugin' => $_details['plugin'], 'controller' => $_details['controller'], 'action' => 'edit', ${$otherSingularVar}[$_details['primaryKey']])
         );
         echo "\n";
         echo "\t\t\t\t";
         echo $this->Form->postLink(
-          __d('cake', 'Delete'),
+          __d('crud', 'Delete'),
           array('plugin' => $_details['plugin'], 'controller' => $_details['controller'], 'action' => 'delete', ${$otherSingularVar}[$_details['primaryKey']]),
           null,
-          __d('cake', 'Are you sure you want to delete # %s?', ${$otherSingularVar}[$_details['primaryKey']])
+          __d('crud', 'Are you sure you want to delete # %s?', ${$otherSingularVar}[$_details['primaryKey']])
         );
         echo "\n";
         echo "\t\t\t</td>\n";
@@ -136,7 +136,7 @@ foreach ($scaffoldFields as $_field => $_options) {
     <div class="actions">
       <ul>
         <li><?php echo $this->Html->link(
-          __d('cake', "New %s", Inflector::humanize(Inflector::underscore($_alias))),
+          __d('crud', "New %s", Inflector::humanize(Inflector::underscore($_alias))),
           array('plugin' => $_details['plugin'], 'controller' => $_details['controller'], 'action' => 'add')
         ); ?> </li>
       </ul>

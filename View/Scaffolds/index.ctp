@@ -9,7 +9,7 @@
   foreach ($scaffoldFilters as $_field => $scaffoldFilter) {
     echo $this->Form->input($_field, $scaffoldFilter);
   }
-  echo $this->Form->end(__d('cake', 'Filter'));
+  echo $this->Form->end(__d('crud', 'Filter'));
 ?>
 </div>
 <?php endif; ?>
@@ -18,7 +18,7 @@
 <?php foreach ($scaffoldFields as $_field => $_options): ?>
   <th><?php echo $this->Paginator->sort($_field); ?></th>
 <?php endforeach; ?>
-  <th><?php echo __d('cake', 'Actions'); ?></th>
+  <th><?php echo __d('crud', 'Actions'); ?></th>
 </tr>
 <?php
 foreach (${$pluralVar} as ${$singularVar}):
@@ -49,13 +49,13 @@ foreach (${$pluralVar} as ${$singularVar}):
     }
 
     echo '<td class="actions">';
-    echo $this->Html->link(__d('cake', 'View'), array('action' => 'view', ${$singularVar}[$modelClass][$primaryKey]));
-    echo ' ' . $this->Html->link(__d('cake', 'Edit'), array('action' => 'edit', ${$singularVar}[$modelClass][$primaryKey]));
+    echo $this->Html->link(__d('crud', 'View'), array('action' => 'view', ${$singularVar}[$modelClass][$primaryKey]));
+    echo ' ' . $this->Html->link(__d('crud', 'Edit'), array('action' => 'edit', ${$singularVar}[$modelClass][$primaryKey]));
     echo ' ' . $this->Form->postLink(
-      __d('cake', 'Delete'),
+      __d('crud', 'Delete'),
       array('action' => 'delete', ${$singularVar}[$modelClass][$primaryKey]),
       null,
-      __d('cake', 'Are you sure you want to delete # %s?', ${$singularVar}[$modelClass][$primaryKey])
+      __d('crud', 'Are you sure you want to delete # %s?', ${$singularVar}[$modelClass][$primaryKey])
     );
     echo '</td>';
   echo '</tr>';
@@ -66,14 +66,14 @@ endforeach;
 </table>
   <p><?php
   echo $this->Paginator->counter(array(
-    'format' => __d('cake', 'Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')
+    'format' => __d('crud', 'Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')
   ));
   ?></p>
   <div class="paging">
   <?php
-    echo $this->Paginator->prev('< ' . __d('cake', 'previous'), array(), null, array('class' => 'prev disabled'));
+    echo $this->Paginator->prev('< ' . __d('crud', 'previous'), array(), null, array('class' => 'prev disabled'));
     echo $this->Paginator->numbers(array('separator' => ''));
-    echo $this->Paginator->next(__d('cake', 'next') .' >', array(), null, array('class' => 'next disabled'));
+    echo $this->Paginator->next(__d('crud', 'next') .' >', array(), null, array('class' => 'next disabled'));
   ?>
   </div>
 </div>
