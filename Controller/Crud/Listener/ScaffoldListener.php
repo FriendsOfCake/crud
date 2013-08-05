@@ -222,6 +222,13 @@ class ScaffoldListener extends CrudListener {
 		if ($sort) {
 			uasort($scaffoldFields, array('ScaffoldListener', '_compareFields'));
 			$scaffoldFields = array_reverse($scaffoldFields, true);
+			foreach ($scaffoldFields as $_field => $_options) {
+				unset(
+					$scaffoldFields[$_field]['__field__'],
+					$scaffoldFields[$_field]['__display_field__'],
+					$scaffoldFields[$_field]['__schema__']
+				);
+			}
 		}
 
 		return $scaffoldFields;
