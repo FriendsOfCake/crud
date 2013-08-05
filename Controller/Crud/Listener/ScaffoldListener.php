@@ -104,10 +104,13 @@ class ScaffoldListener extends CrudListener {
 		$pluralHumanName = Inflector::humanize(Inflector::underscore($controller->name));
 		$modelSchema = $model->schema();
 		$associations = $this->_associations($model);
-		$scaffoldFields = $this->_scaffoldFields();
-		$scaffoldFields = $this->_scaffoldFieldExclude($scaffoldFields);
 		$scaffoldFilters = $this->_scaffoldFilters($request);
 		$sidebarActions = $this->_sidebarActions();
+
+		$_sort = $this->_action()->config('scaffoldFields');
+		$_sort = empty($_sort);
+		$scaffoldFields = $this->_scaffoldFields($_sort);
+		$scaffoldFields = $this->_scaffoldFieldExclude($scaffoldFields, $_sort);
 
 		$controller->set(compact(
 			'modelClass', 'primaryKey', 'displayField', 'singularVar', 'pluralVar',
@@ -135,10 +138,10 @@ class ScaffoldListener extends CrudListener {
 /**
  * Returns fields to be displayed on scaffolded view
  *
- * @param Model $model
+ * @param boolean $sort Add sort keys to output
  * @return array List of fields
  */
-	protected function _scaffoldFields() {
+	protected function _scaffoldFields($sort = true) {
 		$model = $this->_model();
 		$request = $this->_request();
 		$modelSchema = $model->schema();
@@ -167,17 +170,19 @@ class ScaffoldListener extends CrudListener {
 
 		$singularTable = Inflector::singularize($model->table);
 
-		foreach ($scaffoldFields as $_field => $_options) {
-			$entity = explode('.', $_field);
-			$scaffoldFields[$_field]['__field__'] = $_field;
-			$scaffoldFields[$_field]['__display_field__'] = false;
-			$scaffoldFields[$_field]['__schema__'] = null;
-			if (count($entity) == 1 || current($entity) == $model->alias) {
-				$scaffoldFields[$_field]['__display_field__'] = in_array(end($entity), array(
-					$model->displayField,
-					$singularTable,
-				));
-				$scaffoldFields[$_field]['__schema__'] = $modelSchema[end($entity)]['type'];
+		if ($sort) {
+			foreach ($scaffoldFields as $_field => $_options) {
+				$entity = explode('.', $_field);
+				$scaffoldFields[$_field]['__field__'] = $_field;
+				$scaffoldFields[$_field]['__display_field__'] = false;
+				$scaffoldFields[$_field]['__schema__'] = null;
+				if (count($entity) == 1 || current($entity) == $model->alias) {
+					$scaffoldFields[$_field]['__display_field__'] = in_array(end($entity), array(
+						$model->displayField,
+						$singularTable,
+					));
+					$scaffoldFields[$_field]['__schema__'] = $modelSchema[end($entity)]['type'];
+				}
 			}
 		}
 
@@ -188,9 +193,10 @@ class ScaffoldListener extends CrudListener {
  * Returns fields to be allowed for display on scaffolded view
  *
  * @param array $scaffoldFields
+ * @param boolean $sort Sort fields
  * @return array List of fields
  */
-	protected function _scaffoldFieldExclude($scaffoldFields) {
+	protected function _scaffoldFieldExclude($scaffoldFields, $sort = true) {
 		$model = $this->_model();
 		$modelSchema = $model->schema();
 		$className = $this->_action()->config('className');
@@ -213,8 +219,11 @@ class ScaffoldListener extends CrudListener {
 			$blacklist, $blacklist
 		));
 
-		uasort($scaffoldFields, array('ScaffoldListener', '_compareFields'));
-		$scaffoldFields = array_reverse($scaffoldFields, true);
+		if ($sort) {
+			uasort($scaffoldFields, array('ScaffoldListener', '_compareFields'));
+			$scaffoldFields = array_reverse($scaffoldFields, true);
+		}
+
 		return $scaffoldFields;
 	}
 
