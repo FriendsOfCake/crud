@@ -7,6 +7,7 @@ App::uses('Controller', 'Controller');
 App::uses('RequestHandler', 'Controller/Component');
 App::uses('ApiListener', 'Crud.Controller/Crud/Listener');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
+App::uses('IndexCrudAction', 'Crud.Controller/Crud/Action');
 
 /**
  *
@@ -79,85 +80,43 @@ class ApiListenerTest extends CakeTestCase {
 	}
 
 /**
- * Returns a list of actions and their http method
+ * Tests initialization in API request
  *
+ * @covers ApiListener::initialize
  * @return void
  */
-	public function actionsProvider() {
-		return array(
-			array('index', 'get'),
-			array('view', 'get'),
-			array('admin_index', 'get'),
-			array('admin_view', 'get'),
-			array('add', 'post'),
-			array('admin_add', 'post'),
-			array('edit', 'put'),
-			array('admin_edit', 'put'),
-			array('delete', 'delete'),
-			array('admin_delete', 'delete')
-		);
+	public function testInitialize() {
+		$request = $this->getMock('CakeRequest', array('is'));
+		$request->expects($this->once())->method('is')->with('api')->will($this->returnValue(true));
+
+		$mockMethods = array('_request', 'registerExceptionHandler');
+		$listener = $this->getMock('ApiListener', $mockMethods, array(new CrudSubject()));
+		$listener->expects($this->once())->method('_request')->with()->will($this->returnValue($request));
+		$listener->expects($this->once())->method('registerExceptionHandler')->with();
+		$listener->initialize(new CakeEvent('Crud.init'));
 	}
 
 /**
- * Tests initialization and expect no error
+ * Tests initialization in non-API request
  *
- * @dataProvider actionsProvider
+ * @covers ApiListener::initialize
  * @return void
  */
-	public function testIniIsAPI($action, $method) {
-		$subject = $this->getMock('CrudSubject');
-		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
-		$subject->response = $this->getMock('CakeResponse');
-		$subject->action = $subject->request->action = $action;
+	public function testInitializeNotRequest() {
+		$request = $this->getMock('CakeRequest', array('is'));
+		$request->expects($this->once())->method('is')->with('api')->will($this->returnValue(false));
 
-		$apiListener = new ApiListener($subject);
-		$event = new CakeEvent('Crud.init', $subject);
-
-		$subject->request->expects($this->at(0))
-			->method('is')
-			->with('api')
-			->will($this->returnValue(true));
-
-		$subject->request->expects($this->at(1))
-			->method('is')
-			->with($method)
-			->will($this->returnValue(true));
-		$apiListener->initialize($event);
-		$this->assertEquals('Crud.CrudExceptionRenderer', Configure::read('Exception.renderer'));
-		$this->assertTrue(class_exists('CrudExceptionRenderer'));
-	}
-
-/**
- * Tests initialization with worng match of action and method
- *
- * @dataProvider actionsProvider
- * @expectedException MethodNotAllowedException
- * @return void
- */
-	public function testIniError($action, $method) {
-		$subject = $this->getMock('CrudSubject');
-		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
-		$subject->response = $this->getMock('CakeResponse');
-		$subject->action = $subject->request->action = $action;
-
-		$apiListener = new ApiListener($subject);
-		$event = new CakeEvent('Crud.init', $subject);
-
-		$subject->request->expects($this->at(0))
-			->method('is')
-			->with('api')
-			->will($this->returnValue(true));
-
-		$subject->request->expects($this->at(1))
-			->method('is')
-			->with($method)
-			->will($this->returnValue(false));
-		$apiListener->initialize($event);
+		$mockMethods = array('_request', 'registerExceptionHandler');
+		$listener = $this->getMock('ApiListener', $mockMethods, array(new CrudSubject()));
+		$listener->expects($this->once())->method('_request')->with()->will($this->returnValue($request));
+		$listener->expects($this->never())->method('registerExceptionHandler');
+		$listener->initialize(new CakeEvent('Crud.init'));
 	}
 
 /**
  * Tests that the function is not run if it is not an API call
  *
+ * @covers ApiListener::afterSave
  * @return void
  */
 	public function testAfterSaveNotAPI() {
@@ -191,6 +150,7 @@ class ApiListenerTest extends CakeTestCase {
 /**
  * Test the response mangling after saving a record and is an API call
  *
+ * @covers ApiListener::afterSave
  * @dataProvider createdProvider
  * @return void
  */
@@ -274,6 +234,7 @@ class ApiListenerTest extends CakeTestCase {
 /**
  * Tests afterSave method when some validation errors occurred
  *
+ * @covers ApiListener::afterSave
  * @return void
  */
 	public function testAfterSaveNotSuccess() {
@@ -310,6 +271,7 @@ class ApiListenerTest extends CakeTestCase {
 /**
  * Tests that afterDelete logic is not run if the call is not API
  *
+ * @covers ApiListener::afterDelete
  * @return void
  */
 	public function testAfterDeleteNotAPI() {
@@ -331,6 +293,7 @@ class ApiListenerTest extends CakeTestCase {
 /**
  * Tests afterDelete logic
  *
+ * @covers ApiListener::afterDelete
  * @return void
  */
 	public function testAfterDelete() {
@@ -386,6 +349,7 @@ class ApiListenerTest extends CakeTestCase {
 /**
  * Tests that beforeRender logic is not run if the call is not API
  *
+ * @covers ApiListener::beforeRender
  * @return void
  */
 	public function testBeforeRenderNoAPI() {
@@ -407,6 +371,7 @@ class ApiListenerTest extends CakeTestCase {
 /**
  * Tests that beforeRender logic is not run if the call is not API
  *
+ * @covers ApiListener::beforeRender
  * @return void
  */
 	public function testBeforeRenderAPI() {
@@ -452,6 +417,12 @@ class ApiListenerTest extends CakeTestCase {
 		$apiListener->beforeRender($event);
 	}
 
+/**
+ * testChangingViewVarWillReflectSerialize
+ *
+ * @covers ApiListener::beforeRender
+ * @return void
+ */
 	public function testChangingViewVarWillReflectSerialize() {
 		$subject = $this->getMock('CrudSubject');
 		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
@@ -498,6 +469,7 @@ class ApiListenerTest extends CakeTestCase {
 /**
  * Tests implemented events
  *
+ * @covers ApiListener::implementedEvents
  * @return void
  */
 	public function testImplementeEvents() {
@@ -520,6 +492,7 @@ class ApiListenerTest extends CakeTestCase {
  * The API listener should suppress flash messages
  * if the request is "API"
  *
+ * @covers ApiListener::setFlash
  * @return void
  */
 	public function testFlashMessageSupressed() {
@@ -543,6 +516,7 @@ class ApiListenerTest extends CakeTestCase {
  * The API listener should not suppress flash messages
  * if the request isn't "API"
  *
+ * @covers ApiListener::setFlash
  * @return void
  */
 	public function testFlashMessageNotSupressed() {
@@ -564,6 +538,9 @@ class ApiListenerTest extends CakeTestCase {
  * testMapResources
  *
  * Passing no argument, should map all of the app's controllers
+ *
+ * @covers ApiListener::mapResources
+ * @return void
  */
 	public function testMapResources() {
 		$path = CAKE . 'Test' . DS . 'test_app' . DS . 'Controller' . DS;
@@ -610,6 +587,8 @@ class ApiListenerTest extends CakeTestCase {
 /**
  * Passing a plugin name should map only for that plugin
  *
+ * @covers ApiListener::mapResources
+ * @return void
  */
 	public function testMapResourcesPlugin() {
 		$path = CAKE . 'Test' . DS . 'test_app' . DS . 'Plugin' . DS;

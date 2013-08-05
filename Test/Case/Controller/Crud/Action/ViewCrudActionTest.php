@@ -5,7 +5,7 @@ App::uses('Controller', 'Controller');
 App::uses('CakeRequest', 'Network');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
 App::uses('ViewCrudAction', 'Crud.Controller/Crud/Action');
-App::uses('CrudComponent', 'Crud.Controlller/Component');
+App::uses('CrudTestCase', 'Crud.Test/Support');
 
 /**
  *
@@ -14,119 +14,11 @@ App::uses('CrudComponent', 'Crud.Controlller/Component');
  *
  * @copyright Christian Winther, 2013
  */
-class ViewCrudActionTest extends CakeTestCase {
-
-// @codingStandardsIgnoreStart
-	protected $ModelMock;
-
-	protected $ControllerMock;
-
-	protected $ActionMock;
-
-	protected $RequestMock;
-
-	protected $CrudMock;
-// @codingStandardsIgnoreEnd
-
-	public function setUp() {
-		parent::setUp();
-
-		$this->ModelMock = $this->getMockBuilder('Model');
-		$this->ControllerMock = $this->getMockBuilder('Controller');
-		$this->ActionMock = $this->getMockBuilder('ViewCrudAction');
-		$this->RequestMock = $this->getMockBuilder('CakeRequest');
-		$this->CrudMock = $this->getMockBuilder('CrudComponent');
-	}
-
-	public function tearDown() {
-		parent::tearDown();
-
-		unset(
-			$this->ModelMock,
-			$this->ControllerMock,
-			$this->ActionMock,
-			$this->RequestMock,
-			$this->CrudMock
-		);
-	}
+class ViewCrudActionTest extends CrudTestCase {
 
 /**
- * Returns a list of mocked classes that are related to the execution of the
- * action
+ * test_handleGet
  *
- * @return void
- */
-	protected function _mockClasses() {
-		$CrudSubject = new CrudSubject();
-
-		$Crud = $this->CrudMock
-			->disableOriginalConstructor()
-			->setMethods(array('trigger'))
-			->getMock();
-
-		$Model = $this->ModelMock
-			->disableOriginalConstructor()
-			->setMethods(array('create', 'escapeField', 'find', 'saveAll'))
-			->getMock();
-		$Model->name = 'Example';
-
-		$Controller = $this->ControllerMock
-			->disableOriginalConstructor()
-			->setMethods(array('set'))
-			->getMock();
-
-		$Request = $this->RequestMock
-			->setMethods(array('is'))
-			->getMock();
-
-		$CrudSubject->set(array(
-			'crud' => $Crud,
-			'request' => $Request,
-			'controller' => $Controller,
-			'action' => 'view',
-			'model' => $Model,
-			'modelClass' => $Model->name,
-			'args' => array(1)
-		));
-
-		$Action = $this->ActionMock
-			->setConstructorArgs(array($CrudSubject))
-			->setMethods(array('enabled', '_validateId', 'setFlash', '_redirect'))
-			->getMock();
-
-		return compact('Crud', 'Model', 'Controller', 'Request', 'CrudSubject', 'Action');
-	}
-/**
- * Test that calling handle will invoke _handle
- *
- * @return void
- */
-	public function testThatCrudActionWillHandle() {
-		extract($this->_mockClasses());
-
-		$Action = $this->ActionMock
-			->setConstructorArgs(array($CrudSubject))
-			->setMethods(array('enabled', 'config', '_validateId', 'setFlash', '_redirect', '_handle'))
-			->getMock();
-
-		$Action
-			->expects($this->at(0))
-			->method('config')
-			->with('enabled')
-			->will($this->returnValue(true));
-		$Action
-			->expects($this->at(1))
-			->method('config')
-			->with('action')
-			->will($this->returnValue('view'));
-		$Action
-			->expects($this->once())
-			->method('_handle');
-
-		$Action->handle($CrudSubject);
-	}
-
-/**
  * Test that calling HTTP GET on an view action
  * will trigger the appropriate events
  *
@@ -134,216 +26,333 @@ class ViewCrudActionTest extends CakeTestCase {
  *
  * The id provided, it's correct and it's in the db
  *
+ * @covers ViewCrudAction::_handle
  * @return void
  */
-	public function testActionGet() {
-		extract($this->_mockClasses());
-
+	public function test_handleGet() {
 		$query = array('conditions' => array('Model.id' => 1));
 		$data = array('Model' => array('id' => 1));
 
-		$Crud
-			->expects($this->at(0))
-			->method('trigger')
+		$Model = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->setMethods(array('escapeField', 'find'))
+			->getMock();
+
+		$Controller = $this
+			->getMockBuilder('Controller')
+			->disableOriginalConstructor()
+			->setMethods(array('set'))
+			->getMock();
+
+		$i = 0;
+
+		$Action = $this
+    	->getMockBuilder('ViewCrudAction')
+      ->disableOriginalConstructor()
+      ->setMethods(array(
+      		'_validateId', '_controller', '_model',
+      		'_trigger', 'viewVar', '_getFindMethod'
+      	))
+      ->getMock();
+		$Action
+      ->expects($this->at($i++))
+      ->method('_validateId')
+      ->with(1)
+      ->will($this->returnValue(true));
+		$Action
+			->expects($this->at($i++))
+			->method('_model')
+			->with()
+			->will($this->returnValue($Model));
+		$Model
+			->expects($this->once())
+			->method('escapeField')
+			->with()
+			->will($this->returnValue('Model.id'));
+		$Action
+			->expects($this->at($i++))
+			->method('_getFindMethod')
+			->with('first')
+			->will($this->returnValue('first'));
+		$Action
+			->expects($this->at($i++))
+			->method('_trigger')
 			->with('beforeFind', array(
 				'findMethod' => 'first',
 				'query' => $query,
 				'id' => 1
 			))
 			->will($this->returnValue(new CrudSubject(array('query' => $query, 'findMethod' => 'first'))));
-		$Crud
-			->expects($this->at(1))
-			->method('trigger')
-			->with('afterFind', array(
-				'id' => 1,
-				'item' => $data
-			))
-			->will($this->returnValue(new CrudSubject(array('item' => $data))));
-		$Crud
-			->expects($this->at(2))
-			->method('trigger')
-			->with('beforeRender');
-		$Crud
-			->expects($this->exactly(3))
-			->method('trigger');
-
-		$Model
-			->expects($this->once())
-			->method('escapeField')
-			->with()
-			->will($this->returnValue('Model.id'));
 		$Model
 			->expects($this->once())
 			->method('find')
 			->with('first', $query)
 			->will($this->returnValue($data));
-
+		$Action
+			->expects($this->at($i++))
+			->method('_trigger')
+			->with('afterFind', array(
+				'id' => 1,
+				'item' => $data
+			))
+			->will($this->returnValue(new CrudSubject(array('item' => $data))));
+		$Action
+			->expects($this->at($i++))
+			->method('_controller')
+			->with()
+			->will($this->returnValue($Controller));
+		$Action
+			->expects($this->at($i++))
+			->method('viewVar')
+			->with()
+			->will($this->returnValue('example'));
 		$Controller
 			->expects($this->once())
 			->method('set')
 			->with(array('example' => $data, 'success' => true));
-
 		$Action
-			->expects($this->once())
-			->method('_validateId')
-			->with(1)
-			->will($this->returnValue(true));
+			->expects($this->at($i++))
+			->method('_trigger')
+			->with('beforeRender');
 
-		$Action->handle($CrudSubject);
+    $this->setReflectionClassInstance($Action);
+    $this->callProtectedMethod('_handle', array(1), $Action);
 	}
 
 /**
+ * test_handleGetCustomViewVar
+ *
  * Test that calling HTTP GET on an view action
  * will trigger the appropriate events
  *
- * This test checks if changing the viewVar name
- * also changes the key sent to Controller::set
+ * Testing that setting a different viewVar actually works
  *
+ * @covers ViewCrudAction::_handle
  * @return void
  */
-	public function testActionGetChangwViewVarName() {
-		extract($this->_mockClasses());
-
+	public function test_handleGetCustomViewVar() {
 		$query = array('conditions' => array('Model.id' => 1));
 		$data = array('Model' => array('id' => 1));
 
-		$Crud
-			->expects($this->at(0))
-			->method('trigger')
+		$Model = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->setMethods(array('escapeField', 'find'))
+			->getMock();
+
+		$Controller = $this
+			->getMockBuilder('Controller')
+			->disableOriginalConstructor()
+			->setMethods(array('set'))
+			->getMock();
+
+		$i = 0;
+
+		$Action = $this
+    	->getMockBuilder('ViewCrudAction')
+      ->disableOriginalConstructor()
+      ->setMethods(array(
+      		'_validateId', '_controller', '_model',
+      		'_trigger', 'viewVar', '_getFindMethod'
+      	))
+      ->getMock();
+		$Action
+      ->expects($this->at($i++))
+      ->method('_validateId')
+      ->with(1)
+      ->will($this->returnValue(true));
+		$Action
+			->expects($this->at($i++))
+			->method('_model')
+			->with()
+			->will($this->returnValue($Model));
+		$Model
+			->expects($this->once())
+			->method('escapeField')
+			->with()
+			->will($this->returnValue('Model.id'));
+		$Action
+			->expects($this->at($i++))
+			->method('_getFindMethod')
+			->with('first')
+			->will($this->returnValue('first'));
+		$Action
+			->expects($this->at($i++))
+			->method('_trigger')
 			->with('beforeFind', array(
 				'findMethod' => 'first',
 				'query' => $query,
 				'id' => 1
 			))
 			->will($this->returnValue(new CrudSubject(array('query' => $query, 'findMethod' => 'first'))));
-		$Crud
-			->expects($this->at(1))
-			->method('trigger')
-			->with('afterFind', array(
-				'id' => 1,
-				'item' => $data
-			))
-			->will($this->returnValue(new CrudSubject(array('item' => $data))));
-		$Crud
-			->expects($this->at(2))
-			->method('trigger')
-			->with('beforeRender');
-		$Crud
-			->expects($this->exactly(3))
-			->method('trigger');
-
-		$Model
-			->expects($this->once())
-			->method('escapeField')
-			->with()
-			->will($this->returnValue('Model.id'));
 		$Model
 			->expects($this->once())
 			->method('find')
 			->with('first', $query)
 			->will($this->returnValue($data));
-
-		$Action->viewVar('data');
+		$Action
+			->expects($this->at($i++))
+			->method('_trigger')
+			->with('afterFind', array(
+				'id' => 1,
+				'item' => $data
+			))
+			->will($this->returnValue(new CrudSubject(array('item' => $data))));
+		$Action
+			->expects($this->at($i++))
+			->method('_controller')
+			->with()
+			->will($this->returnValue($Controller));
+		$Action
+			->expects($this->at($i++))
+			->method('viewVar')
+			->with()
+			->will($this->returnValue('item'));
 		$Controller
 			->expects($this->once())
 			->method('set')
-			->with(array('data' => $data, 'success' => true));
-
+			->with(array('item' => $data, 'success' => true));
 		$Action
-			->expects($this->once())
-			->method('_validateId')
-			->with(1)
-			->will($this->returnValue(true));
+			->expects($this->at($i++))
+			->method('_trigger')
+			->with('beforeRender');
 
-		$Action->handle($CrudSubject);
+    $this->setReflectionClassInstance($Action);
+    $this->callProtectedMethod('_handle', array(1), $Action);
 	}
 
 /**
+ * test_handleGetNotFound
+ *
+ * Test that calling HTTP GET on an view action
+ * will trigger the appropriate events
+ *
+ * The ID provided is valid, but do not exist in the database
+ *
+ * @covers ViewCrudAction::_handle
+ * @expectedException NotFoundException
+ * @exepctedExceptionMessage Not Found
+ * @exepctedExceptionCode 404
+ * @return void
+ */
+	public function test_handleGetNotFound() {
+		$query = array('conditions' => array('Model.id' => 1));
+		$data = array('Model' => array('id' => 1));
+
+		$Model = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->setMethods(array('escapeField', 'find'))
+			->getMock();
+
+		$Controller = $this
+			->getMockBuilder('Controller')
+			->disableOriginalConstructor()
+			->setMethods(array('set'))
+			->getMock();
+
+		$i = 0;
+
+		$Action = $this
+    	->getMockBuilder('ViewCrudAction')
+      ->disableOriginalConstructor()
+      ->setMethods(array(
+      		'_validateId', '_controller', '_model',
+      		'_trigger', 'viewVar', '_getFindMethod',
+      		'message'
+      	))
+      ->getMock();
+		$Action
+      ->expects($this->at($i++))
+      ->method('_validateId')
+      ->with(1)
+      ->will($this->returnValue(true));
+		$Action
+			->expects($this->at($i++))
+			->method('_model')
+			->with()
+			->will($this->returnValue($Model));
+		$Model
+			->expects($this->once())
+			->method('escapeField')
+			->with()
+			->will($this->returnValue('Model.id'));
+		$Action
+			->expects($this->at($i++))
+			->method('_getFindMethod')
+			->with('first')
+			->will($this->returnValue('first'));
+		$Action
+			->expects($this->at($i++))
+			->method('_trigger')
+			->with('beforeFind', array(
+				'findMethod' => 'first',
+				'query' => $query,
+				'id' => 1
+			))
+			->will($this->returnValue(new CrudSubject(array('query' => $query, 'findMethod' => 'first'))));
+		$Model
+			->expects($this->once())
+			->method('find')
+			->with('first', $query)
+			->will($this->returnValue(false));
+		$Action
+			->expects($this->at($i++))
+			->method('_trigger')
+			->with('recordNotFound', array('id' => 1));
+		$Action
+			->expects($this->at($i++))
+			->method('message')
+			->with('recordNotFound', array('id' => 1))
+			->will($this->returnValue(array('class' => 'NotFoundException', 'text' => 'NotFound', 'code' => 404)));
+		$Action
+			->expects($this->never())
+			->method('_controller');
+		$Action
+			->expects($this->never())
+			->method('viewVar');
+		$Controller
+			->expects($this->never())
+			->method('set');
+
+    $this->setReflectionClassInstance($Action);
+    $this->callProtectedMethod('_handle', array(1), $Action);
+	}
+
+/**
+ * test_handleGetInvalidId
+ *
  * Test that calling HTTP GET on an view action
  * will trigger the appropriate events
  *
  * This test assumes that the id for the view
  * action does not exist in the database
  *
+ * @covers ViewCrudAction::_handle
  * @return void
  */
-	public function testActionGetIdDontExist() {
-		extract($this->_mockClasses());
-
-		$query = array('conditions' => array('Model.id' => 1));
-		$data = array();
-
-		$Crud
-			->expects($this->at(0))
-			->method('trigger')
-			->with('beforeFind', array(
-				'findMethod' => 'first',
-				'query' => $query,
-				'id' => 1
-			))
-			->will($this->returnValue(new CrudSubject(array('query' => $query, 'findMethod' => 'first'))));
-		$Crud
-			->expects($this->at(1))
-			->method('trigger')
-			->with('recordNotFound', array(
-				'id' => 1
-			))
-			->will($this->returnValue(new CrudSubject(array('item' => $data, 'id' => 1))));
-		$Crud
-			->expects($this->exactly(2))
-			->method('trigger');
-
-		$Model
-			->expects($this->once())
-			->method('escapeField')
-			->with()
-			->will($this->returnValue('Model.id'));
-		$Model
-			->expects($this->once())
-			->method('find')
-			->with('first', $query)
-			->will($this->returnValue($data));
-
-		$Controller
+	public function test_handleGetInvalidId() {
+		$Action = $this
+    	->getMockBuilder('ViewCrudAction')
+      ->disableOriginalConstructor()
+      ->setMethods(array('_validateId', '_model', 'beforeRender', '_trigger'))
+      ->getMock();
+		$Action
+      ->expects($this->once())
+      ->method('_validateId')
+      ->with(1)
+      ->will($this->returnValue(false));
+		$Action
 			->expects($this->never())
-			->method('set');
-
+			->method('_model');
 		$Action
-			->expects($this->once())
-			->method('_validateId')
-			->with(1)
-			->will($this->returnValue(true));
+			->expects($this->never())
+			->method('_trigger');
 
-		$this->setExpectedException('NotFoundException');
-
-		$Action->handle($CrudSubject);
-	}
-
-/**
- * Test that calling HTTP GET on an view action
- * will trigger the appropriate events
- *
- * This test assumes the id is invalid
- *
- * @return void
- */
-	public function testActionGetInvalidId() {
-		extract($this->_mockClasses());
-
-		$Crud
-			->expects($this->exactly(0))
-			->method('trigger');
-
-		$Action
-			->expects($this->once())
-			->method('_validateId')
-			->with(1)
-			->will($this->returnValue(false));
-
-		$expected = false;
-		$actual = $Action->handle($CrudSubject);
-
-		$this->assertSame($expected, $actual);
+    $this->setReflectionClassInstance($Action);
+    $result = $this->callProtectedMethod('_handle', array(1), $Action);
+    $this->assertFalse($result);
 	}
 
 }

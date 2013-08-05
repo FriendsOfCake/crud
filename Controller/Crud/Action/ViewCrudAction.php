@@ -30,7 +30,12 @@ class ViewCrudAction extends CrudAction {
 		'findMethod' => 'first',
 		'view' => null,
 		'viewVar' => null,
-		'serialize' => array()
+		'serialize' => array(),
+		'requestType' => 'default',
+		'requestMethods' => array(
+			'default' => array('get'),
+			'api' => array('get')
+		)
 	);
 
 /**
@@ -79,9 +84,9 @@ class ViewCrudAction extends CrudAction {
 		$item = $model->find($subject->findMethod, $query);
 
 		if (empty($item)) {
-			$subject = $this->_trigger('recordNotFound', compact('id'));
+			$this->_trigger('recordNotFound', compact('id'));
 
-			$message = $this->message('recordNotFound', array('id' => $subject->id));
+			$message = $this->message('recordNotFound', array('id' => $id));
 			$exceptionClass = $message['class'];
 			throw new $exceptionClass($message['text'], $message['code']);
 		}
