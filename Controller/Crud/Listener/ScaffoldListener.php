@@ -107,7 +107,7 @@ class ScaffoldListener extends CrudListener {
 		$scaffoldFilters = $this->_scaffoldFilters($request);
 		$sidebarActions = $this->_sidebarActions();
 		$scaffoldRelatedActions = $this->_scaffoldRelatedActions();
-		$adminTitle = $this->_adminTitle();
+		$scaffoldTitle = $this->_scaffoldTitle();
 
 		$_sort = $this->_action()->config('scaffoldFields');
 		$_sort = empty($_sort);
@@ -121,7 +121,7 @@ class ScaffoldListener extends CrudListener {
 			'modelClass', 'primaryKey', 'displayField', 'singularVar', 'pluralVar',
 			'singularHumanName', 'pluralHumanName', 'scaffoldFields', 'associations',
 			'scaffoldFilters', 'action', 'modelSchema', 'sidebarActions',
-			'scaffoldRelatedActions', 'adminTitle', 'redirect_url'
+			'scaffoldRelatedActions', 'scaffoldTitle', 'redirect_url'
 		));
 
 		$controller->set('title_for_layout', $title);
@@ -143,15 +143,25 @@ class ScaffoldListener extends CrudListener {
 		));
 	}
 
-	protected function _adminTitle() {
-		$adminTitle = $this->_action()->config('adminTitle');
-		if (empty($adminTitle)) {
-			$adminTitle = 'Admin';
+/**
+ * Returns title to show on scaffolded view
+ *
+ * @return string
+ */
+	protected function _scaffoldTitle() {
+		$scaffoldTitle = $this->_action()->config('scaffoldTitle');
+		if (empty($scaffoldTitle)) {
+			$scaffoldTitle = 'Admin';
 		}
 
-		return $adminTitle;
+		return $scaffoldTitle;
 	}
 
+/**
+ * Returns whether or not related items should displayed on scaffolded view
+ *
+ * @return boolean
+ */
 	protected function _scaffoldRelatedActions() {
 		$scaffoldRelatedActions = $this->_action()->config('scaffoldRelatedActions');
 		if ($scaffoldRelatedActions === null) {
@@ -261,6 +271,11 @@ class ScaffoldListener extends CrudListener {
 		return $scaffoldFields;
 	}
 
+/**
+ * Comparison method for sorting view fields
+ *
+ * @return integer Result of comparison
+ */
 	protected static function _compareFields($one, $two) {
 		$_primary = 10;
 		$_displayField = 9;
@@ -339,11 +354,10 @@ class ScaffoldListener extends CrudListener {
 		return $scaffoldFilters;
 	}
 
-
 /**
  * Returns links to be shown in actions section of scaffolded view
  *
- * @return array Array of link
+ * @return mixed Array of initialized links, or boolean as to whether or not to show actions
  */
 	protected function _sidebarActions() {
 		$sidebarActions = $this->_action()->config('sidebarActions');

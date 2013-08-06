@@ -17,7 +17,7 @@
 <body>
   <div id="container">
     <div id="header">
-      <h1><?php echo $adminTitle; ?> - <?php echo $title_for_layout; ?></h1>
+      <h1><?php echo $scaffoldTitle; ?> - <?php echo $title_for_layout; ?></h1>
     </div>
     <div id="content">
 
