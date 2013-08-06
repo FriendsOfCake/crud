@@ -107,6 +107,7 @@ class ScaffoldListener extends CrudListener {
 		$scaffoldFilters = $this->_scaffoldFilters($request);
 		$sidebarActions = $this->_sidebarActions();
 		$scaffoldRelatedActions = $this->_scaffoldRelatedActions();
+		$adminTitle = $this->_adminTitle();
 
 		$_sort = $this->_action()->config('scaffoldFields');
 		$_sort = empty($_sort);
@@ -117,7 +118,7 @@ class ScaffoldListener extends CrudListener {
 			'modelClass', 'primaryKey', 'displayField', 'singularVar', 'pluralVar',
 			'singularHumanName', 'pluralHumanName', 'scaffoldFields', 'associations',
 			'scaffoldFilters', 'action', 'modelSchema', 'sidebarActions',
-			'scaffoldRelatedActions'
+			'scaffoldRelatedActions', 'adminTitle'
 		));
 
 		$controller->set('title_for_layout', $title);
@@ -135,6 +136,15 @@ class ScaffoldListener extends CrudListener {
 				APP . 'Plugin' . DS . 'Crud' . DS . 'View' . DS
 			)
 		));
+	}
+
+	protected function _adminTitle() {
+		$adminTitle = $this->_action()->config('adminTitle');
+		if (empty($adminTitle)) {
+			$adminTitle = 'Admin';
+		}
+
+		return $adminTitle;
 	}
 
 	protected function _scaffoldRelatedActions() {
