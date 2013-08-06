@@ -379,13 +379,7 @@ abstract class CrudAction extends CrudBaseObject {
  */
 	protected function _redirect($subject, $url = null, $status = null, $exit = true) {
 		$request = $this->_request();
-		if (!empty($request->data['redirect_url'])) {
-			$url = $request->data['redirect_url'];
-		} elseif (!empty($request->query['redirect_url'])) {
-			$url = $request->query['redirect_url'];
-		} elseif (empty($url)) {
-			$url = array('action' => 'index');
-		}
+		$url = $this->_redirect_url(array('action' => 'index'));
 
 		$subject->url = $url;
 		$subject->status = $status;
@@ -395,6 +389,36 @@ abstract class CrudAction extends CrudBaseObject {
 		$controller = $this->_controller();
 		$controller->redirect($subject->url, $subject->status, $subject->exit);
 		return $controller->response;
+	}
+
+/**
+ * Returns the redirect_url for this request, with a fallback to the referring page
+ *
+ * @param string $default Default URL to use redirect_url is not found in request or data
+ * @param boolean $local If true, restrict referring URLs to local server
+ * @return mixed
+ */
+	protected function _referer_redirect_url($default = null, $local = false) {
+		$controller = $this->_controller();
+		return $this->_redirect_url($controller->referer($default, $local));
+	}
+
+/**
+ * Returns the redirect_url for this request.
+ *
+ * @param string $default Default URL to use redirect_url is not found in request or data
+ * @return mixed
+ */
+	protected function _redirect_url($default = null) {
+		$url = $default;
+		$request = $this->_request();
+		if (!empty($request->data['redirect_url'])) {
+			$url = $request->data['redirect_url'];
+		} elseif (!empty($request->query['redirect_url'])) {
+			$url = $request->query['redirect_url'];
+		}
+
+		return $url;
 	}
 
 /**
