@@ -97,7 +97,7 @@ class EditCrudAction extends CrudAction {
 				if (!empty($this->_request->data['_add'])) {
 					return $this->_redirect($subject, array('action' => 'add'));
 				} elseif (!empty($this->_request->data['_edit'])) {
-					$this->_handleView($id);
+					$this->_handleView($model, $request, $id);
 				} else {
 					$controller = $this->_controller();
 					return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
@@ -107,7 +107,7 @@ class EditCrudAction extends CrudAction {
 				$this->_trigger('afterSave', array('id' => $id, 'success' => false, 'created' => false));
 			}
 		} else {
-			$this->_handleView($id);
+			$this->_handleView($model, $request, $id);
 		}
 
 		$this->_trigger('beforeRender');
@@ -120,10 +120,7 @@ class EditCrudAction extends CrudAction {
  * @return void
  * @throws NotFoundException If record not found
  */
-	protected function _handleView($id) {
-		$request = $this->_request();
-		$model = $this->_model();
-
+	protected function _handleView(Model $model, CakeRequest $request, $id) {
 		$query = array();
 		$query['conditions'] = array($model->escapeField() => $id);
 		$findMethod = $this->_getFindMethod('first');
