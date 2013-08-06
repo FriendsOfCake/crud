@@ -130,6 +130,8 @@ class ScaffoldListener extends CrudListener {
 		$controller->helpers = (array)$controller->helpers;
 		$controller->helpers[] = 'Time';
 
+		$controller->layout = 'Crud.default';
+
 		App::build(array(
 			'View' => array(
 				APP . 'View' . DS,
