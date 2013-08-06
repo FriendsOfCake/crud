@@ -96,7 +96,8 @@ class EditCrudAction extends CrudAction {
 				} elseif (!empty($this->_request->data['_edit'])) {
 					$this->__handle($id);
 				} else {
-					return $this->_redirect($subject, array('action' => 'index'));
+					$controller = $this->_controller();
+					return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
 				}
 			} else {
 				$this->setFlash('error');
