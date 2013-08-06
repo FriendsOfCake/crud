@@ -51,12 +51,7 @@ foreach (${$pluralVar} as ${$singularVar}):
     echo '<td class="actions">';
     echo $this->Html->link(__d('crud', 'View'), array('action' => 'view', ${$singularVar}[$modelClass][$primaryKey]));
     echo ' ' . $this->Html->link(__d('crud', 'Edit'), array('action' => 'edit', ${$singularVar}[$modelClass][$primaryKey]));
-    echo ' ' . $this->Form->postLink(
-      __d('crud', 'Delete'),
-      array('action' => 'delete', ${$singularVar}[$modelClass][$primaryKey]),
-      null,
-      __d('crud', 'Are you sure you want to delete # %s?', ${$singularVar}[$modelClass][$primaryKey])
-    );
+    echo ' ' . $this->Html->link(__d('crud', 'Delete'),array('action' => 'delete', ${$singularVar}[$modelClass][$primaryKey]));
     echo '</td>';
   echo '</tr>';
 
