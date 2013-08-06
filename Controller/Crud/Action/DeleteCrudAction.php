@@ -18,6 +18,8 @@ class DeleteCrudAction extends CrudAction {
  *
  * `findMethod` The default `Model::find()` method for reading data
  *
+ * `type` Specificity of action (record|model)
+ *
  * @var array
  */
 	protected $_settings = array(
@@ -38,7 +40,8 @@ class DeleteCrudAction extends CrudAction {
 			'error' => array(
 				'text' => 'Could not delete {name}'
 			)
-		)
+		),
+		'type' => 'record',
 	);
 
 /**

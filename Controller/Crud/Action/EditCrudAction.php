@@ -34,6 +34,8 @@ class EditCrudAction extends CrudAction {
  * If you configure a key with your action name, it will override the default settings.
  * This is useful for adding fieldList to enhance security in saveAll.
  *
+ * `type` Specificity of action (record|model)
+ *
  * @var array
  */
 	protected $_settings = array(
@@ -59,7 +61,8 @@ class EditCrudAction extends CrudAction {
 				'text' => 'Could not update {name}'
 			)
 		),
-		'serialize' => array()
+		'serialize' => array(),
+		'type' => 'record',
 	);
 
 /**
