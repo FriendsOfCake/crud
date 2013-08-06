@@ -235,6 +235,7 @@ class ApiListenerTest extends CakeTestCase {
 /**
  * Tests afterSave method when some validation errors occurred
  *
+ * @expectedException CrudValidationException
  * @covers ApiListener::afterSave
  * @return void
  */
@@ -254,13 +255,8 @@ class ApiListenerTest extends CakeTestCase {
 			->method('set')
 			->with('success', false);
 
-		$subject->response->expects($this->once())->method('statusCode')->with(400);
-
 		$subject->model = new Model(array('alias' => 'Thing'));
 		$subject->model->validationErrors = array('field' => 'An error');
-		$subject->controller->expects($this->at(1))
-			->method('set')
-			->with('data', array('Thing' => $subject->model->validationErrors));
 
 		$subject->controller->expects($this->never())->method('render');
 		$event = new CakeEvent('Crud.afterSave', $subject);
@@ -268,7 +264,7 @@ class ApiListenerTest extends CakeTestCase {
 		$subject->crud = new CrudComponent(new ComponentCollection());
 		$apiListener = new ApiListener($subject);
 
-		$this->assertNull($apiListener->afterSave($event));
+		$apiListener->afterSave($event);
 	}
 
 /**
