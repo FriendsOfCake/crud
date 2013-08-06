@@ -1,5 +1,6 @@
 <?php
 
+App::uses('Hash', 'Utility');
 App::uses('CrudAction', 'Crud.Controller/Crud');
 
 /**
