@@ -6,9 +6,7 @@ App::uses('CrudBaseObject', 'Crud.Controller/Crud');
  * The Base Crud Listener
  *
  * Licensed under The MIT License
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright Christian Winther, 2013
+ * For full copyright and license information, please see the LICENSE.txt
  */
 abstract class CrudListener extends CrudBaseObject {
 

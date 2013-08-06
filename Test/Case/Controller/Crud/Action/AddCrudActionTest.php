@@ -9,9 +9,7 @@ App::uses('AddCrudAction', 'Crud.Controller/Crud/Action');
 /**
  *
  * Licensed under The MIT License
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright Christian Winther, 2013
+ * For full copyright and license information, please see the LICENSE.txt
  */
 class AddCrudActionTest extends CrudTestCase {
 

@@ -7,9 +7,7 @@ App::uses('CrudAction', 'Crud.Controller/Crud');
  * Handles 'Add' Crud actions
  *
  * Licensed under The MIT License
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright Christian Winther, 2013
+ * For full copyright and license information, please see the LICENSE.txt
  */
 class AddCrudAction extends CrudAction {
 

@@ -8,9 +8,8 @@ App::uses('TranslationsListener', 'Crud.Controller/Crud/Listener');
  * TranslationsShell
  *
  * Licensed under The MIT License
- * Redistributions of files must retain the above copyright notice.
+ * For full copyright and license information, please see the LICENSE.txt
  *
- * @copyright Christian Winther, 2013
  */
 class TranslationsShell extends AppShell {
 

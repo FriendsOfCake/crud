@@ -8,9 +8,7 @@ App::uses('CrudListener', 'Crud.Controller/Crud');
  * It tries to enforce some REST principles and keep some string conventions in the output format
  *
  * Licensed under The MIT License
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright Christian Winther, 2013
+ * For full copyright and license information, please see the LICENSE.txt
  */
 class ApiListener extends CrudListener {
 
