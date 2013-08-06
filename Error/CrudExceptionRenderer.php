@@ -11,6 +11,35 @@ App::uses('ExceptionRenderer', 'Error');
 class CrudExceptionRenderer extends ExceptionRenderer {
 
 /**
+ * Renders validation errors and sends a 412 error code
+ *
+ * @param ValidationErrorException $error
+ * @return void
+ **/
+	public function crudValidation($error) {
+		$url = $this->controller->request->here();
+		$status = $code = $error->getCode();
+		try {
+			$this->controller->response->statusCode($status);
+		} catch(Exception $e) {
+			$status = 412;
+			$this->controller->response->statusCode($status);
+		}
+
+		$sets = array(
+			'code' => $code,
+			'url' => h($url),
+			'name' => $error->getMessage(),
+			'error' => $error,
+			'errorCount' => $error->getValidationErrorCount(),
+			'errors' => $error->getValidationErrors(),
+			'_serialize' => array('code', 'url', 'name', 'errorCount', 'errors')
+		);
+		$this->controller->set($sets);
+		$this->_outputMessage('error400');
+	}
+
+/**
  * Generate the response using the controller object.
  *
  * If there is no specific template for the raised error (normally there won't be one)

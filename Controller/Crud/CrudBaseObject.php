@@ -232,4 +232,16 @@ abstract class CrudBaseObject extends Object implements CakeEventListener {
 		return $this->_container->crud;
 	}
 
+/**
+ * Proxy method for `$this->_crud()->validationErrors()`
+ *
+ * Primary here to ease unit testing
+ *
+ * @codeCoverageIgnore
+ * @return array
+ */
+	protected function _validationErrors() {
+		return $this->_crud()->validationErrors();
+	}
+
 }
