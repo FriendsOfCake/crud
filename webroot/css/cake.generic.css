@@ -292,6 +292,9 @@ form div {
 form .input {
   color: #444;
 }
+form .select, form .checkbox {
+  display: inline-block;
+}
 form .required {
   font-weight: bold;
 }
