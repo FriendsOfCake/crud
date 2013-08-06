@@ -78,63 +78,6 @@ class DeleteCrudAction extends CrudAction {
 			return false;
 		}
 
-		if (!$this->_ensureRecordExists($id)) {
-			$controller = $this->_controller();
-			return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
-		}
-
-		$request = $this->_request();
-		if ($request->is('get')) {
-			return $this->_handleView($id);
-		}
-
-		$subject = $this->_trigger('beforeDelete', compact('id'));
-		if ($subject->stopped) {
-			$this->setFlash('error');
-			$controller = $this->_controller();
-			return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
-		}
-
-		$model = $this->_model();
-		if ($model->delete($id)) {
-			$this->setFlash('success');
-			$subject = $this->_trigger('afterDelete', array('id' => $id, 'success' => true));
-		} else {
-			$this->setFlash('error');
-			$subject = $this->_trigger('afterDelete', array('id' => $id, 'success' => false));
-		}
-
-		$controller = $this->_controller();
-		return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
-	}
-
-/**
- * Helper _handleView method
- *
- * @return void
- */
-	protected function _handleView($id) {
-		$model = $this->_model();
-		$request = $this->_model();
-
-		$item = $request->data;
-		$subject = $this->_trigger('afterFind', compact('id', 'item'));
-		$request->data = Hash::merge(array($model->alias => array(
-			$model->primaryKey => $id
-		)), $item, $model->data, $subject->item);
-
-		$this->_controller()->set(array($this->viewVar() => $request->data));
-		$this->_trigger('beforeRender', compact('id', 'item'));
-	}
-
-/**
- * Helper method to ensure that a record exists
- *
- * @param string $id
- * @return boolean
- * @throws NotFoundException If record not found
- */
-	protected function _ensureRecordExists($id) {
 		$model = $this->_model();
 
 		$query = array();
@@ -153,7 +96,44 @@ class DeleteCrudAction extends CrudAction {
 			throw new $exceptionClass($message['text'], $message['code']);
 		}
 
-		return true;
+		$request = $this->_request();
+		if ($request->is('get')) {
+			return $this->_handleView($model, $request, $id);
+		}
+
+		$subject = $this->_trigger('beforeDelete', compact('id'));
+		if ($subject->stopped) {
+			$this->setFlash('error');
+			$controller = $this->_controller();
+			return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
+		}
+
+		if ($model->delete($id)) {
+			$this->setFlash('success');
+			$subject = $this->_trigger('afterDelete', array('id' => $id, 'success' => true));
+		} else {
+			$this->setFlash('error');
+			$subject = $this->_trigger('afterDelete', array('id' => $id, 'success' => false));
+		}
+
+		$controller = $this->_controller();
+		return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
+	}
+
+/**
+ * Helper _handleView method
+ *
+ * @return void
+ */
+	protected function _handleView(Model $model, CakeRequest $request, $id) {
+		$item = $request->data;
+		$subject = $this->_trigger('afterFind', compact('id', 'item'));
+		$request->data = Hash::merge(array($model->alias => array(
+			$model->primaryKey => $id
+		)), $item, $model->data, $subject->item);
+
+		$this->_controller()->set(array($this->viewVar() => $request->data));
+		$this->_trigger('beforeRender', compact('id', 'item'));
 	}
 
 }
