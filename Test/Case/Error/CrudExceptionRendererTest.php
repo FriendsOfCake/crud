@@ -353,6 +353,7 @@ class CrudExceptionRendererTest extends CakeTestCase {
 			'code' => 412,
 			'url' => $Controller->request->here(),
 			'name' => 'Alias.field : boom',
+			'errorCount' => 1,
 			'errors' => array(
 				'Alias' => array(
 					'field' => array(
@@ -410,6 +411,7 @@ class CrudExceptionRendererTest extends CakeTestCase {
 			'code' => 1000,
 			'url' => $Controller->request->here(),
 			'name' => 'Alias.field : boom',
+			'errorCount' => 1,
 			'errors' => array(
 				'Alias' => array(
 					'field' => array(
@@ -457,7 +459,8 @@ class CrudExceptionRendererTest extends CakeTestCase {
 		$expected = array(
 			'code' => 412,
 			'url' => $Controller->request->here(),
-			'name' => 'Some validation errors occurred',
+			'name' => '2 validation errors occurred',
+			'errorCount' => 2,
 			'errors' => array(
 				'Alias' => array(
 					'field' => array(
@@ -471,7 +474,7 @@ class CrudExceptionRendererTest extends CakeTestCase {
 			'exception' => array(
 				'class' => 'CrudValidationException',
 				'code' => 412,
-				'message' => 'Some validation errors occurred',
+				'message' => '2 validation errors occurred',
 			)
 		);
 		$this->assertEqual($expected, $Controller->viewVars['data']);
@@ -505,7 +508,8 @@ class CrudExceptionRendererTest extends CakeTestCase {
 		$expected = array(
 			'code' => 412,
 			'url' => $Controller->request->here(),
-			'name' => 'Some validation errors occurred',
+			'name' => 'A validation error occurred',
+			'errorCount' => 1,
 			'errors' => array(
 				'Alias' => array(
 					'field' => array(
@@ -516,7 +520,7 @@ class CrudExceptionRendererTest extends CakeTestCase {
 			'exception' => array(
 				'class' => 'CrudValidationException',
 				'code' => 412,
-				'message' => 'Some validation errors occurred',
+				'message' => 'A validation error occurred',
 			)
 		);
 		$this->assertEqual($expected, $Controller->viewVars['data']);

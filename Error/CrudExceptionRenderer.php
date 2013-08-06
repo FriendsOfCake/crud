@@ -33,8 +33,9 @@ class CrudExceptionRenderer extends ExceptionRenderer {
 			'url' => h($url),
 			'name' => $error->getMessage(),
 			'error' => $error,
+			'errorCount' => $error->getValidationErrorCount(),
 			'errors' => $error->getValidationErrors(),
-			'_serialize' => array('code', 'url', 'name', 'errors')
+			'_serialize' => array('code', 'url', 'name', 'errorCount', 'errors')
 		);
 		$this->controller->set($sets);
 		$this->_outputMessage('error400');

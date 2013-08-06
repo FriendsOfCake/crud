@@ -14,6 +14,13 @@ class CrudValidationException extends CakeException {
 	protected $_validationErrors = array();
 
 /**
+ * How many validation errors are there?
+ *
+ * @var int
+ */
+	protected $_validationErrorCount = 0;
+
+/**
  * Constructor
  *
  * @param array $error list of validation errors
@@ -21,34 +28,53 @@ class CrudValidationException extends CakeException {
  * @return void
  **/
 	public function __construct($errors, $code = 412) {
-		$this->message = 'Some validation errors occurred';
-
 		$this->_validationErrors = array_filter($errors);
 		$flat = Hash::flatten($this->_validationErrors);
 
-		if (count($flat) === 1) {
-			$model = key($errors);
-			$field = key($errors[$model]);
-			$error = $errors[$model][$field][0];
+		$errorCount = $this->_validationErrorCount = count($flat);
+		$this->message = __dn('crud', 'A validation error occurred', '%d validation errors occurred', $errorCount, array($errorCount));
 
-			$instance = ClassRegistry::getObject($model);
-			if (isset($instance->validate[$field])) {
-				foreach ($instance->validate[$field] as $key => $rule) {
-					$matchesMessage = (isset($rule['message']) && $error === $rule['message']);
-					if ($key !== $error && !$matchesMessage) {
-						continue;
-					}
-
-					$this->message = sprintf('%s.%s : %s', $model, $field, $error);
-					if (!empty($rule['code'])) {
-						$code = $rule['code'];
-					}
-					break;
-				}
-			}
+		if ($errorCount === 1) {
+			$code = $this->_deriveRuleSpecific($errors, $code);
 		}
 
 		parent::__construct($this->message, $code);
+	}
+
+/**
+ * _deriveRuleSpecific
+ *
+ * If there is only one error, change the exception message to be rule specific
+ * Also change the response code to be that of the validation rule if defined
+ *
+ * @param array $errors
+ * @param int $code
+ * @return int
+ */
+	protected function _deriveRuleSpecific($errors = array(), $code = 412) {
+		$model = key($errors);
+		$field = key($errors[$model]);
+		$error = $errors[$model][$field][0];
+
+		$instance = ClassRegistry::getObject($model);
+		if (!isset($instance->validate[$field])) {
+			return $code;
+		}
+
+		foreach ($instance->validate[$field] as $key => $rule) {
+			$matchesMessage = (isset($rule['message']) && $error === $rule['message']);
+			if ($key !== $error && !$matchesMessage) {
+				continue;
+			}
+
+			$this->message = sprintf('%s.%s : %s', $model, $field, $error);
+			if (!empty($rule['code'])) {
+				$code = $rule['code'];
+			}
+			break;
+		}
+
+		return $code;
 	}
 
 /**
@@ -58,6 +84,15 @@ class CrudValidationException extends CakeException {
  **/
 	public function getValidationErrors() {
 		return $this->_validationErrors;
+	}
+
+/**
+ * How many validation errors are there?
+ *
+ * @return int
+ */
+	public function getValidationErrorCount() {
+		return $this->_validationErrorCount;
 	}
 
 }
