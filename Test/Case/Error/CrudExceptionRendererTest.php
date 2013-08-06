@@ -4,6 +4,7 @@ App::uses('Controller', 'Controller');
 App::uses('CakeRequest', 'Network');
 App::uses('CakeResponse', 'Network');
 App::uses('CrudExceptionRenderer', 'Crud.Error');
+App::uses('CrudValidationException', 'Crud.Error/Exception');
 App::uses('ConnectionManager', 'Model');
 
 class CrudExceptionRendererTest extends CakeTestCase {
@@ -312,4 +313,212 @@ class CrudExceptionRendererTest extends CakeTestCase {
 		$this->assertSame($NestedException, $viewVars['error']);
 	}
 
+	public function testValidationErrorSingleKnownError() {
+		$Model = ClassRegistry::init(array('class' => 'Model', 'alias' => 'Alias', 'table' => false));
+		$Model->validate = array(
+			'field' => array(
+				array(
+					'rule' => 'custom',
+					'message' => 'boom'
+				)
+			)
+		);
+		$Model->invalidate('field', 'boom');
+
+		$Exception = new CrudValidationException(array(
+			'Alias' => array(
+				'field' => array(
+					'boom'
+				)
+			)
+		));
+
+		$Controller = $this->getMock('Controller', array('render'));
+		$Controller->request = new CakeRequest();
+		$Controller->response = new CakeResponse();
+
+		$Renderer = $this->getMock('CrudExceptionRenderer', array('_getController'), array(), '', false);
+		$Renderer
+			->expects($this->once())
+			->method('_getController')
+			->with($Exception)
+			->will($this->returnValue($Controller));
+
+		$Renderer->__construct($Exception);
+		Configure::write('debug', 0);
+		$Renderer->render();
+		Configure::write('debug', 1);
+
+		$expected = array(
+			'code' => 412,
+			'url' => $Controller->request->here(),
+			'name' => 'Alias.field : boom',
+			'errors' => array(
+				'Alias' => array(
+					'field' => array(
+						'boom'
+					)
+				)
+			),
+			'exception' => array(
+				'class' => 'CrudValidationException',
+				'code' => 412,
+				'message' => 'Alias.field : boom'
+			)
+		);
+		$this->assertEqual($expected, $Controller->viewVars['data']);
+	}
+
+	public function testValidationErrorSingleKnownErrorWithCode() {
+		$Model = ClassRegistry::init(array('class' => 'Model', 'alias' => 'Alias', 'table' => false));
+		$Model->validate = array(
+			'field' => array(
+				array(
+					'rule' => 'custom',
+					'message' => 'boom',
+					'code' => 1000
+				)
+			)
+		);
+		$Model->invalidate('field', 'boom');
+
+		$Exception = new CrudValidationException(array(
+			'Alias' => array(
+				'field' => array(
+					'boom'
+				)
+			)
+		));
+
+		$Controller = $this->getMock('Controller', array('render'));
+		$Controller->request = new CakeRequest();
+		$Controller->response = new CakeResponse();
+
+		$Renderer = $this->getMock('CrudExceptionRenderer', array('_getController'), array(), '', false);
+		$Renderer
+			->expects($this->once())
+			->method('_getController')
+			->with($Exception)
+			->will($this->returnValue($Controller));
+
+		$Renderer->__construct($Exception);
+		Configure::write('debug', 0);
+		$Renderer->render();
+		Configure::write('debug', 1);
+
+		$expected = array(
+			'code' => 1000,
+			'url' => $Controller->request->here(),
+			'name' => 'Alias.field : boom',
+			'errors' => array(
+				'Alias' => array(
+					'field' => array(
+						'boom'
+					)
+				)
+			),
+			'exception' => array(
+				'class' => 'CrudValidationException',
+				'code' => 1000,
+				'message' => 'Alias.field : boom'
+			)
+		);
+		$this->assertEqual($expected, $Controller->viewVars['data']);
+	}
+
+	public function testValidationErrorMultipleMessages() {
+		$Exception = new CrudValidationException(array(
+			'Alias' => array(
+				'field' => array(
+					'something wrong with this field'
+				),
+				'another_field' => array(
+					'something wrong with this field'
+				)
+			)
+		));
+
+		$Controller = $this->getMock('Controller', array('render'));
+		$Controller->request = new CakeRequest();
+		$Controller->response = new CakeResponse();
+
+		$Renderer = $this->getMock('CrudExceptionRenderer', array('_getController'), array(), '', false);
+		$Renderer
+			->expects($this->once())
+			->method('_getController')
+			->with($Exception)
+			->will($this->returnValue($Controller));
+
+		$Renderer->__construct($Exception);
+		Configure::write('debug', 0);
+		$Renderer->render();
+		Configure::write('debug', 1);
+
+		$expected = array(
+			'code' => 412,
+			'url' => $Controller->request->here(),
+			'name' => 'Some validation errors occurred',
+			'errors' => array(
+				'Alias' => array(
+					'field' => array(
+						'something wrong with this field'
+					),
+					'another_field' => array(
+						'something wrong with this field'
+					)
+				)
+			),
+			'exception' => array(
+				'class' => 'CrudValidationException',
+				'code' => 412,
+				'message' => 'Some validation errors occurred',
+			)
+		);
+		$this->assertEqual($expected, $Controller->viewVars['data']);
+	}
+
+	public function testValidationErrorUnknownModel() {
+		$Exception = new CrudValidationException(array(
+			'Alias' => array(
+				'field' => array(
+					'something wrong with this field'
+				)
+			)
+		));
+
+		$Controller = $this->getMock('Controller', array('render'));
+		$Controller->request = new CakeRequest();
+		$Controller->response = new CakeResponse();
+
+		$Renderer = $this->getMock('CrudExceptionRenderer', array('_getController'), array(), '', false);
+		$Renderer
+			->expects($this->once())
+			->method('_getController')
+			->with($Exception)
+			->will($this->returnValue($Controller));
+
+		$Renderer->__construct($Exception);
+		Configure::write('debug', 0);
+		$Renderer->render();
+		Configure::write('debug', 1);
+
+		$expected = array(
+			'code' => 412,
+			'url' => $Controller->request->here(),
+			'name' => 'Some validation errors occurred',
+			'errors' => array(
+				'Alias' => array(
+					'field' => array(
+						'something wrong with this field'
+					)
+				)
+			),
+			'exception' => array(
+				'class' => 'CrudValidationException',
+				'code' => 412,
+				'message' => 'Some validation errors occurred',
+			)
+		);
+		$this->assertEqual($expected, $Controller->viewVars['data']);
+	}
 }
