@@ -574,6 +574,27 @@ class CrudComponent extends Component {
 	}
 
 /**
+ * validationErrors
+ *
+ * Return all vaidation errors
+ *
+ * @return array
+ */
+	public function validationErrors() {
+		$return = array();
+
+		$models = ClassRegistry::keys();
+		foreach ($models as $currentModel) {
+			$currentObject = ClassRegistry::getObject($currentModel);
+			if (is_a($currentObject, 'Model')) {
+				$return[$currentObject->alias] = $currentObject->validationErrors;
+			}
+		}
+
+		return $return;
+	}
+
+/**
  * Normalize action configuration
  *
  * If an action don't have a CrudClass specified (the value part of the array)

@@ -1,6 +1,7 @@
 <?php
 
 App::uses('CrudListener', 'Crud.Controller/Crud');
+App::uses('CrudValidationException', 'Crud.Error/Exception');
 
 /**
  * Enabled Crud to respond in a computer readable format like JSON or XML
@@ -21,6 +22,9 @@ class ApiListener extends CrudListener {
 		'viewClasses' => array(
 			'json' => 'Crud.CrudJson',
 			'xml' => 'Crud.CrudXml'
+		),
+		'exceptionClasses' => array(
+			'validate' => 'CrudValidationException'
 		)
 	);
 
@@ -80,6 +84,7 @@ class ApiListener extends CrudListener {
 /**
  * afterSave callback
  *
+ * @throws CrudValidationException
  * @param CakeEvent $event
  * @return void|CakeResponse
  */
@@ -92,10 +97,9 @@ class ApiListener extends CrudListener {
 		$controller->set('success', $event->subject->success);
 
 		if (!$event->subject->success) {
-			$event->subject->response->statusCode(400);
-			$model = $this->_model();
-			$controller->set('data', $model->validationErrors);
-			return;
+			$class = $this->config('exceptionClasses.validate');
+			$errors = $this->_validationErrors();
+			throw new $class($errors);
 		}
 
 		if (empty($controller->viewVars['data'])) {
