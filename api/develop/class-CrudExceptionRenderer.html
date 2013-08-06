@@ -7,7 +7,7 @@
 	<title>Class CrudExceptionRenderer | jippi/cakephp-crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?3697885228"></script>
+	<script type="text/javascript" src="elementlist.js?3478444894"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -77,6 +77,7 @@
 				<li><a href="class-CrudListener.html">CrudListener</a></li>
 				<li><a href="class-CrudPanel.html">CrudPanel</a></li>
 				<li><a href="class-CrudSubject.html">CrudSubject</a></li>
+				<li><a href="class-CrudValidationException.html">CrudValidationException</a></li>
 				<li><a href="class-CrudXmlView.html">CrudXmlView</a></li>
 				<li><a href="class-DebugKitListener.html">DebugKitListener</a></li>
 				<li><a href="class-DeleteCrudAction.html">DeleteCrudAction</a></li>
@@ -145,13 +146,51 @@ ExceptionRenderer
 		
 		
 
-		<b>Located at</b> <a href="source-class-CrudExceptionRenderer.html#5-103" title="Go to source code">Error/CrudExceptionRenderer.php</a><br />
+		<b>Located at</b> <a href="source-class-CrudExceptionRenderer.html#5-132" title="Go to source code">Error/CrudExceptionRenderer.php</a><br />
 	</div>
 
 
 
 		<h2>Methods summary</h2>
 		<table class="summary table table-bordered table-striped" id="methods">
+		<tr data-order="crudValidation" id="_crudValidation">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_crudValidation">#</a>
+			<code><a href="source-class-CrudExceptionRenderer.html#13-40" title="Go to source code">crudValidation</a>( <span>ValidationErrorException <var>$error</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Renders validation errors and sends a 412 error code</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Renders validation errors and sends a 412 error code</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$error</var></dt>
+						<dd><code>ValidationErrorException</code><br>$error</dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
 		<tr data-order="_outputMessage" id="__outputMessage">
 
 			<td class="attributes"><code>
@@ -163,7 +202,7 @@ ExceptionRenderer
 
 			<td class="name"><div>
 			<a class="anchor" href="#__outputMessage">#</a>
-			<code><a href="source-class-CrudExceptionRenderer.html#13-42" title="Go to source code">_outputMessage</a>( <span>string <var>$template</var></span> )</code>
+			<code><a href="source-class-CrudExceptionRenderer.html#42-71" title="Go to source code">_outputMessage</a>( <span>string <var>$template</var></span> )</code>
 
 			<div class="description short">
 				
@@ -206,7 +245,7 @@ MissingView exception</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__outputMessageSafe">#</a>
-			<code><a href="source-class-CrudExceptionRenderer.html#44-60" title="Go to source code">_outputMessageSafe</a>( <span>string <var>$template</var></span> )</code>
+			<code><a href="source-class-CrudExceptionRenderer.html#73-89" title="Go to source code">_outputMessageSafe</a>( <span>string <var>$template</var></span> )</code>
 
 			<div class="description short">
 				
@@ -246,7 +285,7 @@ doesn't call component methods.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__getErrorData">#</a>
-			<code><a href="source-class-CrudExceptionRenderer.html#62-102" title="Go to source code">_getErrorData</a>( )</code>
+			<code><a href="source-class-CrudExceptionRenderer.html#91-131" title="Go to source code">_getErrorData</a>( )</code>
 
 			<div class="description short">
 				

@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="generator" content="ApiGen 2.8.0" />
 
-	<title>Class ApiPaginationListener | jippi/cakephp-crud (develop)</title>
+	<title>Class CrudValidationException | jippi/cakephp-crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
 	<script type="text/javascript" src="elementlist.js?3478444894"></script>
@@ -67,7 +67,7 @@
 				<li><a href="class-AddCrudAction.html">AddCrudAction</a></li>
 				<li><a href="class-ApiFieldFilterListener.html">ApiFieldFilterListener</a></li>
 				<li><a href="class-ApiListener.html">ApiListener</a></li>
-				<li class="active"><a href="class-ApiPaginationListener.html">ApiPaginationListener</a></li>
+				<li><a href="class-ApiPaginationListener.html">ApiPaginationListener</a></li>
 				<li><a href="class-ApiQueryLogListener.html">ApiQueryLogListener</a></li>
 				<li><a href="class-CrudAction.html">CrudAction</a></li>
 				<li><a href="class-CrudBaseObject.html">CrudBaseObject</a></li>
@@ -77,7 +77,7 @@
 				<li><a href="class-CrudListener.html">CrudListener</a></li>
 				<li><a href="class-CrudPanel.html">CrudPanel</a></li>
 				<li><a href="class-CrudSubject.html">CrudSubject</a></li>
-				<li><a href="class-CrudValidationException.html">CrudValidationException</a></li>
+				<li class="active"><a href="class-CrudValidationException.html">CrudValidationException</a></li>
 				<li><a href="class-CrudXmlView.html">CrudXmlView</a></li>
 				<li><a href="class-DebugKitListener.html">DebugKitListener</a></li>
 				<li><a href="class-DeleteCrudAction.html">DeleteCrudAction</a></li>
@@ -107,44 +107,25 @@
 <div id="right">
 	<div id="rightInner">
 <div id="content" class="class">
-	<h1>Class ApiPaginationListener</h1>
+	<h1>Class CrudValidationException</h1>
 
 
 	<div class="description">
 	
-<p>When loaded Crud API Pagination Listener will include pagination information
-in the response</p>
-
-<p>Licensed under The MIT License For full copyright and license information,
-please see the LICENSE.txt</p>
+<p>Exception containing validation errors from the model. Useful for API
+responses where you need an error code in response</p>
 
 	</div>
 
 	<dl class="tree well">
 		<dd style="padding-left:0px">
-Object
+CakeException
 			
 			
 		</dd>
 		<dd style="padding-left:30px">
 			<img src="resources/inherit.png" alt="Extended by" />
-			<a href="class-CrudBaseObject.html"><span>CrudBaseObject</span></a>
-			
-			 implements 
-<span>CakeEventListener</span>
-			
-			
-		</dd>
-		<dd style="padding-left:60px">
-			<img src="resources/inherit.png" alt="Extended by" />
-			<a href="class-CrudListener.html"><span>CrudListener</span></a>
-			
-			
-			
-		</dd>
-		<dd style="padding-left:90px">
-			<img src="resources/inherit.png" alt="Extended by" />
-<b><span>ApiPaginationListener</span></b>			
+<b><span>CrudValidationException</span></b>			
 			
 			
 		</dd>
@@ -163,14 +144,101 @@ Object
 		
 		
 
-		<b>Located at</b> <a href="source-class-ApiPaginationListener.html#5-59" title="Go to source code">Controller/Crud/Listener/ApiPaginationListener.php</a><br />
+		<b>Located at</b> <a href="source-class-CrudValidationException.html#2-98" title="Go to source code">Error/Exception/CrudValidationException.php</a><br />
 	</div>
 
 
 
 		<h2>Methods summary</h2>
 		<table class="summary table table-bordered table-striped" id="methods">
-		<tr data-order="implementedEvents" id="_implementedEvents">
+		<tr data-order="__construct" id="___construct">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#___construct">#</a>
+			<code><a href="source-class-CrudValidationException.html#23-42" title="Go to source code">__construct</a>( <span>array <var>$errors</var></span>, <span>integer <var>$code</var> = <span class="php-num">412</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Constructor</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Constructor</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$errors</var></dt>
+						<dd><code>array</code><br>$error list of validation errors</dd>
+						<dt><var>$code</var></dt>
+						<dd><code>integer</code><br>$code code to report to client</dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_deriveRuleSpecific" id="__deriveRuleSpecific">
+
+			<td class="attributes"><code>
+				 protected 
+				integer
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__deriveRuleSpecific">#</a>
+			<code><a href="source-class-CrudValidationException.html#44-78" title="Go to source code">_deriveRuleSpecific</a>( <span>array <var>$errors</var> = <span class="php-keyword1">array</span>()</span>, <span>integer <var>$code</var> = <span class="php-num">412</span></span> )</code>
+
+			<div class="description short">
+				
+<p>_deriveRuleSpecific</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>_deriveRuleSpecific</p>
+
+<p>If there is only one error, change the exception message to be rule specific
+Also change the response code to be that of the validation rule if defined</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$errors</var></dt>
+						<dd><code>array</code><br>$errors</dd>
+						<dt><var>$code</var></dt>
+						<dd><code>integer</code><br>$code</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>integer</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="getValidationErrors" id="_getValidationErrors">
 
 			<td class="attributes"><code>
 				 public 
@@ -180,22 +248,18 @@ Object
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#_implementedEvents">#</a>
-			<code><a href="source-class-ApiPaginationListener.html#14-26" title="Go to source code">implementedEvents</a>( )</code>
+			<a class="anchor" href="#_getValidationErrors">#</a>
+			<code><a href="source-class-CrudValidationException.html#80-87" title="Go to source code">getValidationErrors</a>( )</code>
 
 			<div class="description short">
 				
-<p>Returns a list of all events that will fire in the controller during it's
-lifecycle. You can override this function to add you own listener callbacks</p>
+<p>Returns the list of validation errors</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Returns a list of all events that will fire in the controller during it's
-lifecycle. You can override this function to add you own listener callbacks</p>
-
-<p>We attach at priority 10 so normal bound events can run before us</p>
+<p>Returns the list of validation errors</p>
 
 
 
@@ -207,43 +271,40 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 
 
 
-					<h4>Overrides</h4>
-					<div class="list"><code><a href="class-CrudListener.html#_implementedEvents">CrudListener::implementedEvents</a></code></div>
 
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="beforeRender" id="_beforeRender">
+		<tr data-order="getValidationErrorCount" id="_getValidationErrorCount">
 
 			<td class="attributes"><code>
 				 public 
-				
+				integer
 				
 				</code>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#_beforeRender">#</a>
-			<code><a href="source-class-ApiPaginationListener.html#28-58" title="Go to source code">beforeRender</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<a class="anchor" href="#_getValidationErrorCount">#</a>
+			<code><a href="source-class-CrudValidationException.html#89-96" title="Go to source code">getValidationErrorCount</a>( )</code>
 
 			<div class="description short">
 				
-<p>Appends the pagination information to the JSON or XML output</p>
+<p>How many validation errors are there?</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Appends the pagination information to the JSON or XML output</p>
+<p>How many validation errors are there?</p>
 
 
 
-					<h4>Parameters</h4>
-					<div class="list"><dl>
-						<dt><var>$event</var></dt>
-						<dd><code>CakeEvent</code><br>$event</dd>
-					</dl></div>
 
+					<h4>Returns</h4>
+					<div class="list">
+						<code>integer</code><br />
+					</div>
 
 
 
@@ -253,22 +314,6 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 		</tr>
 		</table>
 
-		<h3>Methods inherited from <a href="class-CrudBaseObject.html#methods">CrudBaseObject</a></h3>
-		<p class="elementList">
-			<code><a href="class-CrudBaseObject.html#___construct">__construct()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#__action">_action()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#__controller">_controller()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#__crud">_crud()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#__listener">_listener()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#__model">_model()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#__request">_request()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#__session">_session()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#__subject">_subject()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#__trigger">_trigger()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#__validationErrors">_validationErrors()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#_config">config()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#_initialize">initialize()</a></code>
-		</p>
 
 
 		<h3>Magic methods summary</h3>
@@ -281,12 +326,61 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 
 
 		<h2>Properties summary</h2>
+		<table class="summary table table-bordered table-striped" id="properties">
+		<tr data-order="_validationErrors" id="$_validationErrors">
+			<td class="attributes"><code>
+				protected  
+				array
+			</code></td>
 
-		<h3>Properties inherited from <a href="class-CrudBaseObject.html#properties">CrudBaseObject</a></h3>
-		<p class="elementList">
-			<code><a href="class-CrudBaseObject.html#$_container"><var>$_container</var></a></code>, 
-			<code><a href="class-CrudBaseObject.html#$_settings"><var>$_settings</var></a></code>
-		</p>
+			<td class="name">
+					<a href="source-class-CrudValidationException.html#9-14" title="Go to source code"><var>$_validationErrors</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$_validationErrors" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>List of validation errors that occurred in the model</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>List of validation errors that occurred in the model</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		<tr data-order="_validationErrorCount" id="$_validationErrorCount">
+			<td class="attributes"><code>
+				protected  
+				integer
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-CrudValidationException.html#16-21" title="Go to source code"><var>$_validationErrorCount</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$_validationErrorCount" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>How many validation errors are there?</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>How many validation errors are there?</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		</table>
+
 
 
 

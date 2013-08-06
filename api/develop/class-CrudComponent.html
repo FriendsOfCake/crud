@@ -7,7 +7,7 @@
 	<title>Class CrudComponent | jippi/cakephp-crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?3697885228"></script>
+	<script type="text/javascript" src="elementlist.js?3478444894"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -77,6 +77,7 @@
 				<li><a href="class-CrudListener.html">CrudListener</a></li>
 				<li><a href="class-CrudPanel.html">CrudPanel</a></li>
 				<li><a href="class-CrudSubject.html">CrudSubject</a></li>
+				<li><a href="class-CrudValidationException.html">CrudValidationException</a></li>
 				<li><a href="class-CrudXmlView.html">CrudXmlView</a></li>
 				<li><a href="class-DebugKitListener.html">DebugKitListener</a></li>
 				<li><a href="class-DeleteCrudAction.html">DeleteCrudAction</a></li>
@@ -147,7 +148,7 @@ Component
 		
 		
 
-		<b>Located at</b> <a href="source-class-CrudComponent.html#6-772" title="Go to source code">Controller/Component/CrudComponent.php</a><br />
+		<b>Located at</b> <a href="source-class-CrudComponent.html#6-793" title="Go to source code">Controller/Component/CrudComponent.php</a><br />
 	</div>
 
 
@@ -1083,6 +1084,45 @@ entry in the $name array.</dd>
 			</div>
 			</div></td>
 		</tr>
+		<tr data-order="validationErrors" id="_validationErrors">
+
+			<td class="attributes"><code>
+				 public 
+				array
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_validationErrors">#</a>
+			<code><a href="source-class-CrudComponent.html#576-595" title="Go to source code">validationErrors</a>( )</code>
+
+			<div class="description short">
+				
+<p>validationErrors</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>validationErrors</p>
+
+<p>Return all vaidation errors</p>
+
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>array</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
 		<tr data-order="_normalizeConfig" id="__normalizeConfig">
 
 			<td class="attributes"><code>
@@ -1094,7 +1134,7 @@ entry in the $name array.</dd>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__normalizeConfig">#</a>
-			<code><a href="source-class-CrudComponent.html#576-621" title="Go to source code">_normalizeConfig</a>( <span>mixed <var>$types</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-CrudComponent.html#597-642" title="Go to source code">_normalizeConfig</a>( <span>mixed <var>$types</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -1140,7 +1180,7 @@ CrudClass identifier</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__handlerClassName">#</a>
-			<code><a href="source-class-CrudComponent.html#623-643" title="Go to source code">_handlerClassName</a>( <span>string <var>$action</var></span>, <span>string|null <var>$className</var></span> )</code>
+			<code><a href="source-class-CrudComponent.html#644-664" title="Go to source code">_handlerClassName</a>( <span>string <var>$action</var></span>, <span>string|null <var>$className</var></span> )</code>
 
 			<div class="description short">
 				
@@ -1184,7 +1224,7 @@ CrudClass identifier</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__loadListeners">#</a>
-			<code><a href="source-class-CrudComponent.html#645-654" title="Go to source code">_loadListeners</a>( )</code>
+			<code><a href="source-class-CrudComponent.html#666-675" title="Go to source code">_loadListeners</a>( )</code>
 
 			<div class="description short">
 				
@@ -1217,7 +1257,7 @@ CrudClass identifier</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__loadListener">#</a>
-			<code><a href="source-class-CrudComponent.html#656-681" title="Go to source code">_loadListener</a>( <span>string <var>$name</var></span> )</code>
+			<code><a href="source-class-CrudComponent.html#677-702" title="Go to source code">_loadListener</a>( <span>string <var>$name</var></span> )</code>
 
 			<div class="description short">
 				
@@ -1259,7 +1299,7 @@ CrudClass identifier</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__loadAction">#</a>
-			<code><a href="source-class-CrudComponent.html#683-717" title="Go to source code">_loadAction</a>( <span>string <var>$name</var></span> )</code>
+			<code><a href="source-class-CrudComponent.html#704-738" title="Go to source code">_loadAction</a>( <span>string <var>$name</var></span> )</code>
 
 			<div class="description short">
 				
@@ -1305,7 +1345,7 @@ CrudClass identifier</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__setModelProperties">#</a>
-			<code><a href="source-class-CrudComponent.html#719-743" title="Go to source code">_setModelProperties</a>( )</code>
+			<code><a href="source-class-CrudComponent.html#740-764" title="Go to source code">_setModelProperties</a>( )</code>
 
 			<div class="description short">
 				
@@ -1344,7 +1384,7 @@ CrudClass identifier</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__mergeConfig">#</a>
-			<code><a href="source-class-CrudComponent.html#745-770" title="Go to source code">_mergeConfig</a>( <span>array <var>$array1</var></span>, <span>array <var>$array2</var></span> )</code>
+			<code><a href="source-class-CrudComponent.html#766-791" title="Go to source code">_mergeConfig</a>( <span>array <var>$array1</var></span>, <span>array <var>$array2</var></span> )</code>
 
 			<div class="description short">
 				

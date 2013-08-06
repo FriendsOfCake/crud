@@ -8,7 +8,7 @@
 	<title>File Controller/Crud/CrudBaseObject.php | jippi/cakephp-crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?3697885228"></script>
+	<script type="text/javascript" src="elementlist.js?3478444894"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -79,6 +79,7 @@
 				<li><a href="class-CrudListener.html">CrudListener</a></li>
 				<li><a href="class-CrudPanel.html">CrudPanel</a></li>
 				<li><a href="class-CrudSubject.html">CrudSubject</a></li>
+				<li><a href="class-CrudValidationException.html">CrudValidationException</a></li>
 				<li><a href="class-CrudXmlView.html">CrudXmlView</a></li>
 				<li><a href="class-DebugKitListener.html">DebugKitListener</a></li>
 				<li><a href="class-DeleteCrudAction.html">DeleteCrudAction</a></li>
@@ -341,8 +342,20 @@
 </span><span id="232" class="l"><a class="l" href="#232">232 </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;_container-&gt;crud;
 </span><span id="233" class="l"><a class="l" href="#233">233 </a>    }
 </span><span id="234" class="l"><a class="l" href="#234">234 </a>
-</span><span id="235" class="l"><a class="l" href="#235">235 </a>}
-</span><span id="236" class="l"><a class="l" href="#236">236 </a></span></code></pre>
+</span><span id="235" class="l"><a class="l" href="#235">235 </a><span class="php-comment">/**
+</span></span><span id="236" class="l"><a class="l" href="#236">236 </a><span class="php-comment"> * Proxy method for `$this-&gt;_crud()-&gt;validationErrors()`
+</span></span><span id="237" class="l"><a class="l" href="#237">237 </a><span class="php-comment"> *
+</span></span><span id="238" class="l"><a class="l" href="#238">238 </a><span class="php-comment"> * Primary here to ease unit testing
+</span></span><span id="239" class="l"><a class="l" href="#239">239 </a><span class="php-comment"> *
+</span></span><span id="240" class="l"><a class="l" href="#240">240 </a><span class="php-comment"> * @codeCoverageIgnore
+</span></span><span id="241" class="l"><a class="l" href="#241">241 </a><span class="php-comment"> * @return array
+</span></span><span id="242" class="l"><a class="l" href="#242">242 </a><span class="php-comment"> */</span>
+</span><span id="243" class="l"><a class="l" href="#243">243 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__validationErrors" href="#__validationErrors">_validationErrors</a>() {
+</span><span id="244" class="l"><a class="l" href="#244">244 </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;_crud()-&gt;validationErrors();
+</span><span id="245" class="l"><a class="l" href="#245">245 </a>    }
+</span><span id="246" class="l"><a class="l" href="#246">246 </a>
+</span><span id="247" class="l"><a class="l" href="#247">247 </a>}
+</span><span id="248" class="l"><a class="l" href="#248">248 </a></span></code></pre>
 	</div>
 
 	<div id="footer">
