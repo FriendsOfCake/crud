@@ -93,7 +93,7 @@ class ScaffoldListener extends CrudListener {
 		$action = $request->action;
 
 		$scaffoldTitle = Inflector::humanize(Inflector::underscore($controller->viewPath));
-		$title = __d('cake', 'Scaffold :: ') . Inflector::humanize($action) . ' :: ' . $scaffoldTitle;
+		$title = $scaffoldTitle . ' :: ' . Inflector::humanize($action);
 
 		$modelClass = $controller->modelClass;
 		$primaryKey = $model->primaryKey;
