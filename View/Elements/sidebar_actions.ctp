@@ -1,6 +1,6 @@
 <?php if (isset($sidebarActions) && $sidebarActions !== false) : ?>
+  <div class="actions">
   <?php if (is_array($sidebarActions)) : ?>
-    <div class="actions">
       <h3><?php echo __d('cake', 'Actions'); ?></h3>
       <ul>
       <?php
@@ -15,9 +15,7 @@
         }
       ?>
       </ul>
-    </div>
   <?php else : ?>
-    <div class="actions">
       <h3><?php echo __d('cake', 'Actions'); ?></h3>
       <ul>
       <?php
@@ -50,9 +48,8 @@
         echo " </li>\n";
       ?>
       </ul>
-    </div>
     <?php if (!empty($scaffoldRelatedActions)) : ?>
-      <div class="actions related-actions">
+      <div class="related-actions">
         <h3><?php echo __d('cake', 'Related Actions'); ?></h3>
         <ul>
           <?php
@@ -81,4 +78,5 @@
       </div>
     <?php endif; ?>
   <?php endif; ?>
+  </div>
 <?php endif; ?>
