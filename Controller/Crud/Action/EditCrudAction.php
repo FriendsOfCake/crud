@@ -94,7 +94,7 @@ class EditCrudAction extends CrudAction {
 				if (!empty($this->_request->data['_add'])) {
 					return $this->_redirect($subject, array('action' => 'add'));
 				} elseif (!empty($this->_request->data['_edit'])) {
-					$this->_handleEdit($id);
+					$this->__handle($id);
 				} else {
 					return $this->_redirect($subject, array('action' => 'index'));
 				}
@@ -103,13 +103,18 @@ class EditCrudAction extends CrudAction {
 				$this->_trigger('afterSave', array('id' => $id, 'success' => false, 'created' => false));
 			}
 		} else {
-			$this->_handleEdit($id);
+			$this->__handle($id);
 		}
 
 		$this->_trigger('beforeRender');
 	}
 
-	protected function _handleEdit($id) {
+/**
+ * Helper __handle method
+ *
+ * @return void
+ */
+	protected function __handle($id) {
 		$request = $this->_request();
 		$model = $this->_model();
 
@@ -122,7 +127,7 @@ class EditCrudAction extends CrudAction {
 		$request->data = $model->find($subject->findMethod, $query);
 		if (empty($request->data)) {
 			$subject = $this->_trigger('recordNotFound', compact('id'));
-			$message = $this->message('recordNotFound', array('id' => $subject->id));
+			$message = $this->message('recordNotFound', array('id' => $id));
 			$exceptionClass = $message['class'];
 			throw new $exceptionClass($message['text'], $message['code']);
 		}
@@ -130,6 +135,6 @@ class EditCrudAction extends CrudAction {
 		$item = $request->data;
 		$subject = $this->_trigger('afterFind', compact('id', 'item'));
 		$request->data = Hash::merge($request->data, $model->data, $subject->item);
-	}
+	 }
 
 }

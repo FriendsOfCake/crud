@@ -69,16 +69,15 @@ class AddCrudAction extends CrudAction {
 		$model = $this->_model();
 
 		if (!$request->is('post')) {
-			return $this->_handleAdd();
+			return $this->__handle();
 		}
 
 		$this->_trigger('beforeSave');
 		if ($model->saveAll($request->data, $this->saveOptions())) {
 			$this->setFlash('success');
 			$subject = $this->_trigger('afterSave', array('success' => true, 'created' => true,	'id' => $model->id));
-
 			if (!empty($request->data['_add'])) {
-				return $this->_handleAdd();
+				return $this->__handle();
 			} elseif (!empty($request->data['_edit'])) {
 				return $this->_redirect($subject, array('action' => 'edit', $model->id));
 			} else {
@@ -92,10 +91,14 @@ class AddCrudAction extends CrudAction {
 		$this->_trigger('beforeRender', array('success' => false));
 	}
 
-	protected function _handleAdd() {
+/**
+ * Helper __handle method
+ *
+ * @return void
+ */
+	protected function __handle() {
 		$request = $this->_request();
 		$model = $this->_model();
-
 		$model->create();
 		$request->data = $model->data;
 		$this->_trigger('beforeRender', array('success' => false));
