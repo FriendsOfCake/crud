@@ -85,7 +85,7 @@ class DeleteCrudAction extends CrudAction {
 
 		$request = $this->_request();
 		if ($request->is('get')) {
-			return $this->__handle($id);
+			return $this->_handleView($id);
 		}
 
 		$subject = $this->_trigger('beforeDelete', compact('id'));
@@ -108,7 +108,12 @@ class DeleteCrudAction extends CrudAction {
 		return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
 	}
 
-	protected function __handle($id) {
+/**
+ * Helper _handleView method
+ *
+ * @return void
+ */
+	protected function _handleView($id) {
 		$model = $this->_model();
 		$request = $this->_model();
 
@@ -120,7 +125,6 @@ class DeleteCrudAction extends CrudAction {
 
 		$this->_controller()->set(array($this->viewVar() => $request->data));
 		$this->_trigger('beforeRender', compact('id', 'item'));
-		return;
 	}
 
 	protected function __validate($id) {

@@ -97,7 +97,7 @@ class EditCrudAction extends CrudAction {
 				if (!empty($this->_request->data['_add'])) {
 					return $this->_redirect($subject, array('action' => 'add'));
 				} elseif (!empty($this->_request->data['_edit'])) {
-					$this->__handle($id);
+					$this->_handleView($id);
 				} else {
 					$controller = $this->_controller();
 					return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
@@ -107,18 +107,18 @@ class EditCrudAction extends CrudAction {
 				$this->_trigger('afterSave', array('id' => $id, 'success' => false, 'created' => false));
 			}
 		} else {
-			$this->__handle($id);
+			$this->_handleView($id);
 		}
 
 		$this->_trigger('beforeRender');
 	}
 
 /**
- * Helper __handle method
+ * Helper _handleView method
  *
  * @return void
  */
-	protected function __handle($id) {
+	protected function _handleView($id) {
 		$request = $this->_request();
 		$model = $this->_model();
 
