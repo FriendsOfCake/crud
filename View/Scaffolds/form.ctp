@@ -1,6 +1,7 @@
 <div class="<?php echo $pluralVar; ?> form">
   <?php echo $this->Form->create(); ?>
     <h2><?php echo Inflector::humanize($this->request->action) . ' ' .  $singularHumanName; ?></h2>
+    <?php echo $this->element('redirect_url'); ?>
     <?php echo $this->Form->inputs($scaffoldFields, null, array(
       'legend' => false
     )); ?>
