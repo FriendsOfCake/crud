@@ -106,12 +106,7 @@ class ScaffoldListener extends CrudListener {
 		$associations = $this->_associations($model);
 		$scaffoldFilters = $this->_scaffoldFilters($request);
 		$sidebarActions = $this->_sidebarActions();
-		$scaffoldRelatedActions = $this->_action()->config('scaffoldRelatedActions');
-		if ($scaffoldRelatedActions === null) {
-			$scaffoldRelatedActions = true;
-		} else {
-			$scaffoldRelatedActions = (bool)$scaffoldRelatedActions;
-		}
+		$scaffoldRelatedActions = $this->_scaffoldRelatedActions();
 
 		$_sort = $this->_action()->config('scaffoldFields');
 		$_sort = empty($_sort);
@@ -140,6 +135,16 @@ class ScaffoldListener extends CrudListener {
 				APP . 'Plugin' . DS . 'Crud' . DS . 'View' . DS
 			)
 		));
+	}
+
+	protected function _scaffoldRelatedActions() {
+		$scaffoldRelatedActions = $this->_action()->config('scaffoldRelatedActions');
+		if ($scaffoldRelatedActions === null) {
+			$scaffoldRelatedActions = true;
+		} else {
+			$scaffoldRelatedActions = (bool)$scaffoldRelatedActions;
+		}
+		return $scaffoldRelatedActions;
 	}
 
 /**
