@@ -16,11 +16,6 @@
     ?>
     </div>
   <?php echo $this->Form->end(); ?>
-  <?php
-    if ($this->request->action !== 'add') {
-      echo $this->Form->postLink(__d('crud', 'Delete %s', $singularHumanName), array('action' => 'delete', $this->data[$modelClass][$primaryKey]), null, __d('crud', 'Are you sure you want to delete # %s?', $this->data[$modelClass][$primaryKey]));
-    }
-  ?>
 </div>
 
 <?php echo $this->element('sidebar_actions'); ?>
