@@ -78,7 +78,7 @@ class DeleteCrudAction extends CrudAction {
 			return false;
 		}
 
-		if (!$this->__validate($id)) {
+		if (!$this->_ensureRecordExists($id)) {
 			$controller = $this->_controller();
 			return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
 		}
@@ -127,7 +127,14 @@ class DeleteCrudAction extends CrudAction {
 		$this->_trigger('beforeRender', compact('id', 'item'));
 	}
 
-	protected function __validate($id) {
+/**
+ * Helper method to ensure that a record exists
+ *
+ * @param string $id
+ * @return boolean
+ * @throws NotFoundException If record not found
+ */
+	protected function _ensureRecordExists($id) {
 		$model = $this->_model();
 
 		$query = array();

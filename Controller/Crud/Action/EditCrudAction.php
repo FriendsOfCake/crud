@@ -116,7 +116,9 @@ class EditCrudAction extends CrudAction {
 /**
  * Helper _handleView method
  *
+ * @param string $id
  * @return void
+ * @throws NotFoundException If record not found
  */
 	protected function _handleView($id) {
 		$request = $this->_request();
@@ -139,6 +141,6 @@ class EditCrudAction extends CrudAction {
 		$item = $request->data;
 		$subject = $this->_trigger('afterFind', compact('id', 'item'));
 		$request->data = Hash::merge($request->data, $model->data, $subject->item);
-	 }
+	}
 
 }

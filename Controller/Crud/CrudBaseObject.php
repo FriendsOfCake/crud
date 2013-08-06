@@ -251,9 +251,9 @@ abstract class CrudBaseObject extends Object implements CakeEventListener {
  * @param boolean $local If true, restrict referring URLs to local server
  * @return mixed
  */
-	protected function _referer_redirect_url($default = null, $local = false) {
+	protected function _refererRedirectUrl($default = null, $local = false) {
 		$controller = $this->_controller();
-		return $this->_redirect_url($controller->referer($default, $local));
+		return $this->_redirectUrl($controller->referer($default, $local));
 	}
 
 /**
@@ -262,7 +262,7 @@ abstract class CrudBaseObject extends Object implements CakeEventListener {
  * @param string $default Default URL to use redirect_url is not found in request or data
  * @return mixed
  */
-	protected function _redirect_url($default = null) {
+	protected function _redirectUrl($default = null) {
 		$url = $default;
 		$request = $this->_request();
 		if (!empty($request->data['redirect_url'])) {

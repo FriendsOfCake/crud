@@ -115,14 +115,17 @@ class ScaffoldListener extends CrudListener {
 		$scaffoldFields = $this->_scaffoldFields($_sort);
 		$scaffoldFields = $this->_scaffoldFieldExclude($scaffoldFields, $_sort);
 
-		$redirect_url = $this->_referer_redirect_url(array('action' => 'index'));
-		$request->data['redirect_url'] = $redirect_url;
+		$redirectUrl = $this->_refererRedirectUrl(array('action' => 'index'));
+		$request->data['redirect_url'] = $redirectUrl;
 
 		$controller->set(compact(
 			'modelClass', 'primaryKey', 'displayField', 'singularVar', 'pluralVar',
 			'singularHumanName', 'pluralHumanName', 'scaffoldFields', 'associations',
 			'scaffoldFilters', 'action', 'modelSchema', 'sidebarActions',
-			'scaffoldRelatedActions', 'scaffoldTitle', 'redirect_url', 'scaffoldNavigation'
+			'scaffoldRelatedActions', 'scaffoldTitle', 'scaffoldNavigation'
+		));
+		$controller->set(array(
+			'redirect_url' => $redirectUrl
 		));
 
 		$controller->set('title_for_layout', $title);
