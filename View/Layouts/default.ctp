@@ -18,6 +18,23 @@
   <div id="container">
     <div id="header">
       <h1><?php echo $scaffoldTitle; ?> - <?php echo $title_for_layout; ?></h1>
+      <?php if (!empty($scaffoldNavigation)) : ?>
+        <div class="menu">
+          <ul>
+            <?php foreach ($scaffoldNavigation as $_item) : ?>
+              <li <?php echo (Hash::get($_item, 'url.controller') == $this->request->controller) ? 'class="active"' : '' ?>>
+                <?php
+                  if ($_item['type'] == 'link') {
+                    echo $this->Html->link($_item['title'], $_item['url'], $_item['options'], $_item['confirmMessage']);
+                  } else {
+                    echo $this->Form->postLink($_item['title'], $_item['url'], $_item['options'], $_item['confirmMessage']);
+                  }
+                ?>
+              </li>
+            <?php endforeach; ?>
+          </ul>
+        </div>
+      <?php endif; ?>
     </div>
     <div id="content">
 

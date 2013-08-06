@@ -108,6 +108,7 @@ class ScaffoldListener extends CrudListener {
 		$sidebarActions = $this->_sidebarActions();
 		$scaffoldRelatedActions = $this->_scaffoldRelatedActions();
 		$scaffoldTitle = $this->_scaffoldTitle();
+		$scaffoldNavigation = $this->_scaffoldNavigation();
 
 		$_sort = $this->_action()->config('scaffoldFields');
 		$_sort = empty($_sort);
@@ -121,7 +122,7 @@ class ScaffoldListener extends CrudListener {
 			'modelClass', 'primaryKey', 'displayField', 'singularVar', 'pluralVar',
 			'singularHumanName', 'pluralHumanName', 'scaffoldFields', 'associations',
 			'scaffoldFilters', 'action', 'modelSchema', 'sidebarActions',
-			'scaffoldRelatedActions', 'scaffoldTitle', 'redirect_url'
+			'scaffoldRelatedActions', 'scaffoldTitle', 'redirect_url', 'scaffoldNavigation'
 		));
 
 		$controller->set('title_for_layout', $title);
@@ -365,22 +366,55 @@ class ScaffoldListener extends CrudListener {
 			return true;
 		}
 
-		foreach ($sidebarActions as $i => $sidebarAction) {
-			$sidebarActions[$i] = array_merge(array(
+		if ($sidebarActions === false) {
+			return false;
+		}
+
+		foreach ($sidebarActions as $i => $_item) {
+			$sidebarActions[$i] = $this->_makeLink($_item);
+		}
+
+		return $sidebarActions;
+	}
+
+/**
+ * Returns links to be shown in navigation section of scaffolded view
+ *
+ * @return mixed Array of initialized links, or false for no navigation
+ */
+	protected function _scaffoldNavigation() {
+		$scaffoldNavigation = $this->_action()->config('scaffoldNavigation');
+		if (!is_array($scaffoldNavigation)) {
+			return false;
+		}
+
+		foreach ($scaffoldNavigation as $i => $_item) {
+			$scaffoldNavigation[$i] = $this->_makeLink($_item);
+		}
+
+		return $scaffoldNavigation;
+	}
+
+/**
+ * Initializes all data necessary for Html::link() and Form::postLink() calls
+ *
+ * @return array Link data
+ */
+	protected function _makeLink($data) {
+		$data = array_merge(array(
 				'title' => null,
 				'url' => null,
 				'options' => array(),
 				'confirmMessage' => false,
 				'type' => 'link',
-			), $sidebarActions[$i]);
+		), $data);
 
-			$sidebarActions[$i]['type'] = strtolower($sidebarActions[$i]['type']);
-			if (!in_array($sidebarActions[$i]['type'], array('link', 'post'))) {
-				$sidebarActions[$i]['type'] = 'link';
-			}
+		$data['type'] = strtolower($data['type']);
+		if (!in_array($data['type'], array('link', 'post'))) {
+			$data['type'] = 'link';
 		}
 
-		return $sidebarActions;
+		return $data;
 	}
 
 /**

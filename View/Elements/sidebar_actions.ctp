@@ -1,20 +1,20 @@
 <?php if (isset($sidebarActions) && $sidebarActions !== false) : ?>
   <div class="actions">
   <?php if (is_array($sidebarActions)) : ?>
-      <h3><?php echo __d('cake', 'Actions'); ?></h3>
-      <ul>
+    <h3><?php echo __d('cake', 'Actions'); ?></h3>
+    <ul>
       <?php
-        foreach ($sidebarActions as $sidebarAction) {
+        foreach ($sidebarActions as $_item) {
           echo "\t\t<li>";
-          if ($sidebarAction['type'] == 'post') {
-            echo $this->Form->postLink($sidebarAction['title'], $sidebarAction['url'], $sidebarAction['options'], $sidebarAction['confirmMessage']);
+          if ($_item['type'] == 'link') {
+            echo $this->Html->link($_item['title'], $_item['url'], $_item['options'], $_item['confirmMessage']);
           } else {
-            echo $this->Html->link($sidebarAction['title'], $sidebarAction['url'], $sidebarAction['options'], $sidebarAction['confirmMessage']);
+            echo $this->Form->postLink($_item['title'], $_item['url'], $_item['options'], $_item['confirmMessage']);
           }
           echo " </li>\n";
         }
       ?>
-      </ul>
+    </ul>
   <?php else : ?>
       <h3><?php echo __d('cake', 'Actions'); ?></h3>
       <ul>

@@ -81,10 +81,11 @@ p {
   padding: 10px 20px;
 }
 #header h1 {
-  line-height:20px;
+  float: left;
+  line-height: 10px;
   background: #003d4c url('../img/cake.icon.png') no-repeat left;
   color: #fff;
-  padding: 0px 30px;
+  padding: 10.5px 30px 10.5px 30px;
 }
 #header h1 a {
   color: #fff;
@@ -751,4 +752,31 @@ pre {
 .filter .submit input[type=submit] {
   font-size: 14px;
   padding: 2px 5px;
+}
+.menu {
+  float: right;
+}
+.menu ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.menu ul li {
+  float: left;
+  margin-left: 10px;
+  padding: 10.5px 11px;
+}
+.menu ul li a {
+  color: #fff;
+}
+.menu ul li a {
+  text-decoration: none;
+}
+.menu ul .active,
+.menu ul li:hover {
+  background-color: #fff;
+}
+.menu ul .active a,
+.menu ul li:hover a {
+  color: #003d4c;
 }
