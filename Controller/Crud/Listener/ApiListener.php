@@ -100,7 +100,7 @@ class ApiListener extends CrudListener {
 
 		if (!$event->subject->success) {
 			$class = $this->config('exceptionClasses.validate');
-			$errors = $this->_crud()->validationErrors();
+			$errors = $this->_validationErrors();
 			throw new $class($errors);
 		}
 
