@@ -163,7 +163,7 @@ class ApiListener extends CrudListener {
 			$serialize[] = 'data';
 		}
 
-		$serialize = array_merge($serialize, $action->config('serialize'));
+		$serialize = array_merge($serialize, (array)$action->config('serialize'));
 
 		$this->injectViewClasses();
 
