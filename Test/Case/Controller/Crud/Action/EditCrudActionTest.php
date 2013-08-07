@@ -107,6 +107,12 @@ class EditCrudActionTest extends CrudTestCase {
       ->getMock('CakeRequest', array('is'));
     $Request->data = $data;
 
+    $Controller = $this
+      ->getMockBuilder('Controller')
+      ->disableOriginalConstructor()
+      ->setMethods(array('referer'))
+      ->getMock();
+
     $Model = $this
       ->getMock('Model', array('saveAll'));
 
@@ -116,7 +122,7 @@ class EditCrudActionTest extends CrudTestCase {
       ->disableOriginalConstructor()
       ->setMethods(array(
         '_validateId', '_request', '_model', '_trigger',
-        '_redirect', 'setFlash', 'saveOptions'
+        '_redirect', 'setFlash', 'saveOptions', '_controller'
       ))
       ->getMock();
     $Action
@@ -159,6 +165,16 @@ class EditCrudActionTest extends CrudTestCase {
       ->method('_trigger')
       ->with('afterSave', array('success' => true, 'created' => false, 'id' => 1))
       ->will($this->returnValue($CrudSubject));
+    $Action
+      ->expects($this->at($i++))
+      ->method('_controller')
+      ->with()
+      ->will($this->returnValue($Controller));
+    $Controller
+      ->expects($this->once())
+      ->method('referer')
+      ->with(array('action' => 'index'))
+      ->will($this->returnValue(array('action' => 'index')));
     $Action
       ->expects($this->at($i++))
       ->method('_redirect')

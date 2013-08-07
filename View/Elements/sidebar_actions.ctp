@@ -1,10 +1,10 @@
-<?php if (isset($sidebarActions) && $sidebarActions !== false) : ?>
+<?php if (isset($scaffoldSidebarActions) && $scaffoldSidebarActions !== false) : ?>
   <div class="actions">
-  <?php if (is_array($sidebarActions)) : ?>
+  <?php if (is_array($scaffoldSidebarActions)) : ?>
     <h3><?php echo __d('cake', 'Actions'); ?></h3>
     <ul>
       <?php
-        foreach ($sidebarActions as $_item) {
+        foreach ($scaffoldSidebarActions as $_item) {
           echo "\t\t<li>";
           if ($_item['type'] == 'link') {
             echo $this->Html->link($_item['title'], $_item['url'], $_item['options'], $_item['confirmMessage']);

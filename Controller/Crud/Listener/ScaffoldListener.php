@@ -104,16 +104,16 @@ class ScaffoldListener extends CrudListener {
 		$pluralHumanName = Inflector::humanize(Inflector::underscore($controller->name));
 		$modelSchema = $model->schema();
 		$associations = $this->_associations($model);
+		$scaffoldTitle = $this->_scaffoldTitle($request);
+		$scaffoldRelatedActions = $this->_scaffoldRelatedActions($request);
 		$scaffoldFilters = $this->_scaffoldFilters($request);
-		$sidebarActions = $this->_sidebarActions();
-		$scaffoldRelatedActions = $this->_scaffoldRelatedActions();
-		$scaffoldTitle = $this->_scaffoldTitle();
-		$scaffoldNavigation = $this->_scaffoldNavigation();
+		$scaffoldSidebarActions = $this->_scaffoldSidebarActions($request);
+		$scaffoldNavigation = $this->_scaffoldNavigation($request);
 
-		$_sort = $this->_action()->config('scaffoldFields');
+		$_sort = $this->_action($request->action)->config('scaffoldFields');
 		$_sort = empty($_sort);
-		$scaffoldFields = $this->_scaffoldFields($_sort);
-		$scaffoldFields = $this->_scaffoldFieldExclude($scaffoldFields, $_sort);
+		$scaffoldFields = $this->_scaffoldFields($model, $request, $_sort);
+		$scaffoldFields = $this->_scaffoldFieldExclude($model, $request, $scaffoldFields, $_sort);
 
 		$redirectUrl = $this->_refererRedirectUrl(array('action' => 'index'));
 		$request->data['redirect_url'] = $redirectUrl;
@@ -121,7 +121,7 @@ class ScaffoldListener extends CrudListener {
 		$controller->set(compact(
 			'modelClass', 'primaryKey', 'displayField', 'singularVar', 'pluralVar',
 			'singularHumanName', 'pluralHumanName', 'scaffoldFields', 'associations',
-			'scaffoldFilters', 'action', 'modelSchema', 'sidebarActions',
+			'scaffoldFilters', 'action', 'modelSchema', 'scaffoldSidebarActions',
 			'scaffoldRelatedActions', 'scaffoldTitle', 'scaffoldNavigation'
 		));
 		$controller->set(array(
@@ -150,10 +150,11 @@ class ScaffoldListener extends CrudListener {
 /**
  * Returns title to show on scaffolded view
  *
+ * @param CakeRequest $request
  * @return string
  */
-	protected function _scaffoldTitle() {
-		$scaffoldTitle = $this->_action()->config('scaffoldTitle');
+	protected function _scaffoldTitle(CakeRequest $request) {
+		$scaffoldTitle = $this->_action($request->action)->config('scaffoldTitle');
 		if (empty($scaffoldTitle)) {
 			$scaffoldTitle = 'Admin';
 		}
@@ -164,10 +165,11 @@ class ScaffoldListener extends CrudListener {
 /**
  * Returns whether or not related items should displayed on scaffolded view
  *
+ * @param CakeRequest $request
  * @return boolean
  */
-	protected function _scaffoldRelatedActions() {
-		$scaffoldRelatedActions = $this->_action()->config('scaffoldRelatedActions');
+	protected function _scaffoldRelatedActions(CakeRequest $request) {
+		$scaffoldRelatedActions = $this->_action($request->action)->config('scaffoldRelatedActions');
 		if ($scaffoldRelatedActions === null) {
 			$scaffoldRelatedActions = true;
 		} else {
@@ -179,12 +181,12 @@ class ScaffoldListener extends CrudListener {
 /**
  * Returns fields to be displayed on scaffolded view
  *
+ * @param Model $model
+ * @param CakeRequest $request
  * @param boolean $sort Add sort keys to output
  * @return array List of fields
  */
-	protected function _scaffoldFields($sort = true) {
-		$model = $this->_model();
-		$request = $this->_request();
+	protected function _scaffoldFields(Model $model, CakeRequest $request, $sort = true) {
 		$modelSchema = $model->schema();
 
 		$_fields = array();
@@ -194,7 +196,7 @@ class ScaffoldListener extends CrudListener {
 		}
 		$scaffoldFields = $_fields;
 
-		$_scaffoldFields = $this->_action()->config('scaffoldFields');
+		$_scaffoldFields = $this->_action($request->action)->config('scaffoldFields');
 		if (!empty($_scaffoldFields)) {
 			$_fields = array();
 			$_scaffoldFields = (array)$_scaffoldFields;
@@ -233,15 +235,16 @@ class ScaffoldListener extends CrudListener {
 /**
  * Returns fields to be allowed for display on scaffolded view
  *
+ * @param Model $model
+ * @param CakeRequest $request
  * @param array $scaffoldFields
  * @param boolean $sort Sort fields
  * @return array List of fields
  */
-	protected function _scaffoldFieldExclude($scaffoldFields, $sort = true) {
-		$model = $this->_model();
+	protected function _scaffoldFieldExclude(Model $model, CakeRequest $request, $scaffoldFields, $sort = true) {
 		$modelSchema = $model->schema();
-		$className = $this->_action()->config('className');
-		$blacklist = $this->_action()->config('scaffoldFieldExclude');
+		$className = $this->_action($request->action)->config('className');
+		$blacklist = $this->_action($request->action)->config('scaffoldFieldExclude');
 
 		if (empty($blacklist)) {
 			if ($className == 'Crud.Add' || $className == 'Crud.Edit') {
@@ -336,7 +339,7 @@ class ScaffoldListener extends CrudListener {
  */
 	protected function _scaffoldFilters(CakeRequest $request) {
 		$scaffoldFilters = array();
-		$_scaffoldFilters = $this->_action()->config('scope');
+		$_scaffoldFilters = $this->_action($request->action)->config('scope');
 		if (!empty($_scaffoldFilters)) {
 			$scaffoldFilters = (array)$_scaffoldFilters;
 			foreach ($scaffoldFilters as $_field => $scaffoldField) {
@@ -361,32 +364,34 @@ class ScaffoldListener extends CrudListener {
 /**
  * Returns links to be shown in actions section of scaffolded view
  *
+ * @param CakeRequest $request
  * @return mixed Array of initialized links, or boolean as to whether or not to show actions
  */
-	protected function _sidebarActions() {
-		$sidebarActions = $this->_action()->config('sidebarActions');
-		if ($sidebarActions === null) {
+	protected function _scaffoldSidebarActions(CakeRequest $request) {
+		$scaffoldSidebarActions = $this->_action($request->action)->config('sidebarActions');
+		if ($scaffoldSidebarActions === null) {
 			return true;
 		}
 
-		if ($sidebarActions === false) {
+		if ($scaffoldSidebarActions === false) {
 			return false;
 		}
 
-		foreach ($sidebarActions as $i => $_item) {
-			$sidebarActions[$i] = $this->_makeLink($_item);
+		foreach ($scaffoldSidebarActions as $i => $_item) {
+			$scaffoldSidebarActions[$i] = $this->_makeLink($_item);
 		}
 
-		return $sidebarActions;
+		return $scaffoldSidebarActions;
 	}
 
 /**
  * Returns links to be shown in navigation section of scaffolded view
  *
+ * @param CakeRequest $request
  * @return mixed Array of initialized links, or false for no navigation
  */
-	protected function _scaffoldNavigation() {
-		$scaffoldNavigation = $this->_action()->config('scaffoldNavigation');
+	protected function _scaffoldNavigation(CakeRequest $request) {
+		$scaffoldNavigation = $this->_action($request->action)->config('scaffoldNavigation');
 		if (!is_array($scaffoldNavigation)) {
 			return false;
 		}
