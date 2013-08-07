@@ -1,6 +1,8 @@
 <?php
 
 App::uses('CakeEvent', 'Event');
+App::uses('CakeRequest', 'Network');
+App::uses('CakeResponse', 'Network');
 App::uses('Controller', 'Controller');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
 App::uses('CrudComponent', 'Crud.Controller/Component');
@@ -40,18 +42,25 @@ class ScaffoldListenerTest extends CakeTestCase {
 		array(
 			'model' => 'Article',
 			'action' => 'index',
-			'controller' => 'ArticlesController',
+			'controller' => 'Articles',
+			'className' => 'Index',
 			'expected' => array(
-				'title_for_layout' => 'Scaffold :: Index :: ',
+				'title_for_layout' => 'Articles :: Index',
 				'modelClass' => 'Article',
 				'primaryKey' => 'id',
 				'displayField' => 'title',
 				'singularVar' => 'article',
-				'pluralVar' => 'articlesController',
+				'pluralVar' => 'articles',
 				'singularHumanName' => 'Article',
-				'pluralHumanName' => 'Articles Controller',
+				'pluralHumanName' => 'Articles',
 				'scaffoldFields' => array(
-					'id', 'user_id', 'title', 'body', 'published', 'created', 'updated'
+					'id' => array(),
+					'title' => array(),
+					'user_id' => array(),
+					'body' => array(),
+					'published' => array(),
+					'created' => array(),
+					'updated' => array(),
 				),
 				'associations' => array(
 					'belongsTo' => array(
@@ -82,25 +91,90 @@ class ScaffoldListenerTest extends CakeTestCase {
 							'with' => 'ArticlesTag',
 						)
 					)
-				)
-			)
+				),
+				'redirect_url' => 'http://localhost/',
+				'scaffoldFilters' => array(),
+				'action' => 'index',
+				'modelSchema' => array(
+					'id' => array(
+						'type' => 'integer',
+						'null' => false,
+						'default' => null,
+						'length' => 11,
+						'key' => 'primary',
+					),
+					'user_id' => array(
+						'type' => 'integer',
+						'null' => true,
+						'default' => null,
+						'length' => 11,
+					),
+					'title' => array(
+						'type' => 'string',
+						'null' => true,
+						'default' => null,
+						'length' => 255,
+						'collate' => 'utf8_general_ci',
+						'charset' => 'utf8',
+				 	),
+				 	'body' => array(
+						'type' => 'text',
+						'null' => true,
+						'default' => null,
+						'length' => null,
+						'collate' => 'utf8_general_ci',
+						'charset' => 'utf8',
+				 	),
+				 	'published' => array(
+						'type' => 'string',
+						'null' => true,
+						'default' => 'N',
+						'length' => 1,
+						'collate' => 'utf8_general_ci',
+						'charset' => 'utf8',
+				 	),
+				 	'created' => array(
+						'type' => 'datetime',
+						'null' => true,
+						'default' => null,
+						'length' => null,
+				 	),
+				 	'updated' => array(
+						'type' => 'datetime',
+						'null' => true,
+						'default' => null,
+						'length' => null,
+					),
+				),
+				'scaffoldSidebarActions' => true,
+				'scaffoldRelatedActions' => true,
+				'scaffoldTitle' => 'Admin',
+				'scaffoldNavigation' => false,
+			),
 		),
 		// Add (Article)
 		array(
 			'model' => 'Article',
 			'action' => 'add',
-			'controller' => 'ArticlesController',
+			'controller' => 'Articles',
+			'className' => 'Add',
 			'expected' => array(
-				'title_for_layout' => 'Scaffold :: Add :: ',
+				'title_for_layout' => 'Articles :: Add',
 				'modelClass' => 'Article',
 				'primaryKey' => 'id',
 				'displayField' => 'title',
 				'singularVar' => 'article',
-				'pluralVar' => 'articlesController',
+				'pluralVar' => 'articles',
 				'singularHumanName' => 'Article',
-				'pluralHumanName' => 'Articles Controller',
+				'pluralHumanName' => 'Articles',
 				'scaffoldFields' => array(
-					'id', 'user_id', 'title', 'body', 'published', 'created', 'updated'
+					'id' => array(),
+					'title' => array(),
+					'user_id' => array(),
+					'body' => array(),
+					'published' => array(),
+					'created' => array(),
+					'updated' => array(),
 				),
 				'associations' => array(
 					'belongsTo' => array(
@@ -131,25 +205,90 @@ class ScaffoldListenerTest extends CakeTestCase {
 							'with' => 'ArticlesTag',
 						)
 					)
-				)
-			)
+				),
+				'redirect_url' => 'http://localhost/',
+				'scaffoldFilters' => array(),
+				'action' => 'add',
+				'modelSchema' => array(
+					'id' => array(
+						'type' => 'integer',
+						'null' => false,
+						'default' => null,
+						'length' => 11,
+						'key' => 'primary',
+					),
+					'user_id' => array(
+						'type' => 'integer',
+						'null' => true,
+						'default' => null,
+						'length' => 11,
+					),
+					'title' => array(
+						'type' => 'string',
+						'null' => true,
+						'default' => null,
+						'length' => 255,
+						'collate' => 'utf8_general_ci',
+						'charset' => 'utf8',
+				 	),
+				 	'body' => array(
+						'type' => 'text',
+						'null' => true,
+						'default' => null,
+						'length' => null,
+						'collate' => 'utf8_general_ci',
+						'charset' => 'utf8',
+				 	),
+				 	'published' => array(
+						'type' => 'string',
+						'null' => true,
+						'default' => 'N',
+						'length' => 1,
+						'collate' => 'utf8_general_ci',
+						'charset' => 'utf8',
+				 	),
+				 	'created' => array(
+						'type' => 'datetime',
+						'null' => true,
+						'default' => null,
+						'length' => null,
+				 	),
+				 	'updated' => array(
+						'type' => 'datetime',
+						'null' => true,
+						'default' => null,
+						'length' => null,
+					),
+				),
+				'scaffoldSidebarActions' => true,
+				'scaffoldRelatedActions' => true,
+				'scaffoldTitle' => 'Admin',
+				'scaffoldNavigation' => false,
+			),
 		),
 		// Edit (Article)
 		array(
 			'model' => 'Article',
 			'action' => 'edit',
-			'controller' => 'ArticlesController',
+			'controller' => 'Articles',
+			'className' => 'Edit',
 			'expected' => array(
-				'title_for_layout' => 'Scaffold :: Edit :: ',
+				'title_for_layout' => 'Articles :: Edit',
 				'modelClass' => 'Article',
 				'primaryKey' => 'id',
 				'displayField' => 'title',
 				'singularVar' => 'article',
-				'pluralVar' => 'articlesController',
+				'pluralVar' => 'articles',
 				'singularHumanName' => 'Article',
-				'pluralHumanName' => 'Articles Controller',
+				'pluralHumanName' => 'Articles',
 				'scaffoldFields' => array(
-					'id', 'user_id', 'title', 'body', 'published', 'created', 'updated'
+	        'id' => array(),
+	        'title' => array(),
+	        'user_id' => array(),
+	        'body' => array(),
+	        'published' => array(),
+	        'created' => array(),
+	        'updated' => array(),
 				),
 				'associations' => array(
 					'belongsTo' => array(
@@ -180,46 +319,161 @@ class ScaffoldListenerTest extends CakeTestCase {
 							'with' => 'ArticlesTag',
 						)
 					)
-				)
-			)
+				),
+	    	'redirect_url' => 'http://localhost/',
+	    	'scaffoldFilters' => array(),
+	    	'action' => 'edit',
+	    	'modelSchema' => array(
+         	'id' => array(
+            'type' => 'integer',
+            'null' => false,
+            'default' => null,
+            'length' => 11,
+            'key' => 'primary',
+         	),
+         	'user_id' => array(
+            'type' => 'integer',
+            'null' => true,
+            'default' => null,
+            'length' => 11,
+         	),
+         	'title' => array(
+            'type' => 'string',
+            'null' => true,
+            'default' => null,
+            'length' => 255,
+            'collate' => 'utf8_general_ci',
+            'charset' => 'utf8',
+         	),
+         	'body' => array(
+            'type' => 'text',
+            'null' => true,
+            'default' => null,
+            'length' => null,
+            'collate' => 'utf8_general_ci',
+            'charset' => 'utf8',
+         	),
+         	'published' => array(
+            'type' => 'string',
+            'null' => true,
+            'default' => 'N',
+            'length' => 1,
+            'collate' => 'utf8_general_ci',
+            'charset' => 'utf8',
+         	),
+         	'created' => array(
+            'type' => 'datetime',
+            'null' => true,
+            'default' => null,
+            'length' => null,
+         	),
+         	'updated' => array(
+            'type' => 'datetime',
+            'null' => true,
+            'default' => null,
+            'length' => null,
+         	),
+	    	),
+	    	'scaffoldSidebarActions' => true,
+	    	'scaffoldRelatedActions' => true,
+	    	'scaffoldTitle' => 'Admin',
+	    	'scaffoldNavigation' => false,
+
+			),
 		),
 		// Index (User)
 		array(
 			'model' => 'User',
 			'action' => 'index',
-			'controller' => 'UsersController',
+			'controller' => 'Users',
+			'className' => 'Index',
 			'expected' => array(
-				'title_for_layout' => 'Scaffold :: Index :: ',
+				'title_for_layout' => 'Users :: Index',
 				'modelClass' => 'User',
 				'primaryKey' => 'id',
 				'displayField' => 'id',
 				'singularVar' => 'user',
-				'pluralVar' => 'usersController',
+				'pluralVar' => 'users',
 				'singularHumanName' => 'User',
-				'pluralHumanName' => 'Users Controller',
+				'pluralHumanName' => 'Users',
 				'scaffoldFields' => array(
-					'id', 'user', 'password', 'created', 'updated'
+	        'id' => array(),
+	        'user' => array(),
+	        'password' => array(),
+	        'created' => array(),
+	        'updated' => array(),
 				),
 				'associations' => array(
-				)
-			)
+				),
+    		'redirect_url' => 'http://localhost/',
+    		'scaffoldFilters' => array(),
+    		'action' => 'index',
+    		'modelSchema' => array(
+         	'id' => array(
+            'type' => 'integer',
+            'null' => false,
+            'default' => null,
+            'length' => 11,
+            'key' => 'primary',
+         	),
+         	'user' => array(
+            'type' => 'string',
+            'null' => true,
+            'default' => null,
+            'length' => 255,
+            'collate' => 'utf8_general_ci',
+            'charset' => 'utf8',
+         	),
+         	'password' => array(
+            'type' => 'string',
+            'null' => true,
+            'default' => null,
+            'length' => 255,
+            'collate' => 'utf8_general_ci',
+            'charset' => 'utf8',
+         	),
+         	'created' => array(
+            'type' => 'datetime',
+            'null' => true,
+            'default' => null,
+            'length' => null,
+         	),
+         	'updated' => array(
+            'type' => 'datetime',
+            'null' => true,
+            'default' => null,
+            'length' => null,
+         	),
+				),
+    		'scaffoldSidebarActions' => true,
+    		'scaffoldRelatedActions' => true,
+    		'scaffoldTitle' => 'Admin',
+    		'scaffoldNavigation' => false,
+			),
 		),
 		// Index (Comment)
 		array(
 			'model' => 'Comment',
 			'action' => 'index',
-			'controller' => 'CommentsController',
+			'controller' => 'Comments',
+			'className' => 'Index',
 			'expected' => array(
-				'title_for_layout' => 'Scaffold :: Index :: ',
+				'title_for_layout' => 'Comments :: Index',
 				'modelClass' => 'Comment',
 				'primaryKey' => 'id',
 				'displayField' => 'id',
 				'singularVar' => 'comment',
-				'pluralVar' => 'commentsController',
+				'pluralVar' => 'comments',
 				'singularHumanName' => 'Comment',
-				'pluralHumanName' => 'Comments Controller',
+				'pluralHumanName' => 'Comments',
 				'scaffoldFields' => array(
-					'id', 'article_id', 'user_id', 'comment', 'published', 'created', 'updated'
+	        'id' => array(),
+	        'comment' => array(),
+	        'article_id' => array(),
+	        'user_id' => array(),
+	        'published' => array(),
+	        'created' => array(),
+	        'updated' => array(),
 				),
 				'associations' => array(
 					'belongsTo' => array(
@@ -247,8 +501,64 @@ class ScaffoldListenerTest extends CakeTestCase {
 							'controller' => 'attachments'
 						)
 					)
-				)
-			)
+				),
+    		'redirect_url' => 'http://localhost/',
+    		'scaffoldFilters' => array(),
+    		'action' => 'index',
+    		'modelSchema' => array(
+	        'id' => array(
+            'type' => 'integer',
+            'null' => false,
+            'default' => null,
+            'length' => 11,
+            'key' => 'primary',
+         	),
+         	'article_id' => array(
+            'type' => 'integer',
+            'null' => false,
+            'default' => null,
+            'length' => 11,
+         	),
+         	'user_id' => array(
+            'type' => 'integer',
+            'null' => false,
+            'default' => null,
+            'length' => 11,
+         	),
+         	'comment' => array(
+            'type' => 'text',
+            'null' => true,
+            'default' => null,
+            'length' => null,
+            'collate' => 'utf8_general_ci',
+            'charset' => 'utf8',
+         	),
+         	'published' => array(
+            'type' => 'string',
+            'null' => true,
+            'default' => 'N',
+            'length' => 1,
+            'collate' => 'utf8_general_ci',
+            'charset' => 'utf8',
+         	),
+         	'created' => array(
+            'type' => 'datetime',
+            'null' => true,
+            'default' => null,
+            'length' => null,
+         	),
+         	'updated' => array(
+            'type' => 'datetime',
+            'null' => true,
+            'default' => null,
+            'length' => null,
+					),
+				),
+    		'scaffoldSidebarActions' => true,
+    		'scaffoldRelatedActions' => true,
+    		'scaffoldTitle' => 'Admin',
+    		'scaffoldNavigation' => false,
+			),
 		)
 	);
 
@@ -266,15 +576,23 @@ class ScaffoldListenerTest extends CakeTestCase {
 		foreach ($this->_beforeRenderTests as $test) {
 			$Request = new CakeRequest(null, false);
 			$Request->action = $test['action'];
+			$Response = new CakeResponse();
 
 			$Controller = new Controller($Request);
 			$Controller->name = $test['controller'];
 			$Controller->modelClass = $test['model'];
+			$Controller->viewPath = Inflector::pluralize($test['model']);
+			$Controller->__construct($Request, $Response);
+			$Controller->methods = array();
 
 			$Collection = $this->getMock('ComponentCollection', null);
-			$Controller = $this->getMock('Controller');
+			$Collection->init($Controller);
 			$Controller->Components = $Collection;
-			$Crud = $this->getMock('CrudComponent', null, array($Collection));
+
+			$Crud = $this->getMock('CrudComponent', null, array($Collection, array(
+				'actions' => array($test['action'] => array('className' => $test['className']))
+			)));
+			$Crud->initialize($Controller);
 
 			$Model = new $test['model']();
 
