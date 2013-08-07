@@ -247,6 +247,7 @@ class ScaffoldListener extends CrudListener {
 		$blacklist = $this->_action($request->action)->config('scaffoldFieldExclude');
 
 		if (empty($blacklist)) {
+			$blacklist = array();
 			if ($className == 'Crud.Add' || $className == 'Crud.Edit') {
 				$blacklist = array('created', 'modified', 'updated');
 				foreach ($scaffoldFields as $_field => $_options) {
@@ -254,14 +255,14 @@ class ScaffoldListener extends CrudListener {
 						$blacklist[] = $_field;
 					}
 				}
-			} else {
-				$blacklist = array();
 			}
 		}
 
-		$scaffoldFields = array_diff_key($scaffoldFields, array_combine(
-			$blacklist, $blacklist
-		));
+		if (!empty($blacklist)) {
+			$scaffoldFields = array_diff_key($scaffoldFields, array_combine(
+				$blacklist, $blacklist
+			));
+		}
 
 		if ($sort) {
 			uasort($scaffoldFields, array('ScaffoldListener', '_compareFields'));
