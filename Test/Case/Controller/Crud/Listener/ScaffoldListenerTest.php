@@ -114,7 +114,7 @@ class ScaffoldListenerTest extends CakeTestCase {
 						'null' => true,
 						'default' => null,
 						'length' => 255,
-						'collate' => 'utf8_general_ci',
+						'collate' => 'utf8_unicode_ci',
 						'charset' => 'utf8',
 				 	),
 				 	'body' => array(
@@ -122,7 +122,7 @@ class ScaffoldListenerTest extends CakeTestCase {
 						'null' => true,
 						'default' => null,
 						'length' => null,
-						'collate' => 'utf8_general_ci',
+						'collate' => 'utf8_unicode_ci',
 						'charset' => 'utf8',
 				 	),
 				 	'published' => array(
@@ -130,7 +130,7 @@ class ScaffoldListenerTest extends CakeTestCase {
 						'null' => true,
 						'default' => 'N',
 						'length' => 1,
-						'collate' => 'utf8_general_ci',
+						'collate' => 'utf8_unicode_ci',
 						'charset' => 'utf8',
 				 	),
 				 	'created' => array(
@@ -228,7 +228,7 @@ class ScaffoldListenerTest extends CakeTestCase {
 						'null' => true,
 						'default' => null,
 						'length' => 255,
-						'collate' => 'utf8_general_ci',
+						'collate' => 'utf8_unicode_ci',
 						'charset' => 'utf8',
 				 	),
 				 	'body' => array(
@@ -236,7 +236,7 @@ class ScaffoldListenerTest extends CakeTestCase {
 						'null' => true,
 						'default' => null,
 						'length' => null,
-						'collate' => 'utf8_general_ci',
+						'collate' => 'utf8_unicode_ci',
 						'charset' => 'utf8',
 				 	),
 				 	'published' => array(
@@ -244,7 +244,7 @@ class ScaffoldListenerTest extends CakeTestCase {
 						'null' => true,
 						'default' => 'N',
 						'length' => 1,
-						'collate' => 'utf8_general_ci',
+						'collate' => 'utf8_unicode_ci',
 						'charset' => 'utf8',
 				 	),
 				 	'created' => array(
@@ -342,7 +342,7 @@ class ScaffoldListenerTest extends CakeTestCase {
             'null' => true,
             'default' => null,
             'length' => 255,
-            'collate' => 'utf8_general_ci',
+            'collate' => 'utf8_unicode_ci',
             'charset' => 'utf8',
          	),
          	'body' => array(
@@ -350,7 +350,7 @@ class ScaffoldListenerTest extends CakeTestCase {
             'null' => true,
             'default' => null,
             'length' => null,
-            'collate' => 'utf8_general_ci',
+            'collate' => 'utf8_unicode_ci',
             'charset' => 'utf8',
          	),
          	'published' => array(
@@ -358,7 +358,7 @@ class ScaffoldListenerTest extends CakeTestCase {
             'null' => true,
             'default' => 'N',
             'length' => 1,
-            'collate' => 'utf8_general_ci',
+            'collate' => 'utf8_unicode_ci',
             'charset' => 'utf8',
          	),
          	'created' => array(
@@ -421,7 +421,7 @@ class ScaffoldListenerTest extends CakeTestCase {
             'null' => true,
             'default' => null,
             'length' => 255,
-            'collate' => 'utf8_general_ci',
+            'collate' => 'utf8_unicode_ci',
             'charset' => 'utf8',
          	),
          	'password' => array(
@@ -429,7 +429,7 @@ class ScaffoldListenerTest extends CakeTestCase {
             'null' => true,
             'default' => null,
             'length' => 255,
-            'collate' => 'utf8_general_ci',
+            'collate' => 'utf8_unicode_ci',
             'charset' => 'utf8',
          	),
          	'created' => array(
@@ -530,7 +530,7 @@ class ScaffoldListenerTest extends CakeTestCase {
             'null' => true,
             'default' => null,
             'length' => null,
-            'collate' => 'utf8_general_ci',
+            'collate' => 'utf8_unicode_ci',
             'charset' => 'utf8',
          	),
          	'published' => array(
@@ -538,7 +538,7 @@ class ScaffoldListenerTest extends CakeTestCase {
             'null' => true,
             'default' => 'N',
             'length' => 1,
-            'collate' => 'utf8_general_ci',
+            'collate' => 'utf8_unicode_ci',
             'charset' => 'utf8',
          	),
          	'created' => array(
