@@ -49,7 +49,7 @@ class SamplesController extends AppController {
 
 # Configuration
 
-The listener do not have any configuration options
+Optionally enable query string parameters for your index actions as described [here]({{site.url}}/docs/actions/index.html)
 
 # Example output
 
