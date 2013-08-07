@@ -49,7 +49,7 @@ class SamplesController extends AppController {
 
 # Configuration
 
-Optionally enable query string parameters for your index actions as described [here]({{site.url}}/docs/actions/index.html)
+Optionally enable query string parameters for your index actions as described [here]({{site.url}}/docs/actions/index.html#query_string_parameters)
 
 # Example output
 
