@@ -1,5 +1,6 @@
 <?php
 
+App::uses('Hash', 'Utility');
 App::uses('CrudAction', 'Crud.Controller/Crud');
 
 /**
@@ -17,14 +18,18 @@ class DeleteCrudAction extends CrudAction {
  *
  * `findMethod` The default `Model::find()` method for reading data
  *
+ * `type` Specificity of action (record|model)
+ *
  * @var array
  */
 	protected $_settings = array(
 		'enabled' => true,
 		'findMethod' => 'count',
+		'view' => null,
+		'validateId' => null,
 		'requestType' => 'default',
 		'requestMethods' => array(
-			'default' => array('delete'),
+			'default' => array('get', 'delete'),
 			'api' => array('delete')
 		),
 
@@ -35,8 +40,24 @@ class DeleteCrudAction extends CrudAction {
 			'error' => array(
 				'text' => 'Could not delete {name}'
 			)
-		)
+		),
+		'type' => 'record',
 	);
+
+/**
+ * Change the name of the view variable name
+ * of the data when its sent to the view
+ *
+ * @param mixed $method
+ * @return mixed
+ */
+	public function viewVar($name = null) {
+		if (empty($name)) {
+			return $this->config('viewVar') ?: Inflector::variable($this->_model()->name);
+		}
+
+		return $this->config('viewVar', $name);
+	}
 
 /**
  * Generic delete action
@@ -66,13 +87,18 @@ class DeleteCrudAction extends CrudAction {
 		$subject = $this->_trigger('beforeFind', compact('id', 'query', 'findMethod'));
 		$query = $subject->query;
 
-		$count = $model->find($subject->findMethod, $query);
+		$count = $model->find($findMethod, $query);
 		if (empty($count)) {
 			$this->_trigger('recordNotFound', compact('id'));
 
 			$message = $this->message('recordNotFound', array('id' => $id));
 			$exceptionClass = $message['class'];
 			throw new $exceptionClass($message['text'], $message['code']);
+		}
+
+		$request = $this->_request();
+		if ($request->is('get')) {
+			return $this->_handleView($model, $request, $id);
 		}
 
 		$subject = $this->_trigger('beforeDelete', compact('id'));
@@ -93,4 +119,21 @@ class DeleteCrudAction extends CrudAction {
 		$controller = $this->_controller();
 		return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
 	}
+
+/**
+ * Helper _handleView method
+ *
+ * @return void
+ */
+	protected function _handleView(Model $model, CakeRequest $request, $id) {
+		$item = $request->data;
+		$subject = $this->_trigger('afterFind', compact('id', 'item'));
+		$request->data = Hash::merge(array($model->alias => array(
+			$model->primaryKey => $id
+		)), $item, $model->data, $subject->item);
+
+		$this->_controller()->set(array($this->viewVar() => $request->data));
+		$this->_trigger('beforeRender', compact('id', 'item'));
+	}
+
 }

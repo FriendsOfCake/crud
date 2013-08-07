@@ -23,6 +23,8 @@ class DeleteCrudActionTest extends CrudTestCase {
  * @return void
  */
 	public function test_handle() {
+		$Request = $this->getMock('CakeRequest', array('is'));
+
 		$Model = $this
 			->getMockBuilder('Model')
 			->disableOriginalConstructor()
@@ -45,7 +47,7 @@ class DeleteCrudActionTest extends CrudTestCase {
 			->getMockBuilder('DeleteCrudAction')
 			->disableOriginalConstructor()
 			->setMethods(array(
-				'_model', '_validateId', '_getFindMethod',
+				'_model', '_validateId', '_getFindMethod', '_request',
 				'_trigger', 'setFlash', '_redirect', '_controller'
 			))
 			->getMock();
@@ -79,6 +81,15 @@ class DeleteCrudActionTest extends CrudTestCase {
 			->method('find')
 			->with('count', $query)
 			->will($this->returnValue(1));
+		$Action
+			->expects($this->at($i++))
+			->method('_request')
+			->will($this->returnValue($Request));
+		$Request
+			->expects($this->once())
+			->method('is')
+			->with('get')
+			->will($this->returnValue(false));
 		$Action
 			->expects($this->at($i++))
 			->method('_trigger')
@@ -211,6 +222,8 @@ class DeleteCrudActionTest extends CrudTestCase {
  * @return void
  */
 	public function test_handleDeleteFailed() {
+		$Request = $this->getMock('CakeRequest', array('is'));
+
 		$Model = $this
 			->getMockBuilder('Model')
 			->disableOriginalConstructor()
@@ -233,7 +246,7 @@ class DeleteCrudActionTest extends CrudTestCase {
 			->getMockBuilder('DeleteCrudAction')
 			->disableOriginalConstructor()
 			->setMethods(array(
-				'_model', '_validateId', '_getFindMethod',
+				'_model', '_validateId', '_getFindMethod', '_request',
 				'_trigger', 'setFlash', '_redirect', '_controller'
 			))
 			->getMock();
@@ -267,6 +280,15 @@ class DeleteCrudActionTest extends CrudTestCase {
 			->method('find')
 			->with('count', $query)
 			->will($this->returnValue(1));
+		$Action
+			->expects($this->at($i++))
+			->method('_request')
+			->will($this->returnValue($Request));
+		$Request
+			->expects($this->once())
+			->method('is')
+			->with('get')
+			->will($this->returnValue(false));
 		$Action
 			->expects($this->at($i++))
 			->method('_trigger')
@@ -315,6 +337,8 @@ class DeleteCrudActionTest extends CrudTestCase {
  * @return void
  */
 	public function test_handleDeleteStoppedByEvent() {
+		$Request = $this->getMock('CakeRequest', array('is'));
+
 		$Model = $this
 			->getMockBuilder('Model')
 			->disableOriginalConstructor()
@@ -337,7 +361,7 @@ class DeleteCrudActionTest extends CrudTestCase {
 			->getMockBuilder('DeleteCrudAction')
 			->disableOriginalConstructor()
 			->setMethods(array(
-				'_model', '_validateId', '_getFindMethod',
+				'_model', '_validateId', '_getFindMethod', '_request',
 				'_trigger', 'setFlash', '_redirect', '_controller'
 			))
 			->getMock();
@@ -371,6 +395,15 @@ class DeleteCrudActionTest extends CrudTestCase {
 			->method('find')
 			->with('count', $query)
 			->will($this->returnValue(1));
+		$Action
+			->expects($this->at($i++))
+			->method('_request')
+			->will($this->returnValue($Request));
+		$Request
+			->expects($this->once())
+			->method('is')
+			->with('get')
+			->will($this->returnValue(false));
 		$Action
 			->expects($this->at($i++))
 			->method('_trigger')

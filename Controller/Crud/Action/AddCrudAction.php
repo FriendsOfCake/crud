@@ -27,6 +27,8 @@ class AddCrudAction extends CrudAction {
  * If you configure a key with your action name, it will override the default settings.
  * This is useful for adding fieldList to enhance security in saveAll.
  *
+ * `type` Specificity of action (record|model)
+ *
  * @var array
  */
 	protected $_settings = array(
@@ -50,7 +52,8 @@ class AddCrudAction extends CrudAction {
 				'text' => 'Could not create {name}'
 			)
 		),
-		'serialize' => array()
+		'serialize' => array(),
+		'type' => 'model',
 	);
 
 /**
@@ -69,22 +72,37 @@ class AddCrudAction extends CrudAction {
 		$model = $this->_model();
 
 		if (!$request->is('post')) {
-			$model->create();
-			$request->data = $model->data;
-			$this->_trigger('beforeRender', array('success' => false));
-			return;
+			return $this->_handleView($model, $request);
 		}
 
 		$this->_trigger('beforeSave');
 		if ($model->saveAll($request->data, $this->saveOptions())) {
 			$this->setFlash('success');
 			$subject = $this->_trigger('afterSave', array('success' => true, 'created' => true,	'id' => $model->id));
-			return $this->_redirect($subject, array('action' => 'index'));
+			if (!empty($request->data['_add'])) {
+				return $this->_handleView($model, $request);
+			} elseif (!empty($request->data['_edit'])) {
+				return $this->_redirect($subject, array('action' => 'edit', $model->id));
+			} else {
+				$controller = $this->_controller();
+				return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
+			}
 		}
 
 		$this->setFlash('error');
 		$this->_trigger('afterSave', array('success' => false, 'created' => false));
 		$request->data = Hash::merge($request->data, $model->data);
+		$this->_trigger('beforeRender', array('success' => false));
+	}
+
+/**
+ * Helper _handleView method
+ *
+ * @return void
+ */
+	protected function _handleView(Model $model, CakeRequest $request) {
+		$model->create();
+		$request->data = $model->data;
 		$this->_trigger('beforeRender', array('success' => false));
 	}
 

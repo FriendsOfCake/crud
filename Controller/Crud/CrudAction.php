@@ -379,13 +379,7 @@ abstract class CrudAction extends CrudBaseObject {
  */
 	protected function _redirect($subject, $url = null, $status = null, $exit = true) {
 		$request = $this->_request();
-		if (!empty($request->data['redirect_url'])) {
-			$url = $request->data['redirect_url'];
-		} elseif (!empty($request->query['redirect_url'])) {
-			$url = $request->query['redirect_url'];
-		} elseif (empty($url)) {
-			$url = array('action' => 'index');
-		}
+		$url = $this->_redirectUrl(array('action' => 'index'));
 
 		$subject->url = $url;
 		$subject->status = $status;

@@ -34,6 +34,8 @@ class EditCrudAction extends CrudAction {
  * If you configure a key with your action name, it will override the default settings.
  * This is useful for adding fieldList to enhance security in saveAll.
  *
+ * `type` Specificity of action (record|model)
+ *
  * @var array
  */
 	protected $_settings = array(
@@ -59,7 +61,8 @@ class EditCrudAction extends CrudAction {
 				'text' => 'Could not update {name}'
 			)
 		),
-		'serialize' => array()
+		'serialize' => array(),
+		'type' => 'record',
 	);
 
 /**
@@ -91,33 +94,50 @@ class EditCrudAction extends CrudAction {
 			if ($model->saveAll($request->data, $this->saveOptions())) {
 				$this->setFlash('success');
 				$subject = $this->_trigger('afterSave', array('id' => $id, 'success' => true, 'created' => false));
-				return $this->_redirect($subject, array('action' => 'index'));
+				if (!empty($this->_request->data['_add'])) {
+					return $this->_redirect($subject, array('action' => 'add'));
+				} elseif (!empty($this->_request->data['_edit'])) {
+					$this->_handleView($model, $request, $id);
+				} else {
+					$controller = $this->_controller();
+					return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
+				}
 			} else {
 				$this->setFlash('error');
 				$this->_trigger('afterSave', array('id' => $id, 'success' => false, 'created' => false));
 			}
 		} else {
-			$query = array();
-			$query['conditions'] = array($model->escapeField() => $id);
-			$findMethod = $this->_getFindMethod('first');
-			$subject = $this->_trigger('beforeFind', compact('query', 'findMethod'));
-			$query = $subject->query;
-
-			$request->data = $model->find($subject->findMethod, $query);
-			if (empty($request->data)) {
-				$subject = $this->_trigger('recordNotFound', compact('id'));
-
-				$message = $this->message('recordNotFound', array('id' => $id));
-				$exceptionClass = $message['class'];
-				throw new $exceptionClass($message['text'], $message['code']);
-			}
-
-			$item = $request->data;
-			$subject = $this->_trigger('afterFind', compact('id', 'item'));
-			$request->data = Hash::merge($request->data, $model->data, $subject->item);
+			$this->_handleView($model, $request, $id);
 		}
 
 		$this->_trigger('beforeRender');
+	}
+
+/**
+ * Helper _handleView method
+ *
+ * @param string $id
+ * @return void
+ * @throws NotFoundException If record not found
+ */
+	protected function _handleView(Model $model, CakeRequest $request, $id) {
+		$query = array();
+		$query['conditions'] = array($model->escapeField() => $id);
+		$findMethod = $this->_getFindMethod('first');
+		$subject = $this->_trigger('beforeFind', compact('query', 'findMethod'));
+		$query = $subject->query;
+
+		$request->data = $model->find($subject->findMethod, $query);
+		if (empty($request->data)) {
+			$subject = $this->_trigger('recordNotFound', compact('id'));
+			$message = $this->message('recordNotFound', array('id' => $id));
+			$exceptionClass = $message['class'];
+			throw new $exceptionClass($message['text'], $message['code']);
+		}
+
+		$item = $request->data;
+		$subject = $this->_trigger('afterFind', compact('id', 'item'));
+		$request->data = Hash::merge($request->data, $model->data, $subject->item);
 	}
 
 }

@@ -3,6 +3,7 @@
 App::uses('Model', 'Model');
 App::uses('CakeRequest', 'Network');
 App::uses('PaginatorComponent', 'Controller/Component');
+App::uses('Controller', 'Controller');
 App::uses('ComponentCollection', 'Controller');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
 App::uses('IndexCrudAction', 'Crud.Controller/Crud/Action');

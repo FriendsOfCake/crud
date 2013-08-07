@@ -82,10 +82,21 @@ class AddCrudActionTest extends CrudTestCase {
 				return true;
 			}));
 
+		$Controller = $this
+			->getMockBuilder('Controller')
+			->disableOriginalConstructor()
+			->setMethods(array('referer'))
+			->getMock();
+		$Controller
+			->expects($this->at(0))
+			->method('referer')
+			->with(array('action' => 'index'))
+			->will($this->returnValue(array('action' => 'index')));
+
 		$Action = $this
 			->getMockBuilder('AddCrudAction')
 			->disableOriginalConstructor()
-			->setMethods(array('_request', '_model', '_trigger', 'setFlash', '_redirect'))
+			->setMethods(array('_request', '_model', '_controller', '_trigger', 'setFlash', '_redirect'))
 			->getMock();
 
 		$AfterSaveSubject = new CrudSubject();
@@ -112,6 +123,11 @@ class AddCrudActionTest extends CrudTestCase {
 			->method('_trigger')
 			->with('afterSave', array('success' => true, 'created' => true, 'id' => 1))
 			->will($this->returnValue($AfterSaveSubject));
+		$Action
+			->expects($this->at($i++))
+			->method('_controller')
+			->with()
+			->will($this->returnValue($Controller));
 		$Action
 			->expects($this->at($i++))
 			->method('_redirect')

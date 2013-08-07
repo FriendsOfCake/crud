@@ -21,6 +21,8 @@ class ViewCrudAction extends CrudAction {
  * `view` A map of the controller action and the view to render
  * If `NULL` (the default) the controller action name will be used
  *
+ * `type` Specificity of action (record|model)
+ *
  * @var array
  */
 	protected $_settings = array(
@@ -33,7 +35,8 @@ class ViewCrudAction extends CrudAction {
 		'requestMethods' => array(
 			'default' => array('get'),
 			'api' => array('get')
-		)
+		),
+		'type' => 'record',
 	);
 
 /**
