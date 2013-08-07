@@ -273,7 +273,7 @@
 </span><span id="163" class="l"><a class="l" href="#163">163 </a>            <span class="php-var">$serialize</span>[] = <span class="php-quote">'data'</span>;
 </span><span id="164" class="l"><a class="l" href="#164">164 </a>        }
 </span><span id="165" class="l"><a class="l" href="#165">165 </a>
-</span><span id="166" class="l"><a class="l" href="#166">166 </a>        <span class="php-var">$serialize</span> = <span class="php-keyword2">array_merge</span>(<span class="php-var">$serialize</span>, <span class="php-var">$action</span>-&gt;config(<span class="php-quote">'serialize'</span>));
+</span><span id="166" class="l"><a class="l" href="#166">166 </a>        <span class="php-var">$serialize</span> = <span class="php-keyword2">array_merge</span>(<span class="php-var">$serialize</span>, (<span class="php-keyword1">array</span>)<span class="php-var">$action</span>-&gt;config(<span class="php-quote">'serialize'</span>));
 </span><span id="167" class="l"><a class="l" href="#167">167 </a>
 </span><span id="168" class="l"><a class="l" href="#168">168 </a>        <span class="php-var">$this</span>-&gt;injectViewClasses();
 </span><span id="169" class="l"><a class="l" href="#169">169 </a>
