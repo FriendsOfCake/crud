@@ -460,6 +460,11 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testViewWithArrayIndexAction() {
+		$this->request
+			->expects($this->once())
+			->method('method')
+			->will($this->returnValue('GET'));
+
 		$this->controller
 			->expects($this->once())
 			->method('render')

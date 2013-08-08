@@ -135,7 +135,7 @@ class CrudActionTest extends CrudTestCase {
 		$Action = $this
 			->getMockBuilder('CrudAction')
 			->disableOriginalConstructor()
-			->setMethods(array('_request', '_handle', 'enforceRequestType'))
+			->setMethods(array('_request', '_get', 'enforceRequestType'))
 			->getMock();
 		$Action
 			->expects($this->any())
@@ -144,7 +144,7 @@ class CrudActionTest extends CrudTestCase {
 			->will($this->returnValue($Request));
 		$Action
 			->expects($this->once())
-			->method('_handle', '_handle was never called on a enabled action')
+			->method('_get', '_handle was never called on a enabled action')
 			->will($this->returnValue(true));
 
 		$this->_configureAction($Action);
