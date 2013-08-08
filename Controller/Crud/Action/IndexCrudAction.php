@@ -82,13 +82,7 @@ class IndexCrudAction extends CrudAction {
 	}
 
 /**
- * Generic index action
- *
- * Triggers the following callbacks
- *	- Crud.initialize
- *	- Crud.beforePaginate
- *	- Crud.afterPaginate
- *	- Crud.beforeRender
+ * HTTP GET handler
  *
  * @return void
  */

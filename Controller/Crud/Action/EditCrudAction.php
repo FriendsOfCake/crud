@@ -63,20 +63,11 @@ class EditCrudAction extends CrudAction {
 	);
 
 /**
- * Generic edit action
+ * HTTP GET handler
  *
- * Triggers the following callbacks
- *	- Crud.initialize
- *	- Crud.beforeSave
- *	- Crud.afterSave
- *	- Crud.beforeFind
- *	- Crud.recordNotFound
- *	- Crud.afterFind
- *	- Crud.beforeRender
- *
+ * @throws NotFoundException If record not found
  * @param string $id
  * @return void
- * @throws NotFoundException If record not found
  */
 	protected function _get($id = null) {
 		if (!$this->_validateId($id)) {
@@ -108,6 +99,12 @@ class EditCrudAction extends CrudAction {
 		$this->_trigger('beforeRender');
 	}
 
+/**
+ * HTTP PUT handler
+ *
+ * @param mixed $id
+ * @return void
+ */
 	protected function _put($id) {
 		if (!$this->_validateId($id)) {
 			return false;
@@ -127,6 +124,18 @@ class EditCrudAction extends CrudAction {
 		}
 
 		$this->_trigger('beforeRender');
+	}
+
+/**
+ * HTTP POST handler
+ *
+ * Thin proxy for _put
+ *
+ * @param mixed $id
+ * @return void
+ */
+	public function _post($id) {
+		return $this->_put($id);
 	}
 
 }

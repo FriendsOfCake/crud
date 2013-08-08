@@ -39,17 +39,11 @@ class DeleteCrudAction extends CrudAction {
 	);
 
 /**
- * Generic delete action
+ * HTTP DELETE handler
  *
- * Triggers the following callbacks
- *	- beforeFind
- *	- recordNotFound
- *	- beforeDelete
- *	- afterDelete
- *
+ * @throws NotFoundException If record not found
  * @param string $id
  * @return void
- * @throws NotFoundException If record not found
  */
 	protected function _delete($id = null) {
 		if (!$this->_validateId($id)) {
@@ -93,7 +87,14 @@ class DeleteCrudAction extends CrudAction {
 		$this->_redirect($subject, $controller->referer(array('action' => 'index')));
 	}
 
+/**
+ * HTTP POST handler
+ *
+ * @param mixed $id
+ * @return void
+ */
 	protected function _post($id) {
-		$this->_delete($id);
+		return $this->_delete($id);
 	}
+
 }

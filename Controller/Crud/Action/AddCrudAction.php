@@ -54,13 +54,7 @@ class AddCrudAction extends CrudAction {
 	);
 
 /**
- * Generic add action
- *
- * Triggers the following callbacks
- *	- Crud.initialize
- *	- Crud.beforeSave
- *	- Crud.afterSave
- *	- Crud.beforeRender
+ * HTTP GET handler
  *
  * @return void
  */
@@ -73,6 +67,11 @@ class AddCrudAction extends CrudAction {
 		$this->_trigger('beforeRender', array('success' => false));
 	}
 
+/**
+ * HTTP POST handler
+ *
+ * @return void
+ */
 	protected function _post() {
 		$request = $this->_request();
 		$model = $this->_model();
@@ -88,6 +87,15 @@ class AddCrudAction extends CrudAction {
 		$this->_trigger('afterSave', array('success' => false, 'created' => false));
 		$request->data = Hash::merge($request->data, $model->data);
 		$this->_trigger('beforeRender', array('success' => false));
+	}
+
+/**
+ * HTTP PUT handler
+ *
+ * @return void
+ */
+	protected function _put() {
+		return $this->_post();
 	}
 
 }
