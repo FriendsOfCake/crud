@@ -28,12 +28,7 @@ class ViewCrudAction extends CrudAction {
 		'findMethod' => 'first',
 		'view' => null,
 		'viewVar' => null,
-		'serialize' => array(),
-		'requestType' => 'default',
-		'requestMethods' => array(
-			'default' => array('get'),
-			'api' => array('get')
-		)
+		'serialize' => array()
 	);
 
 /**

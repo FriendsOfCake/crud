@@ -37,11 +37,6 @@ class AddCrudAction extends CrudAction {
 			'validate' => 'first',
 			'atomic' => true
 		),
-		'requestType' => 'default',
-		'requestMethods' => array(
-			'default' => array('get', 'post'),
-			'api' => array('post')
-		),
 		'messages' => array(
 			'success' => array(
 				'text' => 'Successfully created {name}'

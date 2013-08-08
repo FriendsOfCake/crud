@@ -22,12 +22,6 @@ class DeleteCrudAction extends CrudAction {
 	protected $_settings = array(
 		'enabled' => true,
 		'findMethod' => 'count',
-		'requestType' => 'default',
-		'requestMethods' => array(
-			'default' => array('delete'),
-			'api' => array('delete')
-		),
-
 		'messages' => array(
 			'success' => array(
 				'text' => 'Successfully deleted {name}'
