@@ -24,8 +24,8 @@ class AddCrudActionTest extends CrudTestCase {
 		$Request
 			->expects($this->once())
 			->method('is')
-			->with('post')
-			->will($this->returnValue(false));
+			->with('get')
+			->will($this->returnValue(true));
 
 		$Model = $this->getMock('Model', array('create'));
 		$Model
@@ -69,8 +69,8 @@ class AddCrudActionTest extends CrudTestCase {
 		$Request
 			->expects($this->once())
 			->method('is')
-			->with('post')
-			->will($this->returnValue(true));
+			->with('get')
+			->will($this->returnValue(false));
 
 		$Model = $this->getMock('Model', array('saveAll'));
 		$Model
@@ -134,8 +134,8 @@ class AddCrudActionTest extends CrudTestCase {
 		$Request
 			->expects($this->once())
 			->method('is')
-			->with('post')
-			->will($this->returnValue(true));
+			->with('get')
+			->will($this->returnValue(false));
 
 		$Model = $this->getMock('Model', array('saveAll'));
 		$Model->data = array('model' => true);

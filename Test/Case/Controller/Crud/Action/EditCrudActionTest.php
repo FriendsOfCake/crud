@@ -28,8 +28,8 @@ class EditCrudActionTest extends CrudTestCase {
     $Request
       ->expects($this->once())
       ->method('is')
-      ->with('put')
-      ->will($this->returnValue(false));
+      ->with('get')
+      ->will($this->returnValue(true));
 
     $Model = $this
       ->getMock('Model', array('create', 'find', 'escapeField'));
@@ -135,8 +135,8 @@ class EditCrudActionTest extends CrudTestCase {
     $Request
       ->expects($this->once())
       ->method('is')
-      ->with('put')
-      ->will($this->returnValue(true));
+      ->with('get')
+      ->will($this->returnValue(false));
     $Action
       ->expects($this->at($i++))
       ->method('_trigger')
@@ -220,8 +220,8 @@ class EditCrudActionTest extends CrudTestCase {
     $Request
       ->expects($this->once())
       ->method('is')
-      ->with('put')
-      ->will($this->returnValue(true));
+      ->with('get')
+      ->will($this->returnValue(false));
     $Action
       ->expects($this->at($i++))
       ->method('_trigger')
@@ -308,8 +308,8 @@ class EditCrudActionTest extends CrudTestCase {
     $Request
       ->expects($this->once())
       ->method('is')
-      ->with('put')
-      ->will($this->returnValue(false));
+      ->with('get')
+      ->will($this->returnValue(true));
     $Model
       ->expects($this->once())
       ->method('escapeField')
@@ -388,8 +388,8 @@ class EditCrudActionTest extends CrudTestCase {
     $Request
       ->expects($this->once())
       ->method('is')
-      ->with('put')
-      ->will($this->returnValue(false));
+      ->with('get')
+      ->will($this->returnValue(true));
     $Model
       ->expects($this->once())
       ->method('escapeField')

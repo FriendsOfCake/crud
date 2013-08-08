@@ -68,7 +68,7 @@ class AddCrudAction extends CrudAction {
 		$request = $this->_request();
 		$model = $this->_model();
 
-		if (!$request->is('post')) {
+		if ($request->is('get')) {
 			$model->create();
 			$request->data = $model->data;
 			$this->_trigger('beforeRender', array('success' => false));
