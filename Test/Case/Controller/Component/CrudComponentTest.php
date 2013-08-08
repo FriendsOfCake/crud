@@ -193,7 +193,7 @@ class CrudComponentTest extends ControllerTestCase {
 		);
 		$this->controller->name = 'CrudExamples';
 
-		$this->request = $this->getMock('CakeRequest', array('is'));
+		$this->request = $this->getMock('CakeRequest', array('is', 'method'));
 		$this->request->expects($this->any())->method('is')->will($this->returnValue(true));
 
 		$response = new CakeResponse();
@@ -329,7 +329,12 @@ class CrudComponentTest extends ControllerTestCase {
  * testView
  *
  */
-	public function testiew() {
+	public function testView() {
+		$this->request
+			->expects($this->once())
+			->method('method')
+			->will($this->returnValue('GET'));
+
 		$this->controller
 			->expects($this->once())
 			->method('render');
@@ -428,6 +433,16 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testViewWithArrayNewAction() {
+		$this->request
+			->expects($this->once())
+			->method('method')
+			->will($this->returnValue('GET'));
+
+		$this->request
+			->expects($this->once())
+			->method('method')
+			->will($this->returnValue('GET'));
+
 		$this->controller
 			->expects($this->once())
 			->method('render')
@@ -584,6 +599,11 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testViewCanBeChangedInControllerAction() {
+		$this->request
+			->expects($this->once())
+			->method('method')
+			->will($this->returnValue('GET'));
+
 		$this->request->action = 'search';
 
 		$this->controller

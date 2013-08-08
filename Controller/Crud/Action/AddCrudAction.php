@@ -64,16 +64,18 @@ class AddCrudAction extends CrudAction {
  *
  * @return void
  */
-	protected function _handle() {
+	protected function _get() {
 		$request = $this->_request();
 		$model = $this->_model();
 
-		if (!$request->is('post')) {
-			$model->create();
-			$request->data = $model->data;
-			$this->_trigger('beforeRender', array('success' => false));
-			return;
-		}
+		$model->create();
+		$request->data = $model->data;
+		$this->_trigger('beforeRender', array('success' => false));
+	}
+
+	protected function _post() {
+		$request = $this->_request();
+		$model = $this->_model();
 
 		$this->_trigger('beforeSave');
 		if ($model->saveAll($request->data, $this->saveOptions())) {

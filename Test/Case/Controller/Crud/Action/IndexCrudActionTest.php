@@ -23,10 +23,10 @@ class IndexCrudActionTest extends CrudTestCase {
 /**
  * Tests that calling index action will paginate the main model
  *
- * @covers IndexCrudAction::_handle
+ * @covers IndexCrudAction::_get
  * @return void
  */
-	public function test_handle() {
+	public function test_get() {
 		$Controller = $this
 			->getMockBuilder('Controller')
 			->disableOriginalConstructor()
@@ -88,13 +88,13 @@ class IndexCrudActionTest extends CrudTestCase {
 			->with(array('success' => true, 'items' => array('foo', 'bar')));
 
     $this->setReflectionClassInstance($Action);
-    $this->callProtectedMethod('_handle', array(), $Action);
+    $this->callProtectedMethod('_get', array(), $Action);
 	}
 
 /**
  * Tests that iterators are casted to arrays
  *
- * @covers IndexCrudAction::_handle
+ * @covers IndexCrudAction::_get
  * @return void
  */
 	public function testPaginatorReturningIterator() {
@@ -159,7 +159,7 @@ class IndexCrudActionTest extends CrudTestCase {
 			->with(array('success' => true, 'items' => array('foo', 'bar')));
 
     $this->setReflectionClassInstance($Action);
-    $this->callProtectedMethod('_handle', array(), $Action);
+    $this->callProtectedMethod('_get', array(), $Action);
 	}
 
 /**

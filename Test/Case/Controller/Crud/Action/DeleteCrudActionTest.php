@@ -19,7 +19,7 @@ class DeleteCrudActionTest extends CrudTestCase {
  *
  * test the best-case flow
  *
- * @covers DeleteCrudAction::_handle
+ * @covers DeleteCrudAction::_delete
  * @return void
  */
 	public function test_handle() {
@@ -114,21 +114,21 @@ class DeleteCrudActionTest extends CrudTestCase {
 			->with($CrudSubject, array('action' => 'index'));
 
 		$this->setReflectionClassInstance($Action);
-		$this->callProtectedMethod('_handle', array(1), $Action);
+		$this->callProtectedMethod('_delete', array(1), $Action);
 	}
 
 /**
- * test_handleNotFound
+ * test_deleteNotFound
  *
  * Test the behavior when a record is not found in the database
  *
- * @covers DeleteCrudAction::_handle
+ * @covers DeleteCrudAction::_delete
  * @expectedException NotFoundException
  * @expectedExceptionMessage Not Found
  * @expectedExceptionCode 404
  * @return void
  */
-	public function test_handleNotFound() {
+	public function test_deleteNotFound() {
 		$Model = $this
 			->getMockBuilder('Model')
 			->disableOriginalConstructor()
@@ -199,18 +199,18 @@ class DeleteCrudActionTest extends CrudTestCase {
 			->method('delete');
 
 		$this->setReflectionClassInstance($Action);
-		$this->callProtectedMethod('_handle', array(1), $Action);
+		$this->callProtectedMethod('_delete', array(1), $Action);
 	}
 
 /**
- * test_handleDeleteFailed
+ * test_deleteDeleteFailed
  *
  * test the behavior of delete() failing
  *
- * @covers DeleteCrudAction::_handle
+ * @covers DeleteCrudAction::_delete
  * @return void
  */
-	public function test_handleDeleteFailed() {
+	public function test_deleteDeleteFailed() {
 		$Model = $this
 			->getMockBuilder('Model')
 			->disableOriginalConstructor()
@@ -302,19 +302,19 @@ class DeleteCrudActionTest extends CrudTestCase {
 			->with($CrudSubject, array('action' => 'index'));
 
 		$this->setReflectionClassInstance($Action);
-		$this->callProtectedMethod('_handle', array(1), $Action);
+		$this->callProtectedMethod('_delete', array(1), $Action);
 	}
 
 /**
- * test_handleDeleteStoppedByEvent
+ * test_deleteDeleteStoppedByEvent
  *
  * test the behavior when the beforeDelete callback
  * stops the event
  *
- * @covers DeleteCrudAction::_handle
+ * @covers DeleteCrudAction::_delete
  * @return void
  */
-	public function test_handleDeleteStoppedByEvent() {
+	public function test_deleteDeleteStoppedByEvent() {
 		$Model = $this
 			->getMockBuilder('Model')
 			->disableOriginalConstructor()
@@ -400,18 +400,18 @@ class DeleteCrudActionTest extends CrudTestCase {
 			->with($CrudSubject, array('action' => 'index'));
 
 		$this->setReflectionClassInstance($Action);
-		$this->callProtectedMethod('_handle', array(1), $Action);
+		$this->callProtectedMethod('_delete', array(1), $Action);
 	}
 
 /**
- * test_handleInvalidId
+ * test_deleteInvalidId
  *
  * Test the behavior when the ID is invalid
  *
- * @covers DeleteCrudAction::_handle
+ * @covers DeleteCrudAction::_delete
  * @return void
  */
-	public function test_handleInvalidId() {
+	public function test_deleteInvalidId() {
 		$Action = $this
 			->getMockBuilder('DeleteCrudAction')
 			->disableOriginalConstructor()
@@ -427,7 +427,7 @@ class DeleteCrudActionTest extends CrudTestCase {
 			->method('_model');
 
 		$this->setReflectionClassInstance($Action);
-		$this->callProtectedMethod('_handle', array(1), $Action);
+		$this->callProtectedMethod('_delete', array(1), $Action);
 	}
 
 }

@@ -92,7 +92,7 @@ class IndexCrudAction extends CrudAction {
  *
  * @return void
  */
-	protected function _handle() {
+	protected function _get() {
 		$this->paginationConfig();
 
 		$controller = $this->_controller();

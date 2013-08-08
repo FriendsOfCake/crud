@@ -14,18 +14,13 @@ App::uses('AddCrudAction', 'Crud.Controller/Crud/Action');
 class AddCrudActionTest extends CrudTestCase {
 
 /**
- * Test the normal HTTP GET flow of _handle
+ * Test the normal HTTP GET flow of _get
  *
- * @covers AddCrudAction::_handle
+ * @covers AddCrudAction::_get
  * @return void
  */
 	public function testActionGet() {
-		$Request = $this->getMock('CakeRequest', array('is'));
-		$Request
-			->expects($this->once())
-			->method('is')
-			->with('post')
-			->will($this->returnValue(false));
+		$Request = $this->getMock('CakeRequest');
 
 		$Model = $this->getMock('Model', array('create'));
 		$Model
@@ -53,24 +48,19 @@ class AddCrudActionTest extends CrudTestCase {
 			->with('beforeRender', array('success' => false));
 
 		$this->setReflectionClassInstance($Action);
-		$this->callProtectedMethod('_handle', array(), $Action);
+		$this->callProtectedMethod('_get', array(), $Action);
 	}
 
 /**
  * Test that calling HTTP POST on an add action
  * will trigger multiple events on success
  *
- * @covers AddCrudAction::_handle
+ * @covers AddCrudAction::_post
  * @return void
  */
 	public function testActionPostSuccess() {
-		$Request = $this->getMock('CakeRequest', array('is'));
+		$Request = $this->getMock('CakeRequest');
 		$Request->data = array('Post' => array('name' => 'Hello World'));
-		$Request
-			->expects($this->once())
-			->method('is')
-			->with('post')
-			->will($this->returnValue(true));
 
 		$Model = $this->getMock('Model', array('saveAll'));
 		$Model
@@ -118,24 +108,19 @@ class AddCrudActionTest extends CrudTestCase {
 			->with($AfterSaveSubject, array('action' => 'index'));
 
 		$this->setReflectionClassInstance($Action);
-		$this->callProtectedMethod('_handle', array(), $Action);
+		$this->callProtectedMethod('_post', array(), $Action);
 	}
 
 /**
  * Test that calling HTTP POST on an add action
  * will trigger multiple events on error
  *
- * @covers AddCrudAction::_handle
+ * @covers AddCrudAction::_post
  * @return void
  */
 	public function testActionPostError() {
-		$Request = $this->getMock('CakeRequest', array('is'));
+		$Request = $this->getMock('CakeRequest');
 		$Request->data = array('Post' => array('name' => 'Hello World'));
-		$Request
-			->expects($this->once())
-			->method('is')
-			->with('post')
-			->will($this->returnValue(true));
 
 		$Model = $this->getMock('Model', array('saveAll'));
 		$Model->data = array('model' => true);
@@ -181,7 +166,7 @@ class AddCrudActionTest extends CrudTestCase {
 			->with('beforeRender', array('success' => false));
 
 		$this->setReflectionClassInstance($Action);
-		$this->callProtectedMethod('_handle', array(), $Action);
+		$this->callProtectedMethod('_post', array(), $Action);
 
 		$result = $Request->data;
 		$expected = $Request->data;

@@ -125,8 +125,12 @@ class CrudActionTest extends CrudTestCase {
  * @return void
  */
 	public function testEnabledActionWorks() {
-		$Request = new CakeRequest();
+		$Request = $this->getMock('CakeRequest', array('method'));
 		$Request->action = 'add';
+		$Request
+			->expects($this->once())
+			->method('method')
+			->will($this->returnValue('GET'));
 
 		$Action = $this
 			->getMockBuilder('CrudAction')
@@ -820,8 +824,14 @@ class CrudActionTest extends CrudTestCase {
 		$Action = $this
 			->getMockBuilder('CrudAction')
 			->disableOriginalConstructor()
-			->setMethods(array('config', 'enforceRequestType', '_handle'))
+			->setMethods(array('config', 'enforceRequestType', '_get', '_request'))
 			->getMock();
+
+		$Request = $this->getMock('CakeRequest', array('method'));
+		$Request
+			->expects($this->once())
+			->method('method')
+			->will($this->returnValue('GET'));
 
 		$i = 0;
 		$Action
@@ -834,7 +844,11 @@ class CrudActionTest extends CrudTestCase {
 			->method('enforceRequestType');
 		$Action
 			->expects($this->at($i++))
-			->method('_handle');
+			->method('_request')
+			->will($this->returnValue($Request));
+		$Action
+			->expects($this->at($i++))
+			->method('_get');
 
 		$Action->handle(new CrudSubject(array('args' => array())));
 	}

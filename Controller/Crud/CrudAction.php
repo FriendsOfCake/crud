@@ -51,7 +51,13 @@ abstract class CrudAction extends CrudBaseObject {
 
 		$this->enforceRequestType();
 
-		return call_user_func_array(array($this, '_handle'), $subject->args);
+		$method = '_' . strtolower($this->_request()->method());
+
+		// if (!method_exists($this, $method)) {
+		// 	$method = '_handle';
+		// }
+
+		return call_user_func_array(array($this, $method), $subject->args);
 	}
 
 /**
@@ -396,13 +402,5 @@ abstract class CrudAction extends CrudBaseObject {
 		$controller->redirect($subject->url, $subject->status, $subject->exit);
 		return $controller->response;
 	}
-
-/**
- * Implements all the request handling and response serving logic
- * for this action
- *
- * @return void|CakeResponse
- */
-	protected abstract function _handle();
 
 }
