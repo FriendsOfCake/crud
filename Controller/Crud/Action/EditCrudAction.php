@@ -86,17 +86,7 @@ class EditCrudAction extends CrudAction {
 		$request = $this->_request();
 		$model = $this->_model();
 
-		if ($request->is('put')) {
-			$this->_trigger('beforeSave', compact('id'));
-			if ($model->saveAll($request->data, $this->saveOptions())) {
-				$this->setFlash('success');
-				$subject = $this->_trigger('afterSave', array('id' => $id, 'success' => true, 'created' => false));
-				return $this->_redirect($subject, array('action' => 'index'));
-			} else {
-				$this->setFlash('error');
-				$this->_trigger('afterSave', array('id' => $id, 'success' => false, 'created' => false));
-			}
-		} else {
+		if ($request->is('get')) {
 			$query = array();
 			$query['conditions'] = array($model->escapeField() => $id);
 			$findMethod = $this->_getFindMethod('first');
@@ -115,6 +105,16 @@ class EditCrudAction extends CrudAction {
 			$item = $request->data;
 			$subject = $this->_trigger('afterFind', compact('id', 'item'));
 			$request->data = Hash::merge($request->data, $model->data, $subject->item);
+		} else {
+			$this->_trigger('beforeSave', compact('id'));
+			if ($model->saveAll($request->data, $this->saveOptions())) {
+				$this->setFlash('success');
+				$subject = $this->_trigger('afterSave', array('id' => $id, 'success' => true, 'created' => false));
+				return $this->_redirect($subject, array('action' => 'index'));
+			} else {
+				$this->setFlash('error');
+				$this->_trigger('afterSave', array('id' => $id, 'success' => false, 'created' => false));
+			}
 		}
 
 		$this->_trigger('beforeRender');
