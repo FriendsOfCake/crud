@@ -35,6 +35,7 @@ abstract class CrudAction extends CrudBaseObject {
  * By returning false the handling is cancelled and the
  * execution flow continues
  *
+ * @throws NotImplementedException if the action can't handle the request
  * @param CakeEvent $event
  * @return mixed
  */

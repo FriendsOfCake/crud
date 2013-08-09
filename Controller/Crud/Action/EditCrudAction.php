@@ -129,7 +129,7 @@ class EditCrudAction extends CrudAction {
  * @param mixed $id
  * @return void
  */
-	public function _post($id) {
+	protected function _post($id) {
 		return $this->_put($id);
 	}
 
