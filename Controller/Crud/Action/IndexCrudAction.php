@@ -28,12 +28,7 @@ class IndexCrudAction extends CrudAction {
 		'findMethod' => 'all',
 		'view' => null,
 		'viewVar' => null,
-		'serialize' => array(),
-		'requestType' => 'default',
-		'requestMethods' => array(
-			'default' => array('get'),
-			'api' => array('get')
-		)
+		'serialize' => array()
 	);
 
 /**
@@ -82,17 +77,11 @@ class IndexCrudAction extends CrudAction {
 	}
 
 /**
- * Generic index action
- *
- * Triggers the following callbacks
- *	- Crud.initialize
- *	- Crud.beforePaginate
- *	- Crud.afterPaginate
- *	- Crud.beforeRender
+ * HTTP GET handler
  *
  * @return void
  */
-	protected function _handle() {
+	protected function _get() {
 		$this->paginationConfig();
 
 		$controller = $this->_controller();

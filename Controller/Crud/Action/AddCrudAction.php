@@ -37,11 +37,6 @@ class AddCrudAction extends CrudAction {
 			'validate' => 'first',
 			'atomic' => true
 		),
-		'requestType' => 'default',
-		'requestMethods' => array(
-			'default' => array('get', 'post'),
-			'api' => array('post')
-		),
 		'messages' => array(
 			'success' => array(
 				'text' => 'Successfully created {name}'
@@ -54,26 +49,27 @@ class AddCrudAction extends CrudAction {
 	);
 
 /**
- * Generic add action
- *
- * Triggers the following callbacks
- *	- Crud.initialize
- *	- Crud.beforeSave
- *	- Crud.afterSave
- *	- Crud.beforeRender
+ * HTTP GET handler
  *
  * @return void
  */
-	protected function _handle() {
+	protected function _get() {
 		$request = $this->_request();
 		$model = $this->_model();
 
-		if (!$request->is('post')) {
-			$model->create();
-			$request->data = $model->data;
-			$this->_trigger('beforeRender', array('success' => false));
-			return;
-		}
+		$model->create();
+		$request->data = $model->data;
+		$this->_trigger('beforeRender', array('success' => false));
+	}
+
+/**
+ * HTTP POST handler
+ *
+ * @return void
+ */
+	protected function _post() {
+		$request = $this->_request();
+		$model = $this->_model();
 
 		$this->_trigger('beforeSave');
 		if ($model->saveAll($request->data, $this->saveOptions())) {
@@ -86,6 +82,15 @@ class AddCrudAction extends CrudAction {
 		$this->_trigger('afterSave', array('success' => false, 'created' => false));
 		$request->data = Hash::merge($request->data, $model->data);
 		$this->_trigger('beforeRender', array('success' => false));
+	}
+
+/**
+ * HTTP PUT handler
+ *
+ * @return void
+ */
+	protected function _put() {
+		return $this->_post();
 	}
 
 }

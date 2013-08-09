@@ -46,11 +46,6 @@ class EditCrudAction extends CrudAction {
 			'validate' => 'first',
 			'atomic' => true
 		),
-		'requestType' => 'default',
-		'requestMethods' => array(
-			'default' => array('get', 'post', 'put'),
-			'api' => array('put')
-		),
 		'messages' => array(
 			'success' => array(
 				'text' => 'Successfully updated {name}'
@@ -63,22 +58,13 @@ class EditCrudAction extends CrudAction {
 	);
 
 /**
- * Generic edit action
+ * HTTP GET handler
  *
- * Triggers the following callbacks
- *	- Crud.initialize
- *	- Crud.beforeSave
- *	- Crud.afterSave
- *	- Crud.beforeFind
- *	- Crud.recordNotFound
- *	- Crud.afterFind
- *	- Crud.beforeRender
- *
+ * @throws NotFoundException If record not found
  * @param string $id
  * @return void
- * @throws NotFoundException If record not found
  */
-	protected function _handle($id = null) {
+	protected function _get($id = null) {
 		if (!$this->_validateId($id)) {
 			return false;
 		}
@@ -86,38 +72,65 @@ class EditCrudAction extends CrudAction {
 		$request = $this->_request();
 		$model = $this->_model();
 
-		if ($request->is('put')) {
-			$this->_trigger('beforeSave', compact('id'));
-			if ($model->saveAll($request->data, $this->saveOptions())) {
-				$this->setFlash('success');
-				$subject = $this->_trigger('afterSave', array('id' => $id, 'success' => true, 'created' => false));
-				return $this->_redirect($subject, array('action' => 'index'));
-			} else {
-				$this->setFlash('error');
-				$this->_trigger('afterSave', array('id' => $id, 'success' => false, 'created' => false));
-			}
+		$query = array();
+		$query['conditions'] = array($model->escapeField() => $id);
+		$findMethod = $this->_getFindMethod('first');
+		$subject = $this->_trigger('beforeFind', compact('query', 'findMethod'));
+		$query = $subject->query;
+
+		$request->data = $model->find($subject->findMethod, $query);
+		if (empty($request->data)) {
+			$subject = $this->_trigger('recordNotFound', compact('id'));
+
+			$message = $this->message('recordNotFound', array('id' => $id));
+			$exceptionClass = $message['class'];
+			throw new $exceptionClass($message['text'], $message['code']);
+		}
+
+		$item = $request->data;
+		$subject = $this->_trigger('afterFind', compact('id', 'item'));
+		$request->data = Hash::merge($request->data, $model->data, $subject->item);
+
+		$this->_trigger('beforeRender');
+	}
+
+/**
+ * HTTP PUT handler
+ *
+ * @param mixed $id
+ * @return void
+ */
+	protected function _put($id) {
+		if (!$this->_validateId($id)) {
+			return false;
+		}
+
+		$request = $this->_request();
+		$model = $this->_model();
+
+		$this->_trigger('beforeSave', compact('id'));
+		if ($model->saveAll($request->data, $this->saveOptions())) {
+			$this->setFlash('success');
+			$subject = $this->_trigger('afterSave', array('id' => $id, 'success' => true, 'created' => false));
+			return $this->_redirect($subject, array('action' => 'index'));
 		} else {
-			$query = array();
-			$query['conditions'] = array($model->escapeField() => $id);
-			$findMethod = $this->_getFindMethod('first');
-			$subject = $this->_trigger('beforeFind', compact('query', 'findMethod'));
-			$query = $subject->query;
-
-			$request->data = $model->find($subject->findMethod, $query);
-			if (empty($request->data)) {
-				$subject = $this->_trigger('recordNotFound', compact('id'));
-
-				$message = $this->message('recordNotFound', array('id' => $id));
-				$exceptionClass = $message['class'];
-				throw new $exceptionClass($message['text'], $message['code']);
-			}
-
-			$item = $request->data;
-			$subject = $this->_trigger('afterFind', compact('id', 'item'));
-			$request->data = Hash::merge($request->data, $model->data, $subject->item);
+			$this->setFlash('error');
+			$this->_trigger('afterSave', array('id' => $id, 'success' => false, 'created' => false));
 		}
 
 		$this->_trigger('beforeRender');
+	}
+
+/**
+ * HTTP POST handler
+ *
+ * Thin proxy for _put
+ *
+ * @param mixed $id
+ * @return void
+ */
+	protected function _post($id) {
+		return $this->_put($id);
 	}
 
 }

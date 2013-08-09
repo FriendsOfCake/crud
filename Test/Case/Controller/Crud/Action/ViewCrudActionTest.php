@@ -15,7 +15,7 @@ App::uses('CrudTestCase', 'Crud.Test/Support');
 class ViewCrudActionTest extends CrudTestCase {
 
 /**
- * test_handleGet
+ * test_getGet
  *
  * Test that calling HTTP GET on an view action
  * will trigger the appropriate events
@@ -24,10 +24,10 @@ class ViewCrudActionTest extends CrudTestCase {
  *
  * The id provided, it's correct and it's in the db
  *
- * @covers ViewCrudAction::_handle
+ * @covers ViewCrudAction::_get
  * @return void
  */
-	public function test_handleGet() {
+	public function test_getGet() {
 		$query = array('conditions' => array('Model.id' => 1));
 		$data = array('Model' => array('id' => 1));
 
@@ -115,21 +115,21 @@ class ViewCrudActionTest extends CrudTestCase {
 			->with('beforeRender');
 
     $this->setReflectionClassInstance($Action);
-    $this->callProtectedMethod('_handle', array(1), $Action);
+    $this->callProtectedMethod('_get', array(1), $Action);
 	}
 
 /**
- * test_handleGetCustomViewVar
+ * test_getGetCustomViewVar
  *
  * Test that calling HTTP GET on an view action
  * will trigger the appropriate events
  *
  * Testing that setting a different viewVar actually works
  *
- * @covers ViewCrudAction::_handle
+ * @covers ViewCrudAction::_get
  * @return void
  */
-	public function test_handleGetCustomViewVar() {
+	public function test_getGetCustomViewVar() {
 		$query = array('conditions' => array('Model.id' => 1));
 		$data = array('Model' => array('id' => 1));
 
@@ -217,24 +217,24 @@ class ViewCrudActionTest extends CrudTestCase {
 			->with('beforeRender');
 
     $this->setReflectionClassInstance($Action);
-    $this->callProtectedMethod('_handle', array(1), $Action);
+    $this->callProtectedMethod('_get', array(1), $Action);
 	}
 
 /**
- * test_handleGetNotFound
+ * test_getGetNotFound
  *
  * Test that calling HTTP GET on an view action
  * will trigger the appropriate events
  *
  * The ID provided is valid, but do not exist in the database
  *
- * @covers ViewCrudAction::_handle
+ * @covers ViewCrudAction::_get
  * @expectedException NotFoundException
  * @exepctedExceptionMessage Not Found
  * @exepctedExceptionCode 404
  * @return void
  */
-	public function test_handleGetNotFound() {
+	public function test_getGetNotFound() {
 		$query = array('conditions' => array('Model.id' => 1));
 		$data = array('Model' => array('id' => 1));
 
@@ -315,11 +315,11 @@ class ViewCrudActionTest extends CrudTestCase {
 			->method('set');
 
     $this->setReflectionClassInstance($Action);
-    $this->callProtectedMethod('_handle', array(1), $Action);
+    $this->callProtectedMethod('_get', array(1), $Action);
 	}
 
 /**
- * test_handleGetInvalidId
+ * test_getGetInvalidId
  *
  * Test that calling HTTP GET on an view action
  * will trigger the appropriate events
@@ -327,10 +327,10 @@ class ViewCrudActionTest extends CrudTestCase {
  * This test assumes that the id for the view
  * action does not exist in the database
  *
- * @covers ViewCrudAction::_handle
+ * @covers ViewCrudAction::_get
  * @return void
  */
-	public function test_handleGetInvalidId() {
+	public function test_getGetInvalidId() {
 		$Action = $this
     	->getMockBuilder('ViewCrudAction')
       ->disableOriginalConstructor()
@@ -349,7 +349,7 @@ class ViewCrudActionTest extends CrudTestCase {
 			->method('_trigger');
 
     $this->setReflectionClassInstance($Action);
-    $result = $this->callProtectedMethod('_handle', array(1), $Action);
+    $result = $this->callProtectedMethod('_get', array(1), $Action);
     $this->assertFalse($result);
 	}
 

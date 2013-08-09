@@ -125,13 +125,17 @@ class CrudActionTest extends CrudTestCase {
  * @return void
  */
 	public function testEnabledActionWorks() {
-		$Request = new CakeRequest();
+		$Request = $this->getMock('CakeRequest', array('method'));
 		$Request->action = 'add';
+		$Request
+			->expects($this->once())
+			->method('method')
+			->will($this->returnValue('GET'));
 
 		$Action = $this
 			->getMockBuilder('CrudAction')
 			->disableOriginalConstructor()
-			->setMethods(array('_request', '_handle', 'enforceRequestType'))
+			->setMethods(array('_request', '_get'))
 			->getMock();
 		$Action
 			->expects($this->any())
@@ -140,7 +144,7 @@ class CrudActionTest extends CrudTestCase {
 			->will($this->returnValue($Request));
 		$Action
 			->expects($this->once())
-			->method('_handle', '_handle was never called on a enabled action')
+			->method('_get', '_handle was never called on a enabled action')
 			->will($this->returnValue(true));
 
 		$this->_configureAction($Action);
@@ -711,103 +715,6 @@ class CrudActionTest extends CrudTestCase {
 	}
 
 /**
- * testRequestMethods
- *
- * @covers CrudAction::requestMethods
- * @return void
- */
-	public function testRequestMethods() {
-		$this->ActionClass->requestMethods('default', array('get', 'post', 'put', 'delete'));
-		$result = $this->ActionClass->requestMethods('default');
-		$expected = array('get', 'post', 'put', 'delete');
-		$this->assertEqual($result, $expected);
-	}
-
-/**
- * testRequestMethodsDefaults
- *
- * @covers CrudAction::requestMethods
- * @return void
- */
-	public function testRequestMethodsDefaults() {
-		$defaults = array('requestMethods' => array('default' => array('get', 'put')));
-		$this->ActionClass = new $this->actionClassName($this->Subject, $defaults);
-
-		$result = $this->ActionClass->requestMethods('default');
-		$expected = array('get', 'put');
-		$this->assertEqual($result, $expected);
-	}
-
-/**
- * testRequestMethodDefaultOverride
- *
- * Test that providing defaults override crud action defaults
- *
- * @covers CrudAction::requestMethods
- * @return void
- */
-	public function testRequestMethodDefaultOverride() {
-		$defaults = array(
-			'requestMethods' => array(
-				'default' => array('put')
-			)
-		);
-
-		$this->ActionClass = $this->getMock('IndexCrudAction', array('foo'), array($this->Subject, $defaults));
-
-		$result = $this->ActionClass->requestMethods('default');
-		$expected = array('put');
-		$this->assertEqual($result, $expected);
-
-		$result = $this->ActionClass->requestMethods('default', array('get'));
-		$expected = $this->ActionClass;
-		$this->assertEqual($result, $expected);
-
-		$result = $this->ActionClass->requestMethods('default');
-		$expected = array('get');
-		$this->assertEqual($result, $expected);
-	}
-
-/**
- * testEnforceRequestType
- *
- * Test that requesting an action with an valid action does not throw an exception
- *
- * @covers CrudAction::enforceRequestType
- * @return void
- */
-	public function testEnforceRequestType() {
-		$request = $this->getMock('CakeRequest', array('is'));
-		$request->expects($this->at(0))->method('is')->with('get')->will($this->returnValue(false));
-		$request->expects($this->at(1))->method('is')->with('post')->will($this->returnValue(true));
-
-		$action = $this->getMock('IndexCrudAction', array('_request', 'requestMethods'), array(new CrudSubject()));
-		$action->expects($this->once())->method('requestMethods')->will($this->returnValue(array('get', 'post')));
-		$action->expects($this->once())->method('_request')->with()->will($this->returnValue($request));
-		$action->enforceRequestType();
-	}
-
-/**
- * testEnforceRequestTypeInvalidRequestType
- *
- * Test that requesting an action with an invalid action throws an exception
- *
- * @covers CrudAction::enforceRequestType
- * @expectedException MethodNotAllowedException
- * @return void
- */
-	public function testEnforceRequestTypeInvalidRequestType() {
-		$request = $this->getMock('CakeRequest', array('is'));
-		$request->expects($this->at(0))->method('is')->with('get')->will($this->returnValue(false));
-		$request->expects($this->at(1))->method('is')->with('post')->will($this->returnValue(false));
-
-		$action = $this->getMock('IndexCrudAction', array('_request', 'requestMethods'), array(new CrudSubject()));
-		$action->expects($this->once())->method('_request')->with()->will($this->returnValue($request));
-		$action->expects($this->once())->method('requestMethods')->will($this->returnValue(array('get', 'post')));
-		$action->enforceRequestType();
-	}
-
-/**
  * testHandle
  *
  * Test that calling handle will invoke _handle
@@ -820,8 +727,14 @@ class CrudActionTest extends CrudTestCase {
 		$Action = $this
 			->getMockBuilder('CrudAction')
 			->disableOriginalConstructor()
-			->setMethods(array('config', 'enforceRequestType', '_handle'))
+			->setMethods(array('config', '_get', '_request'))
 			->getMock();
+
+		$Request = $this->getMock('CakeRequest', array('method'));
+		$Request
+			->expects($this->once())
+			->method('method')
+			->will($this->returnValue('GET'));
 
 		$i = 0;
 		$Action
@@ -831,10 +744,11 @@ class CrudActionTest extends CrudTestCase {
 			->will($this->returnValue(true));
 		$Action
 			->expects($this->at($i++))
-			->method('enforceRequestType');
+			->method('_request')
+			->will($this->returnValue($Request));
 		$Action
 			->expects($this->at($i++))
-			->method('_handle');
+			->method('_get');
 
 		$Action->handle(new CrudSubject(array('args' => array())));
 	}
@@ -852,7 +766,7 @@ class CrudActionTest extends CrudTestCase {
 		$Action = $this
 			->getMockBuilder('CrudAction')
 			->disableOriginalConstructor()
-			->setMethods(array('config', 'enforceRequestType', '_handle'))
+			->setMethods(array('config', '_handle'))
 			->getMock();
 
 		$i = 0;
@@ -861,9 +775,6 @@ class CrudActionTest extends CrudTestCase {
 			->method('config')
 			->with('enabled')
 			->will($this->returnValue(false));
-		$Action
-			->expects($this->never())
-			->method('enforceRequestType');
 		$Action
 			->expects($this->never())
 			->method('_handle');

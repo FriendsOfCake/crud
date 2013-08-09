@@ -28,12 +28,7 @@ class ViewCrudAction extends CrudAction {
 		'findMethod' => 'first',
 		'view' => null,
 		'viewVar' => null,
-		'serialize' => array(),
-		'requestType' => 'default',
-		'requestMethods' => array(
-			'default' => array('get'),
-			'api' => array('get')
-		)
+		'serialize' => array()
 	);
 
 /**
@@ -52,20 +47,13 @@ class ViewCrudAction extends CrudAction {
 	}
 
 /**
- * Generic view action
+ * HTTP GET handler
  *
- * Triggers the following callbacks
- *	- Crud.initialize
- *	- Crud.beforeFind
- *	- Crud.recordNotFound
- *	- Crud.afterFind
- *	- Crud.beforeRender
- *
+ * @throws NotFoundException If record not found
  * @param string $id
  * @return void
- * @throws NotFoundException If record not found
  */
-	protected function _handle($id = null) {
+	protected function _get($id = null) {
 		if (!$this->_validateId($id)) {
 			return false;
 		}

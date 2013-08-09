@@ -14,22 +14,16 @@ App::uses('EditCrudAction', 'Crud.Controller/Crud/Action');
 class EditCrudActionTest extends CrudTestCase {
 
 /**
- * Test the normal HTTP GET flow of _handle
+ * Test the normal HTTP GET flow of _get
  *
- * @covers EditCrudAction::_handle
+ * @covers EditCrudAction::_get
  * @return void
  */
   public function testActionGet() {
     $query = array('conditions' => array('Model.id' => 1));
     $data = array('Model' => array('id' => 1));
 
-    $Request = $this
-      ->getMock('CakeRequest', array('is'));
-    $Request
-      ->expects($this->once())
-      ->method('is')
-      ->with('put')
-      ->will($this->returnValue(false));
+    $Request = $this->getMock('CakeRequest');
 
     $Model = $this
       ->getMock('Model', array('create', 'find', 'escapeField'));
@@ -84,7 +78,7 @@ class EditCrudActionTest extends CrudTestCase {
       ->with('beforeRender');
 
     $this->setReflectionClassInstance($Action);
-    $this->callProtectedMethod('_handle', array(1), $Action);
+    $this->callProtectedMethod('_get', array(1), $Action);
   }
 
 /**
@@ -95,7 +89,7 @@ class EditCrudActionTest extends CrudTestCase {
  * This test assumes the best possible case
  * The id provided, it's correct and it's in the db
  *
- * @covers EditCrudAction::_handle
+ * @covers EditCrudAction::_put
  * @return void
  */
   public function testActionPut() {
@@ -103,8 +97,7 @@ class EditCrudActionTest extends CrudTestCase {
 
     $CrudSubject = new CrudSubject();
 
-    $Request = $this
-      ->getMock('CakeRequest', array('is'));
+    $Request = $this->getMock('CakeRequest');
     $Request->data = $data;
 
     $Model = $this
@@ -132,11 +125,6 @@ class EditCrudActionTest extends CrudTestCase {
       ->expects($this->at($i++))
       ->method('_model')
       ->will($this->returnValue($Model));
-    $Request
-      ->expects($this->once())
-      ->method('is')
-      ->with('put')
-      ->will($this->returnValue(true));
     $Action
       ->expects($this->at($i++))
       ->method('_trigger')
@@ -163,13 +151,12 @@ class EditCrudActionTest extends CrudTestCase {
       ->expects($this->at($i++))
       ->method('_redirect')
       ->with($CrudSubject, array('action' => 'index'));
-
     $Action
       ->expects($this->exactly(2))
       ->method('_trigger');
 
     $this->setReflectionClassInstance($Action);
-    $this->callProtectedMethod('_handle', array(1), $Action);
+    $this->callProtectedMethod('_put', array(1), $Action);
   }
 
 /**
@@ -180,7 +167,7 @@ class EditCrudActionTest extends CrudTestCase {
  * This test assumes the saveAll() call fails
  * The id provided, it's correct and it's in the db
  *
- * @covers EditCrudAction::_handle
+ * @covers EditCrudAction::_put
  * @return void
  */
   public function testActionPutSaveError() {
@@ -188,8 +175,7 @@ class EditCrudActionTest extends CrudTestCase {
 
     $CrudSubject = new CrudSubject();
 
-    $Request = $this
-      ->getMock('CakeRequest', array('is'));
+    $Request = $this->getMock('CakeRequest');
     $Request->data = $data;
 
     $Model = $this
@@ -217,11 +203,6 @@ class EditCrudActionTest extends CrudTestCase {
       ->expects($this->at($i++))
       ->method('_model')
       ->will($this->returnValue($Model));
-    $Request
-      ->expects($this->once())
-      ->method('is')
-      ->with('put')
-      ->will($this->returnValue(true));
     $Action
       ->expects($this->at($i++))
       ->method('_trigger')
@@ -256,7 +237,7 @@ class EditCrudActionTest extends CrudTestCase {
       ->method('_trigger');
 
     $this->setReflectionClassInstance($Action);
-    $this->callProtectedMethod('_handle', array(1), $Action);
+    $this->callProtectedMethod('_put', array(1), $Action);
   }
 
 /**
@@ -266,7 +247,7 @@ class EditCrudActionTest extends CrudTestCase {
  * Given an ID, we test what happens if the ID doesn't
  * exist in the database
  *
- * @covers EditCrudAction::_handle
+ * @covers EditCrudAction::_get
  * @expectedException NotFoundException
  * @expectedExceptionMessage Not Found
  * @expectedExceptionCode 404
@@ -277,8 +258,7 @@ class EditCrudActionTest extends CrudTestCase {
 
     $query = array('conditions' => array('Model.id' => 1));
 
-    $Request = $this
-      ->getMock('CakeRequest', array('is'));
+    $Request = $this->getMock('CakeRequest');
 
     $Model = $this
       ->getMock('Model', array('escapeField', 'find'));
@@ -305,11 +285,6 @@ class EditCrudActionTest extends CrudTestCase {
       ->expects($this->at($i++))
       ->method('_model')
       ->will($this->returnValue($Model));
-    $Request
-      ->expects($this->once())
-      ->method('is')
-      ->with('put')
-      ->will($this->returnValue(false));
     $Model
       ->expects($this->once())
       ->method('escapeField')
@@ -340,7 +315,7 @@ class EditCrudActionTest extends CrudTestCase {
       ->method('_trigger');
 
     $this->setReflectionClassInstance($Action);
-    $this->callProtectedMethod('_handle', array(1), $Action);
+    $this->callProtectedMethod('_get', array(1), $Action);
   }
 
 /**
@@ -353,15 +328,14 @@ class EditCrudActionTest extends CrudTestCase {
  * Additionally the `_getFindMethod` method returns
  * something not-default
  *
- * @covers EditCrudAction::_handle
+ * @covers EditCrudAction::_get
  * @return void
  */
   public function testGetWithCustomFindMethod() {
     $query = array('conditions' => array('Model.id' => 1));
     $data = array('Model' => array('id' => 1));
 
-    $Request = $this
-      ->getMock('CakeRequest', array('is'));
+    $Request = $this->getMock('CakeRequest');
 
     $Model = $this
       ->getMock('Model', array('create', 'find', 'escapeField'));
@@ -385,11 +359,6 @@ class EditCrudActionTest extends CrudTestCase {
       ->expects($this->at($i++))
       ->method('_model')
       ->will($this->returnValue($Model));
-    $Request
-      ->expects($this->once())
-      ->method('is')
-      ->with('put')
-      ->will($this->returnValue(false));
     $Model
       ->expects($this->once())
       ->method('escapeField')
@@ -421,7 +390,7 @@ class EditCrudActionTest extends CrudTestCase {
       ->with('beforeRender');
 
     $this->setReflectionClassInstance($Action);
-    $this->callProtectedMethod('_handle', array(1), $Action);
+    $this->callProtectedMethod('_get', array(1), $Action);
   }
 
 }
