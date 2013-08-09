@@ -42,6 +42,13 @@ class CrudComponent extends Component {
 	protected $_request;
 
 /**
+ * A flat array of the events triggered
+ *
+ * @var array
+ */
+	protected $_eventLog = array();
+
+/**
  * Reference to the current event manager
  *
  * @var CakeEventManager
@@ -458,6 +465,11 @@ class CrudComponent extends Component {
 		$subject = $data instanceof CrudSubject ? $data : $this->getSubject($data);
 		$subject->addEvent($eventName);
 
+		$this->_eventLog[] = array(
+			$eventName,
+			$data
+		);
+
 		$event = new CakeEvent($eventName, $subject);
 		$this->_eventManager->dispatch($event);
 
@@ -550,6 +562,17 @@ class CrudComponent extends Component {
 		}
 
 		return $this->config(sprintf('%s.%s', $type, $name));
+	}
+
+/**
+ * eventLog
+ *
+ * Returns an array of triggered events
+ *
+ * @return array
+ */
+	public function eventLog() {
+		return $this->_eventLog;
 	}
 
 /**
