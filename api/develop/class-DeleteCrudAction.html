@@ -7,7 +7,7 @@
 	<title>Class DeleteCrudAction | jippi/cakephp-crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?3478444894"></script>
+	<script type="text/javascript" src="elementlist.js?1155399482"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -162,14 +162,14 @@ Object
 		
 		
 
-		<b>Located at</b> <a href="source-class-DeleteCrudAction.html#5-96" title="Go to source code">Controller/Crud/Action/DeleteCrudAction.php</a><br />
+		<b>Located at</b> <a href="source-class-DeleteCrudAction.html#5-94" title="Go to source code">Controller/Crud/Action/DeleteCrudAction.php</a><br />
 	</div>
 
 
 
 		<h2>Methods summary</h2>
 		<table class="summary table table-bordered table-striped" id="methods">
-		<tr data-order="_handle" id="__handle">
+		<tr data-order="_delete" id="__delete">
 
 			<td class="attributes"><code>
 				 protected 
@@ -179,30 +179,18 @@ Object
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#__handle">#</a>
-			<code><a href="source-class-DeleteCrudAction.html#41-95" title="Go to source code">_handle</a>( <span>string <var>$id</var> = <span class="php-keyword1">null</span></span> )</code>
+			<a class="anchor" href="#__delete">#</a>
+			<code><a href="source-class-DeleteCrudAction.html#35-82" title="Go to source code">_delete</a>( <span>string <var>$id</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
-<p>Generic delete action</p>
+<p>HTTP DELETE handler</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Generic delete action</p>
-
-<p>Triggers the following callbacks</p>
-
-<ul>
-	<li>beforeFind</li>
-
-	<li>recordNotFound</li>
-
-	<li>beforeDelete</li>
-
-	<li>afterDelete</li>
-</ul>
+<p>HTTP DELETE handler</p>
 
 
 
@@ -216,8 +204,45 @@ Object
 					<h4>Throws</h4>
 					<div class="list">
 						<code>NotFoundException</code><br>If record not found<br />
-						<code>MethodNotAllowedException</code><br>If secure delete enabled and not a HTTP DELETE request<br />
 					</div>
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_post" id="__post">
+
+			<td class="attributes"><code>
+				 protected 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__post">#</a>
+			<code><a href="source-class-DeleteCrudAction.html#84-92" title="Go to source code">_post</a>( <span>mixed <var>$id</var></span> )</code>
+
+			<div class="description short">
+				
+<p>HTTP POST handler</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>HTTP POST handler</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$id</var></dt>
+						<dd><code>mixed</code><br>$id</dd>
+					</dl></div>
+
+
 
 
 
@@ -236,12 +261,10 @@ Object
 			<code><a href="class-CrudAction.html#_detectPrimaryKeyFieldType">detectPrimaryKeyFieldType()</a></code>, 
 			<code><a href="class-CrudAction.html#_disable">disable()</a></code>, 
 			<code><a href="class-CrudAction.html#_enable">enable()</a></code>, 
-			<code><a href="class-CrudAction.html#_enforceRequestType">enforceRequestType()</a></code>, 
 			<code><a href="class-CrudAction.html#_findMethod">findMethod()</a></code>, 
 			<code><a href="class-CrudAction.html#_handle">handle()</a></code>, 
 			<code><a href="class-CrudAction.html#_implementedEvents">implementedEvents()</a></code>, 
 			<code><a href="class-CrudAction.html#_message">message()</a></code>, 
-			<code><a href="class-CrudAction.html#_requestMethods">requestMethods()</a></code>, 
 			<code><a href="class-CrudAction.html#_saveOptions">saveOptions()</a></code>, 
 			<code><a href="class-CrudAction.html#_setFlash">setFlash()</a></code>, 
 			<code><a href="class-CrudAction.html#_view">view()</a></code>
@@ -281,7 +304,7 @@ Object
 			</code></td>
 
 			<td class="name">
-					<a href="source-class-DeleteCrudAction.html#13-39" title="Go to source code"><var>$_settings</var></a>
+					<a href="source-class-DeleteCrudAction.html#13-33" title="Go to source code"><var>$_settings</var></a>
 			</td>
 			<td class="description"><div>
 				<a href="#$_settings" class="anchor">#</a>

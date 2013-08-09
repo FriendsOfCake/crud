@@ -7,7 +7,7 @@
 	<title>Class EditCrudAction | jippi/cakephp-crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?3478444894"></script>
+	<script type="text/javascript" src="elementlist.js?1155399482"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -162,14 +162,14 @@ Object
 		
 		
 
-		<b>Located at</b> <a href="source-class-EditCrudAction.html#6-123" title="Go to source code">Controller/Crud/Action/EditCrudAction.php</a><br />
+		<b>Located at</b> <a href="source-class-EditCrudAction.html#6-136" title="Go to source code">Controller/Crud/Action/EditCrudAction.php</a><br />
 	</div>
 
 
 
 		<h2>Methods summary</h2>
 		<table class="summary table table-bordered table-striped" id="methods">
-		<tr data-order="_handle" id="__handle">
+		<tr data-order="_get" id="__get">
 
 			<td class="attributes"><code>
 				 protected 
@@ -179,36 +179,18 @@ Object
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#__handle">#</a>
-			<code><a href="source-class-EditCrudAction.html#65-121" title="Go to source code">_handle</a>( <span>string <var>$id</var> = <span class="php-keyword1">null</span></span> )</code>
+			<a class="anchor" href="#__get">#</a>
+			<code><a href="source-class-EditCrudAction.html#60-95" title="Go to source code">_get</a>( <span>string <var>$id</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
-<p>Generic edit action</p>
+<p>HTTP GET handler</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Generic edit action</p>
-
-<p>Triggers the following callbacks</p>
-
-<ul>
-	<li>Crud.initialize</li>
-
-	<li>Crud.beforeSave</li>
-
-	<li>Crud.afterSave</li>
-
-	<li>Crud.beforeFind</li>
-
-	<li>Crud.recordNotFound</li>
-
-	<li>Crud.afterFind</li>
-
-	<li>Crud.beforeRender</li>
-</ul>
+<p>HTTP GET handler</p>
 
 
 
@@ -229,6 +211,84 @@ Object
 			</div>
 			</div></td>
 		</tr>
+		<tr data-order="_put" id="__put">
+
+			<td class="attributes"><code>
+				 protected 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__put">#</a>
+			<code><a href="source-class-EditCrudAction.html#97-122" title="Go to source code">_put</a>( <span>mixed <var>$id</var></span> )</code>
+
+			<div class="description short">
+				
+<p>HTTP PUT handler</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>HTTP PUT handler</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$id</var></dt>
+						<dd><code>mixed</code><br>$id</dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_post" id="__post">
+
+			<td class="attributes"><code>
+				 protected 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__post">#</a>
+			<code><a href="source-class-EditCrudAction.html#124-134" title="Go to source code">_post</a>( <span>mixed <var>$id</var></span> )</code>
+
+			<div class="description short">
+				
+<p>HTTP POST handler</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>HTTP POST handler</p>
+
+<p>Thin proxy for _put</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$id</var></dt>
+						<dd><code>mixed</code><br>$id</dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
 		</table>
 
 		<h3>Methods inherited from <a href="class-CrudAction.html#methods">CrudAction</a></h3>
@@ -241,12 +301,10 @@ Object
 			<code><a href="class-CrudAction.html#_detectPrimaryKeyFieldType">detectPrimaryKeyFieldType()</a></code>, 
 			<code><a href="class-CrudAction.html#_disable">disable()</a></code>, 
 			<code><a href="class-CrudAction.html#_enable">enable()</a></code>, 
-			<code><a href="class-CrudAction.html#_enforceRequestType">enforceRequestType()</a></code>, 
 			<code><a href="class-CrudAction.html#_findMethod">findMethod()</a></code>, 
 			<code><a href="class-CrudAction.html#_handle">handle()</a></code>, 
 			<code><a href="class-CrudAction.html#_implementedEvents">implementedEvents()</a></code>, 
 			<code><a href="class-CrudAction.html#_message">message()</a></code>, 
-			<code><a href="class-CrudAction.html#_requestMethods">requestMethods()</a></code>, 
 			<code><a href="class-CrudAction.html#_saveOptions">saveOptions()</a></code>, 
 			<code><a href="class-CrudAction.html#_setFlash">setFlash()</a></code>, 
 			<code><a href="class-CrudAction.html#_view">view()</a></code>
@@ -286,7 +344,7 @@ Object
 			</code></td>
 
 			<td class="name">
-					<a href="source-class-EditCrudAction.html#14-63" title="Go to source code"><var>$_settings</var></a>
+					<a href="source-class-EditCrudAction.html#14-58" title="Go to source code"><var>$_settings</var></a>
 			</td>
 			<td class="description"><div>
 				<a href="#$_settings" class="anchor">#</a>
