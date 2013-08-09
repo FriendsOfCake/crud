@@ -24,9 +24,11 @@ class CrudPanel extends DebugPanel {
  * @return void
  */
 	public function beforeRender(Controller $controller) {
+		$panelData['component'] = $controller->Crud->config();
+
 		if ($controller->Crud->isActionMapped()) {
 			$Action = $controller->Crud->action();
-			$controller->set('CRUD_action_config', $Action->config());
+			$panelData['action'] = $Action->config();
 		}
 
 		$eventManager = $controller->getEventManager();
@@ -50,15 +52,15 @@ class CrudPanel extends DebugPanel {
 				'callbacks' => $callbacks
 			);
 		}
+		$panelData['events'] = $events;
 
-		$listenerConfig = array();
+		$listeners = array();
 		foreach ($controller->Crud->config('listeners') as $listener => $value) {
-			$listenerConfig[$listener] = $controller->Crud->listener($listener)->config();
+			$listeners[$listener] = $controller->Crud->listener($listener)->config();
 		}
+		$panelData['listeners'] = $listeners;
 
-		$controller->set('CRUD_config', $controller->Crud->config());
-		$controller->set('CRUD_listener_config', $listenerConfig);
-		$controller->set('CRUD_events', $events);
+		$controller->set('crudDebugKitData', $panelData);
 	}
 
 /**
@@ -78,11 +80,8 @@ class CrudPanel extends DebugPanel {
 				$class = get_class($listener[0]);
 				$method = $listener[1];
 				$listener = "$class::$method";
-			} else {
-				$class = get_class($listener);
-				if ($class === 'Closure') {
-					$listener = $this->_getClosureSource($listener);
-				}
+			} elseif ($listener instanceof Closure) {
+				$listener = $this->_getClosureSource($listener);
 			}
 		}
 
@@ -105,7 +104,7 @@ class CrudPanel extends DebugPanel {
 			return $closure;
 		}
 
-		list(,$file, $start, $end) = $match;
+		list($m, $file, $start, $end) = $match;
 
 		$data = file($file);
 
