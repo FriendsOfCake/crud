@@ -22,12 +22,6 @@ class DeleteCrudAction extends CrudAction {
 	protected $_settings = array(
 		'enabled' => true,
 		'findMethod' => 'count',
-		'requestType' => 'default',
-		'requestMethods' => array(
-			'default' => array('delete'),
-			'api' => array('delete')
-		),
-
 		'messages' => array(
 			'success' => array(
 				'text' => 'Successfully deleted {name}'
@@ -39,20 +33,13 @@ class DeleteCrudAction extends CrudAction {
 	);
 
 /**
- * Generic delete action
+ * HTTP DELETE handler
  *
- * Triggers the following callbacks
- *	- beforeFind
- *	- recordNotFound
- *	- beforeDelete
- *	- afterDelete
- *
+ * @throws NotFoundException If record not found
  * @param string $id
  * @return void
- * @throws NotFoundException If record not found
- * @throws MethodNotAllowedException If secure delete enabled and not a HTTP DELETE request
  */
-	protected function _handle($id = null) {
+	protected function _delete($id = null) {
 		if (!$this->_validateId($id)) {
 			return false;
 		}
@@ -91,6 +78,17 @@ class DeleteCrudAction extends CrudAction {
 		}
 
 		$controller = $this->_controller();
-		return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
+		$this->_redirect($subject, $controller->referer(array('action' => 'index')));
 	}
+
+/**
+ * HTTP POST handler
+ *
+ * @param mixed $id
+ * @return void
+ */
+	protected function _post($id) {
+		return $this->_delete($id);
+	}
+
 }

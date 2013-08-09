@@ -23,12 +23,6 @@ abstract class CrudAction extends CrudBaseObject {
 	public function __construct(CrudSubject $subject, $defaults = array()) {
 		parent::__construct($subject, $defaults);
 
-		if (isset($defaults['requestMethods'])) {
-			foreach ($defaults['requestMethods'] as $type => $config) {
-				$this->requestMethods($type, $config);
-			}
-		}
-
 		$this->_settings['action'] = $subject->action;
 	}
 
@@ -41,6 +35,7 @@ abstract class CrudAction extends CrudBaseObject {
  * By returning false the handling is cancelled and the
  * execution flow continues
  *
+ * @throws NotImplementedException if the action can't handle the request
  * @param CakeEvent $event
  * @return mixed
  */
@@ -49,9 +44,18 @@ abstract class CrudAction extends CrudBaseObject {
 			return false;
 		}
 
-		$this->enforceRequestType();
+		$requestMethod = $this->_request()->method();
+		$method = '_' . strtolower($requestMethod);
 
-		return call_user_func_array(array($this, '_handle'), $subject->args);
+		if (method_exists($this, $method)) {
+			return call_user_func_array(array($this, $method), $subject->args);
+		}
+
+		if (method_exists($this, '_handle')) {
+			return call_user_func_array(array($this, '_handle'), $subject->args);
+		}
+
+		throw new NotImplementedException(sprintf('Action %s does not implement a handler for HTTP verb %s', get_class($this), $requestMethod));
 	}
 
 /**
@@ -86,43 +90,6 @@ abstract class CrudAction extends CrudBaseObject {
 		if (false === $pos) {
 			$Controller->methods[] = $actionName;
 		}
-	}
-
-/**
- * Get or set a list of request methods allowed for this action
- *
- * @param string $requestType
- * @param array $methods
- * @return array
- */
-	public function requestMethods($requestType, $methods = null) {
-		if (is_null($methods)) {
-			return (array)$this->config('requestMethods.' . $requestType);
-		}
-
-		return $this->config('requestMethods.' . $requestType, $methods, false);
-	}
-
-/**
- * Enforce HTTP request types
- *
- * @throws MethodNotAllowedException If method not allowed
- * @param string $requestType The request type
- * @return void
- */
-	public function enforceRequestType($requestType = null) {
-		if (empty($requestType)) {
-			$requestType = $this->config('requestType');
-		}
-
-		$request = $this->_request();
-		foreach ($this->requestMethods($requestType) as $method) {
-			if ($request->is($method)) {
-				return;
-			}
-		}
-
-		throw new MethodNotAllowedException();
 	}
 
 /**
@@ -396,13 +363,5 @@ abstract class CrudAction extends CrudBaseObject {
 		$controller->redirect($subject->url, $subject->status, $subject->exit);
 		return $controller->response;
 	}
-
-/**
- * Implements all the request handling and response serving logic
- * for this action
- *
- * @return void|CakeResponse
- */
-	protected abstract function _handle();
 
 }
