@@ -69,9 +69,15 @@
             <span class="caret"></span>
           </a>
           <ul class="dropdown-menu">
-            <li><?php echo $this->Html->link(__d('crud', 'View'), array('action' => 'view', ${$singularVar}[$modelClass][$primaryKey])); ?></li>
-            <li><?php echo $this->Html->link(__d('crud', 'Edit'), array('action' => 'edit', ${$singularVar}[$modelClass][$primaryKey])); ?></li>
-            <li><?php echo $this->Html->link(__d('crud', 'Delete'),array('action' => 'delete', ${$singularVar}[$modelClass][$primaryKey])); ?></li>
+            <?php
+              foreach ($scaffoldControllerActions['record'] as $_action) {
+                echo "\t\t<li>";
+                echo $this->Html->link(sprintf('%s %s', Inflector::humanize($_action), $singularHumanName), array(
+                  'action' => $_action, ${$singularVar}[$modelClass][$primaryKey]
+                ));
+                echo " </li>\n";
+              }
+            ?>
           </ul>
         </div>
         </td>
