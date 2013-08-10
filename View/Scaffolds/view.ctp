@@ -1,9 +1,32 @@
-<div class="<?php echo $pluralVar; ?> view">
-<h2><?php echo __d('crud', 'View %s', $singularHumanName); ?></h2>
+<?php $this->start('pageTitle'); ?>
+<?php
+  $primaryKeyValue = null;
+  if (!empty(${$singularVar})) {
+    $primaryKeyValue =  Hash::get(${$singularVar}, "{$modelClass}.{$primaryKey}");
+    if ($displayField != $primaryKey) {
+      $displayFieldValue = Hash::get(${$singularVar}, "{$modelClass}.{$displayField}");
+    }
+  }
+  if ($primaryKeyValue === null && $displayFieldValue === null) : ?>
+    <h2><?php echo __d('crud', 'View %s', $singularHumanName); ?></h2>
+  <?php elseif ($displayFieldValue === null) : ?>
+    <h2><?php echo __d('crud', '%s #%s', $singularHumanName, $primaryKeyValue); ?></h2>
+  <?php elseif ($primaryKeyValue === null) : ?>
+    <h2><?php echo __d('crud', '%s %s', $singularHumanName, $displayFieldValue); ?></h2>
+  <?php else : ?>
+    <h2><?php echo __d('crud', '%s #%s: %s', $singularHumanName, $primaryKeyValue, $displayFieldValue); ?></h2>
+  <?php endif; ?>
+<?php $this->end(); ?>
+
+<div class="<?php echo $pluralVar; ?> view scaffold-view">
   <dl>
 <?php
 $i = 0;
 foreach ($scaffoldFields as $_field => $_options) {
+  if (in_array($_field, array($primaryKey, $displayField))) {
+    continue;
+  }
+
   $isKey = false;
   if (!empty($associations['belongsTo'])) {
     foreach ($associations['belongsTo'] as $_alias => $_details) {
@@ -84,19 +107,22 @@ foreach ($scaffoldFields as $_field => $_options) {
     <h3><?php echo __d('crud', "Related %s", Inflector::humanize($_details['controller'])); ?></h3>
   <?php if (!empty(${$singularVar}[$_alias])): ?>
     <table cellpadding="0" cellspacing="0">
-    <tr>
-  <?php
-      $otherFields = array_keys(${$singularVar}[$_alias][0]);
-      if (isset($_details['with'])) {
-        $index = array_search($_details['with'], $otherFields);
-        unset($otherFields[$index]);
-      }
-      foreach ($otherFields as $_field) {
-        echo "\t\t<th>" . Inflector::humanize($_field) . "</th>\n";
-      }
-  ?>
-      <th class="actions">Actions</th>
-    </tr>
+      <thead>
+        <tr>
+      <?php
+          $otherFields = array_keys(${$singularVar}[$_alias][0]);
+          if (isset($_details['with'])) {
+            $index = array_search($_details['with'], $otherFields);
+            unset($otherFields[$index]);
+          }
+          foreach ($otherFields as $_field) {
+            echo "\t\t<th>" . Inflector::humanize($_field) . "</th>\n";
+          }
+      ?>
+          <th class="actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
   <?php
       $i = 0;
       foreach (${$singularVar}[$_alias] as ${$otherSingularVar}):
@@ -120,17 +146,16 @@ foreach ($scaffoldFields as $_field => $_options) {
         );
         echo "\n";
         echo "\t\t\t\t";
-        echo $this->Form->postLink(
+        echo $this->Html->link(
           __d('crud', 'Delete'),
-          array('plugin' => $_details['plugin'], 'controller' => $_details['controller'], 'action' => 'delete', ${$otherSingularVar}[$_details['primaryKey']]),
-          null,
-          __d('crud', 'Are you sure you want to delete # %s?', ${$otherSingularVar}[$_details['primaryKey']])
+          array('plugin' => $_details['plugin'], 'controller' => $_details['controller'], 'action' => 'delete', ${$otherSingularVar}[$_details['primaryKey']])
         );
         echo "\n";
         echo "\t\t\t</td>\n";
       echo "\t\t</tr>\n";
       endforeach;
   ?>
+      </tbody>
     </table>
   <?php endif; ?>
     <div class="actions">
@@ -144,5 +169,3 @@ foreach ($scaffoldFields as $_field => $_options) {
   </div>
   <?php endforeach; ?>
 </div>
-
-<?php echo $this->element('sidebar_actions'); ?>

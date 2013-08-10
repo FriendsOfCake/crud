@@ -1,23 +1,16 @@
-<?php if (isset($scaffoldSidebarActions) && $scaffoldSidebarActions !== false) : ?>
-  <div class="actions">
+<?php if (!empty($scaffoldRelatedActions) || (isset($scaffoldSidebarActions) && $scaffoldSidebarActions !== false)) : ?>
+  <ul class="nav nav-list nav-list-vivid">
   <?php if (is_array($scaffoldSidebarActions)) : ?>
-    <h3><?php echo __d('cake', 'Actions'); ?></h3>
-    <ul>
-      <?php
-        foreach ($scaffoldSidebarActions as $_item) {
-          echo "\t\t<li>";
-          if ($_item['type'] == 'link') {
-            echo $this->Html->link($_item['title'], $_item['url'], $_item['options'], $_item['confirmMessage']);
-          } else {
-            echo $this->Form->postLink($_item['title'], $_item['url'], $_item['options'], $_item['confirmMessage']);
-          }
-          echo " </li>\n";
-        }
-      ?>
-    </ul>
-  <?php else : ?>
-      <h3><?php echo __d('cake', 'Actions'); ?></h3>
-      <ul>
+    <li class="nav-header"><?php echo __d('cake', 'Actions'); ?></li>
+    <?php
+      foreach ($scaffoldSidebarActions as $_item) {
+        echo "\t\t<li>";
+        echo $this->Html->link($_item['title'], $_item['url'], $_item['options'], $_item['confirmMessage']);
+        echo " </li>\n";
+      }
+    ?>
+    <?php else : ?>
+    <li class="nav-header"><?php echo __d('cake', 'Actions'); ?></li>
       <?php
         if (!empty(${$singularVar})) {
           $primaryKeyValue =  ${$singularVar}[$modelClass][$primaryKey];
@@ -25,33 +18,29 @@
           $primaryKeyValue = $this->Form->value("{$modelClass}.{$primaryKey}");
         }
 
-        if (in_array($this->request->action, array('delete', 'view'))) {
-          echo "\t\t<li>";
-          echo $this->Html->link(__d('cake', 'Edit %s', $singularHumanName),   array('action' => 'edit', $primaryKeyValue));
-          echo " </li>\n";
+        foreach ($scaffoldControllerActions['model'] as $_action) {
+          if ($this->request->action != $_action) {
+            echo "\t\t<li>";
+            echo $this->Html->link(sprintf('%s %s', Inflector::humanize($_action), $pluralHumanName), array(
+              'action' => $_action
+            ));
+            echo " </li>\n";
+          }
         }
-
-        if (in_array($this->request->action, array('edit', 'view'))) {
-          echo "\t\t<li>";
-          echo $this->Form->postLink(__d('cake', 'Delete %s', $singularHumanName), array('action' => 'delete', $primaryKeyValue), null, __d('cake', 'Are you sure you want to delete # %s?', $primaryKeyValue));
-          echo " </li>\n";
+        if (!in_array($this->request->action, $scaffoldControllerActions['model'])) {
+          foreach ($scaffoldControllerActions['record'] as $_action) {
+            if ($this->request->action != $_action) {
+              echo "\t\t<li>";
+              echo $this->Html->link(sprintf('%s %s', Inflector::humanize($_action), $singularHumanName), array(
+                'action' => $_action, $primaryKeyValue
+              ));
+              echo " </li>\n";
+            }
+          }
         }
-
-        if ($this->request->action != 'index') {
-          echo "\t\t<li>";
-          echo $this->Html->link(__d('cake', 'List %s', $pluralHumanName), array('action' => 'index'));
-          echo " </li>\n";
-        }
-
-        echo "\t\t<li>";
-        echo $this->Html->link(__d('cake', 'New %s', $singularHumanName), array('action' => 'add'));
-        echo " </li>\n";
       ?>
-      </ul>
     <?php if (!empty($scaffoldRelatedActions)) : ?>
-      <div class="related-actions">
-        <h3><?php echo __d('cake', 'Related Actions'); ?></h3>
-        <ul>
+        <li class="nav-header"><?php echo __d('cake', 'Related Actions'); ?></li>
           <?php
           $done = array();
           foreach ($associations as $_type => $_data) {
@@ -74,9 +63,7 @@
             }
           }
         ?>
-        </ul>
-      </div>
     <?php endif; ?>
   <?php endif; ?>
-  </div>
+  </ul>
 <?php endif; ?>

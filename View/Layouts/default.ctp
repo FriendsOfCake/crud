@@ -1,13 +1,15 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <?php echo $this->Html->charset(); ?>
-  <title><?php echo $title_for_layout; ?></title>
+  <title><?php echo $title_for_layout; ?> - <?php echo $scaffoldTitle ?></title>
 
   <?php
     echo $this->Html->meta('icon');
 
-    echo $this->Html->css('Crud.cake.generic');
+    echo $this->Html->css('Crud.style');
+    echo $this->Html->script('Crud.jquery-1.10.2.min.js');
+    echo $this->Html->script('Crud.bootstrap.min.js');
 
     echo $this->fetch('meta');
     echo $this->fetch('css');
@@ -15,34 +17,48 @@
   ?>
 </head>
 <body>
-  <div id="container">
-    <div id="header">
-      <h1><?php echo $scaffoldTitle; ?> - <?php echo $title_for_layout; ?></h1>
-      <?php if (!empty($scaffoldNavigation)) : ?>
-        <div class="menu">
-          <ul>
-            <?php foreach ($scaffoldNavigation as $_item) : ?>
-              <li <?php echo (Hash::get($_item, 'url.controller') == $this->request->controller) ? 'class="active"' : '' ?>>
-                <?php
-                  if ($_item['type'] == 'link') {
-                    echo $this->Html->link($_item['title'], $_item['url'], $_item['options'], $_item['confirmMessage']);
-                  } else {
-                    echo $this->Form->postLink($_item['title'], $_item['url'], $_item['options'], $_item['confirmMessage']);
-                  }
-                ?>
-              </li>
-            <?php endforeach; ?>
-          </ul>
+  <div class="wrap">
+    <div class="navbar navbar-static-top navbar-inverse">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="#"><?php echo $scaffoldTitle; ?></a>
+          <?php if (!empty($scaffoldNavigation)) : ?>
+            <ul class="nav pull-right">
+              <?php foreach ($scaffoldNavigation as $_item) : ?>
+                <li <?php echo (Hash::get($_item, 'url.controller') == $this->request->controller) ? 'class="active"' : '' ?>>
+                  <?php echo $this->Html->link($_item['title'], $_item['url'], $_item['options'], $_item['confirmMessage']); ?>
+                </li>
+              <?php endforeach; ?>
+            </ul>
+          <?php endif; ?>
         </div>
-      <?php endif; ?>
+      </div>
     </div>
-    <div id="content">
 
-      <?php echo $this->Session->flash(); ?>
-
-      <?php echo $this->fetch('content'); ?>
+    <div class="page-title">
+      <div class="container">
+        <div class="row-fluid">
+          <?php echo $this->Session->flash(); ?>
+          <?php echo $this->fetch('pageTitle'); ?>
+        </div>
+      </div>
     </div>
-    <div id="footer">
+
+    <div class="container">
+      <div class="row-fluid">
+        <div class="content span10">
+          <?php echo $this->fetch('content'); ?>
+        </div>
+        <div class="sidebar-actions span2">
+          <?php echo $this->element('sidebar_actions'); ?>
+        </div>
+      </div>
+    </div>
+    <div class="push"></div>
+  </div>
+
+  <div class="footer">
+    <div class="container">
       <?php echo $this->Html->link(
           $this->Html->image('cake.power.gif', array('alt' => $title_for_layout, 'border' => '0')),
           'http://www.cakephp.org/',
@@ -51,5 +67,13 @@
       ?>
     </div>
   </div>
+  <?php
+    echo $this->Html->scriptBlock("$('.filters').on('hide', function () {
+      $('.btn-filter').removeClass('filters-open').addClass('filters-collapsed');
+    });");
+    echo $this->Html->scriptBlock("$('.filters').on('show', function () {
+      $('.btn-filter').removeClass('filters-collapsed').addClass('filters-open');
+    });");
+  ?>
 </body>
 </html>
