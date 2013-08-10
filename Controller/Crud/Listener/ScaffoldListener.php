@@ -371,10 +371,7 @@ class ScaffoldListener extends CrudListener {
 			foreach ($scaffoldFilters as $_field => $scaffoldField) {
 				$scaffoldFilters[$_field] = Hash::merge(array(
 					'type' => 'value',
-					'form' => array(
-						'label' => false,
-						'placeholder' => $_field,
-					),
+					'form' => array(),
 				), $scaffoldField);
 				$scaffoldFilters[$_field] = $scaffoldFilters[$_field]['form'];
 
