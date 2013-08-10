@@ -70,6 +70,7 @@ class EditCrudAction extends CrudAction {
  *
  * Triggers the following callbacks
  *	- Crud.initialize
+ *	- Crud.beforeCancel
  *	- Crud.beforeSave
  *	- Crud.afterSave
  *	- Crud.beforeFind
@@ -90,6 +91,12 @@ class EditCrudAction extends CrudAction {
 		$model = $this->_model();
 
 		if ($request->is('put')) {
+			if (!empty($request->data['_cancel'])) {
+				$subject = $this->_trigger('beforeCancel', array('id' => $id));
+				$controller = $this->_controller();
+				return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
+			}
+
 			$this->_trigger('beforeSave', compact('id'));
 			if ($model->saveAll($request->data, $this->saveOptions())) {
 				$this->setFlash('success');

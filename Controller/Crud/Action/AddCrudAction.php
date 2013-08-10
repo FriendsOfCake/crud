@@ -61,6 +61,7 @@ class AddCrudAction extends CrudAction {
  *
  * Triggers the following callbacks
  *	- Crud.initialize
+ *	- Crud.beforeCancel
  *	- Crud.beforeSave
  *	- Crud.afterSave
  *	- Crud.beforeRender
@@ -73,6 +74,12 @@ class AddCrudAction extends CrudAction {
 
 		if (!$request->is('post')) {
 			return $this->_handleView($model, $request);
+		}
+
+		if (!empty($request->data['_cancel'])) {
+			$subject = $this->_trigger('beforeCancel', array('id' => $id));
+			$controller = $this->_controller();
+			return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
 		}
 
 		$this->_trigger('beforeSave');

@@ -101,6 +101,12 @@ class DeleteCrudAction extends CrudAction {
 			return $this->_handleView($model, $request, $id);
 		}
 
+		if (!empty($request->data['_cancel'])) {
+			$subject = $this->_trigger('beforeCancel', array('id' => $id));
+			$controller = $this->_controller();
+			return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
+		}
+
 		$subject = $this->_trigger('beforeDelete', compact('id'));
 		if ($subject->stopped) {
 			$this->setFlash('error');
