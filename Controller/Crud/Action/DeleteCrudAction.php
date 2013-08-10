@@ -44,7 +44,14 @@ class DeleteCrudAction extends CrudAction {
 			return false;
 		}
 
+		$request = $this->_request();
 		$model = $this->_model();
+
+		if ($request->data('_cancel')) {
+			$subject = $this->_trigger('beforeCancel', array('id' => $id));
+			$controller = $this->_controller();
+			return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
+		}
 
 		$query = array();
 		$query['conditions'] = array($model->escapeField() => $id);
@@ -77,6 +84,10 @@ class DeleteCrudAction extends CrudAction {
 			$subject = $this->_trigger('afterDelete', array('id' => $id, 'success' => false));
 		}
 
+		if ($request->data('_add')) {
+			return $this->_redirect($subject, array('action' => 'add'));
+		}
+
 		$controller = $this->_controller();
 		$this->_redirect($subject, $controller->referer(array('action' => 'index')));
 	}
@@ -87,7 +98,7 @@ class DeleteCrudAction extends CrudAction {
  * @param mixed $id
  * @return void
  */
-	protected function _post($id) {
+	protected function _post($id = null) {
 		return $this->_delete($id);
 	}
 

@@ -1,6 +1,5 @@
 <?php
 
-App::uses('Hash', 'Utility');
 App::uses('CrudAction', 'Crud.Controller/Crud');
 
 /**
@@ -100,7 +99,7 @@ class EditCrudAction extends CrudAction {
  * @param mixed $id
  * @return void
  */
-	protected function _put($id) {
+	protected function _put($id = null) {
 		if (!$this->_validateId($id)) {
 			return false;
 		}
@@ -108,11 +107,25 @@ class EditCrudAction extends CrudAction {
 		$request = $this->_request();
 		$model = $this->_model();
 
+		if ($request->data('_cancel')) {
+			$subject = $this->_trigger('beforeCancel', array('id' => $id));
+			$controller = $this->_controller();
+			return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
+		}
+
 		$this->_trigger('beforeSave', compact('id'));
 		if ($model->saveAll($request->data, $this->saveOptions())) {
 			$this->setFlash('success');
 			$subject = $this->_trigger('afterSave', array('id' => $id, 'success' => true, 'created' => false));
-			return $this->_redirect($subject, array('action' => 'index'));
+
+			if ($request->data('_add')) {
+				return $this->_redirect($subject, array('action' => 'add'));
+			} elseif ($request->data('_edit')) {
+				return $this->_redirect($subject, array('action' => $request->action, $id));
+			}
+
+			$controller = $this->_controller();
+			return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
 		} else {
 			$this->setFlash('error');
 			$this->_trigger('afterSave', array('id' => $id, 'success' => false, 'created' => false));
@@ -129,7 +142,7 @@ class EditCrudAction extends CrudAction {
  * @param mixed $id
  * @return void
  */
-	protected function _post($id) {
+	protected function _post($id = null) {
 		return $this->_put($id);
 	}
 

@@ -7,8 +7,27 @@ App::uses('SessionComponent', 'Controller/Component');
 App::uses('CrudAction', 'Crud.Controller/Crud');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
 App::uses('CrudComponent', 'Crud.Controller/Component');
-App::uses('IndexCrudAction', 'Crud.Controller/Crud/Action');
 App::uses('CrudTestCase', 'Crud.Test/Support');
+
+class TestHandleCrudAction extends CrudAction {
+
+	protected $_settings = array(
+		'enabled' => true,
+	);
+
+	protected function _handle() {
+		return false;
+	}
+
+}
+
+class TestExceptionHandlerCrudAction extends CrudAction {
+
+	protected $_settings = array(
+		'enabled' => true,
+	);
+
+}
 
 /**
  *
@@ -778,6 +797,82 @@ class CrudActionTest extends CrudTestCase {
 		$Action
 			->expects($this->never())
 			->method('_handle');
+
+		$Action->handle(new CrudSubject(array('args' => array())));
+	}
+
+/**
+ * testGenericHandle
+ *
+ * Test that calling handle will invoke _handle
+ * when the requestType handler is not available
+ *
+ * @covers CrudAction::handle
+ * @return void
+ */
+	public function testGenericHandle() {
+		$Action = $this
+			->getMockBuilder('CrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array('config', '_handle', '_request'))
+			->getMock();
+
+		$Request = $this->getMock('CakeRequest', array('method'));
+		$Request
+			->expects($this->once())
+			->method('method')
+			->will($this->returnValue('GET'));
+
+		$i = 0;
+		$Action
+			->expects($this->at($i++))
+			->method('config')
+			->with('enabled')
+			->will($this->returnValue(true));
+		$Action
+			->expects($this->at($i++))
+			->method('_request')
+			->will($this->returnValue($Request));
+		$Action
+			->expects($this->once())
+			->method('_handle');
+
+		$Action->handle(new CrudSubject(array('args' => array())));
+	}
+
+/**
+ * testHandleException
+ *
+ * Test that calling handle will not invoke _handle
+ * when the action is disabled
+ *
+ * @covers CrudAction::handle
+ * @expectedException NotImplementedException
+ * @return void
+ */
+	public function testHandleException() {
+		$Action = $this
+			->getMockBuilder('CrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array('config', '_request'))
+			->getMock();
+
+		$Request = $this->getMock('CakeRequest', array('method'));
+		$Request
+			->expects($this->once())
+			->method('method')
+			->will($this->returnValue('GET'));
+
+		$i = 0;
+		$Action
+			->expects($this->at($i++))
+			->method('config')
+			->with('enabled')
+			->will($this->returnValue(true));
+		$Action
+			->expects($this->at($i++))
+			->method('_request')
+			->will($this->returnValue($Request));
 
 		$Action->handle(new CrudSubject(array('args' => array())));
 	}

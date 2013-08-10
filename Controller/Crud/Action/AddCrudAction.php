@@ -1,6 +1,5 @@
 <?php
 
-App::uses('Hash', 'Utility');
 App::uses('CrudAction', 'Crud.Controller/Crud');
 
 /**
@@ -71,11 +70,25 @@ class AddCrudAction extends CrudAction {
 		$request = $this->_request();
 		$model = $this->_model();
 
+		if ($request->data('_cancel')) {
+			$subject = $this->_trigger('beforeCancel');
+			$controller = $this->_controller();
+			return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
+		}
+
 		$this->_trigger('beforeSave');
 		if ($model->saveAll($request->data, $this->saveOptions())) {
 			$this->setFlash('success');
 			$subject = $this->_trigger('afterSave', array('success' => true, 'created' => true,	'id' => $model->id));
-			return $this->_redirect($subject, array('action' => 'index'));
+
+			if ($request->data('_add')) {
+				return $this->_redirect($subject, array('action' => $request->action));
+			} elseif ($request->data('_edit')) {
+				return $this->_redirect($subject, array('action' => 'edit', $model->id));
+			}
+
+			$controller = $this->_controller();
+			return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
 		}
 
 		$this->setFlash('error');

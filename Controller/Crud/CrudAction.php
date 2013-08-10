@@ -1,6 +1,7 @@
 <?php
 
 App::uses('CrudBaseObject', 'Crud.Controller/Crud');
+App::uses('Hash', 'Utility');
 App::uses('Validation', 'Utility');
 
 /**
