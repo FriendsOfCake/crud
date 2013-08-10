@@ -33,6 +33,13 @@ class DeleteCrudAction extends CrudAction {
 	);
 
 /**
+ * Constant representing the scope of this action
+ *
+ * @var integer
+ */
+	const ACTION_SCOPE = CrudAction::SCOPE_RECORD;
+
+/**
  * HTTP DELETE handler
  *
  * @throws NotFoundException If record not found
