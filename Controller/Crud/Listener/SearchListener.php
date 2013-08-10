@@ -72,7 +72,6 @@ class SearchListener extends CrudListener {
 		$this->_commonProcess($controller, $model->name);
 
 		$query = $request->query;
-		$_path = "actions.{$request->action}.scope";
 		if (!empty($request->query['_scope'])) {
 			$config = $this->config('scope.' . $request->query['_scope']);
 			if (empty($config)) {
