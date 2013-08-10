@@ -94,11 +94,19 @@ class SearchListenerTest extends CakeTestCase {
  * @return void
  */
 	public function testBeforePaginate() {
+    $Action = $this->getMock('stdClass', array('config'));
+    $Crud = $this->getMock('stdClass', array('action'));
+    $Crud
+      ->expects($this->once())
+      ->method('action')
+      ->will($this->returnValue($Action));
+
 		$Model = new Model();
 		$Request = new CakeRequest();
 		$Controller = new Controller();
 		$CrudSubject = new CrudSubject(array(
 			'request' => $Request,
+			'crud' => $Crud,
 			'controller' => $Controller,
 			'model' => $Model
 		));
@@ -149,12 +157,20 @@ class SearchListenerTest extends CakeTestCase {
  * @return void
  */
 	public function testBeforePaginateWithModelFilterArgs() {
+    $Action = $this->getMock('stdClass', array('config'));
+    $Crud = $this->getMock('stdClass', array('action'));
+    $Crud
+      ->expects($this->once())
+      ->method('action')
+      ->will($this->returnValue($Action));
+
 		$Model = new Model();
 		$Model->filterArgs = array('sample' => 'test');
 		$Request = new CakeRequest();
 		$Controller = new Controller();
 		$CrudSubject = new CrudSubject(array(
 			'request' => $Request,
+			'crud' => $Crud,
 			'controller' => $Controller,
 			'model' => $Model
 		));
@@ -205,6 +221,13 @@ class SearchListenerTest extends CakeTestCase {
  * @return void
  */
 	public function testBeforePaginateWithUndefinedQueryScope() {
+    $Action = $this->getMock('stdClass', array('config'));
+    $Crud = $this->getMock('stdClass', array('action'));
+    $Crud
+      ->expects($this->once())
+      ->method('action')
+      ->will($this->returnValue($Action));
+
 		$Model = new Model();
 		$Model->filterArgs = array('sample' => 'test');
 		$Request = new CakeRequest();
@@ -212,6 +235,7 @@ class SearchListenerTest extends CakeTestCase {
 		$Controller = new Controller();
 		$CrudSubject = new CrudSubject(array(
 			'request' => $Request,
+			'crud' => $Crud,
 			'controller' => $Controller,
 			'model' => $Model
 		));
@@ -376,12 +400,20 @@ class SearchListenerTest extends CakeTestCase {
  * @return void
  */
 	public function testCheckRequiredPlugins() {
+    $Action = $this->getMock('stdClass', array('config'));
+    $Crud = $this->getMock('stdClass', array('action'));
+    $Crud
+      ->expects($this->once())
+      ->method('action')
+      ->will($this->returnValue($Action));
+
 		$Model = new Model();
 		$Model->filterArgs = array('sample' => 'test');
 		$Request = new CakeRequest();
 		$Controller = new Controller();
 		$CrudSubject = new CrudSubject(array(
 			'request' => $Request,
+			'crud' => $Crud,
 			'controller' => $Controller,
 			'model' => $Model
 		));
