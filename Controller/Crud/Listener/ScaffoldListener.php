@@ -437,13 +437,7 @@ class ScaffoldListener extends CrudListener {
 				'url' => null,
 				'options' => array(),
 				'confirmMessage' => false,
-				'type' => 'link',
 		), $data);
-
-		$data['type'] = strtolower($data['type']);
-		if (!in_array($data['type'], array('link', 'post'))) {
-			$data['type'] = 'link';
-		}
 
 		return $data;
 	}
