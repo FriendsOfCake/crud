@@ -109,6 +109,7 @@ class ScaffoldListener extends CrudListener {
 		$scaffoldFilters = $this->_scaffoldFilters($request);
 		$scaffoldSidebarActions = $this->_scaffoldSidebarActions($request);
 		$scaffoldNavigation = $this->_scaffoldNavigation($request);
+		$scaffoldControllerActions = $this->_scaffoldControllerActions();
 
 		$_sort = $this->_action($request->action)->config('scaffoldFields');
 		$_sort = empty($_sort);
@@ -122,7 +123,8 @@ class ScaffoldListener extends CrudListener {
 			'modelClass', 'primaryKey', 'displayField', 'singularVar', 'pluralVar',
 			'singularHumanName', 'pluralHumanName', 'scaffoldFields', 'associations',
 			'scaffoldFilters', 'action', 'modelSchema', 'scaffoldSidebarActions',
-			'scaffoldRelatedActions', 'scaffoldTitle', 'scaffoldNavigation'
+			'scaffoldRelatedActions', 'scaffoldTitle', 'scaffoldNavigation',
+			'scaffoldControllerActions'
 		));
 		$controller->set(array(
 			'redirect_url' => $redirectUrl
@@ -145,6 +147,29 @@ class ScaffoldListener extends CrudListener {
 				APP . 'Plugin' . DS . 'Crud' . DS . 'View' . DS
 			)
 		));
+	}
+
+/**
+ * Returns groupings of action types on the scaffolded view
+ *
+ * @param CakeRequest $request
+ * @return string
+ */
+	protected function _scaffoldControllerActions() {
+		$_actions = $this->_crud()->config('actions');
+
+		$model = array();
+		$record = array();
+		foreach ($_actions as $_action => $_config) {
+			$_type = $this->_action($_action)->config('type');
+			if ($_type === CrudAction::ACTION_MODEL) {
+				$model[] = $_action;
+			} elseif ($_type === CrudAction::ACTION_RECORD) {
+				$record[] = $_action;
+			}
+		}
+
+		return compact('model', 'record');
 	}
 
 /**
