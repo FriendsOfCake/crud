@@ -53,7 +53,7 @@ class AddCrudAction extends CrudAction {
 			)
 		),
 		'serialize' => array(),
-		'type' => 'model',
+		'type' => CrudAction::ACTION_MODEL,
 	);
 
 /**

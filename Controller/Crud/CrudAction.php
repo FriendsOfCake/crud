@@ -11,6 +11,9 @@ App::uses('Validation', 'Utility');
  */
 abstract class CrudAction extends CrudBaseObject {
 
+	const ACTION_MODEL = 0;
+	const ACTION_RECORD = 1;
+
 /**
  * Startup method
  *

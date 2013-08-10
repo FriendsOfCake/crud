@@ -36,7 +36,7 @@ class IndexCrudAction extends CrudAction {
 			'default' => array('get'),
 			'api' => array('get')
 		),
-		'type' => 'model',
+		'type' => CrudAction::ACTION_MODEL,
 	);
 
 /**

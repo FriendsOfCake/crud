@@ -41,7 +41,7 @@ class DeleteCrudAction extends CrudAction {
 				'text' => 'Could not delete {name}'
 			)
 		),
-		'type' => 'record',
+		'type' => CrudAction::ACTION_RECORD,
 	);
 
 /**

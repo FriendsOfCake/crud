@@ -36,7 +36,7 @@ class ViewCrudAction extends CrudAction {
 			'default' => array('get'),
 			'api' => array('get')
 		),
-		'type' => 'record',
+		'type' => CrudAction::ACTION_RECORD,
 	);
 
 /**

@@ -62,7 +62,7 @@ class EditCrudAction extends CrudAction {
 			)
 		),
 		'serialize' => array(),
-		'type' => 'record',
+		'type' => CrudAction::ACTION_RECORD,
 	);
 
 /**
