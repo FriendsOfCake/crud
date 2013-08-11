@@ -1,19 +1,21 @@
 {
-	"minimum-stability": "dev",
+  "minimum-stability": "dev",
   "config": {
-		"vendor-dir": "vendors",
+    "vendor-dir": "vendors",
     "preferred-install": "source"
   },
   "extra": {
     "installer-paths": {
-      "app/Plugin/Search": ["cakedc/search"]
+      "app/Plugin/DebugKit" : ["cakephp/debug_kit"],
+      "app/Plugin/Search"   : ["cakedc/search"]
     }
   },
-	"require-dev": {
-		"satooshi/php-coveralls": "dev-master"
-	},
-	"require": {
-		"composer/installers" : "~1.0",
-		"cakedc/search"				: "dev-develop"
-	}
+  "require-dev": {
+    "satooshi/php-coveralls": "dev-master"
+  },
+  "require": {
+    "composer/installers" : "~1.0",
+    "cakephp/debug_kit"   : "2.2.*",
+    "cakedc/search"       : "dev-develop"
+  }
 }
