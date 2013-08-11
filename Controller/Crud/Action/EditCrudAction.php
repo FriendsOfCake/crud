@@ -58,6 +58,13 @@ class EditCrudAction extends CrudAction {
 	);
 
 /**
+ * Constant representing the scope of this action
+ *
+ * @var integer
+ */
+	const ACTION_SCOPE = CrudAction::SCOPE_RECORD;
+
+/**
  * HTTP GET handler
  *
  * @throws NotFoundException If record not found
