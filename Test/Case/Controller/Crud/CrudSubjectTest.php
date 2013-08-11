@@ -43,6 +43,32 @@ class CrudSubjectTest extends CakeTestCase {
 	}
 
 /**
+ * Test that event adding works
+ *
+ * @covers CrudSubject::addEvent
+ * @covers CrudSubject::getEvents
+ * @covers CrudSubject::hasEvent
+ * @return void
+ */
+	public function testEventNames() {
+		$this->assertFalse($this->Subject->hasEvent('test'));
+		$this->assertFalse($this->Subject->hasEvent('test_two'));
+		$this->assertFalse($this->Subject->hasEvent('test_three'));
+		$this->assertFalse($this->Subject->hasEvent('invalid'));
+
+		$this->Subject->addEvent('test');
+		$this->Subject->addEvent('test_two');
+		$this->Subject->addEvent('test_three');
+		$this->assertTrue($this->Subject->hasEvent('test'));
+		$this->assertTrue($this->Subject->hasEvent('test_two'));
+		$this->assertTrue($this->Subject->hasEvent('test_three'));
+		$this->assertFalse($this->Subject->hasEvent('invalid'));
+
+		$expected = array('test', 'test_two', 'test_three');
+		$this->assertEquals($expected, $this->Subject->getEvents());
+	}
+
+/**
  * testInvalidMode
  *
  * @covers CrudSubject::shouldProcess
