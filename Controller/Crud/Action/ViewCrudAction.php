@@ -32,6 +32,13 @@ class ViewCrudAction extends CrudAction {
 	);
 
 /**
+ * Constant representing the scope of this action
+ *
+ * @var integer
+ */
+	const ACTION_SCOPE = CrudAction::SCOPE_RECORD;
+
+/**
  * Change the name of the view variable name
  * of the data when its sent to the view
  *

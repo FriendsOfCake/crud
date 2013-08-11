@@ -12,6 +12,20 @@ App::uses('Validation', 'Utility');
 abstract class CrudAction extends CrudBaseObject {
 
 /**
+ * Constant representing a model-level action
+ *
+ * @var integer
+ */
+	const SCOPE_MODEL = 0;
+
+/**
+ * Constant representing a record-level action
+ *
+ * @var integer
+ */
+	const SCOPE_RECORD = 1;
+
+/**
  * Startup method
  *
  * Called when the action is loaded

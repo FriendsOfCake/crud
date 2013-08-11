@@ -49,6 +49,13 @@ class AddCrudAction extends CrudAction {
 	);
 
 /**
+ * Constant representing the scope of this action
+ *
+ * @var integer
+ */
+	const ACTION_SCOPE = CrudAction::SCOPE_MODEL;
+
+/**
  * HTTP GET handler
  *
  * @return void
