@@ -66,6 +66,13 @@ class CrudSubject {
 	public $args;
 
 /**
+ * List of events this subject has passed through
+ *
+ * @var array
+ */
+	protected $_events = array();
+
+/**
  * Constructor
  *
  * @param array $fields
@@ -73,6 +80,36 @@ class CrudSubject {
  */
 	public function __construct($fields = array()) {
 		$this->set($fields);
+	}
+
+/**
+ * Add an event name to the list of events this subject has passed through
+ *
+ * @param string $name name of event
+ * @return void
+ */
+	public function addEvent($name) {
+		$this->_events[] = $name;
+	}
+
+/**
+ * Returns the list of events this subject has passed through
+ *
+ * @return array
+ */
+	public function getEvents() {
+		return $this->_events;
+	}
+
+/**
+ * Returns whether the specified event is in the list the list of events
+ * this subject has passed through
+ *
+ * @param string $name name of event
+ * @return array
+ */
+	public function hasEvent($name) {
+		return in_array($name, $this->_events);
 	}
 
 /**

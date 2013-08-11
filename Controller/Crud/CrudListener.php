@@ -47,7 +47,9 @@ abstract class CrudListener extends CrudBaseObject {
 			'Crud.afterFind' => 'afterFind',
 
 			'Crud.beforeDelete' => 'beforeDelete',
-			'Crud.afterDelete' => 'afterDelete'
+			'Crud.afterDelete' => 'afterDelete',
+
+			'Crud.beforeCancel' => 'beforeCancel',
 		);
 
 		$events = array();

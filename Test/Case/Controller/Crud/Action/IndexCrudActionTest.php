@@ -1,6 +1,7 @@
 <?php
 
 App::uses('Model', 'Model');
+App::uses('Controller', 'Controller');
 App::uses('CakeRequest', 'Network');
 App::uses('PaginatorComponent', 'Controller/Component');
 App::uses('ComponentCollection', 'Controller');
@@ -45,33 +46,33 @@ class IndexCrudActionTest extends CrudTestCase {
 		$i = 0;
 
 		$Action = $this
-    	->getMockBuilder('IndexCrudAction')
-      ->disableOriginalConstructor()
-      ->setMethods(array('paginationConfig', '_controller', '_model', '_trigger', 'viewVar'))
-      ->getMock();
-    $Action
-    	->expects($this->at($i++))
-    	->method('paginationConfig')
-    	->with();
-    $Action
-    	->expects($this->at($i++))
-    	->method('_controller')
-    	->with()
-    	->will($this->returnValue($Controller));
-    $Action
-    	->expects($this->at($i++))
-    	->method('_trigger')
-    	->with('beforePaginate', array('paginator' => $Controller->Paginator));
-    $Action
-    	->expects($this->at($i++))
-    	->method('_model')
-    	->with()
-    	->will($this->returnValue($Model));
-    $Controller
-    	->expects($this->once())
-    	->method('paginate')
-    	->with($Model)
-    	->will($this->returnValue(array('foo', 'bar')));
+			->getMockBuilder('IndexCrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array('paginationConfig', '_controller', '_model', '_trigger', 'viewVar'))
+			->getMock();
+		$Action
+			->expects($this->at($i++))
+			->method('paginationConfig')
+			->with();
+		$Action
+			->expects($this->at($i++))
+			->method('_controller')
+			->with()
+			->will($this->returnValue($Controller));
+		$Action
+			->expects($this->at($i++))
+			->method('_trigger')
+			->with('beforePaginate', array('paginator' => $Controller->Paginator));
+		$Action
+			->expects($this->at($i++))
+			->method('_model')
+			->with()
+			->will($this->returnValue($Model));
+		$Controller
+			->expects($this->once())
+			->method('paginate')
+			->with($Model)
+			->will($this->returnValue(array('foo', 'bar')));
 		$Action
 			->expects($this->at($i++))
 			->method('_trigger')
@@ -87,8 +88,8 @@ class IndexCrudActionTest extends CrudTestCase {
 			->method('set')
 			->with(array('success' => true, 'items' => array('foo', 'bar')));
 
-    $this->setReflectionClassInstance($Action);
-    $this->callProtectedMethod('_get', array(), $Action);
+		$this->setReflectionClassInstance($Action);
+		$this->callProtectedMethod('_get', array(), $Action);
 	}
 
 /**
@@ -116,33 +117,33 @@ class IndexCrudActionTest extends CrudTestCase {
 		$i = 0;
 
 		$Action = $this
-    	->getMockBuilder('IndexCrudAction')
-      ->disableOriginalConstructor()
-      ->setMethods(array('paginationConfig', '_controller', '_model', '_trigger', 'viewVar'))
-      ->getMock();
-    $Action
-    	->expects($this->at($i++))
-    	->method('paginationConfig')
-    	->with();
-    $Action
-    	->expects($this->at($i++))
-    	->method('_controller')
-    	->with()
-    	->will($this->returnValue($Controller));
-    $Action
-    	->expects($this->at($i++))
-    	->method('_trigger')
-    	->with('beforePaginate', array('paginator' => $Controller->Paginator));
-    $Action
-    	->expects($this->at($i++))
-    	->method('_model')
-    	->with()
-    	->will($this->returnValue($Model));
-    $Controller
-    	->expects($this->once())
-    	->method('paginate')
-    	->with($Model)
-    	->will($this->returnValue(array('foo', 'bar')));
+			->getMockBuilder('IndexCrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array('paginationConfig', '_controller', '_model', '_trigger', 'viewVar'))
+			->getMock();
+		$Action
+			->expects($this->at($i++))
+			->method('paginationConfig')
+			->with();
+		$Action
+			->expects($this->at($i++))
+			->method('_controller')
+			->with()
+			->will($this->returnValue($Controller));
+		$Action
+			->expects($this->at($i++))
+			->method('_trigger')
+			->with('beforePaginate', array('paginator' => $Controller->Paginator));
+		$Action
+			->expects($this->at($i++))
+			->method('_model')
+			->with()
+			->will($this->returnValue($Model));
+		$Controller
+			->expects($this->once())
+			->method('paginate')
+			->with($Model)
+			->will($this->returnValue(array('foo', 'bar')));
 		$Action
 			->expects($this->at($i++))
 			->method('_trigger')
@@ -158,8 +159,8 @@ class IndexCrudActionTest extends CrudTestCase {
 			->method('set')
 			->with(array('success' => true, 'items' => array('foo', 'bar')));
 
-    $this->setReflectionClassInstance($Action);
-    $this->callProtectedMethod('_get', array(), $Action);
+		$this->setReflectionClassInstance($Action);
+		$this->callProtectedMethod('_get', array(), $Action);
 	}
 
 /**
@@ -195,36 +196,36 @@ class IndexCrudActionTest extends CrudTestCase {
 
 		$i = 0;
 		$Action = $this
-    	->getMockBuilder('IndexCrudAction')
-      ->disableOriginalConstructor()
-      ->setMethods(array('_controller', '_getFindMethod'))
-      ->getMock();
-    $Action
-    	->expects($this->at($i++))
-    	->method('_controller')
-    	->with()
-    	->will($this->returnValue($Controller));
-    $Controller->Components
-    	->expects($this->once())
-    	->method('load')
-    	->with('Paginator', array('limit' => 50, 'paramType' => 'querystring'))
-    	->will($this->returnCallback(function() use ($Paginator) {
-    		$Paginator->settings = array('limit' => 50, 'paramType' => 'querystring');
-    		return $Paginator;
-    	}));
-    $Action
-    	->expects($this->at($i++))
-    	->method('_getFindMethod')
-    	->with('all')
-    	->will($this->returnValue('all'));
+			->getMockBuilder('IndexCrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array('_controller', '_getFindMethod'))
+			->getMock();
+		$Action
+			->expects($this->at($i++))
+			->method('_controller')
+			->with()
+			->will($this->returnValue($Controller));
+		$Controller->Components
+			->expects($this->once())
+			->method('load')
+			->with('Paginator', array('limit' => 50, 'paramType' => 'querystring'))
+			->will($this->returnCallback(function() use ($Paginator) {
+				$Paginator->settings = array('limit' => 50, 'paramType' => 'querystring');
+				return $Paginator;
+			}));
+		$Action
+			->expects($this->at($i++))
+			->method('_getFindMethod')
+			->with('all')
+			->will($this->returnValue('all'));
 
-    $result = $Action->paginationConfig();
-    $expected = array(
-    	'findType' => 'all',
-    	'limit' => 50,
-    	'paramType' => 'querystring'
-    );
-    $this->assertEqual($result, $expected);
+		$result = $Action->paginationConfig();
+		$expected = array(
+			'findType' => 'all',
+			'limit' => 50,
+			'paramType' => 'querystring'
+		);
+		$this->assertEqual($result, $expected);
 	}
 
 /**
@@ -253,31 +254,86 @@ class IndexCrudActionTest extends CrudTestCase {
 
 		$i = 0;
 		$Action = $this
-    	->getMockBuilder('IndexCrudAction')
-      ->disableOriginalConstructor()
-      ->setMethods(array('_controller', '_getFindMethod'))
-      ->getMock();
-    $Action
-    	->expects($this->at($i++))
-    	->method('_controller')
-    	->with()
-    	->will($this->returnValue($Controller));
-    $Action
-    	->expects($this->never())
-    	->method('_getFindMethod');
+			->getMockBuilder('IndexCrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array('_controller', '_getFindMethod'))
+			->getMock();
+		$Action
+			->expects($this->at($i++))
+			->method('_controller')
+			->with()
+			->will($this->returnValue($Controller));
+		$Action
+			->expects($this->never())
+			->method('_getFindMethod');
 
-    $result = $Action->paginationConfig();
-    $expected = array(
-    	'MyModel' => array(
-    		'limit' => 5,
-    		'findType' => 'another'
-    	),
-    	'page' => 1,
-    	'limit' => 20,
-    	'maxLimit' => 100,
-    	'paramType' => 'named'
-    );
-    $this->assertEqual($result, $expected);
+		$result = $Action->paginationConfig();
+		$expected = array(
+			'MyModel' => array(
+				'limit' => 5,
+				'findType' => 'another'
+			),
+			'page' => 1,
+			'limit' => 20,
+			'maxLimit' => 100,
+			'paramType' => 'named'
+		);
+		$this->assertEqual($result, $expected);
+	}
+
+/**
+ * Test that `all` findMethod is executed when a findType
+ * already is defined for a Model key
+ *
+ * @covers IndexCrudAction::paginationConfig
+ * @return void
+ */
+	public function testPaginationConfigNonexistingFindType() {
+		$Controller = $this
+			->getMockBuilder('Controller')
+			->disableOriginalConstructor()
+			->setMethods(array('foo'))
+			->getMock();
+		$Paginator = $this
+			->getMockBuilder('PaginatorComponent')
+			->disableOriginalConstructor()
+			->getMock();
+		$Paginator->settings['MyModel'] = array(
+			'limit' => 5,
+			'findType' => null
+		);
+		$Controller->Paginator = $Paginator;
+		$Controller->modelClass = 'MyModel';
+
+		$i = 0;
+		$Action = $this
+			->getMockBuilder('IndexCrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array('_controller', '_getFindMethod'))
+			->getMock();
+		$Action
+			->expects($this->at($i++))
+			->method('_controller')
+			->with()
+			->will($this->returnValue($Controller));
+		$Action
+			->expects($this->at($i++))
+			->method('_getFindMethod')
+			->with('all')
+			->will($this->returnValue('all'));
+
+		$result = $Action->paginationConfig();
+		$expected = array(
+			'MyModel' => array(
+				'limit' => 5,
+				'findType' => 'all'
+			),
+			'page' => 1,
+			'limit' => 20,
+			'maxLimit' => 100,
+			'paramType' => 'named'
+		);
+		$this->assertEqual($result, $expected);
 	}
 
 }

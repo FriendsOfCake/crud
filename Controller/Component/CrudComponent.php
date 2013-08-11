@@ -454,8 +454,11 @@ class CrudComponent extends Component {
  * @return CrudSubject
  */
 	public function trigger($eventName, $data = array()) {
+		$eventName = $this->settings['eventPrefix'] . '.' . $eventName;
 		$subject = $data instanceof CrudSubject ? $data : $this->getSubject($data);
-		$event = new CakeEvent($this->settings['eventPrefix'] . '.' . $eventName, $subject);
+		$subject->addEvent($eventName);
+
+		$event = new CakeEvent($eventName, $subject);
 		$this->_eventManager->dispatch($event);
 
 		if ($event->result instanceof CakeResponse) {
