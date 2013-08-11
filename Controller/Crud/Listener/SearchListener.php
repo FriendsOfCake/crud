@@ -74,10 +74,19 @@ class SearchListener extends CrudListener {
 		$query = $request->query;
 		if (!empty($request->query['_scope'])) {
 			$config = $this->config('scope.' . $request->query['_scope']);
-			$query = $config['query'];
+			if (empty($config)) {
+				$config = $this->_action()->config('scope.' . $request->query['_scope']);
+			}
+
+			$query = Hash::get((array)$config, 'query');
 
 			if (!empty($config['filter'])) {
 				$this->_setFilterArgs($model, $config['filter']);
+			}
+		} else {
+			$filterArgs = $this->_action()->config('scope');
+			if (!empty($filterArgs)) {
+				$this->_setFilterArgs($model, (array)$filterArgs);
 			}
 		}
 
