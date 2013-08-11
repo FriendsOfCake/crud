@@ -576,7 +576,6 @@ class EditCrudActionTest extends CrudTestCase {
     $this->callProtectedMethod('_get', array(null), $Action);
   }
 
-
 /**
  * Test that calling HTTP PUT on an edit action
  * will trigger the appropriate events
