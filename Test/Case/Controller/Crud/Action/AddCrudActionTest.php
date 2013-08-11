@@ -147,10 +147,12 @@ class AddCrudActionTest extends CrudTestCase {
  * Test that calling HTTP POST on an add action
  * will trigger multiple events on success
  *
+ * This test will also redirect to the add action
+ *
  * @covers AddCrudAction::_post
  * @return void
  */
-	public function testActionPutWithAddRedirect() {
+	public function testActionPostWithAddRedirect() {
 		$Request = $this->getMock('CakeRequest');
 		$Request->action = 'add';
 		$Request->data = array(
@@ -221,15 +223,16 @@ class AddCrudActionTest extends CrudTestCase {
 		$this->callProtectedMethod('_post', array(), $Action);
 	}
 
-
 /**
  * Test that calling HTTP POST on an add action
  * will trigger multiple events on success
  *
+ * This test will also redirect to the edit action
+ *
  * @covers AddCrudAction::_post
  * @return void
  */
-	public function testActionPutWithEditRedirect() {
+	public function testActionPostWithEditRedirect() {
 		$Request = $this->getMock('CakeRequest');
 		$Request->action = 'add';
 		$Request->data = array(
