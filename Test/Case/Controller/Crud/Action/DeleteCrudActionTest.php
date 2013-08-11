@@ -587,7 +587,6 @@ class DeleteCrudActionTest extends CrudTestCase {
 		$this->callProtectedMethod('_delete', array(1), $Action);
 	}
 
-
 /**
  * Test that calling HTTP DELETE on an edit action
  * with `_cancel` set in the POST data will cancel the form submission
