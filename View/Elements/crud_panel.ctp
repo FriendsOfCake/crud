@@ -1,7 +1,7 @@
 <h2><?= __d('crud', 'Config'); ?></h2>
 <?php
 if (empty($crudDebugKitData['action'])) {
-	$crudDebugKitData['action'] = __('crud', 'Current action is not handled by Crud');
+	$crudDebugKitData['action'] = __d('crud', 'Current action is not handled by Crud');
 }
 
 $config = array(

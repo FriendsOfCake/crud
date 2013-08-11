@@ -653,7 +653,8 @@ class CrudComponentTest extends ControllerTestCase {
 					'class' => 'MethodNotAllowedException',
 					'text' => 'Method not allowed. This action permits only {methods}'
 				)
-			)
+			),
+			'eventLogging' => false
 		);
 		$this->assertEquals($expected, $result);
 	}
@@ -700,7 +701,8 @@ class CrudComponentTest extends ControllerTestCase {
 					'class' => 'MethodNotAllowedException',
 					'text' => 'Method not allowed. This action permits only {methods}'
 				)
-			)
+			),
+			'eventLogging' => false
 		);
 		$this->assertEquals($expected, $result);
 	}
@@ -745,7 +747,8 @@ class CrudComponentTest extends ControllerTestCase {
 					'class' => 'MethodNotAllowedException',
 					'text' => 'Method not allowed. This action permits only {methods}'
 				)
-			)
+			),
+			'eventLogging' => false
 		);
 		$this->assertEquals($expected, $result);
 	}

@@ -1,5 +1,6 @@
 <?php
 
+App::uses('Debugger', 'Utility');
 App::uses('DebugPanel', 'DebugKit.Lib');
 
 /**
@@ -24,43 +25,34 @@ class CrudPanel extends DebugPanel {
  * @return void
  */
 	public function beforeRender(Controller $controller) {
-		$panelData['component'] = $controller->Crud->config();
+		$component = $controller->Crud->config();
 
 		if ($controller->Crud->isActionMapped()) {
 			$Action = $controller->Crud->action();
-			$panelData['action'] = $Action->config();
+			$action = $Action->config();
 		}
 
 		$eventManager = $controller->getEventManager();
 		$eventLog = $controller->Crud->eventLog();
 		$events = array();
 		foreach ($eventLog as $event) {
-			$suffix = '';
 			list($name, $data) = $event;
 
-			while (isset($events[$name . $suffix])) {
-				if (!$suffix) {
-					$suffix = ' #2';
-				} else {
-					$suffix = ' #' . int($suffix);
-				}
-			}
-
-			$callbacks = $this->_getCallbacks($eventManager, $name);
-			$events[$name . $suffix] = array(
+			$listeners = $eventManager->listeners($name);
+			$callbacks = $this->_getCallbacks($listeners);
+			$uName = $this->_getUniqueName($name, $events);
+			$events[$uName] = array(
 				'data' => $data,
 				'callbacks' => $callbacks
 			);
 		}
-		$panelData['events'] = $events;
 
 		$listeners = array();
 		foreach ($controller->Crud->config('listeners') as $listener => $value) {
 			$listeners[$listener] = $controller->Crud->listener($listener)->config();
 		}
-		$panelData['listeners'] = $listeners;
 
-		$controller->set('crudDebugKitData', $panelData);
+		$controller->set('crudDebugKitData', compact('component', 'action', 'events', 'listeners'));
 	}
 
 /**
@@ -68,20 +60,18 @@ class CrudPanel extends DebugPanel {
  *
  * Return all callbacks for a givent event key
  *
- * @param mixed $eventManager
- * @param mixed $eventKey
+ * @param array $listeners
  * @return array
  */
-	protected function _getCallbacks($eventManager, $eventKey) {
-		$listeners = $eventManager->listeners($eventKey);
+	protected function _getCallbacks($listeners) {
 		foreach ($listeners as &$listener) {
 			$listener = $listener['callable'];
 			if (is_array($listener)) {
-				$class = get_class($listener[0]);
+				$class = is_string($listener[0]) ? $listener[0] : get_class($listener[0]);
 				$method = $listener[1];
 				$listener = "$class::$method";
 			} elseif ($listener instanceof Closure) {
-				$listener = $this->_getClosureSource($listener);
+				$listener = $this->_getClosureDefinition($listener);
 			}
 		}
 
@@ -89,32 +79,47 @@ class CrudPanel extends DebugPanel {
 	}
 
 /**
- * _getClosureSource
+ * Return where a closure has been defined
  *
- * Attempt to get the closure source, if it's not possible just return the object
- * in the full knowledge that it'll probably get dumped as the string "function"
+ * If for some reason this doesn't work - it'll return the closure instance in the full knowledge
+ * that it'll probably get dumped as the string "function"
  *
  * @param Closure $closure
- * @return array
+ * @return mixed string or Closure
  */
-	protected function _getClosureSource(Closure $closure) {
+	protected function _getClosureDefinition(Closure $closure) {
 		$exported = ReflectionFunction::export($closure, true);
 		preg_match('#@@ (.*) (\d+) - (\d+)#', $exported, $match);
 		if (!$match) {
 			return $closure;
 		}
 
-		list($m, $file, $start, $end) = $match;
+		list($m, $path, $start) = $match;
 
-		$data = file($file);
+		$path = Debugger::trimPath($path);
 
-		$lines = array();
-		for ($i = $start - 1; $i < $end; $i++) {
-			$string = $data[$i];
-			$lines[] = $string;
+		return "$path:$start";
+	}
+
+/**
+ * _getUniqueName
+ *
+ * The name is used as an array key, ensure there are no collisions by adding a numerical
+ * suffix if the given name already exists
+ *
+ * @param string $name
+ * @param array $existing
+ * @return string
+ */
+	protected function _getUniqueName($name, $existing) {
+		$count = 1;
+		$suffix = '';
+
+		while (isset($existing[$name . $suffix])) {
+			$suffix = ' #' . ++$count;
 		}
 
-		return $lines;
+		return $name . $suffix;
 	}
 
 }
