@@ -1077,4 +1077,60 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->assertEqual($result, $expected);
 	}
 
+/**
+ * Using $key and value, and specifying no merge should overwrite the value keys
+ *
+ * @return void
+ */
+	public function testConfigOverwrite() {
+		$this->Crud->config('messages', array('invalidId' => array('code' => 500)), null, false);
+
+		$expected = array(
+			'domain' => 'crud',
+			'invalidId' => array(
+				'code' => 500
+			),
+			'recordNotFound' => array(
+				'code' => 404,
+				'class' => 'NotFoundException',
+				'text' => 'Not found'
+			),
+			'badRequestMethod' => array(
+				'code' => 405,
+				'class' => 'MethodNotAllowedException',
+				'text' => 'Method not allowed. This action permits only {methods}'
+			)
+		);
+		$result = $this->Crud->config('messages');
+		$this->assertEqual($result, $expected);
+	}
+/**
+ * Passing an array, and specifying no merge should overwrite the value keys
+ *
+ * @return void
+ */
+	public function testConfigOverwriteArray() {
+		$this->Crud->config(array('messages' => array('invalidId' => array('code' => 500))), null, false);
+
+		$expected = array(
+			'domain' => 'crud',
+			'invalidId' => array(
+				'code' => 500,
+				'class' => 'BadRequestException',
+				'text' => 'Invalid id'
+			),
+			'recordNotFound' => array(
+				'code' => 404,
+				'class' => 'NotFoundException',
+				'text' => 'Not found'
+			),
+			'badRequestMethod' => array(
+				'code' => 405,
+				'class' => 'MethodNotAllowedException',
+				'text' => 'Method not allowed. This action permits only {methods}'
+			)
+		);
+		$result = $this->Crud->config('messages');
+		$this->assertEqual($result, $expected);
+	}
 }
