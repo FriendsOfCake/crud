@@ -8,7 +8,7 @@
 	<title>File Controller/Crud/CrudBaseObject.php | jippi/cakephp-crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?1155399482"></script>
+	<script type="text/javascript" src="elementlist.js?401776394"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -354,8 +354,38 @@
 </span><span id="244" class="l"><a class="l" href="#244">244 </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;_crud()-&gt;validationErrors();
 </span><span id="245" class="l"><a class="l" href="#245">245 </a>    }
 </span><span id="246" class="l"><a class="l" href="#246">246 </a>
-</span><span id="247" class="l"><a class="l" href="#247">247 </a>}
-</span><span id="248" class="l"><a class="l" href="#248">248 </a></span></code></pre>
+</span><span id="247" class="l"><a class="l" href="#247">247 </a><span class="php-comment">/**
+</span></span><span id="248" class="l"><a class="l" href="#248">248 </a><span class="php-comment"> * Returns the redirect_url for this request, with a fallback to the referring page
+</span></span><span id="249" class="l"><a class="l" href="#249">249 </a><span class="php-comment"> *
+</span></span><span id="250" class="l"><a class="l" href="#250">250 </a><span class="php-comment"> * @param string $default Default URL to use redirect_url is not found in request or data
+</span></span><span id="251" class="l"><a class="l" href="#251">251 </a><span class="php-comment"> * @param boolean $local If true, restrict referring URLs to local server
+</span></span><span id="252" class="l"><a class="l" href="#252">252 </a><span class="php-comment"> * @return mixed
+</span></span><span id="253" class="l"><a class="l" href="#253">253 </a><span class="php-comment"> */</span>
+</span><span id="254" class="l"><a class="l" href="#254">254 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__refererRedirectUrl" href="#__refererRedirectUrl">_refererRedirectUrl</a>(<span class="php-var">$default</span> = <span class="php-keyword1">null</span>) {
+</span><span id="255" class="l"><a class="l" href="#255">255 </a>        <span class="php-var">$controller</span> = <span class="php-var">$this</span>-&gt;_controller();
+</span><span id="256" class="l"><a class="l" href="#256">256 </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;_redirectUrl(<span class="php-var">$controller</span>-&gt;referer(<span class="php-var">$default</span>, <span class="php-keyword1">true</span>));
+</span><span id="257" class="l"><a class="l" href="#257">257 </a>    }
+</span><span id="258" class="l"><a class="l" href="#258">258 </a>
+</span><span id="259" class="l"><a class="l" href="#259">259 </a><span class="php-comment">/**
+</span></span><span id="260" class="l"><a class="l" href="#260">260 </a><span class="php-comment"> * Returns the redirect_url for this request.
+</span></span><span id="261" class="l"><a class="l" href="#261">261 </a><span class="php-comment"> *
+</span></span><span id="262" class="l"><a class="l" href="#262">262 </a><span class="php-comment"> * @param string $default Default URL to use redirect_url is not found in request or data
+</span></span><span id="263" class="l"><a class="l" href="#263">263 </a><span class="php-comment"> * @return mixed
+</span></span><span id="264" class="l"><a class="l" href="#264">264 </a><span class="php-comment"> */</span>
+</span><span id="265" class="l"><a class="l" href="#265">265 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__redirectUrl" href="#__redirectUrl">_redirectUrl</a>(<span class="php-var">$default</span> = <span class="php-keyword1">null</span>) {
+</span><span id="266" class="l"><a class="l" href="#266">266 </a>        <span class="php-var">$url</span> = <span class="php-var">$default</span>;
+</span><span id="267" class="l"><a class="l" href="#267">267 </a>        <span class="php-var">$request</span> = <span class="php-var">$this</span>-&gt;_request();
+</span><span id="268" class="l"><a class="l" href="#268">268 </a>        <span class="php-keyword1">if</span> (!<span class="php-keyword1">empty</span>(<span class="php-var">$request</span>-&gt;data[<span class="php-quote">'redirect_url'</span>])) {
+</span><span id="269" class="l"><a class="l" href="#269">269 </a>            <span class="php-var">$url</span> = <span class="php-var">$request</span>-&gt;data[<span class="php-quote">'redirect_url'</span>];
+</span><span id="270" class="l"><a class="l" href="#270">270 </a>        } <span class="php-keyword1">elseif</span> (!<span class="php-keyword1">empty</span>(<span class="php-var">$request</span>-&gt;query[<span class="php-quote">'redirect_url'</span>])) {
+</span><span id="271" class="l"><a class="l" href="#271">271 </a>            <span class="php-var">$url</span> = <span class="php-var">$request</span>-&gt;query[<span class="php-quote">'redirect_url'</span>];
+</span><span id="272" class="l"><a class="l" href="#272">272 </a>        }
+</span><span id="273" class="l"><a class="l" href="#273">273 </a>
+</span><span id="274" class="l"><a class="l" href="#274">274 </a>        <span class="php-keyword1">return</span> <span class="php-var">$url</span>;
+</span><span id="275" class="l"><a class="l" href="#275">275 </a>    }
+</span><span id="276" class="l"><a class="l" href="#276">276 </a>
+</span><span id="277" class="l"><a class="l" href="#277">277 </a>}
+</span><span id="278" class="l"><a class="l" href="#278">278 </a></span></code></pre>
 	</div>
 
 	<div id="footer">

@@ -8,7 +8,7 @@
 	<title>File Controller/Crud/CrudAction.php | jippi/cakephp-crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?1155399482"></script>
+	<script type="text/javascript" src="elementlist.js?401776394"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -456,26 +456,20 @@
 </span></span><span id="346" class="l"><a class="l" href="#346">346 </a><span class="php-comment"> */</span>
 </span><span id="347" class="l"><a class="l" href="#347">347 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__redirect" href="#__redirect">_redirect</a>(<span class="php-var">$subject</span>, <span class="php-var">$url</span> = <span class="php-keyword1">null</span>, <span class="php-var">$status</span> = <span class="php-keyword1">null</span>, <span class="php-var">$exit</span> = <span class="php-keyword1">true</span>) {
 </span><span id="348" class="l"><a class="l" href="#348">348 </a>        <span class="php-var">$request</span> = <span class="php-var">$this</span>-&gt;_request();
-</span><span id="349" class="l"><a class="l" href="#349">349 </a>        <span class="php-keyword1">if</span> (!<span class="php-keyword1">empty</span>(<span class="php-var">$request</span>-&gt;data[<span class="php-quote">'redirect_url'</span>])) {
-</span><span id="350" class="l"><a class="l" href="#350">350 </a>            <span class="php-var">$url</span> = <span class="php-var">$request</span>-&gt;data[<span class="php-quote">'redirect_url'</span>];
-</span><span id="351" class="l"><a class="l" href="#351">351 </a>        } <span class="php-keyword1">elseif</span> (!<span class="php-keyword1">empty</span>(<span class="php-var">$request</span>-&gt;query[<span class="php-quote">'redirect_url'</span>])) {
-</span><span id="352" class="l"><a class="l" href="#352">352 </a>            <span class="php-var">$url</span> = <span class="php-var">$request</span>-&gt;query[<span class="php-quote">'redirect_url'</span>];
-</span><span id="353" class="l"><a class="l" href="#353">353 </a>        } <span class="php-keyword1">elseif</span> (<span class="php-keyword1">empty</span>(<span class="php-var">$url</span>)) {
-</span><span id="354" class="l"><a class="l" href="#354">354 </a>            <span class="php-var">$url</span> = <span class="php-keyword1">array</span>(<span class="php-quote">'action'</span> =&gt; <span class="php-quote">'index'</span>);
-</span><span id="355" class="l"><a class="l" href="#355">355 </a>        }
-</span><span id="356" class="l"><a class="l" href="#356">356 </a>
-</span><span id="357" class="l"><a class="l" href="#357">357 </a>        <span class="php-var">$subject</span>-&gt;url = <span class="php-var">$url</span>;
-</span><span id="358" class="l"><a class="l" href="#358">358 </a>        <span class="php-var">$subject</span>-&gt;status = <span class="php-var">$status</span>;
-</span><span id="359" class="l"><a class="l" href="#359">359 </a>        <span class="php-var">$subject</span>-&gt;<span class="php-keyword1">exit</span> = <span class="php-var">$exit</span>;
-</span><span id="360" class="l"><a class="l" href="#360">360 </a>        <span class="php-var">$subject</span> = <span class="php-var">$this</span>-&gt;_trigger(<span class="php-quote">'beforeRedirect'</span>, <span class="php-var">$subject</span>);
-</span><span id="361" class="l"><a class="l" href="#361">361 </a>
-</span><span id="362" class="l"><a class="l" href="#362">362 </a>        <span class="php-var">$controller</span> = <span class="php-var">$this</span>-&gt;_controller();
-</span><span id="363" class="l"><a class="l" href="#363">363 </a>        <span class="php-var">$controller</span>-&gt;redirect(<span class="php-var">$subject</span>-&gt;url, <span class="php-var">$subject</span>-&gt;status, <span class="php-var">$subject</span>-&gt;<span class="php-keyword1">exit</span>);
-</span><span id="364" class="l"><a class="l" href="#364">364 </a>        <span class="php-keyword1">return</span> <span class="php-var">$controller</span>-&gt;response;
-</span><span id="365" class="l"><a class="l" href="#365">365 </a>    }
-</span><span id="366" class="l"><a class="l" href="#366">366 </a>
-</span><span id="367" class="l"><a class="l" href="#367">367 </a>}
-</span><span id="368" class="l"><a class="l" href="#368">368 </a></span></code></pre>
+</span><span id="349" class="l"><a class="l" href="#349">349 </a>        <span class="php-var">$url</span> = <span class="php-var">$this</span>-&gt;_redirectUrl(<span class="php-var">$url</span>);
+</span><span id="350" class="l"><a class="l" href="#350">350 </a>
+</span><span id="351" class="l"><a class="l" href="#351">351 </a>        <span class="php-var">$subject</span>-&gt;url = <span class="php-var">$url</span>;
+</span><span id="352" class="l"><a class="l" href="#352">352 </a>        <span class="php-var">$subject</span>-&gt;status = <span class="php-var">$status</span>;
+</span><span id="353" class="l"><a class="l" href="#353">353 </a>        <span class="php-var">$subject</span>-&gt;<span class="php-keyword1">exit</span> = <span class="php-var">$exit</span>;
+</span><span id="354" class="l"><a class="l" href="#354">354 </a>        <span class="php-var">$subject</span> = <span class="php-var">$this</span>-&gt;_trigger(<span class="php-quote">'beforeRedirect'</span>, <span class="php-var">$subject</span>);
+</span><span id="355" class="l"><a class="l" href="#355">355 </a>
+</span><span id="356" class="l"><a class="l" href="#356">356 </a>        <span class="php-var">$controller</span> = <span class="php-var">$this</span>-&gt;_controller();
+</span><span id="357" class="l"><a class="l" href="#357">357 </a>        <span class="php-var">$controller</span>-&gt;redirect(<span class="php-var">$subject</span>-&gt;url, <span class="php-var">$subject</span>-&gt;status, <span class="php-var">$subject</span>-&gt;<span class="php-keyword1">exit</span>);
+</span><span id="358" class="l"><a class="l" href="#358">358 </a>        <span class="php-keyword1">return</span> <span class="php-var">$controller</span>-&gt;response;
+</span><span id="359" class="l"><a class="l" href="#359">359 </a>    }
+</span><span id="360" class="l"><a class="l" href="#360">360 </a>
+</span><span id="361" class="l"><a class="l" href="#361">361 </a>}
+</span><span id="362" class="l"><a class="l" href="#362">362 </a></span></code></pre>
 	</div>
 
 	<div id="footer">
