@@ -7,7 +7,7 @@
 	<title>Class CrudSubject | jippi/cakephp-crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?2470350034"></script>
+	<script type="text/javascript" src="elementlist.js?3898683119"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -135,7 +135,7 @@ please see the LICENSE.txt</p>
 		
 		
 
-		<b>Located at</b> <a href="source-class-CrudSubject.html#2-120" title="Go to source code">Controller/Crud/CrudSubject.php</a><br />
+		<b>Located at</b> <a href="source-class-CrudSubject.html#2-157" title="Go to source code">Controller/Crud/CrudSubject.php</a><br />
 	</div>
 
 
@@ -153,7 +153,7 @@ please see the LICENSE.txt</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#___construct">#</a>
-			<code><a href="source-class-CrudSubject.html#68-76" title="Go to source code">__construct</a>( <span>array <var>$fields</var> = <span class="php-keyword1">array</span>()</span> )</code>
+			<code><a href="source-class-CrudSubject.html#75-83" title="Go to source code">__construct</a>( <span>array <var>$fields</var> = <span class="php-keyword1">array</span>()</span> )</code>
 
 			<div class="description short">
 				
@@ -180,6 +180,125 @@ please see the LICENSE.txt</p>
 			</div>
 			</div></td>
 		</tr>
+		<tr data-order="addEvent" id="_addEvent">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_addEvent">#</a>
+			<code><a href="source-class-CrudSubject.html#85-93" title="Go to source code">addEvent</a>( <span>string <var>$name</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Add an event name to the list of events this subject has passed through</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Add an event name to the list of events this subject has passed through</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$name</var></dt>
+						<dd><code>string</code><br>$name name of event</dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="getEvents" id="_getEvents">
+
+			<td class="attributes"><code>
+				 public 
+				array
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_getEvents">#</a>
+			<code><a href="source-class-CrudSubject.html#95-102" title="Go to source code">getEvents</a>( )</code>
+
+			<div class="description short">
+				
+<p>Returns the list of events this subject has passed through</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Returns the list of events this subject has passed through</p>
+
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>array</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="hasEvent" id="_hasEvent">
+
+			<td class="attributes"><code>
+				 public 
+				array
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_hasEvent">#</a>
+			<code><a href="source-class-CrudSubject.html#104-113" title="Go to source code">hasEvent</a>( <span>string <var>$name</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Returns whether the specified event is in the list the list of events this
+subject has passed through</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Returns whether the specified event is in the list the list of events this
+subject has passed through</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$name</var></dt>
+						<dd><code>string</code><br>$name name of event</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>array</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
 		<tr data-order="set" id="_set">
 
 			<td class="attributes"><code>
@@ -191,7 +310,7 @@ please see the LICENSE.txt</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_set">#</a>
-			<code><a href="source-class-CrudSubject.html#78-88" title="Go to source code">set</a>( <span>array <var>$fields</var></span> )</code>
+			<code><a href="source-class-CrudSubject.html#115-125" title="Go to source code">set</a>( <span>array <var>$fields</var></span> )</code>
 
 			<div class="description short">
 				
@@ -229,7 +348,7 @@ please see the LICENSE.txt</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_shouldProcess">#</a>
-			<code><a href="source-class-CrudSubject.html#90-118" title="Go to source code">shouldProcess</a>( <span>string <var>$mode</var></span>, <span>mixed <var>$actions</var> = <span class="php-keyword1">array</span>()</span> )</code>
+			<code><a href="source-class-CrudSubject.html#127-155" title="Go to source code">shouldProcess</a>( <span>string <var>$mode</var></span>, <span>mixed <var>$actions</var> = <span class="php-keyword1">array</span>()</span> )</code>
 
 			<div class="description short">
 				
@@ -489,6 +608,32 @@ array (blacklist)</p>
 				<div class="description detailed hidden">
 					
 <p>Optional arguments passed to the controller action</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		<tr data-order="_events" id="$_events">
+			<td class="attributes"><code>
+				protected  
+				array
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-CrudSubject.html#68-73" title="Go to source code"><var>$_events</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$_events" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>List of events this subject has passed through</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>List of events this subject has passed through</p>
 
 
 				</div>
