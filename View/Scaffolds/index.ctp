@@ -12,12 +12,8 @@
     </div>
     <div class="filters collapse">
     <?php
-      echo $this->Form->create($modelClass, array(
-        'url' => array_merge(array('action' => $this->request->params['action']), $this->params['pass']),
-      ));
-      foreach ($scaffoldFilters as $_field => $scaffoldFilter) {
-        echo $this->Form->input($_field, $scaffoldFilter);
-      }
+      echo $this->Form->create($modelClass);
+      echo $this->Form->input($scaffoldFilters);
       echo $this->Form->submit(__d('crud', 'Filter'), array('name' => '_filter', 'class' => 'btn btn-primary btn-filter'));
       echo $this->Form->end();
     ?>
