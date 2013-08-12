@@ -89,8 +89,10 @@ class AddCrudAction extends CrudAction {
 			$subject = $this->_trigger('afterSave', array('success' => true, 'created' => true,	'id' => $model->id));
 
 			if ($request->data('_add')) {
+				unset($request->data['redirect_url']);
 				return $this->_redirect($subject, array('action' => $request->action));
 			} elseif ($request->data('_edit')) {
+				unset($request->data['redirect_url']);
 				return $this->_redirect($subject, array('action' => 'edit', $model->id));
 			}
 

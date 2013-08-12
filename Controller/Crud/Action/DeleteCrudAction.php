@@ -92,6 +92,7 @@ class DeleteCrudAction extends CrudAction {
 		}
 
 		if ($request->data('_add')) {
+			unset($request->data['redirect_url']);
 			return $this->_redirect($subject, array('action' => 'add'));
 		}
 
