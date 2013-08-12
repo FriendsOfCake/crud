@@ -1,6 +1,7 @@
 <?php $this->start('pageTitle'); ?>
 <?php
   $primaryKeyValue = null;
+  $displayFieldValue = null;
   if (!empty(${$singularVar})) {
     $primaryKeyValue =  Hash::get(${$singularVar}, "{$modelClass}.{$primaryKey}");
     if ($displayField != $primaryKey) {
