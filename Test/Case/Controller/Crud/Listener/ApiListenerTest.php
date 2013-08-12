@@ -39,8 +39,8 @@ class ApiListenerTest extends CakeTestCase {
 		$event = new CakeEvent('Crud.startup', $subject);
 		$apiListener->startup($event);
 
-		$event = new CakeEvent('Crud.init', $subject);
-		$apiListener->initialize($event);
+		$event = new CakeEvent('Crud.beforeHandle', $subject);
+		$apiListener->beforeHandle($event);
 
 		//Testing detectors
 		$subject->request->expects($this->at(0))
@@ -81,10 +81,10 @@ class ApiListenerTest extends CakeTestCase {
 /**
  * Tests initialization in API request
  *
- * @covers ApiListener::initialize
+ * @covers ApiListener::beforeHandle
  * @return void
  */
-	public function testInitialize() {
+	public function testBeforeHandle() {
 		$request = $this->getMock('CakeRequest', array('is'));
 		$request->expects($this->once())->method('is')->with('api')->will($this->returnValue(true));
 
@@ -92,16 +92,16 @@ class ApiListenerTest extends CakeTestCase {
 		$listener = $this->getMock('ApiListener', $mockMethods, array(new CrudSubject()));
 		$listener->expects($this->once())->method('_request')->with()->will($this->returnValue($request));
 		$listener->expects($this->once())->method('registerExceptionHandler')->with();
-		$listener->initialize(new CakeEvent('Crud.init'));
+		$listener->beforeHandle(new CakeEvent('Crud.beforeHandle'));
 	}
 
 /**
  * Tests initialization in non-API request
  *
- * @covers ApiListener::initialize
+ * @covers ApiListener::beforeHandle
  * @return void
  */
-	public function testInitializeNotRequest() {
+	public function testBeforeHandleNotRequest() {
 		$request = $this->getMock('CakeRequest', array('is'));
 		$request->expects($this->once())->method('is')->with('api')->will($this->returnValue(false));
 
@@ -109,7 +109,7 @@ class ApiListenerTest extends CakeTestCase {
 		$listener = $this->getMock('ApiListener', $mockMethods, array(new CrudSubject()));
 		$listener->expects($this->once())->method('_request')->with()->will($this->returnValue($request));
 		$listener->expects($this->never())->method('registerExceptionHandler');
-		$listener->initialize(new CakeEvent('Crud.init'));
+		$listener->beforeHandle(new CakeEvent('Crud.init'));
 	}
 
 /**
@@ -473,7 +473,7 @@ class ApiListenerTest extends CakeTestCase {
 		$subject = $this->getMock('CrudSubject');
 		$apiListener = new ApiListener($subject);
 		$expected = array(
-			'Crud.initialize' => array('callable' => 'initialize', 'priority' => 10),
+			'Crud.beforeHandle' => array('callable' => 'beforeHandle', 'priority' => 10),
 			'Crud.startup' => array('callable' => 'startup', 'priority' => 5),
 			'Crud.beforeRender' => array('callable' => 'beforeRender', 'priority' => 100),
 			'Crud.afterSave' => array('callable' => 'afterSave', 'priority' => 100),

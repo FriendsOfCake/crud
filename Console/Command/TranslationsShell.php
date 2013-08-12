@@ -239,7 +239,8 @@ class TranslationsShell extends AppShell {
  */
 	protected function _processAction($actionName, $Controller) {
 		try {
-			$Controller->Crud->initAction($actionName);
+			$Controller->Crud->action($actionName);
+			$Controller->Crud->trigger('beforeHandle');
 		} catch(Exception $e) {
 			return;
 		}
