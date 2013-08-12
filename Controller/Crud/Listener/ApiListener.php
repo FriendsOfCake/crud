@@ -39,7 +39,7 @@ class ApiListener extends CrudListener {
 	public function implementedEvents() {
 		return array(
 			'Crud.startup' => array('callable' => 'startup', 'priority' => 5),
-			'Crud.initialize' => array('callable' => 'initialize', 'priority' => 10),
+			'Crud.beforeHandle' => array('callable' => 'beforeHandle', 'priority' => 10),
 			'Crud.beforeRender' => array('callable' => 'beforeRender', 'priority' => 100),
 			'Crud.afterSave' => array('callable' => 'afterSave', 'priority' => 100),
 			'Crud.afterDelete' => array('callable' => 'afterDelete', 'priority' => 100),
@@ -59,15 +59,15 @@ class ApiListener extends CrudListener {
 	}
 
 /**
- * initialize
+ * beforeHandle
  *
  * Called before the crud action is executed
  *
  * @param CakeEvent $event
  * @return void
  */
-	public function initialize(CakeEvent $event) {
-		parent::initialize($event);
+	public function beforeHandle(CakeEvent $event) {
+		parent::beforeHandle($event);
 
 		if (!$this->_request()->is('api')) {
 			return;

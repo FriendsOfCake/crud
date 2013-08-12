@@ -1051,7 +1051,7 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->Crud = new CrudComponent($this->Collection, array('actions' => array('index')));
 		$this->Crud->initialize($controller);
 		$this->controller->Crud = $this->Crud;
-		$this->Crud->initAction('index');
+		$this->Crud->action('index');
 		$subject = $this->Crud->trigger('sample');
 
 		$this->assertNull($subject->model);

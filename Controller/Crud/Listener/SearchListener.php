@@ -37,8 +37,28 @@ class SearchListener extends CrudListener {
  */
 	public function implementedEvents() {
 		return array(
+			'Crud.beforeHandle' => array('callable' => 'beforeHandle', 'priority' => 50),
 			'Crud.beforePaginate' => array('callable' => 'beforePaginate', 'priority' => 50)
 		);
+	}
+
+	public function beforeHandle(CakeEvent $event) {
+		$request = $this->_request();
+		$model = $this->_model();
+
+		if (!array_key_exists($model->alias, $request->data)) {
+			return;
+		}
+
+		if (!array_key_exists('_search', $request->data($model->alias))) {
+			return;
+		}
+
+		$controller = $this->_controller();
+
+		$this->_ensureComponent($controller);
+		$this->_ensureBehavior($model);
+		$this->_commonProcess($controller, $model->name);
 	}
 
 /**

@@ -37,7 +37,6 @@ abstract class CrudAction extends CrudBaseObject {
  */
 	public function __construct(CrudSubject $subject, $defaults = array()) {
 		parent::__construct($subject, $defaults);
-
 		$this->_settings['action'] = $subject->action;
 	}
 

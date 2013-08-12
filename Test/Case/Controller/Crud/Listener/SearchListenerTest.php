@@ -39,7 +39,10 @@ class SearchListenerTest extends CakeTestCase {
 	public function testImplementedEvents() {
 		$Instance = new SearchListener(new CrudSubject());
 		$result = $Instance->implementedEvents();
-		$expected = array('Crud.beforePaginate' => array('callable' => 'beforePaginate', 'priority' => 50));
+		$expected = array(
+			'Crud.beforeHandle' => array('callable' => 'beforeHandle', 'priority' => 50),
+			'Crud.beforePaginate' => array('callable' => 'beforePaginate', 'priority' => 50)
+		);
 		$this->assertEqual($result, $expected);
 	}
 
