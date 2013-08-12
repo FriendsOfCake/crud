@@ -49,7 +49,7 @@ abstract class CrudBaseObject extends Object implements CakeEventListener {
  * @param CakeEvent $event
  * @return void
  */
-	public function initialize(CakeEvent $event) {
+	public function beforeHandle(CakeEvent $event) {
 		$this->_container = $event->subject;
 	}
 

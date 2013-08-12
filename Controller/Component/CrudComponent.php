@@ -176,17 +176,6 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Initialize action
- *
- * @param string $controllerAction Override the controller action to execute as
- */
-	public function initAction($controllerAction = null) {
-		$this->_action = $controllerAction ?: $this->_action;
-		$this->_loadListeners();
-		$this->trigger('initialize');
-	}
-
-/**
  * Execute a Crud action
  *
  * @param string $controllerAction Override the controller action to execute as
@@ -195,14 +184,19 @@ class CrudComponent extends Component {
  * @throws CakeException If an action is not mapped
  */
 	public function executeAction($controllerAction = null, $args = array()) {
-		$this->initAction($controllerAction);
+		$this->_loadListeners();
+
+		$this->_action = $controllerAction ?: $this->_action;
+
 		$view = $action = $this->_action;
 		if (empty($args)) {
 			$args = $this->_request->params['pass'];
 		}
 
 		try {
-			$response = $this->action($action)->handle($this->getSubject(compact('args')));
+			$subject = $this->trigger('beforeHandle', compact('args', 'action'));
+
+			$response = $this->action($subject->action)->handle($subject);
 			if ($response instanceof CakeResponse) {
 				return $response;
 			}
