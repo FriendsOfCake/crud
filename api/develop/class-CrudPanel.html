@@ -7,7 +7,7 @@
 	<title>Class CrudPanel | jippi/cakephp-crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?3898683119"></script>
+	<script type="text/javascript" src="elementlist.js?3407841856"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -146,7 +146,7 @@ DebugPanel
 		
 		
 
-		<b>Located at</b> <a href="source-class-CrudPanel.html#5-41" title="Go to source code">Lib/Panel/CrudPanel.php</a><br />
+		<b>Located at</b> <a href="source-class-CrudPanel.html#6-125" title="Go to source code">Lib/Panel/CrudPanel.php</a><br />
 	</div>
 
 
@@ -164,7 +164,7 @@ DebugPanel
 
 			<td class="name"><div>
 			<a class="anchor" href="#_beforeRender">#</a>
-			<code><a href="source-class-CrudPanel.html#20-39" title="Go to source code">beforeRender</a>( <span>Controller <var>$controller</var></span> )</code>
+			<code><a href="source-class-CrudPanel.html#21-56" title="Go to source code">beforeRender</a>( <span>Controller <var>$controller</var></span> )</code>
 
 			<div class="description short">
 				
@@ -184,6 +184,142 @@ DebugPanel
 						<dd><code>Controller</code><br>$controller</dd>
 					</dl></div>
 
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_getCallbacks" id="__getCallbacks">
+
+			<td class="attributes"><code>
+				 protected 
+				array
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__getCallbacks">#</a>
+			<code><a href="source-class-CrudPanel.html#58-79" title="Go to source code">_getCallbacks</a>( <span>array <var>$listeners</var></span> )</code>
+
+			<div class="description short">
+				
+<p>_getCallbacks</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>_getCallbacks</p>
+
+<p>Return all callbacks for a givent event key</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$listeners</var></dt>
+						<dd><code>array</code><br>$listeners</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>array</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_getClosureDefinition" id="__getClosureDefinition">
+
+			<td class="attributes"><code>
+				 protected 
+				mixed
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__getClosureDefinition">#</a>
+			<code><a href="source-class-CrudPanel.html#81-102" title="Go to source code">_getClosureDefinition</a>( <span>Closure <var>$closure</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Return where a closure has been defined</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Return where a closure has been defined</p>
+
+<p>If for some reason this doesn't work - it'll return the closure instance in
+the full knowledge that it'll probably get dumped as the string "function"</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$closure</var></dt>
+						<dd><code>Closure</code><br>$closure</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>mixed</code><br>string or Closure<br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_getUniqueName" id="__getUniqueName">
+
+			<td class="attributes"><code>
+				 protected 
+				string
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__getUniqueName">#</a>
+			<code><a href="source-class-CrudPanel.html#104-123" title="Go to source code">_getUniqueName</a>( <span>string <var>$name</var></span>, <span>array <var>$existing</var></span> )</code>
+
+			<div class="description short">
+				
+<p>_getUniqueName</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>_getUniqueName</p>
+
+<p>The name is used as an array key, ensure there are no collisions by adding a
+numerical suffix if the given name already exists</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$name</var></dt>
+						<dd><code>string</code><br>$name</dd>
+						<dt><var>$existing</var></dt>
+						<dd><code>array</code><br>$existing</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>string</code><br />
+					</div>
 
 
 
@@ -213,7 +349,7 @@ DebugPanel
 			</code></td>
 
 			<td class="name">
-					<a href="source-class-CrudPanel.html#13-18" title="Go to source code"><var>$plugin</var></a>
+					<a href="source-class-CrudPanel.html#14-19" title="Go to source code"><var>$plugin</var></a>
 			</td>
 			<td class="description"><div>
 				<a href="#$plugin" class="anchor">#</a>

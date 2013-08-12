@@ -7,7 +7,7 @@
 	<title>Class DebugKitListener | jippi/cakephp-crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?3898683119"></script>
+	<script type="text/javascript" src="elementlist.js?3407841856"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -162,7 +162,7 @@ Object
 		
 		
 
-		<b>Located at</b> <a href="source-class-DebugKitListener.html#7-141" title="Go to source code">Controller/Crud/Listener/DebugKitListener.php</a><br />
+		<b>Located at</b> <a href="source-class-DebugKitListener.html#7-158" title="Go to source code">Controller/Crud/Listener/DebugKitListener.php</a><br />
 	</div>
 
 
@@ -180,7 +180,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#_implementedEvents">#</a>
-			<code><a href="source-class-DebugKitListener.html#15-37" title="Go to source code">implementedEvents</a>( )</code>
+			<code><a href="source-class-DebugKitListener.html#15-39" title="Go to source code">implementedEvents</a>( )</code>
 
 			<div class="description short">
 				
@@ -208,6 +208,47 @@ Object
 			</div>
 			</div></td>
 		</tr>
+		<tr data-order="startup" id="_startup">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_startup">#</a>
+			<code><a href="source-class-DebugKitListener.html#41-52" title="Go to source code">startup</a>( <span>CakeEvent <var>$event</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Start timer for Crud.init</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Start timer for Crud.init</p>
+
+<p>And enable event logging. The Crud.startup event will not itself have been
+logged</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$event</var></dt>
+						<dd><code>CakeEvent</code><br>$event</dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
 		<tr data-order="initialize" id="_initialize">
 
 			<td class="attributes"><code>
@@ -219,7 +260,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#_initialize">#</a>
-			<code><a href="source-class-DebugKitListener.html#39-49" title="Go to source code">initialize</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<code><a href="source-class-DebugKitListener.html#54-66" title="Go to source code">initialize</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
@@ -230,6 +271,9 @@ Object
 			<div class="description detailed hidden">
 				
 <p>Start timer for Crud.init</p>
+
+<p>And enable event logging. The Crud.initialize event will not itself have been
+logged</p>
 
 
 
@@ -259,7 +303,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#_beforeRender">#</a>
-			<code><a href="source-class-DebugKitListener.html#51-59" title="Go to source code">beforeRender</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<code><a href="source-class-DebugKitListener.html#68-76" title="Go to source code">beforeRender</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
@@ -297,7 +341,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#_beforePaginate">#</a>
-			<code><a href="source-class-DebugKitListener.html#61-69" title="Go to source code">beforePaginate</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<code><a href="source-class-DebugKitListener.html#78-86" title="Go to source code">beforePaginate</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
@@ -335,7 +379,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#_afterPaginate">#</a>
-			<code><a href="source-class-DebugKitListener.html#71-79" title="Go to source code">afterPaginate</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<code><a href="source-class-DebugKitListener.html#88-96" title="Go to source code">afterPaginate</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
@@ -373,7 +417,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#_beforeSave">#</a>
-			<code><a href="source-class-DebugKitListener.html#81-89" title="Go to source code">beforeSave</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<code><a href="source-class-DebugKitListener.html#98-106" title="Go to source code">beforeSave</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
@@ -411,7 +455,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#_afterSave">#</a>
-			<code><a href="source-class-DebugKitListener.html#91-99" title="Go to source code">afterSave</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<code><a href="source-class-DebugKitListener.html#108-116" title="Go to source code">afterSave</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
@@ -449,7 +493,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#_beforeFind">#</a>
-			<code><a href="source-class-DebugKitListener.html#101-109" title="Go to source code">beforeFind</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<code><a href="source-class-DebugKitListener.html#118-126" title="Go to source code">beforeFind</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
@@ -487,7 +531,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#_afterFind">#</a>
-			<code><a href="source-class-DebugKitListener.html#111-119" title="Go to source code">afterFind</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<code><a href="source-class-DebugKitListener.html#128-136" title="Go to source code">afterFind</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
@@ -525,7 +569,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#_beforeDelete">#</a>
-			<code><a href="source-class-DebugKitListener.html#121-129" title="Go to source code">beforeDelete</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<code><a href="source-class-DebugKitListener.html#138-146" title="Go to source code">beforeDelete</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
@@ -563,7 +607,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#_afterDelete">#</a>
-			<code><a href="source-class-DebugKitListener.html#131-139" title="Go to source code">afterDelete</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<code><a href="source-class-DebugKitListener.html#148-156" title="Go to source code">afterDelete</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
