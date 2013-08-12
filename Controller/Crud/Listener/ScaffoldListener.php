@@ -144,7 +144,7 @@ class ScaffoldListener extends CrudListener {
 		App::build(array(
 			'View' => array(
 				APP . 'View' . DS,
-				APP . 'Plugin' . DS . 'Crud' . DS . 'View' . DS
+				CakePlugin::path('Crud') . 'View' . DS
 			)
 		));
 	}
