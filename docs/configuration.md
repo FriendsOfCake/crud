@@ -8,7 +8,7 @@ layout: default
 We only use routes without prefix in these examples, but the Crud component works with __any__
 prefixes you may have. It just requires some additional configuration.
 
-In the code example above, we pass in an actions array with all the controller actions we wish the
+In the code example below, we pass in an actions array with all the controller actions we wish the
 Crud component to handle - you can omit some of the actions if you wish.
 
 {% highlight php %}
@@ -174,7 +174,7 @@ public function beforeFilter() {
   $config = $this->Crud->action('index')->findMethod();
 
   // The admin_index() function will call find('unpublished') on your model
-  $this->Crud->action('admin_unpublished')->findMethod('unpublished');
+  $this->Crud->action('admin_index')->findMethod('unpublished');
 
   // Get the current configuration
   $config = $this->Crud->action('admin_index')->findMethod();
@@ -437,9 +437,9 @@ class AppController extends Controller {
         'index' => ['className' => 'MyPlugin.MyIndex']
         // The controller action 'add' will map to the MyPlugin.Controller/Crud/Action/MyAddCrudAction
         'add'   => ['className' => 'MyPlugin.MyAdd']
-        // The controller action 'add' will map to the MyPlugin.Controller/Crud/Action/MyEditCrudAction
+        // The controller action 'edit' will map to the MyPlugin.Controller/Crud/Action/MyEditCrudAction
         'edit'  => ['className' => 'MyPlugin.MyEdit']
-        // The controller action 'add' will map to the MyPlugin.Controller/Crud/Action/MyViewCrudAction
+        // The controller action 'view' will map to the MyPlugin.Controller/Crud/Action/MyViewCrudAction
         'view'  => ['className' => 'MyPlugin.MyView']
       ]
     ]
