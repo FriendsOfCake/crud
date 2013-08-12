@@ -8,7 +8,7 @@
 	<title>File Console/Command/TranslationsShell.php | jippi/cakephp-crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?3407841856"></script>
+	<script type="text/javascript" src="elementlist.js?639133473"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -349,75 +349,76 @@
 </span></span><span id="239" class="l"><a class="l" href="#239">239 </a><span class="php-comment"> */</span>
 </span><span id="240" class="l"><a class="l" href="#240">240 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__processAction" href="#__processAction">_processAction</a>(<span class="php-var">$actionName</span>, <span class="php-var">$Controller</span>) {
 </span><span id="241" class="l"><a class="l" href="#241">241 </a>        <span class="php-keyword1">try</span> {
-</span><span id="242" class="l"><a class="l" href="#242">242 </a>            <span class="php-var">$Controller</span>-&gt;Crud-&gt;initAction(<span class="php-var">$actionName</span>);
-</span><span id="243" class="l"><a class="l" href="#243">243 </a>        } <span class="php-keyword1">catch</span>(Exception <span class="php-var">$e</span>) {
-</span><span id="244" class="l"><a class="l" href="#244">244 </a>            <span class="php-keyword1">return</span>;
-</span><span id="245" class="l"><a class="l" href="#245">245 </a>        }
-</span><span id="246" class="l"><a class="l" href="#246">246 </a>
-</span><span id="247" class="l"><a class="l" href="#247">247 </a>        <span class="php-var">$action</span> = <span class="php-var">$Controller</span>-&gt;Crud-&gt;action(<span class="php-var">$actionName</span>);
-</span><span id="248" class="l"><a class="l" href="#248">248 </a>
-</span><span id="249" class="l"><a class="l" href="#249">249 </a>        <span class="php-var">$messages</span> = (<span class="php-keyword1">array</span>)<span class="php-var">$Controller</span>-&gt;Crud-&gt;config(<span class="php-quote">'messages'</span>) + (<span class="php-keyword1">array</span>)<span class="php-var">$action</span>-&gt;config(<span class="php-quote">'messages'</span>);
-</span><span id="250" class="l"><a class="l" href="#250">250 </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$messages</span>) {
-</span><span id="251" class="l"><a class="l" href="#251">251 </a>            <span class="php-keyword1">return</span>;
-</span><span id="252" class="l"><a class="l" href="#252">252 </a>        }
-</span><span id="253" class="l"><a class="l" href="#253">253 </a>
-</span><span id="254" class="l"><a class="l" href="#254">254 </a>        <span class="php-keyword1">foreach</span> (<span class="php-keyword2">array_keys</span>(<span class="php-var">$messages</span>) <span class="php-keyword1">as</span> <span class="php-var">$type</span>) {
-</span><span id="255" class="l"><a class="l" href="#255">255 </a>            <span class="php-keyword1">if</span> (<span class="php-var">$type</span> === <span class="php-quote">'domain'</span>) {
-</span><span id="256" class="l"><a class="l" href="#256">256 </a>                <span class="php-keyword1">continue</span>;
-</span><span id="257" class="l"><a class="l" href="#257">257 </a>            }
-</span><span id="258" class="l"><a class="l" href="#258">258 </a>            <span class="php-var">$message</span> = <span class="php-var">$action</span>-&gt;message(<span class="php-var">$type</span>);
-</span><span id="259" class="l"><a class="l" href="#259">259 </a>            <span class="php-var">$this</span>-&gt;_processMessage(<span class="php-var">$message</span>, <span class="php-var">$action</span>, <span class="php-var">$Controller</span>-&gt;Crud);
-</span><span id="260" class="l"><a class="l" href="#260">260 </a>        }
-</span><span id="261" class="l"><a class="l" href="#261">261 </a>    }
-</span><span id="262" class="l"><a class="l" href="#262">262 </a>
-</span><span id="263" class="l"><a class="l" href="#263">263 </a><span class="php-comment">/**
-</span></span><span id="264" class="l"><a class="l" href="#264">264 </a><span class="php-comment"> * Generates translation statement string and adds to lines property
-</span></span><span id="265" class="l"><a class="l" href="#265">265 </a><span class="php-comment"> *
-</span></span><span id="266" class="l"><a class="l" href="#266">266 </a><span class="php-comment"> * @param mixed $message
-</span></span><span id="267" class="l"><a class="l" href="#267">267 </a><span class="php-comment"> * @param mixed $action
-</span></span><span id="268" class="l"><a class="l" href="#268">268 </a><span class="php-comment"> * @param mixed $crud
-</span></span><span id="269" class="l"><a class="l" href="#269">269 </a><span class="php-comment"> */</span>
-</span><span id="270" class="l"><a class="l" href="#270">270 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__processMessage" href="#__processMessage">_processMessage</a>(<span class="php-var">$message</span>, <span class="php-var">$action</span>, <span class="php-var">$crud</span>) {
-</span><span id="271" class="l"><a class="l" href="#271">271 </a>        <span class="php-var">$text</span> = <span class="php-var">$message</span>[<span class="php-quote">'params'</span>][<span class="php-quote">'original'</span>];
-</span><span id="272" class="l"><a class="l" href="#272">272 </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$text</span>) {
-</span><span id="273" class="l"><a class="l" href="#273">273 </a>            <span class="php-keyword1">return</span>;
-</span><span id="274" class="l"><a class="l" href="#274">274 </a>        }
-</span><span id="275" class="l"><a class="l" href="#275">275 </a>
-</span><span id="276" class="l"><a class="l" href="#276">276 </a>        <span class="php-var">$domain</span> = <span class="php-var">$action</span>-&gt;config(<span class="php-quote">'messages.domain'</span>);
-</span><span id="277" class="l"><a class="l" href="#277">277 </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$domain</span>) {
-</span><span id="278" class="l"><a class="l" href="#278">278 </a>            <span class="php-var">$domain</span> = <span class="php-var">$crud</span>-&gt;config(<span class="php-quote">'messages.domain'</span>) ?: <span class="php-quote">'crud'</span>;
-</span><span id="279" class="l"><a class="l" href="#279">279 </a>        }
-</span><span id="280" class="l"><a class="l" href="#280">280 </a>
-</span><span id="281" class="l"><a class="l" href="#281">281 </a>        <span class="php-var">$string</span> = <span class="php-quote">&quot;__d('</span><span class="php-var">$domain</span><span class="php-quote">', '</span><span class="php-var">$text</span><span class="php-quote">');&quot;</span>;
-</span><span id="282" class="l"><a class="l" href="#282">282 </a>
-</span><span id="283" class="l"><a class="l" href="#283">283 </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">in_array</span>(<span class="php-var">$string</span>, <span class="php-var">$this</span>-&gt;lines)) {
-</span><span id="284" class="l"><a class="l" href="#284">284 </a>            <span class="php-var">$this</span>-&gt;out(<span class="php-quote">'&lt;info&gt;Skipping:&lt;/info&gt; '</span> . <span class="php-var">$text</span>, <span class="php-num">1</span>, Shell::VERBOSE);
-</span><span id="285" class="l"><a class="l" href="#285">285 </a>        } <span class="php-keyword1">else</span> {
-</span><span id="286" class="l"><a class="l" href="#286">286 </a>            <span class="php-var">$this</span>-&gt;out(<span class="php-quote">'&lt;success&gt;Adding:&lt;/success&gt; '</span> . <span class="php-var">$text</span>);
-</span><span id="287" class="l"><a class="l" href="#287">287 </a>            <span class="php-var">$this</span>-&gt;lines[] = <span class="php-var">$string</span>;
-</span><span id="288" class="l"><a class="l" href="#288">288 </a>        }
-</span><span id="289" class="l"><a class="l" href="#289">289 </a>    }
-</span><span id="290" class="l"><a class="l" href="#290">290 </a>
-</span><span id="291" class="l"><a class="l" href="#291">291 </a><span class="php-comment">/**
-</span></span><span id="292" class="l"><a class="l" href="#292">292 </a><span class="php-comment"> * Take the lines property, populated by the generate method - and write it
-</span></span><span id="293" class="l"><a class="l" href="#293">293 </a><span class="php-comment"> * out to the output file path
-</span></span><span id="294" class="l"><a class="l" href="#294">294 </a><span class="php-comment"> *
-</span></span><span id="295" class="l"><a class="l" href="#295">295 </a><span class="php-comment"> * @return string the file path written to
-</span></span><span id="296" class="l"><a class="l" href="#296">296 </a><span class="php-comment"> */</span>
-</span><span id="297" class="l"><a class="l" href="#297">297 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__writeFile" href="#__writeFile">_writeFile</a>() {
-</span><span id="298" class="l"><a class="l" href="#298">298 </a>        <span class="php-var">$path</span> = <span class="php-var">$this</span>-&gt;path();
-</span><span id="299" class="l"><a class="l" href="#299">299 </a>
-</span><span id="300" class="l"><a class="l" href="#300">300 </a>        <span class="php-var">$lines</span> = <span class="php-keyword2">implode</span>(<span class="php-var">$this</span>-&gt;lines, <span class="php-quote">&quot;\n&quot;</span>) . <span class="php-quote">&quot;\n&quot;</span>;
-</span><span id="301" class="l"><a class="l" href="#301">301 </a>        <span class="php-var">$file</span> = <span class="php-keyword1">new</span> <span class="php-keyword2">File</span>(<span class="php-var">$path</span>, <span class="php-keyword1">true</span>, <span class="php-num">0644</span>);
-</span><span id="302" class="l"><a class="l" href="#302">302 </a>        <span class="php-var">$file</span>-&gt;write(<span class="php-var">$lines</span>);
-</span><span id="303" class="l"><a class="l" href="#303">303 </a>
-</span><span id="304" class="l"><a class="l" href="#304">304 </a>        <span class="php-var">$this</span>-&gt;out(<span class="php-keyword2">str_replace</span>(<span class="php-quote">'APP'</span>, <span class="php-quote">''</span>, <span class="php-var">$path</span>) . <span class="php-quote">' updated'</span>);
-</span><span id="305" class="l"><a class="l" href="#305">305 </a>        <span class="php-var">$this</span>-&gt;hr();
-</span><span id="306" class="l"><a class="l" href="#306">306 </a>
-</span><span id="307" class="l"><a class="l" href="#307">307 </a>        <span class="php-keyword1">return</span> <span class="php-var">$path</span>;
-</span><span id="308" class="l"><a class="l" href="#308">308 </a>    }
-</span><span id="309" class="l"><a class="l" href="#309">309 </a>}
-</span><span id="310" class="l"><a class="l" href="#310">310 </a></span></code></pre>
+</span><span id="242" class="l"><a class="l" href="#242">242 </a>            <span class="php-var">$Controller</span>-&gt;Crud-&gt;action(<span class="php-var">$actionName</span>);
+</span><span id="243" class="l"><a class="l" href="#243">243 </a>            <span class="php-var">$Controller</span>-&gt;Crud-&gt;trigger(<span class="php-quote">'beforeHandle'</span>);
+</span><span id="244" class="l"><a class="l" href="#244">244 </a>        } <span class="php-keyword1">catch</span>(Exception <span class="php-var">$e</span>) {
+</span><span id="245" class="l"><a class="l" href="#245">245 </a>            <span class="php-keyword1">return</span>;
+</span><span id="246" class="l"><a class="l" href="#246">246 </a>        }
+</span><span id="247" class="l"><a class="l" href="#247">247 </a>
+</span><span id="248" class="l"><a class="l" href="#248">248 </a>        <span class="php-var">$action</span> = <span class="php-var">$Controller</span>-&gt;Crud-&gt;action(<span class="php-var">$actionName</span>);
+</span><span id="249" class="l"><a class="l" href="#249">249 </a>
+</span><span id="250" class="l"><a class="l" href="#250">250 </a>        <span class="php-var">$messages</span> = (<span class="php-keyword1">array</span>)<span class="php-var">$Controller</span>-&gt;Crud-&gt;config(<span class="php-quote">'messages'</span>) + (<span class="php-keyword1">array</span>)<span class="php-var">$action</span>-&gt;config(<span class="php-quote">'messages'</span>);
+</span><span id="251" class="l"><a class="l" href="#251">251 </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$messages</span>) {
+</span><span id="252" class="l"><a class="l" href="#252">252 </a>            <span class="php-keyword1">return</span>;
+</span><span id="253" class="l"><a class="l" href="#253">253 </a>        }
+</span><span id="254" class="l"><a class="l" href="#254">254 </a>
+</span><span id="255" class="l"><a class="l" href="#255">255 </a>        <span class="php-keyword1">foreach</span> (<span class="php-keyword2">array_keys</span>(<span class="php-var">$messages</span>) <span class="php-keyword1">as</span> <span class="php-var">$type</span>) {
+</span><span id="256" class="l"><a class="l" href="#256">256 </a>            <span class="php-keyword1">if</span> (<span class="php-var">$type</span> === <span class="php-quote">'domain'</span>) {
+</span><span id="257" class="l"><a class="l" href="#257">257 </a>                <span class="php-keyword1">continue</span>;
+</span><span id="258" class="l"><a class="l" href="#258">258 </a>            }
+</span><span id="259" class="l"><a class="l" href="#259">259 </a>            <span class="php-var">$message</span> = <span class="php-var">$action</span>-&gt;message(<span class="php-var">$type</span>);
+</span><span id="260" class="l"><a class="l" href="#260">260 </a>            <span class="php-var">$this</span>-&gt;_processMessage(<span class="php-var">$message</span>, <span class="php-var">$action</span>, <span class="php-var">$Controller</span>-&gt;Crud);
+</span><span id="261" class="l"><a class="l" href="#261">261 </a>        }
+</span><span id="262" class="l"><a class="l" href="#262">262 </a>    }
+</span><span id="263" class="l"><a class="l" href="#263">263 </a>
+</span><span id="264" class="l"><a class="l" href="#264">264 </a><span class="php-comment">/**
+</span></span><span id="265" class="l"><a class="l" href="#265">265 </a><span class="php-comment"> * Generates translation statement string and adds to lines property
+</span></span><span id="266" class="l"><a class="l" href="#266">266 </a><span class="php-comment"> *
+</span></span><span id="267" class="l"><a class="l" href="#267">267 </a><span class="php-comment"> * @param mixed $message
+</span></span><span id="268" class="l"><a class="l" href="#268">268 </a><span class="php-comment"> * @param mixed $action
+</span></span><span id="269" class="l"><a class="l" href="#269">269 </a><span class="php-comment"> * @param mixed $crud
+</span></span><span id="270" class="l"><a class="l" href="#270">270 </a><span class="php-comment"> */</span>
+</span><span id="271" class="l"><a class="l" href="#271">271 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__processMessage" href="#__processMessage">_processMessage</a>(<span class="php-var">$message</span>, <span class="php-var">$action</span>, <span class="php-var">$crud</span>) {
+</span><span id="272" class="l"><a class="l" href="#272">272 </a>        <span class="php-var">$text</span> = <span class="php-var">$message</span>[<span class="php-quote">'params'</span>][<span class="php-quote">'original'</span>];
+</span><span id="273" class="l"><a class="l" href="#273">273 </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$text</span>) {
+</span><span id="274" class="l"><a class="l" href="#274">274 </a>            <span class="php-keyword1">return</span>;
+</span><span id="275" class="l"><a class="l" href="#275">275 </a>        }
+</span><span id="276" class="l"><a class="l" href="#276">276 </a>
+</span><span id="277" class="l"><a class="l" href="#277">277 </a>        <span class="php-var">$domain</span> = <span class="php-var">$action</span>-&gt;config(<span class="php-quote">'messages.domain'</span>);
+</span><span id="278" class="l"><a class="l" href="#278">278 </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$domain</span>) {
+</span><span id="279" class="l"><a class="l" href="#279">279 </a>            <span class="php-var">$domain</span> = <span class="php-var">$crud</span>-&gt;config(<span class="php-quote">'messages.domain'</span>) ?: <span class="php-quote">'crud'</span>;
+</span><span id="280" class="l"><a class="l" href="#280">280 </a>        }
+</span><span id="281" class="l"><a class="l" href="#281">281 </a>
+</span><span id="282" class="l"><a class="l" href="#282">282 </a>        <span class="php-var">$string</span> = <span class="php-quote">&quot;__d('</span><span class="php-var">$domain</span><span class="php-quote">', '</span><span class="php-var">$text</span><span class="php-quote">');&quot;</span>;
+</span><span id="283" class="l"><a class="l" href="#283">283 </a>
+</span><span id="284" class="l"><a class="l" href="#284">284 </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">in_array</span>(<span class="php-var">$string</span>, <span class="php-var">$this</span>-&gt;lines)) {
+</span><span id="285" class="l"><a class="l" href="#285">285 </a>            <span class="php-var">$this</span>-&gt;out(<span class="php-quote">'&lt;info&gt;Skipping:&lt;/info&gt; '</span> . <span class="php-var">$text</span>, <span class="php-num">1</span>, Shell::VERBOSE);
+</span><span id="286" class="l"><a class="l" href="#286">286 </a>        } <span class="php-keyword1">else</span> {
+</span><span id="287" class="l"><a class="l" href="#287">287 </a>            <span class="php-var">$this</span>-&gt;out(<span class="php-quote">'&lt;success&gt;Adding:&lt;/success&gt; '</span> . <span class="php-var">$text</span>);
+</span><span id="288" class="l"><a class="l" href="#288">288 </a>            <span class="php-var">$this</span>-&gt;lines[] = <span class="php-var">$string</span>;
+</span><span id="289" class="l"><a class="l" href="#289">289 </a>        }
+</span><span id="290" class="l"><a class="l" href="#290">290 </a>    }
+</span><span id="291" class="l"><a class="l" href="#291">291 </a>
+</span><span id="292" class="l"><a class="l" href="#292">292 </a><span class="php-comment">/**
+</span></span><span id="293" class="l"><a class="l" href="#293">293 </a><span class="php-comment"> * Take the lines property, populated by the generate method - and write it
+</span></span><span id="294" class="l"><a class="l" href="#294">294 </a><span class="php-comment"> * out to the output file path
+</span></span><span id="295" class="l"><a class="l" href="#295">295 </a><span class="php-comment"> *
+</span></span><span id="296" class="l"><a class="l" href="#296">296 </a><span class="php-comment"> * @return string the file path written to
+</span></span><span id="297" class="l"><a class="l" href="#297">297 </a><span class="php-comment"> */</span>
+</span><span id="298" class="l"><a class="l" href="#298">298 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__writeFile" href="#__writeFile">_writeFile</a>() {
+</span><span id="299" class="l"><a class="l" href="#299">299 </a>        <span class="php-var">$path</span> = <span class="php-var">$this</span>-&gt;path();
+</span><span id="300" class="l"><a class="l" href="#300">300 </a>
+</span><span id="301" class="l"><a class="l" href="#301">301 </a>        <span class="php-var">$lines</span> = <span class="php-keyword2">implode</span>(<span class="php-var">$this</span>-&gt;lines, <span class="php-quote">&quot;\n&quot;</span>) . <span class="php-quote">&quot;\n&quot;</span>;
+</span><span id="302" class="l"><a class="l" href="#302">302 </a>        <span class="php-var">$file</span> = <span class="php-keyword1">new</span> <span class="php-keyword2">File</span>(<span class="php-var">$path</span>, <span class="php-keyword1">true</span>, <span class="php-num">0644</span>);
+</span><span id="303" class="l"><a class="l" href="#303">303 </a>        <span class="php-var">$file</span>-&gt;write(<span class="php-var">$lines</span>);
+</span><span id="304" class="l"><a class="l" href="#304">304 </a>
+</span><span id="305" class="l"><a class="l" href="#305">305 </a>        <span class="php-var">$this</span>-&gt;out(<span class="php-keyword2">str_replace</span>(<span class="php-quote">'APP'</span>, <span class="php-quote">''</span>, <span class="php-var">$path</span>) . <span class="php-quote">' updated'</span>);
+</span><span id="306" class="l"><a class="l" href="#306">306 </a>        <span class="php-var">$this</span>-&gt;hr();
+</span><span id="307" class="l"><a class="l" href="#307">307 </a>
+</span><span id="308" class="l"><a class="l" href="#308">308 </a>        <span class="php-keyword1">return</span> <span class="php-var">$path</span>;
+</span><span id="309" class="l"><a class="l" href="#309">309 </a>    }
+</span><span id="310" class="l"><a class="l" href="#310">310 </a>}
+</span><span id="311" class="l"><a class="l" href="#311">311 </a></span></code></pre>
 	</div>
 
 	<div id="footer">
