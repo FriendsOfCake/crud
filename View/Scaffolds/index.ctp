@@ -57,7 +57,7 @@
             } elseif ($type == 'time') {
               echo '<td>' . $this->Time->nice(${$singularVar}[$modelClass][$_field]) . '</td>';
             } else {
-              echo '<td>' . h(${$singularVar}[$modelClass][$_field]) . '</td>';
+              echo '<td>' . h(String::truncate(${$singularVar}[$modelClass][$_field], 200)) . '</td>';
             }
           }
         }
