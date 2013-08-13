@@ -103,16 +103,21 @@ class ScaffoldListener extends CrudListener {
 		$pluralHumanName = Inflector::humanize(Inflector::underscore($controller->name));
 		$modelSchema = $model->schema();
 		$associations = $this->_associations($model);
-		$scaffoldRelatedActions = $this->_scaffoldRelatedActions($request);
-		$scaffoldFilters = $this->_scaffoldFilters($request);
-		$scaffoldSidebarActions = $this->_scaffoldSidebarActions($request);
-		$scaffoldNavigation = $this->_scaffoldNavigation($request);
-		$scaffoldControllerActions = $this->_scaffoldControllerActions();
 
 		$scaffoldPrimaryKeyValue = $this->_scaffoldPrimaryKeyValue();
 		$scaffoldDisplayFieldValue = $this->_scaffoldDisplayFieldValue();
 		$scaffoldAdminTitle = $this->_scaffoldAdminTitle();
 		$scaffoldPageTitle = $this->_scaffoldPageTitle($singularHumanName, $scaffoldPrimaryKeyValue, $scaffoldDisplayFieldValue);
+
+		$scaffoldFilters = $this->_scaffoldFilters($request);
+		$scaffoldNavigation = $this->_scaffoldNavigation($request);
+		$scaffoldControllerActions = $this->_scaffoldControllerActions();
+		$scaffoldSidebarActions = $this->_scaffoldSidebarActions(
+			$pluralHumanName,
+			$singularHumanName,
+			$associations,
+			$scaffoldPrimaryKeyValue
+		);
 
 		$_sort = $this->_action($request->action)->config('scaffoldFields');
 		$_sort = empty($_sort);
@@ -127,8 +132,7 @@ class ScaffoldListener extends CrudListener {
 			'modelClass', 'primaryKey', 'displayField', 'singularVar', 'pluralVar',
 			'singularHumanName', 'pluralHumanName', 'scaffoldFields', 'associations',
 			'scaffoldFilters', 'action', 'modelSchema', 'scaffoldSidebarActions',
-			'scaffoldRelatedActions', 'scaffoldNavigation',
-			'scaffoldControllerActions', 'scaffoldFieldsData',
+			'scaffoldNavigation', 'scaffoldControllerActions', 'scaffoldFieldsData',
 			'scaffoldPrimaryKeyValue', 'scaffoldDisplayFieldValue',
 			'scaffoldAdminTitle', 'scaffoldPageTitle'
 		));
@@ -154,30 +158,6 @@ class ScaffoldListener extends CrudListener {
 				CakePlugin::path('Crud') . 'View' . DS
 			)
 		));
-	}
-
-/**
- * Returns groupings of action types on the scaffolded view
- *
- * @param CakeRequest $request
- * @return string
- */
-	protected function _scaffoldControllerActions() {
-		$_actions = $this->_crud()->config('actions');
-
-		$model = array();
-		$record = array();
-		foreach ($_actions as $_actionName => $_config) {
-			$_action = $this->_action($_actionName);
-			$_type = $_action::ACTION_SCOPE;
-			if ($_type === CrudAction::SCOPE_MODEL) {
-				$model[] = $_actionName;
-			} elseif ($_type === CrudAction::SCOPE_RECORD) {
-				$record[] = $_actionName;
-			}
-		}
-
-		return compact('model', 'record');
 	}
 
 /**
@@ -207,15 +187,15 @@ class ScaffoldListener extends CrudListener {
 			$actionName = Inflector::humanize(Inflector::underscore($request->action));
 			$humanName = $this->_controllerName();
 
-		  if ($primaryKeyValue === null && $displayFieldValue === null) {
-    		$scaffoldTitle = sprintf('%s %s', $actionName, $humanName);
-	  	} elseif ($displayFieldValue === null) {
-    		$scaffoldTitle = sprintf('%s %s #%s', $actionName, $humanName, $primaryKeyValue);
-  		} elseif ($primaryKeyValue === null) {
-	    	$scaffoldTitle = sprintf('%s %s %s', $actionName, $humanName, $displayFieldValue);
-	  	} else {
-    	 	$scaffoldTitle =sprintf('%s %s #%s: %s', $actionName, $humanName, $primaryKeyValue, $displayFieldValue);
-    	}
+			if ($primaryKeyValue === null && $displayFieldValue === null) {
+				$scaffoldTitle = sprintf('%s %s', $actionName, $humanName);
+			} elseif ($displayFieldValue === null) {
+				$scaffoldTitle = sprintf('%s %s #%s', $actionName, $humanName, $primaryKeyValue);
+			} elseif ($primaryKeyValue === null) {
+				$scaffoldTitle = sprintf('%s %s %s', $actionName, $humanName, $displayFieldValue);
+			} else {
+				$scaffoldTitle =sprintf('%s %s #%s: %s', $actionName, $humanName, $primaryKeyValue, $displayFieldValue);
+			}
 		}
 		return $scaffoldTitle;
 	}
@@ -231,22 +211,6 @@ class ScaffoldListener extends CrudListener {
 		} elseif ($type === CrudAction::SCOPE_RECORD) {
 			return Inflector::singularize(Inflector::humanize(Inflector::underscore($controller->viewPath)));
 		}
-	}
-
-/**
- * Returns whether or not related items should displayed on scaffolded view
- *
- * @param CakeRequest $request
- * @return boolean
- */
-	protected function _scaffoldRelatedActions(CakeRequest $request) {
-		$scaffoldRelatedActions = $this->_action($request->action)->config('scaffoldRelatedActions');
-		if ($scaffoldRelatedActions === null) {
-			$scaffoldRelatedActions = true;
-		} else {
-			$scaffoldRelatedActions = (bool)$scaffoldRelatedActions;
-		}
-		return $scaffoldRelatedActions;
 	}
 
 /**
@@ -433,17 +397,60 @@ class ScaffoldListener extends CrudListener {
 /**
  * Returns links to be shown in actions section of scaffolded view
  *
- * @param CakeRequest $request
  * @return mixed Array of initialized links, or boolean as to whether or not to show actions
  */
-	protected function _scaffoldSidebarActions(CakeRequest $request) {
+	protected function _scaffoldSidebarActions($pluralHumanName, $singularHumanName, $associations, $primaryKeyValue = null) {
+		$request = $this->_request();
 		$scaffoldSidebarActions = $this->_action($request->action)->config('sidebarActions');
-		if ($scaffoldSidebarActions === null) {
-			return true;
-		}
-
 		if ($scaffoldSidebarActions === false) {
 			return false;
+		}
+
+		if ($scaffoldSidebarActions === null) {
+			$scaffoldSidebarActions = array(
+				array('_type' => 'header', 'title' => __d('crud', 'Actions'))
+			);
+			$controllerActions = $this->_scaffoldControllerActions();
+			foreach ($controllerActions['model'] as $_action) {
+				if ($request->action != $_action) {
+					$scaffoldSidebarActions[] = array(
+						'title' => sprintf('%s %s', Inflector::humanize($_action), $pluralHumanName),
+						'url' => array('action' => $_action),
+					);
+				}
+			}
+
+			if (!in_array($request->action, $controllerActions['model'])) {
+				foreach ($controllerActions['record'] as $_action) {
+					if ($request->action != $_action) {
+						$scaffoldSidebarActions[] = array(
+							'title' => sprintf('%s %s', Inflector::humanize($_action), $singularHumanName),
+							'url' => array('action' => $_action, $primaryKeyValue)
+						);
+					}
+				}
+			}
+		}
+
+		if ($this->_scaffoldRelatedActions()) {
+			$scaffoldSidebarActions[] = array('_type' => 'header', 'title' => __d('crud', 'Related Actions'));
+			$done = array();
+			foreach ($associations as $_type => $_data) {
+				foreach ($_data as $_alias => $_details) {
+					if ($_details['controller'] != $request->controller && !in_array($_details['controller'], $done)) {
+						$scaffoldSidebarActions[] = array(
+							'title' => __d('crud', 'List %s', Inflector::humanize($_details['controller'])),
+							'url' => array('plugin' => $_details['plugin'], 'controller' => $_details['controller'], 'action' => 'index'),
+						);
+
+						$scaffoldSidebarActions[] = array(
+							'title' => __d('cake', 'New %s', Inflector::humanize(Inflector::underscore($_alias))),
+							'url' => array('plugin' => $_details['plugin'], 'controller' => $_details['controller'], 'action' => 'add'),
+						);
+						$done[] = $_details['controller'];
+					}
+				}
+			}
 		}
 
 		foreach ($scaffoldSidebarActions as $i => $_item) {
@@ -454,12 +461,52 @@ class ScaffoldListener extends CrudListener {
 	}
 
 /**
+ * Returns groupings of action types on the scaffolded view
+ *
+ * @return string
+ */
+	protected function _scaffoldControllerActions() {
+		$_actions = $this->_crud()->config('actions');
+
+		$model = array();
+		$record = array();
+		foreach ($_actions as $_actionName => $_config) {
+			$_action = $this->_action($_actionName);
+			$_type = $_action::ACTION_SCOPE;
+			if ($_type === CrudAction::SCOPE_MODEL) {
+				$model[] = $_actionName;
+			} elseif ($_type === CrudAction::SCOPE_RECORD) {
+				$record[] = $_actionName;
+			}
+		}
+
+		return compact('model', 'record');
+	}
+
+/**
+ * Returns whether or not related items should displayed on scaffolded view
+ *
+ * @return boolean
+ */
+	protected function _scaffoldRelatedActions() {
+		$request = $this->_request();
+		$scaffoldRelatedActions = $this->_action($request->action)->config('scaffoldRelatedActions');
+		if ($scaffoldRelatedActions === null) {
+			$scaffoldRelatedActions = true;
+		} else {
+			$scaffoldRelatedActions = (bool)$scaffoldRelatedActions;
+		}
+		return $scaffoldRelatedActions;
+	}
+
+/**
  * Returns links to be shown in navigation section of scaffolded view
  *
  * @param CakeRequest $request
  * @return mixed Array of initialized links, or false for no navigation
  */
 	protected function _scaffoldNavigation(CakeRequest $request) {
+		$request = $this->_request();
 		$scaffoldNavigation = $this->_action($request->action)->config('scaffoldNavigation');
 		if (!is_array($scaffoldNavigation)) {
 			return false;
@@ -475,19 +522,19 @@ class ScaffoldListener extends CrudListener {
 	protected function _scaffoldPrimaryKeyValue() {
 		$controller = $this->_controller();
 		$model = $this->_model();
-	  $primaryKeyValue = null;
-	  $path = null;
+		$primaryKeyValue = null;
+		$path = null;
 
-	  if (!empty($controller->modelClass) && !empty($model->primaryKey)) {
-		  $path = "{$controller->modelClass}.{$model->primaryKey}";
-		  if (!empty($controller->data)) {
-		  	$primaryKeyValue = Hash::get($controller->data, $path);
-		  }
+		if (!empty($controller->modelClass) && !empty($model->primaryKey)) {
+			$path = "{$controller->modelClass}.{$model->primaryKey}";
+			if (!empty($controller->data)) {
+				$primaryKeyValue = Hash::get($controller->data, $path);
+			}
 
-		  $singularVar = Inflector::variable($controller->modelClass);
-		  if (!empty($controller->viewVars[$singularVar])) {
-		  	$primaryKeyValue = Hash::get($controller->viewVars[$singularVar], $path);
-		  }
+			$singularVar = Inflector::variable($controller->modelClass);
+			if (!empty($controller->viewVars[$singularVar])) {
+				$primaryKeyValue = Hash::get($controller->viewVars[$singularVar], $path);
+			}
 		}
 
 		return $primaryKeyValue;
@@ -496,19 +543,19 @@ class ScaffoldListener extends CrudListener {
 	protected function _scaffoldDisplayFieldValue() {
 		$controller = $this->_controller();
 		$model = $this->_model();
-	  $displayFieldValue = null;
-	  $path = null;
+		$displayFieldValue = null;
+		$path = null;
 
-	  if (!empty($controller->modelClass) && !empty($model->displayField) && $model->displayField != $model->primaryKey) {
-		  $path = "{$controller->modelClass}.{$model->displayField}";
-		  if (!empty($controller->data)) {
-		  	$displayFieldValue = Hash::get($controller->data, $path);
-		  }
+		if (!empty($controller->modelClass) && !empty($model->displayField) && $model->displayField != $model->primaryKey) {
+			$path = "{$controller->modelClass}.{$model->displayField}";
+			if (!empty($controller->data)) {
+				$displayFieldValue = Hash::get($controller->data, $path);
+			}
 
-		  $singularVar = Inflector::variable($controller->modelClass);
-		  if (!empty($controller->viewVars[$singularVar])) {
-		  	$displayFieldValue = Hash::get($controller->viewVars[$singularVar], $path);
-		  }
+			$singularVar = Inflector::variable($controller->modelClass);
+			if (!empty($controller->viewVars[$singularVar])) {
+				$displayFieldValue = Hash::get($controller->viewVars[$singularVar], $path);
+			}
 		}
 
 		return $displayFieldValue;
@@ -525,7 +572,12 @@ class ScaffoldListener extends CrudListener {
 				'url' => null,
 				'options' => array(),
 				'confirmMessage' => false,
+				'_type' => 'link'
 		), $data);
+
+		if (!in_array($data['_type'], array('link', 'header'))) {
+			$data['_type'] = 'link';
+		}
 
 		return $data;
 	}
