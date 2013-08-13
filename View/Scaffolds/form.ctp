@@ -1,5 +1,5 @@
 <?php $this->start('pageTitle'); ?>
-<h2><?php echo Inflector::humanize($this->request->action) . ' ' .  $singularHumanName; ?></h2>
+<h2><?php echo $scaffoldPageTitle; ?></h2>
 <?php $this->end(); ?>
 
 <div class="<?php echo $pluralVar; ?> form scaffold-view">

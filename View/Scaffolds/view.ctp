@@ -1,22 +1,5 @@
 <?php $this->start('pageTitle'); ?>
-<?php
-  $primaryKeyValue = null;
-  $displayFieldValue = null;
-  if (!empty(${$singularVar})) {
-    $primaryKeyValue =  Hash::get(${$singularVar}, "{$modelClass}.{$primaryKey}");
-    if ($displayField != $primaryKey) {
-      $displayFieldValue = Hash::get(${$singularVar}, "{$modelClass}.{$displayField}");
-    }
-  }
-  if ($primaryKeyValue === null && $displayFieldValue === null) : ?>
-    <h2><?php echo __d('crud', 'View %s', $singularHumanName); ?></h2>
-  <?php elseif ($displayFieldValue === null) : ?>
-    <h2><?php echo __d('crud', '%s #%s', $singularHumanName, $primaryKeyValue); ?></h2>
-  <?php elseif ($primaryKeyValue === null) : ?>
-    <h2><?php echo __d('crud', '%s %s', $singularHumanName, $displayFieldValue); ?></h2>
-  <?php else : ?>
-    <h2><?php echo __d('crud', '%s #%s: %s', $singularHumanName, $primaryKeyValue, $displayFieldValue); ?></h2>
-  <?php endif; ?>
+<h2><?php echo $scaffoldPageTitle; ?></h2>
 <?php $this->end(); ?>
 
 <div class="<?php echo $pluralVar; ?> view scaffold-view">

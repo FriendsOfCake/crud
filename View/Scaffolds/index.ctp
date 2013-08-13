@@ -1,5 +1,5 @@
 <?php $this->start('pageTitle'); ?>
-<h2><?php echo $pluralHumanName; ?></h2>
+<h2><?php echo $scaffoldPageTitle; ?></h2>
 <?php $this->end(); ?>
 
 <div class="<?php echo $pluralVar; ?> index scaffold-view">

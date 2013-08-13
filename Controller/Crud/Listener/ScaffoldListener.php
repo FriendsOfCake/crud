@@ -92,7 +92,7 @@ class ScaffoldListener extends CrudListener {
 		$action = $request->action;
 
 		$scaffoldTitle = Inflector::humanize(Inflector::underscore($controller->viewPath));
-		$title = $scaffoldTitle . ' :: ' . Inflector::humanize($request->action);
+		$titleForLayout = Inflector::humanize($request->action) . ' :: ' . $scaffoldTitle;
 
 		$modelClass = $controller->modelClass;
 		$primaryKey = $model->primaryKey;
@@ -103,12 +103,16 @@ class ScaffoldListener extends CrudListener {
 		$pluralHumanName = Inflector::humanize(Inflector::underscore($controller->name));
 		$modelSchema = $model->schema();
 		$associations = $this->_associations($model);
-		$scaffoldTitle = $this->_scaffoldTitle($request);
 		$scaffoldRelatedActions = $this->_scaffoldRelatedActions($request);
 		$scaffoldFilters = $this->_scaffoldFilters($request);
 		$scaffoldSidebarActions = $this->_scaffoldSidebarActions($request);
 		$scaffoldNavigation = $this->_scaffoldNavigation($request);
 		$scaffoldControllerActions = $this->_scaffoldControllerActions();
+
+		$scaffoldPrimaryKeyValue = $this->_scaffoldPrimaryKeyValue();
+		$scaffoldDisplayFieldValue = $this->_scaffoldDisplayFieldValue();
+		$scaffoldAdminTitle = $this->_scaffoldAdminTitle();
+		$scaffoldPageTitle = $this->_scaffoldPageTitle($singularHumanName, $scaffoldPrimaryKeyValue, $scaffoldDisplayFieldValue);
 
 		$_sort = $this->_action($request->action)->config('scaffoldFields');
 		$_sort = empty($_sort);
@@ -123,14 +127,16 @@ class ScaffoldListener extends CrudListener {
 			'modelClass', 'primaryKey', 'displayField', 'singularVar', 'pluralVar',
 			'singularHumanName', 'pluralHumanName', 'scaffoldFields', 'associations',
 			'scaffoldFilters', 'action', 'modelSchema', 'scaffoldSidebarActions',
-			'scaffoldRelatedActions', 'scaffoldTitle', 'scaffoldNavigation',
-			'scaffoldControllerActions', 'scaffoldFieldsData'
+			'scaffoldRelatedActions', 'scaffoldNavigation',
+			'scaffoldControllerActions', 'scaffoldFieldsData',
+			'scaffoldPrimaryKeyValue', 'scaffoldDisplayFieldValue',
+			'scaffoldAdminTitle', 'scaffoldPageTitle'
 		));
 		$controller->set(array(
 			'redirect_url' => $redirectUrl
 		));
 
-		$controller->set('title_for_layout', $title);
+		$controller->set('title_for_layout', $titleForLayout);
 
 		if ($controller->viewClass) {
 			$controller->viewClass = 'Scaffold';
@@ -138,6 +144,7 @@ class ScaffoldListener extends CrudListener {
 
 		$controller->helpers = (array)$controller->helpers;
 		$controller->helpers[] = 'Time';
+		$controller->helpers[] = 'Crud.Crud';
 
 		$controller->layout = 'Crud.default';
 
@@ -174,18 +181,56 @@ class ScaffoldListener extends CrudListener {
 	}
 
 /**
- * Returns title to show on scaffolded view
+ * Returns the admin title to show on scaffolded view
  *
- * @param CakeRequest $request
  * @return string
  */
-	protected function _scaffoldTitle(CakeRequest $request) {
-		$scaffoldTitle = $this->_action($request->action)->config('scaffoldTitle');
+	protected function _scaffoldAdminTitle() {
+		$request = $this->_request();
+		$scaffoldTitle = $this->_action($request->action)->config('scaffoldAdminTitle');
 		if (empty($scaffoldTitle)) {
 			$scaffoldTitle = 'Admin';
 		}
 
 		return $scaffoldTitle;
+	}
+
+/**
+ * Returns the admin title to show on scaffolded view
+ *
+ * @return string
+ */
+	protected function _scaffoldPageTitle($singularHumanName, $primaryKeyValue = null, $displayFieldValue = null) {
+		$request = $this->_request();
+		$scaffoldTitle = $this->_action($request->action)->config('scaffoldPageTitle');
+		if (empty($scaffoldTitle)) {
+			$actionName = Inflector::humanize(Inflector::underscore($request->action));
+			$humanName = $this->_controllerName();
+
+		  if ($primaryKeyValue === null && $displayFieldValue === null) {
+    		$scaffoldTitle = sprintf('%s %s', $actionName, $humanName);
+	  	} elseif ($displayFieldValue === null) {
+    		$scaffoldTitle = sprintf('%s %s #%s', $actionName, $humanName, $primaryKeyValue);
+  		} elseif ($primaryKeyValue === null) {
+	    	$scaffoldTitle = sprintf('%s %s %s', $actionName, $humanName, $displayFieldValue);
+	  	} else {
+    	 	$scaffoldTitle =sprintf('%s %s #%s: %s', $actionName, $humanName, $primaryKeyValue, $displayFieldValue);
+    	}
+		}
+		return $scaffoldTitle;
+	}
+
+	protected function _controllerName() {
+		$controller = $this->_controller();
+		$request = $this->_request();
+		$action = $this->_action($request->action);
+
+		$type = $action::ACTION_SCOPE;
+		if ($type === CrudAction::SCOPE_MODEL) {
+			return Inflector::pluralize(Inflector::humanize(Inflector::underscore($controller->viewPath)));
+		} elseif ($type === CrudAction::SCOPE_RECORD) {
+			return Inflector::singularize(Inflector::humanize(Inflector::underscore($controller->viewPath)));
+		}
 	}
 
 /**
@@ -425,6 +470,48 @@ class ScaffoldListener extends CrudListener {
 		}
 
 		return $scaffoldNavigation;
+	}
+
+	protected function _scaffoldPrimaryKeyValue() {
+		$controller = $this->_controller();
+		$model = $this->_model();
+	  $primaryKeyValue = null;
+	  $path = null;
+
+	  if (!empty($controller->modelClass) && !empty($model->primaryKey)) {
+		  $path = "{$controller->modelClass}.{$model->primaryKey}";
+		  if (!empty($controller->data)) {
+		  	$primaryKeyValue = Hash::get($controller->data, $path);
+		  }
+
+		  $singularVar = Inflector::variable($controller->modelClass);
+		  if (!empty($controller->viewVars[$singularVar])) {
+		  	$primaryKeyValue = Hash::get($controller->viewVars[$singularVar], $path);
+		  }
+		}
+
+		return $primaryKeyValue;
+	}
+
+	protected function _scaffoldDisplayFieldValue() {
+		$controller = $this->_controller();
+		$model = $this->_model();
+	  $displayFieldValue = null;
+	  $path = null;
+
+	  if (!empty($controller->modelClass) && !empty($model->displayField) && $model->displayField != $model->primaryKey) {
+		  $path = "{$controller->modelClass}.{$model->displayField}";
+		  if (!empty($controller->data)) {
+		  	$displayFieldValue = Hash::get($controller->data, $path);
+		  }
+
+		  $singularVar = Inflector::variable($controller->modelClass);
+		  if (!empty($controller->viewVars[$singularVar])) {
+		  	$displayFieldValue = Hash::get($controller->viewVars[$singularVar], $path);
+		  }
+		}
+
+		return $displayFieldValue;
 	}
 
 /**

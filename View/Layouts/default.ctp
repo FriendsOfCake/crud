@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <?php echo $this->Html->charset(); ?>
-  <title><?php echo $title_for_layout; ?> - <?php echo $scaffoldTitle ?></title>
+  <title><?php echo $title_for_layout; ?></title>
 
   <?php
     echo $this->Html->meta('icon');
@@ -21,7 +21,7 @@
     <div class="navbar navbar-static-top navbar-inverse">
       <div class="navbar-inner">
         <div class="container">
-          <a class="brand" href="#"><?php echo $scaffoldTitle; ?></a>
+          <a class="brand" href="#"><?php echo $scaffoldAdminTitle; ?></a>
           <?php if (!empty($scaffoldNavigation)) : ?>
             <ul class="nav pull-right">
               <?php foreach ($scaffoldNavigation as $_item) : ?>
