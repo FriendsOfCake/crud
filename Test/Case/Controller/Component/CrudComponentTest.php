@@ -489,37 +489,6 @@ class CrudComponentTest extends ControllerTestCase {
 	}
 
 /**
- * Test that having mapped a custom model for an action,
- * the modelName will be as configured
- *
- * @return void
- */
-	public function testSetModelPropertiesChangeModelForAction() {
-		$this->controller->Donkey = new StdClass;
-
-		$this->Crud->setAction('index');
-		$this->Crud->config('modelMap.index', 'Donkey');
-		$this->Crud->setModelProperties();
-
-		$this->assertSame('Donkey', $this->Crud->getModelName());
-	}
-
-/**
- * Test that having mapped a custom model for an action,
- * but the custom model isn't loaded, will throw an exception
- *
- * @expectedException CakeException
- * @expectedExceptionMessage No model loaded in the Controller by the name "Donkey". Please add it to $uses.
- */
-	public function testSetModelPropertiesChangeModelForActionNotLoadedModel() {
-		$this->Crud->setAction('index');
-		$this->Crud->config('modelMap.index', 'Donkey');
-		$this->Crud->setModelProperties();
-
-		$this->assertSame('Donkey', $this->Crud->getModelName());
-	}
-
-/**
  * Test that the build in action names can't be used
  * within other plugins
  *
@@ -1132,5 +1101,24 @@ class CrudComponentTest extends ControllerTestCase {
 		);
 		$result = $this->Crud->config('messages');
 		$this->assertEqual($result, $expected);
+	}
+
+/**
+ * Tests that is possible to set the model class to use for the action
+ *
+ * @return void
+ */
+	public function testUseModel() {
+		$controller = new Controller(new CakeRequest());
+		$this->Crud = new CrudComponent($this->Collection, array('actions' => array('index')));
+		$class = $this->getMockClass('Model');
+		$this->Crud->initialize($controller);
+		$this->Crud->useModel($class);
+		$this->controller->Crud = $this->Crud;
+		$this->Crud->initAction('index');
+		$subject = $this->Crud->trigger('sample');
+
+		$this->assertInstanceOf($class, $subject->model);
+		$this->assertEquals($class, $subject->modelClass);
 	}
 }

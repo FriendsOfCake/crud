@@ -586,6 +586,18 @@ class CrudComponent extends Component {
 	}
 
 /**
+ * Sets the model class to be used during the action execution
+ *
+ * @param string $modelName The name of the model to load
+ * @return void
+ */
+	public function useModel($modelName) {
+		$this->_controller->loadModel($modelName);
+		$this->_model = $this->_controller->{$modelName};
+		$this->_modelName = $this->_model->name;
+	}
+
+/**
  * Create a CakeEvent subject with the required properties
  *
  * @param array $additional Additional properties for the subject
@@ -776,17 +788,11 @@ class CrudComponent extends Component {
 /**
  * Set internal model properties from the controller
  *
- * REMINDER: modelMap not documented?
- *
  * @return void
  * @throws CakeException If unable to get model instance
  */
 	protected function _setModelProperties() {
-		$configKey = 'modelMap.' . $this->_action;
-		if (!$this->_modelName = $this->config($configKey)) {
-			$this->_modelName = $this->_controller->modelClass;
-		}
-
+		$this->_modelName = $this->_controller->modelClass;
 		if (empty($this->_modelName)) {
 			$this->_model = null;
 			$this->_modelName = null;
@@ -825,4 +831,5 @@ class CrudComponent extends Component {
 
 		return $merged;
 	}
+
 }
