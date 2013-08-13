@@ -593,7 +593,8 @@ class CrudComponent extends Component {
  */
 	public function useModel($modelName) {
 		$this->_controller->loadModel($modelName);
-		$this->_model = $this->_controller->{$modelName};
+		list(, $modelName) = pluginSplit($modelClass);
+		$this->_model = $this->_controller->{$modelClass};
 		$this->_modelName = $this->_model->name;
 	}
 
