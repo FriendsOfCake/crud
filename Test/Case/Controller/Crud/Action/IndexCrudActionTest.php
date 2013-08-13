@@ -61,8 +61,14 @@ class IndexCrudActionTest extends CrudTestCase {
 			->will($this->returnValue($Controller));
 		$Action
 			->expects($this->at($i++))
+			->method('viewVar')
+			->with()
+			->will($this->returnValue('items'));
+		$Action
+			->expects($this->at($i++))
 			->method('_trigger')
-			->with('beforePaginate', array('paginator' => $Controller->Paginator));
+			->with('beforePaginate', array('paginator' => $Controller->Paginator, 'success' => true, 'viewVar' => 'items'))
+			->will($this->returnValue(new CrudSubject(array('success' => true, 'viewVar' => 'items'))));
 		$Action
 			->expects($this->at($i++))
 			->method('_model')
@@ -76,13 +82,8 @@ class IndexCrudActionTest extends CrudTestCase {
 		$Action
 			->expects($this->at($i++))
 			->method('_trigger')
-			->with('afterPaginate', array('items' => array('foo', 'bar')))
-			->will($this->returnValue(new CrudSubject(array('items' => array('foo', 'bar')))));
-		$Action
-			->expects($this->at($i++))
-			->method('viewVar')
-			->with()
-			->will($this->returnValue('items'));
+			->with('afterPaginate', array('success' => true, 'viewVar' => 'items', 'items' => array('foo', 'bar')))
+			->will($this->returnValue(new CrudSubject(array('success' => true, 'viewVar' => 'items', 'items' => array('foo', 'bar')))));
 		$Controller
 			->expects($this->once())
 			->method('set')
@@ -99,7 +100,7 @@ class IndexCrudActionTest extends CrudTestCase {
  * @return void
  */
 	public function testPaginatorReturningIterator() {
-		$Controller = $this
+				$Controller = $this
 			->getMockBuilder('Controller')
 			->disableOriginalConstructor()
 			->setMethods(array('paginate', 'set'))
@@ -132,8 +133,14 @@ class IndexCrudActionTest extends CrudTestCase {
 			->will($this->returnValue($Controller));
 		$Action
 			->expects($this->at($i++))
+			->method('viewVar')
+			->with()
+			->will($this->returnValue('items'));
+		$Action
+			->expects($this->at($i++))
 			->method('_trigger')
-			->with('beforePaginate', array('paginator' => $Controller->Paginator));
+			->with('beforePaginate', array('paginator' => $Controller->Paginator, 'success' => true, 'viewVar' => 'items'))
+			->will($this->returnValue(new CrudSubject(array('success' => true, 'viewVar' => 'items'))));
 		$Action
 			->expects($this->at($i++))
 			->method('_model')
@@ -147,13 +154,8 @@ class IndexCrudActionTest extends CrudTestCase {
 		$Action
 			->expects($this->at($i++))
 			->method('_trigger')
-			->with('afterPaginate', array('items' => array('foo', 'bar')))
-			->will($this->returnValue(new CrudSubject(array('items' => new ArrayIterator(array('foo', 'bar'))))));
-		$Action
-			->expects($this->at($i++))
-			->method('viewVar')
-			->with()
-			->will($this->returnValue('items'));
+			->with('afterPaginate', array('success' => true, 'viewVar' => 'items', 'items' => array('foo', 'bar')))
+			->will($this->returnValue(new CrudSubject(array('success' => true, 'viewVar' => 'items', 'items' => new ArrayIterator(array('foo', 'bar'))))));
 		$Controller
 			->expects($this->once())
 			->method('set')
