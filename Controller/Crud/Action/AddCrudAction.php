@@ -86,7 +86,7 @@ class AddCrudAction extends CrudAction {
 		$this->_trigger('beforeSave');
 		if ($model->saveAll($request->data, $this->saveOptions())) {
 			$this->setFlash('success');
-			$subject = $this->_trigger('afterSave', array('success' => true, 'created' => true,	'id' => $model->id));
+			$subject = $this->_trigger('afterSave', array('success' => true, 'created' => true, 'id' => $model->id));
 
 			if ($request->data('_add')) {
 				return $this->_redirect($subject, array('action' => $request->action));
