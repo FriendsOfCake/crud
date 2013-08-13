@@ -1111,11 +1111,11 @@ class CrudComponentTest extends ControllerTestCase {
 	public function testUseModel() {
 		$controller = new Controller(new CakeRequest());
 		$this->Crud = new CrudComponent($this->Collection, array('actions' => array('index')));
-		$class = $this->getMockClass('Model');
 		$this->Crud->initialize($controller);
-		$this->Crud->useModel($class);
 		$this->controller->Crud = $this->Crud;
-		$this->Crud->initAction('index');
+		$class = $this->getMockClass('Model');
+		$this->Crud->useModel($class);
+		$this->Crud->action('index');
 		$subject = $this->Crud->trigger('sample');
 
 		$this->assertInstanceOf($class, $subject->model);
