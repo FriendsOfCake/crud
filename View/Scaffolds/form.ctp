@@ -4,7 +4,7 @@
 
 <div class="<?php echo $pluralVar; ?> form scaffold-view">
   <?php echo $this->Form->create(); ?>
-    <?php echo $this->element('redirect_url'); ?>
+    <?php echo $this->Crud->redirectUrl(); ?>
     <?php echo $this->Form->inputs($scaffoldFieldsData, null, array(
       'legend' => false
     )); ?>

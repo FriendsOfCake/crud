@@ -11,8 +11,8 @@
 
 <div class="<?php echo $pluralVar; ?> form scaffold-view">
   <?php echo $this->Form->create(null, array('type' => 'delete')); ?>
-    <?php echo $this->element('redirect_url'); ?>
     <p><?php echo  __d('cake', 'Are you sure you want to delete # %s?', $primaryKeyValue); ?></p>
+    <?php echo $this->Crud->redirectUrl(); ?>
     <div class="submit">
     <?php
       echo $this->Form->submit(__d('crud', 'Delete'), array('name' => '_delete', 'div' => false, 'class' => 'btn btn-delete'));
