@@ -23,9 +23,9 @@
 <table cellpadding="0" cellspacing="0">
   <thead>
     <tr>
-    <?php foreach ($scaffoldFieldsData as $_field => $_options): ?>
-      <th><?php echo $this->Paginator->sort($_field); ?></th>
-    <?php endforeach; ?>
+      <?php foreach ($scaffoldFieldsData as $_field => $_options): ?>
+        <th><?php echo $this->Paginator->sort($_field); ?></th>
+      <?php endforeach; ?>
       <th><?php echo __d('crud', 'Actions'); ?></th>
     </tr>
   </thead>
@@ -34,28 +34,15 @@
     foreach (${$pluralVar} as ${$singularVar}):
       echo '<tr>';
         foreach ($scaffoldFieldsData as $_field => $_options) {
-          $isKey = false;
-          if (!empty($associations['belongsTo'])) {
-            foreach ($associations['belongsTo'] as $_alias => $_details) {
-              if ($_field === $_details['foreignKey']) {
-                $isKey = true;
-                echo '<td>' . $this->Html->link(${$singularVar}[$_alias][$_details['displayField']], array('controller' => $_details['controller'], 'action' => 'view', ${$singularVar}[$_alias][$_details['primaryKey']])) . '</td>';
-                break;
-              }
-            }
-          }
-          if ($isKey !== true) {
-            $type = Hash::get($modelSchema, "{$_field}.type");
-            if ($type == 'boolean') {
-              echo '<td>' . (!!${$singularVar}[$modelClass][$_field] ? 'Yes' : 'No') . '</td>';
-            } elseif (in_array($type, array('datetime', 'date', 'timestamp'))) {
-              echo '<td>' . $this->Time->timeAgoInWords(${$singularVar}[$modelClass][$_field]) . '</td>';
-            } elseif ($type == 'time') {
-              echo '<td>' . $this->Time->nice(${$singularVar}[$modelClass][$_field]) . '</td>';
-            } else {
-              echo '<td>' . h(String::truncate(${$singularVar}[$modelClass][$_field], 200)) . '</td>';
-            }
-          }
+          echo '<td>';
+          echo $this->Crud->format(
+            $_field,
+            Hash::get(${$singularVar}, "{$modelClass}.{$_field}"),
+            ${$singularVar},
+            $modelSchema,
+            $associations
+          );
+          echo '</td>';
         }
       ?>
       <td class="actions">

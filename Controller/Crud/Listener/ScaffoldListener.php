@@ -620,6 +620,13 @@ class ScaffoldListener extends CrudListener {
 			}
 		}
 
+		if (empty($associations['hasMany'])) {
+			$associations['hasMany'] = array();
+		}
+		if (empty($associations['hasAndBelongsToMany'])) {
+			$associations['hasAndBelongsToMany'] = array();
+		}
+
 		return $associations;
 	}
 
