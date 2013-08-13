@@ -444,7 +444,7 @@ class ScaffoldListener extends CrudListener {
 						);
 
 						$scaffoldSidebarActions[] = array(
-							'title' => __d('cake', 'New %s', Inflector::humanize(Inflector::underscore($_alias))),
+							'title' => __d('crud', 'New %s', Inflector::humanize(Inflector::underscore($_alias))),
 							'url' => array('plugin' => $_details['plugin'], 'controller' => $_details['controller'], 'action' => 'add'),
 						);
 						$done[] = $_details['controller'];
