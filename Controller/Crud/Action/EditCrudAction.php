@@ -113,6 +113,7 @@ class EditCrudAction extends CrudAction {
 
 		$request = $this->_request();
 		$model = $this->_model();
+		$model->id = $id;
 
 		if ($request->data('_cancel')) {
 			$subject = $this->_trigger('beforeCancel', array('id' => $id));
