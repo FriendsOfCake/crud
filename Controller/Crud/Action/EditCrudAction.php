@@ -115,11 +115,16 @@ class EditCrudAction extends CrudAction {
 
 		$request = $this->_request();
 		$model = $this->_model();
-		$model->id = $id;
 
 		$existing = $this->_findRecord($id, 'count');
 		if (empty($existing)) {
 			return $this->_notFound($id);
+		}
+
+		if (isset($request->data[$model->alias])) {
+			$request->data[$model->alias][$model->primaryKey] = $id;
+		} else {
+			$request->data[$model->primaryKey] = $id;
 		}
 
 		if ($request->data('_cancel')) {
