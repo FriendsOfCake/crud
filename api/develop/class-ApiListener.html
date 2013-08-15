@@ -7,7 +7,7 @@
 	<title>Class ApiListener | jippi/cakephp-crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?36463906"></script>
+	<script type="text/javascript" src="elementlist.js?4055029497"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -165,7 +165,7 @@ Object
 		
 		
 
-		<b>Located at</b> <a href="source-class-ApiListener.html#6-305" title="Go to source code">Controller/Crud/Listener/ApiListener.php</a><br />
+		<b>Located at</b> <a href="source-class-ApiListener.html#6-437" title="Go to source code">Controller/Crud/Listener/ApiListener.php</a><br />
 	</div>
 
 
@@ -183,7 +183,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#_implementedEvents">#</a>
-			<code><a href="source-class-ApiListener.html#31-48" title="Go to source code">implementedEvents</a>( )</code>
+			<code><a href="source-class-ApiListener.html#38-55" title="Go to source code">implementedEvents</a>( )</code>
 
 			<div class="description short">
 				
@@ -226,7 +226,7 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_startup">#</a>
-			<code><a href="source-class-ApiListener.html#50-59" title="Go to source code">startup</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<code><a href="source-class-ApiListener.html#57-66" title="Go to source code">startup</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
@@ -266,7 +266,7 @@ actually executed</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_beforeHandle">#</a>
-			<code><a href="source-class-ApiListener.html#61-77" title="Go to source code">beforeHandle</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<code><a href="source-class-ApiListener.html#68-85" title="Go to source code">beforeHandle</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
@@ -297,6 +297,47 @@ actually executed</p>
 			</div>
 			</div></td>
 		</tr>
+		<tr data-order="_checkRequestMethods" id="__checkRequestMethods">
+
+			<td class="attributes"><code>
+				 protected 
+				boolean
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__checkRequestMethods">#</a>
+			<code><a href="source-class-ApiListener.html#87-109" title="Go to source code">_checkRequestMethods</a>( )</code>
+
+			<div class="description short">
+				
+<p>Check for allowed HTTP request types</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Check for allowed HTTP request types</p>
+
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>boolean</code><br />
+					</div>
+
+					<h4>Throws</h4>
+					<div class="list">
+						<code>BadRequestException</code><br />
+					</div>
+
+
+
+			</div>
+			</div></td>
+		</tr>
 		<tr data-order="registerExceptionHandler" id="_registerExceptionHandler">
 
 			<td class="attributes"><code>
@@ -308,14 +349,18 @@ actually executed</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_registerExceptionHandler">#</a>
-			<code><a href="source-class-ApiListener.html#79-82" title="Go to source code">registerExceptionHandler</a>( )</code>
+			<code><a href="source-class-ApiListener.html#111-119" title="Go to source code">registerExceptionHandler</a>( )</code>
 
 			<div class="description short">
 				
+<p>Register the Crud exception handler</p>
+
 			</div>
 
 			<div class="description detailed hidden">
 				
+<p>Register the Crud exception handler</p>
+
 
 
 
@@ -326,28 +371,28 @@ actually executed</p>
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="afterSave" id="_afterSave">
+		<tr data-order="respond" id="_respond">
 
 			<td class="attributes"><code>
 				 public 
-				|CakeResponse
+				CakeResponse
 				
 				</code>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#_afterSave">#</a>
-			<code><a href="source-class-ApiListener.html#84-121" title="Go to source code">afterSave</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<a class="anchor" href="#_respond">#</a>
+			<code><a href="source-class-ApiListener.html#121-145" title="Go to source code">respond</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
-<p>afterSave callback</p>
+<p>Handle response</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>afterSave callback</p>
+<p>Handle response</p>
 
 
 
@@ -359,12 +404,50 @@ actually executed</p>
 
 					<h4>Returns</h4>
 					<div class="list">
-						<code>|CakeResponse</code><br />
+						<code>CakeResponse</code><br />
 					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_exceptionResponse" id="__exceptionResponse">
+
+			<td class="attributes"><code>
+				 protected 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__exceptionResponse">#</a>
+			<code><a href="source-class-ApiListener.html#147-165" title="Go to source code">_exceptionResponse</a>( <span>array <var>$exceptionConfig</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Throw an exception based on API configuration</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Throw an exception based on API configuration</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$exceptionConfig</var></dt>
+						<dd><code>array</code><br>$exceptionConfig</dd>
+					</dl></div>
+
 
 					<h4>Throws</h4>
 					<div class="list">
-						<code><code><a href="class-CrudValidationException.html">CrudValidationException</a></code></code><br />
+						<code>CakeException</code><br />
 					</div>
 
 
@@ -372,35 +455,110 @@ actually executed</p>
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="afterDelete" id="_afterDelete">
+		<tr data-order="render" id="_render">
 
 			<td class="attributes"><code>
 				 public 
+				CakeResponse
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_render">#</a>
+			<code><a href="source-class-ApiListener.html#167-182" title="Go to source code">render</a>( <span><code><a href="class-CrudSubject.html">CrudSubject</a></code> <var>$subject</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Selects an specific Crud view class to render the output</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Selects an specific Crud view class to render the output</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$subject</var></dt>
+						<dd><code><code><a href="class-CrudSubject.html">CrudSubject</a></code></code><br>$subject</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>CakeResponse</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_ensureSerialize" id="__ensureSerialize">
+
+			<td class="attributes"><code>
+				 protected 
 				
 				
 				</code>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#_afterDelete">#</a>
-			<code><a href="source-class-ApiListener.html#123-143" title="Go to source code">afterDelete</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<a class="anchor" href="#__ensureSerialize">#</a>
+			<code><a href="source-class-ApiListener.html#184-209" title="Go to source code">_ensureSerialize</a>( )</code>
 
 			<div class="description short">
 				
-<p>afterDelete</p>
+<p>Ensure _serialize is set in the view</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>afterDelete</p>
+<p>Ensure _serialize is set in the view</p>
+
+
+
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_ensureSuccess" id="__ensureSuccess">
+
+			<td class="attributes"><code>
+				 protected 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__ensureSuccess">#</a>
+			<code><a href="source-class-ApiListener.html#211-225" title="Go to source code">_ensureSuccess</a>( <span><code><a href="class-CrudSubject.html">CrudSubject</a></code> <var>$subject</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Ensure success key is present in Controller::$viewVars</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Ensure success key is present in Controller::$viewVars</p>
 
 
 
 					<h4>Parameters</h4>
 					<div class="list"><dl>
-						<dt><var>$event</var></dt>
-						<dd><code>CakeEvent</code><br>$event</dd>
+						<dt><var>$subject</var></dt>
+						<dd><code><code><a href="class-CrudSubject.html">CrudSubject</a></code></code><br>$subject</dd>
 					</dl></div>
 
 
@@ -410,37 +568,83 @@ actually executed</p>
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="beforeRender" id="_beforeRender">
+		<tr data-order="_ensureData" id="__ensureData">
 
 			<td class="attributes"><code>
-				 public 
+				 protected 
 				
 				
 				</code>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#_beforeRender">#</a>
-			<code><a href="source-class-ApiListener.html#145-173" title="Go to source code">beforeRender</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<a class="anchor" href="#__ensureData">#</a>
+			<code><a href="source-class-ApiListener.html#227-279" title="Go to source code">_ensureData</a>( <span><code><a href="class-CrudSubject.html">CrudSubject</a></code> <var>$subject</var></span> )</code>
 
 			<div class="description short">
 				
-<p>Selects an specific Crud view class to render the output</p>
+<p>Ensure data key is present in Controller:$viewVars</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Selects an specific Crud view class to render the output</p>
+<p>Ensure data key is present in Controller:$viewVars</p>
 
 
 
 					<h4>Parameters</h4>
 					<div class="list"><dl>
-						<dt><var>$event</var></dt>
-						<dd><code>CakeEvent</code><br>$event</dd>
+						<dt><var>$subject</var></dt>
+						<dd><code><code><a href="class-CrudSubject.html">CrudSubject</a></code></code><br>$subject</dd>
 					</dl></div>
 
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_expandPath" id="__expandPath">
+
+			<td class="attributes"><code>
+				 protected 
+				string
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__expandPath">#</a>
+			<code><a href="source-class-ApiListener.html#281-303" title="Go to source code">_expandPath</a>( <span><code><a href="class-CrudSubject.html">CrudSubject</a></code> <var>$subject</var></span>, <span>string <var>$path</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Expand all scalar values from a CrudSubject and use them for a
+String::insert() interpolation of a path</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Expand all scalar values from a CrudSubject and use them for a
+String::insert() interpolation of a path</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$subject</var></dt>
+						<dd><code><code><a href="class-CrudSubject.html">CrudSubject</a></code></code><br>$subject</dd>
+						<dt><var>$path</var></dt>
+						<dd><code>string</code><br>$path</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>string</code><br />
+					</div>
 
 
 
@@ -459,7 +663,7 @@ actually executed</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_injectViewClasses">#</a>
-			<code><a href="source-class-ApiListener.html#175-186" title="Go to source code">injectViewClasses</a>( )</code>
+			<code><a href="source-class-ApiListener.html#305-316" title="Go to source code">injectViewClasses</a>( )</code>
 
 			<div class="description short">
 				
@@ -497,7 +701,7 @@ href="http://book.cakephp.org/2.0/en/core-libraries/components/request-handling.
 
 			<td class="name"><div>
 			<a class="anchor" href="#_viewClass">#</a>
-			<code><a href="source-class-ApiListener.html#188-209" title="Go to source code">viewClass</a>( <span>string <var>$type</var></span>, <span>string <var>$class</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-ApiListener.html#318-339" title="Go to source code">viewClass</a>( <span>string <var>$type</var></span>, <span>string <var>$class</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -553,7 +757,7 @@ href="http://book.cakephp.org/2.0/en/core-libraries/components/request-handling.
 
 			<td class="name"><div>
 			<a class="anchor" href="#_setFlash">#</a>
-			<code><a href="source-class-ApiListener.html#211-224" title="Go to source code">setFlash</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<code><a href="source-class-ApiListener.html#341-354" title="Go to source code">setFlash</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
@@ -582,34 +786,33 @@ href="http://book.cakephp.org/2.0/en/core-libraries/components/request-handling.
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="_setupDetectors" id="__setupDetectors">
+		<tr data-order="setupDetectors" id="_setupDetectors">
 
 			<td class="attributes"><code>
-				 protected 
+				 public 
 				
 				
 				</code>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#__setupDetectors">#</a>
-			<code><a href="source-class-ApiListener.html#226-260" title="Go to source code">_setupDetectors</a>( )</code>
+			<a class="anchor" href="#_setupDetectors">#</a>
+			<code><a href="source-class-ApiListener.html#356-392" title="Go to source code">setupDetectors</a>( )</code>
 
 			<div class="description short">
 				
-<p>Setup detectors for JSON and XML</p>
+<p>Setup detectors</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Setup detectors for JSON and XML</p>
+<p>Setup detectors</p>
 
 <p>Both detects on two signals: 1) The extension in the request (e.g.
-/users/index.json) 2) The accepts header from the client</p>
+/users/index.$ext) 2) The accepts header from the client</p>
 
-<p>There is a combined request detector for both 'json' and 'xml' called
-'api'</p>
+<p>There is a combined request detector for all detectors called 'api'</p>
 
 
 
@@ -632,7 +835,7 @@ href="http://book.cakephp.org/2.0/en/core-libraries/components/request-handling.
 
 			<td class="name"><div>
 			<a class="anchor" href="#_mapResources">#</a>
-			<code><a href="source-class-ApiListener.html#262-304" title="Go to source code">mapResources</a>( <span>string <var>$plugin</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-ApiListener.html#394-436" title="Go to source code">mapResources</a>( <span>string <var>$plugin</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -716,7 +919,7 @@ Router::setExtensions(array('json', 'xml')); Router::parseExtensions();
 			</code></td>
 
 			<td class="name">
-					<a href="source-class-ApiListener.html#16-29" title="Go to source code"><var>$_settings</var></a>
+					<a href="source-class-ApiListener.html#16-36" title="Go to source code"><var>$_settings</var></a>
 			</td>
 			<td class="description"><div>
 				<a href="#$_settings" class="anchor">#</a>
