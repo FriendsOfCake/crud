@@ -262,50 +262,52 @@
 </span></span><span id="152" class="l"><a class="l" href="#152">152 </a><span class="php-comment"> * Find a record from the ID
 </span></span><span id="153" class="l"><a class="l" href="#153">153 </a><span class="php-comment"> *
 </span></span><span id="154" class="l"><a class="l" href="#154">154 </a><span class="php-comment"> * @param string $id
-</span></span><span id="155" class="l"><a class="l" href="#155">155 </a><span class="php-comment"> * @param $findMethod
+</span></span><span id="155" class="l"><a class="l" href="#155">155 </a><span class="php-comment"> * @param string $findMethod
 </span></span><span id="156" class="l"><a class="l" href="#156">156 </a><span class="php-comment"> * @return array
 </span></span><span id="157" class="l"><a class="l" href="#157">157 </a><span class="php-comment"> */</span>
-</span><span id="158" class="l"><a class="l" href="#158">158 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__findRecord" href="#__findRecord">_findRecord</a>(<span class="php-var">$id</span>, <span class="php-var">$findMethod</span> = <span class="php-quote">'first'</span>) {
+</span><span id="158" class="l"><a class="l" href="#158">158 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__findRecord" href="#__findRecord">_findRecord</a>(<span class="php-var">$id</span>, <span class="php-var">$findMethod</span> = <span class="php-keyword1">null</span>) {
 </span><span id="159" class="l"><a class="l" href="#159">159 </a>        <span class="php-var">$model</span> = <span class="php-var">$this</span>-&gt;_model();
 </span><span id="160" class="l"><a class="l" href="#160">160 </a>
 </span><span id="161" class="l"><a class="l" href="#161">161 </a>        <span class="php-var">$query</span> = <span class="php-keyword1">array</span>();
 </span><span id="162" class="l"><a class="l" href="#162">162 </a>        <span class="php-var">$query</span>[<span class="php-quote">'conditions'</span>] = <span class="php-keyword1">array</span>(<span class="php-var">$model</span>-&gt;escapeField() =&gt; <span class="php-var">$id</span>);
 </span><span id="163" class="l"><a class="l" href="#163">163 </a>
-</span><span id="164" class="l"><a class="l" href="#164">164 </a>        <span class="php-var">$findMethod</span> = <span class="php-var">$this</span>-&gt;_getFindMethod(<span class="php-var">$findMethod</span>);
-</span><span id="165" class="l"><a class="l" href="#165">165 </a>        <span class="php-var">$subject</span> = <span class="php-var">$this</span>-&gt;_trigger(<span class="php-quote">'beforeFind'</span>, <span class="php-keyword2">compact</span>(<span class="php-quote">'query'</span>, <span class="php-quote">'findMethod'</span>));
-</span><span id="166" class="l"><a class="l" href="#166">166 </a>
-</span><span id="167" class="l"><a class="l" href="#167">167 </a>        <span class="php-keyword1">return</span> <span class="php-var">$model</span>-&gt;find(<span class="php-var">$subject</span>-&gt;findMethod, <span class="php-var">$subject</span>-&gt;query);
-</span><span id="168" class="l"><a class="l" href="#168">168 </a>    }
-</span><span id="169" class="l"><a class="l" href="#169">169 </a>
-</span><span id="170" class="l"><a class="l" href="#170">170 </a><span class="php-comment">/**
-</span></span><span id="171" class="l"><a class="l" href="#171">171 </a><span class="php-comment"> * Throw exception if a record is not found
-</span></span><span id="172" class="l"><a class="l" href="#172">172 </a><span class="php-comment"> *
-</span></span><span id="173" class="l"><a class="l" href="#173">173 </a><span class="php-comment"> * @throws Exception
-</span></span><span id="174" class="l"><a class="l" href="#174">174 </a><span class="php-comment"> * @param string $id
-</span></span><span id="175" class="l"><a class="l" href="#175">175 </a><span class="php-comment"> * @return void
-</span></span><span id="176" class="l"><a class="l" href="#176">176 </a><span class="php-comment"> */</span>
-</span><span id="177" class="l"><a class="l" href="#177">177 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__notFound" href="#__notFound">_notFound</a>(<span class="php-var">$id</span>) {
-</span><span id="178" class="l"><a class="l" href="#178">178 </a>        <span class="php-var">$this</span>-&gt;_trigger(<span class="php-quote">'recordNotFound'</span>, <span class="php-keyword2">compact</span>(<span class="php-quote">'id'</span>));
-</span><span id="179" class="l"><a class="l" href="#179">179 </a>
-</span><span id="180" class="l"><a class="l" href="#180">180 </a>        <span class="php-var">$message</span> = <span class="php-var">$this</span>-&gt;message(<span class="php-quote">'recordNotFound'</span>, <span class="php-keyword2">compact</span>(<span class="php-quote">'id'</span>));
-</span><span id="181" class="l"><a class="l" href="#181">181 </a>        <span class="php-var">$exceptionClass</span> = <span class="php-var">$message</span>[<span class="php-quote">'class'</span>];
-</span><span id="182" class="l"><a class="l" href="#182">182 </a>        <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> <span class="php-var">$exceptionClass</span>(<span class="php-var">$message</span>[<span class="php-quote">'text'</span>], <span class="php-var">$message</span>[<span class="php-quote">'code'</span>]);
-</span><span id="183" class="l"><a class="l" href="#183">183 </a>    }
-</span><span id="184" class="l"><a class="l" href="#184">184 </a>
-</span><span id="185" class="l"><a class="l" href="#185">185 </a><span class="php-comment">/**
-</span></span><span id="186" class="l"><a class="l" href="#186">186 </a><span class="php-comment"> * HTTP POST handler
-</span></span><span id="187" class="l"><a class="l" href="#187">187 </a><span class="php-comment"> *
-</span></span><span id="188" class="l"><a class="l" href="#188">188 </a><span class="php-comment"> * Thin proxy for _put
+</span><span id="164" class="l"><a class="l" href="#164">164 </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$findMethod</span>) {
+</span><span id="165" class="l"><a class="l" href="#165">165 </a>            <span class="php-var">$findMethod</span> = <span class="php-var">$this</span>-&gt;_getFindMethod(<span class="php-var">$findMethod</span>);
+</span><span id="166" class="l"><a class="l" href="#166">166 </a>        }
+</span><span id="167" class="l"><a class="l" href="#167">167 </a>        <span class="php-var">$subject</span> = <span class="php-var">$this</span>-&gt;_trigger(<span class="php-quote">'beforeFind'</span>, <span class="php-keyword2">compact</span>(<span class="php-quote">'query'</span>, <span class="php-quote">'findMethod'</span>));
+</span><span id="168" class="l"><a class="l" href="#168">168 </a>
+</span><span id="169" class="l"><a class="l" href="#169">169 </a>        <span class="php-keyword1">return</span> <span class="php-var">$model</span>-&gt;find(<span class="php-var">$subject</span>-&gt;findMethod, <span class="php-var">$subject</span>-&gt;query);
+</span><span id="170" class="l"><a class="l" href="#170">170 </a>    }
+</span><span id="171" class="l"><a class="l" href="#171">171 </a>
+</span><span id="172" class="l"><a class="l" href="#172">172 </a><span class="php-comment">/**
+</span></span><span id="173" class="l"><a class="l" href="#173">173 </a><span class="php-comment"> * Throw exception if a record is not found
+</span></span><span id="174" class="l"><a class="l" href="#174">174 </a><span class="php-comment"> *
+</span></span><span id="175" class="l"><a class="l" href="#175">175 </a><span class="php-comment"> * @throws Exception
+</span></span><span id="176" class="l"><a class="l" href="#176">176 </a><span class="php-comment"> * @param string $id
+</span></span><span id="177" class="l"><a class="l" href="#177">177 </a><span class="php-comment"> * @return void
+</span></span><span id="178" class="l"><a class="l" href="#178">178 </a><span class="php-comment"> */</span>
+</span><span id="179" class="l"><a class="l" href="#179">179 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__notFound" href="#__notFound">_notFound</a>(<span class="php-var">$id</span>) {
+</span><span id="180" class="l"><a class="l" href="#180">180 </a>        <span class="php-var">$this</span>-&gt;_trigger(<span class="php-quote">'recordNotFound'</span>, <span class="php-keyword2">compact</span>(<span class="php-quote">'id'</span>));
+</span><span id="181" class="l"><a class="l" href="#181">181 </a>
+</span><span id="182" class="l"><a class="l" href="#182">182 </a>        <span class="php-var">$message</span> = <span class="php-var">$this</span>-&gt;message(<span class="php-quote">'recordNotFound'</span>, <span class="php-keyword2">compact</span>(<span class="php-quote">'id'</span>));
+</span><span id="183" class="l"><a class="l" href="#183">183 </a>        <span class="php-var">$exceptionClass</span> = <span class="php-var">$message</span>[<span class="php-quote">'class'</span>];
+</span><span id="184" class="l"><a class="l" href="#184">184 </a>        <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> <span class="php-var">$exceptionClass</span>(<span class="php-var">$message</span>[<span class="php-quote">'text'</span>], <span class="php-var">$message</span>[<span class="php-quote">'code'</span>]);
+</span><span id="185" class="l"><a class="l" href="#185">185 </a>    }
+</span><span id="186" class="l"><a class="l" href="#186">186 </a>
+</span><span id="187" class="l"><a class="l" href="#187">187 </a><span class="php-comment">/**
+</span></span><span id="188" class="l"><a class="l" href="#188">188 </a><span class="php-comment"> * HTTP POST handler
 </span></span><span id="189" class="l"><a class="l" href="#189">189 </a><span class="php-comment"> *
-</span></span><span id="190" class="l"><a class="l" href="#190">190 </a><span class="php-comment"> * @param mixed $id
-</span></span><span id="191" class="l"><a class="l" href="#191">191 </a><span class="php-comment"> * @return void
-</span></span><span id="192" class="l"><a class="l" href="#192">192 </a><span class="php-comment"> */</span>
-</span><span id="193" class="l"><a class="l" href="#193">193 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__post" href="#__post">_post</a>(<span class="php-var">$id</span> = <span class="php-keyword1">null</span>) {
-</span><span id="194" class="l"><a class="l" href="#194">194 </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;_put(<span class="php-var">$id</span>);
-</span><span id="195" class="l"><a class="l" href="#195">195 </a>    }
-</span><span id="196" class="l"><a class="l" href="#196">196 </a>
-</span><span id="197" class="l"><a class="l" href="#197">197 </a>}
-</span><span id="198" class="l"><a class="l" href="#198">198 </a></span></code></pre>
+</span></span><span id="190" class="l"><a class="l" href="#190">190 </a><span class="php-comment"> * Thin proxy for _put
+</span></span><span id="191" class="l"><a class="l" href="#191">191 </a><span class="php-comment"> *
+</span></span><span id="192" class="l"><a class="l" href="#192">192 </a><span class="php-comment"> * @param mixed $id
+</span></span><span id="193" class="l"><a class="l" href="#193">193 </a><span class="php-comment"> * @return void
+</span></span><span id="194" class="l"><a class="l" href="#194">194 </a><span class="php-comment"> */</span>
+</span><span id="195" class="l"><a class="l" href="#195">195 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__post" href="#__post">_post</a>(<span class="php-var">$id</span> = <span class="php-keyword1">null</span>) {
+</span><span id="196" class="l"><a class="l" href="#196">196 </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;_put(<span class="php-var">$id</span>);
+</span><span id="197" class="l"><a class="l" href="#197">197 </a>    }
+</span><span id="198" class="l"><a class="l" href="#198">198 </a>
+</span><span id="199" class="l"><a class="l" href="#199">199 </a>}
+</span><span id="200" class="l"><a class="l" href="#200">200 </a></span></code></pre>
 	</div>
 
 	<div id="footer">
