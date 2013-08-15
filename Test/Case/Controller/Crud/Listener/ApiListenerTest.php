@@ -320,7 +320,7 @@ class ApiListenerTest extends CrudTestCase {
 			'Crud.setFlash' => array('callable' => 'setFlash', 'priority' => 5),
 
 			'Crud.beforeRender' => array('callable' => 'respond', 'priority' => 100),
-			'Crud.beforeRender' => array('callable' => 'respond', 'priority' => 100)
+			'Crud.beforeRedirect' => array('callable' => 'respond', 'priority' => 100)
 		);
 		$this->assertEquals($expected, $apiListener->implementedEvents());
 	}

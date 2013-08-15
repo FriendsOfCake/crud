@@ -50,7 +50,7 @@ class ApiListener extends CrudListener {
 			'Crud.setFlash' => array('callable' => 'setFlash', 'priority' => 5),
 
 			'Crud.beforeRender' => array('callable' => 'respond', 'priority' => 100),
-			'Crud.beforeRender' => array('callable' => 'respond', 'priority' => 100)
+			'Crud.beforeRedirect' => array('callable' => 'respond', 'priority' => 100)
 		);
 	}
 
@@ -88,7 +88,7 @@ class ApiListener extends CrudListener {
  * Check for allowed HTTP request types
  *
  * @throws BadRequestException
- * @return void
+ * @return boolean
  */
 	protected function _checkRequestMethods() {
 		$action = $this->_action();
@@ -168,7 +168,7 @@ class ApiListener extends CrudListener {
  * Selects an specific Crud view class to render the output
  *
  * @param CrudSubject $subject
- * @return void
+ * @return CakeResponse
  */
 	public function render(CrudSubject $subject) {
 		$this->injectViewClasses();
