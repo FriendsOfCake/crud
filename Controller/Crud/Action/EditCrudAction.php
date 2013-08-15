@@ -115,11 +115,16 @@ class EditCrudAction extends CrudAction {
 
 		$request = $this->_request();
 		$model = $this->_model();
-		$model->id = $id;
 
 		$existing = $this->_findRecord($id, 'count');
 		if (empty($existing)) {
 			return $this->_notFound($id);
+		}
+
+		if (isset($request->data[$model->alias])) {
+			$request->data[$model->alias][$model->primaryKey] = $id;
+		} else {
+			$request->data[$model->primaryKey] = $id;
 		}
 
 		if ($request->data('_cancel')) {
@@ -194,6 +199,49 @@ class EditCrudAction extends CrudAction {
  */
 	protected function _post($id = null) {
 		return $this->_put($id);
+	}
+
+/**
+ * Is the passed ID valid ?
+ *
+ * Validate the id in the url (the parent function) and then validate the id in the data.
+ *
+ * The data-id check is independent of the config setting `validateId` this checks whether
+ * The id in the url matches the id in the submitted data (a type insensitive check). If
+ * The id is different, this probably indicates a malicious form submission, attempting
+ * to add/edit a record the user doesn't have permission for by submitting to a url they
+ * do have permission to access
+ *
+ * @param mixed $id
+ * @return boolean
+ * @throws BadRequestException If id is invalid
+ */
+	protected function _validateId($id) {
+		parent::_validateId($id);
+
+		$request = $this->_request();
+		if (!$request->data) {
+			return true;
+		}
+
+		$dataId = null;
+		$model = $this->_model();
+
+		$dataId = $request->data($model->alias . '.' . $model->primaryKey) ?: $request->data($model->primaryKey);
+		if ($dataId === null) {
+			return true;
+		}
+
+		// deliberately type insensitive
+		if ($dataId == $id) {
+			return true;
+		}
+
+		$this->_trigger('invalidId', array('id' => $dataId));
+
+		$message = $this->message('invalidId');
+		$exceptionClass = $message['class'];
+		throw new $exceptionClass($message['text'], $message['code']);
 	}
 
 }
