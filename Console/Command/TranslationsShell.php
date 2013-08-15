@@ -1,27 +1,24 @@
 <?php
 
 App::uses('AppShell', 'Console/Command');
-App::uses('CrudSubject', 'Crud.Controller/Event');
-App::uses('TranslationsListener', 'Crud.Controller/Event');
+App::uses('CrudSubject', 'Crud.Controller/Crud');
+App::uses('TranslationsListener', 'Crud.Controller/Crud/Listener');
 
 /**
  * TranslationsShell
  *
- * Copyright 2010-2012, Nodes ApS. (http://www.nodesagency.com/)
- *
  * Licensed under The MIT License
- * Redistributions of files must retain the above copyright notice.
+ * For full copyright and license information, please see the LICENSE.txt
  *
- * @copyright Nodes ApS, 2012
  */
 class TranslationsShell extends AppShell {
 
 /**
- * The array of all messages used by the crud component
+ * The array of raw stings to be written to the output file
  *
  * @var array
  */
-	protected $_messages = array();
+	public $lines = array();
 
 /**
  * The path to write the output file to
@@ -29,13 +26,6 @@ class TranslationsShell extends AppShell {
  * @var string
  */
 	protected $_path = '';
-
-/**
- * The array of raw stings to be written to the output file
- *
- * @var array
- */
-	protected $_strings = array();
 
 /**
  * Gets the option parser instance and configures it.
@@ -58,75 +48,33 @@ class TranslationsShell extends AppShell {
  * @return void
  */
 	public function generate() {
-		if (!$this->_messages) {
-			$this->_initializeMessages();
-		}
-
-		$models = $this->_getModels();
-
-		if (!$models) {
-			$this->out('<warning>No models found to be processed</warning>');
+		$controllers = $this->_getControllers($this->args);
+		if (!$controllers) {
+			$this->out('<warning>No controllers found to be processed</warning>');
 			return;
 		}
 
 		$this->hr();
-		$this->out(sprintf('Generating translation strings for models: %s.', implode($models, ', ')));
+		$this->out(sprintf('Processing translation strings for controllers: %s.', implode($controllers, ', ')));
 		$this->out('');
 
 		$path = $this->path();
 
 		if (file_exists($path)) {
-			$this->_strings = array_map('rtrim', file($path));
+			$this->lines = array_map('rtrim', file($path));
 		} else {
-			$this->_strings[] = '<?php';
+			$this->lines[] = '<?php';
 		}
 
-		$this->_generateTranslations(false);
-		foreach ($models as $model) {
-			$this->_generateTranslations($model);
+		foreach ($controllers as $name) {
+			$this->_processController($name);
 		}
 
 		return $this->_writeFile();
 	}
 
 /**
- * _generateTranslations
- *
- * For the given model name, generate translation strings and add them to the _strings property
- * If the model name is false - the common messages are processed
- *
- * @param mixed $modelName name of a model or false for the general messages
- * @return void
- */
-	protected function _generateTranslations($modelName) {
-		if ($modelName) {
-			$message = "$modelName CRUD Component translations";
-		} else {
-			$message = "Common CRUD Component translations";
-		}
-
-		$this->_addDocBlock($message);
-		foreach ($this->_messages as $message) {
-			$type = strpos($message, '}') ? 'model' : 'common';
-
-			if ($type === 'model' && $modelName || $type === 'common' && !$modelName) {
-				$message = String::insert($message, array('name' => $modelName), array('before' => '{', 'after' => '}'));
-				$string = "__d('crud', '$message');";
-
-				if (in_array($string, $this->_strings)) {
-					$this->out('<info>Skipping:</info> ' . $message, 1, Shell::VERBOSE);
-				} else {
-					$this->out('<success>Adding:</success> ' . $message);
-					$this->_strings[] = $string;
-				}
-			}
-		}
-	}
-
-/**
- * _addDocBlock
- *
- * Add a doc block to the _strings property with the passed message appropriately formatted
+ * Add a doc block to the lines property with the passed message appropriately formatted
  * If the doc block already exists - return false
  *
  * @param string $message
@@ -135,50 +83,77 @@ class TranslationsShell extends AppShell {
 	protected function _addDocBlock($message) {
 		$message = " * $message";
 
-		if (in_array($message, $this->_strings)) {
+		if (in_array($message, $this->lines)) {
 			return false;
 		}
 
-		$this->_strings[] = '';
-		$this->_strings[] = '/**';
-		$this->_strings[] = $message;
-		$this->_strings[] = ' */';
+		$this->lines[] = '';
+		$this->lines[] = '/**';
+		$this->lines[] = $message;
+		$this->lines[] = ' */';
 		return true;
 	}
 
 /**
- * _getModels
- *
- * If no arguments are passed to the cli call, return all App models
+ * If no arguments are passed to the cli call, return all App controllers
  * Otherwise, assume the arguments are a list of file paths to plugin model dirs or an individual plugin model
  *
+ * @param array $args File paths to controllers to process
  * @return array
  */
-	protected function _getModels() {
-		$objectType = 'Model';
-		$models = array();
+	protected function _getControllers($args = array()) {
+		$objectType = 'Controller';
+		$controllers = array();
 
-		if ($this->args) {
-			foreach ($this->args as $arg) {
-				preg_match('@Plugin/([^/]*)/?(?:Model/([^/]*))?@', $arg, $match);
+		if ($args) {
+			foreach ($args as $arg) {
+				$plugin = $controller = null;
+				preg_match('@Plugin/([^/]+)@', $arg, $match);
 
-				if (!empty($match[2])) {
-					$models[] = str_replace('.php', '', $match[2]);
-				} elseif (!empty($match[1])) {
+				if ($match) {
 					$plugin = $match[1];
-					$models = array_merge($models, App::objects("$plugin.Model"));
+				}
+
+				preg_match('@Controller/([^/]+)@', $arg, $match);
+				if ($match) {
+					$controller = $match[1];
+				}
+
+				if (!$plugin && !$controller) {
+					$this->out("<info>Skipping argument:</info> $arg", 1, Shell::VERBOSE);
+					continue;
+				}
+
+				if ($plugin) {
+					if ($controller) {
+						$controllers[] = $plugin . '.' . $controller;
+					} else {
+						$pluginControllers = App::objects("$plugin.Controller");
+						foreach ($pluginControllers as &$c) {
+							$c = "$plugin.$c";
+						}
+						$controllers = array_merge($controllers, $pluginControllers);
+					}
+				} else {
+					$controllers[] = $controller;
 				}
 			}
 		} else {
-			$models = App::objects('Model');
+			$controllers = App::objects('Controller');
 		}
 
-		return $models;
+		foreach ($controllers as $i => &$controller) {
+			$controller = preg_replace('/Controller(\.php)?$/', '', $controller);
+
+			if (preg_match('/^(?:(\w+)\.\1)?App$/', $controller)) {
+				unset($controllers[$i]);
+			}
+		}
+
+		return array_values($controllers);
 	}
 
 /**
- * path
- *
  * Set or retrieve the path to write the output file to
  * Defaults to APP/Config/i18n_crud.php
  *
@@ -195,32 +170,127 @@ class TranslationsShell extends AppShell {
 	}
 
 /**
- * _initializeMessages
+ * Get controller instance
  *
- * Extract all the messages used by the crud componentn, and write to the _messages property
- *
- * @return void
+ * @param string $name Controller name
+ * @param string $plugin Plugin name
+ * @return Controller
+ * @codeCoverageIgnore
  */
-	protected function _initializeMessages() {
-		$event = new TranslationsListener(new CrudSubject());
-		$defaults = $event->getDefaults();
-		foreach ($defaults as $key => $array) {
-			if (!is_array($array)) {
-				continue;
-			}
-			foreach ($array as $subkey => $row) {
-				if (!is_array($row) || !isset($row['message'])) {
-					continue;
-				}
-				$this->_messages["$key.$subkey"] = $row['message'];
-			}
+	protected function _loadController($name, $plugin) {
+		$className = $name . 'Controller';
+		$prefix = rtrim($plugin, '.');
+
+		App::uses($className, $plugin . 'Controller');
+
+		if (!class_exists($className)) {
+			$this->out("<info>Skipping:</info> $className, class could not be loaded", 1, Shell::VERBOSE);
+			return;
+		}
+
+		$request = new CakeRequest();
+		$Controller = new $className($request);
+		$Controller->constructClasses();
+		$Controller->startupProcess();
+
+		if (!$Controller->uses) {
+			$this->out("<info>Skipping:</info> $className, doesn't use any models", 1, Shell::VERBOSE);
+			return;
+		}
+
+		if (!isset($Controller->Crud)) {
+			$this->out("<info>Skipping:</info> $className, doesn't use Crud component", 1, Shell::VERBOSE);
+			return;
+		}
+
+		return $Controller;
+	}
+
+/**
+ * For the given controller name, initialize the crud component and process each action.
+ * Create a listener for the setFlash event to log the flash message details.
+ *
+ * @param string $name Controller name
+ */
+	protected function _processController($name) {
+		list($plugin, $name) = pluginSplit($name, true);
+		$prefix = rtrim($plugin, '.');
+
+		$Controller = $this->_loadController($name, $plugin);
+
+		if (!$Controller) {
+			return;
+		}
+
+		$this->_addDocBlock("$name CRUD Component translations");
+
+		$actions = array_keys($Controller->Crud->config('actions'));
+		foreach ($actions as $actionName) {
+			$this->_processAction($actionName, $Controller);
 		}
 	}
 
 /**
- * _writeFile
+ * Process a single crud action. Initialize the action object, and trigger each
+ * flash message.
  *
- * Take the _strings property, populated by the generate method - and write it
+ * @param string $actionName crud action name
+ * @param Controller $Controller instance
+ */
+	protected function _processAction($actionName, $Controller) {
+		try {
+			$Controller->Crud->action($actionName);
+			$Controller->Crud->trigger('beforeHandle');
+		} catch(Exception $e) {
+			return;
+		}
+
+		$action = $Controller->Crud->action($actionName);
+
+		$messages = (array)$Controller->Crud->config('messages') + (array)$action->config('messages');
+		if (!$messages) {
+			return;
+		}
+
+		foreach (array_keys($messages) as $type) {
+			if ($type === 'domain') {
+				continue;
+			}
+			$message = $action->message($type);
+			$this->_processMessage($message, $action, $Controller->Crud);
+		}
+	}
+
+/**
+ * Generates translation statement string and adds to lines property
+ *
+ * @param mixed $message
+ * @param mixed $action
+ * @param mixed $crud
+ */
+	protected function _processMessage($message, $action, $crud) {
+		$text = $message['params']['original'];
+		if (!$text) {
+			return;
+		}
+
+		$domain = $action->config('messages.domain');
+		if (!$domain) {
+			$domain = $crud->config('messages.domain') ?: 'crud';
+		}
+
+		$string = "__d('$domain', '$text');";
+
+		if (in_array($string, $this->lines)) {
+			$this->out('<info>Skipping:</info> ' . $text, 1, Shell::VERBOSE);
+		} else {
+			$this->out('<success>Adding:</success> ' . $text);
+			$this->lines[] = $string;
+		}
+	}
+
+/**
+ * Take the lines property, populated by the generate method - and write it
  * out to the output file path
  *
  * @return string the file path written to
@@ -228,7 +298,7 @@ class TranslationsShell extends AppShell {
 	protected function _writeFile() {
 		$path = $this->path();
 
-		$lines = implode($this->_strings, "\n") . "\n";
+		$lines = implode($this->lines, "\n") . "\n";
 		$file = new File($path, true, 0644);
 		$file->write($lines);
 

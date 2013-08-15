@@ -1,0 +1,54 @@
+{
+  "name":"jippi/cakephp-crud",
+  "version": "3.0.0-RC",
+  "description":"Automated CRUD / Scaffolding and API for CakePHP 2.1+ - keep your controllers DRY while maintaining flexibility",
+  "type":"cakephp-plugin",
+  "keywords":[
+    "cakephp",
+    "crud",
+    "create",
+    "retrieve",
+    "update",
+    "delete",
+    "bake",
+    "cake",
+    "scaffold",
+    "scaffolding"
+  ],
+  "homepage":"https://github.com/jippi/cakephp-crud",
+  "license":"MIT",
+  "authors":[
+    {
+      "name":"Christian Winther",
+      "role":"Author",
+      "homepage":"http://cakephp.nu/"
+    },
+    {
+      "name":"José Lorenzo Rodríguez",
+      "role":"Contributor",
+      "homepage":"https://github.com/lorenzo"
+    },
+    {
+      "name":"Andy Dawson",
+      "role":"Contributor",
+      "homepage":"https://github.com/ad7six"
+    },
+    {
+      "name":"ADmad",
+      "role":"Contributor",
+      "homepage":"https://github.com/admad"
+    }
+  ],
+  "suggest":{
+    "cakedc/search":"If you want to use the Search Listener"
+  },
+  "support":{
+    "source":"https://github.com/jippi/cakephp-crud",
+    "issues":"https://github.com/jippi/cakephp-crud/issues",
+    "wiki":"http://cakephp.nu/cakephp-crud/",
+    "irc":"irc://irc.freenode.org/cakephp"
+  },
+  "require":{
+    "composer/installers":"*"
+  }
+}

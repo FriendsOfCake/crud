@@ -1,4 +1,11 @@
 <?php
+
+/**
+ * All Crud Test
+ *
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ */
 class AllCrudTest extends PHPUnit_Framework_TestSuite {
 
 	public static function suite() {

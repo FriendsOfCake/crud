@@ -1,8 +1,13 @@
 <?php
 App::uses('Model', 'Model');
-App::uses('AppModel', 'Model');
 
-class CrudExample extends AppModel {
+/**
+ * Crud Example Model
+ *
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ */
+class CrudExample extends Model {
 
 	public $alias = 'CrudExample';
 
