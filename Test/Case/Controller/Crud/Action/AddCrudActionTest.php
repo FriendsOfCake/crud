@@ -321,11 +321,6 @@ class AddCrudActionTest extends CrudTestCase {
 
 		$Model = $this->getMock('Model', array('saveAll'));
 		$Model->data = array('model' => true);
-		$Model
-			->expects($this->once())
-			->method('saveAll')
-			->with($Request->data)
-			->will($this->returnValue(false));
 
 		$Action = $this
 			->getMockBuilder('AddCrudAction')
@@ -348,6 +343,11 @@ class AddCrudActionTest extends CrudTestCase {
 			->expects($this->at($i++))
 			->method('_trigger')
 			->with('beforeSave');
+		$Model
+			->expects($this->once())
+			->method('saveAll')
+			->with($Request->data)
+			->will($this->returnValue(false));
 		$Action
 			->expects($this->at($i++))
 			->method('setFlash')
@@ -360,7 +360,7 @@ class AddCrudActionTest extends CrudTestCase {
 		$Action
 			->expects($this->at($i++))
 			->method('_trigger')
-			->with('beforeRender', array('success' => false));
+			->with('beforeRender', $AfterSaveSubject);
 
 		$this->setReflectionClassInstance($Action);
 		$this->callProtectedMethod('_post', array(), $Action);

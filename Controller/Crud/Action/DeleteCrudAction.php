@@ -29,6 +29,14 @@ class DeleteCrudAction extends CrudAction {
 			'error' => array(
 				'text' => 'Could not delete {name}'
 			)
+		),
+		'api' => array(
+			'success' => array(
+				'code' => 200
+			),
+			'error' => array(
+				'code' => 400
+			)
 		)
 	);
 
