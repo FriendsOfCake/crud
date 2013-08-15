@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="generator" content="ApiGen 2.8.0" />
 
-	<title>Class CrudListener | jippi/cakephp-crud (master)</title>
+	<title>Class IndexCrudAction | jippi/cakephp-crud (master)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
 	<script type="text/javascript" src="elementlist.js?1411212875"></script>
@@ -74,7 +74,7 @@
 				<li><a href="class-CrudComponent.html">CrudComponent</a></li>
 				<li><a href="class-CrudExceptionRenderer.html">CrudExceptionRenderer</a></li>
 				<li><a href="class-CrudJsonView.html">CrudJsonView</a></li>
-				<li class="active"><a href="class-CrudListener.html">CrudListener</a></li>
+				<li><a href="class-CrudListener.html">CrudListener</a></li>
 				<li><a href="class-CrudPanel.html">CrudPanel</a></li>
 				<li><a href="class-CrudSubject.html">CrudSubject</a></li>
 				<li><a href="class-CrudValidationException.html">CrudValidationException</a></li>
@@ -82,7 +82,7 @@
 				<li><a href="class-DebugKitListener.html">DebugKitListener</a></li>
 				<li><a href="class-DeleteCrudAction.html">DeleteCrudAction</a></li>
 				<li><a href="class-EditCrudAction.html">EditCrudAction</a></li>
-				<li><a href="class-IndexCrudAction.html">IndexCrudAction</a></li>
+				<li class="active"><a href="class-IndexCrudAction.html">IndexCrudAction</a></li>
 				<li><a href="class-RelatedModelsListener.html">RelatedModelsListener</a></li>
 				<li><a href="class-ScaffoldListener.html">ScaffoldListener</a></li>
 				<li><a href="class-SearchListener.html">SearchListener</a></li>
@@ -107,12 +107,12 @@
 <div id="right">
 	<div id="rightInner">
 <div id="content" class="class">
-	<h1>Class CrudListener</h1>
+	<h1>Class IndexCrudAction</h1>
 
 
 	<div class="description">
 	
-<p>The Base Crud Listener</p>
+<p>Handles 'Index' Crud actions</p>
 
 <p>Licensed under The MIT License For full copyright and license information,
 please see the LICENSE.txt</p>
@@ -136,26 +136,20 @@ Object
 		</dd>
 		<dd style="padding-left:60px">
 			<img src="resources/inherit.png" alt="Extended by" />
-<b><span>CrudListener</span></b>			
+			<a href="class-CrudAction.html"><span>CrudAction</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:90px">
+			<img src="resources/inherit.png" alt="Extended by" />
+<b><span>IndexCrudAction</span></b>			
 			
 			
 		</dd>
 	</dl>
 
 
-	<div>
-		<h3>Direct known subclasses</h3>
-		<p class="elementList">
-			<code><a href="class-ApiFieldFilterListener.html">ApiFieldFilterListener</a></code>, 
-			<code><a href="class-ApiListener.html">ApiListener</a></code>, 
-			<code><a href="class-ApiPaginationListener.html">ApiPaginationListener</a></code>, 
-			<code><a href="class-ApiQueryLogListener.html">ApiQueryLogListener</a></code>, 
-			<code><a href="class-DebugKitListener.html">DebugKitListener</a></code>, 
-			<code><a href="class-RelatedModelsListener.html">RelatedModelsListener</a></code>, 
-			<code><a href="class-ScaffoldListener.html">ScaffoldListener</a></code>, 
-			<code><a href="class-SearchListener.html">SearchListener</a></code>
-		</p>
-	</div>
 
 
 
@@ -163,21 +157,63 @@ Object
 
 
 	<div class="alert alert-info">
-		<b>Abstract</b><br />
+		
 		
 		
 		
 
-				<b>CodeCoverageIgnore</b>
-				<br />
-		<b>Located at</b> <a href="source-class-CrudListener.html#5-66" title="Go to source code">Controller/Crud/CrudListener.php</a><br />
+		<b>Located at</b> <a href="source-class-IndexCrudAction.html#5-120" title="Go to source code">Controller/Crud/Action/IndexCrudAction.php</a><br />
 	</div>
 
 
 
 		<h2>Methods summary</h2>
 		<table class="summary table table-bordered table-striped" id="methods">
-		<tr data-order="implementedEvents" id="_implementedEvents">
+		<tr data-order="viewVar" id="_viewVar">
+
+			<td class="attributes"><code>
+				 public 
+				mixed
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_viewVar">#</a>
+			<code><a href="source-class-IndexCrudAction.html#48-61" title="Go to source code">viewVar</a>( <span>mixed <var>$name</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Change the name of the view variable name of the data when its sent to the
+view</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Change the name of the view variable name of the data when its sent to the
+view</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$name</var></dt>
+						<dd><code>mixed</code><br>$method</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>mixed</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="paginationConfig" id="_paginationConfig">
 
 			<td class="attributes"><code>
 				 public 
@@ -187,59 +223,91 @@ Object
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#_implementedEvents">#</a>
-			<code><a href="source-class-CrudListener.html#15-64" title="Go to source code">implementedEvents</a>( )</code>
+			<a class="anchor" href="#_paginationConfig">#</a>
+			<code><a href="source-class-IndexCrudAction.html#63-91" title="Go to source code">paginationConfig</a>( )</code>
 
 			<div class="description short">
 				
-<p>Returns a list of all events that will fire in the controller during it's
-life cycle. You can override this function to add you own listener callbacks</p>
+<p>Compute pagination settings</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Returns a list of all events that will fire in the controller during it's
-life cycle. You can override this function to add you own listener callbacks</p>
+<p>Compute pagination settings</p>
 
-<ul>
-	<li>beforeHandle : Called before CrudAction is executed</li>
-
-	<li>startup: Called after the Controller::beforeFilter() and before the Crud
-	action is invoked</li>
-
-	<li>recordNotFound : Called if a find() did not return any records</li>
-
-	<li>beforePaginate : Called right before any paginate() method</li>
-
-	<li>afterPaginate : Called right after any paginate() method</li>
-
-	<li>invalidId : Called if the ID format validation failed</li>
-
-	<li>setFlash : Called before any CakeSession::setFlash</li>
-</ul>
+<p>Initializes PaginatorComponent if it isn't loaded already Modified the
+findType based on the CrudAction configuration</p>
 
 
 
 
 					<h4>Returns</h4>
 					<div class="list">
-						<code>array</code><br />
+						<code>array</code><br>The Paginator settings<br />
 					</div>
 
 
 
-					<h4>Overrides</h4>
-					<div class="list"><code><a href="class-CrudBaseObject.html#_implementedEvents">CrudBaseObject::implementedEvents</a></code></div>
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_get" id="__get">
+
+			<td class="attributes"><code>
+				 protected 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__get">#</a>
+			<code><a href="source-class-IndexCrudAction.html#93-118" title="Go to source code">_get</a>( )</code>
+
+			<div class="description short">
+				
+<p>HTTP GET handler</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>HTTP GET handler</p>
+
+
+
+
+
+
+
 
 			</div>
 			</div></td>
 		</tr>
 		</table>
 
+		<h3>Methods inherited from <a href="class-CrudAction.html#methods">CrudAction</a></h3>
+		<p class="elementList">
+			<code><a href="class-CrudAction.html#___construct">__construct()</a></code>, 
+			<code><a href="class-CrudAction.html#__getFindMethod">_getFindMethod()</a></code>, 
+			<code><a href="class-CrudAction.html#__getResourceName">_getResourceName()</a></code>, 
+			<code><a href="class-CrudAction.html#__redirect">_redirect()</a></code>, 
+			<code><a href="class-CrudAction.html#__validateId">_validateId()</a></code>, 
+			<code><a href="class-CrudAction.html#_detectPrimaryKeyFieldType">detectPrimaryKeyFieldType()</a></code>, 
+			<code><a href="class-CrudAction.html#_disable">disable()</a></code>, 
+			<code><a href="class-CrudAction.html#_enable">enable()</a></code>, 
+			<code><a href="class-CrudAction.html#_findMethod">findMethod()</a></code>, 
+			<code><a href="class-CrudAction.html#_handle">handle()</a></code>, 
+			<code><a href="class-CrudAction.html#_implementedEvents">implementedEvents()</a></code>, 
+			<code><a href="class-CrudAction.html#_message">message()</a></code>, 
+			<code><a href="class-CrudAction.html#_saveOptions">saveOptions()</a></code>, 
+			<code><a href="class-CrudAction.html#_setFlash">setFlash()</a></code>, 
+			<code><a href="class-CrudAction.html#_view">view()</a></code>
+		</p>
 		<h3>Methods inherited from <a href="class-CrudBaseObject.html#methods">CrudBaseObject</a></h3>
 		<p class="elementList">
-			<code><a href="class-CrudBaseObject.html#___construct">__construct()</a></code>, 
 			<code><a href="class-CrudBaseObject.html#__action">_action()</a></code>, 
 			<code><a href="class-CrudBaseObject.html#__controller">_controller()</a></code>, 
 			<code><a href="class-CrudBaseObject.html#__crud">_crud()</a></code>, 
@@ -263,15 +331,83 @@ life cycle. You can override this function to add you own listener callbacks</p>
 
 
 
+		<h2>Constants summary</h2>
+		<table class="summary table table-bordered table-striped" id="constants">
+		<tr data-order="ACTION_SCOPE" id="ACTION_SCOPE">
+
+			<td class="attributes"><code>integer</code></td>
+			<td class="name"><code>
+					<a href="source-class-IndexCrudAction.html#41-46" title="Go to source code"><b>ACTION_SCOPE</b></a>
+			</code></td>
+			<td class="value"><code><code><a href="class-CrudAction.html#SCOPE_MODEL">CrudAction::<b>SCOPE_MODEL</b></a></code></code></td>
+			<td class="description"><div>
+				<a href="#ACTION_SCOPE" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>Constant representing the scope of this action</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>Constant representing the scope of this action</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		</table>
+
+		<h3>Constants inherited from <a href="class-CrudAction.html#constants">CrudAction</a></h3>
+		<p class="elementList">
+			<code><a href="class-CrudAction.html#SCOPE_MODEL"><b>SCOPE_MODEL</b></a></code>, 
+			<code><a href="class-CrudAction.html#SCOPE_RECORD"><b>SCOPE_RECORD</b></a></code>
+		</p>
 
 
 
 		<h2>Properties summary</h2>
+		<table class="summary table table-bordered table-striped" id="properties">
+		<tr data-order="_settings" id="$_settings">
+			<td class="attributes"><code>
+				protected  
+				array
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-IndexCrudAction.html#13-39" title="Go to source code"><var>$_settings</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$_settings" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>Default settings for 'index' actions</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>Default settings for 'index' actions</p>
+
+<p><code>enabled</code> Is this crud action enabled or disabled</p>
+
+<p><code>findMethod</code> The default <code>Model::find()</code> method for
+reading data</p>
+
+<p><code>view</code> A map of the controller action and the view to render If
+<code>NULL</code> (the default) the controller action name will be used</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		</table>
 
 		<h3>Properties inherited from <a href="class-CrudBaseObject.html#properties">CrudBaseObject</a></h3>
 		<p class="elementList">
-			<code><a href="class-CrudBaseObject.html#$_container"><var>$_container</var></a></code>, 
-			<code><a href="class-CrudBaseObject.html#$_settings"><var>$_settings</var></a></code>
+			<code><a href="class-CrudBaseObject.html#$_container"><var>$_container</var></a></code>
 		</p>
 
 

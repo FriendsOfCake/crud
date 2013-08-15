@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Class CrudBaseObject | jippi/cakephp-crud (master)</title>
+
+	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
+	<script type="text/javascript" src="elementlist.js?1411212875"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
+
+</head>
+
+<body>
+	<a href="https://github.com/jippi/cakephp-crud/">
+      		<img style="position: absolute; top: 0; right: 0; border: 0; z-index: 10000" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+    	</a>
+	<div id="navigation" class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<a href="index.html" class="brand">jippi/cakephp-crud (master)</a>
+				<div class="nav-collapse">
+					<ul class="nav">
+						<li class="active">
+<span>Class</span>						</li>
+
+						<li class="divider-vertical"></li>
+
+						<li>
+							<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+						</li>
+						<li>
+							<a href="deprecated.html" title="List of deprecated elements"><span>Deprecated</span></a>
+						</li>
+						<li>
+							<a href="todo.html" title="Todo list"><span>Todo</span></a>
+						</li>
+
+
+
+                                                <li class="divider-vertical"></li>
+						<li><a href="http://cakephp.nu/cakephp-crud/" title="Documentation"><span>View Documentation</span></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="left">
+	<div id="menu">
+		<form id="search" class="form-search">
+			<input type="hidden" name="cx" value="" />
+			<input type="hidden" name="ie" value="UTF-8" />
+			<input type="text" name="q" class="search-query" placeholder="Search" />
+		</form>
+
+
+		<div id="groups">
+		</div>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-AddCrudAction.html">AddCrudAction</a></li>
+				<li><a href="class-ApiFieldFilterListener.html">ApiFieldFilterListener</a></li>
+				<li><a href="class-ApiListener.html">ApiListener</a></li>
+				<li><a href="class-ApiPaginationListener.html">ApiPaginationListener</a></li>
+				<li><a href="class-ApiQueryLogListener.html">ApiQueryLogListener</a></li>
+				<li><a href="class-CrudAction.html">CrudAction</a></li>
+				<li class="active"><a href="class-CrudBaseObject.html">CrudBaseObject</a></li>
+				<li><a href="class-CrudComponent.html">CrudComponent</a></li>
+				<li><a href="class-CrudExceptionRenderer.html">CrudExceptionRenderer</a></li>
+				<li><a href="class-CrudJsonView.html">CrudJsonView</a></li>
+				<li><a href="class-CrudListener.html">CrudListener</a></li>
+				<li><a href="class-CrudPanel.html">CrudPanel</a></li>
+				<li><a href="class-CrudSubject.html">CrudSubject</a></li>
+				<li><a href="class-CrudValidationException.html">CrudValidationException</a></li>
+				<li><a href="class-CrudXmlView.html">CrudXmlView</a></li>
+				<li><a href="class-DebugKitListener.html">DebugKitListener</a></li>
+				<li><a href="class-DeleteCrudAction.html">DeleteCrudAction</a></li>
+				<li><a href="class-EditCrudAction.html">EditCrudAction</a></li>
+				<li><a href="class-IndexCrudAction.html">IndexCrudAction</a></li>
+				<li><a href="class-RelatedModelsListener.html">RelatedModelsListener</a></li>
+				<li><a href="class-ScaffoldListener.html">ScaffoldListener</a></li>
+				<li><a href="class-SearchListener.html">SearchListener</a></li>
+				<li><a href="class-TranslationsShell.html">TranslationsShell</a></li>
+				<li><a href="class-ViewCrudAction.html">ViewCrudAction</a></li>
+			</ul>
+
+
+			<h3>Traits</h3>
+			<ul>
+				<li><a href="class-CrudControllerTrait.html">CrudControllerTrait</a></li>
+			</ul>
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+	<div id="rightInner">
+<div id="content" class="class">
+	<h1>Class CrudBaseObject</h1>
+
+
+	<div class="description">
+	
+<p>Crud Base Class</p>
+
+<p>Implement base methods used in CrudAction and CrudListener classes</p>
+
+<p>Licensed under The MIT License For full copyright and license information,
+please see the LICENSE.txt</p>
+
+	</div>
+
+	<dl class="tree well">
+		<dd style="padding-left:0px">
+Object
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by" />
+<b><span>CrudBaseObject</span></b>			
+			 implements 
+<span>CakeEventListener</span>
+			
+			
+		</dd>
+	</dl>
+
+
+	<div>
+		<h3>Direct known subclasses</h3>
+		<p class="elementList">
+			<code><a href="class-CrudAction.html">CrudAction</a></code>, 
+			<code><a href="class-CrudListener.html">CrudListener</a></code>
+		</p>
+	</div>
+
+	<div>
+		<h3>Indirect known subclasses</h3>
+		<p class="elementList">
+			<code><a href="class-AddCrudAction.html">AddCrudAction</a></code>, 
+			<code><a href="class-ApiFieldFilterListener.html">ApiFieldFilterListener</a></code>, 
+			<code><a href="class-ScaffoldListener.html">ScaffoldListener</a></code>, 
+			<code><a href="class-SearchListener.html">SearchListener</a></code>, 
+			<code><a href="class-ViewCrudAction.html">ViewCrudAction</a></code>, 
+			<code><a href="class-ApiListener.html">ApiListener</a></code>, 
+			<code><a href="class-ApiPaginationListener.html">ApiPaginationListener</a></code>, 
+			<code><a href="class-ApiQueryLogListener.html">ApiQueryLogListener</a></code>, 
+			<code><a href="class-DebugKitListener.html">DebugKitListener</a></code>, 
+			<code><a href="class-DeleteCrudAction.html">DeleteCrudAction</a></code>, 
+			<code><a href="class-EditCrudAction.html">EditCrudAction</a></code>, 
+			<code><a href="class-IndexCrudAction.html">IndexCrudAction</a></code>, 
+			<code><a href="class-RelatedModelsListener.html">RelatedModelsListener</a></code>
+		</p>
+	</div>
+
+
+
+
+
+	<div class="alert alert-info">
+		<b>Abstract</b><br />
+		
+		
+		
+
+		<b>Located at</b> <a href="source-class-CrudBaseObject.html#6-277" title="Go to source code">Controller/Crud/CrudBaseObject.php</a><br />
+	</div>
+
+
+
+		<h2>Methods summary</h2>
+		<table class="summary table table-bordered table-striped" id="methods">
+		<tr data-order="__construct" id="___construct">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#___construct">#</a>
+			<code><a href="source-class-CrudBaseObject.html#31-44" title="Go to source code">__construct</a>( <span><code><a href="class-CrudSubject.html">CrudSubject</a></code> <var>$subject</var></span>, <span>array <var>$defaults</var> = <span class="php-keyword1">array</span>()</span> )</code>
+
+			<div class="description short">
+				
+<p>Constructor</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Constructor</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$subject</var></dt>
+						<dd><code><code><a href="class-CrudSubject.html">CrudSubject</a></code></code><br>$subject</dd>
+						<dt><var>$defaults</var></dt>
+						<dd><code>array</code><br>$defaults Default settings</dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="beforeHandle" id="_beforeHandle">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_beforeHandle">#</a>
+			<code><a href="source-class-CrudBaseObject.html#46-54" title="Go to source code">beforeHandle</a>( <span>CakeEvent <var>$event</var></span> )</code>
+
+			<div class="description short">
+				
+<p>initialize callback</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>initialize callback</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$event</var></dt>
+						<dd><code>CakeEvent</code><br>$event</dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="config" id="_config">
+
+			<td class="attributes"><code>
+				 public 
+				mixed|<code><a href="class-CrudAction.html">CrudAction</a></code>
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_config">#</a>
+			<code><a href="source-class-CrudBaseObject.html#56-113" title="Go to source code">config</a>( <span>mixed <var>$key</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$value</var> = <span class="php-keyword1">null</span></span>, <span>boolean <var>$merge</var> = <span class="php-keyword1">true</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Sets a configuration variable into this action</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Sets a configuration variable into this action</p>
+
+<p>If called with no arguments, all configuration values are returned.</p>
+
+<p>$key is interpreted with dot notation, like the one used for
+Configure::write()</p>
+
+<p>If $key is string and $value is not passed, it will return the value
+associated with such key.</p>
+
+<p>If $key is an array and $value is empty, then $key will be interpreted as key
+=&gt; value dictionary of settings and it will be merged directly with
+$this-&gt;settings</p>
+
+<p>If $key is a string, the value will be inserted in the specified slot as
+indicated using the dot notation</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$key</var></dt>
+						<dd><code>mixed</code><br>$key</dd>
+						<dt><var>$value</var></dt>
+						<dd><code>mixed</code><br>$value</dd>
+						<dt><var>$merge</var></dt>
+						<dd><code>boolean</code><br>$merge</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>mixed|<code><a href="class-CrudAction.html">CrudAction</a></code></code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="implementedEvents" id="_implementedEvents">
+
+			<td class="attributes"><code>
+				 public 
+				array
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_implementedEvents">#</a>
+			<code><a href="source-class-CrudBaseObject.html#115-125" title="Go to source code">implementedEvents</a>( )</code>
+
+			<div class="description short">
+				
+<p>Returns a list of all events that will fire during the objects lifecycle. You
+can override this function to add you own listener callbacks</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Returns a list of all events that will fire during the objects lifecycle. You
+can override this function to add you own listener callbacks</p>
+
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>array</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_action" id="__action">
+
+			<td class="attributes"><code>
+				 protected 
+				<code><a href="class-CrudAction.html">CrudAction</a></code>
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__action">#</a>
+			<code><a href="source-class-CrudBaseObject.html#127-138" title="Go to source code">_action</a>( <span>string <var>$name</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Proxy method for <code>$this-&gt;_crud()-&gt;action()</code></p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Proxy method for <code>$this-&gt;_crud()-&gt;action()</code></p>
+
+<p>Primary here to ease unit testing</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$name</var></dt>
+						<dd><code>string</code><br>$name</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code><code><a href="class-CrudAction.html">CrudAction</a></code></code><br />
+					</div>
+
+
+					<h4>CodeCoverageIgnore</h4>
+					<div class="list">
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_trigger" id="__trigger">
+
+			<td class="attributes"><code>
+				 protected 
+				<code><a href="class-CrudSubject.html">CrudSubject</a></code>
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__trigger">#</a>
+			<code><a href="source-class-CrudBaseObject.html#140-152" title="Go to source code">_trigger</a>( <span>string <var>$eventName</var></span>, <span>array <var>$data</var> = <span class="php-keyword1">array</span>()</span> )</code>
+
+			<div class="description short">
+				
+<p>Proxy method for <code>$this-&gt;_crud()-&gt;trigger()</code></p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Proxy method for <code>$this-&gt;_crud()-&gt;trigger()</code></p>
+
+<p>Primary here to ease unit testing</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$eventName</var></dt>
+						<dd><code>string</code><br>$eventName</dd>
+						<dt><var>$data</var></dt>
+						<dd><code>array</code><br>$data</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code><code><a href="class-CrudSubject.html">CrudSubject</a></code></code><br />
+					</div>
+
+
+					<h4>CodeCoverageIgnore</h4>
+					<div class="list">
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_listener" id="__listener">
+
+			<td class="attributes"><code>
+				 protected 
+				<code><a href="class-CrudListener.html">CrudListener</a></code>
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__listener">#</a>
+			<code><a href="source-class-CrudBaseObject.html#154-165" title="Go to source code">_listener</a>( <span>string <var>$name</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Proxy method for <code>$this-&gt;_crud()-&gt;listener()</code></p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Proxy method for <code>$this-&gt;_crud()-&gt;listener()</code></p>
+
+<p>Primary here to ease unit testing</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$name</var></dt>
+						<dd><code>string</code><br>$name</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code><code><a href="class-CrudListener.html">CrudListener</a></code></code><br />
+					</div>
+
+
+					<h4>CodeCoverageIgnore</h4>
+					<div class="list">
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_session" id="__session">
+
+			<td class="attributes"><code>
+				 protected 
+				SessionComponent
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__session">#</a>
+			<code><a href="source-class-CrudBaseObject.html#167-177" title="Go to source code">_session</a>( )</code>
+
+			<div class="description short">
+				
+<p>Proxy method for <code>$this-&gt;_crud()-&gt;Session</code></p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Proxy method for <code>$this-&gt;_crud()-&gt;Session</code></p>
+
+<p>Primary here to ease unit testing</p>
+
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>SessionComponent</code><br />
+					</div>
+
+
+					<h4>CodeCoverageIgnore</h4>
+					<div class="list">
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_controller" id="__controller">
+
+			<td class="attributes"><code>
+				 protected 
+				Controller
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__controller">#</a>
+			<code><a href="source-class-CrudBaseObject.html#179-189" title="Go to source code">_controller</a>( )</code>
+
+			<div class="description short">
+				
+<p>Proxy method for <code>$this-&gt;_container-&gt;_controller</code></p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Proxy method for <code>$this-&gt;_container-&gt;_controller</code></p>
+
+<p>Primary here to ease unit testing</p>
+
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>Controller</code><br />
+					</div>
+
+
+					<h4>CodeCoverageIgnore</h4>
+					<div class="list">
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_request" id="__request">
+
+			<td class="attributes"><code>
+				 protected 
+				CakeRequest
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__request">#</a>
+			<code><a href="source-class-CrudBaseObject.html#191-201" title="Go to source code">_request</a>( )</code>
+
+			<div class="description short">
+				
+<p>Proxy method for <code>$this-&gt;_container-&gt;_request</code></p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Proxy method for <code>$this-&gt;_container-&gt;_request</code></p>
+
+<p>Primary here to ease unit testing</p>
+
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>CakeRequest</code><br />
+					</div>
+
+
+					<h4>CodeCoverageIgnore</h4>
+					<div class="list">
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_model" id="__model">
+
+			<td class="attributes"><code>
+				 protected 
+				Model
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__model">#</a>
+			<code><a href="source-class-CrudBaseObject.html#203-213" title="Go to source code">_model</a>( )</code>
+
+			<div class="description short">
+				
+<p>Proxy method for <code>$this-&gt;_container-&gt;_model</code></p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Proxy method for <code>$this-&gt;_container-&gt;_model</code></p>
+
+<p>Primary here to ease unit testing</p>
+
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>Model</code><br />
+					</div>
+
+
+					<h4>CodeCoverageIgnore</h4>
+					<div class="list">
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_subject" id="__subject">
+
+			<td class="attributes"><code>
+				 protected 
+				CrudSUbject
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__subject">#</a>
+			<code><a href="source-class-CrudBaseObject.html#215-224" title="Go to source code">_subject</a>( <span>array <var>$additional</var> = <span class="php-keyword1">array</span>()</span> )</code>
+
+			<div class="description short">
+				
+<p>Proxy method for <code>$this-&gt;_crud()-&gt;getSubject()</code></p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Proxy method for <code>$this-&gt;_crud()-&gt;getSubject()</code></p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$additional</var></dt>
+						<dd><code>array</code><br>$additional</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>CrudSUbject</code><br />
+					</div>
+
+
+					<h4>CodeCoverageIgnore</h4>
+					<div class="list">
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_crud" id="__crud">
+
+			<td class="attributes"><code>
+				 protected 
+				<code><a href="class-CrudComponent.html">CrudComponent</a></code>
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__crud">#</a>
+			<code><a href="source-class-CrudBaseObject.html#226-233" title="Go to source code">_crud</a>( )</code>
+
+			<div class="description short">
+				
+<p>Proxy method for <code>$this-&gt;_container-&gt;_crud</code></p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Proxy method for <code>$this-&gt;_container-&gt;_crud</code></p>
+
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code><code><a href="class-CrudComponent.html">CrudComponent</a></code></code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_validationErrors" id="__validationErrors">
+
+			<td class="attributes"><code>
+				 protected 
+				array
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__validationErrors">#</a>
+			<code><a href="source-class-CrudBaseObject.html#235-245" title="Go to source code">_validationErrors</a>( )</code>
+
+			<div class="description short">
+				
+<p>Proxy method for <code>$this-&gt;_crud()-&gt;validationErrors()</code></p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Proxy method for <code>$this-&gt;_crud()-&gt;validationErrors()</code></p>
+
+<p>Primary here to ease unit testing</p>
+
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>array</code><br />
+					</div>
+
+
+					<h4>CodeCoverageIgnore</h4>
+					<div class="list">
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_refererRedirectUrl" id="__refererRedirectUrl">
+
+			<td class="attributes"><code>
+				 protected 
+				mixed
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__refererRedirectUrl">#</a>
+			<code><a href="source-class-CrudBaseObject.html#247-257" title="Go to source code">_refererRedirectUrl</a>( <span>string <var>$default</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Returns the redirect_url for this request, with a fallback to the referring
+page</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Returns the redirect_url for this request, with a fallback to the referring
+page</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$default</var></dt>
+						<dd><code>string</code><br>$default Default URL to use redirect_url is not found in request or data</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>mixed</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_redirectUrl" id="__redirectUrl">
+
+			<td class="attributes"><code>
+				 protected 
+				mixed
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__redirectUrl">#</a>
+			<code><a href="source-class-CrudBaseObject.html#259-275" title="Go to source code">_redirectUrl</a>( <span>string <var>$default</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Returns the redirect_url for this request.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Returns the redirect_url for this request.</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$default</var></dt>
+						<dd><code>string</code><br>$default Default URL to use redirect_url is not found in request or data</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>mixed</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		</table>
+
+
+
+		<h3>Magic methods summary</h3>
+
+
+
+
+
+
+
+
+		<h2>Properties summary</h2>
+		<table class="summary table table-bordered table-striped" id="properties">
+		<tr data-order="_container" id="$_container">
+			<td class="attributes"><code>
+				protected  
+				<code><a href="class-CrudSubject.html">CrudSubject</a></code>
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-CrudBaseObject.html#16-22" title="Go to source code"><var>$_container</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$_container" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>Container with reference to all objects needed within the CrudListener and
+CrudAction</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>Container with reference to all objects needed within the CrudListener and
+CrudAction</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		<tr data-order="_settings" id="$_settings">
+			<td class="attributes"><code>
+				protected  
+				array
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-CrudBaseObject.html#24-29" title="Go to source code"><var>$_settings</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$_settings" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>Instance configuration</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>Instance configuration</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		</table>
+
+
+
+
+
+
+</div>
+	</div>
+
+	<div id="footer">
+		jippi/cakephp-crud (master) API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</body>
+</html>

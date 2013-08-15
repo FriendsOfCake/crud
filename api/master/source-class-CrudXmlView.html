@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+	<meta name="robots" content="noindex" />
+
+	<title>File View/CrudXmlView.php | jippi/cakephp-crud (master)</title>
+
+	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
+	<script type="text/javascript" src="elementlist.js?1411212875"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
+
+</head>
+
+<body>
+	<a href="https://github.com/jippi/cakephp-crud/">
+      		<img style="position: absolute; top: 0; right: 0; border: 0; z-index: 10000" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+    	</a>
+	<div id="navigation" class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<a href="index.html" class="brand">jippi/cakephp-crud (master)</a>
+				<div class="nav-collapse">
+					<ul class="nav">
+						<li>
+							<a href="class-CrudXmlView.html" title="Summary of CrudXmlView"><span>Class</span></a>
+						</li>
+
+						<li class="divider-vertical"></li>
+
+						<li>
+							<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+						</li>
+						<li>
+							<a href="deprecated.html" title="List of deprecated elements"><span>Deprecated</span></a>
+						</li>
+						<li>
+							<a href="todo.html" title="Todo list"><span>Todo</span></a>
+						</li>
+
+
+
+                                                <li class="divider-vertical"></li>
+						<li><a href="http://cakephp.nu/cakephp-crud/" title="Documentation"><span>View Documentation</span></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="left">
+	<div id="menu">
+		<form id="search" class="form-search">
+			<input type="hidden" name="cx" value="" />
+			<input type="hidden" name="ie" value="UTF-8" />
+			<input type="text" name="q" class="search-query" placeholder="Search" />
+		</form>
+
+
+		<div id="groups">
+		</div>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-AddCrudAction.html">AddCrudAction</a></li>
+				<li><a href="class-ApiFieldFilterListener.html">ApiFieldFilterListener</a></li>
+				<li><a href="class-ApiListener.html">ApiListener</a></li>
+				<li><a href="class-ApiPaginationListener.html">ApiPaginationListener</a></li>
+				<li><a href="class-ApiQueryLogListener.html">ApiQueryLogListener</a></li>
+				<li><a href="class-CrudAction.html">CrudAction</a></li>
+				<li><a href="class-CrudBaseObject.html">CrudBaseObject</a></li>
+				<li><a href="class-CrudComponent.html">CrudComponent</a></li>
+				<li><a href="class-CrudExceptionRenderer.html">CrudExceptionRenderer</a></li>
+				<li><a href="class-CrudJsonView.html">CrudJsonView</a></li>
+				<li><a href="class-CrudListener.html">CrudListener</a></li>
+				<li><a href="class-CrudPanel.html">CrudPanel</a></li>
+				<li><a href="class-CrudSubject.html">CrudSubject</a></li>
+				<li><a href="class-CrudValidationException.html">CrudValidationException</a></li>
+				<li class="active"><a href="class-CrudXmlView.html">CrudXmlView</a></li>
+				<li><a href="class-DebugKitListener.html">DebugKitListener</a></li>
+				<li><a href="class-DeleteCrudAction.html">DeleteCrudAction</a></li>
+				<li><a href="class-EditCrudAction.html">EditCrudAction</a></li>
+				<li><a href="class-IndexCrudAction.html">IndexCrudAction</a></li>
+				<li><a href="class-RelatedModelsListener.html">RelatedModelsListener</a></li>
+				<li><a href="class-ScaffoldListener.html">ScaffoldListener</a></li>
+				<li><a href="class-SearchListener.html">SearchListener</a></li>
+				<li><a href="class-TranslationsShell.html">TranslationsShell</a></li>
+				<li><a href="class-ViewCrudAction.html">ViewCrudAction</a></li>
+			</ul>
+
+
+			<h3>Traits</h3>
+			<ul>
+				<li><a href="class-CrudControllerTrait.html">CrudControllerTrait</a></li>
+			</ul>
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+	<div id="rightInner">
+<pre id="source"><code><span id="1" class="l"><a class="l" href="#1"> 1 </a><span class="xlang">&lt;?php</span>
+</span><span id="2" class="l"><a class="l" href="#2"> 2 </a>
+</span><span id="3" class="l"><a class="l" href="#3"> 3 </a>App::uses(<span class="php-quote">'View'</span>, <span class="php-quote">'View'</span>);
+</span><span id="4" class="l"><a class="l" href="#4"> 4 </a>App::uses(<span class="php-quote">'XmlView'</span>, <span class="php-quote">'View'</span>);
+</span><span id="5" class="l"><a class="l" href="#5"> 5 </a>
+</span><span id="6" class="l"><a class="l" href="#6"> 6 </a><span class="php-comment">/**
+</span></span><span id="7" class="l"><a class="l" href="#7"> 7 </a><span class="php-comment"> * CrudApiView
+</span></span><span id="8" class="l"><a class="l" href="#8"> 8 </a><span class="php-comment"> *
+</span></span><span id="9" class="l"><a class="l" href="#9"> 9 </a><span class="php-comment"> * Licensed under The MIT License
+</span></span><span id="10" class="l"><a class="l" href="#10">10 </a><span class="php-comment"> * For full copyright and license information, please see the LICENSE.txt
+</span></span><span id="11" class="l"><a class="l" href="#11">11 </a><span class="php-comment"> */</span>
+</span><span id="12" class="l"><a class="l" href="#12">12 </a><span class="php-keyword1">class</span> <a id="CrudXmlView" href="#CrudXmlView">CrudXmlView</a> <span class="php-keyword1">extends</span> XmlView {
+</span><span id="13" class="l"><a class="l" href="#13">13 </a>
+</span><span id="14" class="l"><a class="l" href="#14">14 </a><span class="php-comment">/**
+</span></span><span id="15" class="l"><a class="l" href="#15">15 </a><span class="php-comment"> * Serialize view vars
+</span></span><span id="16" class="l"><a class="l" href="#16">16 </a><span class="php-comment"> *
+</span></span><span id="17" class="l"><a class="l" href="#17">17 </a><span class="php-comment"> * This is only here to follow CakePHP 2.4 compatibility with _serialize aliasing
+</span></span><span id="18" class="l"><a class="l" href="#18">18 </a><span class="php-comment"> *
+</span></span><span id="19" class="l"><a class="l" href="#19">19 </a><span class="php-comment"> * @param array $serialize The viewVars that need to be serialized
+</span></span><span id="20" class="l"><a class="l" href="#20">20 </a><span class="php-comment"> * @return string The serialized data
+</span></span><span id="21" class="l"><a class="l" href="#21">21 </a><span class="php-comment"> */</span>
+</span><span id="22" class="l"><a class="l" href="#22">22 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__serialize" href="#__serialize">_serialize</a>(<span class="php-var">$serialize</span>) {
+</span><span id="23" class="l"><a class="l" href="#23">23 </a>        <span class="php-var">$rootNode</span> = <span class="php-keyword1">isset</span>(<span class="php-var">$this</span>-&gt;viewVars[<span class="php-quote">'_rootNode'</span>]) ? <span class="php-var">$this</span>-&gt;viewVars[<span class="php-quote">'_rootNode'</span>] : <span class="php-quote">'response'</span>;
+</span><span id="24" class="l"><a class="l" href="#24">24 </a>
+</span><span id="25" class="l"><a class="l" href="#25">25 </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">is_array</span>(<span class="php-var">$serialize</span>)) {
+</span><span id="26" class="l"><a class="l" href="#26">26 </a>            <span class="php-var">$data</span> = <span class="php-keyword1">array</span>(<span class="php-var">$rootNode</span> =&gt; <span class="php-keyword1">array</span>());
+</span><span id="27" class="l"><a class="l" href="#27">27 </a>            <span class="php-keyword1">foreach</span> (<span class="php-var">$serialize</span> <span class="php-keyword1">as</span> <span class="php-var">$alias</span> =&gt; <span class="php-var">$key</span>) {
+</span><span id="28" class="l"><a class="l" href="#28">28 </a>                <span class="php-keyword1">if</span> (<span class="php-keyword2">is_numeric</span>(<span class="php-var">$alias</span>)) {
+</span><span id="29" class="l"><a class="l" href="#29">29 </a>                    <span class="php-var">$alias</span> = <span class="php-var">$key</span>;
+</span><span id="30" class="l"><a class="l" href="#30">30 </a>                }
+</span><span id="31" class="l"><a class="l" href="#31">31 </a>
+</span><span id="32" class="l"><a class="l" href="#32">32 </a>                <span class="php-var">$data</span>[<span class="php-var">$rootNode</span>][<span class="php-var">$alias</span>] = <span class="php-var">$this</span>-&gt;viewVars[<span class="php-var">$key</span>];
+</span><span id="33" class="l"><a class="l" href="#33">33 </a>            }
+</span><span id="34" class="l"><a class="l" href="#34">34 </a>        } <span class="php-keyword1">else</span> {
+</span><span id="35" class="l"><a class="l" href="#35">35 </a>            <span class="php-var">$data</span> = <span class="php-keyword1">isset</span>(<span class="php-var">$this</span>-&gt;viewVars[<span class="php-var">$serialize</span>]) ? <span class="php-var">$this</span>-&gt;viewVars[<span class="php-var">$serialize</span>] : <span class="php-keyword1">null</span>;
+</span><span id="36" class="l"><a class="l" href="#36">36 </a>            <span class="php-keyword1">if</span> (<span class="php-keyword2">is_array</span>(<span class="php-var">$data</span>) &amp;&amp; Set::numeric(<span class="php-keyword2">array_keys</span>(<span class="php-var">$data</span>))) {
+</span><span id="37" class="l"><a class="l" href="#37">37 </a>                <span class="php-var">$data</span> = <span class="php-keyword1">array</span>(<span class="php-var">$rootNode</span> =&gt; <span class="php-keyword1">array</span>(<span class="php-var">$serialize</span> =&gt; <span class="php-var">$data</span>));
+</span><span id="38" class="l"><a class="l" href="#38">38 </a>            }
+</span><span id="39" class="l"><a class="l" href="#39">39 </a>        }
+</span><span id="40" class="l"><a class="l" href="#40">40 </a>
+</span><span id="41" class="l"><a class="l" href="#41">41 </a>        <span class="php-var">$options</span> = <span class="php-keyword1">array</span>();
+</span><span id="42" class="l"><a class="l" href="#42">42 </a>        <span class="php-keyword1">if</span> (Configure::read(<span class="php-quote">'debug'</span>)) {
+</span><span id="43" class="l"><a class="l" href="#43">43 </a>            <span class="php-var">$options</span>[<span class="php-quote">'pretty'</span>] = <span class="php-keyword1">true</span>;
+</span><span id="44" class="l"><a class="l" href="#44">44 </a>        }
+</span><span id="45" class="l"><a class="l" href="#45">45 </a>
+</span><span id="46" class="l"><a class="l" href="#46">46 </a>        <span class="php-keyword1">return</span> Xml::fromArray(<span class="php-var">$data</span>, <span class="php-var">$options</span>)-&gt;asXML();
+</span><span id="47" class="l"><a class="l" href="#47">47 </a>    }
+</span><span id="48" class="l"><a class="l" href="#48">48 </a>
+</span><span id="49" class="l"><a class="l" href="#49">49 </a>}
+</span><span id="50" class="l"><a class="l" href="#50">50 </a></span></code></pre>
+	</div>
+
+	<div id="footer">
+		jippi/cakephp-crud (master) API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</body>
+</html>

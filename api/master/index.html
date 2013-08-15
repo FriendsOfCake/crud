@@ -64,17 +64,37 @@
 		<div id="elements">
 			<h3>Classes</h3>
 			<ul>
-				<li><a href="class-CrudBaseEvent.html">CrudBaseEvent</a></li>
+				<li><a href="class-AddCrudAction.html">AddCrudAction</a></li>
+				<li><a href="class-ApiFieldFilterListener.html">ApiFieldFilterListener</a></li>
+				<li><a href="class-ApiListener.html">ApiListener</a></li>
+				<li><a href="class-ApiPaginationListener.html">ApiPaginationListener</a></li>
+				<li><a href="class-ApiQueryLogListener.html">ApiQueryLogListener</a></li>
+				<li><a href="class-CrudAction.html">CrudAction</a></li>
+				<li><a href="class-CrudBaseObject.html">CrudBaseObject</a></li>
 				<li><a href="class-CrudComponent.html">CrudComponent</a></li>
-				<li><a href="class-CrudEventSubject.html">CrudEventSubject</a></li>
+				<li><a href="class-CrudExceptionRenderer.html">CrudExceptionRenderer</a></li>
+				<li><a href="class-CrudJsonView.html">CrudJsonView</a></li>
 				<li><a href="class-CrudListener.html">CrudListener</a></li>
+				<li><a href="class-CrudPanel.html">CrudPanel</a></li>
 				<li><a href="class-CrudSubject.html">CrudSubject</a></li>
+				<li><a href="class-CrudValidationException.html">CrudValidationException</a></li>
+				<li><a href="class-CrudXmlView.html">CrudXmlView</a></li>
+				<li><a href="class-DebugKitListener.html">DebugKitListener</a></li>
+				<li><a href="class-DeleteCrudAction.html">DeleteCrudAction</a></li>
+				<li><a href="class-EditCrudAction.html">EditCrudAction</a></li>
+				<li><a href="class-IndexCrudAction.html">IndexCrudAction</a></li>
 				<li><a href="class-RelatedModelsListener.html">RelatedModelsListener</a></li>
-				<li><a href="class-TranslationsListener.html">TranslationsListener</a></li>
+				<li><a href="class-ScaffoldListener.html">ScaffoldListener</a></li>
+				<li><a href="class-SearchListener.html">SearchListener</a></li>
 				<li><a href="class-TranslationsShell.html">TranslationsShell</a></li>
+				<li><a href="class-ViewCrudAction.html">ViewCrudAction</a></li>
 			</ul>
 
 
+			<h3>Traits</h3>
+			<ul>
+				<li><a href="class-CrudControllerTrait.html">CrudControllerTrait</a></li>
+			</ul>
 
 
 
@@ -96,41 +116,116 @@
 <h2>Classes summary</h2>
 <table class="summary table table-bordered table-striped" id="classes">
 <tr>
-	<td class="name"><a href="class-CrudBaseEvent.html">CrudBaseEvent</a></td>
-	<td>Crud Base Event
+	<td class="name"><a href="class-AddCrudAction.html">AddCrudAction</a></td>
+	<td>Handles 'Add' Crud actions
 <!-- by Texy2! --></td>
+</tr>
+<tr>
+	<td class="name"><a href="class-ApiFieldFilterListener.html">ApiFieldFilterListener</a></td>
+	<td>Field Filter Listener</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-ApiListener.html">ApiListener</a></td>
+	<td>Enabled Crud to respond in a computer readable format like JSON or XML</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-ApiPaginationListener.html">ApiPaginationListener</a></td>
+	<td>When loaded Crud API Pagination Listener will include pagination information in
+the response</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-ApiQueryLogListener.html">ApiQueryLogListener</a></td>
+	<td>When loaded Crud API will include query logs in the response</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-CrudAction.html">CrudAction</a></td>
+	<td>Base Crud class</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-CrudBaseObject.html">CrudBaseObject</a></td>
+	<td>Crud Base Class</td>
 </tr>
 <tr>
 	<td class="name"><a href="class-CrudComponent.html">CrudComponent</a></td>
 	<td>Crud component</td>
 </tr>
 <tr>
-	<td class="name"><a href="class-CrudEventSubject.html">CrudEventSubject</a></td>
-	<td>Crud Event Subject</td>
+	<td class="name"><a href="class-CrudExceptionRenderer.html">CrudExceptionRenderer</a></td>
+	<td>Exception renderer for ApiListener</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-CrudJsonView.html">CrudJsonView</a></td>
+	<td>CrudApiView</td>
 </tr>
 <tr>
 	<td class="name"><a href="class-CrudListener.html">CrudListener</a></td>
 	<td>The Base Crud Listener</td>
 </tr>
 <tr>
+	<td class="name"><a href="class-CrudPanel.html">CrudPanel</a></td>
+	<td>Crud debug panel in DebugKit</td>
+</tr>
+<tr>
 	<td class="name"><a href="class-CrudSubject.html">CrudSubject</a></td>
 	<td>Crud subject</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-CrudValidationException.html">CrudValidationException</a></td>
+	<td>Exception containing validation errors from the model. Useful for API responses
+where you need an error code in response</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-CrudXmlView.html">CrudXmlView</a></td>
+	<td>CrudApiView</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-DebugKitListener.html">DebugKitListener</a></td>
+	<td>Implements timings for DebugKit / Crud</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-DeleteCrudAction.html">DeleteCrudAction</a></td>
+	<td>Handles 'Delete' Crud actions</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-EditCrudAction.html">EditCrudAction</a></td>
+	<td>Handles 'Edit' Crud actions</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-IndexCrudAction.html">IndexCrudAction</a></td>
+	<td>Handles 'Index' Crud actions</td>
 </tr>
 <tr>
 	<td class="name"><a href="class-RelatedModelsListener.html">RelatedModelsListener</a></td>
 	<td>Implements beforeRender event listener to set related models' lists to the view</td>
 </tr>
 <tr>
-	<td class="name"><a href="class-TranslationsListener.html">TranslationsListener</a></td>
-	<td>TranslationsEvent for Crud</td>
+	<td class="name"><a href="class-ScaffoldListener.html">ScaffoldListener</a></td>
+	<td>Implements beforeRender event listener that uses the build-in scaffolding views
+in cakephp.</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-SearchListener.html">SearchListener</a></td>
+	<td>Search Listener</td>
 </tr>
 <tr>
 	<td class="name"><a href="class-TranslationsShell.html">TranslationsShell</a></td>
 	<td>TranslationsShell</td>
 </tr>
+<tr>
+	<td class="name"><a href="class-ViewCrudAction.html">ViewCrudAction</a></td>
+	<td>Handles 'View' Crud actions</td>
+</tr>
 </table>
 
 
+<h2>Traits summary</h2>
+<table class="summary table table-bordered table-striped" id="traits">
+<tr>
+	<td class="name"><a href="class-CrudControllerTrait.html">CrudControllerTrait</a></td>
+	<td>Enable Crud to catch MissingActionException and attempt to generate response
+using Crud.</td>
+</tr>
+</table>
 
 
 

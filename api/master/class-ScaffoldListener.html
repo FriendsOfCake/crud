@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="generator" content="ApiGen 2.8.0" />
 
-	<title>Class CrudListener | jippi/cakephp-crud (master)</title>
+	<title>Class ScaffoldListener | jippi/cakephp-crud (master)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
 	<script type="text/javascript" src="elementlist.js?1411212875"></script>
@@ -74,7 +74,7 @@
 				<li><a href="class-CrudComponent.html">CrudComponent</a></li>
 				<li><a href="class-CrudExceptionRenderer.html">CrudExceptionRenderer</a></li>
 				<li><a href="class-CrudJsonView.html">CrudJsonView</a></li>
-				<li class="active"><a href="class-CrudListener.html">CrudListener</a></li>
+				<li><a href="class-CrudListener.html">CrudListener</a></li>
 				<li><a href="class-CrudPanel.html">CrudPanel</a></li>
 				<li><a href="class-CrudSubject.html">CrudSubject</a></li>
 				<li><a href="class-CrudValidationException.html">CrudValidationException</a></li>
@@ -84,7 +84,7 @@
 				<li><a href="class-EditCrudAction.html">EditCrudAction</a></li>
 				<li><a href="class-IndexCrudAction.html">IndexCrudAction</a></li>
 				<li><a href="class-RelatedModelsListener.html">RelatedModelsListener</a></li>
-				<li><a href="class-ScaffoldListener.html">ScaffoldListener</a></li>
+				<li class="active"><a href="class-ScaffoldListener.html">ScaffoldListener</a></li>
 				<li><a href="class-SearchListener.html">SearchListener</a></li>
 				<li><a href="class-TranslationsShell.html">TranslationsShell</a></li>
 				<li><a href="class-ViewCrudAction.html">ViewCrudAction</a></li>
@@ -107,12 +107,16 @@
 <div id="right">
 	<div id="rightInner">
 <div id="content" class="class">
-	<h1>Class CrudListener</h1>
+	<h1>Class ScaffoldListener</h1>
 
 
 	<div class="description">
 	
-<p>The Base Crud Listener</p>
+<p>Implements beforeRender event listener that uses the build-in scaffolding
+views in cakephp.</p>
+
+<p>Using this listener you don't have to bake your views when doing rapid
+prototyping of your application</p>
 
 <p>Licensed under The MIT License For full copyright and license information,
 please see the LICENSE.txt</p>
@@ -136,26 +140,20 @@ Object
 		</dd>
 		<dd style="padding-left:60px">
 			<img src="resources/inherit.png" alt="Extended by" />
-<b><span>CrudListener</span></b>			
+			<a href="class-CrudListener.html"><span>CrudListener</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:90px">
+			<img src="resources/inherit.png" alt="Extended by" />
+<b><span>ScaffoldListener</span></b>			
 			
 			
 		</dd>
 	</dl>
 
 
-	<div>
-		<h3>Direct known subclasses</h3>
-		<p class="elementList">
-			<code><a href="class-ApiFieldFilterListener.html">ApiFieldFilterListener</a></code>, 
-			<code><a href="class-ApiListener.html">ApiListener</a></code>, 
-			<code><a href="class-ApiPaginationListener.html">ApiPaginationListener</a></code>, 
-			<code><a href="class-ApiQueryLogListener.html">ApiQueryLogListener</a></code>, 
-			<code><a href="class-DebugKitListener.html">DebugKitListener</a></code>, 
-			<code><a href="class-RelatedModelsListener.html">RelatedModelsListener</a></code>, 
-			<code><a href="class-ScaffoldListener.html">ScaffoldListener</a></code>, 
-			<code><a href="class-SearchListener.html">SearchListener</a></code>
-		</p>
-	</div>
 
 
 
@@ -163,14 +161,12 @@ Object
 
 
 	<div class="alert alert-info">
-		<b>Abstract</b><br />
+		
 		
 		
 		
 
-				<b>CodeCoverageIgnore</b>
-				<br />
-		<b>Located at</b> <a href="source-class-CrudListener.html#5-66" title="Go to source code">Controller/Crud/CrudListener.php</a><br />
+		<b>Located at</b> <a href="source-class-ScaffoldListener.html#6-159" title="Go to source code">Controller/Crud/Listener/ScaffoldListener.php</a><br />
 	</div>
 
 
@@ -188,36 +184,17 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#_implementedEvents">#</a>
-			<code><a href="source-class-CrudListener.html#15-64" title="Go to source code">implementedEvents</a>( )</code>
+			<code><a href="source-class-ScaffoldListener.html#18-29" title="Go to source code">implementedEvents</a>( )</code>
 
 			<div class="description short">
 				
-<p>Returns a list of all events that will fire in the controller during it's
-life cycle. You can override this function to add you own listener callbacks</p>
+<p>List of events implemented by this class</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Returns a list of all events that will fire in the controller during it's
-life cycle. You can override this function to add you own listener callbacks</p>
-
-<ul>
-	<li>beforeHandle : Called before CrudAction is executed</li>
-
-	<li>startup: Called after the Controller::beforeFilter() and before the Crud
-	action is invoked</li>
-
-	<li>recordNotFound : Called if a find() did not return any records</li>
-
-	<li>beforePaginate : Called right before any paginate() method</li>
-
-	<li>afterPaginate : Called right after any paginate() method</li>
-
-	<li>invalidId : Called if the ID format validation failed</li>
-
-	<li>setFlash : Called before any CakeSession::setFlash</li>
-</ul>
+<p>List of events implemented by this class</p>
 
 
 
@@ -230,7 +207,175 @@ life cycle. You can override this function to add you own listener callbacks</p>
 
 
 					<h4>Overrides</h4>
-					<div class="list"><code><a href="class-CrudBaseObject.html#_implementedEvents">CrudBaseObject::implementedEvents</a></code></div>
+					<div class="list"><code><a href="class-CrudListener.html#_implementedEvents">CrudListener::implementedEvents</a></code></div>
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="beforeFind" id="_beforeFind">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_beforeFind">#</a>
+			<code><a href="source-class-ScaffoldListener.html#31-53" title="Go to source code">beforeFind</a>( <span>CakeEvent <var>$event</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Make sure to contain associated models</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Make sure to contain associated models</p>
+
+<p>This have no effect on clean applications where containable isn't loaded, but
+for those who does have it loaded, we should use it.</p>
+
+<p>This help applications with <code>$recursive -1</code> in their AppModel and
+containable behavior loaded</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$event</var></dt>
+						<dd><code>CakeEvent</code><br>$event</dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="beforePaginate" id="_beforePaginate">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_beforePaginate">#</a>
+			<code><a href="source-class-ScaffoldListener.html#55-79" title="Go to source code">beforePaginate</a>( <span>CakeEvent <var>$event</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Make sure to contain associated models</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Make sure to contain associated models</p>
+
+<p>This have no effect on clean applications where containable isn't loaded, but
+for those who does have it loaded, we should use it.</p>
+
+<p>This help applications with <code>$recursive -1</code> in their AppModel and
+containable behavior loaded</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$event</var></dt>
+						<dd><code>CakeEvent</code><br>$event</dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="beforeRender" id="_beforeRender">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_beforeRender">#</a>
+			<code><a href="source-class-ScaffoldListener.html#81-116" title="Go to source code">beforeRender</a>( <span>CakeEvent <var>$event</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Do all the magic needed for using the cakephp scaffold views</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Do all the magic needed for using the cakephp scaffold views</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$event</var></dt>
+						<dd><code>CakeEvent</code></dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_associations" id="__associations">
+
+			<td class="attributes"><code>
+				 protected 
+				array
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__associations">#</a>
+			<code><a href="source-class-ScaffoldListener.html#118-157" title="Go to source code">_associations</a>( <span>Model <var>$model</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Returns associations for controllers models.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Returns associations for controllers models.</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$model</var></dt>
+						<dd><code>Model</code><br>$model</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>array</code><br>Associations for model<br />
+					</div>
+
+
+
 
 			</div>
 			</div></td>

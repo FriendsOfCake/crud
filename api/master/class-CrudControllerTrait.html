@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="generator" content="ApiGen 2.8.0" />
 
-	<title>Todo | jippi/cakephp-crud (master)</title>
+	<title>Trait CrudControllerTrait | jippi/cakephp-crud (master)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
 	<script type="text/javascript" src="elementlist.js?1411212875"></script>
@@ -23,7 +23,7 @@
 				<a href="index.html" class="brand">jippi/cakephp-crud (master)</a>
 				<div class="nav-collapse">
 					<ul class="nav">
-						<li>
+						<li class="active">
 <span>Class</span>						</li>
 
 						<li class="divider-vertical"></li>
@@ -34,8 +34,9 @@
 						<li>
 							<a href="deprecated.html" title="List of deprecated elements"><span>Deprecated</span></a>
 						</li>
-						<li class="active">
-<span>Todo</span>						</li>
+						<li>
+							<a href="todo.html" title="Todo list"><span>Todo</span></a>
+						</li>
 
 
 
@@ -92,7 +93,7 @@
 
 			<h3>Traits</h3>
 			<ul>
-				<li><a href="class-CrudControllerTrait.html">CrudControllerTrait</a></li>
+				<li class="active"><a href="class-CrudControllerTrait.html">CrudControllerTrait</a></li>
 			</ul>
 
 
@@ -105,11 +106,136 @@
 
 <div id="right">
 	<div id="rightInner">
-<div id="content">
-	<h1>Todo</h1>
+<div id="content" class="class">
+	<h1>Trait CrudControllerTrait</h1>
+
+
+	<div class="description">
+	
+<p>Enable Crud to catch MissingActionException and attempt to generate response
+using Crud.</p>
+
+<p>Licensed under The MIT License For full copyright and license information,
+please see the LICENSE.txt</p>
+
+	</div>
 
 
 
+
+
+
+
+
+
+	<div class="alert alert-info">
+		
+		
+		
+		
+
+		<b>Located at</b> <a href="source-class-CrudControllerTrait.html#2-64" title="Go to source code">Lib/CrudControllerTrait.php</a><br />
+	</div>
+
+
+
+		<h2>Methods summary</h2>
+		<table class="summary table table-bordered table-striped" id="methods">
+		<tr data-order="invokeAction" id="_invokeAction">
+
+			<td class="attributes"><code>
+				 public 
+				mixed
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_invokeAction">#</a>
+			<code><a href="source-class-CrudControllerTrait.html#19-62" title="Go to source code">invokeAction</a>( <span>CakeRequest <var>$request</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Dispatches the controller action. Checks that the action exists and isn't
+private.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Dispatches the controller action. Checks that the action exists and isn't
+private.</p>
+
+<p>If Cake raises MissingActionException we attempt to execute Crud</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$request</var></dt>
+						<dd><code>CakeRequest</code><br>$request</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>mixed</code><br>The resulting response.<br />
+					</div>
+
+					<h4>Throws</h4>
+					<div class="list">
+						<code>PrivateActionException</code><br>When actions are not public or prefixed by _<br />
+						<code>MissingActionException</code><br>When actions are not defined and scaffolding and CRUD is not enabled.<br />
+					</div>
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		</table>
+
+
+
+		<h3>Magic methods summary</h3>
+
+
+
+
+
+
+
+
+		<h2>Properties summary</h2>
+		<table class="summary table table-bordered table-striped" id="properties">
+		<tr data-order="dispatchComponents" id="$dispatchComponents">
+			<td class="attributes"><code>
+				public  
+				string
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-CrudControllerTrait.html#11-17" title="Go to source code"><var>$dispatchComponents</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$dispatchComponents" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>List of components that are capable of dispatching an action that is not
+already implement</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>List of components that are capable of dispatching an action that is not
+already implement</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		</table>
 
 
 

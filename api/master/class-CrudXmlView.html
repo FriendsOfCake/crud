@@ -4,10 +4,10 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="generator" content="ApiGen 2.8.0" />
 
-	<title>Class CrudEventSubject | jippi/cakephp-crud (master)</title>
+	<title>Class CrudXmlView | jippi/cakephp-crud (master)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?2522011804"></script>
+	<script type="text/javascript" src="elementlist.js?1411212875"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -64,17 +64,37 @@
 		<div id="elements">
 			<h3>Classes</h3>
 			<ul>
-				<li><a href="class-CrudBaseEvent.html">CrudBaseEvent</a></li>
+				<li><a href="class-AddCrudAction.html">AddCrudAction</a></li>
+				<li><a href="class-ApiFieldFilterListener.html">ApiFieldFilterListener</a></li>
+				<li><a href="class-ApiListener.html">ApiListener</a></li>
+				<li><a href="class-ApiPaginationListener.html">ApiPaginationListener</a></li>
+				<li><a href="class-ApiQueryLogListener.html">ApiQueryLogListener</a></li>
+				<li><a href="class-CrudAction.html">CrudAction</a></li>
+				<li><a href="class-CrudBaseObject.html">CrudBaseObject</a></li>
 				<li><a href="class-CrudComponent.html">CrudComponent</a></li>
-				<li class="active"><a href="class-CrudEventSubject.html">CrudEventSubject</a></li>
+				<li><a href="class-CrudExceptionRenderer.html">CrudExceptionRenderer</a></li>
+				<li><a href="class-CrudJsonView.html">CrudJsonView</a></li>
 				<li><a href="class-CrudListener.html">CrudListener</a></li>
+				<li><a href="class-CrudPanel.html">CrudPanel</a></li>
 				<li><a href="class-CrudSubject.html">CrudSubject</a></li>
+				<li><a href="class-CrudValidationException.html">CrudValidationException</a></li>
+				<li class="active"><a href="class-CrudXmlView.html">CrudXmlView</a></li>
+				<li><a href="class-DebugKitListener.html">DebugKitListener</a></li>
+				<li><a href="class-DeleteCrudAction.html">DeleteCrudAction</a></li>
+				<li><a href="class-EditCrudAction.html">EditCrudAction</a></li>
+				<li><a href="class-IndexCrudAction.html">IndexCrudAction</a></li>
 				<li><a href="class-RelatedModelsListener.html">RelatedModelsListener</a></li>
-				<li><a href="class-TranslationsListener.html">TranslationsListener</a></li>
+				<li><a href="class-ScaffoldListener.html">ScaffoldListener</a></li>
+				<li><a href="class-SearchListener.html">SearchListener</a></li>
 				<li><a href="class-TranslationsShell.html">TranslationsShell</a></li>
+				<li><a href="class-ViewCrudAction.html">ViewCrudAction</a></li>
 			</ul>
 
 
+			<h3>Traits</h3>
+			<ul>
+				<li><a href="class-CrudControllerTrait.html">CrudControllerTrait</a></li>
+			</ul>
 
 
 
@@ -87,39 +107,27 @@
 <div id="right">
 	<div id="rightInner">
 <div id="content" class="class">
-	<h1>Class CrudEventSubject</h1>
+	<h1>Class CrudXmlView</h1>
 
 
 	<div class="description">
 	
-<p>Crud Event Subject</p>
+<p>CrudApiView</p>
 
-<p>Added for backward compatibility only. Will be removed at some point</p>
-
-<p>Copyright 2010-2012, Nodes ApS. (<a
-href="http://www.nodesagency.com/">http://www.nodesagency.com/</a>)</p>
-
-<p>Licensed under The MIT License Redistributions of files must retain the above
-copyright notice.</p>
+<p>Licensed under The MIT License For full copyright and license information,
+please see the LICENSE.txt</p>
 
 	</div>
 
 	<dl class="tree well">
 		<dd style="padding-left:0px">
-stdClass
+XmlView
 			
 			
 		</dd>
 		<dd style="padding-left:30px">
 			<img src="resources/inherit.png" alt="Extended by" />
-			<a href="class-CrudSubject.html"><span>CrudSubject</span></a>
-			
-			
-			
-		</dd>
-		<dd style="padding-left:60px">
-			<img src="resources/inherit.png" alt="Extended by" />
-<b><span>CrudEventSubject</span></b>			
+<b><span>CrudXmlView</span></b>			
 			
 			
 		</dd>
@@ -133,26 +141,65 @@ stdClass
 
 
 	<div class="alert alert-info">
-		<b>Abstract</b><br />
+		
 		
 		
 		
 
-				<b>Copyright:</b>
-				Nodes ApS, 2012<br />
-		<b>Located at</b> <a href="source-class-CrudEventSubject.html#5-21" title="Go to source code">Controller/Event/Compat/CrudEventSubject.php</a><br />
+		<b>Located at</b> <a href="source-class-CrudXmlView.html#6-49" title="Go to source code">View/CrudXmlView.php</a><br />
 	</div>
 
 
 
 		<h2>Methods summary</h2>
+		<table class="summary table table-bordered table-striped" id="methods">
+		<tr data-order="_serialize" id="__serialize">
 
-		<h3>Methods inherited from <a href="class-CrudSubject.html#methods">CrudSubject</a></h3>
-		<p class="elementList">
-			<code><a href="class-CrudSubject.html#___construct">__construct()</a></code>, 
-			<code><a href="class-CrudSubject.html#_set">set()</a></code>, 
-			<code><a href="class-CrudSubject.html#_shouldProcess">shouldProcess()</a></code>
-		</p>
+			<td class="attributes"><code>
+				 protected 
+				string
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__serialize">#</a>
+			<code><a href="source-class-CrudXmlView.html#14-47" title="Go to source code">_serialize</a>( <span>array <var>$serialize</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Serialize view vars</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Serialize view vars</p>
+
+<p>This is only here to follow CakePHP 2.4 compatibility with _serialize
+aliasing</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$serialize</var></dt>
+						<dd><code>array</code><br>$serialize The viewVars that need to be serialized</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>string</code><br>The serialized data<br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		</table>
+
 
 
 		<h3>Magic methods summary</h3>

@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Class ApiFieldFilterListener | jippi/cakephp-crud (master)</title>
+
+	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
+	<script type="text/javascript" src="elementlist.js?1411212875"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
+
+</head>
+
+<body>
+	<a href="https://github.com/jippi/cakephp-crud/">
+      		<img style="position: absolute; top: 0; right: 0; border: 0; z-index: 10000" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+    	</a>
+	<div id="navigation" class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<a href="index.html" class="brand">jippi/cakephp-crud (master)</a>
+				<div class="nav-collapse">
+					<ul class="nav">
+						<li class="active">
+<span>Class</span>						</li>
+
+						<li class="divider-vertical"></li>
+
+						<li>
+							<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+						</li>
+						<li>
+							<a href="deprecated.html" title="List of deprecated elements"><span>Deprecated</span></a>
+						</li>
+						<li>
+							<a href="todo.html" title="Todo list"><span>Todo</span></a>
+						</li>
+
+
+
+                                                <li class="divider-vertical"></li>
+						<li><a href="http://cakephp.nu/cakephp-crud/" title="Documentation"><span>View Documentation</span></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="left">
+	<div id="menu">
+		<form id="search" class="form-search">
+			<input type="hidden" name="cx" value="" />
+			<input type="hidden" name="ie" value="UTF-8" />
+			<input type="text" name="q" class="search-query" placeholder="Search" />
+		</form>
+
+
+		<div id="groups">
+		</div>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-AddCrudAction.html">AddCrudAction</a></li>
+				<li class="active"><a href="class-ApiFieldFilterListener.html">ApiFieldFilterListener</a></li>
+				<li><a href="class-ApiListener.html">ApiListener</a></li>
+				<li><a href="class-ApiPaginationListener.html">ApiPaginationListener</a></li>
+				<li><a href="class-ApiQueryLogListener.html">ApiQueryLogListener</a></li>
+				<li><a href="class-CrudAction.html">CrudAction</a></li>
+				<li><a href="class-CrudBaseObject.html">CrudBaseObject</a></li>
+				<li><a href="class-CrudComponent.html">CrudComponent</a></li>
+				<li><a href="class-CrudExceptionRenderer.html">CrudExceptionRenderer</a></li>
+				<li><a href="class-CrudJsonView.html">CrudJsonView</a></li>
+				<li><a href="class-CrudListener.html">CrudListener</a></li>
+				<li><a href="class-CrudPanel.html">CrudPanel</a></li>
+				<li><a href="class-CrudSubject.html">CrudSubject</a></li>
+				<li><a href="class-CrudValidationException.html">CrudValidationException</a></li>
+				<li><a href="class-CrudXmlView.html">CrudXmlView</a></li>
+				<li><a href="class-DebugKitListener.html">DebugKitListener</a></li>
+				<li><a href="class-DeleteCrudAction.html">DeleteCrudAction</a></li>
+				<li><a href="class-EditCrudAction.html">EditCrudAction</a></li>
+				<li><a href="class-IndexCrudAction.html">IndexCrudAction</a></li>
+				<li><a href="class-RelatedModelsListener.html">RelatedModelsListener</a></li>
+				<li><a href="class-ScaffoldListener.html">ScaffoldListener</a></li>
+				<li><a href="class-SearchListener.html">SearchListener</a></li>
+				<li><a href="class-TranslationsShell.html">TranslationsShell</a></li>
+				<li><a href="class-ViewCrudAction.html">ViewCrudAction</a></li>
+			</ul>
+
+
+			<h3>Traits</h3>
+			<ul>
+				<li><a href="class-CrudControllerTrait.html">CrudControllerTrait</a></li>
+			</ul>
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+	<div id="rightInner">
+<div id="content" class="class">
+	<h1>Class ApiFieldFilterListener</h1>
+
+
+	<div class="description">
+	
+<p>Field Filter Listener</p>
+
+<p>Allow the requester to decide what fields and relations that should be
+returned by providing a <code>fields</code> GET argument with a comma separated
+list of fields.</p>
+
+<p>For a relation automatically to be joined, it has to be whitelisted first. If
+no whitelist exist, no relations will be added automatically
+<code>$this-&gt;_action()-&gt;config('apiFieldFilter.models', array('list',
+'of', 'models'))</code></p>
+
+<p>You can also whitelist fields, if no whitelist exist for fields, all fields
+are allowed If whitelisting exist, only those fields will be allowed to be
+selected. The fields must be in <code>Model.field</code> format
+<code>$this-&gt;_action()-&gt;config('apiFieldFilter.fields.whitelist',
+array('Model.id', 'Model.name', 'Model.created'))</code></p>
+
+<p>You can also blacklist fields, if no blacklist exist, no blacklisting is done
+If blacklisting exist, the field will be removed from the field list if present
+The fields must be in <code>Model.field</code> format
+<code>$this-&gt;_action()-&gt;config('apiFieldFilter.fields.blacklist',
+array('Model.password', 'Model.auth_token', 'Model.created'))</code></p>
+
+<p>This is probably only useful if it's used in conjunction with the
+ApiListener</p>
+
+<p>Limitation: Related models is only supported in 1 level away from the primary
+model at this time. E.g. "Blog" =&gt; Auth, Tag, Posts</p>
+
+<p>Licensed under The MIT License For full copyright and license information,
+please see the LICENSE.txt</p>
+
+	</div>
+
+	<dl class="tree well">
+		<dd style="padding-left:0px">
+Object
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by" />
+			<a href="class-CrudBaseObject.html"><span>CrudBaseObject</span></a>
+			
+			 implements 
+<span>CakeEventListener</span>
+			
+			
+		</dd>
+		<dd style="padding-left:60px">
+			<img src="resources/inherit.png" alt="Extended by" />
+			<a href="class-CrudListener.html"><span>CrudListener</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:90px">
+			<img src="resources/inherit.png" alt="Extended by" />
+<b><span>ApiFieldFilterListener</span></b>			
+			
+			
+		</dd>
+	</dl>
+
+
+
+
+
+
+
+
+	<div class="alert alert-info">
+		
+		
+		
+		
+
+		<b>Located at</b> <a href="source-class-ApiFieldFilterListener.html#5-347" title="Go to source code">Controller/Crud/Listener/ApiFieldFilterListener.php</a><br />
+	</div>
+
+
+
+		<h2>Methods summary</h2>
+		<table class="summary table table-bordered table-striped" id="methods">
+		<tr data-order="implementedEvents" id="_implementedEvents">
+
+			<td class="attributes"><code>
+				 public 
+				array
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_implementedEvents">#</a>
+			<code><a href="source-class-ApiFieldFilterListener.html#35-48" title="Go to source code">implementedEvents</a>( )</code>
+
+			<div class="description short">
+				
+<p>Returns a list of all events that will fire in the controller during it's
+lifecycle. You can override this function to add you own listener callbacks</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Returns a list of all events that will fire in the controller during it's
+lifecycle. You can override this function to add you own listener callbacks</p>
+
+<p>We attach at priority 50 so normal bound events can run before us</p>
+
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>array</code><br />
+					</div>
+
+
+
+					<h4>Overrides</h4>
+					<div class="list"><code><a href="class-CrudListener.html#_implementedEvents">CrudListener::implementedEvents</a></code></div>
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="beforeFind" id="_beforeFind">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_beforeFind">#</a>
+			<code><a href="source-class-ApiFieldFilterListener.html#57-75" title="Go to source code">beforeFind</a>( <span>CakeEvent <var>$event</var></span> )</code>
+
+			<div class="description short">
+				
+<p>beforeFind</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>beforeFind</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$event</var></dt>
+						<dd><code>CakeEvent</code><br>$event</dd>
+					</dl></div>
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="beforePaginate" id="_beforePaginate">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_beforePaginate">#</a>
+			<code><a href="source-class-ApiFieldFilterListener.html#77-97" title="Go to source code">beforePaginate</a>( <span>CakeEvent <var>$event</var></span> )</code>
+
+			<div class="description short">
+				
+<p>beforePaginate</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>beforePaginate</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$event</var></dt>
+						<dd><code>CakeEvent</code><br>$event</dd>
+					</dl></div>
+
+
+
+					<h4>CodeCoverageIgnore</h4>
+					<div class="list">
+							This is exactly the same as beforeFind()<br />
+					</div>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="whitelistFields" id="_whitelistFields">
+
+			<td class="attributes"><code>
+				 public 
+				mixed
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_whitelistFields">#</a>
+			<code><a href="source-class-ApiFieldFilterListener.html#99-113" title="Go to source code">whitelistFields</a>( <span>array <var>$fields</var> = <span class="php-keyword1">null</span></span>, <span>string <var>$action</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Whitelist fields that are allowed to be included in the output list of
+fields</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Whitelist fields that are allowed to be included in the output list of
+fields</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$fields</var></dt>
+						<dd><code>array</code><br>$fields</dd>
+						<dt><var>$action</var></dt>
+						<dd><code>string</code><br>$action</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>mixed</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="blacklistFields" id="_blacklistFields">
+
+			<td class="attributes"><code>
+				 public 
+				mixed
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_blacklistFields">#</a>
+			<code><a href="source-class-ApiFieldFilterListener.html#115-129" title="Go to source code">blacklistFields</a>( <span>array <var>$fields</var> = <span class="php-keyword1">null</span></span>, <span>string <var>$action</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Blacklist fields that are not allowed to be included in the output list of
+fields</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Blacklist fields that are not allowed to be included in the output list of
+fields</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$fields</var></dt>
+						<dd><code>array</code><br>$fields</dd>
+						<dt><var>$action</var></dt>
+						<dd><code>string</code><br>$action</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>mixed</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="whitelistModels" id="_whitelistModels">
+
+			<td class="attributes"><code>
+				 public 
+				mixed
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_whitelistModels">#</a>
+			<code><a href="source-class-ApiFieldFilterListener.html#131-145" title="Go to source code">whitelistModels</a>( <span>array <var>$models</var> = <span class="php-keyword1">null</span></span>, <span>string <var>$action</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Whitelist associated models that are allowed to be included in the output
+list of fields</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Whitelist associated models that are allowed to be included in the output
+list of fields</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$models</var></dt>
+						<dd><code>array</code><br>$models</dd>
+						<dt><var>$action</var></dt>
+						<dd><code>string</code><br>$action</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>mixed</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="allowNoFilter" id="_allowNoFilter">
+
+			<td class="attributes"><code>
+				 public 
+				boolean
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_allowNoFilter">#</a>
+			<code><a href="source-class-ApiFieldFilterListener.html#147-163" title="Go to source code">allowNoFilter</a>( <span>boolean <var>$permit</var> = <span class="php-keyword1">null</span></span>, <span>string <var>$action</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Can the client make a request without specifying the fields he wants
+returned?</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Can the client make a request without specifying the fields he wants
+returned?</p>
+
+<p>This will bypass all black- and white- listing if set to true</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$permit</var></dt>
+						<dd><code>boolean</code><br>$permit</dd>
+						<dt><var>$action</var></dt>
+						<dd><code>string</code><br>$action</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>boolean</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_getFields" id="__getFields">
+
+			<td class="attributes"><code>
+				 protected 
+				array
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__getFields">#</a>
+			<code><a href="source-class-ApiFieldFilterListener.html#165-181" title="Go to source code">_getFields</a>( <span>CakeEvent <var>$event</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Get fields for the query</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Get fields for the query</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$event</var></dt>
+						<dd><code>CakeEvent</code><br>$event</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>array</code><br />
+					</div>
+
+					<h4>Throws</h4>
+					<div class="list">
+						<code>CakeException</code><br>If fields not specified<br />
+					</div>
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_getFieldsForQuery" id="__getFieldsForQuery">
+
+			<td class="attributes"><code>
+				 protected 
+				array
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__getFieldsForQuery">#</a>
+			<code><a href="source-class-ApiFieldFilterListener.html#183-209" title="Go to source code">_getFieldsForQuery</a>( <span>Model <var>$model</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Get the list of fields that should be selected in the query based on the HTTP
+GET requests fields</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Get the list of fields that should be selected in the query based on the HTTP
+GET requests fields</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$model</var></dt>
+						<dd><code>Model</code><br>$model</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>array</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_getFieldsFromRequest" id="__getFieldsFromRequest">
+
+			<td class="attributes"><code>
+				 protected 
+				array
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__getFieldsFromRequest">#</a>
+			<code><a href="source-class-ApiFieldFilterListener.html#211-225" title="Go to source code">_getFieldsFromRequest</a>( )</code>
+
+			<div class="description short">
+				
+<p>Get a list of fields from the HTTP request</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Get a list of fields from the HTTP request</p>
+
+<p>It's assumed the fields are comma separated</p>
+
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>array</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_checkField" id="__checkField">
+
+			<td class="attributes"><code>
+				 protected 
+				mixed
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__checkField">#</a>
+			<code><a href="source-class-ApiFieldFilterListener.html#227-272" title="Go to source code">_checkField</a>( <span>Model <var>$model</var></span>, <span>string <var>$field</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Secure a field - check that the field exist in the model or a closely related
+model</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Secure a field - check that the field exist in the model or a closely related
+model</p>
+
+<p>If the field doesn't exist, it's removed from the field list.</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$model</var></dt>
+						<dd><code>Model</code><br>$model</dd>
+						<dt><var>$field</var></dt>
+						<dd><code>string</code><br>$field</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>mixed</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_associatedModelHasField" id="__associatedModelHasField">
+
+			<td class="attributes"><code>
+				 protected 
+				boolean
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__associatedModelHasField">#</a>
+			<code><a href="source-class-ApiFieldFilterListener.html#274-294" title="Go to source code">_associatedModelHasField</a>( <span>Model <var>$model</var></span>, <span>string <var>$modelName</var></span>, <span>string <var>$fieldName</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Check if the associated <code>modelName</code> to the <code>$model</code>
+exist and if it have the field in question</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Check if the associated <code>modelName</code> to the <code>$model</code>
+exist and if it have the field in question</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$model</var></dt>
+						<dd><code>Model</code><br>$model</dd>
+						<dt><var>$modelName</var></dt>
+						<dd><code>string</code><br>$modelName</dd>
+						<dt><var>$fieldName</var></dt>
+						<dd><code>string</code><br>$fieldName</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>boolean</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_whitelistedAssociatedModel" id="__whitelistedAssociatedModel">
+
+			<td class="attributes"><code>
+				 protected 
+				boolean
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__whitelistedAssociatedModel">#</a>
+			<code><a href="source-class-ApiFieldFilterListener.html#296-312" title="Go to source code">_whitelistedAssociatedModel</a>( <span>string <var>$modelName</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Check if the associated model is whitelisted to be automatically contained on
+demand or not</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Check if the associated model is whitelisted to be automatically contained on
+demand or not</p>
+
+<p>If no whitelisting exists, no associated models may be joined</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$modelName</var></dt>
+						<dd><code>string</code><br>$modelName</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>boolean</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_whitelistedField" id="__whitelistedField">
+
+			<td class="attributes"><code>
+				 protected 
+				boolean
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__whitelistedField">#</a>
+			<code><a href="source-class-ApiFieldFilterListener.html#314-330" title="Go to source code">_whitelistedField</a>( <span>string <var>$fieldName</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Check if a field has been whitelisted</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Check if a field has been whitelisted</p>
+
+<p>If no field whitelisting has been done, all fields are allowed to be
+selected</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$fieldName</var></dt>
+						<dd><code>string</code><br>$fieldName</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>boolean</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_blacklistedField" id="__blacklistedField">
+
+			<td class="attributes"><code>
+				 protected 
+				boolean
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__blacklistedField">#</a>
+			<code><a href="source-class-ApiFieldFilterListener.html#332-345" title="Go to source code">_blacklistedField</a>( <span>string <var>$fieldName</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Check if a field has been blacklisted</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Check if a field has been blacklisted</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$fieldName</var></dt>
+						<dd><code>string</code><br>$fieldName</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>boolean</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		</table>
+
+		<h3>Methods inherited from <a href="class-CrudBaseObject.html#methods">CrudBaseObject</a></h3>
+		<p class="elementList">
+			<code><a href="class-CrudBaseObject.html#___construct">__construct()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__action">_action()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__controller">_controller()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__crud">_crud()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__listener">_listener()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__model">_model()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__redirectUrl">_redirectUrl()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__refererRedirectUrl">_refererRedirectUrl()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__request">_request()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__session">_session()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__subject">_subject()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__trigger">_trigger()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#__validationErrors">_validationErrors()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#_beforeHandle">beforeHandle()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#_config">config()</a></code>
+		</p>
+
+
+		<h3>Magic methods summary</h3>
+
+
+
+
+
+
+
+
+		<h2>Properties summary</h2>
+		<table class="summary table table-bordered table-striped" id="properties">
+		<tr data-order="_relations" id="$_relations">
+			<td class="attributes"><code>
+				protected  
+				array
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-ApiFieldFilterListener.html#50-55" title="Go to source code"><var>$_relations</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$_relations" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>List of relations that should be contained</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>List of relations that should be contained</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		</table>
+
+		<h3>Properties inherited from <a href="class-CrudBaseObject.html#properties">CrudBaseObject</a></h3>
+		<p class="elementList">
+			<code><a href="class-CrudBaseObject.html#$_container"><var>$_container</var></a></code>, 
+			<code><a href="class-CrudBaseObject.html#$_settings"><var>$_settings</var></a></code>
+		</p>
+
+
+
+
+
+</div>
+	</div>
+
+	<div id="footer">
+		jippi/cakephp-crud (master) API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</body>
+</html>

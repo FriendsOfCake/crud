@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="generator" content="ApiGen 2.8.0" />
 
-	<title>Class RelatedModelsListener | jippi/cakephp-crud (master)</title>
+	<title>Class DebugKitListener | jippi/cakephp-crud (master)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
 	<script type="text/javascript" src="elementlist.js?1411212875"></script>
@@ -79,11 +79,11 @@
 				<li><a href="class-CrudSubject.html">CrudSubject</a></li>
 				<li><a href="class-CrudValidationException.html">CrudValidationException</a></li>
 				<li><a href="class-CrudXmlView.html">CrudXmlView</a></li>
-				<li><a href="class-DebugKitListener.html">DebugKitListener</a></li>
+				<li class="active"><a href="class-DebugKitListener.html">DebugKitListener</a></li>
 				<li><a href="class-DeleteCrudAction.html">DeleteCrudAction</a></li>
 				<li><a href="class-EditCrudAction.html">EditCrudAction</a></li>
 				<li><a href="class-IndexCrudAction.html">IndexCrudAction</a></li>
-				<li class="active"><a href="class-RelatedModelsListener.html">RelatedModelsListener</a></li>
+				<li><a href="class-RelatedModelsListener.html">RelatedModelsListener</a></li>
 				<li><a href="class-ScaffoldListener.html">ScaffoldListener</a></li>
 				<li><a href="class-SearchListener.html">SearchListener</a></li>
 				<li><a href="class-TranslationsShell.html">TranslationsShell</a></li>
@@ -107,13 +107,12 @@
 <div id="right">
 	<div id="rightInner">
 <div id="content" class="class">
-	<h1>Class RelatedModelsListener</h1>
+	<h1>Class DebugKitListener</h1>
 
 
 	<div class="description">
 	
-<p>Implements beforeRender event listener to set related models' lists to the
-view</p>
+<p>Implements timings for DebugKit / Crud</p>
 
 <p>Licensed under The MIT License For full copyright and license information,
 please see the LICENSE.txt</p>
@@ -144,7 +143,7 @@ Object
 		</dd>
 		<dd style="padding-left:90px">
 			<img src="resources/inherit.png" alt="Extended by" />
-<b><span>RelatedModelsListener</span></b>			
+<b><span>DebugKitListener</span></b>			
 			
 			
 		</dd>
@@ -163,14 +162,14 @@ Object
 		
 		
 
-		<b>Located at</b> <a href="source-class-RelatedModelsListener.html#6-210" title="Go to source code">Controller/Crud/Listener/RelatedModelsListener.php</a><br />
+		<b>Located at</b> <a href="source-class-DebugKitListener.html#7-157" title="Go to source code">Controller/Crud/Listener/DebugKitListener.php</a><br />
 	</div>
 
 
 
 		<h2>Methods summary</h2>
 		<table class="summary table table-bordered table-striped" id="methods">
-		<tr data-order="models" id="_models">
+		<tr data-order="implementedEvents" id="_implementedEvents">
 
 			<td class="attributes"><code>
 				 public 
@@ -180,26 +179,21 @@ Object
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#_models">#</a>
-			<code><a href="source-class-RelatedModelsListener.html#15-40" title="Go to source code">models</a>( <span>string <var>$action</var> = <span class="php-keyword1">null</span></span> )</code>
+			<a class="anchor" href="#_implementedEvents">#</a>
+			<code><a href="source-class-DebugKitListener.html#15-38" title="Go to source code">implementedEvents</a>( )</code>
 
 			<div class="description short">
 				
-<p>Gets the list of associated model lists to be fetched for an action</p>
+<p>List of events implemented by this class</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Gets the list of associated model lists to be fetched for an action</p>
+<p>List of events implemented by this class</p>
 
 
 
-					<h4>Parameters</h4>
-					<div class="list"><dl>
-						<dt><var>$action</var></dt>
-						<dd><code>string</code><br>$action name of the action</dd>
-					</dl></div>
 
 					<h4>Returns</h4>
 					<div class="list">
@@ -208,11 +202,13 @@ Object
 
 
 
+					<h4>Overrides</h4>
+					<div class="list"><code><a href="class-CrudListener.html#_implementedEvents">CrudListener::implementedEvents</a></code></div>
 
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="publishRelatedModels" id="_publishRelatedModels">
+		<tr data-order="startup" id="_startup">
 
 			<td class="attributes"><code>
 				 public 
@@ -222,30 +218,76 @@ Object
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#_publishRelatedModels">#</a>
-			<code><a href="source-class-RelatedModelsListener.html#42-75" title="Go to source code">publishRelatedModels</a>( <span>null|string <var>$action</var> = <span class="php-keyword1">null</span></span> )</code>
+			<a class="anchor" href="#_startup">#</a>
+			<code><a href="source-class-DebugKitListener.html#40-51" title="Go to source code">startup</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
-<p>Find and publish all related models to the view for an action</p>
+<p>Start timer for Crud.beforeHandle</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Find and publish all related models to the view for an action</p>
+<p>Start timer for Crud.beforeHandle</p>
+
+<p>And enable event logging. The Crud.startup event will not itself have been
+logged</p>
 
 
 
 					<h4>Parameters</h4>
 					<div class="list"><dl>
-						<dt><var>$action</var></dt>
-						<dd><code>null|string</code><br>$action If NULL the current action will be used</dd>
+						<dt><var>$event</var></dt>
+						<dd><code>CakeEvent</code><br>$event</dd>
 					</dl></div>
 
 
 
 
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="beforeHandle" id="_beforeHandle">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_beforeHandle">#</a>
+			<code><a href="source-class-DebugKitListener.html#53-65" title="Go to source code">beforeHandle</a>( <span>CakeEvent <var>$event</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Start timer for Crud.init</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Start timer for Crud.init</p>
+
+<p>And enable event logging. The Crud.initialize event will not itself have been
+logged</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$event</var></dt>
+						<dd><code>CakeEvent</code><br>$event</dd>
+					</dl></div>
+
+
+
+
+					<h4>Overrides</h4>
+					<div class="list"><code><a href="class-CrudBaseObject.html#_beforeHandle">CrudBaseObject::beforeHandle</a></code></div>
 
 			</div>
 			</div></td>
@@ -261,17 +303,17 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#_beforeRender">#</a>
-			<code><a href="source-class-RelatedModelsListener.html#77-86" title="Go to source code">beforeRender</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<code><a href="source-class-DebugKitListener.html#67-75" title="Go to source code">beforeRender</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
-<p>Fetches related models' list and sets them to a variable for the view</p>
+<p>Stop timer for Crud.init</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Fetches related models' list and sets them to a variable for the view</p>
+<p>Stop timer for Crud.init</p>
 
 
 
@@ -283,51 +325,42 @@ Object
 
 
 
-					<h4>CodeCoverageIgnore</h4>
-					<div class="list">
-					</div>
 
 
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="_findRelatedItems" id="__findRelatedItems">
+		<tr data-order="beforePaginate" id="_beforePaginate">
 
 			<td class="attributes"><code>
-				 protected 
-				array
+				 public 
+				
 				
 				</code>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#__findRelatedItems">#</a>
-			<code><a href="source-class-RelatedModelsListener.html#88-107" title="Go to source code">_findRelatedItems</a>( <span>Model <var>$Model</var></span>, <span>array <var>$query</var></span> )</code>
+			<a class="anchor" href="#_beforePaginate">#</a>
+			<code><a href="source-class-DebugKitListener.html#77-85" title="Go to source code">beforePaginate</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
-<p>Execute the DB query to find the related items</p>
+<p>Start timer for Crud.Paginate</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Execute the DB query to find the related items</p>
+<p>Start timer for Crud.Paginate</p>
 
 
 
 					<h4>Parameters</h4>
 					<div class="list"><dl>
-						<dt><var>$Model</var></dt>
-						<dd><code>Model</code><br>$Model</dd>
-						<dt><var>$query</var></dt>
-						<dd><code>array</code><br>$query</dd>
+						<dt><var>$event</var></dt>
+						<dd><code>CakeEvent</code><br>$event</dd>
 					</dl></div>
 
-					<h4>Returns</h4>
-					<div class="list">
-						<code>array</code><br />
-					</div>
 
 
 
@@ -335,43 +368,37 @@ Object
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="_getBaseQuery" id="__getBaseQuery">
+		<tr data-order="afterPaginate" id="_afterPaginate">
 
 			<td class="attributes"><code>
-				 protected 
-				array
+				 public 
+				
 				
 				</code>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#__getBaseQuery">#</a>
-			<code><a href="source-class-RelatedModelsListener.html#109-139" title="Go to source code">_getBaseQuery</a>( <span>Model <var>$AssociatedModel</var></span>, <span>string <var>$associationType</var> = <span class="php-keyword1">null</span></span> )</code>
+			<a class="anchor" href="#_afterPaginate">#</a>
+			<code><a href="source-class-DebugKitListener.html#87-95" title="Go to source code">afterPaginate</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
-<p>Get the base query to find the related items for an associated model</p>
+<p>Stop timer for Crud.Paginate</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Get the base query to find the related items for an associated model</p>
+<p>Stop timer for Crud.Paginate</p>
 
 
 
 					<h4>Parameters</h4>
 					<div class="list"><dl>
-						<dt><var>$AssociatedModel</var></dt>
-						<dd><code>Model</code><br>$AssociatedModel</dd>
-						<dt><var>$associationType</var></dt>
-						<dd><code>string</code><br>$associationType</dd>
+						<dt><var>$event</var></dt>
+						<dd><code>CakeEvent</code><br>$event</dd>
 					</dl></div>
 
-					<h4>Returns</h4>
-					<div class="list">
-						<code>array</code><br />
-					</div>
 
 
 
@@ -379,43 +406,37 @@ Object
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="_getModelInstance" id="__getModelInstance">
+		<tr data-order="beforeSave" id="_beforeSave">
 
 			<td class="attributes"><code>
-				 protected 
-				Model
+				 public 
+				
 				
 				</code>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#__getModelInstance">#</a>
-			<code><a href="source-class-RelatedModelsListener.html#141-165" title="Go to source code">_getModelInstance</a>( <span>string <var>$modelName</var></span>, <span>string <var>$associationType</var> = <span class="php-keyword1">null</span></span> )</code>
+			<a class="anchor" href="#_beforeSave">#</a>
+			<code><a href="source-class-DebugKitListener.html#97-105" title="Go to source code">beforeSave</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
-<p>Returns model instance based on its name</p>
+<p>Start timer for Crud.Save</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Returns model instance based on its name</p>
+<p>Start timer for Crud.Save</p>
 
 
 
 					<h4>Parameters</h4>
 					<div class="list"><dl>
-						<dt><var>$modelName</var></dt>
-						<dd><code>string</code><br>$modelName</dd>
-						<dt><var>$associationType</var></dt>
-						<dd><code>string</code><br>$associationType</dd>
+						<dt><var>$event</var></dt>
+						<dd><code>CakeEvent</code><br>$event</dd>
 					</dl></div>
 
-					<h4>Returns</h4>
-					<div class="list">
-						<code>Model</code><br />
-					</div>
 
 
 
@@ -423,41 +444,37 @@ Object
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="_getAssociationType" id="__getAssociationType">
+		<tr data-order="afterSave" id="_afterSave">
 
 			<td class="attributes"><code>
-				 protected 
-				string|null
+				 public 
+				
 				
 				</code>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#__getAssociationType">#</a>
-			<code><a href="source-class-RelatedModelsListener.html#167-176" title="Go to source code">_getAssociationType</a>( <span>string <var>$modelName</var></span> )</code>
+			<a class="anchor" href="#_afterSave">#</a>
+			<code><a href="source-class-DebugKitListener.html#107-115" title="Go to source code">afterSave</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
-<p>Returns model's association type with controller's model</p>
+<p>Stop timer for Crud.Save</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Returns model's association type with controller's model</p>
+<p>Stop timer for Crud.Save</p>
 
 
 
 					<h4>Parameters</h4>
 					<div class="list"><dl>
-						<dt><var>$modelName</var></dt>
-						<dd><code>string</code><br>$modelName</dd>
+						<dt><var>$event</var></dt>
+						<dd><code>CakeEvent</code><br>$event</dd>
 					</dl></div>
 
-					<h4>Returns</h4>
-					<div class="list">
-						<code>string|null</code><br>Association type if found else null<br />
-					</div>
 
 
 
@@ -465,131 +482,153 @@ Object
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="_hasTreeBehavior" id="__hasTreeBehavior">
+		<tr data-order="beforeFind" id="_beforeFind">
 
 			<td class="attributes"><code>
-				 protected 
-				boolean
+				 public 
+				
 				
 				</code>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#__hasTreeBehavior">#</a>
-			<code><a href="source-class-RelatedModelsListener.html#178-187" title="Go to source code">_hasTreeBehavior</a>( <span>Model <var>$Model</var></span> )</code>
+			<a class="anchor" href="#_beforeFind">#</a>
+			<code><a href="source-class-DebugKitListener.html#117-125" title="Go to source code">beforeFind</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
-<p>Check if a model has the Tree behavior attached or not</p>
+<p>Start timer for Crud.Find</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Check if a model has the Tree behavior attached or not</p>
+<p>Start timer for Crud.Find</p>
 
 
 
 					<h4>Parameters</h4>
 					<div class="list"><dl>
-						<dt><var>$Model</var></dt>
-						<dd><code>Model</code><br>$Model</dd>
+						<dt><var>$event</var></dt>
+						<dd><code>CakeEvent</code><br>$event</dd>
 					</dl></div>
 
-					<h4>Returns</h4>
-					<div class="list">
-						<code>boolean</code><br />
-					</div>
 
 
-					<h4>CodeCoverageIgnore</h4>
-					<div class="list">
-					</div>
 
 
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="_getTreeBehavior" id="__getTreeBehavior">
+		<tr data-order="afterFind" id="_afterFind">
 
 			<td class="attributes"><code>
-				 protected 
-				TreeBehavior
+				 public 
+				
 				
 				</code>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#__getTreeBehavior">#</a>
-			<code><a href="source-class-RelatedModelsListener.html#189-198" title="Go to source code">_getTreeBehavior</a>( <span>Model <var>$Model</var></span> )</code>
+			<a class="anchor" href="#_afterFind">#</a>
+			<code><a href="source-class-DebugKitListener.html#127-135" title="Go to source code">afterFind</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
-<p>Get the TreeBehavior from a model</p>
+<p>Stop timer for Crud.Find</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Get the TreeBehavior from a model</p>
+<p>Stop timer for Crud.Find</p>
 
 
 
 					<h4>Parameters</h4>
 					<div class="list"><dl>
-						<dt><var>$Model</var></dt>
-						<dd><code>Model</code><br>$Model</dd>
+						<dt><var>$event</var></dt>
+						<dd><code>CakeEvent</code><br>$event</dd>
 					</dl></div>
 
-					<h4>Returns</h4>
-					<div class="list">
-						<code>TreeBehavior</code><br />
-					</div>
 
 
-					<h4>CodeCoverageIgnore</h4>
-					<div class="list">
-					</div>
 
 
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="_classRegistryInit" id="__classRegistryInit">
+		<tr data-order="beforeDelete" id="_beforeDelete">
 
 			<td class="attributes"><code>
-				 protected 
-				Model
+				 public 
+				
 				
 				</code>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#__classRegistryInit">#</a>
-			<code><a href="source-class-RelatedModelsListener.html#200-208" title="Go to source code">_classRegistryInit</a>( <span>mixed <var>$modelName</var></span> )</code>
+			<a class="anchor" href="#_beforeDelete">#</a>
+			<code><a href="source-class-DebugKitListener.html#137-145" title="Go to source code">beforeDelete</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
-<p>Wrapper for ClassRegistry::init for easier testing</p>
+<p>Start timer for Crud.Delete</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Wrapper for ClassRegistry::init for easier testing</p>
+<p>Start timer for Crud.Delete</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$event</var></dt>
+						<dd><code>CakeEvent</code><br>$event</dd>
+					</dl></div>
 
 
 
 
-					<h4>Returns</h4>
-					<div class="list">
-						<code>Model</code><br />
-					</div>
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="afterDelete" id="_afterDelete">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_afterDelete">#</a>
+			<code><a href="source-class-DebugKitListener.html#147-155" title="Go to source code">afterDelete</a>( <span>CakeEvent <var>$event</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Stop timer for Crud.Delete</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Stop timer for Crud.Delete</p>
 
 
-					<h4>CodeCoverageIgnore</h4>
-					<div class="list">
-					</div>
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$event</var></dt>
+						<dd><code>CakeEvent</code><br>$event</dd>
+					</dl></div>
+
+
+
 
 
 			</div>
@@ -597,10 +636,6 @@ Object
 		</tr>
 		</table>
 
-		<h3>Methods inherited from <a href="class-CrudListener.html#methods">CrudListener</a></h3>
-		<p class="elementList">
-			<code><a href="class-CrudListener.html#_implementedEvents">implementedEvents()</a></code>
-		</p>
 		<h3>Methods inherited from <a href="class-CrudBaseObject.html#methods">CrudBaseObject</a></h3>
 		<p class="elementList">
 			<code><a href="class-CrudBaseObject.html#___construct">__construct()</a></code>, 
@@ -616,7 +651,6 @@ Object
 			<code><a href="class-CrudBaseObject.html#__subject">_subject()</a></code>, 
 			<code><a href="class-CrudBaseObject.html#__trigger">_trigger()</a></code>, 
 			<code><a href="class-CrudBaseObject.html#__validationErrors">_validationErrors()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#_beforeHandle">beforeHandle()</a></code>, 
 			<code><a href="class-CrudBaseObject.html#_config">config()</a></code>
 		</p>
 
