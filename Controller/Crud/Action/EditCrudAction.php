@@ -201,4 +201,33 @@ class EditCrudAction extends CrudAction {
 		return $this->_put($id);
 	}
 
+	protected function _validateId($id) {
+		parent::_validateId($id);
+
+		$request = $this->_request();
+		if (!$request->data) {
+			return true;
+		}
+
+		$dataId = null;
+		$model = $this->_model();
+		if (isset($request->data[$model->alias][$model->primaryKey])) {
+			$dataId = $request->data[$model->alias][$model->primaryKey];
+		} elseif (isset($request->data[$model->primaryKey])) {
+			$dataId = $request->data[$model->primaryKey];
+		} else {
+			return true;
+		}
+
+		if ($dataId == $id) {
+			return true;
+		}
+
+		$subject = $this->_trigger('invalidId', compact('id'));
+
+		$message = $this->message('invalidId');
+		$exceptionClass = $message['class'];
+		throw new $exceptionClass($message['text'], $message['code']);
+	}
+
 }
