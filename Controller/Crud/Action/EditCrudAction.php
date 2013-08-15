@@ -237,7 +237,7 @@ class EditCrudAction extends CrudAction {
 			return true;
 		}
 
-		$subject = $this->_trigger('invalidId', array('id' => $dataId));
+		$this->_trigger('invalidId', array('id' => $dataId));
 
 		$message = $this->message('invalidId');
 		$exceptionClass = $message['class'];
