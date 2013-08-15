@@ -152,16 +152,18 @@ class EditCrudAction extends CrudAction {
  * Find a record from the ID
  *
  * @param string $id
- * @param $findMethod
+ * @param string $findMethod
  * @return array
  */
-	protected function _findRecord($id, $findMethod = 'first') {
+	protected function _findRecord($id, $findMethod = null) {
 		$model = $this->_model();
 
 		$query = array();
 		$query['conditions'] = array($model->escapeField() => $id);
 
-		$findMethod = $this->_getFindMethod($findMethod);
+		if (!$findMethod) {
+			$findMethod = $this->_getFindMethod($findMethod);
+		}
 		$subject = $this->_trigger('beforeFind', compact('query', 'findMethod'));
 
 		return $model->find($subject->findMethod, $subject->query);
