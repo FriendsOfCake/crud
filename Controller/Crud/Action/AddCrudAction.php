@@ -36,6 +36,21 @@ class AddCrudAction extends CrudAction {
 			'validate' => 'first',
 			'atomic' => true
 		),
+		'api' => array(
+			'methods' => array('put', 'post'),
+			'success' => array(
+				'code' => 201,
+				'data' => array(
+					'subject' => array('id')
+				)
+			),
+			'error' => array(
+				'exception' => array(
+					'type' => 'validate',
+					'class' => 'CrudValidationException'
+				)
+			)
+		),
 		'messages' => array(
 			'success' => array(
 				'text' => 'Successfully created {name}'
@@ -99,9 +114,10 @@ class AddCrudAction extends CrudAction {
 		}
 
 		$this->setFlash('error');
-		$this->_trigger('afterSave', array('success' => false, 'created' => false));
+
+		$subject = $this->_trigger('afterSave', array('success' => false, 'created' => false));
 		$request->data = Hash::merge($request->data, $model->data);
-		$this->_trigger('beforeRender', array('success' => false));
+		$this->_trigger('beforeRender', $subject);
 	}
 
 /**

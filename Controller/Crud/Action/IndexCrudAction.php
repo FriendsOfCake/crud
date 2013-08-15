@@ -27,7 +27,15 @@ class IndexCrudAction extends CrudAction {
 		'findMethod' => 'all',
 		'view' => null,
 		'viewVar' => null,
-		'serialize' => array()
+		'serialize' => array(),
+		'api' => array(
+			'success' => array(
+				'code' => 200
+			),
+			'error' => array(
+				'code' => 400
+			)
+		)
 	);
 
 /**
@@ -91,9 +99,13 @@ class IndexCrudAction extends CrudAction {
 		$this->paginationConfig();
 
 		$controller = $this->_controller();
-		$this->_trigger('beforePaginate', array('paginator' => $controller->Paginator));
+
+		$success = true;
+		$viewVar = $this->viewVar();
+
+		$subject = $this->_trigger('beforePaginate', array('paginator' => $controller->Paginator, 'success' => $success, 'viewVar' => $viewVar));
 		$items = $controller->paginate($this->_model());
-		$subject = $this->_trigger('afterPaginate', compact('items'));
+		$subject = $this->_trigger('afterPaginate', array('success' => $subject->success, 'viewVar' => $subject->viewVar, 'items' => $items));
 
 		$items = $subject->items;
 
@@ -101,8 +113,8 @@ class IndexCrudAction extends CrudAction {
 			$items = iterator_to_array($items);
 		}
 
-		$controller->set(array('success' => true, $this->viewVar() => $items));
-		$this->_trigger('beforeRender');
+		$controller->set(array('success' => $subject->success, $subject->viewVar => $items));
+		$this->_trigger('beforeRender', $subject);
 	}
 
 }

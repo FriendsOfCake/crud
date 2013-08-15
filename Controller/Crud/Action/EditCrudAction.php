@@ -53,6 +53,18 @@ class EditCrudAction extends CrudAction {
 				'text' => 'Could not update {name}'
 			)
 		),
+		'api' => array(
+			'methods' => array('put', 'post'),
+			'success' => array(
+				'code' => 200
+			),
+			'error' => array(
+				'exception' => array(
+					'type' => 'validate',
+					'class' => 'CrudValidationException'
+				)
+			)
+		),
 		'serialize' => array()
 	);
 
@@ -78,19 +90,9 @@ class EditCrudAction extends CrudAction {
 		$request = $this->_request();
 		$model = $this->_model();
 
-		$query = array();
-		$query['conditions'] = array($model->escapeField() => $id);
-		$findMethod = $this->_getFindMethod('first');
-		$subject = $this->_trigger('beforeFind', compact('query', 'findMethod'));
-		$query = $subject->query;
-
-		$request->data = $model->find($subject->findMethod, $query);
+		$request->data = $this->_findRecord($id);
 		if (empty($request->data)) {
-			$subject = $this->_trigger('recordNotFound', compact('id'));
-
-			$message = $this->message('recordNotFound', array('id' => $id));
-			$exceptionClass = $message['class'];
-			throw new $exceptionClass($message['text'], $message['code']);
+			return $this->_notFound($id);
 		}
 
 		$item = $request->data;
@@ -115,6 +117,11 @@ class EditCrudAction extends CrudAction {
 		$model = $this->_model();
 		$model->id = $id;
 
+		$existing = $this->_findRecord($id, 'count');
+		if (empty($existing)) {
+			return $this->_notFound($id);
+		}
+
 		if ($request->data('_cancel')) {
 			$subject = $this->_trigger('beforeCancel', array('id' => $id));
 			$controller = $this->_controller();
@@ -134,12 +141,45 @@ class EditCrudAction extends CrudAction {
 
 			$controller = $this->_controller();
 			return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
-		} else {
-			$this->setFlash('error');
-			$this->_trigger('afterSave', array('id' => $id, 'success' => false, 'created' => false));
 		}
 
-		$this->_trigger('beforeRender');
+		$this->setFlash('error');
+		$subject = $this->_trigger('afterSave', array('id' => $id, 'success' => false, 'created' => false));
+		$this->_trigger('beforeRender', $subject);
+	}
+
+/**
+ * Find a record from the ID
+ *
+ * @param string $id
+ * @param $findMethod
+ * @return array
+ */
+	protected function _findRecord($id, $findMethod = 'first') {
+		$model = $this->_model();
+
+		$query = array();
+		$query['conditions'] = array($model->escapeField() => $id);
+
+		$findMethod = $this->_getFindMethod($findMethod);
+		$subject = $this->_trigger('beforeFind', compact('query', 'findMethod'));
+
+		return $model->find($subject->findMethod, $subject->query);
+	}
+
+/**
+ * Throw exception if a record is not found
+ *
+ * @throws Exception
+ * @param string $id
+ * @return void
+ */
+	protected function _notFound($id) {
+		$this->_trigger('recordNotFound', compact('id'));
+
+		$message = $this->message('recordNotFound', compact('id'));
+		$exceptionClass = $message['class'];
+		throw new $exceptionClass($message['text'], $message['code']);
 	}
 
 /**

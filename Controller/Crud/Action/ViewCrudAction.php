@@ -71,9 +71,8 @@ class ViewCrudAction extends CrudAction {
 
 		$findMethod = $this->_getFindMethod('first');
 		$subject = $this->_trigger('beforeFind', compact('id', 'query', 'findMethod'));
-		$query = $subject->query;
 
-		$item = $model->find($subject->findMethod, $query);
+		$item = $model->find($subject->findMethod, $subject->query);
 
 		if (empty($item)) {
 			$this->_trigger('recordNotFound', compact('id'));
@@ -83,11 +82,13 @@ class ViewCrudAction extends CrudAction {
 			throw new $exceptionClass($message['text'], $message['code']);
 		}
 
-		$subject = $this->_trigger('afterFind', compact('id', 'item'));
-		$item = $subject->item;
+		$success = true;
+		$viewVar = $this->viewVar();
 
-		$this->_controller()->set(array('success' => true, $this->viewVar() => $item));
-		$this->_trigger('beforeRender', compact('id', 'item'));
+		$subject = $this->_trigger('afterFind', compact('id', 'viewVar', 'success', 'item'));
+
+		$this->_controller()->set(array('success' => $subject->success, $subject->viewVar => $subject->item));
+		$this->_trigger('beforeRender', $subject);
 	}
 
 }

@@ -16,7 +16,6 @@ class EditCrudActionTest extends CrudTestCase {
 /**
  * Test the normal HTTP GET flow of _get
  *
- * @covers EditCrudAction::_get
  * @return void
  */
 	public function testActionGet() {
@@ -59,6 +58,10 @@ class EditCrudActionTest extends CrudTestCase {
 			->will($this->returnValue($Model));
 		$Action
 			->expects($this->at($i++))
+			->method('_model')
+			->will($this->returnValue($Model));
+		$Action
+			->expects($this->at($i++))
 			->method('_getFindMethod')
 			->with('first')
 			->will($this->returnValue('first'));
@@ -89,7 +92,6 @@ class EditCrudActionTest extends CrudTestCase {
  * This test assumes the best possible case
  * The id provided, it's correct and it's in the db
  *
- * @covers EditCrudAction::_put
  * @return void
  */
 	public function testActionPut() {
@@ -106,7 +108,6 @@ class EditCrudActionTest extends CrudTestCase {
  * This test assumes the best possible case
  * The id provided, it's correct and it's in the db
  *
- * @covers EditCrudAction::_post
  * @return void
  */
 	public function testActionPost() {
@@ -124,7 +125,7 @@ class EditCrudActionTest extends CrudTestCase {
 		$Request->data = $data;
 
 		$Model = $this
-			->getMock('Model', array('saveAll'));
+			->getMock('Model', array('saveAll', 'find', 'escapeField'));
 
 		$Controller = $this
 			->getMockBuilder('Controller')
@@ -132,7 +133,7 @@ class EditCrudActionTest extends CrudTestCase {
 			->setMethods(array('referer'))
 			->getMock();
 		$Controller
-			->expects($this->at(0))
+			->expects($this->once())
 			->method('referer')
 			->with(array('action' => 'index'))
 			->will($this->returnValue(array('action' => 'index')));
@@ -143,7 +144,8 @@ class EditCrudActionTest extends CrudTestCase {
 			->disableOriginalConstructor()
 			->setMethods(array(
 				'_validateId', '_request', '_model', '_trigger',
-				'_controller', '_redirect', 'setFlash', 'saveOptions'
+				'_controller', '_redirect', 'setFlash', 'saveOptions',
+				'_getFindMethod'
 			))
 			->getMock();
 		$Action
@@ -159,6 +161,30 @@ class EditCrudActionTest extends CrudTestCase {
 			->expects($this->at($i++))
 			->method('_model')
 			->will($this->returnValue($Model));
+		$Action
+			->expects($this->at($i++))
+			->method('_model')
+			->will($this->returnValue($Model));
+		$Model
+			->expects($this->once())
+			->method('escapeField')
+			->with()
+			->will($this->returnValue('Model.id'));
+		$Action
+			->expects($this->at($i++))
+			->method('_getFindMethod')
+			->with('count')
+			->will($this->returnValue('count'));
+		$Action
+			->expects($this->at($i++))
+			->method('_trigger')
+			->with('beforeFind', array('query' => array('conditions' => array('Model.id' => 1)), 'findMethod' => 'count'))
+			->will($this->returnValue(new CrudSubject(array('query' => array('conditions' => array('Model.id' => 1)), 'findMethod' => 'count'))));
+		$Model
+			->expects($this->once())
+			->method('find')
+			->with('count', array('conditions' => array('Model.id' => 1)))
+			->will($this->returnValue(true));
 		$Action
 			->expects($this->at($i++))
 			->method('_trigger')
@@ -190,7 +216,7 @@ class EditCrudActionTest extends CrudTestCase {
 			->method('_redirect')
 			->with($CrudSubject, array('action' => 'index'));
 		$Action
-			->expects($this->exactly(2))
+			->expects($this->exactly(3))
 			->method('_trigger');
 		return $Action;
 	}
@@ -205,7 +231,6 @@ class EditCrudActionTest extends CrudTestCase {
  *
  * This test will also redirect to the add action
  *
- * @covers EditCrudAction::_put
  * @return void
  */
 	public function testActionPutWithAddRedirect() {
@@ -221,7 +246,7 @@ class EditCrudActionTest extends CrudTestCase {
 		$Request->data = $data;
 
 		$Model = $this
-			->getMock('Model', array('saveAll'));
+			->getMock('Model', array('saveAll', 'find'));
 
 		$i = 0;
 		$Action = $this
@@ -229,7 +254,7 @@ class EditCrudActionTest extends CrudTestCase {
 			->disableOriginalConstructor()
 			->setMethods(array(
 				'_validateId', '_request', '_model', '_trigger',
-				'_redirect', 'setFlash', 'saveOptions'
+				'_redirect', 'setFlash', 'saveOptions', '_findRecord'
 			))
 			->getMock();
 		$Action
@@ -245,6 +270,11 @@ class EditCrudActionTest extends CrudTestCase {
 			->expects($this->at($i++))
 			->method('_model')
 			->will($this->returnValue($Model));
+		$Action
+			->expects($this->at($i++))
+			->method('_findRecord')
+			->with(1, 'count')
+			->will($this->returnValue(true));
 		$Request
 			->expects($this->at(0))
 			->method('data')
@@ -299,7 +329,6 @@ class EditCrudActionTest extends CrudTestCase {
  *
  * This test will also redirect to the add action
  *
- * @covers EditCrudAction::_put
  * @return void
  */
 	public function testActionPutWithEditRedirect() {
@@ -324,7 +353,7 @@ class EditCrudActionTest extends CrudTestCase {
 			->disableOriginalConstructor()
 			->setMethods(array(
 				'_validateId', '_request', '_model', '_trigger',
-				'_redirect', 'setFlash', 'saveOptions'
+				'_redirect', 'setFlash', 'saveOptions', '_findRecord'
 			))
 			->getMock();
 		$Action
@@ -340,6 +369,11 @@ class EditCrudActionTest extends CrudTestCase {
 			->expects($this->at($i++))
 			->method('_model')
 			->will($this->returnValue($Model));
+		$Action
+			->expects($this->at($i++))
+			->method('_findRecord')
+			->with(1, 'count')
+			->will($this->returnValue(true));
 		$Request
 			->expects($this->at(0))
 			->method('data')
@@ -397,7 +431,6 @@ class EditCrudActionTest extends CrudTestCase {
  * This test assumes the saveAll() call fails
  * The id provided, it's correct and it's in the db
  *
- * @covers EditCrudAction::_put
  * @return void
  */
 	public function testActionPutSaveError() {
@@ -417,7 +450,7 @@ class EditCrudActionTest extends CrudTestCase {
 			->disableOriginalConstructor()
 			->setMethods(array(
 				'_validateId', '_request', '_model', '_trigger',
-				'_redirect', 'setFlash', 'saveOptions'
+				'_redirect', 'setFlash', 'saveOptions', '_findRecord'
 			))
 			->getMock();
 		$Action
@@ -433,6 +466,11 @@ class EditCrudActionTest extends CrudTestCase {
 			->expects($this->at($i++))
 			->method('_model')
 			->will($this->returnValue($Model));
+		$Action
+			->expects($this->at($i++))
+			->method('_findRecord')
+			->with(1, 'count')
+			->will($this->returnValue(true));
 		$Action
 			->expects($this->at($i++))
 			->method('_trigger')
@@ -477,7 +515,6 @@ class EditCrudActionTest extends CrudTestCase {
  * Given an ID, we test what happens if the ID doesn't
  * exist in the database
  *
- * @covers EditCrudAction::_get
  * @expectedException NotFoundException
  * @expectedExceptionMessage Not Found
  * @expectedExceptionCode 404
@@ -511,6 +548,10 @@ class EditCrudActionTest extends CrudTestCase {
 			->expects($this->at($i++))
 			->method('_request')
 			->will($this->returnValue($Request));
+		$Action
+			->expects($this->at($i++))
+			->method('_model')
+			->will($this->returnValue($Model));
 		$Action
 			->expects($this->at($i++))
 			->method('_model')
@@ -554,7 +595,6 @@ class EditCrudActionTest extends CrudTestCase {
  *
  * Given an ID, we test what happens if the ID is invalid
  *
- * @covers EditCrudAction::_get
  * @return void
  */
 	public function testActionGetWithInvalidId() {
@@ -582,7 +622,6 @@ class EditCrudActionTest extends CrudTestCase {
  *
  * Given an ID, we test what happens if the ID is invalid
  *
- * @covers EditCrudAction::_put
  * @return void
  */
 	public function testActionPutWithInvalidId() {
@@ -614,7 +653,6 @@ class EditCrudActionTest extends CrudTestCase {
  * Additionally the `_getFindMethod` method returns
  * something not-default
  *
- * @covers EditCrudAction::_get
  * @return void
  */
 	public function testGetWithCustomFindMethod() {
@@ -641,6 +679,10 @@ class EditCrudActionTest extends CrudTestCase {
 			->expects($this->at($i++))
 			->method('_request')
 			->will($this->returnValue($Request));
+		$Action
+			->expects($this->at($i++))
+			->method('_model')
+			->will($this->returnValue($Model));
 		$Action
 			->expects($this->at($i++))
 			->method('_model')
@@ -683,7 +725,6 @@ class EditCrudActionTest extends CrudTestCase {
  * Test that calling HTTP PUT on an edit action
  * with `_cancel` set in the POST data will cancel the form submission
  *
- * @covers EditCrudAction::_put
  * @return void
  */
 	public function testPutActionCancel() {
@@ -712,7 +753,7 @@ class EditCrudActionTest extends CrudTestCase {
 			->disableOriginalConstructor()
 			->setMethods(array(
 				'_validateId', '_request', '_model', '_trigger',
-				'_controller', '_redirect'
+				'_controller', '_redirect', '_findRecord'
 			))
 			->getMock();
 		$Action
@@ -728,6 +769,11 @@ class EditCrudActionTest extends CrudTestCase {
 			->expects($this->at($i++))
 			->method('_model')
 			->will($this->returnValue($Model));
+		$Action
+			->expects($this->at($i++))
+			->method('_findRecord')
+			->with(1, 'count')
+			->will($this->returnValue(true));
 		$Request
 			->expects($this->at(0))
 			->method('data')

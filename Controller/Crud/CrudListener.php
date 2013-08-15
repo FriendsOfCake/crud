@@ -7,6 +7,8 @@ App::uses('CrudBaseObject', 'Crud.Controller/Crud');
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
+ *
+ * @codeCoverageIgnore
  */
 abstract class CrudListener extends CrudBaseObject {
 
@@ -22,7 +24,6 @@ abstract class CrudListener extends CrudBaseObject {
  * - invalidId : Called if the ID format validation failed
  * - setFlash : Called before any CakeSession::setFlash
  *
- * @codeCoverageIgnore
  * @return array
  */
 	public function implementedEvents() {

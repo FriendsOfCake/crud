@@ -24,7 +24,6 @@ class ViewCrudActionTest extends CrudTestCase {
  *
  * The id provided, it's correct and it's in the db
  *
- * @covers ViewCrudAction::_get
  * @return void
  */
 	public function test_getGet() {
@@ -89,26 +88,33 @@ class ViewCrudActionTest extends CrudTestCase {
 			->will($this->returnValue($data));
 		$Action
 			->expects($this->at($i++))
+			->method('viewVar')
+			->with()
+			->will($this->returnValue('example'));
+		$Action
+			->expects($this->at($i++))
 			->method('_trigger')
 			->with('afterFind', array(
 				'id' => 1,
-				'item' => $data
+				'item' => $data,
+				'viewVar' => 'example',
+				'success' => true
 			))
-			->will($this->returnValue(new CrudSubject(array('item' => $data))));
+			->will($this->returnValue(new CrudSubject(array(
+				'success' => true,
+				'viewVar' => 'example',
+				'id' => 1,
+				'item' => $data
+			))));
+		$Controller
+			->expects($this->once())
+			->method('set')
+			->with(array('example' => $data, 'success' => true));
 		$Action
 			->expects($this->at($i++))
 			->method('_controller')
 			->with()
 			->will($this->returnValue($Controller));
-		$Action
-			->expects($this->at($i++))
-			->method('viewVar')
-			->with()
-			->will($this->returnValue('example'));
-		$Controller
-			->expects($this->once())
-			->method('set')
-			->with(array('example' => $data, 'success' => true));
 		$Action
 			->expects($this->at($i++))
 			->method('_trigger')
@@ -126,7 +132,6 @@ class ViewCrudActionTest extends CrudTestCase {
  *
  * Testing that setting a different viewVar actually works
  *
- * @covers ViewCrudAction::_get
  * @return void
  */
 	public function test_getGetCustomViewVar() {
@@ -191,22 +196,28 @@ class ViewCrudActionTest extends CrudTestCase {
 			->will($this->returnValue($data));
 		$Action
 			->expects($this->at($i++))
+			->method('viewVar')
+			->with()
+			->will($this->returnValue('item'));
+		$Action
+			->expects($this->at($i++))
 			->method('_trigger')
 			->with('afterFind', array(
 				'id' => 1,
-				'item' => $data
+				'item' => $data,
+				'viewVar' => 'item',
+				'success' => true
 			))
-			->will($this->returnValue(new CrudSubject(array('item' => $data))));
+			->will($this->returnValue(new CrudSubject(array(
+				'item' => $data,
+				'success' => true,
+				'viewVar' => 'item'
+			))));
 		$Action
 			->expects($this->at($i++))
 			->method('_controller')
 			->with()
 			->will($this->returnValue($Controller));
-		$Action
-			->expects($this->at($i++))
-			->method('viewVar')
-			->with()
-			->will($this->returnValue('item'));
 		$Controller
 			->expects($this->once())
 			->method('set')
@@ -228,7 +239,6 @@ class ViewCrudActionTest extends CrudTestCase {
  *
  * The ID provided is valid, but do not exist in the database
  *
- * @covers ViewCrudAction::_get
  * @expectedException NotFoundException
  * @exepctedExceptionMessage Not Found
  * @exepctedExceptionCode 404
@@ -327,7 +337,6 @@ class ViewCrudActionTest extends CrudTestCase {
  * This test assumes that the id for the view
  * action does not exist in the database
  *
- * @covers ViewCrudAction::_get
  * @return void
  */
 	public function test_getGetInvalidId() {
