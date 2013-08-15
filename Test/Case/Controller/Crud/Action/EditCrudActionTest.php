@@ -894,6 +894,124 @@ class EditCrudActionTest extends CrudTestCase {
 	}
 
 /**
+ * testPutSetsIdFromUrl
+ *
+ * @return void
+ */
+	public function testPutSetsIdFromUrl() {
+		$query = array('conditions' => array('Model.id' => 1));
+		$findParams = array('findMethod' => 'count', 'query' => $query);
+
+		$data = array('Model' => array('some' => 'data'));
+
+		$Request = $this->getMock('CakeRequest');
+		$Request->data = $data;
+		$Request->params['pass'][0] = 1;
+
+		$Controller = $this
+			->getMockBuilder('Controller')
+			->disableOriginalConstructor()
+			->getMock();
+
+		$Model = $this
+			->getMockBuilder('Model')
+			->setMethods(array('saveAll', 'find', 'escapeField'))
+			->setConstructorArgs(array(array('name' => 'Model')))
+			->getMock();
+
+		$i = $j = 0;
+		$Action = $this
+			->getMockBuilder('EditCrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array('_request', '_model', '_findRecord', '_trigger', 'setFlash'))
+			->getMock();
+		$Action->config('validateId', false);
+		$Action
+			->expects($this->at($i++))
+			->method('_request') // _put
+			->will($this->returnValue($Request));
+		$Action
+			->expects($this->at($i++))
+			->method('_model') // _put
+			->will($this->returnValue($Model));
+		$Action
+			->expects($this->at($i++))
+			->method('_findRecord') // _put
+			->will($this->returnValue(true));
+		$Action
+			->expects($this->at($i++))
+			->method('_trigger') // _put
+			->with('beforeSave', array('id' => 1))
+			->will($this->returnValue(new CrudSubject(array('id' => 1))));
+		$Model
+			->expects($this->at($j++))
+			->method('saveAll') // _put
+			->with(array('Model' => array('id' => 1, 'some' => 'data')), array('validate' => 'first', 'atomic' => true));
+
+		$this->setReflectionClassInstance($Action);
+		$this->callProtectedMethod('_put', array(1), $Action);
+	}
+
+/**
+ * testPutSetsIdFromUrlWithAbreviatedData
+ *
+ * @return void
+ */
+	public function testPutSetsIdFromUrlWithAbreviatedData() {
+		$query = array('conditions' => array('Model.id' => 1));
+		$findParams = array('findMethod' => 'count', 'query' => $query);
+
+		$data = array('some' => 'data');
+
+		$Request = $this->getMock('CakeRequest');
+		$Request->data = $data;
+		$Request->params['pass'][0] = 1;
+
+		$Controller = $this
+			->getMockBuilder('Controller')
+			->disableOriginalConstructor()
+			->getMock();
+
+		$Model = $this
+			->getMockBuilder('Model')
+			->setMethods(array('saveAll', 'find', 'escapeField'))
+			->setConstructorArgs(array(array('name' => 'Model')))
+			->getMock();
+
+		$i = $j = 0;
+		$Action = $this
+			->getMockBuilder('EditCrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array('_request', '_model', '_findRecord', '_trigger', 'setFlash'))
+			->getMock();
+		$Action->config('validateId', false);
+		$Action
+			->expects($this->at($i++))
+			->method('_request') // _put
+			->will($this->returnValue($Request));
+		$Action
+			->expects($this->at($i++))
+			->method('_model') // _put
+			->will($this->returnValue($Model));
+		$Action
+			->expects($this->at($i++))
+			->method('_findRecord') // _put
+			->will($this->returnValue(true));
+		$Action
+			->expects($this->at($i++))
+			->method('_trigger') // _put
+			->with('beforeSave', array('id' => 1))
+			->will($this->returnValue(new CrudSubject(array('id' => 1))));
+		$Model
+			->expects($this->at($j++))
+			->method('saveAll') // _put
+			->with(array('id' => 1, 'some' => 'data'), array('validate' => 'first', 'atomic' => true));
+
+		$this->setReflectionClassInstance($Action);
+		$this->callProtectedMethod('_put', array(1), $Action);
+	}
+
+/**
  * testPutCannotInsert
  *
  * @return void
