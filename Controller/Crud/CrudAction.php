@@ -328,7 +328,7 @@ abstract class CrudAction extends CrudBaseObject {
 	protected function _validateId($id) {
 		$type = $this->config('validateId');
 
-		if (empty($type)) {
+		if (is_null($type)) {
 			$type = $this->detectPrimaryKeyFieldType();
 		}
 
