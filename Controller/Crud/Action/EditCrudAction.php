@@ -201,6 +201,21 @@ class EditCrudAction extends CrudAction {
 		return $this->_put($id);
 	}
 
+/**
+ * Is the passed ID valid ?
+ *
+ * Validate the id in the url (the parent function) and then validate the id in the data.
+ *
+ * The data-id check is independent of the config setting `validateId` this checks whether
+ * The id in the url matches the id in the submitted data (a type insensitive check). If
+ * The id is different, this probably indicates a malicious form submission, attempting
+ * to add/edit a record the user doesn't have permission for by submitting to a url they
+ * do have permission to access
+ *
+ * @param mixed $id
+ * @return boolean
+ * @throws BadRequestException If id is invalid
+ */
 	protected function _validateId($id) {
 		parent::_validateId($id);
 
@@ -219,8 +234,7 @@ class EditCrudAction extends CrudAction {
 			return true;
 		}
 
-		// This test is deliberately none-strict. Probably both values are strings - but don't
-		// assume so.
+		// deliberately type insensitive
 		if ($dataId == $id) {
 			return true;
 		}
