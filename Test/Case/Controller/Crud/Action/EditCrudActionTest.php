@@ -1093,7 +1093,7 @@ class EditCrudActionTest extends CrudTestCase {
 	public function test_validateIdManipulated() {
 		$data = array('Model' => array('id' => 'manipulated', 'some' => 'data'));
 
-		$Request = $this->getMock('CakeRequest');
+		$Request = new CakeRequest();
 		$Request->data = $data;
 		$Request->params['pass'][0] = 1;
 
@@ -1144,7 +1144,7 @@ class EditCrudActionTest extends CrudTestCase {
 	public function test_validateIdManipulatedShortData() {
 		$data = array('id' => 'manipulated', 'some' => 'data');
 
-		$Request = $this->getMock('CakeRequest');
+		$Request = new CakeRequest();
 		$Request->data = $data;
 		$Request->params['pass'][0] = 1;
 

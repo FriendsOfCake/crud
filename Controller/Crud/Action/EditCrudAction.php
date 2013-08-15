@@ -226,11 +226,9 @@ class EditCrudAction extends CrudAction {
 
 		$dataId = null;
 		$model = $this->_model();
-		if (isset($request->data[$model->alias][$model->primaryKey])) {
-			$dataId = $request->data[$model->alias][$model->primaryKey];
-		} elseif (isset($request->data[$model->primaryKey])) {
-			$dataId = $request->data[$model->primaryKey];
-		} else {
+
+		$dataId = $request->data($model->alias . '.' . $model->primaryKey) ?: $request->data($model->primaryKey);
+		if ($dataId === null) {
 			return true;
 		}
 
