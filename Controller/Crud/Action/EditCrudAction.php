@@ -219,11 +219,13 @@ class EditCrudAction extends CrudAction {
 			return true;
 		}
 
+		// This test is deliberately none-strict. Probably both values are strings - but don't
+		// assume so.
 		if ($dataId == $id) {
 			return true;
 		}
 
-		$subject = $this->_trigger('invalidId', compact('id'));
+		$subject = $this->_trigger('invalidId', array('id' => $dataId));
 
 		$message = $this->message('invalidId');
 		$exceptionClass = $message['class'];
