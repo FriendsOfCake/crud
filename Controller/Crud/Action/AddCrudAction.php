@@ -41,7 +41,7 @@ class AddCrudAction extends CrudAction {
 			'success' => array(
 				'code' => 201,
 				'data' => array(
-					'subject' => array('{modelClass}.id' => 'id')
+					'subject' => array('id')
 				)
 			),
 			'error' => array(
