@@ -63,7 +63,6 @@ class EditCrudActionTest extends CrudTestCase {
 		$Action
 			->expects($this->at($i++))
 			->method('_getFindMethod')
-			->with('first')
 			->will($this->returnValue('first'));
 		$Action
 			->expects($this->at($i++))
@@ -144,8 +143,7 @@ class EditCrudActionTest extends CrudTestCase {
 			->disableOriginalConstructor()
 			->setMethods(array(
 				'_validateId', '_request', '_model', '_trigger',
-				'_controller', '_redirect', 'setFlash', 'saveOptions',
-				'_getFindMethod'
+				'_controller', '_redirect', 'setFlash', 'saveOptions'
 			))
 			->getMock();
 		$Action
@@ -170,11 +168,6 @@ class EditCrudActionTest extends CrudTestCase {
 			->method('escapeField')
 			->with()
 			->will($this->returnValue('Model.id'));
-		$Action
-			->expects($this->at($i++))
-			->method('_getFindMethod')
-			->with('count')
-			->will($this->returnValue('count'));
 		$Action
 			->expects($this->at($i++))
 			->method('_trigger')
@@ -695,7 +688,6 @@ class EditCrudActionTest extends CrudTestCase {
 		$Action
 			->expects($this->at($i++))
 			->method('_getFindMethod')
-			->with('first')
 			->will($this->returnValue('first'));
 		$Action
 			->expects($this->at($i++))
@@ -800,6 +792,93 @@ class EditCrudActionTest extends CrudTestCase {
 
 		$this->setReflectionClassInstance($Action);
 		$this->callProtectedMethod('_put', array(1), $Action);
+	}
+
+/**
+ * test_findRecordDefault
+ *
+ * @return void
+ */
+	public function test_findRecordDefault() {
+		$query = array('conditions' => array('Model.id' => 1));
+		$findParams = array('findMethod' => 'special', 'query' => $query);
+
+		$i = 0;
+		$Model = $this->getMock('Model', array('escapeField', 'find'));
+		$Model
+			->expects($this->at($i++))
+			->method('escapeField')
+			->will($this->returnValue('Model.id'));
+		$Model
+			->expects($this->at($i++))
+			->method('find')
+			->with('special', $query);
+
+		$i = 0;
+		$Action = $this
+			->getMockBuilder('EditCrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array('_model', '_getFindMethod', '_trigger'))
+			->getMock();
+		$Action
+			->expects($this->at($i++))
+			->method('_model')
+			->will($this->returnValue($Model));
+		$Action
+			->expects($this->at($i++))
+			->method('_getFindMethod')
+			->will($this->returnValue('special'));
+		$Action
+			->expects($this->at($i++))
+			->method('_trigger')
+			->with('beforeFind', $findParams)
+			->will($this->returnValue(new CrudSubject($findParams)));
+
+		$this->setReflectionClassInstance($Action);
+		$this->callProtectedMethod('_findRecord', array(1), $Action);
+	}
+
+/**
+ * test_findRecordOverride
+ *
+ * @return void
+ */
+	public function test_findRecordOverride() {
+		$query = array('conditions' => array('Model.id' => 1));
+		$findParams = array('findMethod' => 'count', 'query' => $query);
+
+		$i = 0;
+		$Model = $this->getMock('Model', array('escapeField', 'find'));
+		$Model
+			->expects($this->at($i++))
+			->method('escapeField')
+			->will($this->returnValue('Model.id'));
+		$Model
+			->expects($this->at($i++))
+			->method('find')
+			->with('count', $query);
+
+		$i = 0;
+		$Action = $this
+			->getMockBuilder('EditCrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array('_model', '_getFindMethod', '_trigger'))
+			->getMock();
+		$Action
+			->expects($this->at($i++))
+			->method('_model')
+			->will($this->returnValue($Model));
+		$Action
+			->expects($this->never())
+			->method('_getFindMethod');
+		$Action
+			->expects($this->at($i++))
+			->method('_trigger')
+			->with('beforeFind', $findParams)
+			->will($this->returnValue(new CrudSubject($findParams)));
+
+		$this->setReflectionClassInstance($Action);
+		$this->callProtectedMethod('_findRecord', array(1, 'count'), $Action);
 	}
 
 }
