@@ -877,4 +877,33 @@ class CrudActionTest extends CrudTestCase {
 		$Action->handle(new CrudSubject(array('args' => array())));
 	}
 
+/**
+ * testValidateIdFalse
+ *
+ * If validateId is false - don't do squat
+ *
+ * @return void
+ */
+	public function testValidateIdFalse() {
+		$Action = $this
+			->getMockBuilder('CrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array('config', 'detectPrimaryKeyFieldType'))
+			->getMock();
+
+		$Action
+			->expects($this->once())
+			->method('config')
+			->with('validateId')
+			->will($this->returnValue(false));
+		$Action
+			->expects($this->never())
+			->method('detectPrimaryKeyFieldType');
+
+		$this->setReflectionClassInstance($Action);
+		$return = $this->callProtectedMethod('_validateId', array('some id'), $Action);
+
+		$this->assertTrue($return, 'If validateId is false the check should be skipped');
+	}
+
 }
