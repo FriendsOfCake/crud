@@ -14,7 +14,14 @@ class CrudPanelTest extends CrudTestCase {
 	public function setUp() {
 		parent::setUp();
 
-		CakePlugin::load('DebugKit');
+		if (!CakePlugin::loaded('DebugKit')) {
+			try {
+				CakePlugin::load('DebugKit');
+			} catch (MissingPluginException $e) {
+				$this->markTestSkipped('DebugKit plugin not available');
+			}
+		}
+
 		$this->Controller = new Controller();
 		$this->Panel = new CrudPanel();
 
