@@ -135,7 +135,7 @@ class EditCrudAction extends CrudAction {
 		}
 
 		$this->_trigger('beforeSave', compact('id'));
-		if (call_user_method($this->saveMethod(), $model, $request->data, $this->saveOptions())) {
+		if (call_user_func(array($model, $this->saveMethod()), $request->data, $this->saveOptions())) {
 			$this->setFlash('success');
 			$subject = $this->_trigger('afterSave', array('id' => $id, 'success' => true, 'created' => false));
 
