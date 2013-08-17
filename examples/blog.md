@@ -172,7 +172,7 @@ curl -I -X GET http://your-site-domain.com/posts.json
 Simply POST to `/posts/add.json`
 
 {% highlight text %}
-curl -I -X POST http://your-site-domain.com/posts.json \
+curl -I -X POST http://your-site-domain.com/posts/add.json \
 	-d title="My new JSON API blog post" \
 	-d body="With an epic body"
 
@@ -202,7 +202,7 @@ Example on how validation errors in JSON looks
 In this example, I left out the `body` field
 
 {% highlight text %}
-curl -I -X POST http://your-site-domain.com/posts.json \
+curl -I -X POST http://your-site-domain.com/posts/add.json \
 	-d title="My new JSON API blog post"
 
 HTTP/1.1 400 Bad Request
@@ -269,7 +269,7 @@ Example on how validation errors in XML looks
 In this example, I left out the `body` field
 
 {% highlight text %}
-curl -I -X POST http://your-site-domain.com/posts.xml \
+curl -I -X POST http://your-site-domain.com/posts/add.xml \
 	-d title="My new XML API blog post" \
 
 HTTP/1.1 400 Bad Request
