@@ -38,6 +38,7 @@ class EditCrudAction extends CrudAction {
 	protected $_settings = array(
 		'enabled' => true,
 		'findMethod' => 'first',
+		'saveMethod' => 'saveAssociated',
 		'view' => null,
 		'relatedModels' => true,
 		'validateId' => null,
@@ -134,7 +135,7 @@ class EditCrudAction extends CrudAction {
 		}
 
 		$this->_trigger('beforeSave', compact('id'));
-		if ($model->saveAll($request->data, $this->saveOptions())) {
+		if (call_user_method($this->saveMethod(), $model, $request->data, $this->saveOptions())) {
 			$this->setFlash('success');
 			$subject = $this->_trigger('afterSave', array('id' => $id, 'success' => true, 'created' => false));
 

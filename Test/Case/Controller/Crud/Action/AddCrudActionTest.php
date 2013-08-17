@@ -81,10 +81,10 @@ class AddCrudActionTest extends CrudTestCase {
 		$Request = $this->getMock('CakeRequest');
 		$Request->data = array('Post' => array('name' => 'Hello World'));
 
-		$Model = $this->getMock('Model', array('saveAll'));
+		$Model = $this->getMock('Model', array('saveAssociated'));
 		$Model
 			->expects($this->once())
-			->method('saveAll')
+			->method('saveAssociated')
 			->with($Request->data)
 			->will($this->returnCallback(function() use ($Model) {
 				$Model->id = 1;
@@ -160,10 +160,10 @@ class AddCrudActionTest extends CrudTestCase {
 			'Post' => array('name' => 'Hello World')
 		);
 
-		$Model = $this->getMock('Model', array('saveAll'));
+		$Model = $this->getMock('Model', array('saveAssociated'));
 		$Model
 			->expects($this->once())
-			->method('saveAll')
+			->method('saveAssociated')
 			->with($Request->data)
 			->will($this->returnCallback(function() use ($Model) {
 				$Model->id = 1;
@@ -240,10 +240,10 @@ class AddCrudActionTest extends CrudTestCase {
 			'Post' => array('name' => 'Hello World')
 		);
 
-		$Model = $this->getMock('Model', array('saveAll'));
+		$Model = $this->getMock('Model', array('saveAssociated'));
 		$Model
 			->expects($this->once())
-			->method('saveAll')
+			->method('saveAssociated')
 			->with($Request->data)
 			->will($this->returnCallback(function() use ($Model) {
 				$Model->id = 1;
@@ -319,7 +319,7 @@ class AddCrudActionTest extends CrudTestCase {
 		$Request = $this->getMock('CakeRequest');
 		$Request->data = array('Post' => array('name' => 'Hello World'));
 
-		$Model = $this->getMock('Model', array('saveAll'));
+		$Model = $this->getMock('Model', array('saveAssociated'));
 		$Model->data = array('model' => true);
 
 		$Action = $this
@@ -345,7 +345,7 @@ class AddCrudActionTest extends CrudTestCase {
 			->with('beforeSave');
 		$Model
 			->expects($this->once())
-			->method('saveAll')
+			->method('saveAssociated')
 			->with($Request->data)
 			->will($this->returnValue(false));
 		$Action

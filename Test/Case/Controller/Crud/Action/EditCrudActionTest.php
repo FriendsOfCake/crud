@@ -125,7 +125,7 @@ class EditCrudActionTest extends CrudTestCase {
 
 		$Model = $this
 			->getMockBuilder('Model')
-			->setMethods(array('saveAll', 'find', 'escapeField'))
+			->setMethods(array('saveAssociated', 'find', 'escapeField'))
 			->setConstructorArgs(array(array('name' => 'Model')))
 			->getMock();
 
@@ -191,7 +191,7 @@ class EditCrudActionTest extends CrudTestCase {
 			->will($this->returnValue(array('atomic' => true)));
 		$Model
 			->expects($this->once())
-			->method('saveAll')
+			->method('saveAssociated')
 			->with($data)
 			->will($this->returnValue(true));
 		$Action
@@ -243,7 +243,7 @@ class EditCrudActionTest extends CrudTestCase {
 
 		$Model = $this
 			->getMockBuilder('Model')
-			->setMethods(array('saveAll', 'find'))
+			->setMethods(array('saveAssociated', 'find'))
 			->setConstructorArgs(array(array('name' => 'Model')))
 			->getMock();
 
@@ -289,7 +289,7 @@ class EditCrudActionTest extends CrudTestCase {
 			->will($this->returnValue(array('atomic' => true)));
 		$Model
 			->expects($this->once())
-			->method('saveAll')
+			->method('saveAssociated')
 			->with($data)
 			->will($this->returnValue(true));
 		$Action
@@ -345,7 +345,7 @@ class EditCrudActionTest extends CrudTestCase {
 
 		$Model = $this
 			->getMockBuilder('Model')
-			->setMethods(array('saveAll'))
+			->setMethods(array('saveAssociated'))
 			->setConstructorArgs(array(array('name' => 'Model')))
 			->getMock();
 
@@ -391,7 +391,7 @@ class EditCrudActionTest extends CrudTestCase {
 			->will($this->returnValue(array('atomic' => true)));
 		$Model
 			->expects($this->once())
-			->method('saveAll')
+			->method('saveAssociated')
 			->with($data)
 			->will($this->returnValue(true));
 		$Action
@@ -430,7 +430,7 @@ class EditCrudActionTest extends CrudTestCase {
  * will trigger the appropriate events and try to
  * update a record in the database
  *
- * This test assumes the saveAll() call fails
+ * This test assumes the saveAssociated() call fails
  * The id provided, it's correct and it's in the db
  *
  * @return void
@@ -445,7 +445,7 @@ class EditCrudActionTest extends CrudTestCase {
 
 		$Model = $this
 			->getMockBuilder('Model')
-			->setMethods(array('saveAll'))
+			->setMethods(array('saveAssociated'))
 			->setConstructorArgs(array(array('name' => 'Model')))
 			->getMock();
 
@@ -486,7 +486,7 @@ class EditCrudActionTest extends CrudTestCase {
 			->will($this->returnValue(array('atomic' => true)));
 		$Model
 			->expects($this->once())
-			->method('saveAll')
+			->method('saveAssociated')
 			->with($data)
 			->will($this->returnValue(false));
 		$Action
@@ -915,7 +915,7 @@ class EditCrudActionTest extends CrudTestCase {
 
 		$Model = $this
 			->getMockBuilder('Model')
-			->setMethods(array('saveAll', 'find', 'escapeField'))
+			->setMethods(array('saveAssociated', 'find', 'escapeField'))
 			->setConstructorArgs(array(array('name' => 'Model')))
 			->getMock();
 
@@ -948,7 +948,7 @@ class EditCrudActionTest extends CrudTestCase {
 			->will($this->returnValue(new CrudSubject(array('id' => 1))));
 		$Model
 			->expects($this->at($j++))
-			->method('saveAll')
+			->method('saveAssociated')
 			->with(array('Model' => array('id' => 1, 'some' => 'data')), array('validate' => 'first', 'atomic' => true));
 
 		$this->setReflectionClassInstance($Action);
@@ -977,7 +977,7 @@ class EditCrudActionTest extends CrudTestCase {
 
 		$Model = $this
 			->getMockBuilder('Model')
-			->setMethods(array('saveAll', 'find', 'escapeField'))
+			->setMethods(array('saveAssociated', 'find', 'escapeField'))
 			->setConstructorArgs(array(array('name' => 'Model')))
 			->getMock();
 
@@ -1010,7 +1010,7 @@ class EditCrudActionTest extends CrudTestCase {
 			->will($this->returnValue(new CrudSubject(array('id' => 1))));
 		$Model
 			->expects($this->at($j++))
-			->method('saveAll')
+			->method('saveAssociated')
 			->with(array('id' => 1, 'some' => 'data'), array('validate' => 'first', 'atomic' => true));
 
 		$this->setReflectionClassInstance($Action);
@@ -1056,7 +1056,7 @@ class EditCrudActionTest extends CrudTestCase {
 
 		$Model = $this
 			->getMockBuilder('Model')
-			->setMethods(array('saveAll', 'find', 'escapeField'))
+			->setMethods(array('saveAssociated', 'find', 'escapeField'))
 			->setConstructorArgs(array(array('name' => 'Model')))
 			->getMock();
 
@@ -1099,7 +1099,7 @@ class EditCrudActionTest extends CrudTestCase {
 
 		$Model = $this
 			->getMockBuilder('Model')
-			->setMethods(array('saveAll', 'find', 'escapeField'))
+			->setMethods(array('saveAssociated', 'find', 'escapeField'))
 			->setConstructorArgs(array(array('name' => 'Model')))
 			->getMock();
 
@@ -1150,7 +1150,7 @@ class EditCrudActionTest extends CrudTestCase {
 
 		$Model = $this
 			->getMockBuilder('Model')
-			->setMethods(array('saveAll', 'find', 'escapeField'))
+			->setMethods(array('saveAssociated', 'find', 'escapeField'))
 			->setConstructorArgs(array(array('name' => 'Model')))
 			->getMock();
 
