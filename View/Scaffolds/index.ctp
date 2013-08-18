@@ -13,7 +13,7 @@
     <div class="filters collapse">
     <?php
       echo $this->Form->create($modelClass);
-      echo $this->Form->input($scaffoldFilters);
+      echo $this->Form->inputs($scaffoldFilters, null, array('fieldset' => false, 'legend' => false));
       echo $this->Form->submit(__d('crud', 'Filter'), array('name' => '_filter', 'class' => 'btn btn-primary btn-filter'));
       echo $this->Form->end();
     ?>
