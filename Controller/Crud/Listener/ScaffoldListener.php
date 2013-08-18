@@ -388,6 +388,7 @@ class ScaffoldListener extends CrudListener {
 				if (!isset($scaffoldFilters[$_field]['value'])) {
 					$scaffoldFilters[$_field]['value'] = $request->query($_field);
 				}
+				$scaffoldFilters[$_field]['required'] = false;
 			}
 		}
 
