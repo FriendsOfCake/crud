@@ -62,11 +62,14 @@
 
   <div class="footer">
     <div class="container">
-      <?php echo $this->Html->link(
-          $this->Html->image('cake.power.gif', array('alt' => $title_for_layout, 'border' => '0')),
-          'http://www.cakephp.org/',
-          array('target' => '_blank', 'escape' => false)
-        );
+      <?php
+        if (!empty($cakeIsAwesome)) {
+          echo $this->Html->link(
+            $this->Html->image('cake.power.gif', array('alt' => $title_for_layout, 'border' => '0')),
+            'http://www.cakephp.org/',
+            array('target' => '_blank', 'escape' => false)
+          );
+        }
       ?>
     </div>
   </div>
