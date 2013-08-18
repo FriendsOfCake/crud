@@ -11,7 +11,7 @@ request.
 Relevant links:
 [PHP source code]({{ site.github_url }}/Controller/Crud/Action/ViewCrudAction.php)
 |
-[API documentation](http://cakephp.dk/cakephp-crud/develop/class-ViewCrudAction.html)
+[API documentation]({{site.site}}/cakephp-crud/api/develop/class-ViewCrudAction.html)
 
 # Events
 
