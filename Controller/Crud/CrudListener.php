@@ -16,8 +16,9 @@ abstract class CrudListener extends CrudBaseObject {
  * Returns a list of all events that will fire in the controller during it's life cycle.
  * You can override this function to add you own listener callbacks
  *
+ * - initialize: Called at the same time as CrudComponent::initialize()
+ * - startup: Called at the same time as CrudComponent::startup()
  * - beforeHandle : Called before CrudAction is executed
- * - startup: Called after the Controller::beforeFilter() and before the Crud action is invoked
  * - recordNotFound : Called if a find() did not return any records
  * - beforePaginate : Called right before any paginate() method
  * - afterPaginate : Called right after any paginate() method
@@ -28,8 +29,10 @@ abstract class CrudListener extends CrudBaseObject {
  */
 	public function implementedEvents() {
 		$eventMap = array(
-			'Crud.beforeHandle' => 'beforeHandle',
+			'Crud.initialize' => 'initialize',
 			'Crud.startup' => 'startup',
+
+			'Crud.beforeHandle' => 'beforeHandle',
 
 			'Crud.beforePaginate' => 'beforePaginate',
 			'Crud.afterPaginate' => 'afterPaginate',
