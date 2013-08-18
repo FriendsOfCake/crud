@@ -77,14 +77,29 @@ class AddCrudActionTest extends CrudTestCase {
 		$this->callProtectedMethod('_put', array(), $Action);
 	}
 
-	protected function _actionSuccess() {
+/**
+ * Test that calling HTTP PUT on an add action
+ * will trigger multiple events on success
+ *
+ * @covers AddCrudAction::_put
+ * @return void
+ */
+	public function testActionPutSuccessWithDifferentSaveMethod() {
+		$Action = $this->_actionSuccess('saveAll');
+		$Action->saveMethod('saveAll');
+
+		$this->setReflectionClassInstance($Action);
+		$this->callProtectedMethod('_put', array(), $Action);
+	}
+
+	protected function _actionSuccess($saveMethod = 'saveAssociated') {
 		$Request = $this->getMock('CakeRequest');
 		$Request->data = array('Post' => array('name' => 'Hello World'));
 
-		$Model = $this->getMock('Model', array('saveAssociated'));
+		$Model = $this->getMock('Model', array($saveMethod));
 		$Model
 			->expects($this->once())
-			->method('saveAssociated')
+			->method($saveMethod)
 			->with($Request->data)
 			->will($this->returnCallback(function() use ($Model) {
 				$Model->id = 1;
