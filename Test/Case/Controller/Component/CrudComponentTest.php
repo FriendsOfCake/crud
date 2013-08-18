@@ -256,7 +256,13 @@ class CrudComponentTest extends ControllerTestCase {
 				'Mylistener' => 'MyPlugin.Mylistener'
 			)
 		);
-		$Crud = new CrudComponent($Collection, $settings);
+		$Crud = $this->getMock('CrudComponent', array('_loadListeners', 'trigger'), array($Collection, $settings));
+		$Crud
+			->expects($this->once())
+			->method('_loadListeners');
+		$Crud
+			->expects($this->once())
+			->method('trigger');
 		$Crud->initialize($this->controller);
 
 		$expected = array(
