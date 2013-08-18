@@ -17,11 +17,6 @@ The recommended installation method for this plugin is by using composer. Just a
 
 {% highlight json %}
 {
-	"extra": {
-		"installer-paths": {
-			"app/Plugin/Crud": ["jippi/cakephp-crud"]
-		}
-	},
 	"require" : {
 		"jippi/cakephp-crud": "dev-develop"
 	}
