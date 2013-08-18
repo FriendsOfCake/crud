@@ -194,7 +194,7 @@ class ScaffoldListener extends CrudListener {
 			} elseif ($primaryKeyValue === null) {
 				$scaffoldTitle = sprintf('%s %s %s', $actionName, $humanName, $displayFieldValue);
 			} else {
-				$scaffoldTitle =sprintf('%s %s #%s: %s', $actionName, $humanName, $primaryKeyValue, $displayFieldValue);
+				$scaffoldTitle = sprintf('%s %s #%s: %s', $actionName, $humanName, $primaryKeyValue, $displayFieldValue);
 			}
 		}
 		return $scaffoldTitle;
