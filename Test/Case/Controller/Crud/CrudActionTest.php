@@ -308,6 +308,46 @@ class CrudActionTest extends CrudTestCase {
 	}
 
 /**
+ * Test that getting the saveMethod will execute config()
+ *
+ * @covers CrudAction::saveMethod
+ * @return void
+ */
+	public function testSaveMethodGet() {
+		$Action = $this
+			->getMockBuilder('CrudAction')
+			->setMethods(array('config', '_handle'))
+			->setConstructorArgs(array($this->Subject))
+			->getMock();
+		$Action
+			->expects($this->once())
+			->method('config')
+			->with('saveMethod');
+
+		$Action->saveMethod();
+	}
+
+/**
+ * Test that setting the saveMethod will execute config()
+ *
+ * @covers CrudAction::saveMethod
+ * @return void
+ */
+	public function testSaveMethodSet() {
+		$Action = $this
+			->getMockBuilder('CrudAction')
+			->setMethods(array('config', '_handle'))
+			->setConstructorArgs(array($this->Subject))
+			->getMock();
+		$Action
+			->expects($this->once())
+			->method('config')
+			->with('saveMethod', 'my_first');
+
+		$Action->saveMethod('my_first');
+	}
+
+/**
  * Test that getting the saveOptions will execute config()
  *
  * @covers CrudAction::saveOptions

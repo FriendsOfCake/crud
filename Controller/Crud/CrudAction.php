@@ -124,6 +124,23 @@ abstract class CrudAction extends CrudBaseObject {
 	}
 
 /**
+ * Change the save() method
+ *
+ * If `$method` is NULL the current value is returned
+ * else the `saveMethod` is changed
+ *
+ * @param mixed $method
+ * @return mixed
+ */
+	public function saveMethod($method = null) {
+		if (empty($method)) {
+			return $this->config('saveMethod');
+		}
+
+		return $this->config('saveMethod', $method);
+	}
+
+/**
  * return the config for a given message type
  *
  * @param string $type
