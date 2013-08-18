@@ -162,6 +162,9 @@ class CrudComponent extends Component {
 
 		$name = str_replace('Component', '', get_class($this));
 		$this->_controller->dispatchComponents[$name] = true;
+
+		$this->_loadListeners();
+		$this->trigger('initialize');
 	}
 
 /**
