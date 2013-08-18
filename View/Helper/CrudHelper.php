@@ -75,17 +75,17 @@ class CrudHelper extends CrudAppHelper {
  * @var array
  */
 	public function redirectUrl() {
-		$redirect_url = $this->_View->request->query('redirect_url');
+		$redirectUrl = $this->_View->request->query('redirect_url');
 		if (!empty($this->_View->viewVars['redirect_url'])) {
-			$redirect_url = $this->_View->viewVars['redirect_url'];
+			$redirectUrl = $this->_View->viewVars['redirect_url'];
 		} else {
-			$redirect_url = $this->Form->value('redirect_url');
+			$redirectUrl = $this->Form->value('redirect_url');
 		}
 
-		if (!empty($redirect_url)) {
+		if (!empty($redirectUrl)) {
 			return $this->Form->hidden('redirect_url', array(
 				'name' => 'redirect_url',
-				'value' => $redirect_url,
+				'value' => $redirectUrl,
 				'id' => null,
 				'secure' => FormHelper::SECURE_SKIP
 			));
