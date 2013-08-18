@@ -8,8 +8,10 @@
     echo $this->Html->meta('icon');
 
     echo $this->Html->css('Crud.style');
-    echo $this->Html->script('Crud.jquery-1.10.2.min.js');
-    echo $this->Html->script('Crud.bootstrap.min.js');
+    echo $this->Html->script(array(
+      'Crud.jquery-1.10.2.min.js',
+      'Crud.bootstrap.min.js'
+    ));
 
     echo $this->fetch('meta');
     echo $this->fetch('css');
@@ -68,12 +70,15 @@
     </div>
   </div>
   <?php
-    echo $this->Html->scriptBlock("$('.filters').on('hide', function () {
-      $('.btn-filter').removeClass('filters-open').addClass('filters-collapsed');
-    });");
-    echo $this->Html->scriptBlock("$('.filters').on('show', function () {
-      $('.btn-filter').removeClass('filters-collapsed').addClass('filters-open');
-    });");
+    echo $this->Html->scriptBlock("
+      $('.filters').on('hide', function () {
+        $('.btn-activate-filters').removeClass('filters-open').addClass('filters-collapsed');
+      });
+
+      $('.filters').on('show', function () {
+        $('.btn-activate-filters').removeClass('filters-collapsed').addClass('filters-open');
+      });
+    ");
   ?>
 </body>
 </html>
