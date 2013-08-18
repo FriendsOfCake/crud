@@ -41,6 +41,7 @@
       <div class="container">
         <div class="row-fluid">
           <?php echo $this->Session->flash(); ?>
+          <?php echo $this->Session->flash('auth'); ?>
           <?php echo $this->fetch('pageTitle'); ?>
         </div>
       </div>
