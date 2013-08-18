@@ -50,5 +50,8 @@
   },
   "require":{
     "composer/installers":"*"
+  },
+  "extra": {
+    "installer-name": "Crud"
   }
 }
