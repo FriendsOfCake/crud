@@ -7,7 +7,7 @@
 	<title>Class CrudListener | jippi/cakephp-crud (master)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?1411212875"></script>
+	<script type="text/javascript" src="elementlist.js?3191791767"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -170,7 +170,7 @@ Object
 
 				<b>CodeCoverageIgnore</b>
 				<br />
-		<b>Located at</b> <a href="source-class-CrudListener.html#5-66" title="Go to source code">Controller/Crud/CrudListener.php</a><br />
+		<b>Located at</b> <a href="source-class-CrudListener.html#5-69" title="Go to source code">Controller/Crud/CrudListener.php</a><br />
 	</div>
 
 
@@ -188,7 +188,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#_implementedEvents">#</a>
-			<code><a href="source-class-CrudListener.html#15-64" title="Go to source code">implementedEvents</a>( )</code>
+			<code><a href="source-class-CrudListener.html#15-67" title="Go to source code">implementedEvents</a>( )</code>
 
 			<div class="description short">
 				
@@ -203,10 +203,11 @@ life cycle. You can override this function to add you own listener callbacks</p>
 life cycle. You can override this function to add you own listener callbacks</p>
 
 <ul>
-	<li>beforeHandle : Called before CrudAction is executed</li>
+	<li>initialize: Called at the same time as CrudComponent::initialize()</li>
 
-	<li>startup: Called after the Controller::beforeFilter() and before the Crud
-	action is invoked</li>
+	<li>startup: Called at the same time as CrudComponent::startup()</li>
+
+	<li>beforeHandle : Called before CrudAction is executed</li>
 
 	<li>recordNotFound : Called if a find() did not return any records</li>
 
