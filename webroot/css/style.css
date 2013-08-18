@@ -6386,11 +6386,14 @@ body {
 .filters:after {
   clear: both;
 }
-.filters .input {
+.filters .input,
+.filters .submit {
   display: inline-block;
   margin-right: 20px;
 }
-.filters-container form,
+.filters .submit input {
+  margin-bottom: 10px;
+}
 .filters-container .btn-activate-filters {
   float: right;
 }
