@@ -7,7 +7,7 @@ layout: default
 
 The `add` CrudAction will create a new record if the request is `HTTP POST` and the data validates.
 
-Relevant links: [PHP source code]({{ site.github_url }}/Controller/Crud/Action/AddCrudAction.php) | [API documentation](http://cakephp.dk/cakephp-crud/develop/class-AddCrudAction.html)
+Relevant links: [PHP source code]({{ site.github_url }}/Controller/Crud/Action/AddCrudAction.php) | [API documentation]({{site.site}}/cakephp-crud/api/develop/class-AddCrudAction.html)
 
 # Events
 
