@@ -262,8 +262,12 @@ abstract class CrudBaseObject extends Object implements CakeEventListener {
  * @param string $default Default URL to use redirect_url is not found in request or data
  * @return mixed
  */
-	protected function _redirectUrl($default = null) {
+	protected function _redirectUrl($default = null, $ignoreRequest = false) {
 		$url = $default;
+		if ($ignoreRequest) {
+			return $url;
+		}
+
 		$request = $this->_request();
 		if (!empty($request->data['redirect_url'])) {
 			$url = $request->data['redirect_url'];
