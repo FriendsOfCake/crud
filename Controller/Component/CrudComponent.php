@@ -748,6 +748,9 @@ class CrudComponent extends Component {
 			$subject = $this->getSubject();
 			$this->_listenerInstances[$name] = new $class($subject, $config);
 			$this->_eventManager->attach($this->_listenerInstances[$name]);
+			if (is_callable(array($this->_listenerInstances[$name], 'onload'))) {
+				$this->_listenerInstances[$name]->setup();
+			}
 		}
 
 		return $this->_listenerInstances[$name];

@@ -70,11 +70,11 @@ class ApiListenerTest extends CrudTestCase {
 	}
 
 /**
- * testInitialize
+ * testSetup
  *
  * @return void
  */
-	public function testInitialize() {
+	public function testSetup() {
 		$listener = $this
 			->getMockBuilder('ApiListener')
 			->setMethods(array('setupDetectors'))
@@ -85,7 +85,7 @@ class ApiListenerTest extends CrudTestCase {
 			->expects($this->once())
 			->method('setupDetectors');
 
-		$listener->initialize(new CakeEvent('Crud.initialize'));
+		$listener->setup();
 	}
 
 /**
@@ -315,7 +315,6 @@ class ApiListenerTest extends CrudTestCase {
 		$subject = $this->getMock('CrudSubject');
 		$apiListener = new ApiListener($subject);
 		$expected = array(
-			'Crud.initialize' => array('callable' => 'initialize', 'priority' => 5),
 			'Crud.beforeHandle' => array('callable' => 'beforeHandle', 'priority' => 10),
 			'Crud.setFlash' => array('callable' => 'setFlash', 'priority' => 5),
 
