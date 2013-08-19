@@ -45,7 +45,6 @@ class ApiListener extends CrudListener {
  */
 	public function implementedEvents() {
 		return array(
-			'Crud.initialize' => array('callable' => 'initialize', 'priority' => 5),
 			'Crud.beforeHandle' => array('callable' => 'beforeHandle', 'priority' => 10),
 			'Crud.setFlash' => array('callable' => 'setFlash', 'priority' => 5),
 
@@ -55,12 +54,13 @@ class ApiListener extends CrudListener {
 	}
 
 /**
- * Called before Controller::beforeFilter
+ * setup
  *
- * @param CakeEvent $event
+ * Called when the listener is created
+ *
  * @return void
  */
-	public function initialize(CakeEvent $event) {
+	public function setup() {
 		$this->setupDetectors();
 	}
 

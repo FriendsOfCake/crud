@@ -304,9 +304,14 @@ END;
 		$expected = array(
 			'Pages',
 			'TestAppsError',
+			'TestConfigs',
 			'TestsApps',
 			'TestsAppsPosts'
 		);
+		if (!file_exists($path . 'TestConfigsController.php')) {
+			unset($expected[2]);
+			$expected = array_values($expected);
+		}
 		$controllers = $method->invoke($this->Shell);
 		$this->assertSame($expected, $controllers);
 	}
