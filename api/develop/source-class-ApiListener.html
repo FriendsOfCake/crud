@@ -8,7 +8,7 @@
 	<title>File Controller/Crud/Listener/ApiListener.php | jippi/cakephp-crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?3191791767"></script>
+	<script type="text/javascript" src="elementlist.js?1455520343"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -155,22 +155,22 @@
 </span></span><span id="45" class="l"><a class="l" href="#45"> 45 </a><span class="php-comment"> */</span>
 </span><span id="46" class="l"><a class="l" href="#46"> 46 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_implementedEvents" href="#_implementedEvents">implementedEvents</a>() {
 </span><span id="47" class="l"><a class="l" href="#47"> 47 </a>        <span class="php-keyword1">return</span> <span class="php-keyword1">array</span>(
-</span><span id="48" class="l"><a class="l" href="#48"> 48 </a>            <span class="php-quote">'Crud.initialize'</span> =&gt; <span class="php-keyword1">array</span>(<span class="php-quote">'callable'</span> =&gt; <span class="php-quote">'initialize'</span>, <span class="php-quote">'priority'</span> =&gt; <span class="php-num">5</span>),
-</span><span id="49" class="l"><a class="l" href="#49"> 49 </a>            <span class="php-quote">'Crud.beforeHandle'</span> =&gt; <span class="php-keyword1">array</span>(<span class="php-quote">'callable'</span> =&gt; <span class="php-quote">'beforeHandle'</span>, <span class="php-quote">'priority'</span> =&gt; <span class="php-num">10</span>),
-</span><span id="50" class="l"><a class="l" href="#50"> 50 </a>            <span class="php-quote">'Crud.setFlash'</span> =&gt; <span class="php-keyword1">array</span>(<span class="php-quote">'callable'</span> =&gt; <span class="php-quote">'setFlash'</span>, <span class="php-quote">'priority'</span> =&gt; <span class="php-num">5</span>),
-</span><span id="51" class="l"><a class="l" href="#51"> 51 </a>
-</span><span id="52" class="l"><a class="l" href="#52"> 52 </a>            <span class="php-quote">'Crud.beforeRender'</span> =&gt; <span class="php-keyword1">array</span>(<span class="php-quote">'callable'</span> =&gt; <span class="php-quote">'respond'</span>, <span class="php-quote">'priority'</span> =&gt; <span class="php-num">100</span>),
-</span><span id="53" class="l"><a class="l" href="#53"> 53 </a>            <span class="php-quote">'Crud.beforeRedirect'</span> =&gt; <span class="php-keyword1">array</span>(<span class="php-quote">'callable'</span> =&gt; <span class="php-quote">'respond'</span>, <span class="php-quote">'priority'</span> =&gt; <span class="php-num">100</span>)
-</span><span id="54" class="l"><a class="l" href="#54"> 54 </a>        );
-</span><span id="55" class="l"><a class="l" href="#55"> 55 </a>    }
-</span><span id="56" class="l"><a class="l" href="#56"> 56 </a>
-</span><span id="57" class="l"><a class="l" href="#57"> 57 </a><span class="php-comment">/**
-</span></span><span id="58" class="l"><a class="l" href="#58"> 58 </a><span class="php-comment"> * Called before Controller::beforeFilter
-</span></span><span id="59" class="l"><a class="l" href="#59"> 59 </a><span class="php-comment"> *
-</span></span><span id="60" class="l"><a class="l" href="#60"> 60 </a><span class="php-comment"> * @param CakeEvent $event
+</span><span id="48" class="l"><a class="l" href="#48"> 48 </a>            <span class="php-quote">'Crud.beforeHandle'</span> =&gt; <span class="php-keyword1">array</span>(<span class="php-quote">'callable'</span> =&gt; <span class="php-quote">'beforeHandle'</span>, <span class="php-quote">'priority'</span> =&gt; <span class="php-num">10</span>),
+</span><span id="49" class="l"><a class="l" href="#49"> 49 </a>            <span class="php-quote">'Crud.setFlash'</span> =&gt; <span class="php-keyword1">array</span>(<span class="php-quote">'callable'</span> =&gt; <span class="php-quote">'setFlash'</span>, <span class="php-quote">'priority'</span> =&gt; <span class="php-num">5</span>),
+</span><span id="50" class="l"><a class="l" href="#50"> 50 </a>
+</span><span id="51" class="l"><a class="l" href="#51"> 51 </a>            <span class="php-quote">'Crud.beforeRender'</span> =&gt; <span class="php-keyword1">array</span>(<span class="php-quote">'callable'</span> =&gt; <span class="php-quote">'respond'</span>, <span class="php-quote">'priority'</span> =&gt; <span class="php-num">100</span>),
+</span><span id="52" class="l"><a class="l" href="#52"> 52 </a>            <span class="php-quote">'Crud.beforeRedirect'</span> =&gt; <span class="php-keyword1">array</span>(<span class="php-quote">'callable'</span> =&gt; <span class="php-quote">'respond'</span>, <span class="php-quote">'priority'</span> =&gt; <span class="php-num">100</span>)
+</span><span id="53" class="l"><a class="l" href="#53"> 53 </a>        );
+</span><span id="54" class="l"><a class="l" href="#54"> 54 </a>    }
+</span><span id="55" class="l"><a class="l" href="#55"> 55 </a>
+</span><span id="56" class="l"><a class="l" href="#56"> 56 </a><span class="php-comment">/**
+</span></span><span id="57" class="l"><a class="l" href="#57"> 57 </a><span class="php-comment"> * setup
+</span></span><span id="58" class="l"><a class="l" href="#58"> 58 </a><span class="php-comment"> *
+</span></span><span id="59" class="l"><a class="l" href="#59"> 59 </a><span class="php-comment"> * Called when the listener is created
+</span></span><span id="60" class="l"><a class="l" href="#60"> 60 </a><span class="php-comment"> *
 </span></span><span id="61" class="l"><a class="l" href="#61"> 61 </a><span class="php-comment"> * @return void
 </span></span><span id="62" class="l"><a class="l" href="#62"> 62 </a><span class="php-comment"> */</span>
-</span><span id="63" class="l"><a class="l" href="#63"> 63 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_initialize" href="#_initialize">initialize</a>(CakeEvent <span class="php-var">$event</span>) {
+</span><span id="63" class="l"><a class="l" href="#63"> 63 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_setup" href="#_setup">setup</a>() {
 </span><span id="64" class="l"><a class="l" href="#64"> 64 </a>        <span class="php-var">$this</span>-&gt;setupDetectors();
 </span><span id="65" class="l"><a class="l" href="#65"> 65 </a>    }
 </span><span id="66" class="l"><a class="l" href="#66"> 66 </a>

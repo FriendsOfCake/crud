@@ -8,7 +8,7 @@
 	<title>File Controller/Component/CrudComponent.php | jippi/cakephp-crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?3191791767"></script>
+	<script type="text/javascript" src="elementlist.js?1455520343"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -858,96 +858,99 @@
 </span><span id="748" class="l"><a class="l" href="#748">748 </a>            <span class="php-var">$subject</span> = <span class="php-var">$this</span>-&gt;getSubject();
 </span><span id="749" class="l"><a class="l" href="#749">749 </a>            <span class="php-var">$this</span>-&gt;_listenerInstances[<span class="php-var">$name</span>] = <span class="php-keyword1">new</span> <span class="php-var">$class</span>(<span class="php-var">$subject</span>, <span class="php-var">$config</span>);
 </span><span id="750" class="l"><a class="l" href="#750">750 </a>            <span class="php-var">$this</span>-&gt;_eventManager-&gt;attach(<span class="php-var">$this</span>-&gt;_listenerInstances[<span class="php-var">$name</span>]);
-</span><span id="751" class="l"><a class="l" href="#751">751 </a>        }
-</span><span id="752" class="l"><a class="l" href="#752">752 </a>
-</span><span id="753" class="l"><a class="l" href="#753">753 </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;_listenerInstances[<span class="php-var">$name</span>];
-</span><span id="754" class="l"><a class="l" href="#754">754 </a>    }
+</span><span id="751" class="l"><a class="l" href="#751">751 </a>            <span class="php-keyword1">if</span> (<span class="php-keyword2">is_callable</span>(<span class="php-keyword1">array</span>(<span class="php-var">$this</span>-&gt;_listenerInstances[<span class="php-var">$name</span>], <span class="php-quote">'setup'</span>))) {
+</span><span id="752" class="l"><a class="l" href="#752">752 </a>                <span class="php-var">$this</span>-&gt;_listenerInstances[<span class="php-var">$name</span>]-&gt;setup();
+</span><span id="753" class="l"><a class="l" href="#753">753 </a>            }
+</span><span id="754" class="l"><a class="l" href="#754">754 </a>        }
 </span><span id="755" class="l"><a class="l" href="#755">755 </a>
-</span><span id="756" class="l"><a class="l" href="#756">756 </a><span class="php-comment">/**
-</span></span><span id="757" class="l"><a class="l" href="#757">757 </a><span class="php-comment"> * Load a CrudAction instance
-</span></span><span id="758" class="l"><a class="l" href="#758">758 </a><span class="php-comment"> *
-</span></span><span id="759" class="l"><a class="l" href="#759">759 </a><span class="php-comment"> * @param string $name The controller action name
-</span></span><span id="760" class="l"><a class="l" href="#760">760 </a><span class="php-comment"> * @return CrudAction
-</span></span><span id="761" class="l"><a class="l" href="#761">761 </a><span class="php-comment"> * @throws CakeException If action is not mapped
-</span></span><span id="762" class="l"><a class="l" href="#762">762 </a><span class="php-comment"> */</span>
-</span><span id="763" class="l"><a class="l" href="#763">763 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__loadAction" href="#__loadAction">_loadAction</a>(<span class="php-var">$name</span>) {
-</span><span id="764" class="l"><a class="l" href="#764">764 </a>        <span class="php-keyword1">if</span> (!<span class="php-keyword1">isset</span>(<span class="php-var">$this</span>-&gt;_actionInstances[<span class="php-var">$name</span>])) {
-</span><span id="765" class="l"><a class="l" href="#765">765 </a>            <span class="php-var">$config</span> = <span class="php-var">$this</span>-&gt;config(<span class="php-quote">'actions.'</span> . <span class="php-var">$name</span>);
-</span><span id="766" class="l"><a class="l" href="#766">766 </a>
-</span><span id="767" class="l"><a class="l" href="#767">767 </a>            <span class="php-keyword1">if</span> (<span class="php-keyword1">empty</span>(<span class="php-var">$config</span>)) {
-</span><span id="768" class="l"><a class="l" href="#768">768 </a>                <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> CakeException(<span class="php-keyword2">sprintf</span>(<span class="php-quote">'Action &quot;%s&quot; has not been mapped'</span>, <span class="php-var">$name</span>));
-</span><span id="769" class="l"><a class="l" href="#769">769 </a>            }
-</span><span id="770" class="l"><a class="l" href="#770">770 </a>
-</span><span id="771" class="l"><a class="l" href="#771">771 </a>            <span class="php-keyword1">list</span>(<span class="php-var">$plugin</span>, <span class="php-var">$class</span>) = pluginSplit(<span class="php-var">$config</span>[<span class="php-quote">'className'</span>], <span class="php-keyword1">true</span>);
-</span><span id="772" class="l"><a class="l" href="#772">772 </a>            <span class="php-var">$class</span> = <span class="php-keyword2">ucfirst</span>(<span class="php-var">$class</span>);
+</span><span id="756" class="l"><a class="l" href="#756">756 </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;_listenerInstances[<span class="php-var">$name</span>];
+</span><span id="757" class="l"><a class="l" href="#757">757 </a>    }
+</span><span id="758" class="l"><a class="l" href="#758">758 </a>
+</span><span id="759" class="l"><a class="l" href="#759">759 </a><span class="php-comment">/**
+</span></span><span id="760" class="l"><a class="l" href="#760">760 </a><span class="php-comment"> * Load a CrudAction instance
+</span></span><span id="761" class="l"><a class="l" href="#761">761 </a><span class="php-comment"> *
+</span></span><span id="762" class="l"><a class="l" href="#762">762 </a><span class="php-comment"> * @param string $name The controller action name
+</span></span><span id="763" class="l"><a class="l" href="#763">763 </a><span class="php-comment"> * @return CrudAction
+</span></span><span id="764" class="l"><a class="l" href="#764">764 </a><span class="php-comment"> * @throws CakeException If action is not mapped
+</span></span><span id="765" class="l"><a class="l" href="#765">765 </a><span class="php-comment"> */</span>
+</span><span id="766" class="l"><a class="l" href="#766">766 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__loadAction" href="#__loadAction">_loadAction</a>(<span class="php-var">$name</span>) {
+</span><span id="767" class="l"><a class="l" href="#767">767 </a>        <span class="php-keyword1">if</span> (!<span class="php-keyword1">isset</span>(<span class="php-var">$this</span>-&gt;_actionInstances[<span class="php-var">$name</span>])) {
+</span><span id="768" class="l"><a class="l" href="#768">768 </a>            <span class="php-var">$config</span> = <span class="php-var">$this</span>-&gt;config(<span class="php-quote">'actions.'</span> . <span class="php-var">$name</span>);
+</span><span id="769" class="l"><a class="l" href="#769">769 </a>
+</span><span id="770" class="l"><a class="l" href="#770">770 </a>            <span class="php-keyword1">if</span> (<span class="php-keyword1">empty</span>(<span class="php-var">$config</span>)) {
+</span><span id="771" class="l"><a class="l" href="#771">771 </a>                <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> CakeException(<span class="php-keyword2">sprintf</span>(<span class="php-quote">'Action &quot;%s&quot; has not been mapped'</span>, <span class="php-var">$name</span>));
+</span><span id="772" class="l"><a class="l" href="#772">772 </a>            }
 </span><span id="773" class="l"><a class="l" href="#773">773 </a>
-</span><span id="774" class="l"><a class="l" href="#774">774 </a>            <span class="php-keyword1">if</span> (<span class="php-keyword2">in_array</span>(<span class="php-var">$class</span>, <span class="php-keyword1">array</span>(<span class="php-quote">'Index'</span>, <span class="php-quote">'View'</span>, <span class="php-quote">'Add'</span>, <span class="php-quote">'Edit'</span>, <span class="php-quote">'Delete'</span>))) {
-</span><span id="775" class="l"><a class="l" href="#775">775 </a>                <span class="php-keyword1">if</span> (!<span class="php-keyword1">empty</span>(<span class="php-var">$plugin</span>) &amp;&amp; <span class="php-var">$plugin</span> !== <span class="php-quote">'Crud.'</span>) {
-</span><span id="776" class="l"><a class="l" href="#776">776 </a>                    <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> CakeException(<span class="php-quote">'The build-in CrudActions (Index, View, Add, Edit and Delete) must be loaded from the Crud plugin'</span>);
-</span><span id="777" class="l"><a class="l" href="#777">777 </a>                }
-</span><span id="778" class="l"><a class="l" href="#778">778 </a>
-</span><span id="779" class="l"><a class="l" href="#779">779 </a>                <span class="php-var">$plugin</span> = <span class="php-quote">'Crud.'</span>;
-</span><span id="780" class="l"><a class="l" href="#780">780 </a>            }
+</span><span id="774" class="l"><a class="l" href="#774">774 </a>            <span class="php-keyword1">list</span>(<span class="php-var">$plugin</span>, <span class="php-var">$class</span>) = pluginSplit(<span class="php-var">$config</span>[<span class="php-quote">'className'</span>], <span class="php-keyword1">true</span>);
+</span><span id="775" class="l"><a class="l" href="#775">775 </a>            <span class="php-var">$class</span> = <span class="php-keyword2">ucfirst</span>(<span class="php-var">$class</span>);
+</span><span id="776" class="l"><a class="l" href="#776">776 </a>
+</span><span id="777" class="l"><a class="l" href="#777">777 </a>            <span class="php-keyword1">if</span> (<span class="php-keyword2">in_array</span>(<span class="php-var">$class</span>, <span class="php-keyword1">array</span>(<span class="php-quote">'Index'</span>, <span class="php-quote">'View'</span>, <span class="php-quote">'Add'</span>, <span class="php-quote">'Edit'</span>, <span class="php-quote">'Delete'</span>))) {
+</span><span id="778" class="l"><a class="l" href="#778">778 </a>                <span class="php-keyword1">if</span> (!<span class="php-keyword1">empty</span>(<span class="php-var">$plugin</span>) &amp;&amp; <span class="php-var">$plugin</span> !== <span class="php-quote">'Crud.'</span>) {
+</span><span id="779" class="l"><a class="l" href="#779">779 </a>                    <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> CakeException(<span class="php-quote">'The build-in CrudActions (Index, View, Add, Edit and Delete) must be loaded from the Crud plugin'</span>);
+</span><span id="780" class="l"><a class="l" href="#780">780 </a>                }
 </span><span id="781" class="l"><a class="l" href="#781">781 </a>
-</span><span id="782" class="l"><a class="l" href="#782">782 </a>            <span class="php-var">$class</span> .= <span class="php-quote">'CrudAction'</span>;
-</span><span id="783" class="l"><a class="l" href="#783">783 </a>            App::uses(<span class="php-var">$class</span>, <span class="php-var">$plugin</span> . <span class="php-quote">'Controller/Crud/Action'</span>);
-</span><span id="784" class="l"><a class="l" href="#784">784 </a>            <span class="php-var">$subject</span> = <span class="php-var">$this</span>-&gt;getSubject(<span class="php-keyword1">array</span>(<span class="php-quote">'action'</span> =&gt; <span class="php-var">$name</span>));
-</span><span id="785" class="l"><a class="l" href="#785">785 </a>            <span class="php-var">$this</span>-&gt;_actionInstances[<span class="php-var">$name</span>] = <span class="php-keyword1">new</span> <span class="php-var">$class</span>(<span class="php-var">$subject</span>, <span class="php-var">$config</span>);
-</span><span id="786" class="l"><a class="l" href="#786">786 </a>            <span class="php-var">$this</span>-&gt;_eventManager-&gt;attach(<span class="php-var">$this</span>-&gt;_actionInstances[<span class="php-var">$name</span>]);
-</span><span id="787" class="l"><a class="l" href="#787">787 </a>        }
-</span><span id="788" class="l"><a class="l" href="#788">788 </a>
-</span><span id="789" class="l"><a class="l" href="#789">789 </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;_actionInstances[<span class="php-var">$name</span>];
-</span><span id="790" class="l"><a class="l" href="#790">790 </a>    }
+</span><span id="782" class="l"><a class="l" href="#782">782 </a>                <span class="php-var">$plugin</span> = <span class="php-quote">'Crud.'</span>;
+</span><span id="783" class="l"><a class="l" href="#783">783 </a>            }
+</span><span id="784" class="l"><a class="l" href="#784">784 </a>
+</span><span id="785" class="l"><a class="l" href="#785">785 </a>            <span class="php-var">$class</span> .= <span class="php-quote">'CrudAction'</span>;
+</span><span id="786" class="l"><a class="l" href="#786">786 </a>            App::uses(<span class="php-var">$class</span>, <span class="php-var">$plugin</span> . <span class="php-quote">'Controller/Crud/Action'</span>);
+</span><span id="787" class="l"><a class="l" href="#787">787 </a>            <span class="php-var">$subject</span> = <span class="php-var">$this</span>-&gt;getSubject(<span class="php-keyword1">array</span>(<span class="php-quote">'action'</span> =&gt; <span class="php-var">$name</span>));
+</span><span id="788" class="l"><a class="l" href="#788">788 </a>            <span class="php-var">$this</span>-&gt;_actionInstances[<span class="php-var">$name</span>] = <span class="php-keyword1">new</span> <span class="php-var">$class</span>(<span class="php-var">$subject</span>, <span class="php-var">$config</span>);
+</span><span id="789" class="l"><a class="l" href="#789">789 </a>            <span class="php-var">$this</span>-&gt;_eventManager-&gt;attach(<span class="php-var">$this</span>-&gt;_actionInstances[<span class="php-var">$name</span>]);
+</span><span id="790" class="l"><a class="l" href="#790">790 </a>        }
 </span><span id="791" class="l"><a class="l" href="#791">791 </a>
-</span><span id="792" class="l"><a class="l" href="#792">792 </a><span class="php-comment">/**
-</span></span><span id="793" class="l"><a class="l" href="#793">793 </a><span class="php-comment"> * Set internal model properties from the controller
-</span></span><span id="794" class="l"><a class="l" href="#794">794 </a><span class="php-comment"> *
-</span></span><span id="795" class="l"><a class="l" href="#795">795 </a><span class="php-comment"> * @return void
-</span></span><span id="796" class="l"><a class="l" href="#796">796 </a><span class="php-comment"> * @throws CakeException If unable to get model instance
-</span></span><span id="797" class="l"><a class="l" href="#797">797 </a><span class="php-comment"> */</span>
-</span><span id="798" class="l"><a class="l" href="#798">798 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__setModelProperties" href="#__setModelProperties">_setModelProperties</a>() {
-</span><span id="799" class="l"><a class="l" href="#799">799 </a>        <span class="php-var">$this</span>-&gt;_modelName = <span class="php-var">$this</span>-&gt;_controller-&gt;modelClass;
-</span><span id="800" class="l"><a class="l" href="#800">800 </a>        <span class="php-keyword1">if</span> (<span class="php-keyword1">empty</span>(<span class="php-var">$this</span>-&gt;_modelName)) {
-</span><span id="801" class="l"><a class="l" href="#801">801 </a>            <span class="php-var">$this</span>-&gt;_model = <span class="php-keyword1">null</span>;
-</span><span id="802" class="l"><a class="l" href="#802">802 </a>            <span class="php-var">$this</span>-&gt;_modelName = <span class="php-keyword1">null</span>;
-</span><span id="803" class="l"><a class="l" href="#803">803 </a>            <span class="php-keyword1">return</span>;
-</span><span id="804" class="l"><a class="l" href="#804">804 </a>        }
-</span><span id="805" class="l"><a class="l" href="#805">805 </a>
-</span><span id="806" class="l"><a class="l" href="#806">806 </a>        <span class="php-var">$this</span>-&gt;_model = <span class="php-var">$this</span>-&gt;_controller-&gt;{<span class="php-var">$this</span>-&gt;_modelName};
-</span><span id="807" class="l"><a class="l" href="#807">807 </a>        <span class="php-keyword1">if</span> (<span class="php-keyword1">empty</span>(<span class="php-var">$this</span>-&gt;_model)) {
-</span><span id="808" class="l"><a class="l" href="#808">808 </a>            <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> CakeException(<span class="php-quote">'No model loaded in the Controller by the name &quot;'</span> . <span class="php-var">$this</span>-&gt;_modelName . <span class="php-quote">'&quot;. Please add it to $uses.'</span>);
-</span><span id="809" class="l"><a class="l" href="#809">809 </a>        }
-</span><span id="810" class="l"><a class="l" href="#810">810 </a>    }
-</span><span id="811" class="l"><a class="l" href="#811">811 </a>
-</span><span id="812" class="l"><a class="l" href="#812">812 </a><span class="php-comment">/**
-</span></span><span id="813" class="l"><a class="l" href="#813">813 </a><span class="php-comment"> * Merge configuration arrays
-</span></span><span id="814" class="l"><a class="l" href="#814">814 </a><span class="php-comment"> *
-</span></span><span id="815" class="l"><a class="l" href="#815">815 </a><span class="php-comment"> * Allow us to change e.g. a listener config without losing defaults
-</span></span><span id="816" class="l"><a class="l" href="#816">816 </a><span class="php-comment"> *
-</span></span><span id="817" class="l"><a class="l" href="#817">817 </a><span class="php-comment"> * This is like merge_array_recursive - with the difference that
-</span></span><span id="818" class="l"><a class="l" href="#818">818 </a><span class="php-comment"> * duplicate keys isn't changed to an array with both values, but
-</span></span><span id="819" class="l"><a class="l" href="#819">819 </a><span class="php-comment"> * overridden
-</span></span><span id="820" class="l"><a class="l" href="#820">820 </a><span class="php-comment"> *
-</span></span><span id="821" class="l"><a class="l" href="#821">821 </a><span class="php-comment"> * @param array $array1
-</span></span><span id="822" class="l"><a class="l" href="#822">822 </a><span class="php-comment"> * @param array $array2
-</span></span><span id="823" class="l"><a class="l" href="#823">823 </a><span class="php-comment"> * @return array
-</span></span><span id="824" class="l"><a class="l" href="#824">824 </a><span class="php-comment"> */</span>
-</span><span id="825" class="l"><a class="l" href="#825">825 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__mergeConfig" href="#__mergeConfig">_mergeConfig</a>(<span class="php-keyword1">array</span> <span class="php-var">$array1</span>, <span class="php-keyword1">array</span> <span class="php-var">$array2</span>) {
-</span><span id="826" class="l"><a class="l" href="#826">826 </a>        <span class="php-var">$merged</span> = <span class="php-var">$array1</span>;
-</span><span id="827" class="l"><a class="l" href="#827">827 </a>        <span class="php-keyword1">foreach</span> (<span class="php-var">$array2</span> <span class="php-keyword1">as</span> <span class="php-var">$key</span> =&gt; <span class="php-var">$value</span>) {
-</span><span id="828" class="l"><a class="l" href="#828">828 </a>            <span class="php-keyword1">if</span> (<span class="php-keyword2">is_array</span>(<span class="php-var">$value</span>) &amp;&amp; <span class="php-keyword1">isset</span>(<span class="php-var">$merged</span>[<span class="php-var">$key</span>]) &amp;&amp; <span class="php-keyword2">is_array</span>(<span class="php-var">$merged</span>[<span class="php-var">$key</span>])) {
-</span><span id="829" class="l"><a class="l" href="#829">829 </a>                <span class="php-var">$merged</span>[<span class="php-var">$key</span>] = <span class="php-var">$this</span>-&gt;_mergeConfig(<span class="php-var">$merged</span>[<span class="php-var">$key</span>], <span class="php-var">$value</span>);
-</span><span id="830" class="l"><a class="l" href="#830">830 </a>                <span class="php-keyword1">continue</span>;
-</span><span id="831" class="l"><a class="l" href="#831">831 </a>            }
-</span><span id="832" class="l"><a class="l" href="#832">832 </a>
-</span><span id="833" class="l"><a class="l" href="#833">833 </a>            <span class="php-var">$merged</span>[<span class="php-var">$key</span>] = <span class="php-var">$value</span>;
-</span><span id="834" class="l"><a class="l" href="#834">834 </a>        }
+</span><span id="792" class="l"><a class="l" href="#792">792 </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;_actionInstances[<span class="php-var">$name</span>];
+</span><span id="793" class="l"><a class="l" href="#793">793 </a>    }
+</span><span id="794" class="l"><a class="l" href="#794">794 </a>
+</span><span id="795" class="l"><a class="l" href="#795">795 </a><span class="php-comment">/**
+</span></span><span id="796" class="l"><a class="l" href="#796">796 </a><span class="php-comment"> * Set internal model properties from the controller
+</span></span><span id="797" class="l"><a class="l" href="#797">797 </a><span class="php-comment"> *
+</span></span><span id="798" class="l"><a class="l" href="#798">798 </a><span class="php-comment"> * @return void
+</span></span><span id="799" class="l"><a class="l" href="#799">799 </a><span class="php-comment"> * @throws CakeException If unable to get model instance
+</span></span><span id="800" class="l"><a class="l" href="#800">800 </a><span class="php-comment"> */</span>
+</span><span id="801" class="l"><a class="l" href="#801">801 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__setModelProperties" href="#__setModelProperties">_setModelProperties</a>() {
+</span><span id="802" class="l"><a class="l" href="#802">802 </a>        <span class="php-var">$this</span>-&gt;_modelName = <span class="php-var">$this</span>-&gt;_controller-&gt;modelClass;
+</span><span id="803" class="l"><a class="l" href="#803">803 </a>        <span class="php-keyword1">if</span> (<span class="php-keyword1">empty</span>(<span class="php-var">$this</span>-&gt;_modelName)) {
+</span><span id="804" class="l"><a class="l" href="#804">804 </a>            <span class="php-var">$this</span>-&gt;_model = <span class="php-keyword1">null</span>;
+</span><span id="805" class="l"><a class="l" href="#805">805 </a>            <span class="php-var">$this</span>-&gt;_modelName = <span class="php-keyword1">null</span>;
+</span><span id="806" class="l"><a class="l" href="#806">806 </a>            <span class="php-keyword1">return</span>;
+</span><span id="807" class="l"><a class="l" href="#807">807 </a>        }
+</span><span id="808" class="l"><a class="l" href="#808">808 </a>
+</span><span id="809" class="l"><a class="l" href="#809">809 </a>        <span class="php-var">$this</span>-&gt;_model = <span class="php-var">$this</span>-&gt;_controller-&gt;{<span class="php-var">$this</span>-&gt;_modelName};
+</span><span id="810" class="l"><a class="l" href="#810">810 </a>        <span class="php-keyword1">if</span> (<span class="php-keyword1">empty</span>(<span class="php-var">$this</span>-&gt;_model)) {
+</span><span id="811" class="l"><a class="l" href="#811">811 </a>            <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> CakeException(<span class="php-quote">'No model loaded in the Controller by the name &quot;'</span> . <span class="php-var">$this</span>-&gt;_modelName . <span class="php-quote">'&quot;. Please add it to $uses.'</span>);
+</span><span id="812" class="l"><a class="l" href="#812">812 </a>        }
+</span><span id="813" class="l"><a class="l" href="#813">813 </a>    }
+</span><span id="814" class="l"><a class="l" href="#814">814 </a>
+</span><span id="815" class="l"><a class="l" href="#815">815 </a><span class="php-comment">/**
+</span></span><span id="816" class="l"><a class="l" href="#816">816 </a><span class="php-comment"> * Merge configuration arrays
+</span></span><span id="817" class="l"><a class="l" href="#817">817 </a><span class="php-comment"> *
+</span></span><span id="818" class="l"><a class="l" href="#818">818 </a><span class="php-comment"> * Allow us to change e.g. a listener config without losing defaults
+</span></span><span id="819" class="l"><a class="l" href="#819">819 </a><span class="php-comment"> *
+</span></span><span id="820" class="l"><a class="l" href="#820">820 </a><span class="php-comment"> * This is like merge_array_recursive - with the difference that
+</span></span><span id="821" class="l"><a class="l" href="#821">821 </a><span class="php-comment"> * duplicate keys isn't changed to an array with both values, but
+</span></span><span id="822" class="l"><a class="l" href="#822">822 </a><span class="php-comment"> * overridden
+</span></span><span id="823" class="l"><a class="l" href="#823">823 </a><span class="php-comment"> *
+</span></span><span id="824" class="l"><a class="l" href="#824">824 </a><span class="php-comment"> * @param array $array1
+</span></span><span id="825" class="l"><a class="l" href="#825">825 </a><span class="php-comment"> * @param array $array2
+</span></span><span id="826" class="l"><a class="l" href="#826">826 </a><span class="php-comment"> * @return array
+</span></span><span id="827" class="l"><a class="l" href="#827">827 </a><span class="php-comment"> */</span>
+</span><span id="828" class="l"><a class="l" href="#828">828 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__mergeConfig" href="#__mergeConfig">_mergeConfig</a>(<span class="php-keyword1">array</span> <span class="php-var">$array1</span>, <span class="php-keyword1">array</span> <span class="php-var">$array2</span>) {
+</span><span id="829" class="l"><a class="l" href="#829">829 </a>        <span class="php-var">$merged</span> = <span class="php-var">$array1</span>;
+</span><span id="830" class="l"><a class="l" href="#830">830 </a>        <span class="php-keyword1">foreach</span> (<span class="php-var">$array2</span> <span class="php-keyword1">as</span> <span class="php-var">$key</span> =&gt; <span class="php-var">$value</span>) {
+</span><span id="831" class="l"><a class="l" href="#831">831 </a>            <span class="php-keyword1">if</span> (<span class="php-keyword2">is_array</span>(<span class="php-var">$value</span>) &amp;&amp; <span class="php-keyword1">isset</span>(<span class="php-var">$merged</span>[<span class="php-var">$key</span>]) &amp;&amp; <span class="php-keyword2">is_array</span>(<span class="php-var">$merged</span>[<span class="php-var">$key</span>])) {
+</span><span id="832" class="l"><a class="l" href="#832">832 </a>                <span class="php-var">$merged</span>[<span class="php-var">$key</span>] = <span class="php-var">$this</span>-&gt;_mergeConfig(<span class="php-var">$merged</span>[<span class="php-var">$key</span>], <span class="php-var">$value</span>);
+</span><span id="833" class="l"><a class="l" href="#833">833 </a>                <span class="php-keyword1">continue</span>;
+</span><span id="834" class="l"><a class="l" href="#834">834 </a>            }
 </span><span id="835" class="l"><a class="l" href="#835">835 </a>
-</span><span id="836" class="l"><a class="l" href="#836">836 </a>        <span class="php-keyword1">return</span> <span class="php-var">$merged</span>;
-</span><span id="837" class="l"><a class="l" href="#837">837 </a>    }
+</span><span id="836" class="l"><a class="l" href="#836">836 </a>            <span class="php-var">$merged</span>[<span class="php-var">$key</span>] = <span class="php-var">$value</span>;
+</span><span id="837" class="l"><a class="l" href="#837">837 </a>        }
 </span><span id="838" class="l"><a class="l" href="#838">838 </a>
-</span><span id="839" class="l"><a class="l" href="#839">839 </a>}
-</span><span id="840" class="l"><a class="l" href="#840">840 </a></span></code></pre>
+</span><span id="839" class="l"><a class="l" href="#839">839 </a>        <span class="php-keyword1">return</span> <span class="php-var">$merged</span>;
+</span><span id="840" class="l"><a class="l" href="#840">840 </a>    }
+</span><span id="841" class="l"><a class="l" href="#841">841 </a>
+</span><span id="842" class="l"><a class="l" href="#842">842 </a>}
+</span><span id="843" class="l"><a class="l" href="#843">843 </a></span></code></pre>
 	</div>
 
 	<div id="footer">
