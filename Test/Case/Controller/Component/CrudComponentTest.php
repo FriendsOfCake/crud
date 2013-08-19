@@ -9,6 +9,8 @@ App::uses('CakeEventManager', 'Event');
 App::uses('ComponentCollection', 'Controller');
 App::uses('Component', 'Controller');
 App::uses('CrudComponent', 'Crud.Controller/Component');
+App::uses('CrudListener', 'Crud.Controller/Crud');
+App::uses('CrudControllerTestCase', 'Crud.Test/Support');
 
 App::uses('Model', 'Model');
 
@@ -152,10 +154,19 @@ class TestCrudComponent extends CrudComponent {
 
 }
 
+class TestListener extends CrudListener {
+
+	public $callCount = 0;
+
+	public function setup() {
+		$this->callCount += 1;
+	}
+}
+
 /**
  * CrudComponentTestCase
  */
-class CrudComponentTest extends ControllerTestCase {
+class CrudComponentTest extends CrudControllerTestCase {
 
 /**
  * fixtures
@@ -1126,5 +1137,20 @@ class CrudComponentTest extends ControllerTestCase {
 
 		$this->assertInstanceOf($class, $subject->model);
 		$this->assertEquals($class, $subject->modelClass);
+	}
+
+/**
+ * test_loadListener
+ *
+ * @return void
+ */
+	public function test_loadListener() {
+		$this->Crud->config('listeners.HasSetup', array(
+			'className' => 'Test'
+		));
+
+		$this->setReflectionClassInstance($this->Crud);
+		$listener = $this->callProtectedMethod('_loadListener', array('HasSetup'), $this->Crud);
+		$this->assertSame(1, $listener->callCount, 'Setup should be called');
 	}
 }

@@ -56,6 +56,8 @@ class ApiListener extends CrudListener {
 /**
  * setup
  *
+ * Called when the listener is created
+ *
  * @return void
  */
 	public function setup() {
