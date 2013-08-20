@@ -1,7 +1,7 @@
-[![Build Status](https://travis-ci.org/FriendsOfCake/crud?branch=master)](https://travis-ci.org/jippi/cakephp-crud)
-[![Coverage Status](https://coveralls.io/repos/FriendsOfCake/crud/badge.png?branch=master)](https://coveralls.io/r/jippi/cakephp-crud?branch=develop)
-[![Total Downloads](https://poser.pugx.org/FriendsOfCake/crud/d/total.png)](https://packagist.org/packages/jippi/cakephp-crud)
-[![Latest Stable Version](https://poser.pugx.org/FriendsOfCake/crud/v/stable.png)](https://packagist.org/packages/jippi/cakephp-crud)
+[![Build Status](https://travis-ci.org/FriendsOfCake/crud?branch=master)](https://travis-ci.org/FriendsOfCake/crud)
+[![Coverage Status](https://coveralls.io/repos/FriendsOfCake/crud/badge.png?branch=master)](https://coveralls.io/r/FriendsOfCake/crud?branch=mater)
+[![Total Downloads](https://poser.pugx.org/FriendsOfCake/crud/d/total.png)](https://packagist.org/packages/FriendsOfCake/crud)
+[![Latest Stable Version](https://poser.pugx.org/FriendsOfCake/crud/v/stable.png)](https://packagist.org/packages/FriendsOfCake/crud)
 
 # Introduction
 
