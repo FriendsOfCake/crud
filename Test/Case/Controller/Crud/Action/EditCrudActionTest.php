@@ -1184,34 +1184,32 @@ class EditCrudActionTest extends CrudTestCase {
 	}
 
 /**
- * testActionPutIdInjection
+ * Verify that _injectPrimaryKey is called, and the result is passed to saveAssociated
  *
- * Check that the model id is injected into the right place
- *
- * @dataProvider idInjectionProvider
  * @return void
  */
-	public function testActionPutIdInjection($data, $expectation = null) {
-		if (!$expectation) {
-			$expectation = $data;
-		}
-
+	public function test_injectPrimaryKeyIsCalled() {
 		$CrudSubject = new CrudSubject();
 
 		$Request = $this->getMock('CakeRequest');
-		$Request->data = $data;
+		$Request->data = array('fake', 'input', 'data');
 
 		$Model = $this
 			->getMockBuilder('Model')
 			->setMethods(array('saveAssociated', 'find', 'escapeField'))
 			->setConstructorArgs(array(array('name' => 'Model')))
 			->getMock();
+		$Model
+			->expects($this->any())
+			->method('saveAssociated')
+			->with(array('id' => 1, '_injectPrimaryKey' => 'return'))
+			->will($this->returnValue(false));
 
 		$i = 0;
 		$Action = $this
 			->getMockBuilder('EditCrudAction')
 			->disableOriginalConstructor()
-			->setMethods(array('_validateId', '_request', '_model', '_findRecord', 'setFlash', '_trigger'))
+			->setMethods(array('_validateId', '_request', '_model', '_findRecord', '_injectPrimaryKey', 'setFlash', '_trigger'))
 			->getMock();
 		$Action
 			->expects($this->any())
@@ -1229,19 +1227,48 @@ class EditCrudActionTest extends CrudTestCase {
 			->expects($this->any())
 			->method('_findRecord')
 			->will($this->returnValue(true));
-
-		$Model
+		$Action
 			->expects($this->once())
-			->method('saveAssociated')
-			->with($expectation);
+			->method('_injectPrimaryKey')
+			->will($this->returnValue(array('id' => 1, '_injectPrimaryKey' => 'return')));
 
 		$this->setReflectionClassInstance($Action);
 		$this->callProtectedMethod('_put', array(1), $Action);
 	}
 
 /**
+ * test_injectPrimaryKey
+ *
+ * Check that the model id is injected into the right place
+ *
+ * @dataProvider idInjectionProvider
+ * @param array $data
+ * @param array $expectation
+ */
+	public function test_injectPrimaryKey($data, $expectation = null) {
+		if (!$expectation) {
+			$expectation = $data;
+		}
+
+		$Model = $this
+			->getMockBuilder('Model')
+			->setMethods(array('saveAssociated', 'find', 'escapeField'))
+			->setConstructorArgs(array(array('name' => 'Model')))
+			->getMock();
+
+		$Action = new EditCrudAction(new CrudSubject());
+
+		$this->setReflectionClassInstance($Action);
+		$return = $this->callProtectedMethod('_injectPrimaryKey', array($data, 1, $Model), $Action);
+		$this->assertSame($expectation, $return, '"id" should be injected in the right place in the save data');
+	}
+
+/**
  * idInjectionProvider
- * input and what's expected
+ *
+ * Returns sets of data to use in tests.
+ * 	input
+ * 	expected result (optional, uses input if absent)
  *
  * @return array
  */
