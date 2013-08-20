@@ -162,22 +162,20 @@
 </span><span id="52" class="l"><a class="l" href="#52">52 </a>
 </span><span id="53" class="l"><a class="l" href="#53">53 </a>            <span class="php-quote">'Crud.beforeDelete'</span> =&gt; <span class="php-quote">'beforeDelete'</span>,
 </span><span id="54" class="l"><a class="l" href="#54">54 </a>            <span class="php-quote">'Crud.afterDelete'</span> =&gt; <span class="php-quote">'afterDelete'</span>,
-</span><span id="55" class="l"><a class="l" href="#55">55 </a>
-</span><span id="56" class="l"><a class="l" href="#56">56 </a>            <span class="php-quote">'Crud.beforeCancel'</span> =&gt; <span class="php-quote">'beforeCancel'</span>,
-</span><span id="57" class="l"><a class="l" href="#57">57 </a>        );
-</span><span id="58" class="l"><a class="l" href="#58">58 </a>
-</span><span id="59" class="l"><a class="l" href="#59">59 </a>        <span class="php-var">$events</span> = <span class="php-keyword1">array</span>();
-</span><span id="60" class="l"><a class="l" href="#60">60 </a>        <span class="php-keyword1">foreach</span> (<span class="php-var">$eventMap</span> <span class="php-keyword1">as</span> <span class="php-var">$event</span> =&gt; <span class="php-var">$method</span>) {
-</span><span id="61" class="l"><a class="l" href="#61">61 </a>            <span class="php-keyword1">if</span> (<span class="php-keyword2">method_exists</span>(<span class="php-var">$this</span>, <span class="php-var">$method</span>)) {
-</span><span id="62" class="l"><a class="l" href="#62">62 </a>                <span class="php-var">$events</span>[<span class="php-var">$event</span>] = <span class="php-var">$method</span>;
-</span><span id="63" class="l"><a class="l" href="#63">63 </a>            }
-</span><span id="64" class="l"><a class="l" href="#64">64 </a>        }
-</span><span id="65" class="l"><a class="l" href="#65">65 </a>
-</span><span id="66" class="l"><a class="l" href="#66">66 </a>        <span class="php-keyword1">return</span> <span class="php-var">$events</span>;
-</span><span id="67" class="l"><a class="l" href="#67">67 </a>    }
-</span><span id="68" class="l"><a class="l" href="#68">68 </a>
-</span><span id="69" class="l"><a class="l" href="#69">69 </a>}
-</span><span id="70" class="l"><a class="l" href="#70">70 </a></span></code></pre>
+</span><span id="55" class="l"><a class="l" href="#55">55 </a>        );
+</span><span id="56" class="l"><a class="l" href="#56">56 </a>
+</span><span id="57" class="l"><a class="l" href="#57">57 </a>        <span class="php-var">$events</span> = <span class="php-keyword1">array</span>();
+</span><span id="58" class="l"><a class="l" href="#58">58 </a>        <span class="php-keyword1">foreach</span> (<span class="php-var">$eventMap</span> <span class="php-keyword1">as</span> <span class="php-var">$event</span> =&gt; <span class="php-var">$method</span>) {
+</span><span id="59" class="l"><a class="l" href="#59">59 </a>            <span class="php-keyword1">if</span> (<span class="php-keyword2">method_exists</span>(<span class="php-var">$this</span>, <span class="php-var">$method</span>)) {
+</span><span id="60" class="l"><a class="l" href="#60">60 </a>                <span class="php-var">$events</span>[<span class="php-var">$event</span>] = <span class="php-var">$method</span>;
+</span><span id="61" class="l"><a class="l" href="#61">61 </a>            }
+</span><span id="62" class="l"><a class="l" href="#62">62 </a>        }
+</span><span id="63" class="l"><a class="l" href="#63">63 </a>
+</span><span id="64" class="l"><a class="l" href="#64">64 </a>        <span class="php-keyword1">return</span> <span class="php-var">$events</span>;
+</span><span id="65" class="l"><a class="l" href="#65">65 </a>    }
+</span><span id="66" class="l"><a class="l" href="#66">66 </a>
+</span><span id="67" class="l"><a class="l" href="#67">67 </a>}
+</span><span id="68" class="l"><a class="l" href="#68">68 </a></span></code></pre>
 	</div>
 
 	<div id="footer">
