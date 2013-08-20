@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/FriendsOfCake/crud?branch=master)](https://travis-ci.org/FriendsOfCake/crud)
+[![Build Status](https://travis-ci.org/FriendsOfCake/crud.png?branch=master)](https://travis-ci.org/FriendsOfCake/crud)
 [![Coverage Status](https://coveralls.io/repos/FriendsOfCake/crud/badge.png?branch=master)](https://coveralls.io/r/FriendsOfCake/crud?branch=mater)
 [![Total Downloads](https://poser.pugx.org/FriendsOfCake/crud/d/total.png)](https://packagist.org/packages/FriendsOfCake/crud)
 [![Latest Stable Version](https://poser.pugx.org/FriendsOfCake/crud/v/stable.png)](https://packagist.org/packages/FriendsOfCake/crud)
