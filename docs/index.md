@@ -51,4 +51,4 @@ Requests are always more than welcome.
 
 # Support / questions
 
-You can always hit me up on IRC in the #cakephp channel - I lurk there as 'Jippi'.
+You can always hit me up on IRC in the #FriendsOfCake channel - I lurk there as 'Jippi'.
