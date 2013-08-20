@@ -70,11 +70,11 @@ class ApiListenerTest extends CrudTestCase {
 	}
 
 /**
- * testInitialize
+ * testSetup
  *
  * @return void
  */
-	public function testInitialize() {
+	public function testSetup() {
 		$listener = $this
 			->getMockBuilder('ApiListener')
 			->setMethods(array('setupDetectors'))
@@ -85,7 +85,7 @@ class ApiListenerTest extends CrudTestCase {
 			->expects($this->once())
 			->method('setupDetectors');
 
-		$listener->initialize(new CakeEvent('Crud.initialize'));
+		$listener->setup();
 	}
 
 /**
@@ -315,7 +315,6 @@ class ApiListenerTest extends CrudTestCase {
 		$subject = $this->getMock('CrudSubject');
 		$apiListener = new ApiListener($subject);
 		$expected = array(
-			'Crud.initialize' => array('callable' => 'initialize', 'priority' => 5),
 			'Crud.beforeHandle' => array('callable' => 'beforeHandle', 'priority' => 10),
 			'Crud.setFlash' => array('callable' => 'setFlash', 'priority' => 5),
 
@@ -1296,35 +1295,47 @@ class ApiListenerTest extends CrudTestCase {
 
 		ApiListener::mapResources();
 
-		$expected = array(
-			'GET index /pages',
-			'GET view /pages/:id',
-			'POST add /pages',
-			'PUT edit /pages/:id',
-			'DELETE delete /pages/:id',
-			'POST edit /pages/:id',
-			'GET index /test_apps_error',
-			'GET view /test_apps_error/:id',
-			'POST add /test_apps_error',
-			'PUT edit /test_apps_error/:id',
-			'DELETE delete /test_apps_error/:id',
-			'POST edit /test_apps_error/:id',
-			'GET index /tests_apps',
-			'GET view /tests_apps/:id',
-			'POST add /tests_apps',
-			'PUT edit /tests_apps/:id',
-			'DELETE delete /tests_apps/:id',
-			'POST edit /tests_apps/:id',
-			'GET index /tests_apps_posts',
-			'GET view /tests_apps_posts/:id',
-			'POST add /tests_apps_posts',
-			'PUT edit /tests_apps_posts/:id',
-			'DELETE delete /tests_apps_posts/:id',
-			'POST edit /tests_apps_posts/:id'
-		);
+		$expected = $this->_getRouteExpectations();
 		$return = $this->_currentRoutes();
 
-		$this->assertSame($expected, $return, 'test_app contains Pages, TestAppsError, TestApps and TestsAppsPosts controllers - there should be rest routes for all of these');
+		$this->assertSame($expected, $return, 'test_app contains several controllers - there should be rest routes for all of them');
+	}
+
+/**
+ * _getRouteExpectations
+ *
+ * A little helper function which returns routes expectations for all app controllers
+ *
+ * @return array
+ */
+	protected function _getRouteExpectations() {
+		$routePatterns = array(
+			'GET index /{name}',
+			'GET view /{name}/:id',
+			'POST add /{name}',
+			'PUT edit /{name}/:id',
+			'DELETE delete /{name}/:id',
+			'POST edit /{name}/:id',
+		);
+
+		$expected = array();
+		$controllers = App::objects('Controller');
+		foreach ($controllers as $controller) {
+			$controller = substr($controller, 0, - strlen('Controller'));
+			$controller = Inflector::underscore($controller);
+			if ($controller === 'app') {
+				continue;
+			}
+
+			$routes = $routePatterns;
+			foreach ($routes as &$route) {
+				$route = str_replace('{name}', $controller, $route);
+			}
+
+			$expected = array_merge($expected, $routes);
+		}
+
+		return $expected;
 	}
 
 /**

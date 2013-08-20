@@ -1,7 +1,7 @@
 {
   "name":"jippi/cakephp-crud",
-  "version": "3.0.1",
-  "description":"Automated CRUD / Scaffolding and API for CakePHP 2.1+ - keep your controllers DRY while maintaining flexibility",
+  "version": "3.0.2",
+  "description":"CakePHP Application development on steroids - rapid prototyping / scaffolding & production ready code - XML / JSON APIs and more",
   "type":"cakephp-plugin",
   "keywords":[
     "cakephp",
