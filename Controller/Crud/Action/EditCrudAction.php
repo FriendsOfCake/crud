@@ -122,7 +122,9 @@ class EditCrudAction extends CrudAction {
 			return $this->_notFound($id);
 		}
 
-		if (isset($request->data[$model->alias])) {
+		$key = key($request->data);
+		$keyIsModelAlias = (strtoupper($key[0]) === $key[0]);
+		if (isset($request->data[$model->alias]) || $keyIsModelAlias) {
 			$request->data[$model->alias][$model->primaryKey] = $id;
 		} else {
 			$request->data[$model->primaryKey] = $id;

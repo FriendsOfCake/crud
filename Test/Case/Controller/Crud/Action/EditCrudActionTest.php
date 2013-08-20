@@ -1182,4 +1182,101 @@ class EditCrudActionTest extends CrudTestCase {
 		$this->setReflectionClassInstance($Action);
 		$this->callProtectedMethod('_validateId', array(1), $Action);
 	}
+
+/**
+ * testActionPutIdInjection
+ *
+ * Check that the model id is injected into the right place
+ *
+ * @dataProvider idInjectionProvider
+ * @return void
+ */
+	public function testActionPutIdInjection($data, $expectation = null) {
+		if (!$expectation) {
+			$expectation = $data;
+		}
+
+		$CrudSubject = new CrudSubject();
+
+		$Request = $this->getMock('CakeRequest');
+		$Request->data = $data;
+
+		$Model = $this
+			->getMockBuilder('Model')
+			->setMethods(array('saveAssociated', 'find', 'escapeField'))
+			->setConstructorArgs(array(array('name' => 'Model')))
+			->getMock();
+
+		$i = 0;
+		$Action = $this
+			->getMockBuilder('EditCrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array('_validateId', '_request', '_model', '_findRecord', 'setFlash', '_trigger'))
+			->getMock();
+		$Action
+			->expects($this->any())
+			->method('_validateId')
+			->will($this->returnValue(true));
+		$Action
+			->expects($this->any())
+			->method('_request')
+			->will($this->returnValue($Request));
+		$Action
+			->expects($this->any())
+			->method('_model')
+			->will($this->returnValue($Model));
+		$Action
+			->expects($this->any())
+			->method('_findRecord')
+			->will($this->returnValue(true));
+
+		$Model
+			->expects($this->once())
+			->method('saveAssociated')
+			->with($expectation);
+
+		$this->setReflectionClassInstance($Action);
+		$this->callProtectedMethod('_put', array(1), $Action);
+	}
+
+/**
+ * idInjectionProvider
+ * input and what's expected
+ *
+ * @return array
+ */
+	public function idInjectionProvider() {
+		return array(
+			array(
+				array('Model' => array('id' => 1, 'some' => 'update'))
+			),
+			array(
+				array('Model' => array('id' => 'cheating', 'some' => 'update')),
+				array('Model' => array('id' => 1, 'some' => 'update'))
+			),
+			array(
+				array('Model' => array('some' => 'update')),
+				array('Model' => array('some' => 'update', 'id' => 1))
+			),
+			array(
+				array('id' => 1, 'some' => 'update')
+			),
+			array(
+				array('some' => 'update'),
+				array('some' => 'update', 'id' => 1)
+			),
+			array(
+				array('something' => 'else', 'Model' => array('some' => 'update')),
+				array('something' => 'else', 'Model' => array('some' => 'update', 'id' => 1)),
+			),
+			array(
+				array('Category' => array('Category' => array(1))),
+				array(
+					'Category' => array('Category' => array(1)),
+					'Model' => array('id' => 1)
+				),
+			),
+
+		);
+	}
 }
