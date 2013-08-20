@@ -93,12 +93,6 @@ class AddCrudAction extends CrudAction {
 		$request = $this->_request();
 		$model = $this->_model();
 
-		if ($request->data('_cancel')) {
-			$subject = $this->_trigger('beforeCancel');
-			$controller = $this->_controller();
-			return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
-		}
-
 		$this->_trigger('beforeSave');
 		if (call_user_func(array($model, $this->saveMethod()), $request->data, $this->saveOptions())) {
 			$this->setFlash('success');
