@@ -7,7 +7,7 @@
 	<title>Class EditCrudAction | jippi/cakephp-crud (master)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?3191791767"></script>
+	<script type="text/javascript" src="elementlist.js?971672546"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -162,7 +162,7 @@ Object
 		
 		
 
-		<b>Located at</b> <a href="source-class-EditCrudAction.html#5-248" title="Go to source code">Controller/Crud/Action/EditCrudAction.php</a><br />
+		<b>Located at</b> <a href="source-class-EditCrudAction.html#5-295" title="Go to source code">Controller/Crud/Action/EditCrudAction.php</a><br />
 	</div>
 
 
@@ -222,7 +222,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#__put">#</a>
-			<code><a href="source-class-EditCrudAction.html#106-155" title="Go to source code">_put</a>( <span>mixed <var>$id</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-EditCrudAction.html#106-151" title="Go to source code">_put</a>( <span>mixed <var>$id</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -260,7 +260,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#__findRecord">#</a>
-			<code><a href="source-class-EditCrudAction.html#157-176" title="Go to source code">_findRecord</a>( <span>string <var>$id</var></span>, <span>string <var>$findMethod</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-EditCrudAction.html#153-172" title="Go to source code">_findRecord</a>( <span>string <var>$id</var></span>, <span>string <var>$findMethod</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -304,7 +304,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#__notFound">#</a>
-			<code><a href="source-class-EditCrudAction.html#178-191" title="Go to source code">_notFound</a>( <span>string <var>$id</var></span> )</code>
+			<code><a href="source-class-EditCrudAction.html#174-187" title="Go to source code">_notFound</a>( <span>string <var>$id</var></span> )</code>
 
 			<div class="description short">
 				
@@ -346,7 +346,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#__post">#</a>
-			<code><a href="source-class-EditCrudAction.html#193-203" title="Go to source code">_post</a>( <span>mixed <var>$id</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-EditCrudAction.html#189-199" title="Go to source code">_post</a>( <span>mixed <var>$id</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -375,6 +375,71 @@ Object
 			</div>
 			</div></td>
 		</tr>
+		<tr data-order="_injectPrimaryKey" id="__injectPrimaryKey">
+
+			<td class="attributes"><code>
+				 protected 
+				array
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__injectPrimaryKey">#</a>
+			<code><a href="source-class-EditCrudAction.html#201-250" title="Go to source code">_injectPrimaryKey</a>( <span>array <var>$data</var></span>, <span>mixed <var>$id</var></span>, <span>Model <var>$model</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Inject the id (from the url) into the data to be saved.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Inject the id (from the url) into the data to be saved.</p>
+
+<p>Determine what the format of the data is there are two formats accepted by
+cake:<br />
+array( 'Model' =&gt; array('stuff' =&gt; 'here') );</p>
+
+<p>and<br />
+array('stuff' =&gt; 'here')</p>
+
+<p>The latter is most appropriate for api calls.</p>
+
+<p>If either the first array key is Capitalized, or the model alias is present
+in the form data, The id will be injected under the model-alias key:<br />
+array( 'Model' =&gt; array('stuff' =&gt; 'here', 'id' =&gt; $id) );<br />
+// HABTM example array( 'Category' =&gt; array('Category' =&gt; array(123)),
+'Model' =&gt; array('id' =&gt; $id) // &lt;- added );</p>
+
+<p>If the model-alias key is absent AND the first array key is not capitalized,
+inject in the root:<br />
+array('stuff' =&gt; 'here', 'id' =&gt; $id)</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$data</var></dt>
+						<dd><code>array</code><br>$data</dd>
+						<dt><var>$id</var></dt>
+						<dd><code>mixed</code><br>$id</dd>
+						<dt><var>$model</var></dt>
+						<dd><code>Model</code><br>$model</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>array</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
 		<tr data-order="_validateId" id="__validateId">
 
 			<td class="attributes"><code>
@@ -386,7 +451,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#__validateId">#</a>
-			<code><a href="source-class-EditCrudAction.html#205-246" title="Go to source code">_validateId</a>( <span>mixed <var>$id</var></span> )</code>
+			<code><a href="source-class-EditCrudAction.html#252-293" title="Go to source code">_validateId</a>( <span>mixed <var>$id</var></span> )</code>
 
 			<div class="description short">
 				
