@@ -1,5 +1,5 @@
 ---
-title: jippi/cakephp-crud
+title: FriendsOfCake/crud
 layout: default
 ---
 

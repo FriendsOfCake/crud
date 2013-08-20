@@ -18,7 +18,7 @@ The recommended installation method for this plugin is by using composer. Just a
 {% highlight json %}
 {
 	"require" : {
-		"jippi/cakephp-crud": "dev-develop"
+		"FriendsOfCake/crud": "dev-develop"
 	}
 }
 {% endhighlight %}
@@ -28,7 +28,7 @@ The recommended installation method for this plugin is by using composer. Just a
 Alternatively you can just `git clone` the code into your application
 
 ```
-git clone git://github.com/jippi/cakephp-crud.git app/Plugin/Crud
+git clone git://github.com/FriendsOfCake/crud.git app/Plugin/Crud
 ```
 
 ### git submodule
@@ -37,7 +37,7 @@ Or add it as a git module, this is recommended over `git clone` since it's easie
 with development that way
 
 ```
-git submodule add git://github.com/jippi/cakephp-crud.git app/Plugin/Crud
+git submodule add git://github.com/FriendsOfCake/crud.git app/Plugin/Crud
 ```
 
 # Loading and installation
