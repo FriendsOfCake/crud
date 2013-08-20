@@ -122,11 +122,7 @@ class EditCrudAction extends CrudAction {
 			return $this->_notFound($id);
 		}
 
-		if (isset($request->data[$model->alias])) {
-			$request->data[$model->alias][$model->primaryKey] = $id;
-		} else {
-			$request->data[$model->primaryKey] = $id;
-		}
+		$data = $this->_injectPrimaryKey($request->data, $id, $model);
 
 		if ($request->data('_cancel')) {
 			$subject = $this->_trigger('beforeCancel', array('id' => $id));
@@ -135,7 +131,7 @@ class EditCrudAction extends CrudAction {
 		}
 
 		$this->_trigger('beforeSave', compact('id'));
-		if (call_user_func(array($model, $this->saveMethod()), $request->data, $this->saveOptions())) {
+		if (call_user_func(array($model, $this->saveMethod()), $data, $this->saveOptions())) {
 			$this->setFlash('success');
 			$subject = $this->_trigger('afterSave', array('id' => $id, 'success' => true, 'created' => false));
 
@@ -200,6 +196,57 @@ class EditCrudAction extends CrudAction {
  */
 	protected function _post($id = null) {
 		return $this->_put($id);
+	}
+
+/**
+ * Inject the id (from the url) into the data to be saved.
+ *
+ * Determine what the format of the data is there are two formats accepted by cake:
+ *
+ *     array(
+ *         'Model' => array('stuff' => 'here')
+ *     );
+ *
+ * and
+ *
+ *     array('stuff' => 'here')
+ *
+ * The latter is most appropriate for api calls.
+ *
+ * If either the first array key is Capitalized, or the model alias is present in the form data,
+ * The id will be injected under the model-alias key:
+ *
+ *     array(
+ *         'Model' => array('stuff' => 'here', 'id' => $id)
+ *     );
+ *
+ *     // HABTM example
+ *     array(
+ *         'Category' => array('Category' => array(123)),
+ *         'Model' => array('id' => $id) // <- added
+ *     );
+ *
+ * If the model-alias key is absent AND the first array key is not capitalized, inject in the root:
+ *
+ *     array('stuff' => 'here', 'id' => $id)
+ *
+ *
+ * @param array $data
+ * @param mixed $id
+ * @param Model $model
+ * @return array
+ */
+	protected function _injectPrimaryKey($data, $id, $model) {
+		$key = key($data);
+		$keyIsModelAlias = (strtoupper($key[0]) === $key[0]);
+
+		if (isset($data[$model->alias]) || $keyIsModelAlias) {
+			$data[$model->alias][$model->primaryKey] = $id;
+		} else {
+			$data[$model->primaryKey] = $id;
+		}
+
+		return $data;
 	}
 
 /**

@@ -1182,4 +1182,132 @@ class EditCrudActionTest extends CrudTestCase {
 		$this->setReflectionClassInstance($Action);
 		$this->callProtectedMethod('_validateId', array(1), $Action);
 	}
+
+/**
+ * Verify that _injectPrimaryKey is called, and the result is passed to saveAssociated
+ *
+ * @return void
+ */
+	public function test_injectPrimaryKeyIsCalled() {
+		$CrudSubject = new CrudSubject();
+
+		$Request = $this->getMock('CakeRequest');
+		$Request->data = array('fake', 'input', 'data');
+
+		$Model = $this
+			->getMockBuilder('Model')
+			->setMethods(array('saveAssociated', 'find', 'escapeField'))
+			->setConstructorArgs(array(array('name' => 'Model')))
+			->getMock();
+		$Model
+			->expects($this->any())
+			->method('saveAssociated')
+			->with(array('id' => 1, '_injectPrimaryKey' => 'return'))
+			->will($this->returnValue(false));
+
+		$i = 0;
+		$Action = $this
+			->getMockBuilder('EditCrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array('_validateId', '_request', '_model', '_findRecord', '_injectPrimaryKey', 'setFlash', '_trigger'))
+			->getMock();
+		$Action
+			->expects($this->any())
+			->method('_validateId')
+			->will($this->returnValue(true));
+		$Action
+			->expects($this->any())
+			->method('_request')
+			->will($this->returnValue($Request));
+		$Action
+			->expects($this->any())
+			->method('_model')
+			->will($this->returnValue($Model));
+		$Action
+			->expects($this->any())
+			->method('_findRecord')
+			->will($this->returnValue(true));
+		$Action
+			->expects($this->once())
+			->method('_injectPrimaryKey')
+			->will($this->returnValue(array('id' => 1, '_injectPrimaryKey' => 'return')));
+
+		$this->setReflectionClassInstance($Action);
+		$this->callProtectedMethod('_put', array(1), $Action);
+	}
+
+/**
+ * test_injectPrimaryKey
+ *
+ * Check that the model id is injected into the right place
+ *
+ * @dataProvider idInjectionProvider
+ * @param array $data
+ * @param array $expectation
+ */
+	public function test_injectPrimaryKey($data, $expectation = null) {
+		if (!$expectation) {
+			$expectation = $data;
+		}
+
+		$Model = $this
+			->getMockBuilder('Model')
+			->setMethods(array('saveAssociated', 'find', 'escapeField'))
+			->setConstructorArgs(array(array('name' => 'Model')))
+			->getMock();
+
+		$Action = new EditCrudAction(new CrudSubject());
+
+		$this->setReflectionClassInstance($Action);
+		$return = $this->callProtectedMethod('_injectPrimaryKey', array($data, 1, $Model), $Action);
+		$this->assertSame($expectation, $return, '"id" should be injected in the right place in the save data');
+	}
+
+/**
+ * idInjectionProvider
+ *
+ * Returns sets of data to use in tests.
+ * 	input
+ * 	expected result (optional, uses input if absent)
+ *
+ * @return array
+ */
+	public function idInjectionProvider() {
+		return array(
+			array(
+				array(),
+				array('id' => 1)
+			),
+			array(
+				array('Model' => array('id' => 1, 'some' => 'update'))
+			),
+			array(
+				array('Model' => array('id' => 'cheating', 'some' => 'update')),
+				array('Model' => array('id' => 1, 'some' => 'update'))
+			),
+			array(
+				array('Model' => array('some' => 'update')),
+				array('Model' => array('some' => 'update', 'id' => 1))
+			),
+			array(
+				array('id' => 1, 'some' => 'update')
+			),
+			array(
+				array('some' => 'update'),
+				array('some' => 'update', 'id' => 1)
+			),
+			array(
+				array('something' => 'else', 'Model' => array('some' => 'update')),
+				array('something' => 'else', 'Model' => array('some' => 'update', 'id' => 1)),
+			),
+			array(
+				array('Category' => array('Category' => array(1))),
+				array(
+					'Category' => array('Category' => array(1)),
+					'Model' => array('id' => 1)
+				),
+			),
+
+		);
+	}
 }
