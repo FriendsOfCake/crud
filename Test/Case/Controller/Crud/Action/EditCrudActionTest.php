@@ -1248,6 +1248,10 @@ class EditCrudActionTest extends CrudTestCase {
 	public function idInjectionProvider() {
 		return array(
 			array(
+				array(),
+				array('id' => 1)
+			),
+			array(
 				array('Model' => array('id' => 1, 'some' => 'update'))
 			),
 			array(
