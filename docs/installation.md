@@ -18,7 +18,7 @@ The recommended installation method for this plugin is by using composer. Just a
 {% highlight json %}
 {
 	"require" : {
-		"FriendsOfCake/crud": "dev-develop"
+		"FriendsOfCake/crud": "3.*"
 	}
 }
 {% endhighlight %}

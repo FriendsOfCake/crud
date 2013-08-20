@@ -4,7 +4,7 @@
 
 <div id="disqus_thread"></div>
 <script type="text/javascript">
-    var disqus_shortname = 'cakephpnu';
+    var disqus_shortname = 'friendsofcake';
     var disqus_url = '{{site.url}}{{page.url}}';
 
     /* * * DON'T EDIT BELOW THIS LINE * * */
