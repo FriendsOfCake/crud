@@ -1,6 +1,6 @@
 {
-  "name":"jippi/cakephp-crud",
-  "version": "3.0.2",
+  "name":"friendsofcake/crud",
+  "version": "3.0.3",
   "description":"CakePHP Application development on steroids - rapid prototyping / scaffolding & production ready code - XML / JSON APIs and more",
   "type":"cakephp-plugin",
   "keywords":[
@@ -15,7 +15,7 @@
     "scaffold",
     "scaffolding"
   ],
-  "homepage":"https://github.com/jippi/cakephp-crud",
+  "homepage":"https://github.com/FriendsOfCake/crud",
   "license":"MIT",
   "authors":[
     {
@@ -43,10 +43,10 @@
     "cakedc/search":"If you want to use the Search Listener"
   },
   "support":{
-    "source":"https://github.com/jippi/cakephp-crud",
-    "issues":"https://github.com/jippi/cakephp-crud/issues",
+    "source":"https://github.com/FriendsOfCake/crud",
+    "issues":"https://github.com/FriendsOfCake/crud/issues",
     "wiki":"http://cakephp.nu/cakephp-crud/",
-    "irc":"irc://irc.freenode.org/cakephp"
+    "irc":"irc://irc.freenode.org/friendsofcake"
   },
   "require":{
     "composer/installers":"*"

@@ -122,16 +122,10 @@ class EditCrudAction extends CrudAction {
 			return $this->_notFound($id);
 		}
 
-		$data = $this->_injectPrimaryKey($request->data, $id, $model);
-
-		if ($request->data('_cancel')) {
-			$subject = $this->_trigger('beforeCancel', array('id' => $id));
-			$controller = $this->_controller();
-			return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
-		}
+		$request->data = $this->_injectPrimaryKey($request->data, $id, $model);
 
 		$this->_trigger('beforeSave', compact('id'));
-		if (call_user_func(array($model, $this->saveMethod()), $data, $this->saveOptions())) {
+		if (call_user_func(array($model, $this->saveMethod()), $request->data, $this->saveOptions())) {
 			$this->setFlash('success');
 			$subject = $this->_trigger('afterSave', array('id' => $id, 'success' => true, 'created' => false));
 
