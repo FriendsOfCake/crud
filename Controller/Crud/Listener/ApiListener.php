@@ -76,6 +76,14 @@ class ApiListener extends CrudListener {
 		parent::beforeHandle($event);
 
 		if (!$this->_request()->is('api')) {
+			$events = $this->implementedEvents();
+			$eventManager = $this->_controller()->getEventManager();
+			foreach (array_keys($events) as $name) {
+				if ($name === 'Crud.beforeHandle') {
+					continue;
+				}
+				$eventManager->detach($this, $name);
+			}
 			return;
 		}
 
@@ -124,10 +132,6 @@ class ApiListener extends CrudListener {
  * @return CakeResponse
  */
 	public function respond(CakeEvent $event) {
-		if (!$this->_request()->is('api')) {
-			return;
-		}
-
 		$subject = $event->subject;
 		$action = $this->_action();
 
@@ -345,10 +349,6 @@ class ApiListener extends CrudListener {
  * @param CakeEvent $event
  */
 	public function setFlash(CakeEvent $event) {
-		if (!$this->_request()->is('api')) {
-			return;
-		}
-
 		$event->stopPropagation();
 	}
 
