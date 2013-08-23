@@ -96,7 +96,7 @@ class ApiListenerTest extends CrudTestCase {
 	public function testBeforeHandleNotApi() {
 		$listener = $this
 			->getMockBuilder('ApiListener')
-			->setMethods(array('_request', 'registerExceptionHandler', '_checkRequestMethods'))
+			->setMethods(array('_request', '_controller', 'registerExceptionHandler', '_checkRequestMethods'))
 			->disableOriginalConstructor()
 			->getMock();
 
@@ -104,6 +104,16 @@ class ApiListenerTest extends CrudTestCase {
 			->getMockBuilder('CakeRequest')
 			->setMethods(array('is'))
 			->disableOriginalConstructor()
+			->getMock();
+
+		$controller = $this
+			->getMockBuilder('Controller')
+			->setMethods(array('getEventManager'))
+			->getMock();
+
+		$manager = $this
+			->getMockBuilder('EventManager')
+			->setMethods(array('detach'))
 			->getMock();
 
 		$listener
@@ -115,6 +125,27 @@ class ApiListenerTest extends CrudTestCase {
 			->method('is')
 			->with('api')
 			->will($this->returnValue(false));
+		$listener
+			->expects($this->at(1))
+			->method('_controller')
+			->will($this->returnValue($controller));
+		$controller
+			->expects($this->at(0))
+			->method('getEventManager')
+			->will($this->returnValue($manager));
+		$manager
+			->expects($this->at(0))
+			->method('detach')
+			->with($listener, 'Crud.setFlash');
+		$manager
+			->expects($this->at(1))
+			->method('detach')
+			->with($listener, 'Crud.beforeRender');
+		$manager
+			->expects($this->at(2))
+			->method('detach')
+			->with($listener, 'Crud.beforeRedirect');
+
 		$listener
 			->expects($this->never())
 			->method('registerExceptionHandler');
@@ -144,16 +175,6 @@ class ApiListenerTest extends CrudTestCase {
 		$i = 0;
 
 		$listener = $this->getMock('ApiListener', array('_request', '_action', 'render'), array($subject));
-		$listener
-			->expects($this->at($i++))
-			->method('_request')
-			->with()
-			->will($this->returnValue($request));
-		$request
-			->expects($this->at(0))
-			->method('is')
-			->with('api')
-			->will($this->returnValue(true));
 		$listener
 			->expects($this->at($i++))
 			->method('_action')
@@ -199,16 +220,6 @@ class ApiListenerTest extends CrudTestCase {
 		$listener = $this->getMock('ApiListener', array('_request', '_action', 'render', '_exceptionResponse'), array($subject));
 		$listener
 			->expects($this->at($i++))
-			->method('_request')
-			->with()
-			->will($this->returnValue($request));
-		$request
-			->expects($this->at(0))
-			->method('is')
-			->with('api')
-			->will($this->returnValue(true));
-		$listener
-			->expects($this->at($i++))
 			->method('_action')
 			->with()
 			->will($this->returnValue($action));
@@ -221,54 +232,6 @@ class ApiListenerTest extends CrudTestCase {
 			->expects($this->at($i++))
 			->method('_exceptionResponse')
 			->with(true);
-		$listener
-			->expects($this->never())
-			->method('render');
-		$response
-			->expects($this->never())
-			->method('statusCode');
-
-		$listener->respond($event);
-	}
-
-/**
- * Test response with request not API
- *
- * @return void
- */
-	public function testResponseNotApi() {
-		$request = $this->getMock('CakeRequest', array('is'));
-		$response = $this->getMock('CakeResponse');
-
-		$action = $this->getMock('IndexCrudAction', array('config'), array(new CrudSubject()));
-
-		$subject = $this->getMock('CrudSubject');
-		$subject->success = true;
-
-		$event = new CakeEvent('Crud.afterSave', $subject);
-
-		$i = 0;
-
-		$listener = $this->getMock('ApiListener', array('_request', '_action', 'render', '_exceptionResponse'), array($subject));
-		$listener
-			->expects($this->at($i++))
-			->method('_request')
-			->with()
-			->will($this->returnValue($request));
-		$request
-			->expects($this->at(0))
-			->method('is')
-			->with('api')
-			->will($this->returnValue(false));
-		$listener
-			->expects($this->never())
-			->method('_action');
-		$action
-			->expects($this->never())
-			->method('config');
-		$listener
-			->expects($this->never())
-			->method('_exceptionResponse');
 		$listener
 			->expects($this->never())
 			->method('render');
@@ -1251,30 +1214,6 @@ class ApiListenerTest extends CrudTestCase {
 		if (is_bool($exception)) {
 			$this->assertEqual($result, $exception);
 		}
-
-	}
-
-/**
- * testFlashMessageNotSupressed
- *
- * The API listener should not suppress flash messages
- * if the request isn't "API"
- *
- * @return void
- */
-	public function testFlashMessageNotSupressed() {
-		$Request = new CakeRequest();
-		$Request->addDetector('api', array('callback' => function() { return false; }));
-
-		$subject = new CrudSubject(array('request' => $Request));
-
-		$apiListener = new ApiListener($subject);
-
-		$event = new CakeEvent('Crud.setFlash', $subject);
-		$apiListener->setFlash($event);
-
-		$stopped = $event->isStopped();
-		$this->assertFalse($stopped, 'Set flash event is expected not to be stopped');
 	}
 
 /**
