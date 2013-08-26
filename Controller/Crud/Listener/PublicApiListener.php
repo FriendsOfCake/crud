@@ -67,11 +67,12 @@ class PublicApiListener extends CrudListener {
 		}
 
 		$formatted = array();
-		foreach ($data as &$record) {
+		foreach ($data as $index => &$record) {
 			$new = &$record;
 			if ($this->_settings['changeNesting']) {
 				$new = $this->_changeNesting($new, $alias);
 			}
+			unset($data[$index]);
 			$this->_recurse($new);
 			$formatted[] = $new;
 		}
@@ -118,7 +119,7 @@ class PublicApiListener extends CrudListener {
  * @param string $primaryAlias
  * @return array
  */
-	protected function _changeNesting(array &$record, $primaryAlias) {
+	protected function _changeNesting(array $record, $primaryAlias) {
 		$new = $record[$primaryAlias];
 		unset($record[$primaryAlias]);
 		$new += $record;

@@ -228,7 +228,7 @@ class PublicApiListenerTest extends CrudTestCase {
 		$listener
 			->expects($this->at($i++))
 			->method('_changeNesting')
-			->with($users[0], 'User')
+			->with($this->identicalTo($users[0]), 'User')
 			->will($this->returnValue($nested));
 
 		$listener
@@ -246,7 +246,7 @@ class PublicApiListenerTest extends CrudTestCase {
 		$listener
 			->expects($this->at($i++))
 			->method('_changeNesting')
-			->with($users[1], 'User')
+			->with($this->identicalTo($users[1]), 'User')
 			->will($this->returnValue($nested));
 
 		$listener
@@ -350,12 +350,12 @@ class PublicApiListenerTest extends CrudTestCase {
 		$listener
 			->expects($this->at($i++))
 			->method('_recurse')
-			->with($users[0]);
+			->with($this->identicalTo($users[0]));
 
 		$listener
 			->expects($this->at($i++))
 			->method('_recurse')
-			->with($users[1]);
+			->with($this->identicalTo($users[1]));
 
 		$listener
 			->expects($this->at($i++))
@@ -455,7 +455,7 @@ class PublicApiListenerTest extends CrudTestCase {
 		$listener
 			->expects($this->at($i++))
 			->method('_changeNesting')
-			->with($user, 'User')
+			->with($this->identicalTo($user), 'User')
 			->will($this->returnValue($nested));
 
 		$listener
