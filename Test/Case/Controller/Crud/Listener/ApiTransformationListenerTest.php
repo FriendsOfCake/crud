@@ -26,57 +26,24 @@ class ApiTransformationListenerTest extends CrudTestCase {
  *
  * @return void
  */
-	public function testImplementedEventsApiOnlyIsApi() {
+	public function testImplementedEvents() {
 		$listener = $this
 			->getMockBuilder('ApiTransformationListener')
 			->setMethods(array('_request'))
 			->disableOriginalConstructor()
 			->getMock();
 
-		$request = $this
-			->getMockBuilder('CakeRequest')
-			->setMethods(array('is'))
-			->disableOriginalConstructor()
-			->getMock();
-
-		$listener
-			->expects($this->once())
-			->method('_request')
-			->will($this->returnValue($request));
-
-		$request
-			->expects($this->once())
-			->method('is')
-			->with('api')
-			->will($this->returnValue(true));
-
-		$settings = array(
-			'apiOnly' => true,
-			'changeNesting' => true,
-			'changeKeys' => true,
-			'changeTime' => true,
-			'castNumbers' => true,
-			'_keyMethods' => array(),
-			'_valueMethods' => array()
-		);
-
-		$this->setReflectionClassInstance($listener);
-		$this->setProtectedProperty('_settings', $settings, $listener);
-
-		$expected = array('Crud.beforeRender' => array(
-			'callable' => 'beforeRender',
-			'priority' => 200
-		));
+		$expected = array('Crud.beforeRender' => array('callable' => 'beforeRender', 'priority' => 200));
 		$result = $listener->implementedEvents();
 		$this->assertSame($expected, $result);
 	}
 
 /**
- * testImplementedEventsApiOnlyIsNotApi
+ * testBeforeRenderNoApiRequest
  *
  * @return void
  */
-	public function testImplementedEventsApiOnlyIsNotApi() {
+	public function testBeforeRenderNoApiRequest() {
 		$listener = $this
 			->getMockBuilder('ApiTransformationListener')
 			->setMethods(array('_request'))
@@ -88,11 +55,6 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			->setMethods(array('is'))
 			->disableOriginalConstructor()
 			->getMock();
-
-		$listener
-			->expects($this->once())
-			->method('_request')
-			->will($this->returnValue($request));
 
 		$request
 			->expects($this->once())
@@ -100,59 +62,36 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			->with('api')
 			->will($this->returnValue(false));
 
-		$settings = array(
-			'apiOnly' => true,
-			'changeNesting' => true,
-			'changeKeys' => true,
-			'changeTime' => true,
-			'castNumbers' => true,
-			'_keyMethods' => array(),
-			'_valueMethods' => array()
-		);
-
-		$this->setReflectionClassInstance($listener);
-		$this->setProtectedProperty('_settings', $settings, $listener);
-
-		$expected = array();
-		$result = $listener->implementedEvents();
-		$this->assertSame($expected, $result);
-	}
-
-/**
- * testImplementedEventsNotApiOnly
- *
- * @return void
- */
-	public function testImplementedEventsNotApiOnly() {
-		$listener = $this
-			->getMockBuilder('ApiTransformationListener')
-			->setMethods(array('_request'))
-			->disableOriginalConstructor()
-			->getMock();
+		$listener
+			->expects($this->once())
+			->method('_request')
+			->will($this->returnValue($request));
 
 		$listener
 			->expects($this->never())
-			->method('_request');
+			->method('_controller');
 
-		$settings = array(
-			'apiOnly' => false,
-			'changeNesting' => true,
-			'changeKeys' => true,
-			'changeTime' => true,
-			'castNumbers' => true,
-			'_keyMethods' => array(),
-			'_valueMethods' => array()
-		);
+		$listener
+			->expects($this->never())
+			->method('_action');
 
-		$this->setReflectionClassInstance($listener);
-		$this->setProtectedProperty('_settings', $settings, $listener);
+		$listener
+			->expects($this->never())
+			->method('_model');
 
-		$expected = array('Crud.beforeRender' => array(
-			'callable' => 'beforeRender',
-			'priority' => 200
-		));
-		$result = $listener->implementedEvents();
-		$this->assertSame($expected, $result);
+		$listener
+			->expects($this->never())
+			->method('_setMethods');
+
+		$listener
+			->expects($this->never())
+			->method('_changeNesting');
+
+		$listener
+			->expects($this->never())
+			->method('_recurse');
+
+		$this->assertTrue($listener->beforeRender());
 	}
 
 /**
@@ -164,9 +103,21 @@ class ApiTransformationListenerTest extends CrudTestCase {
 		$i = 0;
 		$listener = $this
 			->getMockBuilder('ApiTransformationListener')
-			->setMethods(array('_controller', '_action', '_model', '_changeNesting', '_recurse', '_setMethods'))
+			->setMethods(array('_request', '_controller', '_action', '_model', '_changeNesting', '_recurse', '_setMethods'))
 			->disableOriginalConstructor()
 			->getMock();
+
+		$request = $this
+			->getMockBuilder('CakeRequest')
+			->setMethods(array('is'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$request
+			->expects($this->once())
+			->method('is')
+			->with('api')
+			->will($this->returnValue(true));
 
 		$controller = $this
 			->getMockBuilder('Controller')
@@ -184,6 +135,11 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			->getMockBuilder('Model')
 			->disableOriginalConstructor()
 			->getMock();
+
+		$listener
+			->expects($this->at($i++))
+			->method('_request')
+			->will($this->returnValue($request));
 
 		$listener
 			->expects($this->at($i++))
@@ -205,7 +161,6 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			->method('_setMethods');
 
 		$settings = array(
-			'apiOnly' => true,
 			'changeNesting' => true,
 			'changeKeys' => true,
 			'changeTime' => true,
@@ -298,9 +253,21 @@ class ApiTransformationListenerTest extends CrudTestCase {
 		$i = 0;
 		$listener = $this
 			->getMockBuilder('ApiTransformationListener')
-			->setMethods(array('_controller', '_action', '_model', '_changeNesting', '_recurse', '_setMethods'))
+			->setMethods(array('_request', '_controller', '_action', '_model', '_changeNesting', '_recurse', '_setMethods'))
 			->disableOriginalConstructor()
 			->getMock();
+
+		$request = $this
+			->getMockBuilder('CakeRequest')
+			->setMethods(array('is'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$request
+			->expects($this->once())
+			->method('is')
+			->with('api')
+			->will($this->returnValue(true));
 
 		$controller = $this
 			->getMockBuilder('Controller')
@@ -318,6 +285,11 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			->getMockBuilder('Model')
 			->disableOriginalConstructor()
 			->getMock();
+
+		$listener
+			->expects($this->at($i++))
+			->method('_request')
+			->will($this->returnValue($request));
 
 		$listener
 			->expects($this->at($i++))
@@ -339,7 +311,6 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			->method('_setMethods');
 
 		$settings = array(
-			'apiOnly' => true,
 			'changeNesting' => false,
 			'changeKeys' => true,
 			'changeTime' => true,
@@ -408,9 +379,21 @@ class ApiTransformationListenerTest extends CrudTestCase {
 		$i = 0;
 		$listener = $this
 			->getMockBuilder('ApiTransformationListener')
-			->setMethods(array('_controller', '_action', '_model', '_changeNesting', '_recurse', '_setMethods'))
+			->setMethods(array('_request', '_controller', '_action', '_model', '_changeNesting', '_recurse', '_setMethods'))
 			->disableOriginalConstructor()
 			->getMock();
+
+		$request = $this
+			->getMockBuilder('CakeRequest')
+			->setMethods(array('is'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$request
+			->expects($this->once())
+			->method('is')
+			->with('api')
+			->will($this->returnValue(true));
 
 		$controller = $this
 			->getMockBuilder('Controller')
@@ -428,6 +411,11 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			->getMockBuilder('Model')
 			->disableOriginalConstructor()
 			->getMock();
+
+		$listener
+			->expects($this->at($i++))
+			->method('_request')
+			->will($this->returnValue($request));
 
 		$listener
 			->expects($this->at($i++))
@@ -449,7 +437,6 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			->method('_setMethods');
 
 		$settings = array(
-			'apiOnly' => true,
 			'changeNesting' => true,
 			'changeKeys' => true,
 			'changeTime' => true,
@@ -521,9 +508,21 @@ class ApiTransformationListenerTest extends CrudTestCase {
 		$i = 0;
 		$listener = $this
 			->getMockBuilder('ApiTransformationListener')
-			->setMethods(array('_controller', '_action', '_model', '_changeNesting', '_recurse', '_setMethods'))
+			->setMethods(array('_request', '_controller', '_action', '_model', '_changeNesting', '_recurse', '_setMethods'))
 			->disableOriginalConstructor()
 			->getMock();
+
+		$request = $this
+			->getMockBuilder('CakeRequest')
+			->setMethods(array('is'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$request
+			->expects($this->once())
+			->method('is')
+			->with('api')
+			->will($this->returnValue(true));
 
 		$controller = $this
 			->getMockBuilder('Controller')
@@ -544,6 +543,11 @@ class ApiTransformationListenerTest extends CrudTestCase {
 
 		$listener
 			->expects($this->at($i++))
+			->method('_request')
+			->will($this->returnValue($request));
+
+		$listener
+			->expects($this->at($i++))
 			->method('_controller')
 			->will($this->returnValue($controller));
 
@@ -558,7 +562,6 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			->will($this->returnValue($model));
 
 		$settings = array(
-			'apiOnly' => true,
 			'changeNesting' => true,
 			'changeKeys' => true,
 			'changeTime' => true,
@@ -605,9 +608,21 @@ class ApiTransformationListenerTest extends CrudTestCase {
 		$i = 0;
 		$listener = $this
 			->getMockBuilder('ApiTransformationListener')
-			->setMethods(array('_controller', '_action', '_model', '_changeNesting', '_recurse', '_setMethods'))
+			->setMethods(array('_request', '_controller', '_action', '_model', '_changeNesting', '_recurse', '_setMethods'))
 			->disableOriginalConstructor()
 			->getMock();
+
+		$request = $this
+			->getMockBuilder('CakeRequest')
+			->setMethods(array('is'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$request
+			->expects($this->once())
+			->method('is')
+			->with('api')
+			->will($this->returnValue(true));
 
 		$controller = $this
 			->getMockBuilder('Controller')
@@ -628,6 +643,11 @@ class ApiTransformationListenerTest extends CrudTestCase {
 
 		$listener
 			->expects($this->at($i++))
+			->method('_request')
+			->will($this->returnValue($request));
+
+		$listener
+			->expects($this->at($i++))
 			->method('_controller')
 			->will($this->returnValue($controller));
 
@@ -642,7 +662,6 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			->will($this->returnValue($model));
 
 		$settings = array(
-			'apiOnly' => true,
 			'changeNesting' => true,
 			'changeKeys' => true,
 			'changeTime' => true,
@@ -699,7 +718,6 @@ class ApiTransformationListenerTest extends CrudTestCase {
 		};
 
 		$settings = array(
-			'apiOnly' => true,
 			'changeNesting' => true,
 			'changeKeys' => true,
 			'changeTime' => true,
@@ -719,7 +737,6 @@ class ApiTransformationListenerTest extends CrudTestCase {
 		$this->assertSame($expected, $result['_valueMethods']);
 
 		$settings = array(
-			'apiOnly' => true,
 			'changeNesting' => true,
 			'changeKeys' => false,
 			'changeTime' => false,
@@ -751,7 +768,6 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			->getMock();
 
 		$settings = array(
-			'apiOnly' => true,
 			'changeNesting' => true,
 			'changeKeys' => true,
 			'changeTime' => true,
@@ -790,7 +806,6 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			->getMock();
 
 		$settings = array(
-			'apiOnly' => true,
 			'changeNesting' => true,
 			'changeKeys' => true,
 			'changeTime' => false,
@@ -829,7 +844,6 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			->getMock();
 
 		$settings = array(
-			'apiOnly' => true,
 			'changeNesting' => true,
 			'changeKeys' => false,
 			'changeTime' => true,
@@ -875,7 +889,6 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			->getMock();
 
 		$settings = array(
-			'apiOnly' => true,
 			'changeNesting' => true,
 			'changeKeys' => false,
 			'changeTime' => false,
@@ -911,7 +924,6 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			->getMock();
 
 		$settings = array(
-			'apiOnly' => true,
 			'changeNesting' => true,
 			'changeKeys' => false,
 			'changeTime' => false,
@@ -950,7 +962,6 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			->getMock();
 
 		$settings = array(
-			'apiOnly' => true,
 			'changeNesting' => true,
 			'changeKeys' => false,
 			'changeTime' => false,
@@ -996,7 +1007,6 @@ class ApiTransformationListenerTest extends CrudTestCase {
 		};
 
 		$settings = array(
-			'apiOnly' => true,
 			'changeNesting' => true,
 			'changeKeys' => false,
 			'changeTime' => false,
@@ -1035,7 +1045,6 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			->getMock();
 
 		$settings = array(
-			'apiOnly' => true,
 			'changeNesting' => true,
 			'changeKeys' => false,
 			'changeTime' => false,

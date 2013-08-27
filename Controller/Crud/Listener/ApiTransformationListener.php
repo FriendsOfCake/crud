@@ -24,7 +24,6 @@ class ApiTransformationListener extends CrudListener {
  * @var array
  */
 	protected $_settings = array(
-		'apiOnly' => true,
 		'changeNesting' => true,
 		'changeKeys' => true,
 		'changeTime' => true,
@@ -35,19 +34,13 @@ class ApiTransformationListener extends CrudListener {
 	);
 
 /**
- * Adds a new beforeRender event to the list of events from the
- * ApiListener.
+ * Adds the Crud.beforeRender event. It has a high priority
+ * number to make sure it is called late/last.
  *
  * @return array
  */
 	public function implementedEvents() {
-		if ($this->_settings['apiOnly'] && !$this->_request()->is('api')) {
-			return array();
-		}
-		return array('Crud.beforeRender' => array(
-			'callable' => 'beforeRender',
-			'priority' => 200
-		));
+		return array('Crud.beforeRender' => array('callable' => 'beforeRender', 'priority' => 200));
 	}
 
 /**
@@ -57,6 +50,10 @@ class ApiTransformationListener extends CrudListener {
  * @return boolean
  */
 	public function beforeRender() {
+		if (!$this->_request()->is('api')) {
+			return true;
+		}
+
 		$viewVars = $this->_controller()->viewVars;
 		$viewVar = $this->_action()->viewVar();
 		$alias = $this->_model()->alias;
