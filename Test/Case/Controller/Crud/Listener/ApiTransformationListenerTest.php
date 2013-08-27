@@ -5,7 +5,7 @@ App::uses('CrudTestCase', 'Crud.Test/Support');
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class PublicApiListenerTest extends CrudTestCase {
+class ApiTransformationListenerTest extends CrudTestCase {
 
 /**
  * Setup additional classes.
@@ -18,7 +18,7 @@ class PublicApiListenerTest extends CrudTestCase {
 		App::uses('Model', 'Model');
 		App::uses('CakeRequest', 'Network');
 		App::uses('IndexCrudAction', 'Crud.Controller/Crud/Action');
-		App::uses('PublicApiListener', 'Crud.Controller/Crud/Listener');
+		App::uses('ApiTransformationListener', 'Crud.Controller/Crud/Listener');
 	}
 
 /**
@@ -28,7 +28,7 @@ class PublicApiListenerTest extends CrudTestCase {
  */
 	public function testImplementedEventsApiOnlyIsApi() {
 		$listener = $this
-			->getMockBuilder('PublicApiListener')
+			->getMockBuilder('ApiTransformationListener')
 			->setMethods(array('_request'))
 			->disableOriginalConstructor()
 			->getMock();
@@ -72,7 +72,7 @@ class PublicApiListenerTest extends CrudTestCase {
  */
 	public function testImplementedEventsApiOnlyIsNotApi() {
 		$listener = $this
-			->getMockBuilder('PublicApiListener')
+			->getMockBuilder('ApiTransformationListener')
 			->setMethods(array('_request'))
 			->disableOriginalConstructor()
 			->getMock();
@@ -116,7 +116,7 @@ class PublicApiListenerTest extends CrudTestCase {
  */
 	public function testImplementedEventsNotApiOnly() {
 		$listener = $this
-			->getMockBuilder('PublicApiListener')
+			->getMockBuilder('ApiTransformationListener')
 			->setMethods(array('_request'))
 			->disableOriginalConstructor()
 			->getMock();
@@ -148,7 +148,7 @@ class PublicApiListenerTest extends CrudTestCase {
 	public function testBeforeRenderWithNestingChange() {
 		$i = 0;
 		$listener = $this
-			->getMockBuilder('PublicApiListener')
+			->getMockBuilder('ApiTransformationListener')
 			->setMethods(array('_controller', '_action', '_model', '_changeNesting', '_recurse'))
 			->disableOriginalConstructor()
 			->getMock();
@@ -275,7 +275,7 @@ class PublicApiListenerTest extends CrudTestCase {
 	public function testBeforeRenderWithoutNestingChange() {
 		$i = 0;
 		$listener = $this
-			->getMockBuilder('PublicApiListener')
+			->getMockBuilder('ApiTransformationListener')
 			->setMethods(array('_controller', '_action', '_model', '_changeNesting', '_recurse'))
 			->disableOriginalConstructor()
 			->getMock();
@@ -378,7 +378,7 @@ class PublicApiListenerTest extends CrudTestCase {
 	public function testBeforeRenderWithFindFirstAndNestingChange() {
 		$i = 0;
 		$listener = $this
-			->getMockBuilder('PublicApiListener')
+			->getMockBuilder('ApiTransformationListener')
 			->setMethods(array('_controller', '_action', '_model', '_changeNesting', '_recurse'))
 			->disableOriginalConstructor()
 			->getMock();
@@ -484,7 +484,7 @@ class PublicApiListenerTest extends CrudTestCase {
 	public function testBeforeRenderWithoutViewVar() {
 		$i = 0;
 		$listener = $this
-			->getMockBuilder('PublicApiListener')
+			->getMockBuilder('ApiTransformationListener')
 			->setMethods(array('_controller', '_action', '_model', '_changeNesting', '_recurse'))
 			->disableOriginalConstructor()
 			->getMock();
@@ -565,7 +565,7 @@ class PublicApiListenerTest extends CrudTestCase {
 	public function testBeforeRenderWithEmptyViewVar() {
 		$i = 0;
 		$listener = $this
-			->getMockBuilder('PublicApiListener')
+			->getMockBuilder('ApiTransformationListener')
 			->setMethods(array('_controller', '_action', '_model', '_changeNesting', '_recurse'))
 			->disableOriginalConstructor()
 			->getMock();
@@ -646,7 +646,7 @@ class PublicApiListenerTest extends CrudTestCase {
  */
 	public function testRecurseWithKeysAndCasts() {
 		$listener = $this
-			->getMockBuilder('PublicApiListener')
+			->getMockBuilder('ApiTransformationListener')
 			->disableOriginalConstructor()
 			->getMock();
 
@@ -682,7 +682,7 @@ class PublicApiListenerTest extends CrudTestCase {
  */
 	public function testRecurseNoCasts() {
 		$listener = $this
-			->getMockBuilder('PublicApiListener')
+			->getMockBuilder('ApiTransformationListener')
 			->disableOriginalConstructor()
 			->getMock();
 
@@ -718,7 +718,7 @@ class PublicApiListenerTest extends CrudTestCase {
  */
 	public function testRecurseNoKeys() {
 		$listener = $this
-			->getMockBuilder('PublicApiListener')
+			->getMockBuilder('ApiTransformationListener')
 			->disableOriginalConstructor()
 			->getMock();
 
@@ -761,7 +761,7 @@ class PublicApiListenerTest extends CrudTestCase {
  */
 	public function testRecurseNoKeysAndNoCasts() {
 		$listener = $this
-			->getMockBuilder('PublicApiListener')
+			->getMockBuilder('ApiTransformationListener')
 			->disableOriginalConstructor()
 			->getMock();
 
@@ -794,7 +794,7 @@ class PublicApiListenerTest extends CrudTestCase {
  */
 	public function testChangeNesting() {
 		$listener = $this
-			->getMockBuilder('PublicApiListener')
+			->getMockBuilder('ApiTransformationListener')
 			->disableOriginalConstructor()
 			->getMock();
 

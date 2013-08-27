@@ -16,7 +16,7 @@ App::uses('CrudListener', 'Crud.Controller/Crud');
  * - http://developer.github.com/v3/
  * - https://developers.google.com/custom-search/v1/using_rest
  */
-class PublicApiListener extends CrudListener {
+class ApiTransformationListener extends CrudListener {
 
 /**
  * Default settings.
