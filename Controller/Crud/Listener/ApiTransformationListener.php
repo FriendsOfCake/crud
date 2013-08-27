@@ -158,8 +158,11 @@ class ApiTransformationListener extends CrudListener {
 	}
 
 /**
- * Nests the secundary models in the array of the
+ * Nests the secondary models in the array of the
  * primary model.
+ *
+ * Might overwrite array keys if model field names have the
+ * same name as the secondary model.
  *
  * @param array $record
  * @param string $primaryAlias
@@ -174,6 +177,9 @@ class ApiTransformationListener extends CrudListener {
 
 /**
  * Replaces array keys for associated records.
+ *
+ * Might overwrite array keys if model field names have the
+ * same name as the secondary model.
  *
  * Example
  * =======
