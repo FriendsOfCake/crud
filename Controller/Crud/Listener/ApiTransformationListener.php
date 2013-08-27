@@ -9,7 +9,7 @@ App::uses('CrudListener', 'Crud.Controller/Crud');
 /**
  * PublicApiListener
  *
- * Listener to format data consitent with most public
+ * Listener to format data consistent with most public
  * APIs out there such as Twitter, GitHub and Google.
  *
  * - https://dev.twitter.com/docs/api/1.1/get/statuses/mentions_timeline
