@@ -27,7 +27,11 @@ class ApiTransformationListener extends CrudListener {
 		'apiOnly' => true,
 		'changeNesting' => true,
 		'changeKeys' => true,
-		'castValues' => true
+		'changeTime' => true,
+		'castNumbers' => true,
+
+		'_keyMethods' => array(),
+		'_valueMethods' => array()
 	);
 
 /**
@@ -58,6 +62,8 @@ class ApiTransformationListener extends CrudListener {
 			return true;
 		}
 
+		$this->_setMethods();
+
 		$data = $viewVars[$viewVar];
 		$wrapped = false;
 
@@ -84,6 +90,50 @@ class ApiTransformationListener extends CrudListener {
 	}
 
 /**
+ * Merge in the internal methods based on the settings.
+ *
+ * @return void
+ */
+	protected function _setMethods() {
+		$keyMethods = $valueMethods = array();
+
+		if ($this->_settings['changeKeys']) {
+			$keyMethods[] = '_replaceKeys';
+		}
+
+		if ($this->_settings['castNumbers']) {
+			$valueMethods[] = '_castNumbers';
+		}
+
+		if ($this->_settings['changeTime']) {
+			$valueMethods[] = '_changeDateToUnix';
+		}
+
+		$this->_settings['_keyMethods'] = array_merge($keyMethods, $this->_settings['_keyMethods']);
+		$this->_settings['_valueMethods'] = array_merge($valueMethods, $this->_settings['_valueMethods']);
+	}
+
+/**
+ * Calls a method. Optimizes where possible because of the
+ * large number of calls through this method.
+ *
+ * @param string|Closure|array $method
+ * @param mixed $variable
+ * @return mixed
+ */
+	protected function _call($method, &$variable) {
+		if (is_string($method) && method_exists($this, $method)) {
+			return $this->$method($variable);
+		}
+
+		if ($method instanceof Closure) {
+			return $method($variable);
+		}
+
+		return call_user_func($method, $variable);
+	}
+
+/**
  * Recurse through an array and apply key changes and casts.
  *
  * @param mixed $variable
@@ -92,8 +142,8 @@ class ApiTransformationListener extends CrudListener {
 	protected function _recurse(&$variable) {
 		if (is_array($variable)) {
 
-			if ($this->_settings['changeKeys']) {
-				$variable = $this->_replaceKeys($variable);
+			foreach ($this->_settings['_keyMethods'] as $method) {
+				$variable = $this->_call($method, $variable);
 			}
 
 			foreach ($variable as &$value) {
@@ -104,11 +154,10 @@ class ApiTransformationListener extends CrudListener {
 
 		}
 
-		if (!$this->_settings['castValues']) {
-			return;
+		foreach ($this->_settings['_valueMethods'] as $method) {
+			$variable = $this->_call($method, $variable);
 		}
 
-		$this->_cast($variable);
 	}
 
 /**
@@ -147,7 +196,7 @@ class ApiTransformationListener extends CrudListener {
  * @param mixed $value
  * @return void
  */
-	protected function _replaceKeys(array &$variable) {
+	protected function _replaceKeys(array $variable) {
 		$keys = array_keys($variable);
 		$replaced = false;
 
@@ -178,14 +227,28 @@ class ApiTransformationListener extends CrudListener {
  * @param mixed $variable
  * @return void
  */
-	protected function _cast(&$variable) {
-		if (is_numeric($variable)) {
-			$variable += 0;
-			return;
+	protected function _castNumbers($variable) {
+		if (!is_numeric($variable)) {
+			return $variable;
+		}
+		return $variable + 0;
+	}
+
+/**
+ * Converts database dates to unix times.
+ *
+ * @param mixed $variable
+ * @return integer
+ */
+	protected function _changeDateToUnix($variable) {
+		if (!is_string($variable)) {
+			return $variable;
 		}
 
-		if (preg_match('@^\d{4}-\d{2}-\d{2}@', $variable)) {
-			$variable = strtotime($variable);
+		if (!preg_match('@^\d{4}-\d{2}-\d{2}@', $variable)) {
+			return $variable;
 		}
+
+		return strtotime($variable);
 	}
 }
