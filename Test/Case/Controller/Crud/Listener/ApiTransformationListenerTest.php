@@ -833,6 +833,44 @@ class ApiTransformationListenerTest extends CrudTestCase {
 	}
 
 /**
+ * testRecurseNoCastsHasMany
+ *
+ * @return void
+ */
+	public function testRecurseNoCastsEmptyHasMany() {
+		$listener = $this
+			->getMockBuilder('ApiTransformationListener')
+			->disableOriginalConstructor()
+			->getMock();
+
+		$settings = array(
+			'changeNesting' => true,
+			'changeKeys' => true,
+			'changeTime' => false,
+			'castNumbers' => false,
+			'_keyMethods' => array('_replaceKeys'),
+			'_valueMethods' => array()
+		);
+
+		$this->setReflectionClassInstance($listener);
+		$this->setProtectedProperty('_settings', $settings, $listener);
+
+		$data = array(
+			'User' => array('id' => '5', 'name' => 'FriendsOfCake'),
+			'Comment' => array()
+		);
+
+		$expected = array(
+			'user' => array('id' => '5', 'name' => 'FriendsOfCake'),
+			'comments' => array()
+		);
+
+		$this->callProtectedMethod('_recurse', array(&$data), $listener);
+
+		$this->assertSame($expected, $data);
+	}
+
+/**
  * testRecurseNoKeys
  *
  * @return void
