@@ -126,7 +126,6 @@ class PublicApiListener extends CrudListener {
 		return $new;
 	}
 
-
 /**
  * Replaces array keys for associated records.
  *
