@@ -157,7 +157,6 @@ class ApiTransformationListener extends CrudListener {
 		foreach ($this->_settings['_valueMethods'] as $method) {
 			$variable = $this->_call($method, $variable);
 		}
-
 	}
 
 /**
