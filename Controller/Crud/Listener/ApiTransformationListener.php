@@ -44,7 +44,10 @@ class ApiTransformationListener extends CrudListener {
 		if ($this->_settings['apiOnly'] && !$this->_request()->is('api')) {
 			return array();
 		}
-		return array('Controller.beforeRender' => 'beforeRender');
+		return array('Crud.beforeRender' => array(
+			'callable' => 'beforeRender',
+			'priority' => 200
+		));
 	}
 
 /**

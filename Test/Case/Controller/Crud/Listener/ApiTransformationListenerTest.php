@@ -63,7 +63,10 @@ class ApiTransformationListenerTest extends CrudTestCase {
 		$this->setReflectionClassInstance($listener);
 		$this->setProtectedProperty('_settings', $settings, $listener);
 
-		$expected = array('Controller.beforeRender' => 'beforeRender');
+		$expected = array('Crud.beforeRender' => array(
+			'callable' => 'beforeRender',
+			'priority' => 200
+		));
 		$result = $listener->implementedEvents();
 		$this->assertSame($expected, $result);
 	}
@@ -144,7 +147,10 @@ class ApiTransformationListenerTest extends CrudTestCase {
 		$this->setReflectionClassInstance($listener);
 		$this->setProtectedProperty('_settings', $settings, $listener);
 
-		$expected = array('Controller.beforeRender' => 'beforeRender');
+		$expected = array('Crud.beforeRender' => array(
+			'callable' => 'beforeRender',
+			'priority' => 200
+		));
 		$result = $listener->implementedEvents();
 		$this->assertSame($expected, $result);
 	}
