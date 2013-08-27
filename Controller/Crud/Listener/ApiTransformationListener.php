@@ -141,7 +141,6 @@ class ApiTransformationListener extends CrudListener {
  */
 	protected function _recurse(&$variable) {
 		if (is_array($variable)) {
-
 			foreach ($this->_settings['_keyMethods'] as $method) {
 				$variable = $this->_call($method, $variable);
 			}
@@ -151,7 +150,6 @@ class ApiTransformationListener extends CrudListener {
 			}
 
 			return;
-
 		}
 
 		foreach ($this->_settings['_valueMethods'] as $method) {
