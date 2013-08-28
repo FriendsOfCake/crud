@@ -56,7 +56,6 @@ class ApiTransformationListener extends CrudListener {
 
 		$viewVars = $this->_controller()->viewVars;
 		$viewVar = $this->_action()->viewVar();
-		$alias = $this->_model()->alias;
 
 		if (empty($viewVars[$viewVar])) {
 			return true;
@@ -64,6 +63,7 @@ class ApiTransformationListener extends CrudListener {
 
 		$this->_setMethods();
 
+		$alias = $this->_model()->alias;
 		$data = $viewVars[$viewVar];
 		$wrapped = false;
 

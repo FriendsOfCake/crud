@@ -153,12 +153,12 @@ class ApiTransformationListenerTest extends CrudTestCase {
 
 		$listener
 			->expects($this->at($i++))
-			->method('_model')
-			->will($this->returnValue($model));
+			->method('_setMethods');
 
 		$listener
 			->expects($this->at($i++))
-			->method('_setMethods');
+			->method('_model')
+			->will($this->returnValue($model));
 
 		$settings = array(
 			'changeNesting' => true,
@@ -303,12 +303,12 @@ class ApiTransformationListenerTest extends CrudTestCase {
 
 		$listener
 			->expects($this->at($i++))
-			->method('_model')
-			->will($this->returnValue($model));
+			->method('_setMethods');
 
 		$listener
 			->expects($this->at($i++))
-			->method('_setMethods');
+			->method('_model')
+			->will($this->returnValue($model));
 
 		$settings = array(
 			'changeNesting' => false,
@@ -429,12 +429,12 @@ class ApiTransformationListenerTest extends CrudTestCase {
 
 		$listener
 			->expects($this->at($i++))
-			->method('_model')
-			->will($this->returnValue($model));
+			->method('_setMethods');
 
 		$listener
 			->expects($this->at($i++))
-			->method('_setMethods');
+			->method('_model')
+			->will($this->returnValue($model));
 
 		$settings = array(
 			'changeNesting' => true,
@@ -557,7 +557,7 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			->will($this->returnValue($action));
 
 		$listener
-			->expects($this->at($i++))
+			->expects($this->never())
 			->method('_model')
 			->will($this->returnValue($model));
 
@@ -657,7 +657,7 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			->will($this->returnValue($action));
 
 		$listener
-			->expects($this->at($i++))
+			->expects($this->never())
 			->method('_model')
 			->will($this->returnValue($model));
 
