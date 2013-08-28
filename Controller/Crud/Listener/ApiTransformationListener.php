@@ -21,6 +21,32 @@ class ApiTransformationListener extends CrudListener {
 /**
  * Default settings.
  *
+ * - changeNesting boolean
+ *   Removes the top level model name and nests the associated
+ *   records inside the primary record.
+ *
+ * - changeKeys boolean
+ *   Changes keys to lowercase model names using the associations
+ *   or if not empty the _replaceMap setting.
+ *
+ * - changeTime boolean
+ *   Changes datetime strings to unix time integers.
+ *
+ * - castNumbers boolean
+ *   Casts numeric strings to the right datatype.
+ *
+ * - _keyMethods array
+ *   List of function names, closures or callback arrays to call
+ *   for the keys when recursing through the data.
+ *
+ * - _valueMethods array
+ *   List of function names, closures or callback arrays to call
+ *   for the values when recursing through the data.
+ *
+ * - _replaceMap array
+ *   List of key-value pairs to use for key replacement. Keep
+ *   this empty to have it derive from the model associations.
+ *
  * @var array
  */
 	protected $_settings = array(
