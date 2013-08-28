@@ -30,7 +30,8 @@ class ApiTransformationListener extends CrudListener {
 		'castNumbers' => true,
 
 		'_keyMethods' => array(),
-		'_valueMethods' => array()
+		'_valueMethods' => array(),
+		'_replaceMap' => array()
 	);
 
 /**
@@ -200,6 +201,10 @@ class ApiTransformationListener extends CrudListener {
  * @return void
  */
 	protected function _replaceKeys(array $variable) {
+		if (empty($this->_settings['_replaceMap'])) {
+			$this->_settings['_replaceMap'] = $this->_getReplaceMapFromAssociations();
+		}
+
 		$keys = array_keys($variable);
 		$replaced = false;
 
@@ -208,12 +213,11 @@ class ApiTransformationListener extends CrudListener {
 				continue;
 			}
 
-			$_key = Inflector::tableize($key);
-			if (!isset($variable[$key][0])) {
-				$_key = Inflector::singularize($_key);
+			if (!isset($this->_settings['_replaceMap'][$key])) {
+				continue;
 			}
 
-			$key = $_key;
+			$key = $this->_settings['_replaceMap'][$key];
 			$replaced = true;
 		}
 
@@ -222,6 +226,44 @@ class ApiTransformationListener extends CrudListener {
 		}
 
 		return array_combine($keys, array_values($variable));
+	}
+
+/**
+ * Get a key-value map with replacements for the model keys.
+ * The replacements are derived from the associations.
+ *
+ * @param Model $model
+ * @param array $map
+ * @return boolean|array
+ */
+	protected function _getReplaceMapFromAssociations(Model $model = null, array $map = null) {
+		if ($model === null) {
+			$model = $this->_model();
+		}
+
+		if ($map === null) {
+			$map = array($model->alias => Inflector::singularize(Inflector::tableize($model->alias)));
+		}
+
+		foreach ($model->associations() as $type) {
+			foreach ($model->{$type} as $alias => &$association) {
+				if (!property_exists($model, $alias)) {
+					continue;
+				}
+
+				$key = Inflector::tableize($alias);
+				if ($type === 'belongsTo' || $type === 'hasOne') {
+					$key = Inflector::singularize($key);
+				}
+
+				if (!isset($map[$alias])) {
+					$map[$alias] = $key;
+					$map = $this->_getReplaceMapFromAssociations($model->{$alias}, $map);
+				}
+			}
+		}
+
+		return $map;
 	}
 
 /**
