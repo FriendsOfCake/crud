@@ -247,7 +247,7 @@ class ApiTransformationListener extends CrudListener {
 
 		foreach ($model->associations() as $type) {
 			foreach ($model->{$type} as $alias => &$association) {
-				if (!property_exists($model, $alias)) {
+				if (isset($map[$alias]) || !property_exists($model, $alias)) {
 					continue;
 				}
 
@@ -256,10 +256,8 @@ class ApiTransformationListener extends CrudListener {
 					$key = Inflector::singularize($key);
 				}
 
-				if (!isset($map[$alias])) {
-					$map[$alias] = $key;
-					$map = $this->_getReplaceMapFromAssociations($model->{$alias}, $map);
-				}
+				$map[$alias] = $key;
+				$map = $this->_getReplaceMapFromAssociations($model->{$alias}, $map);
 			}
 		}
 
