@@ -842,6 +842,45 @@ class ApiTransformationListenerTest extends CrudTestCase {
 	}
 
 /**
+ * testRecurseNoCastsMapWithoutMatch
+ *
+ * @return void
+ */
+	public function testRecurseNoCastsMapWithoutMatch() {
+		$listener = $this
+			->getMockBuilder('ApiTransformationListener')
+			->disableOriginalConstructor()
+			->getMock();
+
+		$settings = array(
+			'changeNesting' => true,
+			'changeKeys' => true,
+			'changeTime' => false,
+			'castNumbers' => false,
+			'_keyMethods' => array('_replaceKeys'),
+			'_valueMethods' => array(),
+			'_replaceMap' => array('CakePHP' => 'FriendsOfCake')
+		);
+
+		$this->setReflectionClassInstance($listener);
+		$this->setProtectedProperty('_settings', $settings, $listener);
+
+		$data = array(
+			'User' => array('id' => '5', 'name' => 'FriendsOfCake'),
+			'Comment' => array()
+		);
+
+		$expected = array(
+			'User' => array('id' => '5', 'name' => 'FriendsOfCake'),
+			'Comment' => array()
+		);
+
+		$this->callProtectedMethod('_recurse', array(&$data), $listener);
+
+		$this->assertSame($expected, $data);
+	}
+
+/**
  * testRecurseNoCastsHasMany
  *
  * @return void
@@ -1107,6 +1146,93 @@ class ApiTransformationListenerTest extends CrudTestCase {
 		$this->callProtectedMethod('_recurse', array(&$data), $listener);
 
 		$this->assertSame($expected, $data);
+	}
+
+/**
+ * testGetReplaceMapFromAssociationsEndlessLoopPrevention
+ *
+ * @return void
+ */
+	public function testGetReplaceMapFromAssociationsEndlessLoopPrevention() {
+		$listener = $this
+			->getMockBuilder('ApiTransformationListener')
+			->setMethods(array('_model'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$user = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->setMethods(array('find'))
+			->getMock();
+		$user->name = $user->alias = 'User';
+
+		$user->belongsTo = array('User' => array('className' => 'User', 'foreignKey' => 'user_id'));
+		$user->User = $user;
+
+		$listener
+			->expects($this->once())
+			->method('_model')
+			->will($this->returnValue($user));
+
+		$this->setReflectionClassInstance($listener);
+
+		$expected = array('User' => 'user');
+		$result = $this->callProtectedMethod('_getReplaceMapFromAssociations', array(), $listener);
+
+		$this->assertSame($expected, $result);
+	}
+
+/**
+ * testGetReplaceMapFromAssociationsDeepSingleRecordAssociations
+ *
+ * @return void
+ */
+	public function testGetReplaceMapFromAssociationsDeepSingleRecordAssociations() {
+		$listener = $this
+			->getMockBuilder('ApiTransformationListener')
+			->setMethods(array('_model'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$user = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->setMethods(array('find'))
+			->getMock();
+		$user->name = $user->alias = 'User';
+
+		$group = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->setMethods(array('find'))
+			->getMock();
+		$group->name = $group->alias = 'Group';
+
+		$ambassador = $this
+			->getMockBuilder('Model')
+			->disableOriginalConstructor()
+			->setMethods(array('find'))
+			->getMock();
+		$ambassador->name = $ambassador->alias = 'Ambassador';
+
+		$user->belongsTo = array('Group' => array('className' => 'Group', 'foreignKey' => 'group_id'));
+		$group->hasOne = array('Ambassador' => array('className' => 'Ambassador', 'foreignKey' => 'group_id'));
+
+		$group->Ambassador = $ambassador;
+		$user->Group = $group;
+
+		$listener
+			->expects($this->once())
+			->method('_model')
+			->will($this->returnValue($user));
+
+		$this->setReflectionClassInstance($listener);
+
+		$expected = array('User' => 'user', 'Group' => 'group', 'Ambassador' => 'ambassador');
+		$result = $this->callProtectedMethod('_getReplaceMapFromAssociations', array(), $listener);
+
+		$this->assertSame($expected, $result);
 	}
 
 /**
