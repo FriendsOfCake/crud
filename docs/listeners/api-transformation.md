@@ -134,13 +134,13 @@ class SamplesController extends AppController {
           'castNumbers' => true,
 
           // Methods to run for every data key.
-          '_keyMethods' => [],
+          'keyMethods' => [],
 
           // Methods to run for every data value.
-          '_valueMethods' => [],
+          'valueMethods' => [],
 
           // Key-value pairs for 'changeKeys'.
-          '_replaceMap' => []
+          'replaceMap' => []
         ]
       ]
     ]
@@ -280,7 +280,7 @@ __After `changeKeys`__
 }
 {% endhighlight %}
 
-For flexibility you can also define your own `_replaceMap`. This option will then be used instead of the model associations. See further down on how to use it.
+For flexibility you can also define your own `replaceMap`. This option will then be used instead of the model associations. See further down on how to use it.
 
 ## changeTime
 
@@ -370,9 +370,9 @@ __After `castNumbers`__
 }
 {% endhighlight %}
 
-## \_keyMethods & \_valueMethods
+## \keyMethods & \valueMethods
 
-To avoid looping through everything twice when you want to do your own custom transformation the `ApiTransformationListener` allows you to hook into the recursive loop method. This can be done by defining additional methods in the `_keyMethods` or `_valueMethods` options. Their use is similar to the `call_user_func()` syntax:
+To avoid looping through everything twice when you want to do your own custom transformation the `ApiTransformationListener` allows you to hook into the recursive loop method. This can be done by defining additional methods in the `keyMethods` or `valueMethods` options. Their use is similar to the `call_user_func()` syntax:
 
 __Example methods__
 
@@ -389,7 +389,7 @@ class SamplesController extends AppController {
 
     $this->Crud->addListener('Api');
     $this->Crud->addListener('ApiListener', 'ApiListener', [
-      '_valueMethods' => [$slug, 'strtolower']
+      'valueMethods' => [$slug, 'strtolower']
     ]);
   }
 
@@ -425,9 +425,9 @@ __After the methods __
 }
 {% endhighlight %}
 
-## \_replaceMap
+## \replaceMap
 
-As stated above you can override the `replaceKeys` map by setting the `_replaceMap` option:
+As stated above you can override the `replaceKeys` map by setting the `replaceMap` option:
 
 __Example map__
 
@@ -439,7 +439,7 @@ class SamplesController extends AppController {
     parent::beforeFilter();
     $this->Crud->addListener('Api');
     $this->Crud->addListener('ApiListener', 'ApiListener', [
-      '_replaceMap' => [
+      'replaceMap' => [
         'User' => 'account',
         'Comment' => 'remarks'
       ]
@@ -480,7 +480,7 @@ __Initial reponse__
 }
 {% endhighlight %}
 
-__After `changeKeys` with the custom `_replaceMap`__
+__After `changeKeys` with the custom `replaceMap`__
 
 {% highlight json %}
 {
