@@ -157,9 +157,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => true,
 			'changeTime' => true,
 			'castNumbers' => true,
-			'_keyMethods' => array(),
-			'_valueMethods' => array(),
-			'_replaceMap' => array()
+			'keyMethods' => array(),
+			'valueMethods' => array(),
+			'replaceMap' => array()
 		);
 
 		$this->setReflectionClassInstance($listener);
@@ -308,9 +308,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => true,
 			'changeTime' => true,
 			'castNumbers' => true,
-			'_keyMethods' => array(),
-			'_valueMethods' => array(),
-			'_replaceMap' => array()
+			'keyMethods' => array(),
+			'valueMethods' => array(),
+			'replaceMap' => array()
 		);
 
 		$this->setReflectionClassInstance($listener);
@@ -435,9 +435,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => true,
 			'changeTime' => true,
 			'castNumbers' => true,
-			'_keyMethods' => array(),
-			'_valueMethods' => array(),
-			'_replaceMap' => array()
+			'keyMethods' => array(),
+			'valueMethods' => array(),
+			'replaceMap' => array()
 		);
 
 		$this->setReflectionClassInstance($listener);
@@ -561,9 +561,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => true,
 			'changeTime' => true,
 			'castNumbers' => true,
-			'_keyMethods' => array(),
-			'_valueMethods' => array(),
-			'_replaceMap' => array()
+			'keyMethods' => array(),
+			'valueMethods' => array(),
+			'replaceMap' => array()
 		);
 
 		$this->setReflectionClassInstance($listener);
@@ -662,9 +662,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => true,
 			'changeTime' => true,
 			'castNumbers' => true,
-			'_keyMethods' => array(),
-			'_valueMethods' => array(),
-			'_replaceMap' => array()
+			'keyMethods' => array(),
+			'valueMethods' => array(),
+			'replaceMap' => array()
 		);
 
 		$this->setReflectionClassInstance($listener);
@@ -719,9 +719,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => true,
 			'changeTime' => true,
 			'castNumbers' => true,
-			'_keyMethods' => array(),
-			'_valueMethods' => array($closure),
-			'_replaceMap' => array()
+			'keyMethods' => array(),
+			'valueMethods' => array($closure),
+			'replaceMap' => array()
 		);
 
 		$this->setProtectedProperty('_settings', $settings, $listener);
@@ -729,19 +729,19 @@ class ApiTransformationListenerTest extends CrudTestCase {
 		$result = $this->getProtectedProperty('_settings', $listener);
 
 		$expected = array('_replaceKeys');
-		$this->assertSame($expected, $result['_keyMethods']);
+		$this->assertSame($expected, $result['keyMethods']);
 
 		$expected = array('_castNumbers', '_changeDateToUnix', $closure);
-		$this->assertSame($expected, $result['_valueMethods']);
+		$this->assertSame($expected, $result['valueMethods']);
 
 		$settings = array(
 			'changeNesting' => true,
 			'changeKeys' => false,
 			'changeTime' => false,
 			'castNumbers' => true,
-			'_keyMethods' => array(),
-			'_valueMethods' => array($closure),
-			'_replaceMap' => array()
+			'keyMethods' => array(),
+			'valueMethods' => array($closure),
+			'replaceMap' => array()
 		);
 
 		$this->setProtectedProperty('_settings', $settings, $listener);
@@ -749,10 +749,10 @@ class ApiTransformationListenerTest extends CrudTestCase {
 		$result = $this->getProtectedProperty('_settings', $listener);
 
 		$expected = array();
-		$this->assertSame($expected, $result['_keyMethods']);
+		$this->assertSame($expected, $result['keyMethods']);
 
 		$expected = array('_castNumbers', $closure);
-		$this->assertSame($expected, $result['_valueMethods']);
+		$this->assertSame($expected, $result['valueMethods']);
 	}
 
 /**
@@ -771,9 +771,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => true,
 			'changeTime' => true,
 			'castNumbers' => true,
-			'_keyMethods' => array('_replaceKeys'),
-			'_valueMethods' => array('_castNumbers', '_changeDateToUnix'),
-			'_replaceMap' => array('User' => 'user', 'Profile' => 'profile')
+			'keyMethods' => array('_replaceKeys'),
+			'valueMethods' => array('_castNumbers', '_changeDateToUnix'),
+			'replaceMap' => array('User' => 'user', 'Profile' => 'profile')
 		);
 
 		$this->setReflectionClassInstance($listener);
@@ -810,9 +810,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => true,
 			'changeTime' => false,
 			'castNumbers' => false,
-			'_keyMethods' => array('_replaceKeys'),
-			'_valueMethods' => array(),
-			'_replaceMap' => array('User' => 'user', 'Profile' => 'profile')
+			'keyMethods' => array('_replaceKeys'),
+			'valueMethods' => array(),
+			'replaceMap' => array('User' => 'user', 'Profile' => 'profile')
 		);
 
 		$this->setReflectionClassInstance($listener);
@@ -849,9 +849,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => true,
 			'changeTime' => false,
 			'castNumbers' => false,
-			'_keyMethods' => array('_replaceKeys'),
-			'_valueMethods' => array(),
-			'_replaceMap' => array('CakePHP' => 'FriendsOfCake')
+			'keyMethods' => array('_replaceKeys'),
+			'valueMethods' => array(),
+			'replaceMap' => array('CakePHP' => 'FriendsOfCake')
 		);
 
 		$this->setReflectionClassInstance($listener);
@@ -911,9 +911,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => true,
 			'changeTime' => false,
 			'castNumbers' => false,
-			'_keyMethods' => array('_replaceKeys'),
-			'_valueMethods' => array(),
-			'_replaceMap' => array()
+			'keyMethods' => array('_replaceKeys'),
+			'valueMethods' => array(),
+			'replaceMap' => array()
 		);
 
 		$this->setReflectionClassInstance($listener);
@@ -950,9 +950,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => false,
 			'changeTime' => true,
 			'castNumbers' => true,
-			'_keyMethods' => array(),
-			'_valueMethods' => array('_castNumbers', '_changeDateToUnix'),
-			'_replaceMap' => array()
+			'keyMethods' => array(),
+			'valueMethods' => array('_castNumbers', '_changeDateToUnix'),
+			'replaceMap' => array()
 		);
 
 		$this->setReflectionClassInstance($listener);
@@ -996,9 +996,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => false,
 			'changeTime' => false,
 			'castNumbers' => false,
-			'_keyMethods' => array(),
-			'_valueMethods' => array(),
-			'_replaceMap' => array()
+			'keyMethods' => array(),
+			'valueMethods' => array(),
+			'replaceMap' => array()
 		);
 
 		$this->setReflectionClassInstance($listener);
@@ -1032,9 +1032,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => false,
 			'changeTime' => false,
 			'castNumbers' => false,
-			'_keyMethods' => array(),
-			'_valueMethods' => array('strtoupper'),
-			'_replaceMap' => array()
+			'keyMethods' => array(),
+			'valueMethods' => array('strtoupper'),
+			'replaceMap' => array()
 		);
 
 		$this->setReflectionClassInstance($listener);
@@ -1071,9 +1071,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => false,
 			'changeTime' => false,
 			'castNumbers' => false,
-			'_keyMethods' => array(),
-			'_valueMethods' => array('Inflector::slug'),
-			'_replaceMap' => array()
+			'keyMethods' => array(),
+			'valueMethods' => array('Inflector::slug'),
+			'replaceMap' => array()
 		);
 
 		$this->setReflectionClassInstance($listener);
@@ -1117,9 +1117,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => false,
 			'changeTime' => false,
 			'castNumbers' => false,
-			'_keyMethods' => array(),
-			'_valueMethods' => array($uppercase),
-			'_replaceMap' => array()
+			'keyMethods' => array(),
+			'valueMethods' => array($uppercase),
+			'replaceMap' => array()
 		);
 
 		$this->setReflectionClassInstance($listener);
@@ -1243,9 +1243,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => false,
 			'changeTime' => false,
 			'castNumbers' => false,
-			'_keyMethods' => array(),
-			'_valueMethods' => array(),
-			'_replaceMap' => array()
+			'keyMethods' => array(),
+			'valueMethods' => array(),
+			'replaceMap' => array()
 		);
 
 		$this->setReflectionClassInstance($listener);
