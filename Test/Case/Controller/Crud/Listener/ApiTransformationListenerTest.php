@@ -13,6 +13,10 @@ App::uses('ApiTransformationListener', 'Crud.Controller/Crud/Listener');
  */
 class ApiTransformationListenerTest extends CrudTestCase {
 
+	public static function staticExample($value) {
+		return Inflector::slug($value);
+	}
+
 /**
  * testImplementedEventsApiOnlyIsApi
  *
@@ -1033,7 +1037,7 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeTime' => false,
 			'castNumbers' => false,
 			'keyMethods' => array(),
-			'valueMethods' => array('strtoupper'),
+			'valueMethods' => array(function($value, $key) { return strtoupper($value); }),
 			'replaceMap' => array()
 		);
 
@@ -1072,7 +1076,7 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeTime' => false,
 			'castNumbers' => false,
 			'keyMethods' => array(),
-			'valueMethods' => array('Inflector::slug'),
+			'valueMethods' => array('ApiTransformationListenerTest::staticExample'),
 			'replaceMap' => array()
 		);
 

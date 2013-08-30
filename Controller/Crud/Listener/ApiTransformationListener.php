@@ -106,7 +106,7 @@ class ApiTransformationListener extends CrudListener {
 				$new = $this->_changeNesting($new, $alias);
 			}
 			unset($data[$index]);
-			$this->_recurse($new);
+			$this->_recurse($new, $index);
 			$formatted[] = $new;
 		}
 		$formatted = $wrapped ? $formatted[0] : $formatted;
@@ -146,41 +146,43 @@ class ApiTransformationListener extends CrudListener {
  *
  * @param string|Closure|array $method
  * @param mixed $variable
+ * @param mixed $key
  * @return mixed
  */
-	protected function _call($method, &$variable) {
+	protected function _call($method, &$variable, $key) {
 		if (is_string($method) && method_exists($this, $method)) {
-			return $this->$method($variable);
+			return $this->$method($variable, $key);
 		}
 
 		if ($method instanceof Closure) {
-			return $method($variable);
+			return $method($variable, $key);
 		}
 
-		return call_user_func($method, $variable);
+		return call_user_func($method, $variable, $key);
 	}
 
 /**
  * Recurse through an array and apply key changes and casts.
  *
  * @param mixed $variable
+ * @param mixed $key
  * @return void
  */
-	protected function _recurse(&$variable) {
+	protected function _recurse(&$variable, $key = null) {
 		if (is_array($variable)) {
 			foreach ($this->_settings['keyMethods'] as $method) {
-				$variable = $this->_call($method, $variable);
+				$variable = $this->_call($method, $variable, $key);
 			}
 
-			foreach ($variable as &$value) {
-				$this->_recurse($value);
+			foreach ($variable as $k => &$value) {
+				$this->_recurse($value, $k);
 			}
 
 			return;
 		}
 
 		foreach ($this->_settings['valueMethods'] as $method) {
-			$variable = $this->_call($method, $variable);
+			$variable = $this->_call($method, $variable, $key);
 		}
 	}
 
