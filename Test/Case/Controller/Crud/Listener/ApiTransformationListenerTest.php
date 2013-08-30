@@ -13,6 +13,14 @@ App::uses('ApiTransformationListener', 'Crud.Controller/Crud/Listener');
  */
 class ApiTransformationListenerTest extends CrudTestCase {
 
+/**
+ * staticExample
+ *
+ * Used to test static calls
+ *
+ * @param string $value
+ * @return string
+ */
 	public static function staticExample($value) {
 		return Inflector::slug($value);
 	}
@@ -1137,6 +1145,61 @@ class ApiTransformationListenerTest extends CrudTestCase {
 		$expected = array(
 			'User' => array('id' => '5', 'name' => 'FRIENDSOFCAKE'),
 			'Profile' => array('id' => '987', 'twitter' => '@FRIENDSOFCAKE')
+		);
+
+		$this->callProtectedMethod('_recurse', array(&$data), $listener);
+
+		$this->assertSame($expected, $data);
+	}
+
+	public function testRecurseKeySpecificTransform() {
+		$listener = $this
+			->getMockBuilder('ApiTransformationListener')
+			->disableOriginalConstructor()
+			->getMock();
+
+		$callback = function($variable, $key) {
+			if ($key === 'changeme') {
+				return 'changed';
+			}
+			return $variable;
+		};
+
+		$settings = array(
+			'changeNesting' => true,
+			'changeKeys' => false,
+			'changeTime' => false,
+			'castNumbers' => false,
+			'keyMethods' => array(),
+			'valueMethods' => array($callback),
+			'replaceMap' => array()
+		);
+
+		$this->setReflectionClassInstance($listener);
+		$this->setProtectedProperty('_settings', $settings, $listener);
+
+		$data = array(
+			'User' => array(
+				'id' => '5',
+				'name' => 'FriendsOfCake',
+				'changeme' => 'old'
+			),
+			'Profile' => array(
+				'id' => '987',
+				'twitter' => '@FriendsOfCake'
+			)
+		);
+
+		$expected = array(
+			'User' => array(
+				'id' => '5',
+				'name' => 'FriendsOfCake',
+				'changeme' => 'changed'
+			),
+			'Profile' => array(
+				'id' => '987',
+				'twitter' => '@FriendsOfCake'
+			)
 		);
 
 		$this->callProtectedMethod('_recurse', array(&$data), $listener);
