@@ -1,25 +1,17 @@
 <?php
+
 App::uses('CrudTestCase', 'Crud.Test/Support');
+App::uses('Controller', 'Controller');
+App::uses('Model', 'Model');
+App::uses('CakeRequest', 'Network');
+App::uses('IndexCrudAction', 'Crud.Controller/Crud/Action');
+App::uses('ApiTransformationListener', 'Crud.Controller/Crud/Listener');
 
 /**
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
 class ApiTransformationListenerTest extends CrudTestCase {
-
-/**
- * Setup additional classes.
- *
- * @return void
- */
-	public static function setUpBeforeClass() {
-		parent::setUpBeforeClass();
-		App::uses('Controller', 'Controller');
-		App::uses('Model', 'Model');
-		App::uses('CakeRequest', 'Network');
-		App::uses('IndexCrudAction', 'Crud.Controller/Crud/Action');
-		App::uses('ApiTransformationListener', 'Crud.Controller/Crud/Listener');
-	}
 
 /**
  * testImplementedEventsApiOnlyIsApi
