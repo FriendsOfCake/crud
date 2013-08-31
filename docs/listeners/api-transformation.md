@@ -118,9 +118,6 @@ class SamplesController extends AppController {
         'Api',
         'ApiTransformation' => [
 
-          // Required.
-          'className' => 'ApiTransformation',
-
           // Remove top model and nest associations.
           'changeNesting' => true,
 
