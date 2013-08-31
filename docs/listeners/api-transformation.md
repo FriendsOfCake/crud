@@ -384,7 +384,7 @@ __After `castNumbers`__
 }
 {% endhighlight %}
 
-## \keyMethods & \valueMethods
+## keyMethods & valueMethods
 
 To avoid looping through everything multiple times, when you want to do your
 own custom transformation the `ApiTransformationListener` allows you to hook
@@ -447,7 +447,7 @@ __After the methods __
 }
 {% endhighlight %}
 
-## \replaceMap
+## replaceMap
 
 As stated above you can override the `replaceKeys` map by setting the
 `replaceMap` option:
