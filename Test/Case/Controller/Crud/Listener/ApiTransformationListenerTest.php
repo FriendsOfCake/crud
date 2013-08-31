@@ -14,6 +14,18 @@ App::uses('ApiTransformationListener', 'Crud.Controller/Crud/Listener');
 class ApiTransformationListenerTest extends CrudTestCase {
 
 /**
+ * staticExample
+ *
+ * Used to test static calls
+ *
+ * @param string $value
+ * @return string
+ */
+	public static function staticExample($value) {
+		return Inflector::slug($value);
+	}
+
+/**
  * testImplementedEventsApiOnlyIsApi
  *
  * @return void
@@ -157,9 +169,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => true,
 			'changeTime' => true,
 			'castNumbers' => true,
-			'_keyMethods' => array(),
-			'_valueMethods' => array(),
-			'_replaceMap' => array()
+			'keyMethods' => array(),
+			'valueMethods' => array(),
+			'replaceMap' => array()
 		);
 
 		$this->setReflectionClassInstance($listener);
@@ -308,9 +320,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => true,
 			'changeTime' => true,
 			'castNumbers' => true,
-			'_keyMethods' => array(),
-			'_valueMethods' => array(),
-			'_replaceMap' => array()
+			'keyMethods' => array(),
+			'valueMethods' => array(),
+			'replaceMap' => array()
 		);
 
 		$this->setReflectionClassInstance($listener);
@@ -435,9 +447,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => true,
 			'changeTime' => true,
 			'castNumbers' => true,
-			'_keyMethods' => array(),
-			'_valueMethods' => array(),
-			'_replaceMap' => array()
+			'keyMethods' => array(),
+			'valueMethods' => array(),
+			'replaceMap' => array()
 		);
 
 		$this->setReflectionClassInstance($listener);
@@ -561,9 +573,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => true,
 			'changeTime' => true,
 			'castNumbers' => true,
-			'_keyMethods' => array(),
-			'_valueMethods' => array(),
-			'_replaceMap' => array()
+			'keyMethods' => array(),
+			'valueMethods' => array(),
+			'replaceMap' => array()
 		);
 
 		$this->setReflectionClassInstance($listener);
@@ -662,9 +674,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => true,
 			'changeTime' => true,
 			'castNumbers' => true,
-			'_keyMethods' => array(),
-			'_valueMethods' => array(),
-			'_replaceMap' => array()
+			'keyMethods' => array(),
+			'valueMethods' => array(),
+			'replaceMap' => array()
 		);
 
 		$this->setReflectionClassInstance($listener);
@@ -719,9 +731,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => true,
 			'changeTime' => true,
 			'castNumbers' => true,
-			'_keyMethods' => array(),
-			'_valueMethods' => array($closure),
-			'_replaceMap' => array()
+			'keyMethods' => array(),
+			'valueMethods' => array($closure),
+			'replaceMap' => array()
 		);
 
 		$this->setProtectedProperty('_settings', $settings, $listener);
@@ -729,19 +741,19 @@ class ApiTransformationListenerTest extends CrudTestCase {
 		$result = $this->getProtectedProperty('_settings', $listener);
 
 		$expected = array('_replaceKeys');
-		$this->assertSame($expected, $result['_keyMethods']);
+		$this->assertSame($expected, $result['keyMethods']);
 
 		$expected = array('_castNumbers', '_changeDateToUnix', $closure);
-		$this->assertSame($expected, $result['_valueMethods']);
+		$this->assertSame($expected, $result['valueMethods']);
 
 		$settings = array(
 			'changeNesting' => true,
 			'changeKeys' => false,
 			'changeTime' => false,
 			'castNumbers' => true,
-			'_keyMethods' => array(),
-			'_valueMethods' => array($closure),
-			'_replaceMap' => array()
+			'keyMethods' => array(),
+			'valueMethods' => array($closure),
+			'replaceMap' => array()
 		);
 
 		$this->setProtectedProperty('_settings', $settings, $listener);
@@ -749,10 +761,10 @@ class ApiTransformationListenerTest extends CrudTestCase {
 		$result = $this->getProtectedProperty('_settings', $listener);
 
 		$expected = array();
-		$this->assertSame($expected, $result['_keyMethods']);
+		$this->assertSame($expected, $result['keyMethods']);
 
 		$expected = array('_castNumbers', $closure);
-		$this->assertSame($expected, $result['_valueMethods']);
+		$this->assertSame($expected, $result['valueMethods']);
 	}
 
 /**
@@ -771,9 +783,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => true,
 			'changeTime' => true,
 			'castNumbers' => true,
-			'_keyMethods' => array('_replaceKeys'),
-			'_valueMethods' => array('_castNumbers', '_changeDateToUnix'),
-			'_replaceMap' => array('User' => 'user', 'Profile' => 'profile')
+			'keyMethods' => array('_replaceKeys'),
+			'valueMethods' => array('_castNumbers', '_changeDateToUnix'),
+			'replaceMap' => array('User' => 'user', 'Profile' => 'profile')
 		);
 
 		$this->setReflectionClassInstance($listener);
@@ -810,9 +822,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => true,
 			'changeTime' => false,
 			'castNumbers' => false,
-			'_keyMethods' => array('_replaceKeys'),
-			'_valueMethods' => array(),
-			'_replaceMap' => array('User' => 'user', 'Profile' => 'profile')
+			'keyMethods' => array('_replaceKeys'),
+			'valueMethods' => array(),
+			'replaceMap' => array('User' => 'user', 'Profile' => 'profile')
 		);
 
 		$this->setReflectionClassInstance($listener);
@@ -849,9 +861,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => true,
 			'changeTime' => false,
 			'castNumbers' => false,
-			'_keyMethods' => array('_replaceKeys'),
-			'_valueMethods' => array(),
-			'_replaceMap' => array('CakePHP' => 'FriendsOfCake')
+			'keyMethods' => array('_replaceKeys'),
+			'valueMethods' => array(),
+			'replaceMap' => array('CakePHP' => 'FriendsOfCake')
 		);
 
 		$this->setReflectionClassInstance($listener);
@@ -911,9 +923,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => true,
 			'changeTime' => false,
 			'castNumbers' => false,
-			'_keyMethods' => array('_replaceKeys'),
-			'_valueMethods' => array(),
-			'_replaceMap' => array()
+			'keyMethods' => array('_replaceKeys'),
+			'valueMethods' => array(),
+			'replaceMap' => array()
 		);
 
 		$this->setReflectionClassInstance($listener);
@@ -950,9 +962,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => false,
 			'changeTime' => true,
 			'castNumbers' => true,
-			'_keyMethods' => array(),
-			'_valueMethods' => array('_castNumbers', '_changeDateToUnix'),
-			'_replaceMap' => array()
+			'keyMethods' => array(),
+			'valueMethods' => array('_castNumbers', '_changeDateToUnix'),
+			'replaceMap' => array()
 		);
 
 		$this->setReflectionClassInstance($listener);
@@ -996,9 +1008,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => false,
 			'changeTime' => false,
 			'castNumbers' => false,
-			'_keyMethods' => array(),
-			'_valueMethods' => array(),
-			'_replaceMap' => array()
+			'keyMethods' => array(),
+			'valueMethods' => array(),
+			'replaceMap' => array()
 		);
 
 		$this->setReflectionClassInstance($listener);
@@ -1032,9 +1044,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => false,
 			'changeTime' => false,
 			'castNumbers' => false,
-			'_keyMethods' => array(),
-			'_valueMethods' => array('strtoupper'),
-			'_replaceMap' => array()
+			'keyMethods' => array(),
+			'valueMethods' => array(function($value, $key) { return strtoupper($value); }),
+			'replaceMap' => array()
 		);
 
 		$this->setReflectionClassInstance($listener);
@@ -1071,9 +1083,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => false,
 			'changeTime' => false,
 			'castNumbers' => false,
-			'_keyMethods' => array(),
-			'_valueMethods' => array('Inflector::slug'),
-			'_replaceMap' => array()
+			'keyMethods' => array(),
+			'valueMethods' => array('ApiTransformationListenerTest::staticExample'),
+			'replaceMap' => array()
 		);
 
 		$this->setReflectionClassInstance($listener);
@@ -1117,9 +1129,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => false,
 			'changeTime' => false,
 			'castNumbers' => false,
-			'_keyMethods' => array(),
-			'_valueMethods' => array($uppercase),
-			'_replaceMap' => array()
+			'keyMethods' => array(),
+			'valueMethods' => array($uppercase),
+			'replaceMap' => array()
 		);
 
 		$this->setReflectionClassInstance($listener);
@@ -1133,6 +1145,146 @@ class ApiTransformationListenerTest extends CrudTestCase {
 		$expected = array(
 			'User' => array('id' => '5', 'name' => 'FRIENDSOFCAKE'),
 			'Profile' => array('id' => '987', 'twitter' => '@FRIENDSOFCAKE')
+		);
+
+		$this->callProtectedMethod('_recurse', array(&$data), $listener);
+
+		$this->assertSame($expected, $data);
+	}
+
+	public function testRecurseKeySpecificTransform() {
+		$listener = $this
+			->getMockBuilder('ApiTransformationListener')
+			->disableOriginalConstructor()
+			->getMock();
+
+		$callback = function($variable, $key) {
+			if ($key === 'User.changeme') {
+				return 'changed';
+			}
+			return $variable;
+		};
+
+		$settings = array(
+			'changeNesting' => true,
+			'changeKeys' => false,
+			'changeTime' => false,
+			'castNumbers' => false,
+			'keyMethods' => array(),
+			'valueMethods' => array($callback),
+			'replaceMap' => array()
+		);
+
+		$this->setReflectionClassInstance($listener);
+		$this->setProtectedProperty('_settings', $settings, $listener);
+
+		$data = array(
+			'User' => array(
+				'id' => '5',
+				'name' => 'FriendsOfCake',
+				'changeme' => 'old'
+			),
+			'Profile' => array(
+				'id' => '987',
+				'twitter' => '@FriendsOfCake'
+			)
+		);
+
+		$expected = array(
+			'User' => array(
+				'id' => '5',
+				'name' => 'FriendsOfCake',
+				'changeme' => 'changed'
+			),
+			'Profile' => array(
+				'id' => '987',
+				'twitter' => '@FriendsOfCake'
+			)
+		);
+
+		$this->callProtectedMethod('_recurse', array(&$data), $listener);
+
+		$this->assertSame($expected, $data);
+	}
+
+	public function testRecurseKeySpecificNestedTransform() {
+		$listener = $this
+			->getMockBuilder('ApiTransformationListener')
+			->disableOriginalConstructor()
+			->getMock();
+
+		$callback = function($variable, $key) {
+			if (preg_match('@^\d+.User\.changeme$@', $key)) {
+				return 'changed';
+			}
+			return $variable;
+		};
+
+		$settings = array(
+			'changeNesting' => true,
+			'changeKeys' => false,
+			'changeTime' => false,
+			'castNumbers' => false,
+			'keyMethods' => array(),
+			'valueMethods' => array($callback),
+			'replaceMap' => array()
+		);
+
+		$this->setReflectionClassInstance($listener);
+		$this->setProtectedProperty('_settings', $settings, $listener);
+
+		$data = array(
+			'changeme' => 'no change',
+			array(
+				'changeme' => 'no change',
+				'User' => array(
+					'id' => '5',
+					'name' => 'FriendsOfCake',
+					'changeme' => 'old'
+				),
+				'Profile' => array(
+					'id' => '987',
+					'twitter' => '@FriendsOfCake'
+				)
+			),
+			array(
+				'User' => array(
+					'id' => '6',
+					'name' => 'FriendsOfCake',
+					'changeme' => 'old two'
+				),
+				'Profile' => array(
+					'id' => '987',
+					'twitter' => '@FriendsOfCake'
+				)
+			)
+		);
+
+		$expected = array(
+			'changeme' => 'no change',
+			array(
+				'changeme' => 'no change',
+				'User' => array(
+					'id' => '5',
+					'name' => 'FriendsOfCake',
+					'changeme' => 'changed'
+				),
+				'Profile' => array(
+					'id' => '987',
+					'twitter' => '@FriendsOfCake'
+				)
+			),
+			array(
+				'User' => array(
+					'id' => '6',
+					'name' => 'FriendsOfCake',
+					'changeme' => 'changed'
+				),
+				'Profile' => array(
+					'id' => '987',
+					'twitter' => '@FriendsOfCake'
+				)
+			)
 		);
 
 		$this->callProtectedMethod('_recurse', array(&$data), $listener);
@@ -1243,9 +1395,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeKeys' => false,
 			'changeTime' => false,
 			'castNumbers' => false,
-			'_keyMethods' => array(),
-			'_valueMethods' => array(),
-			'_replaceMap' => array()
+			'keyMethods' => array(),
+			'valueMethods' => array(),
+			'replaceMap' => array()
 		);
 
 		$this->setReflectionClassInstance($listener);
