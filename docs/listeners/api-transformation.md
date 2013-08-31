@@ -28,7 +28,7 @@ __Default output__
         },
         "Comment": [{
             "id": "324",
-            "message": "I like FriendOfCake."
+            "message": "I like FriendsOfCake."
         }, {
             "id": "849",
             "message": "Cool."
@@ -178,7 +178,7 @@ __Initial reponse__
         },
         "Comment": [{
             "id": "324",
-            "message": "I like FriendOfCake."
+            "message": "I like FriendsOfCake."
         }, {
             "id": "849",
             "message": "Cool."
@@ -238,7 +238,7 @@ __Initial reponse__
         },
         "Comment": [{
             "id": "324",
-            "message": "I like FriendOfCake."
+            "message": "I like FriendsOfCake."
         }, {
             "id": "849",
             "message": "Cool."
@@ -268,7 +268,7 @@ __After `changeKeys`__
         },
         "comments": [{
             "id": "324",
-            "message": "I like FriendOfCake."
+            "message": "I like FriendsOfCake."
         }, {
             "id": "849",
             "message": "Cool."
@@ -468,7 +468,7 @@ __Initial reponse__
         },
         "Comment": [{
             "id": "324",
-            "message": "I like FriendOfCake."
+            "message": "I like FriendsOfCake."
         }, {
             "id": "849",
             "message": "Cool."
@@ -498,7 +498,7 @@ __After `changeKeys` with the custom `_replaceMap`__
         },
         "remarks": [{
             "id": "324",
-            "message": "I like FriendOfCake."
+            "message": "I like FriendsOfCake."
         }, {
             "id": "849",
             "message": "Cool."
