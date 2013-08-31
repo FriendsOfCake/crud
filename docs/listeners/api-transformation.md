@@ -372,7 +372,7 @@ __After `castNumbers`__
 
 ## \keyMethods & \valueMethods
 
-To avoid looping through everything multiple times, when you want to do your own custom transformation the `ApiTransformationListener` allows you to hook into the recursive loop method. This can be done by defining additional methods in the `keyMethods` or `valueMethods` options. Their use is similar to the `call_user_func()` syntax, the callback recieves both the value, and the key (array index) returning the updated value:
+To avoid looping through everything multiple times, when you want to do your own custom transformation the `ApiTransformationListener` allows you to hook into the recursive loop method. This can be done by defining additional methods in the `keyMethods` or `valueMethods` options. Their use is similar to the `call_user_func()` syntax, the callback recieves both the value, and the path (dot-delimited keys for the current array index) returning the updated value:
 
 __Example methods__
 
@@ -384,8 +384,8 @@ class SamplesController extends AppController {
     parent::beforeFilter();
 
     $slug = function($value, $key) {
-		if ($key === 'name') {
-        	return Inflector::slug($value, '-');
+		if ($key === '0.User.username') {
+        	return strtolower(Inflector::slug($value, '-'));
 		}
 		return $value;
     };
