@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Crud - Application development on steroids</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+		<div class="reveal">
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+<!-- Intro -->
+				<section>
+					<h1>Crud</h1>
+					<h3>Application development on steroids</h3>
+					<p>
+						<small>by <a href="http://cakephp.nu">Christian "Jippi" Winther</a> / <a href="http://twitter.com/jippi">@jippi</a></small>
+						<br />
+						<small>GitHub: <a href="http://github.com/friendsofcake/crud">friendsofcake/crud</a> / <a href="http://friendsofcake.com/crud">FriendsOfCake.com/crud</a></small>
+					</p>
+
+					<aside class="notes">
+						Used to be "Scaffolding on steroids", but CRUD is so much more than scaffolding<br />
+						It's production ready
+					</aside>
+				</section>
+
+<!-- Crud -->
+				<section>
+					<h2>What is CRUD?</h2>
+					<ul style="list-style-type: none;">
+						<li>- [C]reate</li>
+						<li>- [R]read</li>
+						<li>- [U]pdate</li>
+						<li>- [D]elete</li>
+					</ul>
+
+					<aside class="notes">
+						I guess everyone know that, but just to make sure
+					</aside>
+				</section>
+
+<!-- Goals -->
+				<section>
+					<h2>Development goals</h2>
+					<p>What do we aim for?</p>
+					<ul style="list-style-type: none;">
+						<li>- Rapid development</li>
+						<li>- DRY code</li>
+						<li>- Maintainability</li>
+						<li>- Flexibility</li>
+						<li>- Extensibility</li>
+						<li>- Testability</li>
+						<li>- Reusability‎</li>
+						<li>- Focus on the business goals</li>
+						<li>- Error free code</li>
+						<li>- Unicorns</li>
+					</ul>
+
+					<aside class="notes">
+						Developers are inherently lazy, and thats a good thing.
+					</aside>
+				</section>
+
+<!-- Possible solutions -->
+				<section>
+					<h2>Possible solutions</h2>
+					<p>
+						<ul>
+							<li>CakePHP - Scaffolding</li>
+							<li>CakePHP - Bake</li>
+							<li>Community projects</li>
+						</ul>
+					</p>
+
+				</section>
+
+<!-- CakePHP scaffolding -->
+				<section>
+					<h2>CakePHP - Scaffolding</h2>
+
+					<ul style="list-style-type: none;">
+						<li>✔ Rapid development</li>
+						<li>✔ DRY code</li>
+						<li>✘ Maintainability</li>
+						<li>✘ Flexibility</li>
+						<li>✘ Extensibility</li>
+						<li>✔ Testability</li>
+						<li>✔ Reusability‎</li>
+						<li>✔ Focus on the business goals</li>
+						<li>✔ Error free code</li>
+						<li>✘ Unicorns</li>
+					</ul>
+
+					<aside class="notes">
+						<ul>
+							<li>Rapid       : one line of code, done</li>
+							<li>DRY         : one line of code, done</li>
+							<li>Maintainable: you can't modify it</li>
+							<li>Flexible    : you can't modify it</li>
+							<li>Extensible  : you can't modify it or inject logic, only cake callbacks</li>
+							<li>Test        : you can't test it (?)</li>
+							<li>Reusability : sure, copy that line</li>
+							<li>Business    : impossible to change its behavior</li>
+							<li>Hard work   : it's from CakePHP core</li>
+							<li>Magic dust  : none </li>
+						</ul>
+					</aside>
+				</section>
+
+<!-- CakePHP bake -->
+				<section>
+					<h2>CakePHP - bake</h2>
+
+					<ul style="list-style-type: none;">
+						<li>✔ Rapid development</li>
+						<li>✘ DRY code</li>
+						<li>(✔) Maintainability</li>
+						<li>(✔) Flexibility</li>
+						<li>(✔) Extensibility</li>
+						<li>✔ Testability</li>
+						<li>(✔) Reusability‎</li>
+						<li>✔ Focus on the business problems</li>
+						<li>✔ Error free code</li>
+						<li>✘ Unicorns</li>
+					</ul>
+
+					<aside class="notes">
+						<ul>
+							<li>Rapid       : a few commands done</li>
+							<li>DRY         : code is replicated</li>
+							<li>Maintainable: sure, but all over the place</li>
+							<li>Flexible    : sure, you can do anything, but not easy to keep DRY</li>
+							<li>Extensible  : you can do anything you want</li>
+							<li>Test        : you can test it, its easy</li>
+							<li>Reusability : sure, make bake template and go crazy</li>
+							<li>Business    : impossible to change its behavior</li>
+							<li>Hard work   : it's from CakePHP core</li>
+							<li>Magic dust  : none </li>
+						</ul>
+					</aside>
+				</section>
+
+<!-- Community projects 1/2 -->
+				<section>
+					<h2>Community projects</h2>
+					<p>to mention just a few</p>
+					<ul>
+						<li>milesj/Admin (active)</li>
+						<li>josegonzalez/cake_admin (~1 year ago; now Crud-view)</li>
+						<li>plusglobal/BrowniePHP (~2 months)</li>
+						<li>electblake/CakePHP-Adminster-Plugin (~7 months)</li>
+					</ul>
+
+					<aside class="notes">
+						I found 30+ plugins, most if not all was abandoned
+					</aside>
+				</section>
+
+<!-- Community projects 2/2 -->
+				<section>
+					<h2>Community projects</h2>
+					<p>Why they weren't a perfect fit</p>
+					<ul>
+						<li>Configuration over conventions</li>
+						<li>Not flexible</li>
+						<li>Not extensible</li>
+						<li>Not unit tested</li>
+						<li>"All or nothing"</li>
+						<li>Lack of unicorns</li>
+					</ul>
+				</section>
+
+<!-- Enter CRUD -->
+				<section>
+					<h2>Enter CRUD</h2>
+					<ul style="list-style-type: none;">
+						<li>✔ Rapid development</li>
+						<li>✔ DRY code</li>
+						<li>✔ Maintainability</li>
+						<li>✔ Flexibility</li>
+						<li>✔ Extensibility</li>
+						<li>✔ Testability</li>
+						<li>✔ Reusability‎</li>
+						<li>✔ Focus on the business goals</li>
+						<li>✔ Error free code</li>
+						<li>✔ Unicorns</li>
+					</ul>
+
+					<br />
+					<br />
+
+					<small>Or so I like to think ...</small>
+				</section>
+
+<!-- Rapid Development -->
+		<section>
+			<h2>✔ Rapid development</h2>
+
+			<p style="text-align: left">
+				~5 minutes installation (composer & git).<br />
+				Modify AppController, instant win in all controllers (Crud actions, listeners).<br />
+				Default variables are bake view compatible.
+			</p>
+		</section>
+
+<!-- DRY -->
+		<section>
+			<h2>✔ DRY code</h2>
+
+			<p style="text-align: left">
+				0 lines of code for default crud / controller actions.<br />
+				Only implement a controller action if you need to modify default behavior.<br />
+				Put repeating logic into listeners or custom actions.
+			</p>
+		</section>
+
+<!-- Maintainable -->
+		<section>
+			<h2>✔ Maintainable</h2>
+
+			<p style="text-align: left">
+				Centralized code, reuse across controllers and applications.<br />
+				Fix once, fix everywhere.<br />
+				Skinny controllers.
+			</p>
+		</section>
+
+<!-- Flexible -->
+		<section>
+			<h2>✔ Flexible</h2>
+
+			<p style="text-align: left">
+				Events... events everywhere.<br />
+				Make your own actions & listeners.<br />
+				Tries very hard not to get in your way.<br />
+				Many configuration options, with sane defaults.
+			</p>
+
+			<aside class="notes">
+				Events: same as beforeSave, beforeFind, beforeRender etc, no new magic
+				<br />
+				Very cake feeling about it
+			</aside>
+		</section>
+
+<!-- Extensible -->
+		<section>
+			<h2>✔ Extensible</h2>
+
+			<p style="text-align: left">
+				Listeners can very easily extend the capabilities of your application.<br />
+				Replace Crud actions or listeners with your own.
+			</p>
+		</section>
+
+<!-- Less code to test -->
+		<section>
+			<h2>✔ Testable</h2>
+
+			<p style="text-align: left">
+				Crud got ~90% test coverage, build in features "just works".<br />
+				Works very well with "testAction()".<br />
+				Very easy to mock code in tests if you want to.<br />
+				Doesn't get in the way of your own Controller tests
+			</p>
+		</section>
+
+<!-- Reusability‎ -->
+		<section>
+			<h2>✔ Reusability‎</h2>
+
+			<p style="text-align: left">
+				Reuse the same CRUD actions & listeners across controllers & projects.
+			</p>
+
+			<p style="text-align: left">
+				Currently ~8 developers are actively involved in CRUD, 6 of them are CakePHP core devs:
+			</p>
+
+			<ul>
+				<li>jose_zap / lorenzo</li>
+				<li>savant / josegonzalez</li>
+				<li>AD7six</li>
+				<li>ADmad</li>
+				<li>Phally</li>
+				<li>Jippi</li>
+			</ul>
+
+			<p style="text-align: left">Most of us use CRUD in production.</p>
+			<p style="text-align: left">CRUD (v2) is used in 400+ applications at Nodes.</p>
+		</section>
+
+<!-- Focus on the business problems -->
+		<section>
+			<h2>✔ Focus on the business problems</h2>
+
+			<p style="text-align: left">
+				All the basic CRUD logic is taken care of, focus on things that sets your business case apart from basic CRUD.<br />
+				<br />
+				More secure than scaffold and bake out of the box.
+			</p>
+		</section>
+
+<!-- magic dust -->
+		<section>
+			<h2>✔ Unicorns</h2>
+
+			<p style="text-align: left">
+				Use listeners to extend your application.<br />
+				--> CakeDC/Search<br />
+				--> CakePHP/DebugKit<br />
+				Roll your own Crud actions.<br />
+				One line and you got yourself a REST API.<br />
+				We got documentation. (I know, right?!)
+		</section>
+
+<!-- code time -->
+		<section>
+			<h2>Code time</h2>
+			<p>But first, lets clarify some terms</p>
+		</section>
+
+<!-- Crud actions -->
+		<section>
+			<h2>Crud Action</h2>
+			<p>Same as a normal controller action.</p>
+			<p>Actions emit events that listeners can subscribe to.</p>
+			<p>Isolated in its own object, with configuration & logic.</p>
+			<p>Actions must be an object extending the CrudAction class.</p>
+			<p>Can be bound up until beforeFilter().</p>
+		</section>
+
+<!-- Crud actions -->
+		<section>
+			<h2>Crud Listener</h2>
+			<p>Can be anything "callable".</p>
+			<p>Core Crud listeners are objects.</p>
+			<p>Could be as simple as a closure.</p>
+			<p>Listeners can also emit events.</p>
+			<p>Can be bound at any time during the request.</p>
+
+			<aside class="notes">
+				Events: just cake events, no magic
+			</aside>
+		</section>
+
+<!-- code time -->
+		<section>
+			<h2>Code time</h2>
+			<p>For real this time ...</p>
+		</section>
+
+<!-- Whew -->
+		<section>
+			<h2>Whew...</h2>
+			<p>Only 3 slides left</p>
+		</section>
+
+<!-- future of crud 1/2 -->
+		<section>
+			<h2>Future of Crud</h2>
+			<p>Crud View</p>
+			<br />
+			<p>On the fly views for all build-in & user provided crud actions.</p>
+			<br />
+			<p>Admin interface for free.</p>
+			<br />
+			<p>savant is spearheading this.</p>
+		</section>
+
+<!-- future of crud 2/2 -->
+		<section>
+			<h2>Future of Crud</h2>
+			<p>Batch operations</p>
+			<br />
+			<p>[Add|Edit|Delete] multiple records</p>
+		</section>
+
+<!-- Thank you -->
+		<section>
+			<h2>Thank you</h2>
+			<p>Questions?</p>
+			<br />
+			<p>
+				<small>by <a href="http://cakephp.nu">Christian "Jippi" Winther</a> / <a href="http://twitter.com/jippi">@jippi</a></small>
+				<br />
+				<small>GitHub: <a href="http://github.com/jippi/cakephp-crud">jippi/cakephp-crud</a> / <a href="http://cakephp.nu/">cakephp.nu</a></small>
+			</p>
+		</section>
+
+	</div>
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.min.js"></script>
+
+<script>
+	// Full list of configuration options available here:
+	// https://github.com/hakimel/reveal.js#configuration
+	Reveal.initialize({
+		controls: true,
+		progress: true,
+		history: true,
+		center: true,
+
+		theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+		transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+		// Optional libraries used to extend on reveal.js
+		dependencies: [
+			{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+			{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+			{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+			{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+			{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+			{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+			// { src: 'plugin/leap/leap.js', async: true }
+			// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+			// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+		]
+	});
+</script>
+
+</body>
+</html>
