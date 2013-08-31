@@ -27,7 +27,7 @@ class ApiTransformationListener extends CrudListener {
  *
  * - changeKeys boolean
  *   Changes keys to lowercase model names using the associations
- *   or if not empty the _replaceMap setting.
+ *   or if not empty the replaceMap setting.
  *
  * - changeTime boolean
  *   Changes datetime strings to unix time integers.
@@ -35,15 +35,15 @@ class ApiTransformationListener extends CrudListener {
  * - castNumbers boolean
  *   Casts numeric strings to the right datatype.
  *
- * - _keyMethods array
+ * - keyMethods array
  *   List of function names, closures or callback arrays to call
  *   for the keys when recursing through the data.
  *
- * - _valueMethods array
+ * - valueMethods array
  *   List of function names, closures or callback arrays to call
  *   for the values when recursing through the data.
  *
- * - _replaceMap array
+ * - replaceMap array
  *   List of key-value pairs to use for key replacement. Keep
  *   this empty to have it derive from the model associations.
  *
@@ -55,9 +55,9 @@ class ApiTransformationListener extends CrudListener {
 		'changeTime' => true,
 		'castNumbers' => true,
 
-		'_keyMethods' => array(),
-		'_valueMethods' => array(),
-		'_replaceMap' => array()
+		'keyMethods' => array(),
+		'valueMethods' => array(),
+		'replaceMap' => array()
 	);
 
 /**
@@ -106,7 +106,7 @@ class ApiTransformationListener extends CrudListener {
 				$new = $this->_changeNesting($new, $alias);
 			}
 			unset($data[$index]);
-			$this->_recurse($new);
+			$this->_recurse($new, $index);
 			$formatted[] = $new;
 		}
 		$formatted = $wrapped ? $formatted[0] : $formatted;
@@ -136,8 +136,8 @@ class ApiTransformationListener extends CrudListener {
 			$valueMethods[] = '_changeDateToUnix';
 		}
 
-		$this->_settings['_keyMethods'] = array_merge($keyMethods, $this->_settings['_keyMethods']);
-		$this->_settings['_valueMethods'] = array_merge($valueMethods, $this->_settings['_valueMethods']);
+		$this->_settings['keyMethods'] = array_merge($keyMethods, $this->_settings['keyMethods']);
+		$this->_settings['valueMethods'] = array_merge($valueMethods, $this->_settings['valueMethods']);
 	}
 
 /**
@@ -146,41 +146,43 @@ class ApiTransformationListener extends CrudListener {
  *
  * @param string|Closure|array $method
  * @param mixed $variable
+ * @param mixed $key
  * @return mixed
  */
-	protected function _call($method, &$variable) {
+	protected function _call($method, &$variable, $key) {
 		if (is_string($method) && method_exists($this, $method)) {
-			return $this->$method($variable);
+			return $this->$method($variable, $key);
 		}
 
 		if ($method instanceof Closure) {
-			return $method($variable);
+			return $method($variable, $key);
 		}
 
-		return call_user_func($method, $variable);
+		return call_user_func($method, $variable, $key);
 	}
 
 /**
  * Recurse through an array and apply key changes and casts.
  *
  * @param mixed $variable
+ * @param mixed $key
  * @return void
  */
-	protected function _recurse(&$variable) {
+	protected function _recurse(&$variable, $key = null) {
 		if (is_array($variable)) {
-			foreach ($this->_settings['_keyMethods'] as $method) {
-				$variable = $this->_call($method, $variable);
+			foreach ($this->_settings['keyMethods'] as $method) {
+				$variable = $this->_call($method, $variable, $key);
 			}
 
-			foreach ($variable as &$value) {
-				$this->_recurse($value);
+			foreach ($variable as $k => &$value) {
+				$this->_recurse($value, $key === null ? $k : "$key.$k");
 			}
 
 			return;
 		}
 
-		foreach ($this->_settings['_valueMethods'] as $method) {
-			$variable = $this->_call($method, $variable);
+		foreach ($this->_settings['valueMethods'] as $method) {
+			$variable = $this->_call($method, $variable, $key);
 		}
 	}
 
@@ -227,8 +229,8 @@ class ApiTransformationListener extends CrudListener {
  * @return void
  */
 	protected function _replaceKeys(array $variable) {
-		if (empty($this->_settings['_replaceMap'])) {
-			$this->_settings['_replaceMap'] = $this->_getReplaceMapFromAssociations();
+		if (empty($this->_settings['replaceMap'])) {
+			$this->_settings['replaceMap'] = $this->_getReplaceMapFromAssociations();
 		}
 
 		$keys = array_keys($variable);
@@ -239,11 +241,11 @@ class ApiTransformationListener extends CrudListener {
 				continue;
 			}
 
-			if (!isset($this->_settings['_replaceMap'][$key])) {
+			if (!isset($this->_settings['replaceMap'][$key])) {
 				continue;
 			}
 
-			$key = $this->_settings['_replaceMap'][$key];
+			$key = $this->_settings['replaceMap'][$key];
 			$replaced = true;
 		}
 
