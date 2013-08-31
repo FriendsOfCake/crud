@@ -1207,6 +1207,91 @@ class ApiTransformationListenerTest extends CrudTestCase {
 		$this->assertSame($expected, $data);
 	}
 
+	public function testRecurseKeySpecificNestedTransform() {
+		$listener = $this
+			->getMockBuilder('ApiTransformationListener')
+			->disableOriginalConstructor()
+			->getMock();
+
+		$callback = function($variable, $key) {
+			if (preg_match('@^\d+.User\.changeme$@', $key)) {
+				return 'changed';
+			}
+			return $variable;
+		};
+
+		$settings = array(
+			'changeNesting' => true,
+			'changeKeys' => false,
+			'changeTime' => false,
+			'castNumbers' => false,
+			'keyMethods' => array(),
+			'valueMethods' => array($callback),
+			'replaceMap' => array()
+		);
+
+		$this->setReflectionClassInstance($listener);
+		$this->setProtectedProperty('_settings', $settings, $listener);
+
+		$data = array(
+			'changeme' => 'no change',
+			array(
+				'changeme' => 'no change',
+				'User' => array(
+					'id' => '5',
+					'name' => 'FriendsOfCake',
+					'changeme' => 'old'
+				),
+				'Profile' => array(
+					'id' => '987',
+					'twitter' => '@FriendsOfCake'
+				)
+			),
+			array(
+				'User' => array(
+					'id' => '6',
+					'name' => 'FriendsOfCake',
+					'changeme' => 'old two'
+				),
+				'Profile' => array(
+					'id' => '987',
+					'twitter' => '@FriendsOfCake'
+				)
+			)
+		);
+
+		$expected = array(
+			'changeme' => 'no change',
+			array(
+				'changeme' => 'no change',
+				'User' => array(
+					'id' => '5',
+					'name' => 'FriendsOfCake',
+					'changeme' => 'changed'
+				),
+				'Profile' => array(
+					'id' => '987',
+					'twitter' => '@FriendsOfCake'
+				)
+			),
+			array(
+				'User' => array(
+					'id' => '6',
+					'name' => 'FriendsOfCake',
+					'changeme' => 'changed'
+				),
+				'Profile' => array(
+					'id' => '987',
+					'twitter' => '@FriendsOfCake'
+				)
+			)
+		);
+
+		$this->callProtectedMethod('_recurse', array(&$data), $listener);
+
+		$this->assertSame($expected, $data);
+	}
+
 /**
  * testGetReplaceMapFromAssociationsEndlessLoopPrevention
  *
