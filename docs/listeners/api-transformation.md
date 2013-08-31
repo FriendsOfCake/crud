@@ -5,7 +5,10 @@ layout: default
 
 # Api Transformation Listener
 
-The default API output is similar to CakePHP arrays. This is fine for private APIs, but for public APIs that format isn't consitent with other public APIs such as Google, Twitter and GitHub. This listener allows you to transform the API output. See the example below.
+The default API output is similar to CakePHP arrays. This is fine for private
+APIs, but for public APIs that format isn't consitent with other public APIs
+such as Google, Twitter and GitHub. This listener allows you to transform the
+API output. See the example below.
 
 __Default output__
 
@@ -66,9 +69,11 @@ __Transformed output__
 
 # Setup
 
-First make sure you have a _working_ API using the `ApiListener`. The `ApiTransformationListener` uses the `ApiListener` to activate on API requests.
+First make sure you have a _working_ API using the `ApiListener`. The
+`ApiTransformationListener` uses the `ApiListener` to activate on API requests.
 
-As with all listeners you can add this listener by using the `$components` array:
+As with all listeners you can add this listener by using the `$components`
+array:
 
 {% highlight php %}
 <?php
@@ -154,9 +159,11 @@ Below is a detailed explanation of these options.
 
 ## changeNesting
 
-The `changeNesting` option removes the top model name for every record and nests all associated records into the primary record.
+The `changeNesting` option removes the top model name for every record and
+nests all associated records into the primary record.
 
-_Warning: When you have field names equal to the model names it will overwrite your keys._
+_Warning: When you have field names equal to the model names it will overwrite
+your keys._
 
 See below for an example:
 
@@ -218,7 +225,11 @@ __After `changeNesting`__
 
 ## changeKeys
 
-The `changeKeys` option replaces the model keys with their lowercase names. By default it will derive these names from the model associations. `hasMany` and `hasAndBelongsToMany` associations will get plural names while `belongsTo` and `hasOne` will remain singular. The primary model will always be singular, because there will only be one in every record. Example:
+The `changeKeys` option replaces the model keys with their lowercase names. By
+default it will derive these names from the model associations. `hasMany` and
+`hasAndBelongsToMany` associations will get plural names while `belongsTo` and
+`hasOne` will remain singular. The primary model will always be singular,
+because there will only be one in every record. Example:
 
 __Initial reponse__
 
@@ -280,11 +291,14 @@ __After `changeKeys`__
 }
 {% endhighlight %}
 
-For flexibility you can also define your own `replaceMap`. This option will then be used instead of the model associations. See further down on how to use it.
+For flexibility you can also define your own `replaceMap`. This option will
+then be used instead of the model associations. See further down on how to use
+it.
 
 ## changeTime
 
-The `changeTime` option changes dates and datetimes to Unix time integers. Example:
+The `changeTime` option changes dates and datetimes to Unix time integers.
+Example:
 
 __Initial reponse__
 
@@ -372,7 +386,12 @@ __After `castNumbers`__
 
 ## \keyMethods & \valueMethods
 
-To avoid looping through everything multiple times, when you want to do your own custom transformation the `ApiTransformationListener` allows you to hook into the recursive loop method. This can be done by defining additional methods in the `keyMethods` or `valueMethods` options. Their use is similar to the `call_user_func()` syntax, the callback recieves both the value, and the path (dot-delimited keys for the current array index) returning the updated value:
+To avoid looping through everything multiple times, when you want to do your
+own custom transformation the `ApiTransformationListener` allows you to hook
+into the recursive loop method. This can be done by defining additional methods
+in the `keyMethods` or `valueMethods` options. Their use is similar to the
+`call_user_func()` syntax, the callback recieves both the value, and the path
+(dot-delimited keys for the current array index) returning the updated value:
 
 __Example methods__
 
@@ -430,7 +449,8 @@ __After the methods __
 
 ## \replaceMap
 
-As stated above you can override the `replaceKeys` map by setting the `replaceMap` option:
+As stated above you can override the `replaceKeys` map by setting the
+`replaceMap` option:
 
 __Example map__
 
