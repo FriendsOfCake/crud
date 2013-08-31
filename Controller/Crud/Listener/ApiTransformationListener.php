@@ -175,7 +175,7 @@ class ApiTransformationListener extends CrudListener {
 			}
 
 			foreach ($variable as $k => &$value) {
-				$this->_recurse($value, $k);
+				$this->_recurse($value, $key ? "$key.$k" : $k);
 			}
 
 			return;

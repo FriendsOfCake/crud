@@ -1159,7 +1159,7 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			->getMock();
 
 		$callback = function($variable, $key) {
-			if ($key === 'changeme') {
+			if ($key === 'User.changeme') {
 				return 'changed';
 			}
 			return $variable;
