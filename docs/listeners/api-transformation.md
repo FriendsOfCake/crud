@@ -6,7 +6,7 @@ layout: default
 # Api Transformation Listener
 
 The default API output is similar to CakePHP arrays. This is fine for private
-APIs, but for public APIs that format isn't consitent with other public APIs
+APIs, but for public APIs that format isn't consistent with other public APIs
 such as Google, Twitter and GitHub. This listener allows you to transform the
 API output. See the example below.
 
