@@ -242,13 +242,15 @@ class ApiFieldFilterListener extends CrudListener {
 			$modelName = $model->alias;
 		}
 
+		$isPrimary = $modelName === $model->alias;
+
 		// If the model name is the local one, check if the field exist
-		if ($modelName === $model->alias && !$model->hasField($fieldName)) {
+		if ($isPrimary && !$model->hasField($fieldName)) {
 			return false;
 		}
 
 		// Check associated models if the field exist there
-		if ($modelName !== $model->alias) {
+		if (!$isPrimary) {
 			if (!$this->_associatedModelHasField($model, $modelName, $fieldName)) {
 				return false;
 			}
@@ -263,7 +265,7 @@ class ApiFieldFilterListener extends CrudListener {
 			return;
 		}
 
-		if ($modelName != $model->alias) {
+		if (!$isPrimary) {
 			$this->_relations[] = $modelName;
 		}
 
