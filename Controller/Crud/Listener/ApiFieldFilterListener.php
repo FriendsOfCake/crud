@@ -77,7 +77,6 @@ class ApiFieldFilterListener extends CrudListener {
 /**
  * beforePaginate
  *
- * @codeCoverageIgnore This is exactly the same as beforeFind()
  * @param CakeEvent $event
  * @return void
  */
@@ -92,8 +91,8 @@ class ApiFieldFilterListener extends CrudListener {
 		}
 
 		$controller = $this->_controller();
-		$controller->paginate['fields'] = $fields;
-		$controller->paginate['contain'] = $this->_relations;
+		$controller->Paginator->settings['fields'] = $fields;
+		$controller->Paginator->settings['contain'] = $this->_relations;
 	}
 
 /**
