@@ -307,7 +307,7 @@ class ApiFieldFilterListener extends CrudListener {
 			return false;
 		}
 
-		return false !== array_search($modelName, $allowedModels);
+		return array_search($modelName, $allowedModels) !== false;
 	}
 
 /**
@@ -325,7 +325,7 @@ class ApiFieldFilterListener extends CrudListener {
 			return true;
 		}
 
-		return false !== in_array($fieldName, $allowedFields);
+		return in_array($fieldName, $allowedFields);
 	}
 
 /**
@@ -340,7 +340,7 @@ class ApiFieldFilterListener extends CrudListener {
 			return false;
 		}
 
-		return false !== in_array($fieldName, $disallowedFields);
+		return in_array($fieldName, $disallowedFields);
 	}
 
 }
