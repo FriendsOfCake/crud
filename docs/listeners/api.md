@@ -122,6 +122,25 @@ For a request to `edit`, `admin_edit` the HTTP request type __must__ be `HTTP PU
 For a request to `delete`, `admin_delete` the HTTP request type __must__ be `HTTP DELETE` - else an
 `MethodNotAllowed` exception will be raised.
 
+# Making your application API only
+
+Using the `ApiListener` it's fairly easy to make your application only a REST API without the
+possibility to access other pages. Without any views they will trigger `HTTP 500` errors. To make
+your application API only, add the following code to your `AppController::beforeFilter()`:
+
+{% highlight php %}
+<?php
+public function beforeFilter() {
+  if (!$this->request->is('api')) {
+    throw new NotFoundException();
+  }
+  parent::beforeFilter();
+}
+?>
+{% endhighlight %}
+
+Make sure the `ApiListener` is added before that is executed though. All request that aren't meant for the API will now throw a `HTTP 404` error instead.
+
 # Response format
 
 The default response format for both XML and JSON is two root keys, `success` and `data`
