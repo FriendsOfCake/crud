@@ -309,7 +309,7 @@ class ApiFieldFilterListener extends CrudListener {
 			return false;
 		}
 
-		return array_search($modelName, $allowedModels) !== false;
+		return in_array($modelName, $allowedModels);
 	}
 
 /**
