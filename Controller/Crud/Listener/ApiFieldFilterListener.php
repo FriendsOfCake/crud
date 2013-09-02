@@ -77,7 +77,6 @@ class ApiFieldFilterListener extends CrudListener {
 /**
  * beforePaginate
  *
- * @codeCoverageIgnore This is exactly the same as beforeFind()
  * @param CakeEvent $event
  * @return void
  */
@@ -92,8 +91,8 @@ class ApiFieldFilterListener extends CrudListener {
 		}
 
 		$controller = $this->_controller();
-		$controller->paginate['fields'] = $fields;
-		$controller->paginate['contain'] = $this->_relations;
+		$controller->Paginator->settings['fields'] = $fields;
+		$controller->Paginator->settings['contain'] = $this->_relations;
 	}
 
 /**
@@ -243,13 +242,15 @@ class ApiFieldFilterListener extends CrudListener {
 			$modelName = $model->alias;
 		}
 
+		$isPrimary = $modelName === $model->alias;
+
 		// If the model name is the local one, check if the field exist
-		if ($modelName === $model->alias && !$model->hasField($fieldName)) {
+		if ($isPrimary && !$model->hasField($fieldName)) {
 			return false;
 		}
 
 		// Check associated models if the field exist there
-		if ($modelName !== $model->alias) {
+		if (!$isPrimary) {
 			if (!$this->_associatedModelHasField($model, $modelName, $fieldName)) {
 				return false;
 			}
@@ -264,7 +265,7 @@ class ApiFieldFilterListener extends CrudListener {
 			return;
 		}
 
-		if ($modelName != $model->alias) {
+		if (!$isPrimary) {
 			$this->_relations[] = $modelName;
 		}
 
@@ -308,7 +309,7 @@ class ApiFieldFilterListener extends CrudListener {
 			return false;
 		}
 
-		return false !== array_search($modelName, $allowedModels);
+		return in_array($modelName, $allowedModels);
 	}
 
 /**
@@ -326,7 +327,7 @@ class ApiFieldFilterListener extends CrudListener {
 			return true;
 		}
 
-		return false !== in_array($fieldName, $allowedFields);
+		return in_array($fieldName, $allowedFields);
 	}
 
 /**
@@ -341,7 +342,7 @@ class ApiFieldFilterListener extends CrudListener {
 			return false;
 		}
 
-		return false !== in_array($fieldName, $disallowedFields);
+		return in_array($fieldName, $disallowedFields);
 	}
 
 }
