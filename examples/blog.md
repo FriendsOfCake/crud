@@ -183,7 +183,7 @@ Content-Type: application/json; charset=UTF-8
 Content-Length: 43
 Connection: keep-alive
 Set-Cookie: CAKEPHP=qp2dpvkpkqqk81mdn3iajdals2; expires=Sun, 16-Jun-2013 16:17:12 GMT; path=/; HttpOnly
-Location: http://crud.local.bownty.net/posts/view/5
+Location: http://your-site-domain.com/posts/view/5
 
 {
   "success": true,
@@ -249,7 +249,7 @@ Content-Type: application/json; charset=UTF-8
 Content-Length: 43
 Connection: keep-alive
 Set-Cookie: CAKEPHP=qp2dpvkpkqqk81mdn3iajdals2; expires=Sun, 16-Jun-2013 16:17:12 GMT; path=/; HttpOnly
-Location: http://crud.local.bownty.net/posts/view/5
+Location: http://your-site-domain.com/posts/view/5
 
 <?xml version="1.0" encoding="UTF-8"?>
 <response>
