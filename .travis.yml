@@ -10,7 +10,7 @@ notifications:
 
 env:
   - DB=mysql CAKE_VERSION=master
-  - DB=mysql CAKE_VERSION=2.4
+  - DB=mysql CAKE_VERSION=2.5
 
 matrix:
   include:

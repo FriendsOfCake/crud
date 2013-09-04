@@ -2,6 +2,7 @@
 
 App::uses('Model', 'Model');
 App::uses('Controller', 'Controller');
+App::uses('PaginatorComponent', 'Controller/Component');
 App::uses('CakeRequest', 'Network');
 App::uses('CakeEvent', 'Event');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
@@ -22,6 +23,7 @@ class ApiFieldFilterListenerTest extends CakeTestCase {
 		$this->ControllerMock = $this->getMockBuilder('Controller');
 		$this->RequestMock = $this->getMockBuilder('CakeRequest');
 		$this->CrudMock = $this->getMockBuilder('CrudComponent');
+		$this->PaginatorMock = $this->getMockBuilder('PaginatorComponent');
 		$this->ActionMock = $this->getMockBuilder('IndexCrudAction');
 	}
 
@@ -33,6 +35,7 @@ class ApiFieldFilterListenerTest extends CakeTestCase {
 			$this->Controller,
 			$this->RequestMock,
 			$this->CrudMock,
+			$this->PaginatorMock,
 			$this->ActionMock
 		);
 	}
@@ -76,6 +79,12 @@ class ApiFieldFilterListenerTest extends CakeTestCase {
 		$Request = new CakeRequest();
 		$Request->addDetector('api', array('callback' => function() { return true; }));
 
+		$Paginator = $this->PaginatorMock
+			->disableOriginalConstructor()
+			->setMethods(null)
+			->getMock();
+		$Controller->Paginator = $Paginator;
+
 		$CrudSubject->set(array(
 			'crud' => $Crud,
 			'request' => $Request,
@@ -114,7 +123,7 @@ class ApiFieldFilterListenerTest extends CakeTestCase {
 			$i++;
 		}
 
-		return compact('Crud', 'Model', 'Controller', 'Request', 'CrudSubject', 'Listener', 'Action', 'Event');
+		return compact('Crud', 'Model', 'Controller', 'Paginator', 'Request', 'CrudSubject', 'Listener', 'Action', 'Event');
 	}
 
 /**
@@ -333,4 +342,95 @@ class ApiFieldFilterListenerTest extends CakeTestCase {
 		$this->assertSame($expected, $actual);
 	}
 
+/**
+ * Test that a beforePaginate with no fields in the query
+ * will not inject any fields or contain into the query
+ *
+ * @return void
+ */
+	public function testBeforePaginateRequestWithoutFieldsWithNoFilterOn() {
+		extract($this->_mockClasses());
+		$Listener->allowNoFilter(true);
+		$Listener->beforePaginate($Event);
+
+		$this->assertFalse(isset($Paginator->settings['fields']));
+		$this->assertFalse(isset($Paginator->settings['contain']));
+	}
+
+/**
+ * Test that a beforePaginate with no fields in the query
+ * will throw an exception by default
+ *
+ * @expectedException CakeException
+ * @expectedExceptionMessage Please specify which fields you would like to select
+ * @return void
+ */
+	public function testBeforePaginateRequestWithoutFieldsWithNoFilterDefault() {
+		extract($this->_mockClasses());
+		$Listener->beforePaginate($Event);
+
+		$this->assertFalse(isset($Paginator->settings['fields']));
+		$this->assertFalse(isset($Paginator->settings['contain']));
+	}
+
+/**
+ * Test that a beforePaginate with no fields in the query
+ * will throw an exception if 'allowNofilter' is set to false
+ *
+ * @expectedException CakeException
+ * @expectedExceptionMessage Please specify which fields you would like to select
+ * @return void
+ */
+	public function testBeforePaginateRequestWithoutFieldsWithNoFilterOff() {
+		extract($this->_mockClasses());
+		$Action->config('apiFieldFilter.allowNoFilter', false);
+		$Listener->beforePaginate($Event);
+
+		$this->assertFalse(isset($Paginator->settings['fields']));
+		$this->assertFalse(isset($Paginator->settings['contain']));
+	}
+
+/**
+ * Test that a beforePaginate with 3 fields
+ * will inject them into the fields array
+ *
+ * @return void
+ */
+	public function testBeforePaginateRequestWithFields() {
+		$hasField = array('id' => true,	'name' => true,	'password' => true);
+		extract($this->_mockClasses($hasField));
+		$Request->query['fields'] = 'id,name,password';
+
+		$Listener->beforePaginate($Event);
+
+		$expected = array('Model.id', 'Model.name', 'Model.password');
+		$actual = $Paginator->settings['fields'];
+		$this->assertSame($expected, $actual);
+
+		$this->assertTrue(isset($Paginator->settings['contain']));
+		$this->assertEmpty($Paginator->settings['contain']);
+	}
+
+/**
+ * Test that a beforePaginate with 3 fields
+ * will inject two into the fields array
+ * since they exist in the model, but the 3rd
+ * field (password) will be removed
+ *
+ * @return void
+ */
+	public function testBeforePaginateGetFieldsIncludeFieldNotInModel() {
+		$hasField = array('id' => true,	'name' => true,	'password' => false);
+		extract($this->_mockClasses($hasField));
+		$Request->query['fields'] = 'id,name,password';
+
+		$Listener->beforePaginate($Event);
+
+		$expected = array('Model.id', 'Model.name');
+		$actual = $Paginator->settings['fields'];
+		$this->assertSame($expected, $actual);
+
+		$this->assertTrue(isset($Paginator->settings['contain']));
+		$this->assertEmpty($Paginator->settings['contain']);
+	}
 }
