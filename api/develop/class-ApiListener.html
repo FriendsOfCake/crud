@@ -7,7 +7,7 @@
 	<title>Class ApiListener | FriendsOfCake/crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?971672546"></script>
+	<script type="text/javascript" src="elementlist.js?3107131408"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -69,6 +69,7 @@
 				<li class="active"><a href="class-ApiListener.html">ApiListener</a></li>
 				<li><a href="class-ApiPaginationListener.html">ApiPaginationListener</a></li>
 				<li><a href="class-ApiQueryLogListener.html">ApiQueryLogListener</a></li>
+				<li><a href="class-ApiTransformationListener.html">ApiTransformationListener</a></li>
 				<li><a href="class-CrudAction.html">CrudAction</a></li>
 				<li><a href="class-CrudBaseObject.html">CrudBaseObject</a></li>
 				<li><a href="class-CrudComponent.html">CrudComponent</a></li>
@@ -261,7 +262,7 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_beforeHandle">#</a>
-			<code><a href="source-class-ApiListener.html#67-84" title="Go to source code">beforeHandle</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<code><a href="source-class-ApiListener.html#67-92" title="Go to source code">beforeHandle</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
@@ -303,7 +304,7 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__checkRequestMethods">#</a>
-			<code><a href="source-class-ApiListener.html#86-108" title="Go to source code">_checkRequestMethods</a>( )</code>
+			<code><a href="source-class-ApiListener.html#94-116" title="Go to source code">_checkRequestMethods</a>( )</code>
 
 			<div class="description short">
 				
@@ -344,7 +345,7 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_registerExceptionHandler">#</a>
-			<code><a href="source-class-ApiListener.html#110-118" title="Go to source code">registerExceptionHandler</a>( )</code>
+			<code><a href="source-class-ApiListener.html#118-126" title="Go to source code">registerExceptionHandler</a>( )</code>
 
 			<div class="description short">
 				
@@ -377,7 +378,7 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_respond">#</a>
-			<code><a href="source-class-ApiListener.html#120-144" title="Go to source code">respond</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<code><a href="source-class-ApiListener.html#128-148" title="Go to source code">respond</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
@@ -419,7 +420,7 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__exceptionResponse">#</a>
-			<code><a href="source-class-ApiListener.html#146-164" title="Go to source code">_exceptionResponse</a>( <span>array <var>$exceptionConfig</var></span> )</code>
+			<code><a href="source-class-ApiListener.html#150-168" title="Go to source code">_exceptionResponse</a>( <span>array <var>$exceptionConfig</var></span> )</code>
 
 			<div class="description short">
 				
@@ -461,7 +462,7 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_render">#</a>
-			<code><a href="source-class-ApiListener.html#166-181" title="Go to source code">render</a>( <span><code><a href="class-CrudSubject.html">CrudSubject</a></code> <var>$subject</var></span> )</code>
+			<code><a href="source-class-ApiListener.html#170-185" title="Go to source code">render</a>( <span><code><a href="class-CrudSubject.html">CrudSubject</a></code> <var>$subject</var></span> )</code>
 
 			<div class="description short">
 				
@@ -503,7 +504,7 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__ensureSerialize">#</a>
-			<code><a href="source-class-ApiListener.html#183-208" title="Go to source code">_ensureSerialize</a>( )</code>
+			<code><a href="source-class-ApiListener.html#187-212" title="Go to source code">_ensureSerialize</a>( )</code>
 
 			<div class="description short">
 				
@@ -536,7 +537,7 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__ensureSuccess">#</a>
-			<code><a href="source-class-ApiListener.html#210-224" title="Go to source code">_ensureSuccess</a>( <span><code><a href="class-CrudSubject.html">CrudSubject</a></code> <var>$subject</var></span> )</code>
+			<code><a href="source-class-ApiListener.html#214-228" title="Go to source code">_ensureSuccess</a>( <span><code><a href="class-CrudSubject.html">CrudSubject</a></code> <var>$subject</var></span> )</code>
 
 			<div class="description short">
 				
@@ -574,7 +575,7 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__ensureData">#</a>
-			<code><a href="source-class-ApiListener.html#226-278" title="Go to source code">_ensureData</a>( <span><code><a href="class-CrudSubject.html">CrudSubject</a></code> <var>$subject</var></span> )</code>
+			<code><a href="source-class-ApiListener.html#230-282" title="Go to source code">_ensureData</a>( <span><code><a href="class-CrudSubject.html">CrudSubject</a></code> <var>$subject</var></span> )</code>
 
 			<div class="description short">
 				
@@ -612,7 +613,7 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__expandPath">#</a>
-			<code><a href="source-class-ApiListener.html#280-302" title="Go to source code">_expandPath</a>( <span><code><a href="class-CrudSubject.html">CrudSubject</a></code> <var>$subject</var></span>, <span>string <var>$path</var></span> )</code>
+			<code><a href="source-class-ApiListener.html#284-306" title="Go to source code">_expandPath</a>( <span><code><a href="class-CrudSubject.html">CrudSubject</a></code> <var>$subject</var></span>, <span>string <var>$path</var></span> )</code>
 
 			<div class="description short">
 				
@@ -658,7 +659,7 @@ String::insert() interpolation of a path</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_injectViewClasses">#</a>
-			<code><a href="source-class-ApiListener.html#304-315" title="Go to source code">injectViewClasses</a>( )</code>
+			<code><a href="source-class-ApiListener.html#308-319" title="Go to source code">injectViewClasses</a>( )</code>
 
 			<div class="description short">
 				
@@ -696,7 +697,7 @@ href="http://book.cakephp.org/2.0/en/core-libraries/components/request-handling.
 
 			<td class="name"><div>
 			<a class="anchor" href="#_viewClass">#</a>
-			<code><a href="source-class-ApiListener.html#317-338" title="Go to source code">viewClass</a>( <span>string <var>$type</var></span>, <span>string <var>$class</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-ApiListener.html#321-342" title="Go to source code">viewClass</a>( <span>string <var>$type</var></span>, <span>string <var>$class</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -752,7 +753,7 @@ href="http://book.cakephp.org/2.0/en/core-libraries/components/request-handling.
 
 			<td class="name"><div>
 			<a class="anchor" href="#_setFlash">#</a>
-			<code><a href="source-class-ApiListener.html#340-353" title="Go to source code">setFlash</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<code><a href="source-class-ApiListener.html#344-353" title="Go to source code">setFlash</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
