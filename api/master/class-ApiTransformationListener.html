@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="generator" content="ApiGen 2.8.0" />
 
-	<title>Class SearchListener | FriendsOfCake/crud (master)</title>
+	<title>Class ApiTransformationListener | FriendsOfCake/crud (master)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
 	<script type="text/javascript" src="elementlist.js?3107131408"></script>
@@ -69,7 +69,7 @@
 				<li><a href="class-ApiListener.html">ApiListener</a></li>
 				<li><a href="class-ApiPaginationListener.html">ApiPaginationListener</a></li>
 				<li><a href="class-ApiQueryLogListener.html">ApiQueryLogListener</a></li>
-				<li><a href="class-ApiTransformationListener.html">ApiTransformationListener</a></li>
+				<li class="active"><a href="class-ApiTransformationListener.html">ApiTransformationListener</a></li>
 				<li><a href="class-CrudAction.html">CrudAction</a></li>
 				<li><a href="class-CrudBaseObject.html">CrudBaseObject</a></li>
 				<li><a href="class-CrudComponent.html">CrudComponent</a></li>
@@ -86,7 +86,7 @@
 				<li><a href="class-IndexCrudAction.html">IndexCrudAction</a></li>
 				<li><a href="class-RelatedModelsListener.html">RelatedModelsListener</a></li>
 				<li><a href="class-ScaffoldListener.html">ScaffoldListener</a></li>
-				<li class="active"><a href="class-SearchListener.html">SearchListener</a></li>
+				<li><a href="class-SearchListener.html">SearchListener</a></li>
 				<li><a href="class-TranslationsShell.html">TranslationsShell</a></li>
 				<li><a href="class-ViewCrudAction.html">ViewCrudAction</a></li>
 			</ul>
@@ -108,15 +108,26 @@
 <div id="right">
 	<div id="rightInner">
 <div id="content" class="class">
-	<h1>Class SearchListener</h1>
+	<h1>Class ApiTransformationListener</h1>
 
 
 	<div class="description">
 	
-<p>Search Listener</p>
+<p>PublicApiListener</p>
 
-<p>Licensed under The MIT License For full copyright and license information,
-please see the LICENSE.txt</p>
+<p>Listener to format data consistent with most public APIs out there such as
+Twitter, GitHub and Google.</p>
+
+<ul>
+	<li><a
+	href="https://dev.twitter.com/docs/api/1.1/get/statuses/mentions_timeline">https://dev.twitter.com/docs/api/1.1/get/statuses/mentions_timeline</a></li>
+
+	<li><a
+	href="http://developer.github.com/v3/">http://developer.github.com/v3/</a></li>
+
+	<li><a
+	href="https://developers.google.com/custom-search/v1/using_rest">https://developers.google.com/custom-search/v1/using_rest</a></li>
+</ul>
 
 	</div>
 
@@ -144,7 +155,7 @@ Object
 		</dd>
 		<dd style="padding-left:90px">
 			<img src="resources/inherit.png" alt="Extended by" />
-<b><span>SearchListener</span></b>			
+<b><span>ApiTransformationListener</span></b>			
 			
 			
 		</dd>
@@ -163,7 +174,7 @@ Object
 		
 		
 
-		<b>Located at</b> <a href="source-class-SearchListener.html#5-211" title="Go to source code">Controller/Crud/Listener/SearchListener.php</a><br />
+		<b>Located at</b> <a href="source-class-ApiTransformationListener.html#9-325" title="Go to source code">Controller/Crud/Listener/ApiTransformationListener.php</a><br />
 	</div>
 
 
@@ -181,21 +192,19 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#_implementedEvents">#</a>
-			<code><a href="source-class-SearchListener.html#30-43" title="Go to source code">implementedEvents</a>( )</code>
+			<code><a href="source-class-ApiTransformationListener.html#63-71" title="Go to source code">implementedEvents</a>( )</code>
 
 			<div class="description short">
 				
-<p>Returns a list of all events that will fire in the controller during it's
-lifecycle. You can override this function to add you own listener callbacks</p>
+<p>Adds the Crud.beforeRender event. It has a high priority number to make sure
+it is called late/last.</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Returns a list of all events that will fire in the controller during it's
-lifecycle. You can override this function to add you own listener callbacks</p>
-
-<p>We attach at priority 50 so normal bound events can run before us</p>
+<p>Adds the Crud.beforeRender event. It has a high priority number to make sure
+it is called late/last.</p>
 
 
 
@@ -213,84 +222,118 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="beforeHandle" id="_beforeHandle">
+		<tr data-order="beforeRender" id="_beforeRender">
 
 			<td class="attributes"><code>
 				 public 
-				
+				boolean
 				
 				</code>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#_beforeHandle">#</a>
-			<code><a href="source-class-SearchListener.html#45-62" title="Go to source code">beforeHandle</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<a class="anchor" href="#_beforeRender">#</a>
+			<code><a href="source-class-ApiTransformationListener.html#73-117" title="Go to source code">beforeRender</a>( )</code>
 
 			<div class="description short">
 				
-<p>initialize callback</p>
+<p>After everything is done and before anything is rendered change the data
+format.</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>initialize callback</p>
-
-
-
-					<h4>Parameters</h4>
-					<div class="list"><dl>
-						<dt><var>$event</var></dt>
-						<dd><code>CakeEvent</code><br>$event</dd>
-					</dl></div>
+<p>After everything is done and before anything is rendered change the data
+format.</p>
 
 
 
 
-					<h4>Overrides</h4>
-					<div class="list"><code><a href="class-CrudBaseObject.html#_beforeHandle">CrudBaseObject::beforeHandle</a></code></div>
+					<h4>Returns</h4>
+					<div class="list">
+						<code>boolean</code><br />
+					</div>
+
+
+
 
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="scope" id="_scope">
+		<tr data-order="_setMethods" id="__setMethods">
 
 			<td class="attributes"><code>
-				 public 
-				ScopedListener
+				 protected 
+				
 				
 				</code>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#_scope">#</a>
-			<code><a href="source-class-SearchListener.html#64-75" title="Go to source code">scope</a>( <span>string <var>$name</var></span>, <span>array <var>$query</var></span>, <span>array|null <var>$filter</var> = <span class="php-keyword1">null</span></span> )</code>
+			<a class="anchor" href="#__setMethods">#</a>
+			<code><a href="source-class-ApiTransformationListener.html#119-141" title="Go to source code">_setMethods</a>( )</code>
 
 			<div class="description short">
 				
-<p>Define a new scope</p>
+<p>Merge in the internal methods based on the settings.</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Define a new scope</p>
+<p>Merge in the internal methods based on the settings.</p>
+
+
+
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_call" id="__call">
+
+			<td class="attributes"><code>
+				 protected 
+				mixed
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__call">#</a>
+			<code><a href="source-class-ApiTransformationListener.html#143-162" title="Go to source code">_call</a>( <span>string|Closure|array <var>$method</var></span>, <span>mixed <var>&amp; $variable</var></span>, <span>mixed <var>$key</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Calls a method. Optimizes where possible because of the large number of calls
+through this method.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Calls a method. Optimizes where possible because of the large number of calls
+through this method.</p>
 
 
 
 					<h4>Parameters</h4>
 					<div class="list"><dl>
-						<dt><var>$name</var></dt>
-						<dd><code>string</code><br>$name Name of the scope (?scope=$name)</dd>
-						<dt><var>$query</var></dt>
-						<dd><code>array</code><br>$query The query arguments to pass to Search</dd>
-						<dt><var>$filter</var></dt>
-						<dd><code>array|null</code><br>$filter The filterArgs to use on the model</dd>
+						<dt><var>$method</var></dt>
+						<dd><code>string|Closure|array</code><br>$method</dd>
+						<dt><var>$variable</var></dt>
+						<dd><code>mixed</code><br>$variable</dd>
+						<dt><var>$key</var></dt>
+						<dd><code>mixed</code><br>$key</dd>
 					</dl></div>
 
 					<h4>Returns</h4>
 					<div class="list">
-						<code>ScopedListener</code><br />
+						<code>mixed</code><br />
 					</div>
 
 
@@ -299,45 +342,7 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="beforePaginate" id="_beforePaginate">
-
-			<td class="attributes"><code>
-				 public 
-				
-				
-				</code>
-			</td>
-
-			<td class="name"><div>
-			<a class="anchor" href="#_beforePaginate">#</a>
-			<code><a href="source-class-SearchListener.html#77-119" title="Go to source code">beforePaginate</a>( <span>CakeEvent <var>$e</var></span> )</code>
-
-			<div class="description short">
-				
-<p>beforePaginate callback</p>
-
-			</div>
-
-			<div class="description detailed hidden">
-				
-<p>beforePaginate callback</p>
-
-
-
-					<h4>Parameters</h4>
-					<div class="list"><dl>
-						<dt><var>$e</var></dt>
-						<dd><code>CakeEvent</code><br>$e</dd>
-					</dl></div>
-
-
-
-
-
-			</div>
-			</div></td>
-		</tr>
-		<tr data-order="_checkRequiredPlugin" id="__checkRequiredPlugin">
+		<tr data-order="_recurse" id="__recurse">
 
 			<td class="attributes"><code>
 				 protected 
@@ -347,34 +352,84 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#__checkRequiredPlugin">#</a>
-			<code><a href="source-class-SearchListener.html#121-133" title="Go to source code">_checkRequiredPlugin</a>( )</code>
+			<a class="anchor" href="#__recurse">#</a>
+			<code><a href="source-class-ApiTransformationListener.html#164-187" title="Go to source code">_recurse</a>( <span>mixed <var>&amp; $variable</var></span>, <span>mixed <var>$key</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
-<p>Check that the cakedc/search plugin is installed</p>
+<p>Recurse through an array and apply key changes and casts.</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Check that the cakedc/search plugin is installed</p>
+<p>Recurse through an array and apply key changes and casts.</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$variable</var></dt>
+						<dd><code>mixed</code><br>$variable</dd>
+						<dt><var>$key</var></dt>
+						<dd><code>mixed</code><br>$key</dd>
+					</dl></div>
 
 
 
 
 
-					<h4>Throws</h4>
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_changeNesting" id="__changeNesting">
+
+			<td class="attributes"><code>
+				 protected 
+				array
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__changeNesting">#</a>
+			<code><a href="source-class-ApiTransformationListener.html#189-205" title="Go to source code">_changeNesting</a>( <span>array <var>$record</var></span>, <span>string <var>$primaryAlias</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Nests the secondary models in the array of the primary model.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Nests the secondary models in the array of the primary model.</p>
+
+<p>Might overwrite array keys if model field names have the same name as the
+secondary model.</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$record</var></dt>
+						<dd><code>array</code><br>$record</dd>
+						<dt><var>$primaryAlias</var></dt>
+						<dd><code>string</code><br>$primaryAlias</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
 					<div class="list">
-						<code>CakeException</code><br>If cakedc/search isn't loaded<br />
+						<code>array</code><br />
 					</div>
+
 
 
 
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="_ensureComponent" id="__ensureComponent">
+		<tr data-order="_replaceKeys" id="__replaceKeys">
 
 			<td class="attributes"><code>
 				 protected 
@@ -384,25 +439,38 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#__ensureComponent">#</a>
-			<code><a href="source-class-SearchListener.html#135-150" title="Go to source code">_ensureComponent</a>( <span>Controller <var>$controller</var></span> )</code>
+			<a class="anchor" href="#__replaceKeys">#</a>
+			<code><a href="source-class-ApiTransformationListener.html#207-257" title="Go to source code">_replaceKeys</a>( <span>array <var>$variable</var></span> )</code>
 
 			<div class="description short">
 				
-<p>Ensure that the Prg component is loaded from the Search plugin</p>
+<p>Replaces array keys for associated records.</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Ensure that the Prg component is loaded from the Search plugin</p>
+<p>Replaces array keys for associated records.</p>
+
+<p>Might overwrite array keys if model field names have the same name as the
+secondary model.</p>
+
+<h1>Example</h1>
+
+<p>Replacing the array keys for the following associations:</p>
+
+<p>User hasMany Comment Comment belongsTo Post</p>
+
+<p>The array keys that will replaced:</p>
+
+<p>Comment -&gt; comments (plural) Post -&gt; post (singular)</p>
 
 
 
 					<h4>Parameters</h4>
 					<div class="list"><dl>
-						<dt><var>$controller</var></dt>
-						<dd><code>Controller</code><br>$controller</dd>
+						<dt><var>$variable</var></dt>
+						<dd><code>array</code><br>$variable</dd>
 					</dl></div>
 
 
@@ -412,28 +480,30 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="_ensureBehavior" id="__ensureBehavior">
+		<tr data-order="_getReplaceMapFromAssociations" id="__getReplaceMapFromAssociations">
 
 			<td class="attributes"><code>
 				 protected 
-				
+				boolean|array
 				
 				</code>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#__ensureBehavior">#</a>
-			<code><a href="source-class-SearchListener.html#152-165" title="Go to source code">_ensureBehavior</a>( <span>Model <var>$model</var></span> )</code>
+			<a class="anchor" href="#__getReplaceMapFromAssociations">#</a>
+			<code><a href="source-class-ApiTransformationListener.html#259-293" title="Go to source code">_getReplaceMapFromAssociations</a>( <span>Model <var>$model</var> = <span class="php-keyword1">null</span></span>, <span>array <var>$map</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
-<p>Ensure that the searchable behavior is loaded</p>
+<p>Get a key-value map with replacements for the model keys. The replacements
+are derived from the associations.</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Ensure that the searchable behavior is loaded</p>
+<p>Get a key-value map with replacements for the model keys. The replacements
+are derived from the associations.</p>
 
 
 
@@ -441,8 +511,14 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 					<div class="list"><dl>
 						<dt><var>$model</var></dt>
 						<dd><code>Model</code><br>$model</dd>
+						<dt><var>$map</var></dt>
+						<dd><code>array</code><br>$map</dd>
 					</dl></div>
 
+					<h4>Returns</h4>
+					<div class="list">
+						<code>boolean|array</code><br />
+					</div>
 
 
 
@@ -450,7 +526,7 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="_commonProcess" id="__commonProcess">
+		<tr data-order="_castNumbers" id="__castNumbers">
 
 			<td class="attributes"><code>
 				 protected 
@@ -460,122 +536,71 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#__commonProcess">#</a>
-			<code><a href="source-class-SearchListener.html#167-177" title="Go to source code">_commonProcess</a>( <span>Controller <var>$controller</var></span>, <span>string <var>$modelClass</var></span> )</code>
+			<a class="anchor" href="#__castNumbers">#</a>
+			<code><a href="source-class-ApiTransformationListener.html#295-306" title="Go to source code">_castNumbers</a>( <span>mixed <var>$variable</var></span> )</code>
 
 			<div class="description short">
 				
-<p>Execute commonProcess on Prg component</p>
+<p>Change "1" to 1, and "123.456" to 123.456.</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Execute commonProcess on Prg component</p>
+<p>Change "1" to 1, and "123.456" to 123.456.</p>
 
 
 
 					<h4>Parameters</h4>
 					<div class="list"><dl>
-						<dt><var>$controller</var></dt>
-						<dd><code>Controller</code><br>$controller</dd>
-						<dt><var>$modelClass</var></dt>
-						<dd><code>string</code><br>$modelClass</dd>
+						<dt><var>$variable</var></dt>
+						<dd><code>mixed</code><br>$variable</dd>
 					</dl></div>
 
 
 
-					<h4>CodeCoverageIgnore</h4>
-					<div class="list">
-					</div>
 
 
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="_setPaginationOptions" id="__setPaginationOptions">
+		<tr data-order="_changeDateToUnix" id="__changeDateToUnix">
 
 			<td class="attributes"><code>
 				 protected 
-				
+				integer
 				
 				</code>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#__setPaginationOptions">#</a>
-			<code><a href="source-class-SearchListener.html#179-196" title="Go to source code">_setPaginationOptions</a>( <span>Controller <var>$controller</var></span>, <span>Model <var>$model</var></span>, <span>array <var>$query</var></span> )</code>
+			<a class="anchor" href="#__changeDateToUnix">#</a>
+			<code><a href="source-class-ApiTransformationListener.html#308-324" title="Go to source code">_changeDateToUnix</a>( <span>mixed <var>$variable</var></span> )</code>
 
 			<div class="description short">
 				
-<p>Set the pagination options</p>
+<p>Converts database dates to unix times.</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Set the pagination options</p>
+<p>Converts database dates to unix times.</p>
 
 
 
 					<h4>Parameters</h4>
 					<div class="list"><dl>
-						<dt><var>$controller</var></dt>
-						<dd><code>Controller</code><br>$controller</dd>
-						<dt><var>$model</var></dt>
-						<dd><code>Model</code><br>$model</dd>
-						<dt><var>$query</var></dt>
-						<dd><code>array</code><br>$query</dd>
+						<dt><var>$variable</var></dt>
+						<dd><code>mixed</code><br>$variable</dd>
 					</dl></div>
 
-
-
-					<h4>CodeCoverageIgnore</h4>
+					<h4>Returns</h4>
 					<div class="list">
+						<code>integer</code><br />
 					</div>
 
 
-			</div>
-			</div></td>
-		</tr>
-		<tr data-order="_setFilterArgs" id="__setFilterArgs">
-
-			<td class="attributes"><code>
-				 protected 
-				
-				
-				</code>
-			</td>
-
-			<td class="name"><div>
-			<a class="anchor" href="#__setFilterArgs">#</a>
-			<code><a href="source-class-SearchListener.html#198-209" title="Go to source code">_setFilterArgs</a>( <span>Model <var>$model</var></span>, <span>array <var>$filter</var></span> )</code>
-
-			<div class="description short">
-				
-<p>Set the model filter args</p>
-
-			</div>
-
-			<div class="description detailed hidden">
-				
-<p>Set the model filter args</p>
-
-
-
-					<h4>Parameters</h4>
-					<div class="list"><dl>
-						<dt><var>$model</var></dt>
-						<dd><code>Model</code><br>$model</dd>
-						<dt><var>$filter</var></dt>
-						<dd><code>array</code><br>$filter</dd>
-					</dl></div>
-
-
-
-					<h4>CodeCoverageIgnore</h4>
-					<div class="list">
-					</div>
 
 
 			</div>
@@ -598,6 +623,7 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 			<code><a href="class-CrudBaseObject.html#__subject">_subject()</a></code>, 
 			<code><a href="class-CrudBaseObject.html#__trigger">_trigger()</a></code>, 
 			<code><a href="class-CrudBaseObject.html#__validationErrors">_validationErrors()</a></code>, 
+			<code><a href="class-CrudBaseObject.html#_beforeHandle">beforeHandle()</a></code>, 
 			<code><a href="class-CrudBaseObject.html#_config">config()</a></code>
 		</p>
 
@@ -620,20 +646,41 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 			</code></td>
 
 			<td class="name">
-					<a href="source-class-SearchListener.html#13-28" title="Go to source code"><var>$_settings</var></a>
+					<a href="source-class-ApiTransformationListener.html#21-61" title="Go to source code"><var>$_settings</var></a>
 			</td>
 			<td class="description"><div>
 				<a href="#$_settings" class="anchor">#</a>
 
 				<div class="description short">
 					
-<p>Default configuration</p>
+<p>Default settings.</p>
 
 				</div>
 
 				<div class="description detailed hidden">
 					
-<p>Default configuration</p>
+<p>Default settings.</p>
+
+<ul>
+	<li>changeNesting boolean Removes the top level model name and nests the
+	associated records inside the primary record.</li>
+
+	<li>changeKeys boolean Changes keys to lowercase model names using the
+	associations or if not empty the replaceMap setting.</li>
+
+	<li>changeTime boolean Changes datetime strings to unix time integers.</li>
+
+	<li>castNumbers boolean Casts numeric strings to the right datatype.</li>
+
+	<li>keyMethods array List of function names, closures or callback arrays to call
+	for the keys when recursing through the data.</li>
+
+	<li>valueMethods array List of function names, closures or callback arrays to
+	call for the values when recursing through the data.</li>
+
+	<li>replaceMap array List of key-value pairs to use for key replacement. Keep
+	this empty to have it derive from the model associations.</li>
+</ul>
 
 
 				</div>
