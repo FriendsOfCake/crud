@@ -249,7 +249,7 @@ abstract class CrudAction extends CrudBaseObject {
 /**
  * Get the model find method for a current controller action
  *
- * @param string|NULL $default The default find method in case it hasn't been mapped
+ * @param string $default The default find method in case it hasn't been mapped
  * @return string The find method used in ->_model->find($method)
  */
 	protected function _getFindMethod($default = null) {
@@ -286,7 +286,7 @@ abstract class CrudAction extends CrudBaseObject {
  *
  * If no reliable detection can be made, no validation will be made
  *
- * @param NULL|Model $model
+ * @param Model $model
  * @return string
  * @throws CakeException If unable to get model object
  */
