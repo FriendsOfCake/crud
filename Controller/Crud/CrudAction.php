@@ -372,7 +372,7 @@ abstract class CrudAction extends CrudBaseObject {
  * Called for all redirects inside CRUD
  *
  * @param CrudSubject $subject
- * @param array|null $url
+ * @param array $url
  * @return void
  */
 	protected function _redirect($subject, $url = null, $status = null, $exit = true) {
