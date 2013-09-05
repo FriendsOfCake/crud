@@ -146,7 +146,7 @@
 </span></span><span id="35" class="l"><a class="l" href="#35"> 35 </a><span class="php-comment"> * @param array $defaults
 </span></span><span id="36" class="l"><a class="l" href="#36"> 36 </a><span class="php-comment"> * @return void
 </span></span><span id="37" class="l"><a class="l" href="#37"> 37 </a><span class="php-comment"> */</span>
-</span><span id="38" class="l"><a class="l" href="#38"> 38 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="___construct" href="#___construct">__construct</a>(CrudSubject <span class="php-var">$subject</span>, <span class="php-var">$defaults</span> = <span class="php-keyword1">array</span>()) {
+</span><span id="38" class="l"><a class="l" href="#38"> 38 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="___construct" href="#___construct">__construct</a>(CrudSubject <span class="php-var">$subject</span>, <span class="php-keyword1">array</span> <span class="php-var">$defaults</span> = <span class="php-keyword1">array</span>()) {
 </span><span id="39" class="l"><a class="l" href="#39"> 39 </a>        parent::__construct(<span class="php-var">$subject</span>, <span class="php-var">$defaults</span>);
 </span><span id="40" class="l"><a class="l" href="#40"> 40 </a>        <span class="php-var">$this</span>-&gt;_settings[<span class="php-quote">'action'</span>] = <span class="php-var">$subject</span>-&gt;action;
 </span><span id="41" class="l"><a class="l" href="#41"> 41 </a>    }
@@ -259,7 +259,7 @@
 </span></span><span id="148" class="l"><a class="l" href="#148">148 </a><span class="php-comment"> * @return array
 </span></span><span id="149" class="l"><a class="l" href="#149">149 </a><span class="php-comment"> * @throws CakeException for a missing or undefined message type
 </span></span><span id="150" class="l"><a class="l" href="#150">150 </a><span class="php-comment"> */</span>
-</span><span id="151" class="l"><a class="l" href="#151">151 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_message" href="#_message">message</a>(<span class="php-var">$type</span>, <span class="php-var">$replacements</span> = <span class="php-keyword1">array</span>()) {
+</span><span id="151" class="l"><a class="l" href="#151">151 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_message" href="#_message">message</a>(<span class="php-var">$type</span>, <span class="php-keyword1">array</span> <span class="php-var">$replacements</span> = <span class="php-keyword1">array</span>()) {
 </span><span id="152" class="l"><a class="l" href="#152">152 </a>        <span class="php-keyword1">if</span> (<span class="php-keyword1">empty</span>(<span class="php-var">$type</span>)) {
 </span><span id="153" class="l"><a class="l" href="#153">153 </a>            <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> CakeException(<span class="php-quote">'Missing message type'</span>);
 </span><span id="154" class="l"><a class="l" href="#154">154 </a>        }
@@ -360,7 +360,7 @@
 </span><span id="249" class="l"><a class="l" href="#249">249 </a><span class="php-comment">/**
 </span></span><span id="250" class="l"><a class="l" href="#250">250 </a><span class="php-comment"> * Get the model find method for a current controller action
 </span></span><span id="251" class="l"><a class="l" href="#251">251 </a><span class="php-comment"> *
-</span></span><span id="252" class="l"><a class="l" href="#252">252 </a><span class="php-comment"> * @param string|NULL $default The default find method in case it hasn't been mapped
+</span></span><span id="252" class="l"><a class="l" href="#252">252 </a><span class="php-comment"> * @param string $default The default find method in case it hasn't been mapped
 </span></span><span id="253" class="l"><a class="l" href="#253">253 </a><span class="php-comment"> * @return string The find method used in -&gt;_model-&gt;find($method)
 </span></span><span id="254" class="l"><a class="l" href="#254">254 </a><span class="php-comment"> */</span>
 </span><span id="255" class="l"><a class="l" href="#255">255 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__getFindMethod" href="#__getFindMethod">_getFindMethod</a>(<span class="php-var">$default</span> = <span class="php-keyword1">null</span>) {
@@ -397,11 +397,11 @@
 </span></span><span id="286" class="l"><a class="l" href="#286">286 </a><span class="php-comment"> *
 </span></span><span id="287" class="l"><a class="l" href="#287">287 </a><span class="php-comment"> * If no reliable detection can be made, no validation will be made
 </span></span><span id="288" class="l"><a class="l" href="#288">288 </a><span class="php-comment"> *
-</span></span><span id="289" class="l"><a class="l" href="#289">289 </a><span class="php-comment"> * @param NULL|Model $model
+</span></span><span id="289" class="l"><a class="l" href="#289">289 </a><span class="php-comment"> * @param Model $model
 </span></span><span id="290" class="l"><a class="l" href="#290">290 </a><span class="php-comment"> * @return string
 </span></span><span id="291" class="l"><a class="l" href="#291">291 </a><span class="php-comment"> * @throws CakeException If unable to get model object
 </span></span><span id="292" class="l"><a class="l" href="#292">292 </a><span class="php-comment"> */</span>
-</span><span id="293" class="l"><a class="l" href="#293">293 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_detectPrimaryKeyFieldType" href="#_detectPrimaryKeyFieldType">detectPrimaryKeyFieldType</a>(<span class="php-var">$model</span> = <span class="php-keyword1">null</span>) {
+</span><span id="293" class="l"><a class="l" href="#293">293 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_detectPrimaryKeyFieldType" href="#_detectPrimaryKeyFieldType">detectPrimaryKeyFieldType</a>(Model <span class="php-var">$model</span> = <span class="php-keyword1">null</span>) {
 </span><span id="294" class="l"><a class="l" href="#294">294 </a>        <span class="php-keyword1">if</span> (<span class="php-keyword1">empty</span>(<span class="php-var">$model</span>)) {
 </span><span id="295" class="l"><a class="l" href="#295">295 </a>            <span class="php-var">$model</span> = <span class="php-var">$this</span>-&gt;_model();
 </span><span id="296" class="l"><a class="l" href="#296">296 </a>            <span class="php-keyword1">if</span> (<span class="php-keyword1">empty</span>(<span class="php-var">$model</span>)) {
@@ -483,25 +483,26 @@
 </span></span><span id="372" class="l"><a class="l" href="#372">372 </a><span class="php-comment"> * Called for all redirects inside CRUD
 </span></span><span id="373" class="l"><a class="l" href="#373">373 </a><span class="php-comment"> *
 </span></span><span id="374" class="l"><a class="l" href="#374">374 </a><span class="php-comment"> * @param CrudSubject $subject
-</span></span><span id="375" class="l"><a class="l" href="#375">375 </a><span class="php-comment"> * @param array|null $url
-</span></span><span id="376" class="l"><a class="l" href="#376">376 </a><span class="php-comment"> * @return void
-</span></span><span id="377" class="l"><a class="l" href="#377">377 </a><span class="php-comment"> */</span>
-</span><span id="378" class="l"><a class="l" href="#378">378 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__redirect" href="#__redirect">_redirect</a>(<span class="php-var">$subject</span>, <span class="php-var">$url</span> = <span class="php-keyword1">null</span>, <span class="php-var">$status</span> = <span class="php-keyword1">null</span>, <span class="php-var">$exit</span> = <span class="php-keyword1">true</span>) {
-</span><span id="379" class="l"><a class="l" href="#379">379 </a>        <span class="php-var">$request</span> = <span class="php-var">$this</span>-&gt;_request();
-</span><span id="380" class="l"><a class="l" href="#380">380 </a>        <span class="php-var">$url</span> = <span class="php-var">$this</span>-&gt;_redirectUrl(<span class="php-var">$url</span>);
-</span><span id="381" class="l"><a class="l" href="#381">381 </a>
-</span><span id="382" class="l"><a class="l" href="#382">382 </a>        <span class="php-var">$subject</span>-&gt;url = <span class="php-var">$url</span>;
-</span><span id="383" class="l"><a class="l" href="#383">383 </a>        <span class="php-var">$subject</span>-&gt;status = <span class="php-var">$status</span>;
-</span><span id="384" class="l"><a class="l" href="#384">384 </a>        <span class="php-var">$subject</span>-&gt;<span class="php-keyword1">exit</span> = <span class="php-var">$exit</span>;
-</span><span id="385" class="l"><a class="l" href="#385">385 </a>        <span class="php-var">$subject</span> = <span class="php-var">$this</span>-&gt;_trigger(<span class="php-quote">'beforeRedirect'</span>, <span class="php-var">$subject</span>);
-</span><span id="386" class="l"><a class="l" href="#386">386 </a>
-</span><span id="387" class="l"><a class="l" href="#387">387 </a>        <span class="php-var">$controller</span> = <span class="php-var">$this</span>-&gt;_controller();
-</span><span id="388" class="l"><a class="l" href="#388">388 </a>        <span class="php-var">$controller</span>-&gt;redirect(<span class="php-var">$subject</span>-&gt;url, <span class="php-var">$subject</span>-&gt;status, <span class="php-var">$subject</span>-&gt;<span class="php-keyword1">exit</span>);
-</span><span id="389" class="l"><a class="l" href="#389">389 </a>        <span class="php-keyword1">return</span> <span class="php-var">$controller</span>-&gt;response;
-</span><span id="390" class="l"><a class="l" href="#390">390 </a>    }
-</span><span id="391" class="l"><a class="l" href="#391">391 </a>
-</span><span id="392" class="l"><a class="l" href="#392">392 </a>}
-</span><span id="393" class="l"><a class="l" href="#393">393 </a></span></code></pre>
+</span></span><span id="375" class="l"><a class="l" href="#375">375 </a><span class="php-comment"> * @param array $url
+</span></span><span id="376" class="l"><a class="l" href="#376">376 </a><span class="php-comment"> * @param integer $status
+</span></span><span id="377" class="l"><a class="l" href="#377">377 </a><span class="php-comment"> * @param boolean $exit
+</span></span><span id="378" class="l"><a class="l" href="#378">378 </a><span class="php-comment"> * @return void
+</span></span><span id="379" class="l"><a class="l" href="#379">379 </a><span class="php-comment"> */</span>
+</span><span id="380" class="l"><a class="l" href="#380">380 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__redirect" href="#__redirect">_redirect</a>(CrudSubject <span class="php-var">$subject</span>, <span class="php-keyword1">array</span> <span class="php-var">$url</span> = <span class="php-keyword1">null</span>, <span class="php-var">$status</span> = <span class="php-keyword1">null</span>, <span class="php-var">$exit</span> = <span class="php-keyword1">true</span>) {
+</span><span id="381" class="l"><a class="l" href="#381">381 </a>        <span class="php-var">$url</span> = <span class="php-var">$this</span>-&gt;_redirectUrl(<span class="php-var">$url</span>);
+</span><span id="382" class="l"><a class="l" href="#382">382 </a>
+</span><span id="383" class="l"><a class="l" href="#383">383 </a>        <span class="php-var">$subject</span>-&gt;url = <span class="php-var">$url</span>;
+</span><span id="384" class="l"><a class="l" href="#384">384 </a>        <span class="php-var">$subject</span>-&gt;status = <span class="php-var">$status</span>;
+</span><span id="385" class="l"><a class="l" href="#385">385 </a>        <span class="php-var">$subject</span>-&gt;<span class="php-keyword1">exit</span> = <span class="php-var">$exit</span>;
+</span><span id="386" class="l"><a class="l" href="#386">386 </a>        <span class="php-var">$subject</span> = <span class="php-var">$this</span>-&gt;_trigger(<span class="php-quote">'beforeRedirect'</span>, <span class="php-var">$subject</span>);
+</span><span id="387" class="l"><a class="l" href="#387">387 </a>
+</span><span id="388" class="l"><a class="l" href="#388">388 </a>        <span class="php-var">$controller</span> = <span class="php-var">$this</span>-&gt;_controller();
+</span><span id="389" class="l"><a class="l" href="#389">389 </a>        <span class="php-var">$controller</span>-&gt;redirect(<span class="php-var">$subject</span>-&gt;url, <span class="php-var">$subject</span>-&gt;status, <span class="php-var">$subject</span>-&gt;<span class="php-keyword1">exit</span>);
+</span><span id="390" class="l"><a class="l" href="#390">390 </a>        <span class="php-keyword1">return</span> <span class="php-var">$controller</span>-&gt;response;
+</span><span id="391" class="l"><a class="l" href="#391">391 </a>    }
+</span><span id="392" class="l"><a class="l" href="#392">392 </a>
+</span><span id="393" class="l"><a class="l" href="#393">393 </a>}
+</span><span id="394" class="l"><a class="l" href="#394">394 </a></span></code></pre>
 	</div>
 
 	<div id="footer">
