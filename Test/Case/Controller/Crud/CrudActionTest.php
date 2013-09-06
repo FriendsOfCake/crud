@@ -531,7 +531,7 @@ class CrudActionTest extends CrudTestCase {
 			'atomic' => true
 		);
 		$actual = $CrudAction->config('saveOptions');
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 
 		$CrudAction->config('saveOptions.atomic', true);
 		$expected = array(
@@ -539,7 +539,7 @@ class CrudActionTest extends CrudTestCase {
 			'atomic' => true
 		);
 		$actual = $CrudAction->config('saveOptions');
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 
 		$CrudAction->config('saveOptions', array(
 			'fieldList' => array('hello')
@@ -550,7 +550,7 @@ class CrudActionTest extends CrudTestCase {
 			'fieldList' => array('hello')
 		);
 		$actual = $CrudAction->config('saveOptions');
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 	}
 
 /**
@@ -563,12 +563,12 @@ class CrudActionTest extends CrudTestCase {
 	public function testGetSaveAllOptionsCustomAction() {
 		$expected = array('validate' => 'first', 'atomic' => true);
 		$actual = $this->ActionClass->saveOptions();
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 
 		$this->ActionClass->saveOptions(array('atomic' => false));
 		$expected = array('validate' => 'first', 'atomic' => false);
 		$actual = $this->ActionClass->saveOptions();
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 	}
 
 /**
@@ -625,7 +625,7 @@ class CrudActionTest extends CrudTestCase {
 			'text' => 'Simple message'
 		);
 		$actual = $this->ActionClass->message('simple');
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 	}
 
 /**
@@ -650,7 +650,7 @@ class CrudActionTest extends CrudTestCase {
 			'text' => 'Overridden message'
 		);
 		$actual = $this->ActionClass->message('simple');
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 	}
 
 /**
@@ -674,7 +674,7 @@ class CrudActionTest extends CrudTestCase {
 			'text' => 'Simple message'
 		);
 		$actual = $this->ActionClass->message('simple');
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 	}
 
 /**
@@ -698,7 +698,7 @@ class CrudActionTest extends CrudTestCase {
 			'text' => 'Simple message with id "123"'
 		);
 		$actual = $this->ActionClass->message('simple', array('id' => 123));
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 	}
 
 /**
@@ -722,7 +722,7 @@ class CrudActionTest extends CrudTestCase {
 			'text' => 'Invalid id'
 		);
 		$actual = $this->ActionClass->message('invalidId');
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 	}
 
 /**
@@ -746,7 +746,7 @@ class CrudActionTest extends CrudTestCase {
 			'text' => 'Not found'
 		);
 		$actual = $this->ActionClass->message('recordNotFound');
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 	}
 
 /**
@@ -770,7 +770,7 @@ class CrudActionTest extends CrudTestCase {
 			'text' => 'Method not allowed. This action permits only THESE ONES'
 		);
 		$actual = $this->ActionClass->message('badRequestMethod', array('methods' => 'THESE ONES'));
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 	}
 
 /**

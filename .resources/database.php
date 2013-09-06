@@ -1,7 +1,7 @@
 <?php
 class DATABASE_CONFIG {
 
-	private $__identities = array(
+	protected $_identities = array(
 		'mysql' => array(
 			'datasource' => 'Database/Mysql',
 			'host' => '0.0.0.0',
@@ -75,7 +75,7 @@ class DATABASE_CONFIG {
 		}
 
 		foreach (array('default', 'test', 'test2', 'test_database_three') as $source) {
-			$config = array_merge($this->{$source}, $this->__identities[$db]);
+			$config = array_merge($this->{$source}, $this->_identities[$db]);
 			if (is_array($config['database'])) {
 				$config['database'] = $config['database'][$source];
 			}
