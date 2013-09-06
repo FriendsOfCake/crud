@@ -266,7 +266,7 @@ class ApiListenerTest extends CrudTestCase {
 			)
 		);
 		$result = $listener->config();
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -1116,7 +1116,7 @@ class ApiListenerTest extends CrudTestCase {
 
 		$expected = 'Crud.CrudExceptionRenderer';
 		$result = Configure::read('Exception.renderer');
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -1212,7 +1212,7 @@ class ApiListenerTest extends CrudTestCase {
 		$result = $this->callProtectedMethod('_checkRequestMethods', array(), $listener);
 
 		if (is_bool($exception)) {
-			$this->assertEqual($result, $exception);
+			$this->assertEquals($exception, $result);
 		}
 	}
 
@@ -1343,10 +1343,10 @@ class ApiListenerTest extends CrudTestCase {
 		$apiListener = new ApiListener(new CrudSubject());
 
 		$result = $apiListener->viewClass('json', 'Sample.ViewClass');
-		$this->assertEqual($result, $apiListener, 'Setting a viewClass did not return the listener itself');
+		$this->assertEquals($apiListener, $result, 'Setting a viewClass did not return the listener itself');
 
 		$result = $apiListener->viewClass('json');
-		$this->assertEqual($result, 'Sample.ViewClass', 'The changed viewClass was not returned');
+		$this->assertEquals('Sample.ViewClass', $result, 'The changed viewClass was not returned');
 	}
 
 /**
@@ -1364,7 +1364,7 @@ class ApiListenerTest extends CrudTestCase {
 			'json' => 'Crud.CrudJson',
 			'xml' => 'Crud.CrudXml'
 		);
-		$this->assertEqual($result, $expected, 'The default viewClasses setting has changed');
+		$this->assertEquals($expected, $result, 'The default viewClasses setting has changed');
 	}
 
 /**
