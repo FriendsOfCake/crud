@@ -818,7 +818,7 @@ class CrudComponent extends Component {
  * Allow us to change e.g. a listener config without losing defaults
  *
  * This is like merge_array_recursive - with the difference that
- * duplicate keys isn't changed to an array with both values, but
+ * duplicate keys aren't changed to an array with both values, but
  * overridden
  *
  * @param array $array1
