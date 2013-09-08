@@ -1,7 +1,5 @@
 <?php
 /**
- * Short description for class.
- *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
@@ -10,7 +8,7 @@ class PostsTagFixture extends CakeTestFixture {
 /**
  * Table to be created
  *
- * @var string 'PostsTag'
+ * @var string 'posts_tags'
  */
 	public $table = 'posts_tags';
 
