@@ -141,7 +141,7 @@ class ApiFieldFilterListenerTest extends CakeTestCase {
 		);
 
 		$actual = $Listener->implementedEvents();
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 	}
 
 /**

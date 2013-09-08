@@ -35,7 +35,7 @@ class ApiQueryLogListenerTest extends CakeTestCase {
 		$Instance = new ApiQueryLogListener(new CrudSubject());
 		$result = $Instance->implementedEvents();
 		$expected = array('Crud.beforeRender' => array('callable' => 'beforeRender', 'priority' => 75));
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -190,7 +190,7 @@ class ApiQueryLogListenerTest extends CakeTestCase {
 		$result = $Method->invoke($Instance);
 		$expected = array('default' => array());
 
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 }
