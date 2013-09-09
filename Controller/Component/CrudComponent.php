@@ -183,7 +183,7 @@ class CrudComponent extends Component {
  *
  * @param string $controllerAction Override the controller action to execute as
  * @param array $arguments List of arguments to pass to the CRUD action (Usually an ID to edit / delete)
- * @return mixed void, or a CakeResponse object
+ * @return CakeResponse
  * @throws CakeException If an action is not mapped
  */
 	public function executeAction($controllerAction = null, $args = array()) {
