@@ -56,14 +56,16 @@ class CrudComponent extends Component {
 	protected $_eventManager;
 
 /**
- * Cached property for Controller::$modelClass.
+ * Cached property for Controller::$modelClass. This is
+ * the model name of the current model.
  *
  * @var string
  */
 	protected $_modelName;
 
 /**
- * Cached property for the current Controller::$modelClass instance.
+ * Cached property for the current model instance. Instance
+ * of Controller::$modelClass.
  *
  * @var Model
  */
