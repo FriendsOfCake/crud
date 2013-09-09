@@ -236,11 +236,7 @@ class CrudComponent extends Component {
  * @return void
  */
 	public function enable($actions) {
-		if (!is_array($actions)) {
-			$actions = array($actions);
-		}
-
-		foreach ($actions as $action) {
+		foreach ((array)$actions as $action) {
 			$this->action($action)->enable();
 		}
 	}
@@ -252,11 +248,7 @@ class CrudComponent extends Component {
  * @return void
  */
 	public function disable($actions) {
-		if (!is_array($actions)) {
-			$actions = array($actions);
-		}
-
-		foreach ($actions as $action) {
+		foreach ((array)$actions as $action) {
 			$this->action($action)->disable();
 		}
 	}
@@ -375,11 +367,7 @@ class CrudComponent extends Component {
  * @return void
  */
 	public function on($events, $callback, $options = array()) {
-		if (!is_array($events)) {
-			$events = array($events);
-		}
-
-		foreach ($events as $event) {
+		foreach ((array)$events as $event) {
 			if (!strpos($event, '.')) {
 				$event = $this->settings['eventPrefix'] . '.' . $event;
 			}
