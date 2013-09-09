@@ -402,7 +402,7 @@ class CrudComponent extends Component {
  * @return void
  */
 	public function addListener($name, $class = null, $defaults = array()) {
-		if (false !== strpos($name, '.')) {
+		if (strpos($name, '.') !== false) {
 			list($plugin, $name) = pluginSplit($name);
 			$name = strtolower($name);
 			$class = $plugin . '.' . ucfirst($name);
@@ -512,11 +512,11 @@ class CrudComponent extends Component {
  * @return mixed|CrudComponent
  */
 	public function config($key = null, $value = null) {
-		if (is_null($key) && is_null($value)) {
+		if ($key === null && $value === null) {
 			return $this->settings;
 		}
 
-		if (is_null($value)) {
+		if ($value === null) {
 			if (is_array($key)) {
 				$this->settings = Hash::merge($this->settings, $key);
 				return $this;
@@ -550,7 +550,7 @@ class CrudComponent extends Component {
  * @return mixed
  */
 	public function defaults($type, $name, $config = null) {
-		if (!is_null($config)) {
+		if ($config !== null) {
 			if (!is_array($name)) {
 				$name = array($name);
 			}
@@ -663,7 +663,7 @@ class CrudComponent extends Component {
 					$settings = array();
 				}
 
-				if ($type === 'listeners' && false !== strpos($name, '.')) {
+				if ($type === 'listeners' && strpos($name, '.') !== false) {
 					unset($this->settings[$type][$name]);
 
 					list($plugin, $name) = pluginSplit($name);
@@ -686,13 +686,13 @@ class CrudComponent extends Component {
  */
 	protected function _handlerClassName($action, $className) {
 		if (empty($className)) {
-			if (false !== strstr($action, '_')) {
+			if (strstr($action, '_') !== false) {
 				list($prefix, $className) = explode('_', $action, 2);
 				$className = 'Crud.' . ucfirst($className);
 			} else {
 				$className = 'Crud.' . ucfirst($action);
 			}
-		} elseif (false === strpos($className, '.')) {
+		} elseif (strpos($className, '.') === false) {
 			$className = 'Crud.' . ucfirst($className);
 		}
 
