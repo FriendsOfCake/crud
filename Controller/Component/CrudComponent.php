@@ -191,7 +191,7 @@ class CrudComponent extends Component {
 
 		$this->_action = $controllerAction ?: $this->_action;
 
-		$view = $action = $this->_action;
+		$action = $this->_action;
 		if (empty($args)) {
 			$args = $this->_request->params['pass'];
 		}
