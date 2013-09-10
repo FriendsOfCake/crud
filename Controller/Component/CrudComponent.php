@@ -819,7 +819,7 @@ class CrudComponent extends Component {
  *
  * This is like merge_array_recursive - with the difference that
  * duplicate keys aren't changed to an array with both values, but
- * overridden
+ * overridden.
  *
  * @param array $array1
  * @param array $array2
