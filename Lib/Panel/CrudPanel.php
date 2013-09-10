@@ -58,7 +58,7 @@ class CrudPanel extends DebugPanel {
 /**
  * _getCallbacks
  *
- * Return all callbacks for a givent event key
+ * Return all callbacks for a given event key
  *
  * @param array $listeners
  * @return array
