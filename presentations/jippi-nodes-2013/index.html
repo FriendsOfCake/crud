@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Crud - Application development on steroids</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+		<div class="reveal">
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+<!-- Intro -->
+
+				<section>
+					<h1>Crud</h1>
+					<h3>Application development on steroids</h3>
+					<p>
+						<small>by <a href="http://cakephp.nu">Christian "Jippi" Winther</a> / <a href="http://twitter.com/jippi">@jippi</a></small>
+						<br />
+						<small>GitHub: <a href="http://github.com/friendsofcake/crud">friendsofcake/crud</a> / <a href="http://friendsofcake.com/crud">FriendsOfCake.com/crud</a></small>
+					</p>
+
+					<aside class="notes">
+						Used to be "Scaffolding on steroids", but CRUD is so much more than scaffolding<br />
+						It's production ready
+					</aside>
+				</section>
+
+<!-- Crud -->
+
+				<section>
+					<h2>What is CRUD?</h2>
+					<ul style="list-style-type: none;">
+						<li>- [C]reate</li>
+						<li>- [R]read</li>
+						<li>- [U]pdate</li>
+						<li>- [D]elete</li>
+					</ul>
+
+					<aside class="notes">
+						I guess everyone know that, but just to make sure
+					</aside>
+				</section>
+
+<!-- v2 -->
+
+				<section>
+					<h2>CRUD v2</h2>
+
+					<p>The Nodes version</p>
+
+					<ul style="list-style-type: none;">
+						<li>- One big Component class</li>
+						<li>- Not flexible</li>
+						<li>- Hidden bugs</li>
+						<li>- Almost no documentation</li>
+						<li>- Not (really) maintained</li>
+						<li>- Inconsistent</li>
+						<li>- Not very well unit tested</li>
+						<li>- Bad architecture</li>
+						<li>- Not community backed</li>
+					</ul>
+
+					<br />
+					<br />
+
+					<p>It worked really well when I did it</p>
+
+					<aside class="notes">
+						CrudComponent is everything<br />
+						Can't change out one action for another<br />
+						Found them while writing v3<br />
+						Compared to v3 at least<br />
+						No commits since I left Nodes (~4 months ago)<br />
+						It behaves different depending on usage<br />
+						~40% test coverage<br />
+						"All In One" class, not possible to swap things out<br />
+						Few people outside Nodes uses it, not marketing for the plugin<br />
+					</aside>
+				</section>
+
+<!-- -->
+
+				<section>
+					<h2>CRUD v3</h2>
+					<p>The current version</p>
+					<ul style="list-style-type: none;">
+						<li>- Separate classes for each Crud action</li>
+						<li>- Very flexible</li>
+						<li>- No known bugs</li>
+						<li>- Tons of documentation</li>
+						<li>- Actively maintained (6 CakePHP core devs)</li>
+						<li>- Very consistent</li>
+						<li>- 90% test coverage</li>
+						<li>- Clean architecture</li>
+						<li>- Community backed</li>
+					</ul>
+
+					<br />
+					<br />
+
+					<p>Rewritten from scratch</p>
+
+					<aside class="notes">
+						Everything is isolated classes, uses events to communicate<br />
+						Everything can be replaced with another implementation<br />
+						Used in quite a few apps, no bugs<br />
+						Spend many many weekends on this<br />
+						May be official scaffolding for Cake 3<br />
+						No quirks, should behave as expected<br />
+						~90% test coverage<br />
+						Observer pattern, emit and listen for events<br />
+						Big push to make it the foundation for new CakePHP community apps<br />
+					</aside>
+				</section>
+
+<!-- -->
+
+				<section>
+					<h2>The Crud Component</h2>
+					<p>Very very skinny</p>
+					<p>Most logic is moved into Crud Actions & Listeners</p>
+				</section>
+
+<!-- -->
+
+				<section>
+					<h2>v2 => v3</h2>
+					<p>Didn't spend time making upgrade easy</p>
+					<p>It just happened to be very similar APIs</p>
+				</section>
+
+<!-- -->
+
+				<section>
+					<h2>v2 => v3</h2>
+					<p>All "map*" configs are gone</p>
+					<p>No "actionMap", "viewMap", "findMethodMap" or "listenerClassMap"</p>
+				</section>
+
+<!-- -->
+
+				<section>
+					<h2>v2 => v3</h2>
+					<p>getListener()</p>
+
+					<pre><code data-trim contenteditable>
+// v2
+$this->Crud->getListener($name);
+// v3
+$this->Crud->listener($name);
+					</code></pre>
+				</section>
+
+<!-- -->
+
+				<section>
+					<h2>v2 => v3</h2>
+					<p>trigger()</p>
+
+					<pre><code data-trim contenteditable>
+// v2
+$this->Crud->trigger($name);
+// v3
+// also support array of $name, and event priority
+$this->Crud->trigger($name);
+					</code></pre>
+
+					<p>Same, but better, yay!</p>
+				</section>
+
+<!-- -->
+
+				<section>
+					<h2>v2 => v3</h2>
+					<p>enableAction()</p>
+
+					<pre><code data-trim contenteditable>
+// v2
+$this->Crud->enableAction($name);
+// v3
+// also support array of $name
+$this->Crud->enable($name);
+					</code></pre>
+				</section>
+
+<!-- -->
+
+				<section>
+					<h2>v2 => v3</h2>
+					<p>disableAction()</p>
+
+					<pre><code data-trim contenteditable>
+// v2
+$this->Crud->disableAction($name);
+// v3
+// also support array of $name
+$this->Crud->disable($name);
+					</code></pre>
+				</section>
+
+<!-- -->
+
+				<section>
+					<h2>v2 => v3</h2>
+					<p>mapActionView()</p>
+
+					<pre><code data-trim contenteditable>
+// v2
+$this->Crud->mapActionView('edit', 'form');
+// v3
+$this->Crud->action('edit')->view('form');
+// v3
+$this->Crud->action('edit')->config('view', 'form');
+					</code></pre>
+				</section>
+
+<!-- -->
+
+				<section>
+					<h2>v2 => v3</h2>
+					<p>mapAction()</p>
+
+					<pre><code data-trim contenteditable>
+// v2
+$this->Crud->mapAction($action, $type, $enable = true);
+// v3
+$this->Crud->mapAction($action, $type, $enable = true);
+					</code></pre>
+
+					<p>Same, yay</p>
+				</section>
+
+<!-- -->
+
+				<section>
+					<h2>v2 => v3</h2>
+					<p>isActionMapped()</p>
+
+					<pre><code data-trim contenteditable>
+// v2
+$this->Crud->isActionMapped($action);
+// v3
+$this->Crud->isActionMapped($action);
+					</code></pre>
+
+					<p>Same, yay</p>
+				</section>
+
+<!-- -->
+
+				<section>
+					<h2>v2 => v3</h2>
+					<p>mapFindMethod()</p>
+
+					<pre><code data-trim contenteditable>
+// v2
+$this->Crud->mapFindMethod('view', 'first');
+// v3
+$this->Crud->action('view')->findMethod('first');
+// v3
+$this->Crud->action('view')->config('findMethod', 'first');
+					</code></pre>
+				</section>
+
+<!-- -->
+
+				<section>
+					<h2>v2 => v3</h2>
+					<p>on()</p>
+
+					<pre><code data-trim contenteditable>
+// v2
+$this->Crud->on($events, $callback);
+// v3
+$this->Crud->on($events, $callback);
+					</code></pre>
+
+					<p>Same, yay</p>
+				</section>
+
+<!-- -->
+
+				<section>
+					<h2>v2 => v3</h2>
+					<p>config()</p>
+
+					<pre><code data-trim contenteditable>
+// v2
+$this->Crud->config($key, $value);
+// v3
+$this->Crud->config($key, $value);
+					</code></pre>
+
+					<p>Same, yay</p>
+					<p>This only changes CrudComponent settings now, not actions</p>
+				</section>
+
+<!-- -->
+
+				<section>
+					<h2>v2 => v3</h2>
+					<p>executeAction()</p>
+
+					<pre><code data-trim contenteditable>
+// v2
+$this->Crud->executeAction($controllerAction, $args);
+// v3
+$this->Crud->executeAction($controllerAction, $args);
+					</code></pre>
+
+					<p>Same, yay</p>
+				</section>
+
+				<section>
+					<h2>Crud Actions</h2>
+
+					<p>No longer _[index|add|edit|view|delete]Action method in CrudComponent</p>
+
+					<br />
+
+					<p>_${name}Action => Plugin/Crud/Controller/Crud/Action/${name}CrudAction</p>
+				</section>
+
+				<section>
+					<h2>Crud actions</h2>
+
+					<p>One class per action</p>
+					<p>Share nothing</p>
+					<p>Isolated configuration</p>
+				</section>
+
+				<section>
+					<h2>Crud actions</h2>
+
+					<ul>
+						<li>Index</li>
+						<li>View</li>
+						<li>Add</li>
+						<li>Edit</li>
+						<li>Delete</li>
+						<li>{Your own action here}</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Index Crud action</h2>
+
+					<pre><code data-trim contenteditable>
+class IndexCrudAction extends CrudAction {
+
+	protected $_settings = [];
+
+	protected function _get() {}
+
+}
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Add Crud action</h2>
+
+					<pre><code data-trim contenteditable>
+class AddCrudAction extends CrudAction {
+
+	protected $_settings = [];
+
+	protected function _get() {}
+
+	protected function _post() {}
+
+	protected function _put() {}
+
+}
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>YOUR Crud action</h2>
+
+					<pre><code data-trim contenteditable>
+class YourCrudAction extends CrudAction {
+
+	protected $_settings = [];
+
+	protected function _get() {}
+
+	protected function _post() {}
+
+	protected function _put() {}
+
+}
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>YOUR Crud action</h2>
+
+					<pre><code data-trim contenteditable>
+class YourCrudAction extends CrudAction {
+
+	protected $_settings = [];
+
+	protected function _handle() {}
+
+}
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Crud listeners</h2>
+
+					<p>One class per listener</p>
+					<p>Share nothing</p>
+					<p>Isolated configuration</p>
+					<p>Listen for events</p>
+				</section>
+
+				<section>
+					<h2>Crud listeners</h2>
+
+					<ul>
+						<li>Search</li>
+						<li>DebugKit</li>
+						<li>Scaffold</li>
+						<li>Related Models</li>
+						<li>Api</li>
+						<li>Api QueryLog</li>
+						<li>Api Pagination</li>
+						<li>Api Field Filter</li>
+						<li>Api Transformation</li>
+					</ul>
+				</section>
+
+<!-- future of crud 1/2 -->
+
+		<section>
+			<h2>Future of Crud</h2>
+			<p>Crud View</p>
+			<br />
+			<p>On the fly views for all build-in & user provided crud actions.</p>
+			<br />
+			<p>Admin interface for free.</p>
+		</section>
+
+<!-- future of crud 2/2 -->
+
+		<section>
+			<h2>Future of Crud</h2>
+			<p>Batch operations</p>
+			<br />
+			<p>[Add|Edit|Delete] multiple records</p>
+		</section>
+
+<!-- Thank you -->
+
+		<section>
+			<h2>Thank you</h2>
+			<p>Questions?</p>
+			<p>Code?</p>
+			<p>Discuss!</p>
+			<br />
+			<p>
+				<small>by <a href="http://cakephp.nu">Christian "Jippi" Winther</a> / <a href="http://twitter.com/jippi">@jippi</a></small>
+				<br />
+				<small>GitHub: <a href="http://github.com/jippi/cakephp-crud">jippi/cakephp-crud</a> / <a href="http://cakephp.nu/">cakephp.nu</a></small>
+			</p>
+		</section>
+
+	</div>
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.min.js"></script>
+
+<script>
+	// Full list of configuration options available here:
+	// https://github.com/hakimel/reveal.js#configuration
+	Reveal.initialize({
+		controls: true,
+		progress: true,
+		history: true,
+		center: true,
+
+		theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+		transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+		// Optional libraries used to extend on reveal.js
+		dependencies: [
+			{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+			{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+			{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+			{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+			{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+			{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+			// { src: 'plugin/leap/leap.js', async: true }
+			// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+			// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+		]
+	});
+</script>
+
+</body>
+</html>
