@@ -456,7 +456,7 @@
 </span><span id="345" class="l"><a class="l" href="#345">345 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__validateId" href="#__validateId">_validateId</a>(<span class="php-var">$id</span>) {
 </span><span id="346" class="l"><a class="l" href="#346">346 </a>        <span class="php-var">$type</span> = <span class="php-var">$this</span>-&gt;config(<span class="php-quote">'validateId'</span>);
 </span><span id="347" class="l"><a class="l" href="#347">347 </a>
-</span><span id="348" class="l"><a class="l" href="#348">348 </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">is_null</span>(<span class="php-var">$type</span>)) {
+</span><span id="348" class="l"><a class="l" href="#348">348 </a>        <span class="php-keyword1">if</span> (<span class="php-var">$type</span> === <span class="php-keyword1">null</span>) {
 </span><span id="349" class="l"><a class="l" href="#349">349 </a>            <span class="php-var">$type</span> = <span class="php-var">$this</span>-&gt;detectPrimaryKeyFieldType();
 </span><span id="350" class="l"><a class="l" href="#350">350 </a>        }
 </span><span id="351" class="l"><a class="l" href="#351">351 </a>

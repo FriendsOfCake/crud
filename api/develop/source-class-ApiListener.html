@@ -367,7 +367,7 @@
 </span><span id="256" class="l"><a class="l" href="#256">256 </a>            <span class="php-var">$subjectArray</span> = (<span class="php-keyword1">array</span>)<span class="php-var">$subject</span>;
 </span><span id="257" class="l"><a class="l" href="#257">257 </a>
 </span><span id="258" class="l"><a class="l" href="#258">258 </a>            <span class="php-keyword1">foreach</span> (<span class="php-var">$config</span>[<span class="php-quote">'data'</span>][<span class="php-quote">'subject'</span>] <span class="php-keyword1">as</span> <span class="php-var">$keyPath</span> =&gt; <span class="php-var">$valuePath</span>) {
-</span><span id="259" class="l"><a class="l" href="#259">259 </a>                <span class="php-keyword1">if</span> (<span class="php-keyword2">is_null</span>(<span class="php-var">$valuePath</span>)) {
+</span><span id="259" class="l"><a class="l" href="#259">259 </a>                <span class="php-keyword1">if</span> (<span class="php-var">$valuePath</span> === <span class="php-keyword1">null</span>) {
 </span><span id="260" class="l"><a class="l" href="#260">260 </a>                    <span class="php-var">$valuePath</span> = <span class="php-var">$keyPath</span>;
 </span><span id="261" class="l"><a class="l" href="#261">261 </a>                }
 </span><span id="262" class="l"><a class="l" href="#262">262 </a>
@@ -445,7 +445,7 @@
 </span></span><span id="334" class="l"><a class="l" href="#334">334 </a><span class="php-comment"> * @return mixed
 </span></span><span id="335" class="l"><a class="l" href="#335">335 </a><span class="php-comment"> */</span>
 </span><span id="336" class="l"><a class="l" href="#336">336 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_viewClass" href="#_viewClass">viewClass</a>(<span class="php-var">$type</span>, <span class="php-var">$class</span> = <span class="php-keyword1">null</span>) {
-</span><span id="337" class="l"><a class="l" href="#337">337 </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">is_null</span>(<span class="php-var">$class</span>)) {
+</span><span id="337" class="l"><a class="l" href="#337">337 </a>        <span class="php-keyword1">if</span> (<span class="php-var">$class</span> === <span class="php-keyword1">null</span>) {
 </span><span id="338" class="l"><a class="l" href="#338">338 </a>            <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;config(<span class="php-quote">'viewClasses.'</span> . <span class="php-var">$type</span>);
 </span><span id="339" class="l"><a class="l" href="#339">339 </a>        }
 </span><span id="340" class="l"><a class="l" href="#340">340 </a>
