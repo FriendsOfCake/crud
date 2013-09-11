@@ -256,7 +256,7 @@ class ApiListener extends CrudListener {
 			$subjectArray = (array)$subject;
 
 			foreach ($config['data']['subject'] as $keyPath => $valuePath) {
-				if (is_null($valuePath)) {
+				if ($valuePath === null) {
 					$valuePath = $keyPath;
 				}
 
@@ -334,7 +334,7 @@ class ApiListener extends CrudListener {
  * @return mixed
  */
 	public function viewClass($type, $class = null) {
-		if (is_null($class)) {
+		if ($class === null) {
 			return $this->config('viewClasses.' . $type);
 		}
 
