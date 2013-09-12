@@ -194,7 +194,7 @@ public function index() {
   // Get the current configuration
   $config = $this->Crud->action()->findMethod();
 
-  return $this->Crud->executeAction();
+  return $this->Crud->execute();
 }
 
 public function admin_index() {
@@ -203,7 +203,7 @@ public function admin_index() {
   // Get the current configuration
   $config = $this->Crud->action()->findMethod();
 
-  return $this->Crud->executeAction();
+  return $this->Crud->execute();
 }
 ?>
 {% endhighlight %}
@@ -247,7 +247,7 @@ public function index() {
   // Get the current configuration
   $config = $this->Crud->action()->view();
 
-  return $this->Crud->executeAction();
+  return $this->Crud->execute();
 }
 
 public function admin_index() {
@@ -256,7 +256,7 @@ public function admin_index() {
   // Get the current configuration
   $config = $this->Crud->action()->view();
 
-  return $this->Crud->executeAction();
+  return $this->Crud->execute();
 }
 ?>
 {% endhighlight %}
@@ -299,7 +299,7 @@ public function index() {
   // Get the current configuration
   $config = $this->Crud->action()->viewVar();
 
-  return $this->Crud->executeAction();
+  return $this->Crud->execute();
 }
 
 public function admin_index() {
@@ -308,7 +308,7 @@ public function admin_index() {
   // Get the current configuration
   $config = $this->Crud->action()->viewVar();
 
-  return $this->Crud->executeAction();
+  return $this->Crud->execute();
 }
 ?>
 {% endhighlight %}
