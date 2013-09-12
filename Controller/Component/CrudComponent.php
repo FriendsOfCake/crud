@@ -182,14 +182,27 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Execute a Crud action.
+ * Alias for `execute`.
  *
+ * @deprecated Will be removed in Crud 3.1
  * @param string $controllerAction Override the controller action to execute as.
  * @param array $arguments List of arguments to pass to the CRUD action (Usually an ID to edit / delete).
  * @return CakeResponse
  * @throws CakeException If an action is not mapped.
  */
 	public function executeAction($controllerAction = null, $args = array()) {
+		return $this->execute($controllerAction, $args);
+	}
+
+/**
+ * Execute a Crud action
+ *
+ * @param string $controllerAction Override the controller action to execute as.
+ * @param array $arguments List of arguments to pass to the CRUD action (Usually an ID to edit / delete).
+ * @return CakeResponse
+ * @throws CakeException If an action is not mapped.
+ */
+	public function execute($controllerAction = null, $args = array()) {
 		$this->_loadListeners();
 
 		$this->_action = $controllerAction ?: $this->_action;
