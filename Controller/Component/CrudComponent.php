@@ -135,6 +135,7 @@ class CrudComponent extends Component {
  *
  * @param ComponentCollection $collection A ComponentCollection this component can use to lazy load its components.
  * @param array $settings Array of configuration settings.
+ * @return void
  */
 	public function __construct(ComponentCollection $collection, $settings = array()) {
 		parent::__construct($collection, $this->_mergeConfig($this->settings, $settings));
