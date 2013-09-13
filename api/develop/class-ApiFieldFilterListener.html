@@ -120,19 +120,19 @@ returned by providing a <code>fields</code> GET argument with a comma separated
 list of fields.</p>
 
 <p>For a relation automatically to be joined, it has to be whitelisted first. If
-no whitelist exist, no relations will be added automatically
+no whitelist exists, no relations will be added automatically
 <code>$this-&gt;_action()-&gt;config('apiFieldFilter.models', array('list',
 'of', 'models'))</code></p>
 
-<p>You can also whitelist fields, if no whitelist exist for fields, all fields
-are allowed If whitelisting exist, only those fields will be allowed to be
+<p>You can also whitelist fields, if no whitelist exists for fields, all fields
+are allowed If whitelisting exists, only those fields will be allowed to be
 selected. The fields must be in <code>Model.field</code> format
 <code>$this-&gt;_action()-&gt;config('apiFieldFilter.fields.whitelist',
 array('Model.id', 'Model.name', 'Model.created'))</code></p>
 
-<p>You can also blacklist fields, if no blacklist exist, no blacklisting is done
-If blacklisting exist, the field will be removed from the field list if present
-The fields must be in <code>Model.field</code> format
+<p>You can also blacklist fields, if no blacklist exists, no blacklisting is
+done If blacklisting exists, the field will be removed from the field list if
+present The fields must be in <code>Model.field</code> format
 <code>$this-&gt;_action()-&gt;config('apiFieldFilter.fields.blacklist',
 array('Model.password', 'Model.auth_token', 'Model.created'))</code></p>
 
@@ -212,14 +212,14 @@ Object
 
 			<div class="description short">
 				
-<p>Returns a list of all events that will fire in the controller during it's
+<p>Returns a list of all events that will fire in the controller during its
 lifecycle. You can override this function to add you own listener callbacks</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Returns a list of all events that will fire in the controller during it's
+<p>Returns a list of all events that will fire in the controller during its
 lifecycle. You can override this function to add you own listener callbacks</p>
 
 <p>We attach at priority 50 so normal bound events can run before us</p>
@@ -646,15 +646,15 @@ GET requests fields</p>
 
 			<div class="description short">
 				
-<p>Secure a field - check that the field exist in the model or a closely related
-model</p>
+<p>Secure a field - check that the field exists in the model or a closely
+related model</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Secure a field - check that the field exist in the model or a closely related
-model</p>
+<p>Secure a field - check that the field exists in the model or a closely
+related model</p>
 
 <p>If the field doesn't exist, it's removed from the field list.</p>
 
@@ -695,14 +695,14 @@ model</p>
 			<div class="description short">
 				
 <p>Check if the associated <code>modelName</code> to the <code>$model</code>
-exist and if it have the field in question</p>
+exists and if it has the field in question</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
 <p>Check if the associated <code>modelName</code> to the <code>$model</code>
-exist and if it have the field in question</p>
+exists and if it has the field in question</p>
 
 
 
