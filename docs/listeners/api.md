@@ -93,7 +93,7 @@ standardized error will be returned, in either `json` or `xml` - according to th
 
 # Custom view classes
 
-By default the Api Listener will override the `ReqeustHandler` viewClass for `json` and `xml`
+By default the Api Listener will override the `RequestHandler` viewClass for `json` and `xml`
 
 For `xml` the `Crud.CrudXml` view class will be used, and for `json` the `Crud.CrudJson` view will be used.
 
