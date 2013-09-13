@@ -274,7 +274,7 @@ class ApiFieldFilterListener extends CrudListener {
 
 /**
  * Check if the associated `modelName` to the `$model`
- * exists and if it have the field in question
+ * exists and if it has the field in question
  *
  * @param Model $model
  * @param string $modelName
