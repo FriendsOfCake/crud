@@ -125,8 +125,8 @@ class CrudSubject {
 	}
 
 /**
- * Check about they called action, is white listed or blacklisted
- * depending on the mode.
+ * Check if the called action is white listed or blacklisted
+ * depending on the mode
  *
  * Modes:
  * only => only if in array (white list)

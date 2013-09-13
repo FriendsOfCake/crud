@@ -79,7 +79,7 @@ class ApiQueryLogListenerTest extends CakeTestCase {
 /**
  * Test that calling beforeRender with debug 2
  * will ask for request type but won't ask for serialize configuration
- * since it's not API request
+ * since it's not an API request
  *
  * @covers ApiQueryLogListener::beforeRender
  * @return void

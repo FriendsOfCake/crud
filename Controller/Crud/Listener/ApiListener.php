@@ -36,7 +36,7 @@ class ApiListener extends CrudListener {
 	);
 
 /**
- * Returns a list of all events that will fire in the controller during it's lifecycle.
+ * Returns a list of all events that will fire in the controller during its lifecycle.
  * You can override this function to add you own listener callbacks
  *
  * We attach at priority 10 so normal bound events can run before us
