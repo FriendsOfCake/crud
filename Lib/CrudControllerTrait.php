@@ -10,7 +10,7 @@ trait CrudControllerTrait {
 
 /**
  * List of components that are capable of dispatching an action that is
- * not already implement
+ * not already implemented
  *
  * @var string
  */

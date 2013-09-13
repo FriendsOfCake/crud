@@ -36,7 +36,7 @@ class ApiListener extends CrudListener {
 	);
 
 /**
- * Returns a list of all events that will fire in the controller during it's lifecycle.
+ * Returns a list of all events that will fire in the controller during its lifecycle.
  * You can override this function to add you own listener callbacks
  *
  * We attach at priority 10 so normal bound events can run before us
@@ -256,7 +256,7 @@ class ApiListener extends CrudListener {
 			$subjectArray = (array)$subject;
 
 			foreach ($config['data']['subject'] as $keyPath => $valuePath) {
-				if (is_null($valuePath)) {
+				if ($valuePath === null) {
 					$valuePath = $keyPath;
 				}
 
@@ -334,7 +334,7 @@ class ApiListener extends CrudListener {
  * @return mixed
  */
 	public function viewClass($type, $class = null) {
-		if (is_null($class)) {
+		if ($class === null) {
 			return $this->config('viewClasses.' . $type);
 		}
 

@@ -383,7 +383,7 @@ class AddCrudActionTest extends CrudTestCase {
 		$result = $Request->data;
 		$expected = $Request->data;
 		$expected['model'] = true;
-		$this->assertEqual($result, $expected, 'The Request::$data and Model::$data was not merged');
+		$this->assertEquals($expected, $result, 'The Request::$data and Model::$data was not merged');
 	}
 
 }

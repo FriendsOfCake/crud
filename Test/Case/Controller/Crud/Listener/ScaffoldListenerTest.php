@@ -298,7 +298,7 @@ class ScaffoldListenerTest extends CakeTestCase {
  */
 	public function testBeforeRender($Listener, $Event, $expected) {
 		$Listener->beforeRender($Event);
-		$this->assertEqual($Event->subject->controller->viewVars, $expected);
+		$this->assertEquals($expected, $Event->subject->controller->viewVars);
 	}
 
 /**
@@ -317,7 +317,7 @@ class ScaffoldListenerTest extends CakeTestCase {
 		);
 
 		$result = $Listener->implementedEvents();
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 }

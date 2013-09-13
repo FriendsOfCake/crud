@@ -23,7 +23,7 @@ class ApiPaginationListenerTest extends CakeTestCase {
 		$Instance = new ApiPaginationListener(new CrudSubject());
 		$result = $Instance->implementedEvents();
 		$expected = array('Crud.beforeRender' => array('callable' => 'beforeRender', 'priority' => 75));
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**

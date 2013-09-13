@@ -227,7 +227,7 @@ class IndexCrudActionTest extends CrudTestCase {
 			'limit' => 50,
 			'paramType' => 'querystring'
 		);
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -280,7 +280,7 @@ class IndexCrudActionTest extends CrudTestCase {
 			'maxLimit' => 100,
 			'paramType' => 'named'
 		);
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -335,7 +335,7 @@ class IndexCrudActionTest extends CrudTestCase {
 			'maxLimit' => 100,
 			'paramType' => 'named'
 		);
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 }

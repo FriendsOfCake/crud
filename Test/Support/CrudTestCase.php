@@ -45,7 +45,7 @@ abstract class CrudTestCase extends CakeTestCase {
 	}
 
 /**
- * Map a instance of a object to it's class name
+ * Map a instance of a object to its class name
  *
  * @param Object $instance
  * @return void

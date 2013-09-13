@@ -35,7 +35,7 @@ class ApiQueryLogListenerTest extends CakeTestCase {
 		$Instance = new ApiQueryLogListener(new CrudSubject());
 		$result = $Instance->implementedEvents();
 		$expected = array('Crud.beforeRender' => array('callable' => 'beforeRender', 'priority' => 75));
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -79,7 +79,7 @@ class ApiQueryLogListenerTest extends CakeTestCase {
 /**
  * Test that calling beforeRender with debug 2
  * will ask for request type but won't ask for serialize configuration
- * since it's not API request
+ * since it's not an API request
  *
  * @covers ApiQueryLogListener::beforeRender
  * @return void
@@ -190,7 +190,7 @@ class ApiQueryLogListenerTest extends CakeTestCase {
 		$result = $Method->invoke($Instance);
 		$expected = array('default' => array());
 
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 }
