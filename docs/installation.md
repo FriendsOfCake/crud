@@ -126,13 +126,13 @@ abstract class AppController extends Controller {
 						continue;
 					}
 
-					// Skip if executeAction isn't defined in the Component
-					if (!method_exists($this->{$component}, 'executeAction')) {
+					// Skip if execute isn't defined in the Component
+					if (!method_exists($this->{$component}, 'execute')) {
 						continue;
 					}
 
 					// Execute the callback, can return CakeResponse object
-					return $this->{$component}->executeAction();
+					return $this->{$component}->execute();
 				}
 			}
 
