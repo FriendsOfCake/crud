@@ -101,7 +101,7 @@ class CrudExamplesController extends Controller {
  * @return void
  */
 	public function add() {
-		return $this->Crud->executeAction();
+		return $this->Crud->execute();
 	}
 
 /**
@@ -110,7 +110,7 @@ class CrudExamplesController extends Controller {
  * @return void
  */
 	public function search() {
-		return $this->Crud->executeAction('index');
+		return $this->Crud->execute('index');
 	}
 
 /**
@@ -119,7 +119,7 @@ class CrudExamplesController extends Controller {
  * @return void
  */
 	public function index() {
-		return $this->Crud->executeAction('index');
+		return $this->Crud->execute('index');
 	}
 
 }
@@ -295,6 +295,23 @@ class CrudComponentTest extends CrudControllerTestCase {
 	}
 
 /**
+ * Test deprecated `executeAction` calls `execute` correctly
+ *
+ */
+	public function testExecuteActionToExecute() {
+		$Collection = $this->getMock('ComponentCollection');
+		$settings = array('actions' => array('index'));
+
+		$Crud = $this->getMock('CrudComponent', array('execute'), array($Collection, $settings));
+		$Crud
+			->expects($this->once())
+			->method('execute')
+			->with('index', array('foo' => 'bar'));
+
+		$Crud->executeAction('index', array('foo' => 'bar'));
+	}
+
+/**
  * testEnable
  *
  */
@@ -357,7 +374,7 @@ class CrudComponentTest extends CrudControllerTestCase {
 			->method('render');
 
 		$this->Crud->view('view', 'cupcakes');
-		$this->Crud->executeAction('view', array(1));
+		$this->Crud->execute('view', array(1));
 	}
 
 /**
@@ -441,7 +458,7 @@ class CrudComponentTest extends CrudControllerTestCase {
  * @return void
  */
 	public function testCrudWillComplainAboutUnmappedAction() {
-		$this->Crud->executeAction('show_all');
+		$this->Crud->execute('show_all');
 	}
 
 /**
@@ -468,7 +485,7 @@ class CrudComponentTest extends CrudControllerTestCase {
 		$this->Crud->mapAction('show_all', 'index');
 		$this->Crud->view(array('show_all' => 'index', 'index' => 'overview'));
 
-		$this->Crud->executeAction('show_all');
+		$this->Crud->execute('show_all');
 	}
 
 /**
@@ -490,7 +507,7 @@ class CrudComponentTest extends CrudControllerTestCase {
 		$this->Crud->mapAction('show_all', 'index');
 		$this->Crud->view(array('show_all' => 'index', 'index' => 'overview'));
 
-		$this->Crud->executeAction('index');
+		$this->Crud->execute('index');
 	}
 
 /**
@@ -584,7 +601,7 @@ class CrudComponentTest extends CrudControllerTestCase {
 
 /**
  * Test that having a 'search' action in the controller
- * and calling ->executeAction('index') will still
+ * and calling ->execute('index') will still
  * render the 'search' view
  *
  * @return void
