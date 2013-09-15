@@ -8,7 +8,7 @@
 	<title>File Controller/Crud/Listener/ApiFieldFilterListener.php | FriendsOfCake/crud (master)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?3107131408"></script>
+	<script type="text/javascript" src="elementlist.js?3468173570"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -120,16 +120,16 @@
 </span></span><span id="9" class="l"><a class="l" href="#9">  9 </a><span class="php-comment"> * returned by providing a `fields` GET argument with a comma separated list of fields.
 </span></span><span id="10" class="l"><a class="l" href="#10"> 10 </a><span class="php-comment"> *
 </span></span><span id="11" class="l"><a class="l" href="#11"> 11 </a><span class="php-comment"> * For a relation automatically to be joined, it has to be whitelisted first.
-</span></span><span id="12" class="l"><a class="l" href="#12"> 12 </a><span class="php-comment"> * If no whitelist exist, no relations will be added automatically
+</span></span><span id="12" class="l"><a class="l" href="#12"> 12 </a><span class="php-comment"> * If no whitelist exists, no relations will be added automatically
 </span></span><span id="13" class="l"><a class="l" href="#13"> 13 </a><span class="php-comment"> * `$this-&gt;_action()-&gt;config('apiFieldFilter.models', array('list', 'of', 'models'))`
 </span></span><span id="14" class="l"><a class="l" href="#14"> 14 </a><span class="php-comment"> *
-</span></span><span id="15" class="l"><a class="l" href="#15"> 15 </a><span class="php-comment"> * You can also whitelist fields, if no whitelist exist for fields, all fields are allowed
-</span></span><span id="16" class="l"><a class="l" href="#16"> 16 </a><span class="php-comment"> * If whitelisting exist, only those fields will be allowed to be selected.
+</span></span><span id="15" class="l"><a class="l" href="#15"> 15 </a><span class="php-comment"> * You can also whitelist fields, if no whitelist exists for fields, all fields are allowed
+</span></span><span id="16" class="l"><a class="l" href="#16"> 16 </a><span class="php-comment"> * If whitelisting exists, only those fields will be allowed to be selected.
 </span></span><span id="17" class="l"><a class="l" href="#17"> 17 </a><span class="php-comment"> * The fields must be in `Model.field` format
 </span></span><span id="18" class="l"><a class="l" href="#18"> 18 </a><span class="php-comment"> * `$this-&gt;_action()-&gt;config('apiFieldFilter.fields.whitelist', array('Model.id', 'Model.name', 'Model.created'))`
 </span></span><span id="19" class="l"><a class="l" href="#19"> 19 </a><span class="php-comment"> *
-</span></span><span id="20" class="l"><a class="l" href="#20"> 20 </a><span class="php-comment"> * You can also blacklist fields, if no blacklist exist, no blacklisting is done
-</span></span><span id="21" class="l"><a class="l" href="#21"> 21 </a><span class="php-comment"> * If blacklisting exist, the field will be removed from the field list if present
+</span></span><span id="20" class="l"><a class="l" href="#20"> 20 </a><span class="php-comment"> * You can also blacklist fields, if no blacklist exists, no blacklisting is done
+</span></span><span id="21" class="l"><a class="l" href="#21"> 21 </a><span class="php-comment"> * If blacklisting exists, the field will be removed from the field list if present
 </span></span><span id="22" class="l"><a class="l" href="#22"> 22 </a><span class="php-comment"> * The fields must be in `Model.field` format
 </span></span><span id="23" class="l"><a class="l" href="#23"> 23 </a><span class="php-comment"> * `$this-&gt;_action()-&gt;config('apiFieldFilter.fields.blacklist', array('Model.password', 'Model.auth_token', 'Model.created'))`
 </span></span><span id="24" class="l"><a class="l" href="#24"> 24 </a><span class="php-comment"> *
@@ -144,7 +144,7 @@
 </span><span id="33" class="l"><a class="l" href="#33"> 33 </a><span class="php-keyword1">class</span> <a id="ApiFieldFilterListener" href="#ApiFieldFilterListener">ApiFieldFilterListener</a> <span class="php-keyword1">extends</span> CrudListener {
 </span><span id="34" class="l"><a class="l" href="#34"> 34 </a>
 </span><span id="35" class="l"><a class="l" href="#35"> 35 </a><span class="php-comment">/**
-</span></span><span id="36" class="l"><a class="l" href="#36"> 36 </a><span class="php-comment"> * Returns a list of all events that will fire in the controller during it's lifecycle.
+</span></span><span id="36" class="l"><a class="l" href="#36"> 36 </a><span class="php-comment"> * Returns a list of all events that will fire in the controller during its lifecycle.
 </span></span><span id="37" class="l"><a class="l" href="#37"> 37 </a><span class="php-comment"> * You can override this function to add you own listener callbacks
 </span></span><span id="38" class="l"><a class="l" href="#38"> 38 </a><span class="php-comment"> *
 </span></span><span id="39" class="l"><a class="l" href="#39"> 39 </a><span class="php-comment"> * We attach at priority 50 so normal bound events can run before us
@@ -335,7 +335,7 @@
 </span><span id="224" class="l"><a class="l" href="#224">224 </a>    }
 </span><span id="225" class="l"><a class="l" href="#225">225 </a>
 </span><span id="226" class="l"><a class="l" href="#226">226 </a><span class="php-comment">/**
-</span></span><span id="227" class="l"><a class="l" href="#227">227 </a><span class="php-comment"> * Secure a field - check that the field exist in the model
+</span></span><span id="227" class="l"><a class="l" href="#227">227 </a><span class="php-comment"> * Secure a field - check that the field exists in the model
 </span></span><span id="228" class="l"><a class="l" href="#228">228 </a><span class="php-comment"> * or a closely related model
 </span></span><span id="229" class="l"><a class="l" href="#229">229 </a><span class="php-comment"> *
 </span></span><span id="230" class="l"><a class="l" href="#230">230 </a><span class="php-comment"> * If the field doesn't exist, it's removed from the
@@ -355,12 +355,12 @@
 </span><span id="244" class="l"><a class="l" href="#244">244 </a>
 </span><span id="245" class="l"><a class="l" href="#245">245 </a>        <span class="php-var">$isPrimary</span> = <span class="php-var">$modelName</span> === <span class="php-var">$model</span>-&gt;alias;
 </span><span id="246" class="l"><a class="l" href="#246">246 </a>
-</span><span id="247" class="l"><a class="l" href="#247">247 </a>        <span class="php-comment">// If the model name is the local one, check if the field exist</span>
+</span><span id="247" class="l"><a class="l" href="#247">247 </a>        <span class="php-comment">// If the model name is the local one, check if the field exists</span>
 </span><span id="248" class="l"><a class="l" href="#248">248 </a>        <span class="php-keyword1">if</span> (<span class="php-var">$isPrimary</span> &amp;&amp; !<span class="php-var">$model</span>-&gt;hasField(<span class="php-var">$fieldName</span>)) {
 </span><span id="249" class="l"><a class="l" href="#249">249 </a>            <span class="php-keyword1">return</span> <span class="php-keyword1">false</span>;
 </span><span id="250" class="l"><a class="l" href="#250">250 </a>        }
 </span><span id="251" class="l"><a class="l" href="#251">251 </a>
-</span><span id="252" class="l"><a class="l" href="#252">252 </a>        <span class="php-comment">// Check associated models if the field exist there</span>
+</span><span id="252" class="l"><a class="l" href="#252">252 </a>        <span class="php-comment">// Check associated models if the field exists there</span>
 </span><span id="253" class="l"><a class="l" href="#253">253 </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$isPrimary</span>) {
 </span><span id="254" class="l"><a class="l" href="#254">254 </a>            <span class="php-keyword1">if</span> (!<span class="php-var">$this</span>-&gt;_associatedModelHasField(<span class="php-var">$model</span>, <span class="php-var">$modelName</span>, <span class="php-var">$fieldName</span>)) {
 </span><span id="255" class="l"><a class="l" href="#255">255 </a>                <span class="php-keyword1">return</span> <span class="php-keyword1">false</span>;
@@ -385,7 +385,7 @@
 </span><span id="274" class="l"><a class="l" href="#274">274 </a>
 </span><span id="275" class="l"><a class="l" href="#275">275 </a><span class="php-comment">/**
 </span></span><span id="276" class="l"><a class="l" href="#276">276 </a><span class="php-comment"> * Check if the associated `modelName` to the `$model`
-</span></span><span id="277" class="l"><a class="l" href="#277">277 </a><span class="php-comment"> * exist and if it have the field in question
+</span></span><span id="277" class="l"><a class="l" href="#277">277 </a><span class="php-comment"> * exists and if it has the field in question
 </span></span><span id="278" class="l"><a class="l" href="#278">278 </a><span class="php-comment"> *
 </span></span><span id="279" class="l"><a class="l" href="#279">279 </a><span class="php-comment"> * @param Model $model
 </span></span><span id="280" class="l"><a class="l" href="#280">280 </a><span class="php-comment"> * @param string $modelName
