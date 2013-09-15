@@ -143,7 +143,7 @@ abstract class CrudAction extends CrudBaseObject {
  * Set or get the related models that should be found
  * for the action
  *
- * @param array $related
+ * @param string|array $related
  * @return mixed
  */
 	public function relatedModels($related = null) {
