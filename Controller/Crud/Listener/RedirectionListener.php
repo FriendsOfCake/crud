@@ -1,50 +1,26 @@
 <?php
-class RedirectionListener extends CrudListener {
 
-	protected $_settings = array(
-		'accessors' => array()
-	);
-
-	public function setup() {
-		$this->_settings['accessors']['request'] = function(CrudSubject $subject, $key = null) {
-			return $subject->request->{$key};
-		};
-
-		$this->_settings['accessors']['request.data'] = function(CrudSubject $subject, $key = null) {
-			return $subject->request->data($key);
-		};
-
-		$this->_settings['accessors']['request.query'] = function(CrudSubject $subject, $key = null) {
-			return $subject->request->query($key);
-		};
-
-		$this->_settings['accessors']['model.data'] = function(CrudSubject $subject, $key = null) {
-			return Hash::get($subject->model->data, $key);
-		};
-
-		$this->_settings['accessors']['model.field'] = function(CrudSubject $subject, $key = null) {
-			return $subject->model->field($key);
-		};
-
-		$this->_settings['accessors']['subject'] = function(CrudSubject $subject, $key = null) {
-			if (isset($subject->{$key})) {
-				return $subject->{$key};
-			}
-
-			return null;
-		};
-	}
+App::uses('CakeEvent', 'Event');
+App::uses('CrudListener', 'Crud.Controller/Crud');
 
 /**
- * Add a new accessor
+ * Enabled Crud to respond in a computer readable format like JSON or XML
  *
- * @param string $key
- * @param Closure $accessor
- * @return void
+ * It tries to enforce some REST principles and keep some string conventions in the output format
+ *
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
  */
-	public function accessor($key, Closure $accessor) {
-		$this->_settings['accessors'][$key] = $accessor;
-	}
+class RedirectionListener extends CrudListener {
+
+/**
+ * Settings
+ *
+ * @var array
+ */
+	protected $_settings = array(
+		'readers' => array()
+	);
 
 /**
  * Returns a list of all events that will fire in the controller during its lifecycle.
@@ -59,6 +35,79 @@ class RedirectionListener extends CrudListener {
 	}
 
 /**
+ * Setup method
+ *
+ * Called when the listener is initialized
+ *
+ * Setup the default readers
+ *
+ * @return void
+ */
+	public function setup() {
+
+// ---- request
+
+		$this->reader('request.key', function(CrudSubject $subject, $key = null) {
+			if (!isset($subject->request->{$key})) {
+				return null;
+			}
+
+			return $subject->request->{$key};
+		});
+
+		$this->reader('request.data', function(CrudSubject $subject, $key = null) {
+			return $subject->request->data($key);
+		});
+
+		$this->reader('request.query', function(CrudSubject $subject, $key = null) {
+			return $subject->request->query($key);
+		});
+
+// ---- model
+
+		$this->reader('model.key', function(CrudSubject $subject, $key = null) {
+			if (!isset($subject->model->{$key})) {
+				return null;
+			}
+
+			return $subject->model->{$key};
+		});
+
+		$this->reader('model.data', function(CrudSubject $subject, $key = null) {
+			return Hash::get($subject->model->data, $key);
+		});
+
+		$this->reader('model.field', function(CrudSubject $subject, $key = null) {
+			return $subject->model->field($key);
+		});
+
+// ---- subject
+
+		$this->reader('subject.key', function(CrudSubject $subject, $key = null) {
+			if (!isset($subject->{$key})) {
+				return null;
+			}
+
+			return $subject->{$key};;
+		});
+	}
+
+/**
+ * Add or replace an reader
+ *
+ * @param string $key
+ * @param null|Closure $reader
+ * @return mixed
+ */
+	public function reader($key, Closure $reader = null) {
+		if ($reader === null) {
+			return $this->config('readers.' . $key);
+		}
+
+		return $this->config('readers.' . $key, $reader);
+	}
+
+/**
  * Redirect callback
  *
  * If a special redirect key is provided, change the
@@ -70,7 +119,12 @@ class RedirectionListener extends CrudListener {
 	public function redirect(CakeEvent $event) {
 		$subject = $event->subject;
 
-		foreach ($this->_action()->config('redirect') as $redirect) {
+		$redirects = $this->_action()->config('redirect');
+		if (empty($redirects)) {
+			return;
+		}
+
+		foreach ($redirects as $redirect) {
 			if (!$this->_getKey($subject, $redirect['type'], $redirect['key'])) {
 				continue;
 			}
@@ -108,25 +162,20 @@ class RedirectionListener extends CrudListener {
 /**
  * Return the value of `$type` with `$key`
  *
- * Types:
- *  - `request`: Access a property directly on the CakeRequest object
- *  - `request.data`: Read a `$key` in the CakeRequest->data array
- *  - `request.query`: Read a `$key` in the CakeRequest->query array
- *  - `model.data`: Read a `$key` in the Model->data array
- *  - `model.field`: Read a `$key` using `Model->field($key)`
- *  - `subject`: Read a `$key` directly on `$event->subject`
- *
  * @param CrudSubject $subject
  * @param string $type
  * @param string $key
  * @return mixed
  */
 	protected function _getKey(CrudSubject $subject, $type, $key) {
-		if (!array_key_exists($type, $this->_settings['accessors'])) {
+		$callable = $this->reader($type);
+
+		if ($callable === null || !is_callable($callable)) {
 			throw new Exception('Invalid type: '.  $type);
 		}
 
-		return $this->_settings['accessors'][$type]($subject, $key);
+		$callable = $this->reader($type);
+		return $callable($subject, $key);
 	}
 
 }
