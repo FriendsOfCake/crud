@@ -117,4 +117,8 @@ class IndexCrudAction extends CrudAction {
 		$this->_trigger('beforeRender', $subject);
 	}
 
+	protected function _post() {
+		return $this->_get();
+	}
+
 }

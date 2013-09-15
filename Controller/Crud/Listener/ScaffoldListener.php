@@ -375,7 +375,7 @@ class ScaffoldListener extends CrudListener {
  */
 	protected function _scaffoldFilters(CakeRequest $request) {
 		$scaffoldFilters = array();
-		$_scaffoldFilters = $this->_action($request->action)->config('scope');
+		$_scaffoldFilters = $this->_listener('Search')->config('scope');
 		if (!empty($_scaffoldFilters)) {
 			$scaffoldFilters = (array)$_scaffoldFilters;
 			foreach ($scaffoldFilters as $_field => $scaffoldField) {

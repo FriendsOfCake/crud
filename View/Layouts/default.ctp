@@ -61,7 +61,7 @@
 					<?php echo $this->fetch('content'); ?>
 				</div>
 				<div class="sidebar-actions span2">
-					<?php echo $this->element('sidebar_actions'); ?>
+					<?php echo $this->element('scaffold/sidebar_actions'); ?>
 				</div>
 			</div>
 		</div>
