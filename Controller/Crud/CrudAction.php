@@ -140,6 +140,21 @@ abstract class CrudAction extends CrudBaseObject {
 	}
 
 /**
+ * Change the related models that should be found
+ * for the action
+ *
+ * @param array $related
+ * @return mixed
+ */
+	public function related($related = null) {
+		if (is_null($related)) {
+			return $this->config('relatedModels');
+		}
+
+		return $this->config('relatedModels', $related, false);
+	}
+
+/**
  * return the config for a given message type
  *
  * @param string $type
