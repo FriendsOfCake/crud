@@ -1,10 +1,15 @@
 <?php
 
 App::uses('Model', 'Model');
+App::uses('Controller', 'Controller');
 App::uses('CakeRequest', 'Network');
+App::uses('CakeResponse', 'Network');
+App::uses('ComponentCollection', 'Controller');
 App::uses('CrudTestCase', 'Crud.Test/Support');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
 App::uses('AddCrudAction', 'Crud.Controller/Crud/Action');
+App::uses('CrudComponent', 'Crud.Controller/Component');
+App::uses('RedirectionListener', 'Crud.Controller/Crud/Listener');
 
 /**
  *
@@ -204,6 +209,96 @@ class AddCrudActionTest extends CrudTestCase {
 		$expected = $Request->data;
 		$expected['model'] = true;
 		$this->assertEquals($expected, $result, 'The Request::$data and Model::$data was not merged');
+	}
+
+/**
+ * Test redirection logic for "add"
+ *
+ * @return void
+ */
+	public function testRedirectListenerWithAdd() {
+		$Crud = $this
+			->getMockBuilder('CrudComponent')
+			->disableOriginalConstructor()
+			->setMethods(null)
+			->getMock();
+
+		$Controller = $this
+			->getMockBuilder('Controller')
+			->disableOriginalConstructor()
+			->setMethods(array('redirect'))
+			->getMock();
+
+		$Request = new CakeRequest;
+		$Request->params['action'] = 'add';
+		$Request->data = array('_add' => 'something');
+
+		$Controller->__construct($Request, new CakeResponse);
+
+		$Crud->__construct(new ComponentCollection);
+		$Crud->initialize($Controller);
+		$Crud->mapAction('add', 'add');
+
+		$Crud->addListener('redirection');
+		$Crud->listener('redirection');
+
+		$Action = $Crud->action('add');
+
+		$CrudSubject = $Crud->getSubject();
+		$CrudSubject->success = true;
+		$CrudSubject->created = true;
+		$CrudSubject->id = 69;
+
+		$this->setReflectionClassInstance($Action);
+		$this->callProtectedMethod('_redirect', array($CrudSubject, array('action' => 'index')), $Action);
+
+		$expected = array('action' => 'add');
+		$this->assertEquals($expected, $CrudSubject->url);
+	}
+
+/**
+ * Test redirection logic for "edit"
+ *
+ * @return void
+ */
+	public function testRedirectListenerWithEdit() {
+		$Crud = $this
+			->getMockBuilder('CrudComponent')
+			->disableOriginalConstructor()
+			->setMethods(null)
+			->getMock();
+
+		$Controller = $this
+			->getMockBuilder('Controller')
+			->disableOriginalConstructor()
+			->setMethods(array('redirect'))
+			->getMock();
+
+		$Request = new CakeRequest;
+		$Request->params['action'] = 'add';
+		$Request->data = array('_edit' => 'something');
+
+		$Controller->__construct($Request, new CakeResponse);
+
+		$Crud->__construct(new ComponentCollection);
+		$Crud->initialize($Controller);
+		$Crud->mapAction('add', 'add');
+
+		$Crud->addListener('redirection');
+		$Crud->listener('redirection');
+
+		$Action = $Crud->action('add');
+
+		$CrudSubject = $Crud->getSubject();
+		$CrudSubject->success = true;
+		$CrudSubject->created = true;
+		$CrudSubject->id = 69;
+
+		$this->setReflectionClassInstance($Action);
+		$this->callProtectedMethod('_redirect', array($CrudSubject, array('action' => 'index')), $Action);
+
+		$expected = array('action' => 'edit', 69);
+		$this->assertEquals($expected, $CrudSubject->url);
 	}
 
 }
