@@ -143,6 +143,11 @@ class RedirectionListener extends CrudListener {
 				continue;
 			}
 
+			if ($key === '?') {
+				$url[$key] = $this->_getUrl($subject, $value);
+				continue;
+			}
+
 			$url[$key] = $this->_getKey($subject, $value[0], $value[1]);
 		}
 

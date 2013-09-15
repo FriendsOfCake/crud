@@ -486,11 +486,11 @@ class RedirectionListenerTest extends CrudTestCase {
 				array('action' => 'edit', array('model.data', 'slug')),
 				array('action' => 'edit', 'epic')
 			),
-			// array(
-			// 	new CrudSubject(array('model' => $Model)),
-			// 	array('action' => 'edit', '?' => array('name' => array('model.key', 'id'))),
-			// 	array('action' => 'edit', '?' => array('name' => 'epic'))
-			// ),
+			array(
+				new CrudSubject(array('model' => $Model)),
+				array('action' => 'edit', '?' => array('name' => array('model.data', 'slug'))),
+				array('action' => 'edit', '?' => array('name' => 'epic'))
+			),
 			array(
 				new CrudSubject(array('id' => 69)),
 				array('action' => 'edit', array('subject.key', 'id')),
