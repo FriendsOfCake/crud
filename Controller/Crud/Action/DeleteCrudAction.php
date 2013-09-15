@@ -94,7 +94,7 @@ class DeleteCrudAction extends CrudAction {
 		}
 
 		if ($request->data('_add')) {
-			return $this->_redirect($subject, array('action' => 'add'));
+			return $this->_redirect($subject, array('action' => 'add'), null, true, true);
 		}
 
 		$controller = $this->_controller();

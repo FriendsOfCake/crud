@@ -104,9 +104,15 @@ class SearchListener extends CrudListener {
 				$this->_setFilterArgs($model, $config['filter']);
 			}
 		} else {
-			$filterArgs = $this->_action()->config('scope');
-			if (!empty($filterArgs)) {
-				$this->_setFilterArgs($model, (array)$filterArgs);
+			$filterArgs = $this->config('scope');
+
+			$_f = [];
+			foreach ($filterArgs as $_k => $filterArg) {
+				$_f[$_k] = $filterArg['filter'];
+			}
+
+			if (!empty($_f)) {
+				$this->_setFilterArgs($model, (array)$_f);
 			}
 		}
 
