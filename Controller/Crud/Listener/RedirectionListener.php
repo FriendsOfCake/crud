@@ -44,9 +44,6 @@ class RedirectionListener extends CrudListener {
  * @return void
  */
 	public function setup() {
-
-// ---- request
-
 		$this->reader('request.key', function(CrudSubject $subject, $key = null) {
 			if (!isset($subject->request->{$key})) {
 				return null;
@@ -63,8 +60,6 @@ class RedirectionListener extends CrudListener {
 			return $subject->request->query($key);
 		});
 
-// ---- model
-
 		$this->reader('model.key', function(CrudSubject $subject, $key = null) {
 			if (!isset($subject->model->{$key})) {
 				return null;
@@ -80,8 +75,6 @@ class RedirectionListener extends CrudListener {
 		$this->reader('model.field', function(CrudSubject $subject, $key = null) {
 			return $subject->model->field($key);
 		});
-
-// ---- subject
 
 		$this->reader('subject.key', function(CrudSubject $subject, $key = null) {
 			if (!isset($subject->{$key})) {
@@ -132,7 +125,6 @@ class RedirectionListener extends CrudListener {
 			$subject->url = $this->_getUrl($subject, $redirect);
 			break;
 		}
-
 	}
 
 /**
@@ -162,19 +154,19 @@ class RedirectionListener extends CrudListener {
 /**
  * Return the value of `$type` with `$key`
  *
+ * @throws Exception if the reader is invalid
  * @param CrudSubject $subject
- * @param string $type
+ * @param string $reader
  * @param string $key
  * @return mixed
  */
-	protected function _getKey(CrudSubject $subject, $type, $key) {
-		$callable = $this->reader($type);
+	protected function _getKey(CrudSubject $subject, $reader, $key) {
+		$callable = $this->reader($reader);
 
 		if ($callable === null || !is_callable($callable)) {
-			throw new Exception('Invalid type: '.  $type);
+			throw new Exception('Invalid type: ' . $reader);
 		}
 
-		$callable = $this->reader($type);
 		return $callable($subject, $key);
 	}
 
