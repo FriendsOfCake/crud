@@ -30,7 +30,7 @@ $this->end();
 				<tr>
 					<?= $this->element('scaffold/table_columns', compact('_singularVar')); ?>
 					<td class="actions">
-						<?= $this->element('scaffold/table_actions', compact('_field', '_options', '_singularVar')); ?>
+						<?= $this->element('scaffold/table_actions', compact('_singularVar')); ?>
 					</td>
 				</tr>
 				<?php
