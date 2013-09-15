@@ -25,9 +25,9 @@ class EditCrudAction extends CrudAction {
  * of model associations to be fetched
  *
  * `validateId` ID Argument validation - by default it will inspect your model's primary key
- * and based on it's data type either use integer or uuid validation.
+ * and based on its data type either use integer or uuid validation.
  * Can be disabled by setting it to "false". Supports "integer" and "uuid" configuration
- * By default it's configuration is NULL, which means "auto detect"
+ * By default its configuration is NULL, which means "auto detect"
  *
  * `saveOptions` Raw array passed as 2nd argument to saveAll() in `add` and `edit` method
  * If you configure a key with your action name, it will override the default settings.

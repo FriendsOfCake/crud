@@ -13,8 +13,8 @@ App::uses('CrudBaseObject', 'Crud.Controller/Crud');
 abstract class CrudListener extends CrudBaseObject {
 
 /**
- * Returns a list of all events that will fire in the controller during it's life cycle.
- * You can override this function to add you own listener callbacks
+ * Returns a list of all events that will fire in the controller during its life cycle.
+ * You can override this function to add you own listener callbacks.
  *
  * - initialize: Called at the same time as CrudComponent::initialize()
  * - startup: Called at the same time as CrudComponent::startup()
@@ -23,7 +23,7 @@ abstract class CrudListener extends CrudBaseObject {
  * - beforePaginate : Called right before any paginate() method
  * - afterPaginate : Called right after any paginate() method
  * - invalidId : Called if the ID format validation failed
- * - setFlash : Called before any CakeSession::setFlash
+ * - setFlash : Called before any CakeSession::setFlash()
  *
  * @return array
  */

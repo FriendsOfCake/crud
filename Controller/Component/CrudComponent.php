@@ -14,70 +14,72 @@ App::uses('CrudSubject', 'Crud.Controller/Crud');
 class CrudComponent extends Component {
 
 /**
- * Reference to a Session component
+ * Reference to a Session component.
  *
  * @var array
  */
 	public $components = array('Session');
 
 /**
- * The current controller action
+ * The current controller action.
  *
  * @var string
  */
 	protected $_action;
 
 /**
- * Reference to the current controller
+ * Reference to the current controller.
  *
  * @var Controller
  */
 	protected $_controller;
 
 /**
- * Reference to the current request
+ * Reference to the current request.
  *
  * @var CakeRequest
  */
 	protected $_request;
 
 /**
- * A flat array of the events triggered
+ * A flat array of the events triggered.
  *
  * @var array
  */
 	protected $_eventLog = array();
 
 /**
- * Reference to the current event manager
+ * Reference to the current event manager.
  *
  * @var CakeEventManager
  */
 	protected $_eventManager;
 
 /**
- * Cached property for Controller::modelClass
+ * Cached property for Controller::$modelClass. This is
+ * the model name of the current model.
  *
  * @var string
  */
 	protected $_modelName;
 
 /**
- * Cached property for the current Controller::modelClass instance
+ * Cached property for the current model instance. Instance
+ * of Controller::$modelClass.
  *
  * @var Model
  */
 	protected $_model;
 
 /**
- * List of listener objects attached to Crud
+ * List of listener objects attached to Crud.
  *
  * @var array
  */
 	protected $_listenerInstances = array();
 
 /**
- * List of crud actions
+ * List of crud actions.
  *
  * @var array
  */
@@ -86,18 +88,18 @@ class CrudComponent extends Component {
 /**
  * Components settings.
  *
- * `eventPrefix` All emitted events will be prefixed with this property value
+ * `eventPrefix` All emitted events will be prefixed with this property value.
  *
  * `actions` contains an array of controller methods this component should offer implementation for.
  * Each action maps to a CrudAction class. `$controllerAction => $crudActionClass`.
  * Example: `array('admin_index' => 'Crud.Index')`
- * By default no actions are enabled
+ * By default no actions are enabled.
  *
  * `listeners` List of internal-name => ${plugin}.${class} listeners
  * that will be bound automatically in Crud. By default the related model event
- * are bound. Events will always assume to be in the Controller/Event folder
+ * are bound. Events will always assume to be in the Controller/Event folder.
  *
- * `eventLogging` boolean to determine whether the class should log triggered events
+ * `eventLogging` boolean to determine whether the class should log triggered events.
  *
  * @var array
  */
@@ -131,18 +133,19 @@ class CrudComponent extends Component {
 /**
  * Constructor
  *
- * @param ComponentCollection $collection A ComponentCollection this component can use to lazy load its components
+ * @param ComponentCollection $collection A ComponentCollection this component can use to lazy load its components.
  * @param array $settings Array of configuration settings.
+ * @return void
  */
 	public function __construct(ComponentCollection $collection, $settings = array()) {
 		parent::__construct($collection, $this->_mergeConfig($this->settings, $settings));
 	}
 
 /**
- * Make sure to update the list of known controller methods before startup is called
+ * Make sure to update the list of known controller methods before startup is called.
  *
  * The reason for this is that if we don't, the Auth component won't execute any callbacks on the controller
- * like isAuthorized
+ * like isAuthorized.
  *
  * @param Controller $controller
  * @return void
@@ -168,9 +171,9 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Called after the Controller::beforeFilter() and before the controller action
+ * Called after the Controller::beforeFilter() and before the controller action.
  *
- * @param Controller $controller Controller with components to startup
+ * @param Controller $controller Controller with components to startup.
  * @return void
  */
 	public function startup(Controller $controller) {
@@ -179,19 +182,32 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Execute a Crud action
+ * Alias for `execute`.
  *
- * @param string $controllerAction Override the controller action to execute as
- * @param array $arguments List of arguments to pass to the CRUD action (Usually an ID to edit / delete)
- * @return mixed void, or a CakeResponse object
- * @throws CakeException If an action is not mapped
+ * @deprecated Will be removed in Crud 3.1
+ * @param string $controllerAction Override the controller action to execute as.
+ * @param array $arguments List of arguments to pass to the CRUD action (Usually an ID to edit / delete).
+ * @return CakeResponse
+ * @throws CakeException If an action is not mapped.
  */
 	public function executeAction($controllerAction = null, $args = array()) {
+		return $this->execute($controllerAction, $args);
+	}
+
+/**
+ * Execute a Crud action
+ *
+ * @param string $controllerAction Override the controller action to execute as.
+ * @param array $arguments List of arguments to pass to the CRUD action (Usually an ID to edit / delete).
+ * @return CakeResponse
+ * @throws CakeException If an action is not mapped.
+ */
+	public function execute($controllerAction = null, $args = array()) {
 		$this->_loadListeners();
 
 		$this->_action = $controllerAction ?: $this->_action;
 
-		$view = $action = $this->_action;
+		$action = $this->_action;
 		if (empty($args)) {
 			$args = $this->_request->params['pass'];
 		}
@@ -216,9 +232,9 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Get an CrudAction object by action name
+ * Get a CrudAction object by action name.
  *
- * @param string $name The controller action name
+ * @param string $name The controller action name.
  * @return CrudAction
  */
 	public function action($name = null) {
@@ -230,41 +246,33 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Enable one or multiple CRUD actions
+ * Enable one or multiple CRUD actions.
  *
- * @param string $actions The action to enable
+ * @param string|array $actions The action to enable.
  * @return void
  */
 	public function enable($actions) {
-		if (!is_array($actions)) {
-			$actions = array($actions);
-		}
-
-		foreach ($actions as $action) {
+		foreach ((array)$actions as $action) {
 			$this->action($action)->enable();
 		}
 	}
 
 /**
- * Disable one or multiple CRUD actions
+ * Disable one or multiple CRUD actions.
  *
- * @param string $actions The action to disable
+ * @param string|array $actions The action to disable.
  * @return void
  */
 	public function disable($actions) {
-		if (!is_array($actions)) {
-			$actions = array($actions);
-		}
-
-		foreach ($actions as $action) {
+		foreach ((array)$actions as $action) {
 			$this->action($action)->disable();
 		}
 	}
 
 /**
- * Map the view file to use for a controller action
+ * Map the view file to use for a controller action.
  *
- * To map multiple action views in one go pass an array as first argument and no second argument
+ * To map multiple action views in one go pass an array as first argument and no second argument.
  *
  * @param string|array $action
  * @param string $view
@@ -283,9 +291,9 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Change the viewVar name for one or multiple actions
+ * Change the viewVar name for one or multiple actions.
  *
- * To map multiple action viewVars in one go pass an array as first argument and no second argument
+ * To map multiple action viewVars in one go pass an array as first argument and no second argument.
  *
  * @param string|array $action
  * @param string $viewVar
@@ -304,12 +312,12 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Map a controller action to a Model::find($method)
+ * Map a controller action to a Model::find($method).
  *
- * To map multiple findMethods in one go pass an array as first argument and no second argument
+ * To map multiple findMethods in one go pass an array as first argument and no second argument.
  *
- * @param string $action
- * @param strign $method
+ * @param string|array $action
+ * @param string $method
  * @return void
  */
 	public function findMethod($action, $method = null) {
@@ -325,10 +333,10 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Map action to a internal request type
+ * Map action to an internal request type.
  *
- * @param string $action The Controller action to provide an implementation for
- * @param string|array $setting Settings array or one of the CRUD events (index, add, edit, delete, view)
+ * @param string $action The Controller action to provide an implementation for.
+ * @param string|array $setting Settings array or one of the CRUD events (index, add, edit, delete, view).
  * @param boolean $enable Should the mapping be enabled right away?
  * @return void
  */
@@ -344,7 +352,7 @@ class CrudComponent extends Component {
 /**
  * Check if a CRUD action has been mapped (whether it will be handled by CRUD component)
  *
- * @param string|null $action If null, use the current action
+ * @param string $action If null, use the current action.
  * @return boolean
  */
 	public function isActionMapped($action = null) {
@@ -367,19 +375,15 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Attaches an event listener function to the controller for Crud Events
+ * Attaches an event listener function to the controller for Crud Events.
  *
- * @param string|array $events Name of the Crud Event you want to attach to controller
- * @param callback $callback callable method or closure to be executed on event
- * @param array $options used to set the `priority` and `passParams` flags to the listener.
+ * @param string|array $events Name of the Crud Event you want to attach to controller.
+ * @param callback $callback Callable method or closure to be executed on event.
+ * @param array $options Used to set the `priority` and `passParams` flags to the listener.
  * @return void
  */
 	public function on($events, $callback, $options = array()) {
-		if (!is_array($events)) {
-			$events = array($events);
-		}
-
-		foreach ($events as $event) {
+		foreach ((array)$events as $event) {
 			if (!strpos($event, '.')) {
 				$event = $this->settings['eventPrefix'] . '.' . $event;
 			}
@@ -389,7 +393,7 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Get a single event class
+ * Get a single event class.
  *
  * @param string $name
  * @return CrudBaseEvent
@@ -401,20 +405,20 @@ class CrudComponent extends Component {
 /**
  * Add a new listener to Crud
  *
- * This will not load or initialize the listener, only lazy-load it
+ * This will not load or initialize the listener, only lazy-load it.
  *
  * If `$name` is provided but no `$class` argument, the className will
  * be derived from the `$name`.
  *
- * CakePHP Plugin.ClassName format for `$name` and `$class` is supported
+ * CakePHP Plugin.ClassName format for `$name` and `$class` is supported.
  *
  * @param string $name
- * @param string|null $class Normal CakePHP plugin-dot annotation supported
- * @param array $defaults Any default settings for a listener
+ * @param string $class Normal CakePHP plugin-dot annotation supported.
+ * @param array $defaults Any default settings for a listener.
  * @return void
  */
 	public function addListener($name, $class = null, $defaults = array()) {
-		if (false !== strpos($name, '.')) {
+		if (strpos($name, '.') !== false) {
 			list($plugin, $name) = pluginSplit($name);
 			$name = strtolower($name);
 			$class = $plugin . '.' . ucfirst($name);
@@ -424,9 +428,9 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Remove a listener from Crud
+ * Remove a listener from Crud.
  *
- * This will also detach it from the EventManager if it's attached
+ * This will also detach it from the EventManager if it's attached.
  *
  * @param string $name
  * @return boolean
@@ -457,7 +461,7 @@ class CrudComponent extends Component {
  *
  * @param string $eventName
  * @param array $data
- * @throws Exception if any event listener return a CakeResponse object
+ * @throws Exception if any event listener return a CakeResponse object.
  * @return CrudSubject
  */
 	public function trigger($eventName, $data = array()) {
@@ -487,7 +491,7 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Add a log entry for the event event
+ * Add a log entry for the event event.
  *
  * @param string $eventName
  * @param array $data
@@ -501,34 +505,34 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Sets a configuration variable into this component
+ * Sets a configuration variable into this component.
  *
  * If called with no arguments, all configuration values are
  * returned.
  *
  * $key is interpreted with dot notation, like the one used for
- * Configure::write()
+ * Configure::write().
  *
- * If $key is string and $value is not passed, it will return the
+ * If $key is a string and $value is not passed, it will return the
  * value associated with such key.
  *
  * If $key is an array and $value is empty, then $key will
  * be interpreted as key => value dictionary of settings and
- * it will be merged directly with $this->settings
+ * it will be merged directly with $this->settings.
  *
  * If $key is a string, the value will be inserted in the specified
- * slot as indicated using the dot notation
+ * slot as indicated using the dot notation.
  *
  * @param mixed $key
  * @param mixed $value
  * @return mixed|CrudComponent
  */
 	public function config($key = null, $value = null) {
-		if (is_null($key) && is_null($value)) {
+		if ($key === null && $value === null) {
 			return $this->settings;
 		}
 
-		if (is_null($value)) {
+		if ($value === null) {
 			if (is_array($key)) {
 				$this->settings = Hash::merge($this->settings, $key);
 				return $this;
@@ -552,17 +556,17 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Set or get defaults for listeners and actions
+ * Set or get defaults for listeners and actions.
  *
- * @param string $type Can be anything, but 'listeners' or 'actions' is currently only used
+ * @param string $type Can be anything, but 'listeners' or 'actions' is currently only used.
  * @param mixed $name The name of the $type - e.g. 'api', 'relatedModels'
  * 	or an array ('api', 'relatedModels'). If $name is an array, the $config will be applied
  * 	to each entry in the $name array.
- * @param mixed $config If NULL, the defaults is returned, else the defaults are changed
+ * @param mixed $config If NULL, the defaults is returned, else the defaults are changed.
  * @return mixed
  */
 	public function defaults($type, $name, $config = null) {
-		if (!is_null($config)) {
+		if ($config !== null) {
 			if (!is_array($name)) {
 				$name = array($name);
 			}
@@ -578,9 +582,7 @@ class CrudComponent extends Component {
 	}
 
 /**
- * eventLog
- *
- * Returns an array of triggered events
+ * Returns an array of triggered events.
  *
  * @return array
  */
@@ -589,9 +591,9 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Sets the model class to be used during the action execution
+ * Sets the model class to be used during the action execution.
  *
- * @param string $modelName The name of the model to load
+ * @param string $modelName The name of the model to load.
  * @return void
  */
 	public function useModel($modelName) {
@@ -602,9 +604,9 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Create a CakeEvent subject with the required properties
+ * Create a CakeEvent subject with the required properties.
  *
- * @param array $additional Additional properties for the subject
+ * @param array $additional Additional properties for the subject.
  * @return CrudSubject
  */
 	public function getSubject($additional = array()) {
@@ -626,9 +628,7 @@ class CrudComponent extends Component {
 	}
 
 /**
- * validationErrors
- *
- * Return all vaidation errors
+ * Return all vaidation errors.
  *
  * @return array
  */
@@ -649,13 +649,13 @@ class CrudComponent extends Component {
 /**
  * Normalize action configuration
  *
- * If an action don't have a CrudClass specified (the value part of the array)
+ * If an action doesn't have a CrudClass specified (the value part of the array)
  * try to compute it by exploding on action name on '_' and take the last chunk
- * as CrudClass identifier
+ * as CrudClass identifier.
  *
- * @param mixed $types Class type(s)
+ * @param mixed $types Class type(s).
  * @return void
- * @throws CakeException If className is missing for listener
+ * @throws CakeException If className is missing for listener.
  */
 	protected function _normalizeConfig($types = null) {
 		if (!$types) {
@@ -679,7 +679,7 @@ class CrudComponent extends Component {
 					$settings = array();
 				}
 
-				if ($type === 'listeners' && false !== strpos($name, '.')) {
+				if ($type === 'listeners' && strpos($name, '.') !== false) {
 					unset($this->settings[$type][$name]);
 
 					list($plugin, $name) = pluginSplit($name);
@@ -694,21 +694,21 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Generate valid class name for action and listener handler
+ * Generate valid class name for action and listener handler.
  *
  * @param string $action
- * @param string|null $className
+ * @param string $className
  * @return string Class name
  */
 	protected function _handlerClassName($action, $className) {
 		if (empty($className)) {
-			if (false !== strstr($action, '_')) {
+			if (strstr($action, '_') !== false) {
 				list($prefix, $className) = explode('_', $action, 2);
 				$className = 'Crud.' . ucfirst($className);
 			} else {
 				$className = 'Crud.' . ucfirst($action);
 			}
-		} elseif (false === strpos($className, '.')) {
+		} elseif (strpos($className, '.') === false) {
 			$className = 'Crud.' . ucfirst($className);
 		}
 
@@ -716,7 +716,7 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Load all event classes attached to Crud
+ * Load all event classes attached to Crud.
  *
  * @return void
  */
@@ -727,11 +727,11 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Load a single event class attached to Crud
+ * Load a single event class attached to Crud.
  *
- * @throws CakeException
  * @param string $name
- * @return void
+ * @return CrudListener
+ * @throws CakeException
  */
 	protected function _loadListener($name) {
 		if (!isset($this->_listenerInstances[$name])) {
@@ -757,11 +757,11 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Load a CrudAction instance
+ * Load a CrudAction instance.
  *
- * @param string $name The controller action name
+ * @param string $name The controller action name.
  * @return CrudAction
- * @throws CakeException If action is not mapped
+ * @throws CakeException If action is not mapped.
  */
 	protected function _loadAction($name) {
 		if (!isset($this->_actionInstances[$name])) {
@@ -793,10 +793,10 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Set internal model properties from the controller
+ * Set internal model properties from the controller.
  *
  * @return void
- * @throws CakeException If unable to get model instance
+ * @throws CakeException If unable to get model instance.
  */
 	protected function _setModelProperties() {
 		$this->_modelName = $this->_controller->modelClass;
@@ -813,13 +813,13 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Merge configuration arrays
+ * Merge configuration arrays.
  *
- * Allow us to change e.g. a listener config without losing defaults
+ * Allow us to change e.g. a listener config without losing defaults.
  *
  * This is like merge_array_recursive - with the difference that
  * duplicate keys aren't changed to an array with both values, but
- * overridden
+ * overridden.
  *
  * @param array $array1
  * @param array $array2

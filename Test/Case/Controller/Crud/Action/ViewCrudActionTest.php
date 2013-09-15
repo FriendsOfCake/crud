@@ -237,7 +237,7 @@ class ViewCrudActionTest extends CrudTestCase {
  * Test that calling HTTP GET on an view action
  * will trigger the appropriate events
  *
- * The ID provided is valid, but do not exist in the database
+ * The ID provided is valid, but does not exist in the database
  *
  * @expectedException NotFoundException
  * @exepctedExceptionMessage Not Found

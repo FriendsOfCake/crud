@@ -35,7 +35,7 @@ abstract class CrudAction extends CrudBaseObject {
  * @param array $defaults
  * @return void
  */
-	public function __construct(CrudSubject $subject, $defaults = array()) {
+	public function __construct(CrudSubject $subject, array $defaults = array()) {
 		parent::__construct($subject, $defaults);
 		$this->_settings['action'] = $subject->action;
 	}
@@ -84,7 +84,7 @@ abstract class CrudAction extends CrudBaseObject {
 		$actionName = $this->config('action');
 
 		$pos = array_search($actionName, $Controller->methods);
-		if (false !== $pos) {
+		if ($pos !== false) {
 			unset($Controller->methods[$pos]);
 		}
 	}
@@ -100,8 +100,7 @@ abstract class CrudAction extends CrudBaseObject {
 		$Controller = $this->_controller();
 		$actionName = $this->config('action');
 
-		$pos = array_search($actionName, $Controller->methods);
-		if (false === $pos) {
+		if (!in_array($actionName, $Controller->methods)) {
 			$Controller->methods[] = $actionName;
 		}
 	}
@@ -116,7 +115,7 @@ abstract class CrudAction extends CrudBaseObject {
  * @return mixed
  */
 	public function findMethod($method = null) {
-		if (empty($method)) {
+		if ($method === null) {
 			return $this->config('findMethod');
 		}
 
@@ -133,11 +132,26 @@ abstract class CrudAction extends CrudBaseObject {
  * @return mixed
  */
 	public function saveMethod($method = null) {
-		if (empty($method)) {
+		if ($method === null) {
 			return $this->config('saveMethod');
 		}
 
 		return $this->config('saveMethod', $method);
+	}
+
+/**
+ * Set or get the related models that should be found
+ * for the action
+ *
+ * @param mixed $related Everything but `null` will change the configuration
+ * @return mixed
+ */
+	public function relatedModels($related = null) {
+		if ($related === null) {
+			return $this->config('relatedModels');
+		}
+
+		return $this->config('relatedModels', $related, false);
 	}
 
 /**
@@ -148,7 +162,7 @@ abstract class CrudAction extends CrudBaseObject {
  * @return array
  * @throws CakeException for a missing or undefined message type
  */
-	public function message($type, $replacements = array()) {
+	public function message($type, array $replacements = array()) {
 		if (empty($type)) {
 			throw new CakeException('Missing message type');
 		}
@@ -249,7 +263,7 @@ abstract class CrudAction extends CrudBaseObject {
 /**
  * Get the model find method for a current controller action
  *
- * @param string|NULL $default The default find method in case it hasn't been mapped
+ * @param string $default The default find method in case it hasn't been mapped
  * @return string The find method used in ->_model->find($method)
  */
 	protected function _getFindMethod($default = null) {
@@ -286,11 +300,11 @@ abstract class CrudAction extends CrudBaseObject {
  *
  * If no reliable detection can be made, no validation will be made
  *
- * @param NULL|Model $model
+ * @param Model $model
  * @return string
  * @throws CakeException If unable to get model object
  */
-	public function detectPrimaryKeyFieldType($model = null) {
+	public function detectPrimaryKeyFieldType(Model $model = null) {
 		if (empty($model)) {
 			$model = $this->_model();
 			if (empty($model)) {
@@ -345,7 +359,7 @@ abstract class CrudAction extends CrudBaseObject {
 	protected function _validateId($id) {
 		$type = $this->config('validateId');
 
-		if (is_null($type)) {
+		if ($type === null) {
 			$type = $this->detectPrimaryKeyFieldType();
 		}
 
@@ -372,11 +386,12 @@ abstract class CrudAction extends CrudBaseObject {
  * Called for all redirects inside CRUD
  *
  * @param CrudSubject $subject
- * @param array|null $url
+ * @param array $url
+ * @param integer $status
+ * @param boolean $exit
  * @return void
  */
-	protected function _redirect($subject, $url = null, $status = null, $exit = true) {
-		$request = $this->_request();
+	protected function _redirect(CrudSubject $subject, array $url = null, $status = null, $exit = true) {
 		$url = $this->_redirectUrl($url);
 
 		$subject->url = $url;
