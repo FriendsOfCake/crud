@@ -84,7 +84,7 @@ abstract class CrudAction extends CrudBaseObject {
 		$actionName = $this->config('action');
 
 		$pos = array_search($actionName, $Controller->methods);
-		if (false !== $pos) {
+		if ($pos !== false) {
 			unset($Controller->methods[$pos]);
 		}
 	}
@@ -100,8 +100,7 @@ abstract class CrudAction extends CrudBaseObject {
 		$Controller = $this->_controller();
 		$actionName = $this->config('action');
 
-		$pos = array_search($actionName, $Controller->methods);
-		if (false === $pos) {
+		if (!in_array($actionName, $Controller->methods)) {
 			$Controller->methods[] = $actionName;
 		}
 	}
