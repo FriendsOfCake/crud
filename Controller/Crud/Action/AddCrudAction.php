@@ -61,7 +61,7 @@ class AddCrudAction extends CrudAction {
 			'edit' => array(
 				'type' => 'request.data',
 				'key' => '_edit',
-				'url' => array('action' => 'edit', array('subject', 'id'))
+				'url' => array('action' => 'edit', array('subject.key', 'id'))
 			)
 		),
 		'messages' => array(
