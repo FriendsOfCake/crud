@@ -11,7 +11,7 @@ class CrudHelper extends CrudAppHelper {
 	public $helpers = array(
 		'Form',
 		'Html',
-		'Time',
+		'Time'
 	);
 
 /**
@@ -33,11 +33,16 @@ class CrudHelper extends CrudAppHelper {
 		$type = Hash::get($schema, "{$field}.type");
 		if ($type == 'boolean') {
 			return !!$value ? 'Yes' : 'No';
-		} elseif (in_array($type, array('datetime', 'date', 'timestamp'))) {
+		}
+
+		if (in_array($type, array('datetime', 'date', 'timestamp'))) {
 			return $this->Time->timeAgoInWords($value);
-		} elseif ($type == 'time') {
+		}
+
+		if ($type == 'time') {
 			return $this->Time->nice($value);
 		}
+
 		return h(String::truncate($value, 200));
 	}
 
@@ -50,19 +55,23 @@ class CrudHelper extends CrudAppHelper {
  * @var mixed array of data to output, false if no match found
  */
 	public function relation($field, $data, $associations = array()) {
-		if (!empty($associations['belongsTo'])) {
-			foreach ($associations['belongsTo'] as $_alias => $_details) {
-				if ($field === $_details['foreignKey']) {
-					return array(
-						'alias' => $_alias,
-						'output' => $this->Html->link($data[$_alias][$_details['displayField']], array(
-							'controller' => $_details['controller'],
-							'action' => 'view',
-							$data[$_alias][$_details['primaryKey']]
-						)),
-					);
-				}
+		if (empty($associations['belongsTo'])) {
+			return false;
+		}
+
+		foreach ($associations['belongsTo'] as $_alias => $_details) {
+			if ($field !== $_details['foreignKey']) {
+				continue;
 			}
+
+			return array(
+				'alias' => $_alias,
+				'output' => $this->Html->link($data[$_alias][$_details['displayField']], array(
+					'controller' => $_details['controller'],
+					'action' => 'view',
+					$data[$_alias][$_details['primaryKey']]
+				))
+			);
 		}
 
 		return false;

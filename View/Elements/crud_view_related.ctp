@@ -1,6 +1,7 @@
 <?php
 if (!empty($associations['hasOne'])) :
-foreach ($associations['hasOne'] as $_alias => $_details): ?>
+	foreach ($associations['hasOne'] as $_alias => $_details):
+		?>
 <div class="related">
   <h3><?php echo __d('crud', "Related %s", Inflector::humanize($_details['controller'])); ?></h3>
   <?php if (!empty(${$singularVar}[$_alias])): ?>
