@@ -59,19 +59,19 @@ It's possible to dynamically reconfigure the `relatedModels` listener
 // This can be changed in beforeFilter and the controller action
 public function beforeFilter() {
   // Automatically executes find('list') on the User ($users) and Tag ($tags) models
-  $this->Crud->action($action)->config('relatedModels', array('User', 'Tag'));
+  $this->Crud->action($action)->relatedModels(array('User', 'Tag'));
 
   // Automatically executes find('list') on the User ($users) model
-  $this->Crud->action($action)->config('relatedModels', array('User'));
+  $this->Crud->action($action)->relatedModels(array('User'));
 
   // Fetch related data from all model relations (default)
-  $this->Crud->action($action)->config('relatedModels', true);
+  $this->Crud->action($action)->relatedModels(true);
 
   // Don't fetch any related data
-  $this->Crud->action($action)->config('relatedModels', false);
+  $this->Crud->action($action)->relatedModels(false);
 
   // Get the current configuration
-  $config = $this->Crud->action($action)->config('relatedModels');
+  $config = $this->Crud->action($action)->relatedModels();
 }
 ?>
 {% endhighlight %}
@@ -85,14 +85,20 @@ logic.
 `Crud.beforeRelatedModel` will receive the following parameters in the event subject, which can be
 altered on the fly before any result is fetched
 
-  * query: An array with options for find('list') model: Model instance, the model to be used for
-  * finding the list or records
+  * query: An array with options for find('list')
+  * viewVar: The name of the variable when set to the view
+  * modelName: The name of the associated model
+  * associationType: The type of association (belongsTo, hasAndBelongsToMany etc.)
+  * associatedModel: The model instance used to fetch the related data (instance of `modelName`)
 
 `Crud.afterRelatedModel` will receive the following parameters in the event subject, which can be
 altered on the fly after results were fetched
 
-  * items: result from calling find('list') viewVar: Variable name to be set on the view with items
-  * as value model: Model instance, the model to be used for finding the list or records
+  * items: result from calling find('list')
+  * viewVar: Variable name to be set on the view with items
+  * modelName: The name of the associated model
+  * associationType: The type of association (belongsTo, hasAndBelongsToMany etc.)
+  * associatedModel: The model instance used to fetch the related data (instance of `modelName`)
 
 ## Example
 
