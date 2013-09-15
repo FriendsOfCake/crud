@@ -52,6 +52,18 @@ class AddCrudAction extends CrudAction {
 				)
 			)
 		),
+		'redirect' => array(
+			'add' => array(
+				'type' => 'request.data',
+				'key' => '_add',
+				'url' => array('action' => 'add')
+			),
+			'edit' => array(
+				'type' => 'request.data',
+				'key' => '_edit',
+				'url' => array('action' => 'edit', array('subject', 'id'))
+			)
+		),
 		'messages' => array(
 			'success' => array(
 				'text' => 'Successfully created {name}'
@@ -97,15 +109,7 @@ class AddCrudAction extends CrudAction {
 		if (call_user_func(array($model, $this->saveMethod()), $request->data, $this->saveOptions())) {
 			$this->setFlash('success');
 			$subject = $this->_trigger('afterSave', array('success' => true, 'created' => true, 'id' => $model->id));
-
-			if ($request->data('_add')) {
-				return $this->_redirect($subject, array('action' => $request->action));
-			} elseif ($request->data('_edit')) {
-				return $this->_redirect($subject, array('action' => 'edit', $model->id));
-			}
-
-			$controller = $this->_controller();
-			return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
+			return $this->_redirect($subject, array('action' => 'index'));
 		}
 
 		$this->setFlash('error');

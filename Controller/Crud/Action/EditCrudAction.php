@@ -54,6 +54,18 @@ class EditCrudAction extends CrudAction {
 				'text' => 'Could not update {name}'
 			)
 		),
+		'redirect' => array(
+			'add' => array(
+				'type' => 'request.data',
+				'key' => '_add',
+				'url' => array('action' => 'add')
+			),
+			'edit' => array(
+				'type' => 'request.data',
+				'key' => '_edit',
+				'url' => array('action' => 'edit', array('subject', 'id'))
+			)
+		),
 		'api' => array(
 			'methods' => array('put', 'post'),
 			'success' => array(
@@ -128,15 +140,7 @@ class EditCrudAction extends CrudAction {
 		if (call_user_func(array($model, $this->saveMethod()), $request->data, $this->saveOptions())) {
 			$this->setFlash('success');
 			$subject = $this->_trigger('afterSave', array('id' => $id, 'success' => true, 'created' => false));
-
-			if ($request->data('_add')) {
-				return $this->_redirect($subject, array('action' => 'add'));
-			} elseif ($request->data('_edit')) {
-				return $this->_redirect($subject, array('action' => $request->action, $id));
-			}
-
-			$controller = $this->_controller();
-			return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
+			return $this->_redirect($subject, array('action' => 'index'));
 		}
 
 		$this->setFlash('error');
@@ -160,8 +164,8 @@ class EditCrudAction extends CrudAction {
 		if (!$findMethod) {
 			$findMethod = $this->_getFindMethod($findMethod);
 		}
-		$subject = $this->_trigger('beforeFind', compact('query', 'findMethod'));
 
+		$subject = $this->_trigger('beforeFind', compact('query', 'findMethod'));
 		return $model->find($subject->findMethod, $subject->query);
 	}
 
