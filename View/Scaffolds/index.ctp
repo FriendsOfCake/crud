@@ -22,40 +22,15 @@ $this->end();
 				<th><?php echo __d('crud', 'Actions'); ?></th>
 			</tr>
 		</thead>
+
 		<tbody>
 			<?php
-			foreach (${$pluralVar} as ${$singularVar}):
-				echo '<tr>';
-					foreach ($scaffoldFieldsData as $_field => $_options) {
-						echo '<td>';
-						echo $this->Crud->format(
-							$_field,
-							Hash::get(${$singularVar}, "{$modelClass}.{$_field}"),
-							${$singularVar},
-							$modelSchema,
-							$associations
-						);
-						echo '</td>';
-					}
+			foreach (${$pluralVar} as $_singularVar) :
 				?>
-				<td class="actions">
-					<div class="btn-group">
-						<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-							<?= __d('crud', 'Actions'); ?>
-							<span class="caret"></span>
-						</a>
-						<ul class="dropdown-menu">
-							<?php
-							foreach ($scaffoldControllerActions['record'] as $_action) {
-								echo "\t\t<li>";
-								echo $this->Html->link(sprintf('%s %s', Inflector::humanize($_action), $singularHumanName), array(
-									'action' => $_action, ${$singularVar}[$modelClass][$primaryKey]
-								));
-								echo " </li>\n";
-							}
-							?>
-						</ul>
-					</div>
+				<tr>
+					<?= $this->element('scaffold/table_columns', compact('_singularVar')); ?>
+					<td class="actions">
+						<?= $this->element('scaffold/table_actions', compact('_field', '_options', '_singularVar')); ?>
 					</td>
 				</tr>
 				<?php
@@ -63,20 +38,6 @@ $this->end();
 			?>
 		</tbody>
 	</table>
-	<div class="paging paging-centered">
-		<div>
-			<?php
-			echo $this->Paginator->prev(__d('crud', '<<'), array(), null, array('class' => 'prev disabled'));
-			echo $this->Paginator->numbers(array('separator' => ''));
-			echo $this->Paginator->next(__d('crud', '>>'), array(), null, array('class' => 'next disabled'));
-			?>
-		</div>
-		<p>
-			<?php
-			echo $this->Paginator->counter(array(
-				'format' => __d('crud', 'Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')
-			));
-			?>
-		</p>
-	</div>
+
+	<?= $this->element('scaffold/pagination'); ?>
 </div>
