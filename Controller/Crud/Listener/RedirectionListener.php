@@ -1,30 +1,32 @@
 <?php
 class RedirectionListener extends CrudListener {
 
-	protected $_accessors = array();
+	protected $_settings = array(
+		'accessors' => array()
+	);
 
 	public function setup() {
-		$this->_accessors['request'] = function(CrudSubject $subject, $key = null) {
+		$this->_settings['accessors']['request'] = function(CrudSubject $subject, $key = null) {
 			return $subject->request->{$key};
 		};
 
-		$this->_accessors['request.data'] = function(CrudSubject $subject, $key = null) {
+		$this->_settings['accessors']['request.data'] = function(CrudSubject $subject, $key = null) {
 			return $subject->request->data($key);
 		};
 
-		$this->_accessors['request.query'] = function(CrudSubject $subject, $key = null) {
+		$this->_settings['accessors']['request.query'] = function(CrudSubject $subject, $key = null) {
 			return $subject->request->query($key);
 		};
 
-		$this->_accessors['model.data'] = function(CrudSubject $subject, $key = null) {
+		$this->_settings['accessors']['model.data'] = function(CrudSubject $subject, $key = null) {
 			return Hash::get($subject->model->data, $key);
 		};
 
-		$this->_accessors['model.field'] = function(CrudSubject $subject, $key = null) {
+		$this->_settings['accessors']['model.field'] = function(CrudSubject $subject, $key = null) {
 			return $subject->model->field($key);
 		};
 
-		$this->_accessors['subject'] = function(CrudSubject $subject, $key = null) {
+		$this->_settings['accessors']['subject'] = function(CrudSubject $subject, $key = null) {
 			if (isset($subject->{$key})) {
 				return $subject->{$key};
 			}
@@ -41,7 +43,7 @@ class RedirectionListener extends CrudListener {
  * @return void
  */
 	public function accessor($key, Closure $accessor) {
-		$this->_accessors[$key] = $accessor;
+		$this->_settings['accessors'][$key] = $accessor;
 	}
 
 /**
@@ -120,11 +122,11 @@ class RedirectionListener extends CrudListener {
  * @return mixed
  */
 	protected function _getKey(CrudSubject $subject, $type, $key) {
-		if (!array_key_exists($type, $this->_accessors)) {
+		if (!array_key_exists($type, $this->_settings['accessors'])) {
 			throw new Exception('Invalid type: '.  $type);
 		}
 
-		return $this->_accessors[$type]($subject, $key);
+		return $this->_settings['accessors'][$type]($subject, $key);
 	}
 
 }
