@@ -147,7 +147,7 @@ abstract class CrudAction extends CrudBaseObject {
  * @return mixed
  */
 	public function relatedModels($related = null) {
-		if (is_null($related)) {
+		if ($related === NULL) {
 			return $this->config('relatedModels');
 		}
 
