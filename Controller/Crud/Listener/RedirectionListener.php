@@ -1,6 +1,49 @@
 <?php
 class RedirectionListener extends CrudListener {
 
+	protected $_accessors = array();
+
+	public function setup() {
+		$this->_accessors['request'] = function(CrudSubject $subject, $key = null) {
+			return $subject->request->{$key};
+		};
+
+		$this->_accessors['request.data'] = function(CrudSubject $subject, $key = null) {
+			return $subject->request->data($key);
+		};
+
+		$this->_accessors['request.query'] = function(CrudSubject $subject, $key = null) {
+			return $subject->request->query($key);
+		};
+
+		$this->_accessors['model.data'] = function(CrudSubject $subject, $key = null) {
+			return Hash::get($subject->model->data, $key);
+		};
+
+		$this->_accessors['model.field'] = function(CrudSubject $subject, $key = null) {
+			return $subject->model->field($key);
+		};
+
+		$this->_accessors['subject'] = function(CrudSubject $subject, $key = null) {
+			if (isset($subject->{$key})) {
+				return $subject->{$key};
+			}
+
+			return null;
+		};
+	}
+
+/**
+ * Add a new accessor
+ *
+ * @param string $key
+ * @param Closure $accessor
+ * @return void
+ */
+	public function accessor($key, Closure $accessor) {
+		$this->_accessors[$key] = $accessor;
+	}
+
 /**
  * Returns a list of all events that will fire in the controller during its lifecycle.
  * You can override this function to add you own listener callbacks
@@ -25,7 +68,7 @@ class RedirectionListener extends CrudListener {
 	public function redirect(CakeEvent $event) {
 		$subject = $event->subject;
 
-		foreach ($this->action()->config('redirect') as $redirect) {
+		foreach ($this->_action()->config('redirect') as $redirect) {
 			if (!$this->_getKey($subject, $redirect['type'], $redirect['key'])) {
 				continue;
 			}
@@ -77,30 +120,11 @@ class RedirectionListener extends CrudListener {
  * @return mixed
  */
 	protected function _getKey(CrudSubject $subject, $type, $key) {
-		switch ($type) {
-			case 'request':
-				return $this->_request()->{$key};
-
-			case 'request.data':
-				return $this->_request()->data($key);
-
-			case 'request.query':
-				return $this->_request()->query($key);
-
-			case 'model.data':
-				return Hash::get($this->_model()->data, $key);
-
-			case 'model.field':
-				return $this->_model()->field($key);
-
-			case 'subject':
-				if (isset($subject->{$key})) {
-					return $subject->{$key};
-				}
-
-			default:
-				throw new Exception('Unknown key type: ' . $type);
+		if (!array_key_exists($type, $this->_accessors)) {
+			throw new Exception('Invalid type: '.  $type);
 		}
+
+		return $this->_accessors[$type]($subject, $key);
 	}
 
 }
