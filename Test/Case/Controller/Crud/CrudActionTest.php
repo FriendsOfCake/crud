@@ -946,4 +946,44 @@ class CrudActionTest extends CrudTestCase {
 		$this->assertTrue($return, 'If validateId is false the check should be skipped');
 	}
 
+/**
+ * Test that getting the saveMethod will execute config()
+ *
+ * @covers CrudAction::relatedModels
+ * @return void
+ */
+	public function testRelatedModelsGet() {
+		$Action = $this
+			->getMockBuilder('CrudAction')
+			->setMethods(array('config'))
+			->setConstructorArgs(array($this->Subject))
+			->getMock();
+		$Action
+			->expects($this->once())
+			->method('config')
+			->with('relatedModels');
+
+		$Action->relatedModels();
+	}
+
+/**
+ * Test that setting the saveMethod will execute config()
+ *
+ * @covers CrudAction::relatedModels
+ * @return void
+ */
+	public function testRelatedModelsSet() {
+		$Action = $this
+			->getMockBuilder('CrudAction')
+			->setMethods(array('config'))
+			->setConstructorArgs(array($this->Subject))
+			->getMock();
+		$Action
+			->expects($this->once())
+			->method('config')
+			->with('relatedModels', 'Tag', false);
+
+		$Action->relatedModels('Tag');
+	}
+
 }
