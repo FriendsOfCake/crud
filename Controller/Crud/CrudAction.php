@@ -100,8 +100,7 @@ abstract class CrudAction extends CrudBaseObject {
 		$Controller = $this->_controller();
 		$actionName = $this->config('action');
 
-		$pos = array_search($actionName, $Controller->methods);
-		if ($pos === false) {
+		if (!in_array($actionName, $Controller->methods)) {
 			$Controller->methods[] = $actionName;
 		}
 	}
