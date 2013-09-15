@@ -19,7 +19,7 @@ class RelatedModelsListener extends CrudListener {
  * @return array
  */
 	public function models($action = null) {
-		$settings = $this->_action($action)->related();
+		$settings = $this->_action($action)->relatedModels();
 		if ($settings === true) {
 			$ModelInstance = $this->_model();
 			return array_merge(
