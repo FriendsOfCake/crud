@@ -167,7 +167,7 @@ public function _beforeSave(CakeEvent $event) {
 Very much like the other `Closure` examples above.
 
 When implementing callbacks inside the controller action, it's very important to call the
-`executeAction` in `Crud`.
+`execute` in `Crud`.
 
 This will allow Crud to continue to do it's magic just as if the method didn't exist at all in the
 controller in the first place.
@@ -182,7 +182,7 @@ class DemoController extends AppController {
 		}
 
 		// Important for the ViewCrudAction to be executed
-		return $this->Crud->executeAction();
+		return $this->Crud->execute();
 	}
 
 }
