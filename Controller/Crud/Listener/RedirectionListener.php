@@ -81,7 +81,7 @@ class RedirectionListener extends CrudListener {
 				return null;
 			}
 
-			return $subject->{$key};;
+			return $subject->{$key};
 		});
 	}
 
@@ -122,7 +122,7 @@ class RedirectionListener extends CrudListener {
 				continue;
 			}
 
-			$subject->url = $this->_getUrl($subject, $redirect);
+			$subject->url = $this->_getUrl($subject, $redirect['url']);
 			break;
 		}
 	}
@@ -137,9 +137,7 @@ class RedirectionListener extends CrudListener {
  * @param array $config
  * @return array
  */
-	protected function _getUrl(CrudSubject $subject, $config) {
-		$url = $config['url'];
-
+	protected function _getUrl(CrudSubject $subject, $url) {
 		foreach ($url as $key => $value) {
 			if (!is_array($value)) {
 				continue;

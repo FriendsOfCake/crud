@@ -410,7 +410,7 @@ class RedirectionListenerTest extends CrudTestCase {
 			->disableoriginalConstructor()
 			->getMock();
 
-		$action->config('redirect', array('add' => array('type' => 'request.key', 'key' => 'hello')));
+		$action->config('redirect', array('add' => array('type' => 'request.key', 'key' => 'hello', 'url' => array('action' => 'index'))));
 
 		$subject = new CrudSubject();
 
@@ -431,12 +431,95 @@ class RedirectionListenerTest extends CrudTestCase {
 		$listener
 			->expects($this->once())
 			->method('_getUrl')
-			->with($subject, array('type' => 'request.key', 'key' => 'hello'))
+			->with($subject, array('action' => 'index'))
 			->will($this->returnValue(array('action' => 'index')));
 
 		$listener->redirect(new CakeEvent('Crud.beforeRedirect', $subject));
 
 		$this->assertSame(array('action' => 'index'), $subject->url);
+	}
+
+	public function dataProvider_getUrl() {
+		$CakeRequest = new CakeRequest;
+		$CakeRequest->params['action'] = 'index';
+		$CakeRequest->query['parent_id'] = 10;
+		$CakeRequest->data['epic'] = 'jippi';
+
+		$Model = new Model;
+		$Model->id = 69;
+		$Model->slug = 'jippi-is-awesome';
+		$Model->data = array('name' => 'epic', 'slug' => 'epic');
+
+		return array(
+			array(
+				new CrudSubject(),
+				array('action' => 'index'),
+				array('action' => 'index')
+			),
+			array(
+				new CrudSubject(),
+				array('controller' => 'posts', 'action' => 'index'),
+				array('controller' => 'posts', 'action' => 'index')
+			),
+			array(
+				new CrudSubject(array('request' => $CakeRequest)),
+				array('action' => array('request.key', 'action')),
+				array('action' => 'index')
+			),
+			array(
+				new CrudSubject(array('request' => $CakeRequest)),
+				array('action' => array('request.data', 'epic')),
+				array('action' => 'jippi')
+			),
+			array(
+				new CrudSubject(array('request' => $CakeRequest)),
+				array('action' => array('request.query', 'parent_id')),
+				array('action' => 10)
+			),
+			array(
+				new CrudSubject(array('model' => $Model)),
+				array('action' => 'edit', array('model.key', 'id')),
+				array('action' => 'edit', 69)
+			),
+			array(
+				new CrudSubject(array('model' => $Model)),
+				array('action' => 'edit', array('model.data', 'slug')),
+				array('action' => 'edit', 'epic')
+			),
+			// array(
+			// 	new CrudSubject(array('model' => $Model)),
+			// 	array('action' => 'edit', '?' => array('name' => array('model.key', 'id'))),
+			// 	array('action' => 'edit', '?' => array('name' => 'epic'))
+			// ),
+			array(
+				new CrudSubject(array('id' => 69)),
+				array('action' => 'edit', array('subject.key', 'id')),
+				array('action' => 'edit', 69)
+			)
+		);
+	}
+
+/**
+ * Test _getUrl
+ *
+ * @dataProvider dataProvider_getUrl
+ * @covers RedirectionListener::_getUrl
+ * @covers RedirectionListener::_getKey
+ * @return void
+ */
+	public function test_getUrl(CrudSubject $subject, $url, $expected) {
+		$listener = $this
+			->getMockBuilder('RedirectionListener')
+			->setMethods(null)
+			->disableoriginalConstructor()
+			->getMock();
+
+		$listener->setup();
+
+		$this->setReflectionClassInstance($listener);
+
+		$result = $this->callProtectedMethod('_getUrl', array($subject, $url), $listener);
+		$this->assertEquals($expected, $result);
 	}
 
 }
