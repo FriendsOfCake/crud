@@ -115,7 +115,7 @@ abstract class CrudAction extends CrudBaseObject {
  * @return mixed
  */
 	public function findMethod($method = null) {
-		if (empty($method)) {
+		if ($method === null) {
 			return $this->config('findMethod');
 		}
 
@@ -132,11 +132,26 @@ abstract class CrudAction extends CrudBaseObject {
  * @return mixed
  */
 	public function saveMethod($method = null) {
-		if (empty($method)) {
+		if ($method === null) {
 			return $this->config('saveMethod');
 		}
 
 		return $this->config('saveMethod', $method);
+	}
+
+/**
+ * Set or get the related models that should be found
+ * for the action
+ *
+ * @param mixed $related Everything but `null` will change the configuration
+ * @return mixed
+ */
+	public function relatedModels($related = null) {
+		if ($related === null) {
+			return $this->config('relatedModels');
+		}
+
+		return $this->config('relatedModels', $related, false);
 	}
 
 /**
