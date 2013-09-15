@@ -55,20 +55,20 @@ class RelatedModelsListener extends CrudListener {
 
 		$Controller = $this->_controller();
 
-		foreach ($models as $model) {
-			$associationType = $this->_getAssociationType($model);
-			$AssociatedModel = $this->_getModelInstance($model, $associationType);
+		foreach ($models as $modelName) {
+			$associationType = $this->_getAssociationType($modelName);
+			$associatedModel = $this->_getModelInstance($modelName, $associationType);
 
-			$viewVar = Inflector::variable(Inflector::pluralize($AssociatedModel->alias));
+			$viewVar = Inflector::variable(Inflector::pluralize($associatedModel->alias));
 			if (array_key_exists($viewVar, $Controller->viewVars)) {
 				continue;
 			}
 
-			$query = $this->_getBaseQuery($AssociatedModel, $associationType);
+			$query = $this->_getBaseQuery($associatedModel, $associationType);
 
-			$subject = $this->_trigger('beforeRelatedModel', compact('model', 'query', 'viewVar'));
-			$items = $this->_findRelatedItems($AssociatedModel, $subject->query);
-			$subject = $this->_trigger('afterRelatedModel', compact('model', 'items', 'viewVar'));
+			$subject = $this->_trigger('beforeRelatedModel', compact('modelName', 'query', 'viewVar', 'associationType', 'associatedModel'));
+			$items = $this->_findRelatedItems($associatedModel, $subject->query);
+			$subject = $this->_trigger('afterRelatedModel', compact('modelName', 'items', 'viewVar', 'associationType', 'associatedModel'));
 
 			$Controller->set($subject->viewVar, $subject->items);
 		}
@@ -109,29 +109,29 @@ class RelatedModelsListener extends CrudListener {
 /**
  * Get the base query to find the related items for an associated model
  *
- * @param Model $AssociatedModel
+ * @param Model $associatedModel
  * @param string $associationType
  * @return array
  */
-	protected function _getBaseQuery(Model $AssociatedModel, $associationType = null) {
+	protected function _getBaseQuery(Model $associatedModel, $associationType = null) {
 		$query = array();
 
 		if ($associationType === 'belongsTo') {
 			$PrimaryModel = $this->_model();
-			$query['conditions'] = $PrimaryModel->belongsTo[$AssociatedModel->alias]['conditions'];
+			$query['conditions'] = $PrimaryModel->belongsTo[$associatedModel->alias]['conditions'];
 		}
 
-		if ($this->_hasTreeBehavior($AssociatedModel)) {
-			$TreeBehavior = $this->_getTreeBehavior($AssociatedModel);
+		if ($this->_hasTreeBehavior($associatedModel)) {
+			$TreeBehavior = $this->_getTreeBehavior($associatedModel);
 			$query = array(
 				'keyPath' => null,
 				'valuePath' => null,
 				'spacer' => '_',
-				'recursive' => $TreeBehavior->settings[$AssociatedModel->alias]['recursive']
+				'recursive' => $TreeBehavior->settings[$associatedModel->alias]['recursive']
 			);
 
 			if (empty($query['conditions'])) {
-				$query['conditions'] = $TreeBehavior->settings[$AssociatedModel->alias]['scope'];
+				$query['conditions'] = $TreeBehavior->settings[$associatedModel->alias]['scope'];
 			}
 		}
 

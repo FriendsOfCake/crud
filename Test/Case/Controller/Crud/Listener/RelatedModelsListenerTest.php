@@ -705,7 +705,7 @@ class RelatedModelListenerTest extends CrudTestCase {
 		$Listener
 			->expects($this->at($i++))
 			->method('_trigger')
-			->with('beforeRelatedModel', array('model' => 'Post', 'query' => $postQuery, 'viewVar' => 'posts'))
+			->with('beforeRelatedModel', array('modelName' => 'Post', 'query' => $postQuery, 'viewVar' => 'posts', 'associationType' => 'belongsTo', 'associatedModel' => $Post))
 			->will($this->returnValue(new CrudSubject(array('query' => $postQuery + array('_callback' => true)))));
 		$Listener
 			->expects($this->at($i++))
@@ -715,7 +715,7 @@ class RelatedModelListenerTest extends CrudTestCase {
 		$Listener
 			->expects($this->at($i++))
 			->method('_trigger')
-			->with('afterRelatedModel', array('model' => 'Post', 'items' => array(1, 2, 3), 'viewVar' => 'posts'))
+			->with('afterRelatedModel', array('modelName' => 'Post', 'items' => array(1, 2, 3), 'viewVar' => 'posts', 'associationType' => 'belongsTo', 'associatedModel' => $Post))
 			->will($this->returnValue(new CrudSubject(array('items' => array(1, 2, 3), 'viewVar' => 'posts'))));
 		$Controller
 			->expects($this->once())
