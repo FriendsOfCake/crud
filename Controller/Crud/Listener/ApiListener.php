@@ -23,13 +23,20 @@ class ApiListener extends CrudListener {
 			'json' => 'Crud.CrudJson',
 			'xml' => 'Crud.CrudXml'
 		),
-		'exceptionClasses' => array(
-			'validate' => 'CrudValidationException'
+		'detectors' => array(
+			'json' => array('ext' => 'json', 'accepts' => 'application/json'),
+			'xml' => array('ext' => 'xml', 'accepts' => 'text/xml')
+		),
+		'exception' => array(
+			'type' => 'default',
+			'class' => 'BadRequestException',
+			'message' => 'Unknown error',
+			'code' => 0
 		)
 	);
 
 /**
- * Returns a list of all events that will fire in the controller during it's lifecycle.
+ * Returns a list of all events that will fire in the controller during its lifecycle.
  * You can override this function to add you own listener callbacks
  *
  * We attach at priority 10 so normal bound events can run before us
@@ -38,118 +45,154 @@ class ApiListener extends CrudListener {
  */
 	public function implementedEvents() {
 		return array(
-			'Crud.startup' => array('callable' => 'startup', 'priority' => 5),
-			'Crud.initialize' => array('callable' => 'initialize', 'priority' => 10),
-			'Crud.beforeRender' => array('callable' => 'beforeRender', 'priority' => 100),
-			'Crud.afterSave' => array('callable' => 'afterSave', 'priority' => 100),
-			'Crud.afterDelete' => array('callable' => 'afterDelete', 'priority' => 100),
-			'Crud.setFlash' => array('callable' => 'setFlash', 'priority' => 100)
+			'Crud.beforeHandle' => array('callable' => 'beforeHandle', 'priority' => 10),
+			'Crud.setFlash' => array('callable' => 'setFlash', 'priority' => 5),
+
+			'Crud.beforeRender' => array('callable' => 'respond', 'priority' => 100),
+			'Crud.beforeRedirect' => array('callable' => 'respond', 'priority' => 100)
 		);
 	}
 
 /**
- * Called when all listeners has been loaded,
- * and before the crud action is actually executed
+ * setup
  *
- * @param CakeEvent $event
+ * Called when the listener is created
+ *
  * @return void
  */
-	public function startup(CakeEvent $event) {
-		$this->_setupDetectors();
+	public function setup() {
+		$this->setupDetectors();
 	}
 
 /**
- * initialize
+ * beforeHandle
  *
  * Called before the crud action is executed
  *
  * @param CakeEvent $event
  * @return void
  */
-	public function initialize(CakeEvent $event) {
-		parent::initialize($event);
+	public function beforeHandle(CakeEvent $event) {
+		parent::beforeHandle($event);
 
 		if (!$this->_request()->is('api')) {
+			$events = $this->implementedEvents();
+			$eventManager = $this->_controller()->getEventManager();
+			foreach (array_keys($events) as $name) {
+				if ($name === 'Crud.beforeHandle') {
+					continue;
+				}
+				$eventManager->detach($this, $name);
+			}
 			return;
 		}
 
 		$this->registerExceptionHandler();
+		$this->_checkRequestMethods();
 	}
 
+/**
+ * Check for allowed HTTP request types
+ *
+ * @throws BadRequestException
+ * @return boolean
+ */
+	protected function _checkRequestMethods() {
+		$action = $this->_action();
+		$apiConfig = $action->config('api');
+
+		if (!isset($apiConfig['methods'])) {
+			return false;
+		}
+
+		$request = $this->_request();
+		foreach ($apiConfig['methods'] as $method) {
+			if ($request->is($method)) {
+				return true;
+			}
+		}
+
+		throw new BadRequestException('Wrong request method');
+	}
+
+/**
+ * Register the Crud exception handler
+ *
+ * @return void
+ */
 	public function registerExceptionHandler() {
 		App::uses('CrudExceptionRenderer', 'Crud.Error');
 		Configure::write('Exception.renderer', 'Crud.CrudExceptionRenderer');
 	}
 
 /**
- * afterSave callback
+ * Handle response
  *
- * @throws CrudValidationException
  * @param CakeEvent $event
- * @return void|CakeResponse
+ * @return CakeResponse
  */
-	public function afterSave(CakeEvent $event) {
-		if (!$this->_request()->is('api')) {
-			return;
+	public function respond(CakeEvent $event) {
+		$subject = $event->subject;
+		$action = $this->_action();
+
+		$key = $subject->success ? 'success' : 'error';
+		$apiConfig = $action->config('api.' . $key);
+
+		if (isset($apiConfig['exception'])) {
+			return $this->_exceptionResponse($apiConfig['exception']);
 		}
 
-		$controller = $this->_controller();
-		$controller->set('success', $event->subject->success);
-
-		if (!$event->subject->success) {
-			$class = $this->config('exceptionClasses.validate');
-			$errors = $this->_validationErrors();
-			throw new $class($errors);
-		}
-
-		if (empty($controller->viewVars['data'])) {
-			$model = $this->_model();
-			$controller->set('data', array($model->alias => array($model->primaryKey => $event->subject->id)));
-		}
-
-		$this->beforeRender($event);
-		$response = $controller->render();
-
-		if ($event->subject->created) {
-			$response->statusCode(201);
-		} else {
-			$response->statusCode(301);
-		}
-
-		$response->header('Location', Router::url(array('action' => 'view', $event->subject->id), true));
+		$response = $this->render($event->subject);
+		$response->statusCode($apiConfig['code']);
 		return $response;
 	}
 
 /**
- * afterDelete
+ * Throw an exception based on API configuration
  *
- * @param CakeEvent $event
+ * @throws CakeException
+ * @param array $exceptionConfig
  * @return void
  */
-	public function afterDelete(CakeEvent $event) {
-		if (!$this->_request()->is('api')) {
-			return;
+	protected function _exceptionResponse($exceptionConfig) {
+		$exceptionConfig = array_merge($this->config('exception'), $exceptionConfig);
+
+		$class = $exceptionConfig['class'];
+
+		if ($exceptionConfig['type'] === 'validate') {
+			$errors = $this->_validationErrors();
+			throw new $class($errors);
 		}
 
-		$event->stopPropagation();
-
-		$this->beforeRender($event);
-
-		$controller = $this->_controller();
-		$controller->set('success', $event->subject->success);
-		$controller->set('data', null);
-
-		return $controller->render();
+		throw new $class($exceptionConfig['message'], $exceptionConfig['code']);
 	}
 
 /**
  * Selects an specific Crud view class to render the output
  *
- * @param CakeEvent $event
+ * @param CrudSubject $subject
+ * @return CakeResponse
+ */
+	public function render(CrudSubject $subject) {
+		$this->injectViewClasses();
+		$this->_ensureSuccess($subject);
+		$this->_ensureData($subject);
+		$this->_ensureSerialize();
+
+		$controller = $this->_controller();
+		$controller->RequestHandler->renderAs($controller, $controller->RequestHandler->ext);
+		return $controller->render();
+	}
+
+/**
+ * Ensure _serialize is set in the view
+ *
  * @return void
  */
-	public function beforeRender(CakeEvent $event) {
-		if (!$this->_request()->is('api')) {
+	protected function _ensureSerialize() {
+		$controller = $this->_controller();
+
+		if (isset($controller->viewVars['_serialize'])) {
 			return;
 		}
 
@@ -157,6 +200,7 @@ class ApiListener extends CrudListener {
 
 		$serialize = array();
 		$serialize[] = 'success';
+
 		if (method_exists($action, 'viewVar')) {
 			$serialize['data'] = $action->viewVar();
 		} else {
@@ -164,12 +208,101 @@ class ApiListener extends CrudListener {
 		}
 
 		$serialize = array_merge($serialize, (array)$action->config('serialize'));
-
-		$this->injectViewClasses();
-
-		$controller = $this->_controller();
 		$controller->set('_serialize', $serialize);
-		$controller->RequestHandler->renderAs($controller, $controller->RequestHandler->ext);
+	}
+
+/**
+ * Ensure success key is present in Controller::$viewVars
+ *
+ * @param CrudSubject $subject
+ * @return void
+ */
+	protected function _ensureSuccess(CrudSubject $subject) {
+		$controller = $this->_controller();
+
+		if (isset($controller->viewVars['success'])) {
+			return;
+		}
+
+		$controller->set('success', $subject->success);
+	}
+
+/**
+ * Ensure data key is present in Controller:$viewVars
+ *
+ * @param CrudSubject $subject
+ * @return void
+ */
+	protected function _ensureData(CrudSubject $subject) {
+		$controller = $this->_controller();
+
+		// Don't touch existing data properties
+		if (isset($controller->viewVars['data'])) {
+			return;
+		}
+
+		$key = $subject->success ? 'success' : 'error';
+
+		// Load configuration
+		$config = $this->_action()->config('api.' . $key);
+
+		// New, empty, data array
+		$data = array();
+
+		// If fields should be extracted from the subject
+		if (isset($config['data']['subject'])) {
+			$config['data']['subject'] = Hash::normalize((array)$config['data']['subject']);
+
+			$subjectArray = (array)$subject;
+
+			foreach ($config['data']['subject'] as $keyPath => $valuePath) {
+				if ($valuePath === null) {
+					$valuePath = $keyPath;
+				}
+
+				$keyPath = $this->_expandPath($subject, $keyPath);
+				$valuePath = $this->_expandPath($subject, $valuePath);
+
+				$data = Hash::insert($data, $keyPath, Hash::get($subjectArray, $valuePath));
+			}
+		}
+
+		// Raw (hardcoded) key/values
+		if (isset($config['data']['raw'])) {
+
+			foreach ($config['data']['raw'] as $path => $value) {
+				$path = $this->_expandPath($subject, $path);
+				$data = Hash::insert($data, $path, $value);
+			}
+
+		}
+
+		// Publish the new data
+		$controller->set('data', $data);
+	}
+
+/**
+ * Expand all scalar values from a CrudSubject
+ * and use them for a String::insert() interpolation
+ * of a path
+ *
+ * @param CrudSubject $subject
+ * @param string $path
+ * @return string
+ */
+	protected function _expandPath(CrudSubject $subject, $path) {
+		$keys = array();
+		$subjectArray = (array)$subject;
+
+		foreach (array_keys($subjectArray) as $key) {
+			if (!is_scalar($subjectArray[$key])) {
+				continue;
+			}
+
+			$keys[$key] = $subjectArray[$key];
+		}
+
+		return String::insert($path, $keys, array('before' => '{', 'after' => '}'));
 	}
 
 /**
@@ -201,7 +334,7 @@ class ApiListener extends CrudListener {
  * @return mixed
  */
 	public function viewClass($type, $class = null) {
-		if (is_null($class)) {
+		if ($class === null) {
 			return $this->config('viewClasses.' . $type);
 		}
 
@@ -216,46 +349,44 @@ class ApiListener extends CrudListener {
  * @param CakeEvent $event
  */
 	public function setFlash(CakeEvent $event) {
-		if (!$this->_request()->is('api')) {
-			return;
-		}
-
 		$event->stopPropagation();
 	}
 
 /**
- * Setup detectors for JSON and XML
+ * Setup detectors
  *
  * Both detects on two signals:
- *  1) The extension in the request (e.g. /users/index.json)
+ *  1) The extension in the request (e.g. /users/index.$ext)
  *  2) The accepts header from the client
  *
- * There is a combined request detector for both 'json' and 'xml' called
- * 'api'
+ * There is a combined request detector for all detectors called 'api'
  *
  * @return void
  */
-	protected function _setupDetectors() {
+	public function setupDetectors() {
 		$request = $this->_request();
+		$detectors = $this->config('detectors');
 
-		$request->addDetector('json', array('callback' => function(CakeRequest $request) {
-			if (isset($request->params['ext']) && $request->params['ext'] === 'json') {
-				return true;
+		foreach ($detectors as $name => $config) {
+
+			$request->addDetector($name, array('callback' => function(CakeRequest $request) use ($config) {
+				if (isset($request->params['ext']) && $request->params['ext'] === $config['ext']) {
+					return true;
+				}
+
+				return $request->accepts($config['accepts']);
+			}));
+
+		}
+
+		$request->addDetector('api', array('callback' => function(CakeRequest $request) use ($detectors) {
+			foreach ($detectors as $name => $config) {
+				if ($request->is($name)) {
+					return true;
+				}
 			}
 
-			return $request->accepts('application/json');
-		}));
-
-		$request->addDetector('xml', array('callback' => function(CakeRequest $request) {
-			if (isset($request->params['ext']) && $request->params['ext'] === 'xml') {
-				return true;
-			}
-
-			return $request->accepts('text/xml');
-		}));
-
-		$request->addDetector('api', array('callback' => function(CakeRequest $request) {
-			return $request->is('json') || $request->is('xml');
+			return false;
 		}));
 	}
 

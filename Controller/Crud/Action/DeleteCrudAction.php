@@ -29,6 +29,14 @@ class DeleteCrudAction extends CrudAction {
 			'error' => array(
 				'text' => 'Could not delete {name}'
 			)
+		),
+		'api' => array(
+			'success' => array(
+				'code' => 200
+			),
+			'error' => array(
+				'code' => 400
+			)
 		)
 	);
 
@@ -53,12 +61,6 @@ class DeleteCrudAction extends CrudAction {
 
 		$request = $this->_request();
 		$model = $this->_model();
-
-		if ($request->data('_cancel')) {
-			$subject = $this->_trigger('beforeCancel', array('id' => $id));
-			$controller = $this->_controller();
-			return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
-		}
 
 		$query = array();
 		$query['conditions'] = array($model->escapeField() => $id);

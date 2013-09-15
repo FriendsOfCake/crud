@@ -9,16 +9,16 @@ App::uses('CrudListener', 'Crud.Controller/Crud');
  * returned by providing a `fields` GET argument with a comma separated list of fields.
  *
  * For a relation automatically to be joined, it has to be whitelisted first.
- * If no whitelist exist, no relations will be added automatically
+ * If no whitelist exists, no relations will be added automatically
  * `$this->_action()->config('apiFieldFilter.models', array('list', 'of', 'models'))`
  *
- * You can also whitelist fields, if no whitelist exist for fields, all fields are allowed
- * If whitelisting exist, only those fields will be allowed to be selected.
+ * You can also whitelist fields, if no whitelist exists for fields, all fields are allowed
+ * If whitelisting exists, only those fields will be allowed to be selected.
  * The fields must be in `Model.field` format
  * `$this->_action()->config('apiFieldFilter.fields.whitelist', array('Model.id', 'Model.name', 'Model.created'))`
  *
- * You can also blacklist fields, if no blacklist exist, no blacklisting is done
- * If blacklisting exist, the field will be removed from the field list if present
+ * You can also blacklist fields, if no blacklist exists, no blacklisting is done
+ * If blacklisting exists, the field will be removed from the field list if present
  * The fields must be in `Model.field` format
  * `$this->_action()->config('apiFieldFilter.fields.blacklist', array('Model.password', 'Model.auth_token', 'Model.created'))`
  *
@@ -33,7 +33,7 @@ App::uses('CrudListener', 'Crud.Controller/Crud');
 class ApiFieldFilterListener extends CrudListener {
 
 /**
- * Returns a list of all events that will fire in the controller during it's lifecycle.
+ * Returns a list of all events that will fire in the controller during its lifecycle.
  * You can override this function to add you own listener callbacks
  *
  * We attach at priority 50 so normal bound events can run before us
@@ -77,7 +77,6 @@ class ApiFieldFilterListener extends CrudListener {
 /**
  * beforePaginate
  *
- * @codeCoverageIgnore This is exactly the same as beforeFind()
  * @param CakeEvent $event
  * @return void
  */
@@ -92,8 +91,8 @@ class ApiFieldFilterListener extends CrudListener {
 		}
 
 		$controller = $this->_controller();
-		$controller->paginate['fields'] = $fields;
-		$controller->paginate['contain'] = $this->_relations;
+		$controller->Paginator->settings['fields'] = $fields;
+		$controller->Paginator->settings['contain'] = $this->_relations;
 	}
 
 /**
@@ -225,7 +224,7 @@ class ApiFieldFilterListener extends CrudListener {
 	}
 
 /**
- * Secure a field - check that the field exist in the model
+ * Secure a field - check that the field exists in the model
  * or a closely related model
  *
  * If the field doesn't exist, it's removed from the
@@ -243,13 +242,15 @@ class ApiFieldFilterListener extends CrudListener {
 			$modelName = $model->alias;
 		}
 
-		// If the model name is the local one, check if the field exist
-		if ($modelName === $model->alias && !$model->hasField($fieldName)) {
+		$isPrimary = $modelName === $model->alias;
+
+		// If the model name is the local one, check if the field exists
+		if ($isPrimary && !$model->hasField($fieldName)) {
 			return false;
 		}
 
-		// Check associated models if the field exist there
-		if ($modelName !== $model->alias) {
+		// Check associated models if the field exists there
+		if (!$isPrimary) {
 			if (!$this->_associatedModelHasField($model, $modelName, $fieldName)) {
 				return false;
 			}
@@ -264,7 +265,7 @@ class ApiFieldFilterListener extends CrudListener {
 			return;
 		}
 
-		if ($modelName != $model->alias) {
+		if (!$isPrimary) {
 			$this->_relations[] = $modelName;
 		}
 
@@ -273,7 +274,7 @@ class ApiFieldFilterListener extends CrudListener {
 
 /**
  * Check if the associated `modelName` to the `$model`
- * exist and if it have the field in question
+ * exists and if it has the field in question
  *
  * @param Model $model
  * @param string $modelName
@@ -308,7 +309,7 @@ class ApiFieldFilterListener extends CrudListener {
 			return false;
 		}
 
-		return false !== array_search($modelName, $allowedModels);
+		return in_array($modelName, $allowedModels);
 	}
 
 /**
@@ -326,7 +327,7 @@ class ApiFieldFilterListener extends CrudListener {
 			return true;
 		}
 
-		return false !== in_array($fieldName, $allowedFields);
+		return in_array($fieldName, $allowedFields);
 	}
 
 /**
@@ -341,7 +342,7 @@ class ApiFieldFilterListener extends CrudListener {
 			return false;
 		}
 
-		return false !== in_array($fieldName, $disallowedFields);
+		return in_array($fieldName, $disallowedFields);
 	}
 
 }

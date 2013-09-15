@@ -5,7 +5,7 @@
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-abstract class CrudTestCase extends CakeTestCase {
+abstract class CrudControllerTestCase extends ControllerTestCase {
 
 /**
  * List of Reflection properties made public

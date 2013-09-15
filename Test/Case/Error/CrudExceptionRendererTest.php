@@ -35,7 +35,7 @@ class CrudExceptionRendererTest extends CakeTestCase {
 
 		$expected = array('success', 'data');
 		$actual = $viewVars['_serialize'];
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 
 		$expected = array(
 			'code' => 500,
@@ -49,7 +49,7 @@ class CrudExceptionRendererTest extends CakeTestCase {
 		);
 		$actual = $viewVars['data'];
 		unset($actual['exception']['trace']);
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 
 		$this->assertTrue(!isset($actual['queryLog']));
 
@@ -93,7 +93,7 @@ class CrudExceptionRendererTest extends CakeTestCase {
 
 		$expected = array('success', 'data');
 		$actual = $viewVars['_serialize'];
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 
 		$expected = array(
 			'code' => 500,
@@ -111,7 +111,7 @@ class CrudExceptionRendererTest extends CakeTestCase {
 
 		unset($actual['exception']['trace']);
 		unset($actual['queryLog']);
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 
 		$this->assertTrue(!empty($queryLog));
 		$this->assertTrue(isset($queryLog['test']));
@@ -159,7 +159,7 @@ class CrudExceptionRendererTest extends CakeTestCase {
 
 		$expected = array('success', 'data');
 		$actual = $viewVars['_serialize'];
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 
 		$expected = array(
 			'code' => 500,
@@ -173,7 +173,7 @@ class CrudExceptionRendererTest extends CakeTestCase {
 		);
 		$actual = $viewVars['data'];
 		unset($actual['exception']['trace']);
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 
 		$this->assertTrue(isset($viewVars['success']));
 		$this->assertFalse($viewVars['success']);
@@ -219,7 +219,7 @@ class CrudExceptionRendererTest extends CakeTestCase {
 
 		$expected = array('success', 'data');
 		$actual = $viewVars['_serialize'];
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 
 		$expected = array(
 			'code' => 500,
@@ -233,7 +233,7 @@ class CrudExceptionRendererTest extends CakeTestCase {
 		);
 		$actual = $viewVars['data'];
 		unset($actual['exception']['trace']);
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 
 		$this->assertTrue(isset($viewVars['success']));
 		$this->assertFalse($viewVars['success']);
@@ -281,7 +281,7 @@ class CrudExceptionRendererTest extends CakeTestCase {
 
 		$expected = array('success', 'data');
 		$actual = $viewVars['_serialize'];
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 
 		$expected = array(
 			'code' => 500,
@@ -295,7 +295,7 @@ class CrudExceptionRendererTest extends CakeTestCase {
 		);
 		$actual = $viewVars['data'];
 		unset($actual['exception']['trace']);
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 
 		$this->assertTrue(isset($viewVars['success']));
 		$this->assertFalse($viewVars['success']);
@@ -367,7 +367,7 @@ class CrudExceptionRendererTest extends CakeTestCase {
 				'message' => 'Alias.field : boom'
 			)
 		);
-		$this->assertEqual($expected, $Controller->viewVars['data']);
+		$this->assertEquals($expected, $Controller->viewVars['data']);
 	}
 
 	public function testValidationErrorSingleKnownErrorWithCode() {
@@ -425,7 +425,7 @@ class CrudExceptionRendererTest extends CakeTestCase {
 				'message' => 'Alias.field : boom'
 			)
 		);
-		$this->assertEqual($expected, $Controller->viewVars['data']);
+		$this->assertEquals($expected, $Controller->viewVars['data']);
 	}
 
 	public function testValidationErrorMultipleMessages() {
@@ -477,7 +477,7 @@ class CrudExceptionRendererTest extends CakeTestCase {
 				'message' => '2 validation errors occurred',
 			)
 		);
-		$this->assertEqual($expected, $Controller->viewVars['data']);
+		$this->assertEquals($expected, $Controller->viewVars['data']);
 	}
 
 	public function testValidationErrorUnknownModel() {
@@ -523,6 +523,6 @@ class CrudExceptionRendererTest extends CakeTestCase {
 				'message' => 'A validation error occurred',
 			)
 		);
-		$this->assertEqual($expected, $Controller->viewVars['data']);
+		$this->assertEquals($expected, $Controller->viewVars['data']);
 	}
 }

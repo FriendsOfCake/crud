@@ -308,6 +308,46 @@ class CrudActionTest extends CrudTestCase {
 	}
 
 /**
+ * Test that getting the saveMethod will execute config()
+ *
+ * @covers CrudAction::saveMethod
+ * @return void
+ */
+	public function testSaveMethodGet() {
+		$Action = $this
+			->getMockBuilder('CrudAction')
+			->setMethods(array('config', '_handle'))
+			->setConstructorArgs(array($this->Subject))
+			->getMock();
+		$Action
+			->expects($this->once())
+			->method('config')
+			->with('saveMethod');
+
+		$Action->saveMethod();
+	}
+
+/**
+ * Test that setting the saveMethod will execute config()
+ *
+ * @covers CrudAction::saveMethod
+ * @return void
+ */
+	public function testSaveMethodSet() {
+		$Action = $this
+			->getMockBuilder('CrudAction')
+			->setMethods(array('config', '_handle'))
+			->setConstructorArgs(array($this->Subject))
+			->getMock();
+		$Action
+			->expects($this->once())
+			->method('config')
+			->with('saveMethod', 'my_first');
+
+		$Action->saveMethod('my_first');
+	}
+
+/**
  * Test that getting the saveOptions will execute config()
  *
  * @covers CrudAction::saveOptions
@@ -491,7 +531,7 @@ class CrudActionTest extends CrudTestCase {
 			'atomic' => true
 		);
 		$actual = $CrudAction->config('saveOptions');
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 
 		$CrudAction->config('saveOptions.atomic', true);
 		$expected = array(
@@ -499,7 +539,7 @@ class CrudActionTest extends CrudTestCase {
 			'atomic' => true
 		);
 		$actual = $CrudAction->config('saveOptions');
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 
 		$CrudAction->config('saveOptions', array(
 			'fieldList' => array('hello')
@@ -510,7 +550,7 @@ class CrudActionTest extends CrudTestCase {
 			'fieldList' => array('hello')
 		);
 		$actual = $CrudAction->config('saveOptions');
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 	}
 
 /**
@@ -523,12 +563,12 @@ class CrudActionTest extends CrudTestCase {
 	public function testGetSaveAllOptionsCustomAction() {
 		$expected = array('validate' => 'first', 'atomic' => true);
 		$actual = $this->ActionClass->saveOptions();
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 
 		$this->ActionClass->saveOptions(array('atomic' => false));
 		$expected = array('validate' => 'first', 'atomic' => false);
 		$actual = $this->ActionClass->saveOptions();
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 	}
 
 /**
@@ -585,7 +625,7 @@ class CrudActionTest extends CrudTestCase {
 			'text' => 'Simple message'
 		);
 		$actual = $this->ActionClass->message('simple');
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 	}
 
 /**
@@ -610,7 +650,7 @@ class CrudActionTest extends CrudTestCase {
 			'text' => 'Overridden message'
 		);
 		$actual = $this->ActionClass->message('simple');
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 	}
 
 /**
@@ -634,7 +674,7 @@ class CrudActionTest extends CrudTestCase {
 			'text' => 'Simple message'
 		);
 		$actual = $this->ActionClass->message('simple');
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 	}
 
 /**
@@ -658,7 +698,7 @@ class CrudActionTest extends CrudTestCase {
 			'text' => 'Simple message with id "123"'
 		);
 		$actual = $this->ActionClass->message('simple', array('id' => 123));
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 	}
 
 /**
@@ -682,7 +722,7 @@ class CrudActionTest extends CrudTestCase {
 			'text' => 'Invalid id'
 		);
 		$actual = $this->ActionClass->message('invalidId');
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 	}
 
 /**
@@ -706,7 +746,7 @@ class CrudActionTest extends CrudTestCase {
 			'text' => 'Not found'
 		);
 		$actual = $this->ActionClass->message('recordNotFound');
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 	}
 
 /**
@@ -730,7 +770,7 @@ class CrudActionTest extends CrudTestCase {
 			'text' => 'Method not allowed. This action permits only THESE ONES'
 		);
 		$actual = $this->ActionClass->message('badRequestMethod', array('methods' => 'THESE ONES'));
-		$this->assertEqual($expected, $actual);
+		$this->assertEquals($expected, $actual);
 	}
 
 /**
@@ -875,6 +915,75 @@ class CrudActionTest extends CrudTestCase {
 			->will($this->returnValue($Request));
 
 		$Action->handle(new CrudSubject(array('args' => array())));
+	}
+
+/**
+ * testValidateIdFalse
+ *
+ * If validateId is false - don't do squat
+ *
+ * @return void
+ */
+	public function testValidateIdFalse() {
+		$Action = $this
+			->getMockBuilder('CrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array('config', 'detectPrimaryKeyFieldType'))
+			->getMock();
+
+		$Action
+			->expects($this->once())
+			->method('config')
+			->with('validateId')
+			->will($this->returnValue(false));
+		$Action
+			->expects($this->never())
+			->method('detectPrimaryKeyFieldType');
+
+		$this->setReflectionClassInstance($Action);
+		$return = $this->callProtectedMethod('_validateId', array('some id'), $Action);
+
+		$this->assertTrue($return, 'If validateId is false the check should be skipped');
+	}
+
+/**
+ * Test that getting the saveMethod will execute config()
+ *
+ * @covers CrudAction::relatedModels
+ * @return void
+ */
+	public function testRelatedModelsGet() {
+		$Action = $this
+			->getMockBuilder('CrudAction')
+			->setMethods(array('config'))
+			->setConstructorArgs(array($this->Subject))
+			->getMock();
+		$Action
+			->expects($this->once())
+			->method('config')
+			->with('relatedModels');
+
+		$Action->relatedModels();
+	}
+
+/**
+ * Test that setting the saveMethod will execute config()
+ *
+ * @covers CrudAction::relatedModels
+ * @return void
+ */
+	public function testRelatedModelsSet() {
+		$Action = $this
+			->getMockBuilder('CrudAction')
+			->setMethods(array('config'))
+			->setConstructorArgs(array($this->Subject))
+			->getMock();
+		$Action
+			->expects($this->once())
+			->method('config')
+			->with('relatedModels', 'Tag', false);
+
+		$Action->relatedModels('Tag');
 	}
 
 }

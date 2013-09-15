@@ -9,6 +9,8 @@ App::uses('CakeEventManager', 'Event');
 App::uses('ComponentCollection', 'Controller');
 App::uses('Component', 'Controller');
 App::uses('CrudComponent', 'Crud.Controller/Component');
+App::uses('CrudListener', 'Crud.Controller/Crud');
+App::uses('CrudControllerTestCase', 'Crud.Test/Support');
 
 App::uses('Model', 'Model');
 
@@ -99,7 +101,7 @@ class CrudExamplesController extends Controller {
  * @return void
  */
 	public function add() {
-		return $this->Crud->executeAction();
+		return $this->Crud->execute();
 	}
 
 /**
@@ -108,7 +110,7 @@ class CrudExamplesController extends Controller {
  * @return void
  */
 	public function search() {
-		return $this->Crud->executeAction('index');
+		return $this->Crud->execute('index');
 	}
 
 /**
@@ -117,7 +119,7 @@ class CrudExamplesController extends Controller {
  * @return void
  */
 	public function index() {
-		return $this->Crud->executeAction('index');
+		return $this->Crud->execute('index');
 	}
 
 }
@@ -152,10 +154,19 @@ class TestCrudComponent extends CrudComponent {
 
 }
 
+class TestListener extends CrudListener {
+
+	public $callCount = 0;
+
+	public function setup() {
+		$this->callCount += 1;
+	}
+}
+
 /**
  * CrudComponentTestCase
  */
-class CrudComponentTest extends ControllerTestCase {
+class CrudComponentTest extends CrudControllerTestCase {
 
 /**
  * fixtures
@@ -256,7 +267,13 @@ class CrudComponentTest extends ControllerTestCase {
 				'Mylistener' => 'MyPlugin.Mylistener'
 			)
 		);
-		$Crud = new CrudComponent($Collection, $settings);
+		$Crud = $this->getMock('CrudComponent', array('_loadListeners', 'trigger'), array($Collection, $settings));
+		$Crud
+			->expects($this->once())
+			->method('_loadListeners');
+		$Crud
+			->expects($this->once())
+			->method('trigger');
 		$Crud->initialize($this->controller);
 
 		$expected = array(
@@ -275,6 +292,23 @@ class CrudComponentTest extends ControllerTestCase {
 			'RelatedModels' => array('className' => 'Crud.RelatedModels'),
 		);
 		$this->assertEquals($expected, $Crud->settings['listeners']);
+	}
+
+/**
+ * Test deprecated `executeAction` calls `execute` correctly
+ *
+ */
+	public function testExecuteActionToExecute() {
+		$Collection = $this->getMock('ComponentCollection');
+		$settings = array('actions' => array('index'));
+
+		$Crud = $this->getMock('CrudComponent', array('execute'), array($Collection, $settings));
+		$Crud
+			->expects($this->once())
+			->method('execute')
+			->with('index', array('foo' => 'bar'));
+
+		$Crud->executeAction('index', array('foo' => 'bar'));
 	}
 
 /**
@@ -340,7 +374,7 @@ class CrudComponentTest extends ControllerTestCase {
 			->method('render');
 
 		$this->Crud->view('view', 'cupcakes');
-		$this->Crud->executeAction('view', array(1));
+		$this->Crud->execute('view', array(1));
 	}
 
 /**
@@ -424,7 +458,7 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testCrudWillComplainAboutUnmappedAction() {
-		$this->Crud->executeAction('show_all');
+		$this->Crud->execute('show_all');
 	}
 
 /**
@@ -451,7 +485,7 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->Crud->mapAction('show_all', 'index');
 		$this->Crud->view(array('show_all' => 'index', 'index' => 'overview'));
 
-		$this->Crud->executeAction('show_all');
+		$this->Crud->execute('show_all');
 	}
 
 /**
@@ -473,7 +507,7 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->Crud->mapAction('show_all', 'index');
 		$this->Crud->view(array('show_all' => 'index', 'index' => 'overview'));
 
-		$this->Crud->executeAction('index');
+		$this->Crud->execute('index');
 	}
 
 /**
@@ -486,37 +520,6 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->Crud->setAction('index');
 		$this->Crud->setModelProperties();
 		$this->assertSame('CrudExample', $this->Crud->getModelName());
-	}
-
-/**
- * Test that having mapped a custom model for an action,
- * the modelName will be as configured
- *
- * @return void
- */
-	public function testSetModelPropertiesChangeModelForAction() {
-		$this->controller->Donkey = new StdClass;
-
-		$this->Crud->setAction('index');
-		$this->Crud->config('modelMap.index', 'Donkey');
-		$this->Crud->setModelProperties();
-
-		$this->assertSame('Donkey', $this->Crud->getModelName());
-	}
-
-/**
- * Test that having mapped a custom model for an action,
- * but the custom model isn't loaded, will throw an exception
- *
- * @expectedException CakeException
- * @expectedExceptionMessage No model loaded in the Controller by the name "Donkey". Please add it to $uses.
- */
-	public function testSetModelPropertiesChangeModelForActionNotLoadedModel() {
-		$this->Crud->setAction('index');
-		$this->Crud->config('modelMap.index', 'Donkey');
-		$this->Crud->setModelProperties();
-
-		$this->assertSame('Donkey', $this->Crud->getModelName());
 	}
 
 /**
@@ -598,7 +601,7 @@ class CrudComponentTest extends ControllerTestCase {
 
 /**
  * Test that having a 'search' action in the controller
- * and calling ->executeAction('index') will still
+ * and calling ->execute('index') will still
  * render the 'search' view
  *
  * @return void
@@ -653,7 +656,8 @@ class CrudComponentTest extends ControllerTestCase {
 					'class' => 'MethodNotAllowedException',
 					'text' => 'Method not allowed. This action permits only {methods}'
 				)
-			)
+			),
+			'eventLogging' => false
 		);
 		$this->assertEquals($expected, $result);
 	}
@@ -700,7 +704,8 @@ class CrudComponentTest extends ControllerTestCase {
 					'class' => 'MethodNotAllowedException',
 					'text' => 'Method not allowed. This action permits only {methods}'
 				)
-			)
+			),
+			'eventLogging' => false
 		);
 		$this->assertEquals($expected, $result);
 	}
@@ -745,7 +750,8 @@ class CrudComponentTest extends ControllerTestCase {
 					'class' => 'MethodNotAllowedException',
 					'text' => 'Method not allowed. This action permits only {methods}'
 				)
-			)
+			),
+			'eventLogging' => false
 		);
 		$this->assertEquals($expected, $result);
 	}
@@ -762,7 +768,7 @@ class CrudComponentTest extends ControllerTestCase {
 			'RelatedModels' => array('className' => 'Crud.RelatedModels')
 		);
 
-		$this->assertEquals($listeners, $expected);
+		$this->assertEquals($expected, $listeners);
 
 		$this->Crud->addListener('Api', 'Crud.Api');
 
@@ -771,7 +777,7 @@ class CrudComponentTest extends ControllerTestCase {
 			'RelatedModels' => array('className' => 'Crud.RelatedModels'),
 			'Api' => array('className' => 'Crud.Api')
 		);
-		$this->assertEquals($listeners, $expected);
+		$this->assertEquals($expected, $listeners);
 
 		$this->assertEquals(array('className' => 'Crud.Api'), $this->Crud->defaults('listeners', 'Api'));
 	}
@@ -788,7 +794,7 @@ class CrudComponentTest extends ControllerTestCase {
 			'RelatedModels' => array('className' => 'Crud.RelatedModels')
 		);
 
-		$this->assertEquals($listeners, $expected);
+		$this->assertEquals($expected, $listeners);
 
 		$this->Crud->addListener('Api', 'Crud.Api', array('test' => 1));
 
@@ -797,7 +803,7 @@ class CrudComponentTest extends ControllerTestCase {
 			'RelatedModels' => array('className' => 'Crud.RelatedModels'),
 			'Api' => array('className' => 'Crud.Api', 'test' => 1)
 		);
-		$this->assertEquals($listeners, $expected);
+		$this->assertEquals($expected, $listeners);
 
 		$this->assertEquals(
 			array('className' => 'Crud.Api', 'test' => 1),
@@ -816,13 +822,13 @@ class CrudComponentTest extends ControllerTestCase {
 			'RelatedModels' => array('className' => 'Crud.RelatedModels')
 		);
 
-		$this->assertEquals($listeners, $expected);
+		$this->assertEquals($expected, $listeners);
 
 		$this->Crud->removeListener('RelatedModels');
 
 		$listeners = $this->Crud->config('listeners');
 		$expected = array();
-		$this->assertEquals($listeners, $expected);
+		$this->assertEquals($expected, $listeners);
 
 		// Should now throw an exception
 		$this->setExpectedException('CakeException', 'Listener "relatedModels" is not configured');
@@ -838,7 +844,7 @@ class CrudComponentTest extends ControllerTestCase {
 	public function testRemoveListenerNoExist() {
 		$expected = false;
 		$result = $this->Crud->removeListener('invalid_name');
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -853,7 +859,7 @@ class CrudComponentTest extends ControllerTestCase {
 		$expected = array(
 			'RelatedModels' => array('className' => 'Crud.RelatedModels')
 		);
-		$this->assertEquals($listeners, $expected);
+		$this->assertEquals($expected, $listeners);
 
 		// Make sure the listener is attached
 		$this->Crud->listener('RelatedModels');
@@ -863,7 +869,7 @@ class CrudComponentTest extends ControllerTestCase {
 
 		$listeners = $this->Crud->config('listeners');
 		$expected = array();
-		$this->assertEquals($listeners, $expected);
+		$this->assertEquals($expected, $listeners);
 
 		// Should now throw an exception
 		$this->setExpectedException('CakeException', 'Listener "RelatedModels" is not configured');
@@ -880,7 +886,7 @@ class CrudComponentTest extends ControllerTestCase {
 
 		$expected = 'my_var';
 		$result = $this->Crud->action('index')->viewVar();
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -893,11 +899,11 @@ class CrudComponentTest extends ControllerTestCase {
 
 		$expected = 'my_var';
 		$result = $this->Crud->action('index')->viewVar();
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 
 		$expected = 'view_var';
 		$result = $this->Crud->action('view')->viewVar();
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -910,11 +916,11 @@ class CrudComponentTest extends ControllerTestCase {
 
 		$expected = 'my_all';
 		$result = $this->Crud->action('index')->findMethod();
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 
 		$expected = 'my_view';
 		$result = $this->Crud->action('view')->findMethod();
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -926,7 +932,7 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->Crud->defaults('actions', 'index', array('unit_test' => true));
 		$config = $this->Crud->defaults('actions', 'index');
 
-		$this->assertEqual($config['unit_test'], true);
+		$this->assertTrue($config['unit_test']);
 	}
 
 /**
@@ -938,10 +944,10 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->Crud->defaults('actions', array('index', 'view'), array('unit_test' => true));
 
 		$config = $this->Crud->defaults('actions', 'index');
-		$this->assertEqual($config['unit_test'], true);
+		$this->assertTrue($config['unit_test']);
 
 		$config = $this->Crud->defaults('actions', 'view');
-		$this->assertEqual($config['unit_test'], true);
+		$this->assertTrue($config['unit_test']);
 	}
 
 /**
@@ -953,7 +959,7 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->Crud->defaults('listeners', 'translations', array('unit_test' => true));
 		$config = $this->Crud->defaults('listeners', 'translations');
 
-		$this->assertEqual($config['unit_test'], true);
+		$this->assertTrue($config['unit_test']);
 	}
 
 /**
@@ -965,10 +971,10 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->Crud->defaults('listeners', array('translations', 'relatedModels'), array('unit_test' => true));
 
 		$config = $this->Crud->defaults('listeners', 'translations');
-		$this->assertEqual($config['unit_test'], true);
+		$this->assertTrue($config['unit_test']);
 
 		$config = $this->Crud->defaults('listeners', 'relatedModels');
-		$this->assertEqual($config['unit_test'], true);
+		$this->assertTrue($config['unit_test']);
 	}
 
 /**
@@ -981,7 +987,7 @@ class CrudComponentTest extends ControllerTestCase {
 	public function testDefaultsListenerNotAlreadyLoaded() {
 		$this->Crud->defaults('listeners', 'api', array('unit_test' => true));
 		$config = $this->Crud->defaults('listeners', 'api');
-		$this->assertEqual($config['unit_test'], true);
+		$this->assertTrue($config['unit_test']);
 	}
 
 /**
@@ -994,7 +1000,7 @@ class CrudComponentTest extends ControllerTestCase {
 	public function testAddListenerOnlyNameNoClassName() {
 		$this->Crud->addListener('api');
 		$config = $this->Crud->config('listeners');
-		$this->assertEqual($config['api'], array('className' => 'Crud.Api'));
+		$this->assertEquals(array('className' => 'Crud.Api'), $config['api']);
 	}
 
 /**
@@ -1010,7 +1016,7 @@ class CrudComponentTest extends ControllerTestCase {
 	public function testAddListenerOnlyNameClassName() {
 		$this->Crud->addListener('api', 'Api');
 		$config = $this->Crud->config('listeners');
-		$this->assertEqual($config['api'], array('className' => 'Api'));
+		$this->assertEquals(array('className' => 'Api'), $config['api']);
 	}
 
 /**
@@ -1022,7 +1028,7 @@ class CrudComponentTest extends ControllerTestCase {
 	public function testAddListenerOnlyNameWithPlugin() {
 		$this->Crud->addListener('MyPlugin.Api');
 		$config = $this->Crud->config('listeners');
-		$this->assertEqual($config['api'], array('className' => 'MyPlugin.Api'));
+		$this->assertEquals(array('className' => 'MyPlugin.Api'), $config['api']);
 	}
 
 /**
@@ -1034,7 +1040,7 @@ class CrudComponentTest extends ControllerTestCase {
 	public function testAddListenerOnlyNameWithPluginLowercase() {
 		$this->Crud->addListener('MyPlugin.api');
 		$config = $this->Crud->config('listeners');
-		$this->assertEqual($config['api'], array('className' => 'MyPlugin.Api'));
+		$this->assertEquals(array('className' => 'MyPlugin.Api'), $config['api']);
 	}
 
 /**
@@ -1048,7 +1054,7 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->Crud = new CrudComponent($this->Collection, array('actions' => array('index')));
 		$this->Crud->initialize($controller);
 		$this->controller->Crud = $this->Crud;
-		$this->Crud->initAction('index');
+		$this->Crud->action('index');
 		$subject = $this->Crud->trigger('sample');
 
 		$this->assertNull($subject->model);
@@ -1071,7 +1077,97 @@ class CrudComponentTest extends ControllerTestCase {
 			'text' => 'Invalid id'
 		);
 		$result = $this->Crud->config('messages.invalidId');
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
+/**
+ * Using $key and value, and specifying no merge should overwrite the value keys
+ *
+ * @return void
+ */
+	public function testConfigOverwrite() {
+		$this->Crud->config('messages', array('invalidId' => array('code' => 500)), null, false);
+
+		$expected = array(
+			'domain' => 'crud',
+			'invalidId' => array(
+				'code' => 500
+			),
+			'recordNotFound' => array(
+				'code' => 404,
+				'class' => 'NotFoundException',
+				'text' => 'Not found'
+			),
+			'badRequestMethod' => array(
+				'code' => 405,
+				'class' => 'MethodNotAllowedException',
+				'text' => 'Method not allowed. This action permits only {methods}'
+			)
+		);
+		$result = $this->Crud->config('messages');
+		$this->assertEquals($expected, $result);
+	}
+/**
+ * Passing an array, and specifying no merge should overwrite the value keys
+ *
+ * @return void
+ */
+	public function testConfigOverwriteArray() {
+		$this->Crud->config(array('messages' => array('invalidId' => array('code' => 500))), null, false);
+
+		$expected = array(
+			'domain' => 'crud',
+			'invalidId' => array(
+				'code' => 500,
+				'class' => 'BadRequestException',
+				'text' => 'Invalid id'
+			),
+			'recordNotFound' => array(
+				'code' => 404,
+				'class' => 'NotFoundException',
+				'text' => 'Not found'
+			),
+			'badRequestMethod' => array(
+				'code' => 405,
+				'class' => 'MethodNotAllowedException',
+				'text' => 'Method not allowed. This action permits only {methods}'
+			)
+		);
+		$result = $this->Crud->config('messages');
+		$this->assertEquals($expected, $result);
+	}
+
+/**
+ * Tests that is possible to set the model class to use for the action
+ *
+ * @return void
+ */
+	public function testUseModel() {
+		$controller = new Controller(new CakeRequest());
+		$this->Crud = new CrudComponent($this->Collection, array('actions' => array('index')));
+		$this->Crud->initialize($controller);
+		$this->controller->Crud = $this->Crud;
+		$class = $this->getMockClass('Model');
+		$this->Crud->useModel($class);
+		$this->Crud->action('index');
+		$subject = $this->Crud->trigger('sample');
+
+		$this->assertInstanceOf($class, $subject->model);
+		$this->assertEquals($class, $subject->modelClass);
+	}
+
+/**
+ * test_loadListener
+ *
+ * @return void
+ */
+	public function test_loadListener() {
+		$this->Crud->config('listeners.HasSetup', array(
+			'className' => 'Test'
+		));
+
+		$this->setReflectionClassInstance($this->Crud);
+		$listener = $this->callProtectedMethod('_loadListener', array('HasSetup'), $this->Crud);
+		$this->assertSame(1, $listener->callCount, 'Setup should be called');
+	}
 }

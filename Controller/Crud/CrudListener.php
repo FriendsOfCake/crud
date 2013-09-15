@@ -7,28 +7,32 @@ App::uses('CrudBaseObject', 'Crud.Controller/Crud');
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
+ *
+ * @codeCoverageIgnore
  */
 abstract class CrudListener extends CrudBaseObject {
 
 /**
- * Returns a list of all events that will fire in the controller during it's life cycle.
- * You can override this function to add you own listener callbacks
+ * Returns a list of all events that will fire in the controller during its life cycle.
+ * You can override this function to add you own listener callbacks.
  *
- * - initialize : Called before Controller::beforeFilter
- * - startup: Called after the Controller::beforeFilter() and before the Crud action is invoked
+ * - initialize: Called at the same time as CrudComponent::initialize()
+ * - startup: Called at the same time as CrudComponent::startup()
+ * - beforeHandle : Called before CrudAction is executed
  * - recordNotFound : Called if a find() did not return any records
  * - beforePaginate : Called right before any paginate() method
  * - afterPaginate : Called right after any paginate() method
  * - invalidId : Called if the ID format validation failed
- * - setFlash : Called before any CakeSession::setFlash
+ * - setFlash : Called before any CakeSession::setFlash()
  *
- * @codeCoverageIgnore
  * @return array
  */
 	public function implementedEvents() {
 		$eventMap = array(
 			'Crud.initialize' => 'initialize',
 			'Crud.startup' => 'startup',
+
+			'Crud.beforeHandle' => 'beforeHandle',
 
 			'Crud.beforePaginate' => 'beforePaginate',
 			'Crud.afterPaginate' => 'afterPaginate',
@@ -48,8 +52,6 @@ abstract class CrudListener extends CrudBaseObject {
 
 			'Crud.beforeDelete' => 'beforeDelete',
 			'Crud.afterDelete' => 'afterDelete',
-
-			'Crud.beforeCancel' => 'beforeCancel',
 		);
 
 		$events = array();

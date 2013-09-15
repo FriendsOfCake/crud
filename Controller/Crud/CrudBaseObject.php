@@ -49,7 +49,7 @@ abstract class CrudBaseObject extends Object implements CakeEventListener {
  * @param CakeEvent $event
  * @return void
  */
-	public function initialize(CakeEvent $event) {
+	public function beforeHandle(CakeEvent $event) {
 		$this->_container = $event->subject;
 	}
 
@@ -78,11 +78,11 @@ abstract class CrudBaseObject extends Object implements CakeEventListener {
  * @return mixed|CrudAction
  */
 	public function config($key = null, $value = null, $merge = true) {
-		if (is_null($key) && is_null($value)) {
+		if ($key === null && $value === null) {
 			return $this->_settings;
 		}
 
-		if (is_null($value)) {
+		if ($value === null) {
 			if (is_array($key)) {
 				if ($merge) {
 					$this->_settings = Hash::merge($this->_settings, $key);

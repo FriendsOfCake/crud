@@ -10,7 +10,7 @@ trait CrudControllerTrait {
 
 /**
  * List of components that are capable of dispatching an action that is
- * not already implement
+ * not already implemented
  *
  * @var string
  */
@@ -46,13 +46,13 @@ trait CrudControllerTrait {
 						continue;
 					}
 
-					// Skip if executeAction isn't defined in the Component
-					if (!method_exists($this->{$component}, 'executeAction')) {
+					// Skip if execute isn't defined in the Component
+					if (!method_exists($this->{$component}, 'execute')) {
 						continue;
 					}
 
 					// Execute the callback, should return CakeResponse object
-					return $this->{$component}->executeAction();
+					return $this->{$component}->execute();
 				}
 			}
 

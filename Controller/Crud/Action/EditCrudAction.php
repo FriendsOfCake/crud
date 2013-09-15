@@ -25,9 +25,9 @@ class EditCrudAction extends CrudAction {
  * of model associations to be fetched
  *
  * `validateId` ID Argument validation - by default it will inspect your model's primary key
- * and based on it's data type either use integer or uuid validation.
+ * and based on its data type either use integer or uuid validation.
  * Can be disabled by setting it to "false". Supports "integer" and "uuid" configuration
- * By default it's configuration is NULL, which means "auto detect"
+ * By default its configuration is NULL, which means "auto detect"
  *
  * `saveOptions` Raw array passed as 2nd argument to saveAll() in `add` and `edit` method
  * If you configure a key with your action name, it will override the default settings.
@@ -38,6 +38,7 @@ class EditCrudAction extends CrudAction {
 	protected $_settings = array(
 		'enabled' => true,
 		'findMethod' => 'first',
+		'saveMethod' => 'saveAssociated',
 		'view' => null,
 		'relatedModels' => true,
 		'validateId' => null,
@@ -51,6 +52,18 @@ class EditCrudAction extends CrudAction {
 			),
 			'error' => array(
 				'text' => 'Could not update {name}'
+			)
+		),
+		'api' => array(
+			'methods' => array('put', 'post'),
+			'success' => array(
+				'code' => 200
+			),
+			'error' => array(
+				'exception' => array(
+					'type' => 'validate',
+					'class' => 'CrudValidationException'
+				)
 			)
 		),
 		'serialize' => array()
@@ -78,19 +91,9 @@ class EditCrudAction extends CrudAction {
 		$request = $this->_request();
 		$model = $this->_model();
 
-		$query = array();
-		$query['conditions'] = array($model->escapeField() => $id);
-		$findMethod = $this->_getFindMethod('first');
-		$subject = $this->_trigger('beforeFind', compact('query', 'findMethod'));
-		$query = $subject->query;
-
-		$request->data = $model->find($subject->findMethod, $query);
+		$request->data = $this->_findRecord($id);
 		if (empty($request->data)) {
-			$subject = $this->_trigger('recordNotFound', compact('id'));
-
-			$message = $this->message('recordNotFound', array('id' => $id));
-			$exceptionClass = $message['class'];
-			throw new $exceptionClass($message['text'], $message['code']);
+			return $this->_notFound($id);
 		}
 
 		$item = $request->data;
@@ -114,14 +117,15 @@ class EditCrudAction extends CrudAction {
 		$request = $this->_request();
 		$model = $this->_model();
 
-		if ($request->data('_cancel')) {
-			$subject = $this->_trigger('beforeCancel', array('id' => $id));
-			$controller = $this->_controller();
-			return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
+		$existing = $this->_findRecord($id, 'count');
+		if (empty($existing)) {
+			return $this->_notFound($id);
 		}
 
+		$request->data = $this->_injectPrimaryKey($request->data, $id, $model);
+
 		$this->_trigger('beforeSave', compact('id'));
-		if ($model->saveAll($request->data, $this->saveOptions())) {
+		if (call_user_func(array($model, $this->saveMethod()), $request->data, $this->saveOptions())) {
 			$this->setFlash('success');
 			$subject = $this->_trigger('afterSave', array('id' => $id, 'success' => true, 'created' => false));
 
@@ -133,12 +137,47 @@ class EditCrudAction extends CrudAction {
 
 			$controller = $this->_controller();
 			return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
-		} else {
-			$this->setFlash('error');
-			$this->_trigger('afterSave', array('id' => $id, 'success' => false, 'created' => false));
 		}
 
-		$this->_trigger('beforeRender');
+		$this->setFlash('error');
+		$subject = $this->_trigger('afterSave', array('id' => $id, 'success' => false, 'created' => false));
+		$this->_trigger('beforeRender', $subject);
+	}
+
+/**
+ * Find a record from the ID
+ *
+ * @param string $id
+ * @param string $findMethod
+ * @return array
+ */
+	protected function _findRecord($id, $findMethod = null) {
+		$model = $this->_model();
+
+		$query = array();
+		$query['conditions'] = array($model->escapeField() => $id);
+
+		if (!$findMethod) {
+			$findMethod = $this->_getFindMethod($findMethod);
+		}
+		$subject = $this->_trigger('beforeFind', compact('query', 'findMethod'));
+
+		return $model->find($subject->findMethod, $subject->query);
+	}
+
+/**
+ * Throw exception if a record is not found
+ *
+ * @throws Exception
+ * @param string $id
+ * @return void
+ */
+	protected function _notFound($id) {
+		$this->_trigger('recordNotFound', compact('id'));
+
+		$message = $this->message('recordNotFound', compact('id'));
+		$exceptionClass = $message['class'];
+		throw new $exceptionClass($message['text'], $message['code']);
 	}
 
 /**
@@ -151,6 +190,100 @@ class EditCrudAction extends CrudAction {
  */
 	protected function _post($id = null) {
 		return $this->_put($id);
+	}
+
+/**
+ * Inject the id (from the url) into the data to be saved.
+ *
+ * Determine what the format of the data is there are two formats accepted by cake:
+ *
+ *     array(
+ *         'Model' => array('stuff' => 'here')
+ *     );
+ *
+ * and
+ *
+ *     array('stuff' => 'here')
+ *
+ * The latter is most appropriate for api calls.
+ *
+ * If either the first array key is Capitalized, or the model alias is present in the form data,
+ * The id will be injected under the model-alias key:
+ *
+ *     array(
+ *         'Model' => array('stuff' => 'here', 'id' => $id)
+ *     );
+ *
+ *     // HABTM example
+ *     array(
+ *         'Category' => array('Category' => array(123)),
+ *         'Model' => array('id' => $id) // <- added
+ *     );
+ *
+ * If the model-alias key is absent AND the first array key is not capitalized, inject in the root:
+ *
+ *     array('stuff' => 'here', 'id' => $id)
+ *
+ *
+ * @param array $data
+ * @param mixed $id
+ * @param Model $model
+ * @return array
+ */
+	protected function _injectPrimaryKey($data, $id, $model) {
+		$key = key($data);
+		$keyIsModelAlias = (strtoupper($key[0]) === $key[0]);
+
+		if (isset($data[$model->alias]) || $keyIsModelAlias) {
+			$data[$model->alias][$model->primaryKey] = $id;
+		} else {
+			$data[$model->primaryKey] = $id;
+		}
+
+		return $data;
+	}
+
+/**
+ * Is the passed ID valid ?
+ *
+ * Validate the id in the url (the parent function) and then validate the id in the data.
+ *
+ * The data-id check is independent of the config setting `validateId` this checks whether
+ * The id in the url matches the id in the submitted data (a type insensitive check). If
+ * The id is different, this probably indicates a malicious form submission, attempting
+ * to add/edit a record the user doesn't have permission for by submitting to a url they
+ * do have permission to access
+ *
+ * @param mixed $id
+ * @return boolean
+ * @throws BadRequestException If id is invalid
+ */
+	protected function _validateId($id) {
+		parent::_validateId($id);
+
+		$request = $this->_request();
+		if (!$request->data) {
+			return true;
+		}
+
+		$dataId = null;
+		$model = $this->_model();
+
+		$dataId = $request->data($model->alias . '.' . $model->primaryKey) ?: $request->data($model->primaryKey);
+		if ($dataId === null) {
+			return true;
+		}
+
+		// deliberately type insensitive
+		if ($dataId == $id) {
+			return true;
+		}
+
+		$this->_trigger('invalidId', array('id' => $dataId));
+
+		$message = $this->message('invalidId');
+		$exceptionClass = $message['class'];
+		throw new $exceptionClass($message['text'], $message['code']);
 	}
 
 }

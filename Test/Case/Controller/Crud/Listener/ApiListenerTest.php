@@ -9,18 +9,20 @@ App::uses('CrudComponent', 'Crud.Controller/Component');
 App::uses('ApiListener', 'Crud.Controller/Crud/Listener');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
 App::uses('IndexCrudAction', 'Crud.Controller/Crud/Action');
+App::uses('CrudTestCase', 'Crud.Test/Support');
 
 /**
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class ApiListenerTest extends CakeTestCase {
+class ApiListenerTest extends CrudTestCase {
 
 	protected $_config;
 
 	public function setUp() {
 		parent::setUp();
+
 		$this->_config = Configure::read();
 	}
 
@@ -30,457 +32,901 @@ class ApiListenerTest extends CakeTestCase {
 		CakePlugin::unload('TestPlugin');
 	}
 
-	public function testInitNotIsAPi() {
-		$subject = $this->getMock('CrudSubject');
-		$subject->request = $this->getMock('CakeRequest', array('accepts'));
-		$subject->response = $this->getMock('CakeResponse');
-		$apiListener = new ApiListener($subject);
+/**
+ * testBeforeHandle
+ *
+ * @return void
+ */
+	public function testBeforeHandle() {
+		$listener = $this
+			->getMockBuilder('ApiListener')
+			->setMethods(array('_request', 'registerExceptionHandler', '_checkRequestMethods'))
+			->disableOriginalConstructor()
+			->getMock();
 
-		$event = new CakeEvent('Crud.startup', $subject);
-		$apiListener->startup($event);
+		$request = $this
+			->getMockBuilder('CakeRequest')
+			->setMethods(array('is'))
+			->disableOriginalConstructor()
+			->getMock();
 
-		$event = new CakeEvent('Crud.init', $subject);
-		$apiListener->initialize($event);
-
-		//Testing detectors
-		$subject->request->expects($this->at(0))
-			->method('accepts')
-			->with('application/json')
+		$listener
+			->expects($this->at(0))
+			->method('_request')
+			->will($this->returnValue($request));
+		$request
+			->expects($this->once())
+			->method('is')
+			->with('api')
 			->will($this->returnValue(true));
+		$listener
+			->expects($this->at(1))
+			->method('registerExceptionHandler');
+		$listener
+			->expects($this->at(1))
+			->method('_checkRequestMethods');
 
-		$subject->request->expects($this->at(1))
-			->method('accepts')
-			->with('application/json')
-			->will($this->returnValue(false));
-
-		$subject->request->expects($this->at(2))
-			->method('accepts')
-			->with('text/xml')
-			->will($this->returnValue(false));
-
-		$subject->request->expects($this->at(3))
-			->method('accepts')
-			->with('text/xml')
-			->will($this->returnValue(true));
-
-		$this->assertTrue($subject->request->is('json'));
-		$this->assertFalse($subject->request->is('json'));
-
-		$subject->request->params['ext'] = 'json';
-		$this->assertTrue($subject->request->is('json'));
-		$this->assertTrue($subject->request->is('api'));
-
-		$this->assertFalse($subject->request->is('xml'));
-		$this->assertTrue($subject->request->is('xml'));
-
-		$subject->request->params['ext'] = 'xml';
-		$this->assertTrue($subject->request->is('xml'));
-		$this->assertTrue($subject->request->is('api'));
+		$listener->beforeHandle(new CakeEvent('Crud.beforeHandle'));
 	}
 
 /**
- * Tests initialization in API request
+ * testSetup
  *
- * @covers ApiListener::initialize
  * @return void
  */
-	public function testInitialize() {
-		$request = $this->getMock('CakeRequest', array('is'));
-		$request->expects($this->once())->method('is')->with('api')->will($this->returnValue(true));
+	public function testSetup() {
+		$listener = $this
+			->getMockBuilder('ApiListener')
+			->setMethods(array('setupDetectors'))
+			->disableOriginalConstructor()
+			->getMock();
 
-		$mockMethods = array('_request', 'registerExceptionHandler');
-		$listener = $this->getMock('ApiListener', $mockMethods, array(new CrudSubject()));
-		$listener->expects($this->once())->method('_request')->with()->will($this->returnValue($request));
-		$listener->expects($this->once())->method('registerExceptionHandler')->with();
-		$listener->initialize(new CakeEvent('Crud.init'));
+		$listener
+			->expects($this->once())
+			->method('setupDetectors');
+
+		$listener->setup();
 	}
 
 /**
- * Tests initialization in non-API request
+ * testBeforeHandleNotApi
  *
- * @covers ApiListener::initialize
  * @return void
  */
-	public function testInitializeNotRequest() {
-		$request = $this->getMock('CakeRequest', array('is'));
-		$request->expects($this->once())->method('is')->with('api')->will($this->returnValue(false));
+	public function testBeforeHandleNotApi() {
+		$listener = $this
+			->getMockBuilder('ApiListener')
+			->setMethods(array('_request', '_controller', 'registerExceptionHandler', '_checkRequestMethods'))
+			->disableOriginalConstructor()
+			->getMock();
 
-		$mockMethods = array('_request', 'registerExceptionHandler');
-		$listener = $this->getMock('ApiListener', $mockMethods, array(new CrudSubject()));
-		$listener->expects($this->once())->method('_request')->with()->will($this->returnValue($request));
-		$listener->expects($this->never())->method('registerExceptionHandler');
-		$listener->initialize(new CakeEvent('Crud.init'));
-	}
+		$request = $this
+			->getMockBuilder('CakeRequest')
+			->setMethods(array('is'))
+			->disableOriginalConstructor()
+			->getMock();
 
-/**
- * Tests that the function is not run if it is not an API call
- *
- * @covers ApiListener::afterSave
- * @return void
- */
-	public function testAfterSaveNotAPI() {
-		$subject = $this->getMock('CrudSubject');
-		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
-		$subject->controller = $this->getMock('Controller', array('set'), array($subject->request));
-		$subject->response = $this->getMock('CakeResponse');
-		$apiListener = new ApiListener($subject);
+		$controller = $this
+			->getMockBuilder('Controller')
+			->setMethods(array('getEventManager'))
+			->getMock();
 
-		$subject->request->expects($this->once())
+		$manager = $this
+			->getMockBuilder('EventManager')
+			->setMethods(array('detach'))
+			->getMock();
+
+		$listener
+			->expects($this->at(0))
+			->method('_request')
+			->will($this->returnValue($request));
+		$request
+			->expects($this->once())
 			->method('is')
 			->with('api')
 			->will($this->returnValue(false));
-		$subject->controller->expects($this->never())->method('set');
-		$event = new CakeEvent('Crud.init', $subject);
-		$apiListener->afterSave($event);
+		$listener
+			->expects($this->at(1))
+			->method('_controller')
+			->will($this->returnValue($controller));
+		$controller
+			->expects($this->at(0))
+			->method('getEventManager')
+			->will($this->returnValue($manager));
+		$manager
+			->expects($this->at(0))
+			->method('detach')
+			->with($listener, 'Crud.setFlash');
+		$manager
+			->expects($this->at(1))
+			->method('detach')
+			->with($listener, 'Crud.beforeRender');
+		$manager
+			->expects($this->at(2))
+			->method('detach')
+			->with($listener, 'Crud.beforeRedirect');
+
+		$listener
+			->expects($this->never())
+			->method('registerExceptionHandler');
+		$listener
+			->expects($this->never())
+			->method('_checkRequestMethods');
+
+		$listener->beforeHandle(new CakeEvent('Crud.beforeHandle'));
 	}
 
 /**
- * Returns the 2 possible states for subject->created
+ * Test response method
  *
  * @return void
  */
-	public function createdProvider() {
-		return array(
-			array(true, 'once'),
-			array(false, 'once')
-		);
-	}
+	public function testResponse() {
+		$request = $this->getMock('CakeRequest', array('is'));
+		$response = $this->getMock('CakeResponse');
 
-/**
- * Test the response mangling after saving a record and is an API call
- *
- * @covers ApiListener::afterSave
- * @dataProvider createdProvider
- * @return void
- */
-	public function testAfterSaveSuccess($created, $matcher) {
+		$action = $this->getMock('IndexCrudAction', array('config'), array(new CrudSubject()));
+
 		$subject = $this->getMock('CrudSubject');
-		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
-		$subject->controller = $this->getMock('Controller', array('set', 'render'), array($subject->request));
-		$subject->controller->RequestHandler = $this->getMock('stdClass', array('viewClassMap', 'renderAs'));
-		$subject->controller->RequestHandler->ext = 'json';
-		$subject->response = $this->getMock('CakeResponse');
-		$subject->crud = $this->getMock('stdClass', array('action'));
-		$action = $this->getMock('stdClass', array('config'));
+		$subject->success = true;
+
+		$event = new CakeEvent('Crud.afterSave', $subject);
+
+		$i = 0;
+
+		$listener = $this->getMock('ApiListener', array('_request', '_action', 'render'), array($subject));
+		$listener
+			->expects($this->at($i++))
+			->method('_action')
+			->with()
+			->will($this->returnValue($action));
 		$action
 			->expects($this->at(0))
 			->method('config')
-			->with('serialize')
-			->will($this->returnValue(array()));
-		$subject->crud
-			->expects($this->once())
-			->method('action')
+			->with('api.success')
+			->will($this->returnValue(array('code' => 200)));
+		$listener
+			->expects($this->at($i++))
+			->method('render')
+			->with($subject)
+			->will($this->returnValue($response));
+		$response
+			->expects($this->at(0))
+			->method('statusCode')
+			->with(200);
+
+		$result = $listener->respond($event);
+		$this->assertSame($response, $result);
+	}
+
+/**
+ * Test response method with exception config
+ *
+ * @return void
+ */
+	public function testResponseWithExceptionConfig() {
+		$request = $this->getMock('CakeRequest', array('is'));
+		$response = $this->getMock('CakeResponse');
+
+		$action = $this->getMock('IndexCrudAction', array('config'), array(new CrudSubject()));
+
+		$subject = $this->getMock('CrudSubject');
+		$subject->success = true;
+
+		$event = new CakeEvent('Crud.afterSave', $subject);
+
+		$i = 0;
+
+		$listener = $this->getMock('ApiListener', array('_request', '_action', 'render', '_exceptionResponse'), array($subject));
+		$listener
+			->expects($this->at($i++))
+			->method('_action')
 			->with()
 			->will($this->returnValue($action));
-
-		$subject->request
-			->expects($this->any())
-			->method('is')
-			->with('api')
-			->will($this->returnValue(true));
-
-		$subject->success = true;
-		$subject->controller
+		$action
 			->expects($this->at(0))
-			->method('set')
-			->with('success', true);
-
-		$subject->model = new Model(array('alias' => 'Thing'));
-		$subject->id = 100;
-		$subject->controller
-			->expects($this->at(1))
-			->method('set')
-			->with('data', array('Thing' => array('id' => 100)));
-
-		$subject->controller
-			->expects($this->once())
-			->method('render')
-			->will($this->returnValue($subject->response));
-
-		$subject->controller->RequestHandler
-			->expects($this->at(0))
-			->method('viewClassMap')
-			->with('json', 'Crud.CrudJson');
-
-		$subject->controller->RequestHandler
-			->expects($this->at(1))
-			->method('viewClassMap')
-			->with('xml', 'Crud.CrudXml');
-
-		$subject->controller->RequestHandler
-			->expects($this->at(2))
-			->method('renderAs')
-			->with($subject->controller, $subject->controller->RequestHandler->ext);
-
-		$subject->created = $created;
-		$expect = $subject->response
-			->expects($this->{$matcher}())
+			->method('config')
+			->with('api.success')
+			->will($this->returnValue(array('exception' => true)));
+		$listener
+			->expects($this->at($i++))
+			->method('_exceptionResponse')
+			->with(true);
+		$listener
+			->expects($this->never())
+			->method('render');
+		$response
+			->expects($this->never())
 			->method('statusCode');
 
-		if ($created) {
-			$expect->with(201);
-		}
-
-		$subject->response->expects($this->once())->method('header')
-			->with('Location', Router::url(array('action' => 'view', 100), true));
-
-		$event = new CakeEvent('Crud.afterSave', $subject);
-		$apiListener = new ApiListener($subject);
-		$result = $apiListener->afterSave($event);
-		$this->assertSame($subject->response, $result);
+		$listener->respond($event);
 	}
 
 /**
- * Tests afterSave method when some validation errors occurred
+ * Test default configuration
  *
- * @expectedException CrudValidationException
- * @covers ApiListener::afterSave
  * @return void
  */
-	public function testAfterSaveNotSuccess() {
-		$subject = $this->getMock('CrudSubject');
-		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
-		$subject->controller = $this->getMock('Controller', array('set', 'render'), array($subject->request));
-		$subject->response = $this->getMock('CakeResponse');
-
-		$subject->request->expects($this->once())
-			->method('is')
-			->with('api')
-			->will($this->returnValue(true));
-
-		$subject->success = false;
-		$subject->controller->expects($this->at(0))
-			->method('set')
-			->with('success', false);
-
-		$subject->model = new Model(array('alias' => 'Thing'));
-		$subject->model->validationErrors = array('field' => 'An error');
-
-		$subject->controller->expects($this->never())->method('render');
-		$event = new CakeEvent('Crud.afterSave', $subject);
-
-		$subject->crud = new CrudComponent(new ComponentCollection());
-		$apiListener = new ApiListener($subject);
-
-		$apiListener->afterSave($event);
-	}
-
-/**
- * Tests that afterDelete logic is not run if the call is not API
- *
- * @covers ApiListener::afterDelete
- * @return void
- */
-	public function testAfterDeleteNotAPI() {
-		$subject = $this->getMock('CrudSubject');
-		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
-		$subject->controller = $this->getMock('Controller', array('set'), array($subject->request));
-		$subject->response = $this->getMock('CakeResponse');
-		$apiListener = new ApiListener($subject);
-
-		$subject->request->expects($this->once())
-			->method('is')
-			->with('api')
-			->will($this->returnValue(false));
-		$subject->controller->expects($this->never())->method('set');
-		$event = new CakeEvent('Crud.afterDelete', $subject);
-		$apiListener->afterDelete($event);
-	}
-
-/**
- * Tests afterDelete logic
- *
- * @covers ApiListener::afterDelete
- * @return void
- */
-	public function testAfterDelete() {
-		$subject = $this->getMock('CrudSubject');
-		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
-		$subject->controller = $this->getMock('Controller', array('set', 'render'), array($subject->request));
-		$subject->controller->RequestHandler = $this->getMock('stdClass', array('viewClassMap', 'renderAs'));
-		$subject->controller->RequestHandler->ext = 'json';
-		$subject->response = $this->getMock('CakeResponse');
-		$subject->crud = $this->getMock('stdClass', array('action'));
-		$action = $this->getMock('stdClass', array('config'));
-		$action
-			->expects($this->at(0))
-			->method('config')
-			->with('serialize')
-			->will($this->returnValue(array()));
-		$subject->crud
-			->expects($this->once())
-			->method('action')
-			->with()
-			->will($this->returnValue($action));
-		$apiListener = new ApiListener($subject);
-
-		$subject->request->expects($this->any())
-			->method('is')
-			->with('api')
-			->will($this->returnValue(true));
-
-		$subject->success = true;
-		$subject->controller
-			->expects($this->at(0))
-			->method('set')
-			->with('_serialize', array('success', 'data'));
-
-		$subject->controller
-			->expects($this->at(1))
-			->method('set')
-			->with('success', true);
-
-		$subject->controller
-			->expects($this->at(2))
-			->method('set')
-			->with('data', null);
-
-		$subject->controller->expects($this->once())
-			->method('render')
-			->will($this->returnValue($subject->response));
-
-		$event = new CakeEvent('Crud.afterDelete', $subject);
-		$this->assertEquals($subject->response, $apiListener->afterDelete($event));
-	}
-
-/**
- * Tests that beforeRender logic is not run if the call is not API
- *
- * @covers ApiListener::beforeRender
- * @return void
- */
-	public function testBeforeRenderNoAPI() {
-		$subject = $this->getMock('CrudSubject');
-		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
-		$subject->controller = $this->getMock('Controller', array('set'), array($subject->request));
-		$subject->response = $this->getMock('CakeResponse');
-		$apiListener = new ApiListener($subject);
-
-		$subject->request->expects($this->once())
-			->method('is')
-			->with('api')
-			->will($this->returnValue(false));
-		$subject->controller->expects($this->never())->method('set');
-		$event = new CakeEvent('Crud.beforeRender', $subject);
-		$apiListener->beforeRender($event);
-	}
-
-/**
- * Tests that beforeRender logic is not run if the call is not API
- *
- * @covers ApiListener::beforeRender
- * @return void
- */
-	public function testBeforeRenderAPI() {
-		$subject = $this->getMock('CrudSubject');
-		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
-		$subject->controller = $this->getMock('Controller', array('set'), array($subject->request));
-		$subject->controller->RequestHandler = $this->getMock('RequestHandlerComponent', array('viewClassMap', 'renderAs'));
-		$subject->controller->RequestHandler->ext = 'json';
-		$subject->response = $this->getMock('CakeResponse');
-
-		$subject->crud = $this->getMock('stdClass', array('action'));
-		$apiListener = new ApiListener($subject);
-
-		$subject->request->expects($this->once())
-			->method('is')
-			->with('api')
-			->will($this->returnValue(true));
-
-		$action = $this->getMock('stdClass', array('config', 'viewVar'));
-		$subject->crud->expects($this->once())->method('action')->will($this->returnValue($action));
-		$action->expects($this->once())
-			->method('config')
-			->with('serialize')
-			->will($this->returnValue(array()));
-		$action->expects($this->once())
-			->method('viewVar')
-			->will($this->returnValue('items'));
-
-		$subject->controller->expects($this->once())
-			->method('set')
-			->with('_serialize', array('data' => 'items', 'success'));
-
-		$subject->controller->RequestHandler->expects($this->at(0))
-			->method('viewClassMap')
-			->with('json', 'Crud.CrudJson');
-		$subject->controller->RequestHandler->expects($this->at(1))
-			->method('viewClassMap')
-			->with('xml', 'Crud.CrudXml');
-		$subject->controller->RequestHandler->expects($this->once())
-			->method('renderAs')
-			->with($subject->controller, 'json');
-		$event = new CakeEvent('Crud.beforeRender', $subject);
-		$apiListener->beforeRender($event);
-	}
-
-/**
- * testChangingViewVarWillReflectSerialize
- *
- * @covers ApiListener::beforeRender
- * @return void
- */
-	public function testChangingViewVarWillReflectSerialize() {
-		$subject = $this->getMock('CrudSubject');
-		$subject->request = $this->getMock('CakeRequest', array('accepts', 'is'));
-		$subject->controller = $this->getMock('Controller', array('set'), array($subject->request));
-		$subject->controller->RequestHandler = $this->getMock('RequestHandlerComponent', array('viewClassMap', 'renderAs'));
-		$subject->controller->RequestHandler->ext = 'json';
-		$subject->response = $this->getMock('CakeResponse');
-
-		$subject->crud = $this->getMock('stdClass', array('action'));
-		$apiListener = new ApiListener($subject);
-
-		$subject->request->expects($this->once())
-			->method('is')
-			->with('api')
-			->will($this->returnValue(true));
-
-		$action = $this->getMock('stdClass', array('config', 'viewVar'));
-		$subject->crud->expects($this->once())->method('action')->will($this->returnValue($action));
-		$action->expects($this->once())
-			->method('config')
-			->with('serialize')
-			->will($this->returnValue(array()));
-		$action->expects($this->once())
-			->method('viewVar')
-			->will($this->returnValue('something_else'));
-
-		$subject->controller->expects($this->once())
-			->method('set')
-			->with('_serialize', array('data' => 'something_else', 'success'));
-
-		$subject->controller->RequestHandler->expects($this->at(0))
-			->method('viewClassMap')
-			->with('json', 'Crud.CrudJson');
-		$subject->controller->RequestHandler->expects($this->at(1))
-			->method('viewClassMap')
-			->with('xml', 'Crud.CrudXml');
-		$subject->controller->RequestHandler->expects($this->once())
-			->method('renderAs')
-			->with($subject->controller, 'json');
-		$event = new CakeEvent('Crud.beforeRender', $subject);
-		$apiListener->beforeRender($event);
+	public function testDefaultConfiguration() {
+		$listener = new ApiListener(new CrudSubject());
+		$expected = array(
+			'viewClasses' => array(
+				'json' => 'Crud.CrudJson',
+				'xml' => 'Crud.CrudXml'
+			),
+			'detectors' => array(
+				'json' => array('ext' => 'json', 'accepts' => 'application/json'),
+				'xml' => array('ext' => 'xml', 'accepts' => 'text/xml')
+			),
+			'exception' => array(
+				'type' => 'default',
+				'class' => 'BadRequestException',
+				'message' => 'Unknown error',
+				'code' => 0
+			)
+		);
+		$result = $listener->config();
+		$this->assertEquals($expected, $result);
 	}
 
 /**
  * Tests implemented events
  *
- * @covers ApiListener::implementedEvents
  * @return void
  */
 	public function testImplementeEvents() {
 		$subject = $this->getMock('CrudSubject');
 		$apiListener = new ApiListener($subject);
 		$expected = array(
-			'Crud.initialize' => array('callable' => 'initialize', 'priority' => 10),
-			'Crud.startup' => array('callable' => 'startup', 'priority' => 5),
-			'Crud.beforeRender' => array('callable' => 'beforeRender', 'priority' => 100),
-			'Crud.afterSave' => array('callable' => 'afterSave', 'priority' => 100),
-			'Crud.afterDelete' => array('callable' => 'afterDelete', 'priority' => 100),
-			'Crud.setFlash' => array('callable' => 'setFlash', 'priority' => 100)
+			'Crud.beforeHandle' => array('callable' => 'beforeHandle', 'priority' => 10),
+			'Crud.setFlash' => array('callable' => 'setFlash', 'priority' => 5),
+
+			'Crud.beforeRender' => array('callable' => 'respond', 'priority' => 100),
+			'Crud.beforeRedirect' => array('callable' => 'respond', 'priority' => 100)
 		);
 		$this->assertEquals($expected, $apiListener->implementedEvents());
+	}
+
+/**
+ * Data provider for test_exceptionResponse
+ *
+ * @return array
+ */
+	public function data_exceptionResponse() {
+		return array(
+			'default configuration' => array(
+				array(),
+				'BadRequestException',
+				'Unknown error',
+				0
+			),
+
+			'change exception class' => array(
+				array('class' => 'CakeException'),
+				'CakeException',
+				'Unknown error',
+				0
+			),
+
+			'change exception code' => array(
+				array('code' => 10),
+				'BadRequestException',
+				'Unknown error',
+				10
+			),
+
+			'change exception message' => array(
+				array('message' => 'epic message'),
+				'BadRequestException',
+				'epic message',
+				10
+			),
+
+			'Validate case #1 - no validation errors' => array(
+				array('class' => 'CrudValidationException', 'type' => 'validate'),
+				'CrudValidationException',
+				'0 validation errors occurred',
+				0
+			),
+
+			'Validate case #2 - one validation error' => array(
+				array('class' => 'CrudValidationException', 'type' => 'validate'),
+				'CrudValidationException',
+				'A validation error occurred',
+				0,
+				array(array('id' => 'hello world'))
+			),
+
+			'Validate case #3 - two validation errors' => array(
+				array('class' => 'CrudValidationException', 'type' => 'validate'),
+				'CrudValidationException',
+				'2 validation errors occurred',
+				0,
+				array(array('id' => 'hello world', 'name' => 'fail me'))
+			)
+		);
+	}
+
+/**
+ * Test _exceptionResponse
+ *
+ * @dataProvider data_exceptionResponse
+ * @param array $apiConfig
+ * @param string $exceptionClass
+ * @param string $exceptionMessage
+ * @param integer $exceptionCode
+ * @param array $validationErrors
+ * @return void
+ */
+	public function test_exceptionResponse($apiConfig, $exceptionClass, $exceptionMessage, $exceptionCode, $validationErrors = array()) {
+		$listener = $this->getMock('ApiListener', array('_validationErrors'), array(new CrudSubject()));
+
+		if (isset($apiConfig['type']) && $apiConfig['type'] === 'validate') {
+			$listener->expects($this->once())->method('_validationErrors')->with()->will($this->returnValue($validationErrors));
+		} else {
+			$listener->expects($this->never())->method('_validationErrors');
+		}
+
+		$this->expectException($exceptionClass, $exceptionMessage, $exceptionCode);
+
+		$this->setReflectionClassInstance($listener);
+		$this->callProtectedMethod('_exceptionResponse', array($apiConfig), $listener);
+	}
+
+/**
+ * Test render
+ *
+ * @return void
+ */
+	public function testRender() {
+		$listener = $this->getMockBuilder('ApiListener')
+			->setMethods(array('injectViewClasses', '_ensureSuccess', '_ensureData', '_ensureSerialize', '_controller'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$subject = new CrudSubject();
+
+		$requestHandler = $this->getMockBuilder('RequestHandlerComponent')
+			->setMethods(array('renderAs'))
+			->disableOriginalConstructor()
+			->getMock();
+		$controller = $this->getMockBuilder('Controller')
+			->setMethods(array('render'))
+			->disableOriginalConstructor()
+			->getMock();
+		$controller->RequestHandler = $requestHandler;
+		$controller->RequestHandler->ext = 'json';
+
+		$i = 0;
+		$listener
+			->expects($this->at($i++))
+			->method('injectViewClasses')
+			->with();
+		$listener
+			->expects($this->at($i++))
+			->method('_ensureSuccess')
+			->with($subject);
+		$listener
+			->expects($this->at($i++))
+			->method('_ensureData')
+			->with($subject);
+		$listener
+			->expects($this->at($i++))
+			->method('_ensureSerialize')
+			->with();
+		$listener
+			->expects($this->at($i++))
+			->method('_controller')
+			->with()
+			->will($this->returnValue($controller));
+		$requestHandler
+			->expects($this->once())
+			->method('renderAs')
+			->with($controller, 'json');
+		$controller
+			->expects($this->once())
+			->method('render')
+			->with();
+
+		$listener->render($subject);
+	}
+
+/**
+ * test_ensureSerializeWithViewVar
+ *
+ * @return void
+ */
+	public function test_ensureSerializeWithViewVar() {
+		$listener = $this
+			->getMockBuilder('ApiListener')
+			->setMethods(array('_action', '_controller'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$controller = $this
+			->getMockBuilder('Controller')
+			->setMethods(array('set'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$action = $this
+			->getMockBuilder('IndexCrudAction')
+			->setMethods(array('config', 'viewVar'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$i = 0;
+		$listener
+			->expects($this->at($i++))
+			->method('_controller')
+			->will($this->returnValue($controller));
+		$listener
+			->expects($this->at($i++))
+			->method('_action')
+			->will($this->returnValue($action));
+		$action
+			->expects($this->at(0))
+			->method('viewVar')
+			->will($this->returnValue('items'));
+		$controller
+			->expects($this->once())
+			->method('set')
+			->with('_serialize', array('success', 'data' => 'items'));
+
+		$this->setReflectionClassInstance($listener);
+		$this->callProtectedMethod('_ensureSerialize', array(), $listener);
+	}
+
+
+/**
+ * test_ensureSerializeAlreadySet
+ *
+ * @return void
+ */
+	public function test_ensureSerializeAlreadySet() {
+		$listener = $this
+			->getMockBuilder('ApiListener')
+			->setMethods(array('_action', '_controller'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$controller = $this
+			->getMockBuilder('Controller')
+			->setMethods(array('set'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$controller->viewVars['_serialize'] = 'hello world';
+
+		$action = $this
+			->getMockBuilder('IndexCrudAction')
+			->setMethods(array('config', 'viewVar'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$i = 0;
+		$listener
+			->expects($this->at($i++))
+			->method('_controller')
+			->will($this->returnValue($controller));
+		$listener
+			->expects($this->never())
+			->method('_action');
+		$action
+			->expects($this->never())
+			->method('viewVar');
+		$controller
+			->expects($this->never())
+			->method('set');
+
+		$this->setReflectionClassInstance($listener);
+		$this->callProtectedMethod('_ensureSerialize', array(), $listener);
+	}
+
+/**
+ * test_ensureSerializeWithViewVarChanged
+ *
+ * @return void
+ */
+	public function test_ensureSerializeWithViewVarChanged() {
+		$listener = $this
+			->getMockBuilder('ApiListener')
+			->setMethods(array('_action', '_controller'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$controller = $this
+			->getMockBuilder('Controller')
+			->setMethods(array('set'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$action = $this
+			->getMockBuilder('IndexCrudAction')
+			->setMethods(array('config', 'viewVar'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$i = 0;
+		$listener
+			->expects($this->at($i++))
+			->method('_controller')
+			->will($this->returnValue($controller));
+		$listener
+			->expects($this->at($i++))
+			->method('_action')
+			->will($this->returnValue($action));
+		$action
+			->expects($this->at(0))
+			->method('viewVar')
+			->will($this->returnValue('helloWorld'));
+		$controller
+			->expects($this->once())
+			->method('set')
+			->with('_serialize', array('success', 'data' => 'helloWorld'));
+
+		$this->setReflectionClassInstance($listener);
+		$this->callProtectedMethod('_ensureSerialize', array(), $listener);
+	}
+
+/**
+ * test_ensureSerializeWithoutViewVar
+ *
+ * @return void
+ */
+	public function test_ensureSerializeWithoutViewVar() {
+		$listener = $this
+			->getMockBuilder('ApiListener')
+			->setMethods(array('_action', '_controller'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$controller = $this
+			->getMockBuilder('Controller')
+			->setMethods(array('set'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$action = $this
+			->getMockBuilder('AddCrudAction')
+			->setMethods(array('config'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$i = 0;
+		$listener
+			->expects($this->at($i++))
+			->method('_controller')
+			->will($this->returnValue($controller));
+		$listener
+			->expects($this->at($i++))
+			->method('_action')
+			->will($this->returnValue($action));
+		$controller
+			->expects($this->once())
+			->method('set')
+			->with('_serialize', array('success', 'data'));
+
+		$this->setReflectionClassInstance($listener);
+		$this->callProtectedMethod('_ensureSerialize', array(), $listener);
+	}
+
+/**
+ * test_ensureSuccess
+ *
+ * @return void
+ */
+	public function test_ensureSuccess() {
+		$listener = $this
+			->getMockBuilder('ApiListener')
+			->setMethods(array('_controller'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$subject = new CrudSubject(array('success' => true));
+
+		$controller = $this
+			->getMockBuilder('Controller')
+			->setMethods(array('set'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$i = 0;
+		$listener
+			->expects($this->at($i++))
+			->method('_controller')
+			->will($this->returnValue($controller));
+		$controller
+			->expects($this->once())
+			->method('set')
+			->with('success', true);
+
+		$this->setReflectionClassInstance($listener);
+		$this->callProtectedMethod('_ensureSuccess', array($subject), $listener);
+	}
+
+/**
+ * test_ensureData
+ *
+ * @return void
+ */
+	public function test_ensureData() {
+		$listener = $this
+			->getMockBuilder('ApiListener')
+			->setMethods(array('_controller', '_action'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$controller = $this
+			->getMockBuilder('Controller')
+			->setMethods(array('set'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$action = $this
+			->getMockBuilder('CrudAction')
+			->setMethods(array('config'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$subject = new CrudSubject(array('success' => true));
+
+		$config = array();
+
+		$i = 0;
+		$listener
+			->expects($this->at($i++))
+			->method('_controller')
+			->will($this->returnValue($controller));
+		$listener
+			->expects($this->at($i++))
+			->method('_action')
+			->will($this->returnValue($action));
+		$action
+			->expects($this->at(0))
+			->method('config')
+			->with('api.success')
+			->will($this->returnValue($config));
+		$controller
+			->expects($this->once())
+			->method('set')
+			->with('data', array());
+
+		$this->setReflectionClassInstance($listener);
+		$result = $this->callProtectedMethod('_ensureData', array($subject), $listener);
+	}
+
+/**
+ * test_ensureDataSubject
+ *
+ * @return void
+ */
+	public function test_ensureDataSubject() {
+		$listener = $this
+			->getMockBuilder('ApiListener')
+			->setMethods(array('_controller', '_action'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$controller = $this
+			->getMockBuilder('Controller')
+			->setMethods(array('set'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$action = $this
+			->getMockBuilder('CrudAction')
+			->setMethods(array('config'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$subject = new CrudSubject(array('success' => true, 'id' => 1, 'modelClass' => 'MyModel'));
+
+		$config = array('data' => array(
+			'subject' => array(
+				'{modelClass}.id' => 'id',
+				'modelClass'
+			)
+		));
+
+		$i = 0;
+		$listener
+			->expects($this->at($i++))
+			->method('_controller')
+			->will($this->returnValue($controller));
+		$listener
+			->expects($this->at($i++))
+			->method('_action')
+			->will($this->returnValue($action));
+		$action
+			->expects($this->at(0))
+			->method('config')
+			->with('api.success')
+			->will($this->returnValue($config));
+		$controller
+			->expects($this->once())
+			->method('set')
+			->with('data', array('modelClass' => 'MyModel', 'MyModel' => array('id' => 1)));
+
+		$this->setReflectionClassInstance($listener);
+		$result = $this->callProtectedMethod('_ensureData', array($subject), $listener);
+	}
+
+/**
+ * test_ensureDataRaw
+ *
+ * @return void
+ */
+	public function test_ensureDataRaw() {
+		$listener = $this
+			->getMockBuilder('ApiListener')
+			->setMethods(array('_controller', '_action'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$controller = $this
+			->getMockBuilder('Controller')
+			->setMethods(array('set'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$action = $this
+			->getMockBuilder('CrudAction')
+			->setMethods(array('config'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$subject = new CrudSubject(array('success' => true, 'id' => 1, 'modelClass' => 'MyModel'));
+
+		$config = array('data' => array('raw' => array('{modelClass}.id' => 1)));
+
+		$i = 0;
+		$listener
+			->expects($this->at($i++))
+			->method('_controller')
+			->will($this->returnValue($controller));
+		$listener
+			->expects($this->at($i++))
+			->method('_action')
+			->will($this->returnValue($action));
+		$action
+			->expects($this->at(0))
+			->method('config')
+			->with('api.success')
+			->will($this->returnValue($config));
+		$controller
+			->expects($this->once())
+			->method('set')
+			->with('data', array('MyModel' => array('id' => 1)));
+
+		$this->setReflectionClassInstance($listener);
+		$result = $this->callProtectedMethod('_ensureData', array($subject), $listener);
+	}
+
+/**
+ * test_ensureDataError
+ *
+ * @return void
+ */
+	public function test_ensureDataError() {
+		$listener = $this
+			->getMockBuilder('ApiListener')
+			->setMethods(array('_controller', '_action'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$controller = $this
+			->getMockBuilder('Controller')
+			->setMethods(array('set'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$action = $this
+			->getMockBuilder('CrudAction')
+			->setMethods(array('config'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$subject = new CrudSubject(array('success' => false));
+
+		$config = array();
+
+		$i = 0;
+		$listener
+			->expects($this->at($i++))
+			->method('_controller')
+			->will($this->returnValue($controller));
+		$listener
+			->expects($this->at($i++))
+			->method('_action')
+			->will($this->returnValue($action));
+		$action
+			->expects($this->at(0))
+			->method('config')
+			->with('api.error')
+			->will($this->returnValue($config));
+		$controller
+			->expects($this->once())
+			->method('set')
+			->with('data', array());
+
+		$this->setReflectionClassInstance($listener);
+		$result = $this->callProtectedMethod('_ensureData', array($subject), $listener);
+	}
+
+/**
+ * test_ensureDataExists
+ *
+ * @return void
+ */
+	public function test_ensureDataExists() {
+		$listener = $this
+			->getMockBuilder('ApiListener')
+			->setMethods(array('_controller', '_action'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$controller = $this
+			->getMockBuilder('Controller')
+			->setMethods(array('set'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$controller->viewVars['data'] = true;
+
+		$subject = new CrudSubject();
+
+		$config = array();
+
+		$i = 0;
+		$listener
+			->expects($this->at($i++))
+			->method('_controller')
+			->will($this->returnValue($controller));
+		$listener
+			->expects($this->never())
+			->method('_action');
+		$controller
+			->expects($this->never())
+			->method('set');
+
+		$this->setReflectionClassInstance($listener);
+		$result = $this->callProtectedMethod('_ensureData', array($subject), $listener);
+	}
+
+/**
+ * test_ensureSuccessAlreadySet
+ *
+ * @return void
+ */
+	public function test_ensureSuccessAlreadySet() {
+		$listener = $this
+			->getMockBuilder('ApiListener')
+			->setMethods(array('_controller'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$subject = new CrudSubject(array('success' => true));
+
+		$controller = $this
+			->getMockBuilder('Controller')
+			->setMethods(array('set'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$controller->viewVars['success'] = true;
+
+		$i = 0;
+		$listener
+			->expects($this->at($i++))
+			->method('_controller')
+			->will($this->returnValue($controller));
+		$controller
+			->expects($this->never())
+			->method('set');
+
+		$this->setReflectionClassInstance($listener);
+		$this->callProtectedMethod('_ensureSuccess', array($subject), $listener);
 	}
 
 /**
@@ -489,7 +935,6 @@ class ApiListenerTest extends CakeTestCase {
  * The API listener should suppress flash messages
  * if the request is "API"
  *
- * @covers ApiListener::setFlash
  * @return void
  */
 	public function testFlashMessageSupressed() {
@@ -508,27 +953,267 @@ class ApiListenerTest extends CakeTestCase {
 	}
 
 /**
- * testFlashMessageNotSupressed
+ * Data provider for test_expandPath
  *
- * The API listener should not suppress flash messages
- * if the request isn't "API"
+ * @return array
+ */
+	public function data_expandPath() {
+		return array(
+			'simple string' => array(
+				new CrudSubject(array('modelClass' => 'MyModel')),
+				'{modelClass}.id',
+				'MyModel.id'
+			),
+
+			'string and integer' => array(
+				new CrudSubject(array('modelClass' => 'MyModel', 'id' => 1)),
+				'{modelClass}.{id}',
+				'MyModel.1'
+			),
+
+			'ignore non scalar' => array(
+				new CrudSubject(array('modelClass' => 'MyModel', 'complex' => new StdClass)),
+				'{modelClass}.{id}',
+				'MyModel.{id}'
+			),
+		);
+	}
+
+/**
+ * test_expandPath
  *
- * @covers ApiListener::setFlash
+ * @dataProvider data_expandPath
  * @return void
  */
-	public function testFlashMessageNotSupressed() {
-		$Request = new CakeRequest();
-		$Request->addDetector('api', array('callback' => function() { return false; }));
+	public function test_expandPath($subject, $path, $expected) {
+		$listener = new ApiListener(new CrudSubject());
 
-		$subject = new CrudSubject(array('request' => $Request));
+		$this->setReflectionClassInstance($listener);
+		$result = $this->callProtectedMethod('_expandPath', array($subject, $path), $listener);
+		$this->assertSame($expected, $result);
+	}
 
-		$apiListener = new ApiListener($subject);
+/**
+ * testSetupDetectors
+ *
+ * @return void
+ */
+	public function testSetupDetectors() {
+		$detectors = array('xml' => array(), 'json' => array());
 
-		$event = new CakeEvent('Crud.setFlash', $subject);
-		$apiListener->setFlash($event);
+		$listener = $this
+			->getMockBuilder('ApiListener')
+			->setMethods(array('_request', 'config'))
+			->disableOriginalConstructor()
+			->getMock();
 
-		$stopped = $event->isStopped();
-		$this->assertFalse($stopped, 'Set flash event is expected not to be stopped');
+		$request = $this
+			->getMockBuilder('CakeRequest')
+			->setMethods(array('addDetector'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$i = 0;
+		$listener
+			->expects($this->at($i++))
+			->method('_request')
+			->will($this->returnValue($request));
+		$listener
+			->expects($this->at($i++))
+			->method('config')
+			->with('detectors')
+			->will($this->returnValue($detectors));
+
+		$r = 0;
+		foreach ($detectors as $name => $config) {
+			$request
+				->expects($this->at($r++))
+				->method('addDetector')
+				->with($name);
+		}
+
+		$request
+			->expects($this->at($r++))
+			->method('addDetector')
+			->with('api');
+
+		$listener->setupDetectors();
+	}
+
+/**
+ * testSetupDetectorsIntigration
+ *
+ * @return void
+ */
+	public function testSetupDetectorsIntigration() {
+		$detectors = array(
+			'json' => array('ext' => 'json', 'accepts' => 'application/json'),
+			'xml' => array('ext' => 'xml', 'accepts' => 'text/xml')
+		);
+
+		$listener = $this
+			->getMockBuilder('ApiListener')
+			->setMethods(array('_request', 'config'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$request = $this
+			->getMockBuilder('CakeRequest')
+			->setMethods(array('accepts'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$i = 0;
+		$listener
+			->expects($this->at($i++))
+			->method('_request')
+			->will($this->returnValue($request));
+		$listener
+			->expects($this->at($i++))
+			->method('config')
+			->with('detectors')
+			->will($this->returnValue($detectors));
+
+		$listener->setupDetectors();
+
+		// Test with "ext"
+		foreach ($detectors as $name => $configuration) {
+			$request->params['ext'] = $configuration['ext'];
+			$this->assertTrue($request->is($name));
+		}
+
+		$request->params['ext'] = null;
+
+		// Test with "accepts"
+		$r = 0;
+		foreach ($detectors as $name => $configuration) {
+			$request
+				->expects($this->at($r++))
+				->method('accepts')
+				->with($configuration['accepts'])
+				->will($this->returnValue(true));
+		}
+
+		foreach ($detectors as $name => $config) {
+			$this->assertTrue($request->is($name));
+		}
+
+		$request->params['ext'] = 'xml';
+		$this->assertTrue($request->is('api'));
+
+		$request->params['ext'] = null;
+		$this->assertFalse($request->is('api'));
+	}
+
+/**
+ * testRegisterExceptionHandler
+ *
+ * @return void
+ */
+	public function testRegisterExceptionHandler() {
+		$listener = new ApiListener(new CrudSubject());
+		$listener->registerExceptionHandler();
+
+		$expected = 'Crud.CrudExceptionRenderer';
+		$result = Configure::read('Exception.renderer');
+		$this->assertEquals($expected, $result);
+	}
+
+/**
+ * data provider for test_checkRequestMethods
+ *
+ * @return array
+ */
+	public function data_checkRequestMethods() {
+		return array(
+			'defaults' => array(
+				array(),
+				false,
+				array()
+			),
+			'valid get' => array(
+				array('methods' => array('get')),
+				true,
+				array('get' => true)
+			),
+			'invalid post' => array(
+				array('methods' => array('post')),
+				'BadRequestException',
+				array('post' => false)
+			),
+			'valid put' => array(
+				array('methods' => array('post', 'get', 'put')),
+				true,
+				array('post' => false, 'get' => false, 'put' => true)
+			)
+		);
+	}
+
+/**
+ * test_checkRequestMethods
+ *
+ * @dataProvider data_checkRequestMethods
+ * @return void
+ */
+	public function test_checkRequestMethods($apiConfig, $exception, $requestMethods) {
+		$listener = $this
+			->getMockBuilder('ApiListener')
+			->setMethods(array('_action', '_request'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$action = $this
+			->getMockBuilder('CrudAction')
+			->setMethods(array('config'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$request = $this
+			->getMockBuilder('CakeRequest')
+			->setMethods(array('is'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$listener
+			->expects($this->at(0))
+			->method('_action')
+			->will($this->returnValue($action));
+		$action
+			->expects($this->at(0))
+			->method('config')
+			->with('api')
+			->will($this->returnValue($apiConfig));
+
+		if (!empty($apiConfig['methods'])) {
+			$listener
+				->expects($this->at(1))
+				->method('_request')
+				->will($this->returnValue($request));
+
+			$r = 0;
+			foreach ($requestMethods as $method => $bool) {
+				$request
+					->expects($this->at($r++))
+					->method('is')
+					->with($method)
+					->will($this->returnValue($bool));
+			}
+		} else {
+			$listener
+				->expects($this->never())
+				->method('_request');
+		}
+
+		if (is_string($exception)) {
+			$this->expectException($exception);
+		}
+
+		$this->setReflectionClassInstance($listener);
+		$result = $this->callProtectedMethod('_checkRequestMethods', array(), $listener);
+
+		if (is_bool($exception)) {
+			$this->assertEquals($exception, $result);
+		}
 	}
 
 /**
@@ -536,7 +1221,6 @@ class ApiListenerTest extends CakeTestCase {
  *
  * Passing no argument, should map all of the app's controllers
  *
- * @covers ApiListener::mapResources
  * @return void
  */
 	public function testMapResources() {
@@ -550,41 +1234,52 @@ class ApiListenerTest extends CakeTestCase {
 
 		ApiListener::mapResources();
 
-		$expected = array(
-			'GET index /pages',
-			'GET view /pages/:id',
-			'POST add /pages',
-			'PUT edit /pages/:id',
-			'DELETE delete /pages/:id',
-			'POST edit /pages/:id',
-			'GET index /test_apps_error',
-			'GET view /test_apps_error/:id',
-			'POST add /test_apps_error',
-			'PUT edit /test_apps_error/:id',
-			'DELETE delete /test_apps_error/:id',
-			'POST edit /test_apps_error/:id',
-			'GET index /tests_apps',
-			'GET view /tests_apps/:id',
-			'POST add /tests_apps',
-			'PUT edit /tests_apps/:id',
-			'DELETE delete /tests_apps/:id',
-			'POST edit /tests_apps/:id',
-			'GET index /tests_apps_posts',
-			'GET view /tests_apps_posts/:id',
-			'POST add /tests_apps_posts',
-			'PUT edit /tests_apps_posts/:id',
-			'DELETE delete /tests_apps_posts/:id',
-			'POST edit /tests_apps_posts/:id'
-		);
+		$expected = $this->_getRouteExpectations();
 		$return = $this->_currentRoutes();
 
-		$this->assertSame($expected, $return, 'test_app contains Pages, TestAppsError, TestApps and TestsAppsPosts controllers - there should be rest routes for all of these');
+		$this->assertSame($expected, $return, 'test_app contains several controllers - there should be rest routes for all of them');
+	}
+
+/**
+ * _getRouteExpectations
+ *
+ * A little helper function which returns routes expectations for all app controllers
+ *
+ * @return array
+ */
+	protected function _getRouteExpectations() {
+		$routePatterns = array(
+			'GET index /{name}',
+			'GET view /{name}/:id',
+			'POST add /{name}',
+			'PUT edit /{name}/:id',
+			'DELETE delete /{name}/:id',
+			'POST edit /{name}/:id',
+		);
+
+		$expected = array();
+		$controllers = App::objects('Controller');
+		foreach ($controllers as $controller) {
+			$controller = substr($controller, 0, - strlen('Controller'));
+			$controller = Inflector::underscore($controller);
+			if ($controller === 'app') {
+				continue;
+			}
+
+			$routes = $routePatterns;
+			foreach ($routes as &$route) {
+				$route = str_replace('{name}', $controller, $route);
+			}
+
+			$expected = array_merge($expected, $routes);
+		}
+
+		return $expected;
 	}
 
 /**
  * Passing a plugin name should map only for that plugin
  *
- * @covers ApiListener::mapResources
  * @return void
  */
 	public function testMapResourcesPlugin() {
@@ -642,17 +1337,16 @@ class ApiListenerTest extends CakeTestCase {
  *
  * Test that both set and get works
  *
- * @covers ApiListener::viewClass
  * @return void
  */
 	public function testViewClass() {
 		$apiListener = new ApiListener(new CrudSubject());
 
 		$result = $apiListener->viewClass('json', 'Sample.ViewClass');
-		$this->assertEqual($result, $apiListener, 'Setting a viewClass did not return the listener itself');
+		$this->assertEquals($apiListener, $result, 'Setting a viewClass did not return the listener itself');
 
 		$result = $apiListener->viewClass('json');
-		$this->assertEqual($result, 'Sample.ViewClass', 'The changed viewClass was not returned');
+		$this->assertEquals('Sample.ViewClass', $result, 'The changed viewClass was not returned');
 	}
 
 /**
@@ -660,7 +1354,6 @@ class ApiListenerTest extends CakeTestCase {
  *
  * Test that the default viewClasses are as expected
  *
- * @covers ApiListener::viewClass
  * @return void
  */
 	public function testViewClassDefaults() {
@@ -671,13 +1364,12 @@ class ApiListenerTest extends CakeTestCase {
 			'json' => 'Crud.CrudJson',
 			'xml' => 'Crud.CrudXml'
 		);
-		$this->assertEqual($result, $expected, 'The default viewClasses setting has changed');
+		$this->assertEquals($expected, $result, 'The default viewClasses setting has changed');
 	}
 
 /**
  * testInjectViewClasses
  *
- * @covers ApiListener::injectViewClasses
  * @return void
  */
 	public function testInjectViewClasses() {

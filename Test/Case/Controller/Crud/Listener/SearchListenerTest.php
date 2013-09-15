@@ -39,8 +39,11 @@ class SearchListenerTest extends CakeTestCase {
 	public function testImplementedEvents() {
 		$Instance = new SearchListener(new CrudSubject());
 		$result = $Instance->implementedEvents();
-		$expected = array('Crud.beforePaginate' => array('callable' => 'beforePaginate', 'priority' => 50));
-		$this->assertEqual($result, $expected);
+		$expected = array(
+			'Crud.beforeHandle' => array('callable' => 'beforeHandle', 'priority' => 50),
+			'Crud.beforePaginate' => array('callable' => 'beforePaginate', 'priority' => 50)
+		);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -67,7 +70,7 @@ class SearchListenerTest extends CakeTestCase {
 
 		$expected = array('query' => array('key' => 'value'), 'filter' => null);
 		$result = $Instance->config('scope.test');
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -82,7 +85,7 @@ class SearchListenerTest extends CakeTestCase {
 
 		$expected = array('query' => array('key' => 'value'), 'filter' => array('epic' => 'value'));
 		$result = $Instance->config('scope.test');
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**

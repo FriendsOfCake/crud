@@ -10,7 +10,7 @@ notifications:
 
 env:
   - DB=mysql CAKE_VERSION=master
-  - DB=mysql CAKE_VERSION=2.4
+  - DB=mysql CAKE_VERSION=2.5
 
 matrix:
   include:
@@ -41,7 +41,7 @@ before_script:
   - chmod -R 777 app/tmp
   - mkdir -p build/logs
 
-  - mv ../cakephp-crud app/Plugin/Crud
+  - mv ../crud app/Plugin/Crud
   - mv app/Plugin/Crud/.resources/bootstrap.php app/Config/bootstrap.php
   - mv app/Plugin/Crud/.resources/database.php app/Config/database.php
   - mv app/Plugin/Crud/.resources/phpunit.xml phpunit.xml

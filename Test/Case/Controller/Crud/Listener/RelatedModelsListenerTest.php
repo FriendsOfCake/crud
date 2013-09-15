@@ -43,7 +43,7 @@ class RelatedModelListenerTest extends CrudTestCase {
 
 		$result = $Listener->models();
 		$expected = array('Post', 'User');
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -76,7 +76,7 @@ class RelatedModelListenerTest extends CrudTestCase {
 
 		$result = $Listener->models();
 		$expected = array();
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -109,7 +109,7 @@ class RelatedModelListenerTest extends CrudTestCase {
 
 		$result = $Listener->models();
 		$expected = array('Post');
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -163,7 +163,7 @@ class RelatedModelListenerTest extends CrudTestCase {
 
 		$result = $Listener->models();
 		$expected = array('Post', 'Tag');
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -209,7 +209,7 @@ class RelatedModelListenerTest extends CrudTestCase {
 		$this->setReflectionClassInstance($Listener);
 		$result = $this->callProtectedMethod('_findRelatedItems', array($Model, $query), $Listener);
 		$expected = $data;
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -259,7 +259,7 @@ class RelatedModelListenerTest extends CrudTestCase {
 		$this->setReflectionClassInstance($Listener);
 		$result = $this->callProtectedMethod('_findRelatedItems', array($Model, $query), $Listener);
 		$expected = $data;
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -294,15 +294,15 @@ class RelatedModelListenerTest extends CrudTestCase {
 		$this->setReflectionClassInstance($Listener);
 		$result = $this->callProtectedMethod('_getAssociationType', array('Post'), $Listener);
 		$expected = 'belongsTo';
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 
 		$result = $this->callProtectedMethod('_getAssociationType', array('Tag'), $Listener);
 		$expected = 'hasMany';
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 
 		$result = $this->callProtectedMethod('_getAssociationType', array('Comment'), $Listener);
 		$expected = null;
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -337,7 +337,7 @@ class RelatedModelListenerTest extends CrudTestCase {
 		$this->setReflectionClassInstance($Listener);
 		$result = $this->callProtectedMethod('_getModelInstance', array('Post'), $Listener);
 		$expected = 'PostModel';
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -388,7 +388,7 @@ class RelatedModelListenerTest extends CrudTestCase {
 		$this->setReflectionClassInstance($Listener);
 		$result = $this->callProtectedMethod('_getModelInstance', array('Post'), $Listener);
 		$expected = $PostModel;
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -446,7 +446,7 @@ class RelatedModelListenerTest extends CrudTestCase {
 		$this->setReflectionClassInstance($Listener);
 		$result = $this->callProtectedMethod('_getModelInstance', array('Post', 'belongsTo'), $Listener);
 		$expected = $PostModel;
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -498,7 +498,7 @@ class RelatedModelListenerTest extends CrudTestCase {
 		$this->setReflectionClassInstance($Listener);
 		$result = $this->callProtectedMethod('_getModelInstance', array('Post'), $Listener);
 		$expected = $PostModel;
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -541,7 +541,7 @@ class RelatedModelListenerTest extends CrudTestCase {
 		$this->setReflectionClassInstance($Listener);
 		$result = $this->callProtectedMethod('_getBaseQuery', array($Associated, 'belongsTo'), $Listener);
 		$expected = array('conditions' => array('is_active' => true));
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -582,7 +582,7 @@ class RelatedModelListenerTest extends CrudTestCase {
 		$this->setReflectionClassInstance($Listener);
 		$result = $this->callProtectedMethod('_getBaseQuery', array($Associated, 'hasMany'), $Listener);
 		$expected = array();
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -643,7 +643,7 @@ class RelatedModelListenerTest extends CrudTestCase {
 			'recursive' => -1,
 			'conditions' => array('is_active' => true)
 		);
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -705,7 +705,7 @@ class RelatedModelListenerTest extends CrudTestCase {
 		$Listener
 			->expects($this->at($i++))
 			->method('_trigger')
-			->with('beforeRelatedModel', array('model' => 'Post', 'query' => $postQuery, 'viewVar' => 'posts'))
+			->with('beforeRelatedModel', array('modelName' => 'Post', 'query' => $postQuery, 'viewVar' => 'posts', 'associationType' => 'belongsTo', 'associatedModel' => $Post))
 			->will($this->returnValue(new CrudSubject(array('query' => $postQuery + array('_callback' => true)))));
 		$Listener
 			->expects($this->at($i++))
@@ -715,7 +715,7 @@ class RelatedModelListenerTest extends CrudTestCase {
 		$Listener
 			->expects($this->at($i++))
 			->method('_trigger')
-			->with('afterRelatedModel', array('model' => 'Post', 'items' => array(1, 2, 3), 'viewVar' => 'posts'))
+			->with('afterRelatedModel', array('modelName' => 'Post', 'items' => array(1, 2, 3), 'viewVar' => 'posts', 'associationType' => 'belongsTo', 'associatedModel' => $Post))
 			->will($this->returnValue(new CrudSubject(array('items' => array(1, 2, 3), 'viewVar' => 'posts'))));
 		$Controller
 			->expects($this->once())

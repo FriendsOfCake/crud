@@ -30,11 +30,27 @@ class AddCrudAction extends CrudAction {
  */
 	protected $_settings = array(
 		'enabled' => true,
+		'saveMethod' => 'saveAssociated',
 		'view' => null,
 		'relatedModels' => true,
 		'saveOptions' => array(
 			'validate' => 'first',
 			'atomic' => true
+		),
+		'api' => array(
+			'methods' => array('put', 'post'),
+			'success' => array(
+				'code' => 201,
+				'data' => array(
+					'subject' => array('id')
+				)
+			),
+			'error' => array(
+				'exception' => array(
+					'type' => 'validate',
+					'class' => 'CrudValidationException'
+				)
+			)
 		),
 		'messages' => array(
 			'success' => array(
@@ -77,16 +93,10 @@ class AddCrudAction extends CrudAction {
 		$request = $this->_request();
 		$model = $this->_model();
 
-		if ($request->data('_cancel')) {
-			$subject = $this->_trigger('beforeCancel');
-			$controller = $this->_controller();
-			return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
-		}
-
 		$this->_trigger('beforeSave');
-		if ($model->saveAll($request->data, $this->saveOptions())) {
+		if (call_user_func(array($model, $this->saveMethod()), $request->data, $this->saveOptions())) {
 			$this->setFlash('success');
-			$subject = $this->_trigger('afterSave', array('success' => true, 'created' => true,	'id' => $model->id));
+			$subject = $this->_trigger('afterSave', array('success' => true, 'created' => true, 'id' => $model->id));
 
 			if ($request->data('_add')) {
 				return $this->_redirect($subject, array('action' => $request->action), null, true, true);
@@ -99,9 +109,10 @@ class AddCrudAction extends CrudAction {
 		}
 
 		$this->setFlash('error');
-		$this->_trigger('afterSave', array('success' => false, 'created' => false));
+
+		$subject = $this->_trigger('afterSave', array('success' => false, 'created' => false));
 		$request->data = Hash::merge($request->data, $model->data);
-		$this->_trigger('beforeRender', array('success' => false));
+		$this->_trigger('beforeRender', $subject);
 	}
 
 /**
