@@ -249,11 +249,13 @@ class AddCrudActionTest extends CrudTestCase {
 		$CrudSubject->created = true;
 		$CrudSubject->id = 69;
 
+		$Controller
+			->expects($this->once())
+			->method('redirect')
+			->with(array('action' => 'add'));
+
 		$this->setReflectionClassInstance($Action);
 		$this->callProtectedMethod('_redirect', array($CrudSubject, array('action' => 'index')), $Action);
-
-		$expected = array('action' => 'add');
-		$this->assertEquals($expected, $CrudSubject->url);
 	}
 
 /**

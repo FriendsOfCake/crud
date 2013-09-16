@@ -155,6 +155,40 @@ abstract class CrudAction extends CrudBaseObject {
 	}
 
 /**
+ * Change redirection configuration
+ *
+ * If both `$name` and `$config` is empty all redirection
+ * rules will be returned.
+ *
+ * If `$name` is provided and `$config` is null, the named
+ * redirection configuration is returned.
+ *
+ * If both `$name` and `$config` is provided, the configuration
+ * is changed for the named rule.
+ *
+ * $config should contain the following keys:
+ *  - type : name of the reader
+ *  - key  : the key to read inside the reader
+ *  - url  : the url to redirect to
+ *
+ * @param null|string $name Name of the redirection rule
+ * @param null|array $config Redirection configuration
+ * @return mixed
+ */
+	public function redirection($name = null, $config = null) {
+		if ($name === null && $config === null) {
+			return $this->config('redirection');
+		}
+
+		$path = sprintf('redirection.%s', $name);
+		if ($config === null) {
+			return $this->config($path);
+		}
+
+		return $this->config($path, $config);
+	}
+
+/**
  * return the config for a given message type
  *
  * @param string $type

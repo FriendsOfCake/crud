@@ -30,7 +30,7 @@ class RedirectionListener extends CrudListener {
  */
 	public function implementedEvents() {
 		return array(
-			'Crud.beforeRedirect' => array('callable' => 'redirect', 'priority' => 90)
+			'Crud.beforeRedirect' => array('callable' => 'beforeRedirect', 'priority' => 90)
 		);
 	}
 
@@ -109,16 +109,16 @@ class RedirectionListener extends CrudListener {
  * @param CakeEvent $event
  * @return void
  */
-	public function redirect(CakeEvent $event) {
+	public function beforeRedirect(CakeEvent $event) {
 		$subject = $event->subject;
 
-		$redirects = $this->_action()->config('redirect');
+		$redirects = $this->_action()->redirection();
 		if (empty($redirects)) {
 			return;
 		}
 
 		foreach ($redirects as $redirect) {
-			if (!$this->_getKey($subject, $redirect['type'], $redirect['key'])) {
+			if (!$this->_getKey($subject, $redirect['reader'], $redirect['key'])) {
 				continue;
 			}
 
@@ -167,7 +167,7 @@ class RedirectionListener extends CrudListener {
 		$callable = $this->reader($reader);
 
 		if ($callable === null || !is_callable($callable)) {
-			throw new Exception('Invalid type: ' . $reader);
+			throw new Exception('Invalid reader: ' . $reader);
 		}
 
 		return $callable($subject, $key);

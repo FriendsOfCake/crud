@@ -32,7 +32,7 @@ class DeleteCrudAction extends CrudAction {
 		),
 		'redirect' => array(
 			'add' => array(
-				'type' => 'request.data',
+				'reader' => 'request.data',
 				'key' => '_add',
 				'url' => array('action' => 'add')
 			)

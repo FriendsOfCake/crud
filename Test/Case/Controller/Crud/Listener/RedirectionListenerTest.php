@@ -28,7 +28,7 @@ class RedirectionListenerTest extends CrudTestCase {
 
 		$result = $listener->implementedEvents();
 		$expected = array(
-			'Crud.beforeRedirect' => array('callable' => 'redirect', 'priority' => 90)
+			'Crud.beforeRedirect' => array('callable' => 'beforeRedirect', 'priority' => 90)
 		);
 		$this->assertEquals($expected, $result);
 	}
@@ -354,7 +354,7 @@ class RedirectionListenerTest extends CrudTestCase {
 
 		$subject = new CrudSubject();
 
-		$listener->redirect(new CakeEvent('Crud.beforeRedirect', $subject));
+		$listener->beforeRedirect(new CakeEvent('Crud.beforeRedirect', $subject));
 	}
 
 /**
@@ -371,7 +371,7 @@ class RedirectionListenerTest extends CrudTestCase {
 			->disableoriginalConstructor()
 			->getMock();
 
-		$action->config('redirect', array('add' => array('type' => 'request.key', 'key' => 'hello')));
+		$action->redirection('add', array('reader' => 'request.key', 'key' => 'hello'));
 
 		$subject = new CrudSubject();
 
@@ -393,7 +393,7 @@ class RedirectionListenerTest extends CrudTestCase {
 			->expects($this->never())
 			->method('_getUrl');
 
-		$listener->redirect(new CakeEvent('Crud.beforeRedirect', $subject));
+		$listener->beforeRedirect(new CakeEvent('Crud.beforeRedirect', $subject));
 	}
 
 /**
@@ -410,7 +410,11 @@ class RedirectionListenerTest extends CrudTestCase {
 			->disableoriginalConstructor()
 			->getMock();
 
-		$action->config('redirect', array('add' => array('type' => 'request.key', 'key' => 'hello', 'url' => array('action' => 'index'))));
+		$action->redirection('add', array(
+			'reader' => 'request.key',
+			'key' => 'hello',
+			'url' => array('action' => 'index')
+		));
 
 		$subject = new CrudSubject();
 
@@ -434,7 +438,7 @@ class RedirectionListenerTest extends CrudTestCase {
 			->with($subject, array('action' => 'index'))
 			->will($this->returnValue(array('action' => 'index')));
 
-		$listener->redirect(new CakeEvent('Crud.beforeRedirect', $subject));
+		$listener->beforeRedirect(new CakeEvent('Crud.beforeRedirect', $subject));
 
 		$this->assertSame(array('action' => 'index'), $subject->url);
 	}
