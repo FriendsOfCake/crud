@@ -3,3 +3,4 @@ _site
 _source
 .DS_Store
 link-checker-crawled-pages.pstore
+.ruby-version
