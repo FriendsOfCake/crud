@@ -329,7 +329,7 @@ class RedirectionListenerTest extends CrudTestCase {
  * Test how `redirect` handles an action without any
  * redirect configuration
  *
- * @covers RedirectionListener::redirect
+ * @covers RedirectionListener::beforeRedirect
  * @return void
  */
 	public function testRedirectWithNoConfig() {
@@ -361,7 +361,7 @@ class RedirectionListenerTest extends CrudTestCase {
  * Test how `redirect` handles an action with action redirect
  * configuration
  *
- * @covers RedirectionListener::redirect
+ * @covers RedirectionListener::beforeRedirect
  * @return void
  */
 	public function testRedirectWithConfigButNoValidKey() {
@@ -400,7 +400,7 @@ class RedirectionListenerTest extends CrudTestCase {
  * Test how `redirect` handles an action with action redirect
  * configuration
  *
- * @covers RedirectionListener::redirect
+ * @covers RedirectionListener::beforeRedirect
  * @return void
  */
 	public function testRedirectWithConfigAndValidKey() {
