@@ -4,9 +4,9 @@ App::uses('CakeEvent', 'Event');
 App::uses('CrudListener', 'Crud.Controller/Crud');
 
 /**
- * Enabled Crud to respond in a computer readable format like JSON or XML
+ * Redirection Listener
  *
- * It tries to enforce some REST principles and keep some string conventions in the output format
+ * Listener to improve upon the default redirection behavior of Crud actions
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
