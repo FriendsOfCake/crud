@@ -86,7 +86,7 @@ class RedirectionListener extends CrudListener {
 	}
 
 /**
- * Add or replace an reader
+ * Add or replace a reader
  *
  * @param string $key
  * @param null|Closure $reader

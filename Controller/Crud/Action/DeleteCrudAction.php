@@ -30,13 +30,6 @@ class DeleteCrudAction extends CrudAction {
 				'text' => 'Could not delete {name}'
 			)
 		),
-		'redirect' => array(
-			'add' => array(
-				'reader' => 'request.data',
-				'key' => '_add',
-				'url' => array('action' => 'add')
-			)
-		),
 		'api' => array(
 			'success' => array(
 				'code' => 200
