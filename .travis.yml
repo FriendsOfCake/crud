@@ -9,6 +9,8 @@ env:
   global:
     - REPO_NAME=crud
     - PLUGIN_NAME=Crud
+    - REQUIRE="cakephp/debug_kit:2.2.* cakedc/search:dev-develop"
+
   matrix:
     - DB=mysql CAKE_VERSION=master
     - DB=mysql CAKE_VERSION=2.5
@@ -23,14 +25,14 @@ matrix:
         - DB=mysql CAKE_VERSION=master PHPCS=1
 
 before_script:
-  - ./travis.sh
-  - cd ../cakephp
+  - ./.travis/before_script.sh
+  - cd ../cakephp/app
 
 script:
-  - sh -c "if [ '$PHPCS' != '1' ]; then ./lib/Cake/Console/cake test $PLUGIN_NAME All$PLUGIN_NAME --stderr --coverage-clover build/logs/clover.xml; else phpcs -p --ignore='*/Test/*' --extensions=php --standard=CakePHP ./plugins/$PLUGIN_NAME; fi"
+  - ./.travis/script.sh
 
 after_success:
-  - sh -c "if [ '$COVERALLS' = '1' ]; then php vendor/bin/coveralls -c .coveralls.yml -v; fi"
+  - ./.travis/after_success.sh
 
 notifications:
   email: false
