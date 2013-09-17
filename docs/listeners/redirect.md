@@ -1,11 +1,11 @@
 ---
-title: Redirection Listener
+title: Redirect
 layout: default
 ---
 
-# Redirection listener
+# Redirect listener
 
-Enable more complex redirection rules
+Enable more complex redirect rules
 
 # Setup
 
@@ -20,7 +20,7 @@ This is recommended if you want to attach it only to specific controllers and ac
 class SamplesController extends AppController {
 
   public function beforeFilter() {
-    $this->Crud->addListener('Redirection');
+    $this->Crud->addListener('Redirect');
 
     parent::beforeFilter();
   }
@@ -39,7 +39,7 @@ class SamplesController extends AppController {
   public $components = [
     'Crud.Crud' => [
       'actions' => ['index', 'view'],
-      'listeners' => ['Redirection']
+      'listeners' => ['Redirect']
     ];
 
 }
@@ -116,7 +116,7 @@ The closure takes two arguments:
 class SamplesController extends AppController {
 
   public function beforeFilter() {
-    $listener = $this->Crud->listener('Redirection');
+    $listener = $this->Crud->listener('Redirect');
     $listener->reader($name, Closure $closure);
 
     // Example on a reader using Configure
@@ -141,6 +141,7 @@ By default Add Crud Action always redirect to `array('action' => 'index')` on `a
 <table class="table">
 <thead>
   <tr>
+  	<th>Name</th>
     <th>Reader</th>
     <th>Key</th>
     <th>Result</th>
@@ -149,12 +150,14 @@ By default Add Crud Action always redirect to `array('action' => 'index')` on `a
 </thead>
 <tbody>
   <tr>
+  	<td>post_add</td>
     <td><code>request.data</code></td>
     <td><code>_add</code></td>
     <td><code>array('action' => 'add')</code></td>
     <td>By providing <code>_add</code> as a post key, the user will be redirected back to the add action</td>
   </tr>
   <tr>
+  	<td>post_edit</td>
     <td><code>request.data</code></td>
     <td><code>_edit</code></td>
     <td><code>array('action' => 'edit', $id)</code></td>
@@ -170,6 +173,7 @@ By default Edit Crud Action always redirect to `array('action' => 'index')` on `
 <table class="table">
 <thead>
   <tr>
+    <th>Name</th>
     <th>Reader</th>
     <th>Key</th>
     <th>Result</th>
@@ -178,12 +182,14 @@ By default Edit Crud Action always redirect to `array('action' => 'index')` on `
 </thead>
 <tbody>
   <tr>
+    <td>post_add</td>
     <td><code>request.data</code></td>
     <td><code>_add</code></td>
     <td><code>array('action' => 'add')</code></td>
     <td>By providing <code>_add</code> as a post key, the user will be redirected to the <code>add</code> action</td>
   </tr>
   <tr>
+  	<td>post_edit</td>
     <td><code>request.data</code></td>
     <td><code>_edit</code></td>
     <td><code>array('action' => 'edit', $id)</code></td>
@@ -192,26 +198,26 @@ By default Edit Crud Action always redirect to `array('action' => 'index')` on `
 </tbody>
 </table>
 
-# Configuring your own redirection rules
+# Configuring your own redirect rules
 
-It's very simple to modify existing or add your own redirection rules
+It's very simple to modify existing or add your own redirect rules
 
 {% highlight php %}
 <?php
 class SamplesController extends AppController {
 
   public function beforeFilter() {
-    // Get all the redirection rules
-    $rules = $this->Crud->action()->redirection();
+    // Get all the redirect rules
+    $rules = $this->Crud->action()->redirectConfig();
 
     // Get one named rule only
-    $rule = $this->Crud->action()->redirection('add');
+    $rule = $this->Crud->action()->redirectConfig('add');
 
-    // Configure a redirection rule:
+    // Configure a redirect rule:
     //
     // if $_POST['_view'] is set then redirect to
     // 'view' action with the value of '$subject->id'
-    $this->Crud->action()->redirection('view',
+    $this->Crud->action()->redirectConfig('view',
       [
         'reader' => 'request.data',  // Any reader from the list above
         'key'    => '_view',         // The key to check for, passed to the reader
