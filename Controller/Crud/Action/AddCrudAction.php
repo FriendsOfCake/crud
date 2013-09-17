@@ -52,7 +52,7 @@ class AddCrudAction extends CrudAction {
 				)
 			)
 		),
-		'redirection' => array(
+		'redirect' => array(
 			'post_add' => array(
 				'reader' => 'request.data',
 				'key' => '_add',

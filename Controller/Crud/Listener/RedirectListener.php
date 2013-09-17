@@ -4,14 +4,14 @@ App::uses('CakeEvent', 'Event');
 App::uses('CrudListener', 'Crud.Controller/Crud');
 
 /**
- * Redirection Listener
+ * Redirect Listener
  *
  * Listener to improve upon the default redirection behavior of Crud actions
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class RedirectionListener extends CrudListener {
+class RedirectListener extends CrudListener {
 
 /**
  * Settings
@@ -112,7 +112,7 @@ class RedirectionListener extends CrudListener {
 	public function beforeRedirect(CakeEvent $event) {
 		$subject = $event->subject;
 
-		$redirects = $this->_action()->redirection();
+		$redirects = $this->_action()->redirectConfig();
 		if (empty($redirects)) {
 			return;
 		}

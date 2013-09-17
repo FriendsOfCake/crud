@@ -54,7 +54,7 @@ class EditCrudAction extends CrudAction {
 				'text' => 'Could not update {name}'
 			)
 		),
-		'redirection' => array(
+		'redirect' => array(
 			'post_add' => array(
 				'reader' => 'request.data',
 				'key' => '_add',

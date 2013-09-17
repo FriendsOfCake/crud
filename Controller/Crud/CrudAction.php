@@ -155,7 +155,7 @@ abstract class CrudAction extends CrudBaseObject {
 	}
 
 /**
- * Change redirection configuration
+ * Change redirect configuration
  *
  * If both `$name` and `$config` is empty all redirection
  * rules will be returned.
@@ -175,12 +175,12 @@ abstract class CrudAction extends CrudBaseObject {
  * @param null|array $config Redirection configuration
  * @return mixed
  */
-	public function redirection($name = null, $config = null) {
+	public function redirectConfig($name = null, $config = null) {
 		if ($name === null && $config === null) {
-			return $this->config('redirection');
+			return $this->config('redirect');
 		}
 
-		$path = sprintf('redirection.%s', $name);
+		$path = sprintf('redirect.%s', $name);
 		if ($config === null) {
 			return $this->config($path);
 		}

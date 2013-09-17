@@ -239,8 +239,8 @@ class AddCrudActionTest extends CrudTestCase {
 		$Crud->initialize($Controller);
 		$Crud->mapAction('add', 'add');
 
-		$Crud->addListener('redirection');
-		$Crud->listener('redirection');
+		$Crud->addListener('redirect');
+		$Crud->listener('redirect');
 
 		$Action = $Crud->action('add');
 
@@ -286,8 +286,8 @@ class AddCrudActionTest extends CrudTestCase {
 		$Crud->initialize($Controller);
 		$Crud->mapAction('add', 'add');
 
-		$Crud->addListener('redirection');
-		$Crud->listener('redirection');
+		$Crud->addListener('redirect');
+		$Crud->listener('redirect');
 
 		$Action = $Crud->action('add');
 
