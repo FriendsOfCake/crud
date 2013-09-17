@@ -141,6 +141,7 @@ By default Add Crud Action always redirect to `array('action' => 'index')` on `a
 <table class="table">
 <thead>
   <tr>
+  	<th>Name</th>
     <th>Reader</th>
     <th>Key</th>
     <th>Result</th>
@@ -149,12 +150,14 @@ By default Add Crud Action always redirect to `array('action' => 'index')` on `a
 </thead>
 <tbody>
   <tr>
+  	<td>post_add</td>
     <td><code>request.data</code></td>
     <td><code>_add</code></td>
     <td><code>array('action' => 'add')</code></td>
     <td>By providing <code>_add</code> as a post key, the user will be redirected back to the add action</td>
   </tr>
   <tr>
+  	<td>post_edit</td>
     <td><code>request.data</code></td>
     <td><code>_edit</code></td>
     <td><code>array('action' => 'edit', $id)</code></td>
@@ -170,6 +173,7 @@ By default Edit Crud Action always redirect to `array('action' => 'index')` on `
 <table class="table">
 <thead>
   <tr>
+    <th>Name</th>
     <th>Reader</th>
     <th>Key</th>
     <th>Result</th>
@@ -178,12 +182,14 @@ By default Edit Crud Action always redirect to `array('action' => 'index')` on `
 </thead>
 <tbody>
   <tr>
+    <td>post_add</td>
     <td><code>request.data</code></td>
     <td><code>_add</code></td>
     <td><code>array('action' => 'add')</code></td>
     <td>By providing <code>_add</code> as a post key, the user will be redirected to the <code>add</code> action</td>
   </tr>
   <tr>
+  	<td>post_edit</td>
     <td><code>request.data</code></td>
     <td><code>_edit</code></td>
     <td><code>array('action' => 'edit', $id)</code></td>
