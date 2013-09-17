@@ -89,10 +89,10 @@ class RedirectionListener extends CrudListener {
  * Add or replace a reader
  *
  * @param string $key
- * @param null|Closure $reader
+ * @param mixed $reader
  * @return mixed
  */
-	public function reader($key, Closure $reader = null) {
+	public function reader($key, $reader = null) {
 		if ($reader === null) {
 			return $this->config('readers.' . $key);
 		}

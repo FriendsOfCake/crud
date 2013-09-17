@@ -53,12 +53,12 @@ class AddCrudAction extends CrudAction {
 			)
 		),
 		'redirection' => array(
-			'add' => array(
+			'post_add' => array(
 				'reader' => 'request.data',
 				'key' => '_add',
 				'url' => array('action' => 'add')
 			),
-			'edit' => array(
+			'post_edit' => array(
 				'reader' => 'request.data',
 				'key' => '_edit',
 				'url' => array('action' => 'edit', array('subject.key', 'id'))
