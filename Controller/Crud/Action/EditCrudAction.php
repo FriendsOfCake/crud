@@ -244,13 +244,13 @@ class EditCrudAction extends CrudAction {
 	}
 
 /**
- * Is the passed ID valid ?
+ * Is the passed ID valid?
  *
  * Validate the id in the url (the parent function) and then validate the id in the data.
  *
- * The data-id check is independent of the config setting `validateId` this checks whether
- * The id in the url matches the id in the submitted data (a type insensitive check). If
- * The id is different, this probably indicates a malicious form submission, attempting
+ * The data-id check is independent of the config setting `validateId`; this checks whether
+ * the id in the url matches the id in the submitted data (a type insensitive check). If
+ * the id is different, this probably indicates a malicious form submission, attempting
  * to add/edit a record the user doesn't have permission for by submitting to a url they
  * do have permission to access
  *
