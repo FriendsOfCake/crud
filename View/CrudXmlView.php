@@ -8,15 +8,15 @@ App::uses('XmlView', 'View');
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
+ *
+ * @codeCoverageIgnore Backport of 2.4 XmlView aliasing
  */
 class CrudXmlView extends XmlView {
 
 /**
- * Serialize view vars
+ * Serialize view vars.
  *
- * This is only here to follow CakePHP 2.4 compatibility with _serialize aliasing
- *
- * @param array $serialize The viewVars that need to be serialized
+ * @param array $serialize The viewVars that need to be serialized.
  * @return string The serialized data
  */
 	protected function _serialize($serialize) {
@@ -24,6 +24,7 @@ class CrudXmlView extends XmlView {
 
 		if (is_array($serialize)) {
 			$data = array($rootNode => array());
+
 			foreach ($serialize as $alias => $key) {
 				if (is_numeric($alias)) {
 					$alias = $key;
@@ -33,12 +34,14 @@ class CrudXmlView extends XmlView {
 			}
 		} else {
 			$data = isset($this->viewVars[$serialize]) ? $this->viewVars[$serialize] : null;
+
 			if (is_array($data) && Set::numeric(array_keys($data))) {
 				$data = array($rootNode => array($serialize => $data));
 			}
 		}
 
 		$options = array();
+
 		if (Configure::read('debug')) {
 			$options['pretty'] = true;
 		}

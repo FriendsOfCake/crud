@@ -8,6 +8,8 @@ App::uses('JsonView', 'View');
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
+ *
+ * @codeCoverageIgnore Backport of 2.4 JsonView aliasing
  */
 class CrudJsonView extends JsonView {
 
@@ -20,23 +22,27 @@ class CrudJsonView extends JsonView {
 	protected function _serialize($serialize) {
 		if (is_array($serialize)) {
 			$data = array();
+
 			foreach ($serialize as $alias => $key) {
 				if (is_numeric($alias)) {
 					$alias = $key;
 				}
 
-				$data[$alias] = $this->viewVars[$key];
+				if (array_key_exists($key, $this->viewVars)) {
+					$data[$alias] = $this->viewVars[$key];
+				}
 			}
+
+			$data = !empty($data) ? $data : null;
 		} else {
 			$data = isset($this->viewVars[$serialize]) ? $this->viewVars[$serialize] : null;
 		}
 
-		$options = 0;
 		if (version_compare(PHP_VERSION, '5.4.0', '>=') && Configure::read('debug')) {
-			$options = $options | JSON_PRETTY_PRINT;
+			return json_encode($data, JSON_PRETTY_PRINT);
 		}
 
-		return json_encode($data, $options);
+		return json_encode($data);
 	}
 
 }
