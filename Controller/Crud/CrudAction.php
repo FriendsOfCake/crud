@@ -155,6 +155,40 @@ abstract class CrudAction extends CrudBaseObject {
 	}
 
 /**
+ * Change redirect configuration
+ *
+ * If both `$name` and `$config` is empty all redirection
+ * rules will be returned.
+ *
+ * If `$name` is provided and `$config` is null, the named
+ * redirection configuration is returned.
+ *
+ * If both `$name` and `$config` is provided, the configuration
+ * is changed for the named rule.
+ *
+ * $config should contain the following keys:
+ *  - type : name of the reader
+ *  - key  : the key to read inside the reader
+ *  - url  : the url to redirect to
+ *
+ * @param null|string $name Name of the redirection rule
+ * @param null|array $config Redirection configuration
+ * @return mixed
+ */
+	public function redirectConfig($name = null, $config = null) {
+		if ($name === null && $config === null) {
+			return $this->config('redirect');
+		}
+
+		$path = sprintf('redirect.%s', $name);
+		if ($config === null) {
+			return $this->config($path);
+		}
+
+		return $this->config($path, $config);
+	}
+
+/**
  * return the config for a given message type
  *
  * @param string $type
@@ -386,12 +420,12 @@ abstract class CrudAction extends CrudBaseObject {
  * Called for all redirects inside CRUD
  *
  * @param CrudSubject $subject
- * @param array $url
+ * @param string|array $url
  * @param integer $status
  * @param boolean $exit
  * @return void
  */
-	protected function _redirect(CrudSubject $subject, array $url = null, $status = null, $exit = true) {
+	protected function _redirect(CrudSubject $subject, $url = null, $status = null, $exit = true) {
 		$url = $this->_redirectUrl($url);
 
 		$subject->url = $url;

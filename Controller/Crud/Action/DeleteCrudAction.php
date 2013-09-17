@@ -81,8 +81,7 @@ class DeleteCrudAction extends CrudAction {
 		$subject = $this->_trigger('beforeDelete', compact('id'));
 		if ($subject->stopped) {
 			$this->setFlash('error');
-			$controller = $this->_controller();
-			return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
+			return $this->_redirect($subject, array('action' => 'index'));
 		}
 
 		if ($model->delete($id)) {
@@ -93,12 +92,7 @@ class DeleteCrudAction extends CrudAction {
 			$subject = $this->_trigger('afterDelete', array('id' => $id, 'success' => false));
 		}
 
-		if ($request->data('_add')) {
-			return $this->_redirect($subject, array('action' => 'add'));
-		}
-
-		$controller = $this->_controller();
-		$this->_redirect($subject, $controller->referer(array('action' => 'index')));
+		$this->_redirect($subject, array('action' => 'index'));
 	}
 
 /**
