@@ -1,10 +1,15 @@
 <?php
 
 App::uses('Model', 'Model');
+App::uses('Controller', 'Controller');
 App::uses('CakeRequest', 'Network');
+App::uses('CakeResponse', 'Network');
+App::uses('ComponentCollection', 'Controller');
 App::uses('CrudTestCase', 'Crud.Test/Support');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
 App::uses('AddCrudAction', 'Crud.Controller/Crud/Action');
+App::uses('CrudComponent', 'Crud.Controller/Component');
+App::uses('RedirectionListener', 'Crud.Controller/Crud/Listener');
 
 /**
  *
@@ -106,21 +111,10 @@ class AddCrudActionTest extends CrudTestCase {
 				return true;
 			}));
 
-		$Controller = $this
-			->getMockBuilder('Controller')
-			->disableOriginalConstructor()
-			->setMethods(array('referer'))
-			->getMock();
-		$Controller
-			->expects($this->at(0))
-			->method('referer')
-			->with(array('action' => 'index'))
-			->will($this->returnValue(array('action' => 'index')));
-
 		$Action = $this
 			->getMockBuilder('AddCrudAction')
 			->disableOriginalConstructor()
-			->setMethods(array('_request', '_model', '_controller', '_trigger', 'setFlash', '_redirect'))
+			->setMethods(array('_request', '_model', '_trigger', 'setFlash', '_redirect'))
 			->getMock();
 
 		$AfterSaveSubject = new CrudSubject();
@@ -149,178 +143,9 @@ class AddCrudActionTest extends CrudTestCase {
 			->will($this->returnValue($AfterSaveSubject));
 		$Action
 			->expects($this->at($i++))
-			->method('_controller')
-			->will($this->returnValue($Controller));
-		$Action
-			->expects($this->at($i++))
 			->method('_redirect')
 			->with($AfterSaveSubject, array('action' => 'index'));
 		return $Action;
-	}
-
-/**
- * Test that calling HTTP POST on an add action
- * will trigger multiple events on success
- *
- * This test will also redirect to the add action
- *
- * @covers AddCrudAction::_post
- * @return void
- */
-	public function testActionPostWithAddRedirect() {
-		$Request = $this->getMock('CakeRequest');
-		$Request->action = 'add';
-		$Request->data = array(
-			'_add' => '_add',
-			'Post' => array('name' => 'Hello World')
-		);
-
-		$Model = $this->getMock('Model', array('saveAssociated'));
-		$Model
-			->expects($this->once())
-			->method('saveAssociated')
-			->with($Request->data)
-			->will($this->returnCallback(function() use ($Model) {
-				$Model->id = 1;
-				return true;
-			}));
-
-		$Controller = $this
-			->getMockBuilder('Controller')
-			->disableOriginalConstructor()
-			->setMethods(array('referer'))
-			->getMock();
-
-		$Action = $this
-			->getMockBuilder('AddCrudAction')
-			->disableOriginalConstructor()
-			->setMethods(array('_request', '_model', '_controller', '_trigger', 'setFlash', '_redirect'))
-			->getMock();
-
-		$CrudSubject = new CrudSubject();
-
-		$i = 0;
-		$Action
-			->expects($this->at($i++))
-			->method('_request')
-			->will($this->returnValue($Request));
-		$Action
-			->expects($this->at($i++))
-			->method('_model')
-			->will($this->returnValue($Model));
-		$Action
-			->expects($this->at($i++))
-			->method('_trigger')
-			->with('beforeSave');
-		$Action
-			->expects($this->at($i++))
-			->method('setFlash')
-			->with('success');
-		$Action
-			->expects($this->at($i++))
-			->method('_trigger')
-			->with('afterSave', array('success' => true, 'created' => true, 'id' => 1))
-			->will($this->returnValue($CrudSubject));
-		$Request
-			->expects($this->at(0))
-			->method('data')
-			->with('_add')
-			->will($this->returnValue(true));
-		$Action
-			->expects($this->at($i++))
-			->method('_redirect')
-			->with($CrudSubject, array('action' => 'add'));
-		$Action
-			->expects($this->exactly(2))
-			->method('_trigger');
-
-		$this->setReflectionClassInstance($Action);
-		$this->callProtectedMethod('_post', array(), $Action);
-	}
-
-/**
- * Test that calling HTTP POST on an add action
- * will trigger multiple events on success
- *
- * This test will also redirect to the edit action
- *
- * @covers AddCrudAction::_post
- * @return void
- */
-	public function testActionPostWithEditRedirect() {
-		$Request = $this->getMock('CakeRequest');
-		$Request->action = 'add';
-		$Request->data = array(
-			'_edit' => '_edit',
-			'Post' => array('name' => 'Hello World')
-		);
-
-		$Model = $this->getMock('Model', array('saveAssociated'));
-		$Model
-			->expects($this->once())
-			->method('saveAssociated')
-			->with($Request->data)
-			->will($this->returnCallback(function() use ($Model) {
-				$Model->id = 1;
-				return true;
-			}));
-
-		$Controller = $this
-			->getMockBuilder('Controller')
-			->disableOriginalConstructor()
-			->setMethods(array('referer'))
-			->getMock();
-
-		$Action = $this
-			->getMockBuilder('AddCrudAction')
-			->disableOriginalConstructor()
-			->setMethods(array('_request', '_model', '_controller', '_trigger', 'setFlash', '_redirect'))
-			->getMock();
-
-		$CrudSubject = new CrudSubject();
-
-		$i = 0;
-		$Action
-			->expects($this->at($i++))
-			->method('_request')
-			->will($this->returnValue($Request));
-		$Action
-			->expects($this->at($i++))
-			->method('_model')
-			->will($this->returnValue($Model));
-		$Action
-			->expects($this->at($i++))
-			->method('_trigger')
-			->with('beforeSave');
-		$Action
-			->expects($this->at($i++))
-			->method('setFlash')
-			->with('success');
-		$Action
-			->expects($this->at($i++))
-			->method('_trigger')
-			->with('afterSave', array('success' => true, 'created' => true, 'id' => 1))
-			->will($this->returnValue($CrudSubject));
-		$Request
-			->expects($this->at(0))
-			->method('data')
-			->with('_add')
-			->will($this->returnValue(false));
-		$Request
-			->expects($this->at(1))
-			->method('data')
-			->with('_edit')
-			->will($this->returnValue(true));
-		$Action
-			->expects($this->at($i++))
-			->method('_redirect')
-			->with($CrudSubject, array('action' => 'edit', 1));
-		$Action
-			->expects($this->exactly(2))
-			->method('_trigger');
-
-		$this->setReflectionClassInstance($Action);
-		$this->callProtectedMethod('_post', array(), $Action);
 	}
 
 /**
@@ -384,6 +209,98 @@ class AddCrudActionTest extends CrudTestCase {
 		$expected = $Request->data;
 		$expected['model'] = true;
 		$this->assertEquals($expected, $result, 'The Request::$data and Model::$data was not merged');
+	}
+
+/**
+ * Test redirection logic for "add"
+ *
+ * @return void
+ */
+	public function testRedirectListenerWithAdd() {
+		$Crud = $this
+			->getMockBuilder('CrudComponent')
+			->disableOriginalConstructor()
+			->setMethods(null)
+			->getMock();
+
+		$Controller = $this
+			->getMockBuilder('Controller')
+			->disableOriginalConstructor()
+			->setMethods(array('redirect'))
+			->getMock();
+
+		$Request = new CakeRequest;
+		$Request->params['action'] = 'add';
+		$Request->data = array('_add' => 'something');
+
+		$Controller->__construct($Request, new CakeResponse);
+
+		$Crud->__construct(new ComponentCollection);
+		$Crud->initialize($Controller);
+		$Crud->mapAction('add', 'add');
+
+		$Crud->addListener('redirect');
+		$Crud->listener('redirect');
+
+		$Action = $Crud->action('add');
+
+		$CrudSubject = $Crud->getSubject();
+		$CrudSubject->success = true;
+		$CrudSubject->created = true;
+		$CrudSubject->id = 69;
+
+		$Controller
+			->expects($this->once())
+			->method('redirect')
+			->with(array('action' => 'add'));
+
+		$this->setReflectionClassInstance($Action);
+		$this->callProtectedMethod('_redirect', array($CrudSubject, array('action' => 'index')), $Action);
+	}
+
+/**
+ * Test redirection logic for "edit"
+ *
+ * @return void
+ */
+	public function testRedirectListenerWithEdit() {
+		$Crud = $this
+			->getMockBuilder('CrudComponent')
+			->disableOriginalConstructor()
+			->setMethods(null)
+			->getMock();
+
+		$Controller = $this
+			->getMockBuilder('Controller')
+			->disableOriginalConstructor()
+			->setMethods(array('redirect'))
+			->getMock();
+
+		$Request = new CakeRequest;
+		$Request->params['action'] = 'add';
+		$Request->data = array('_edit' => 'something');
+
+		$Controller->__construct($Request, new CakeResponse);
+
+		$Crud->__construct(new ComponentCollection);
+		$Crud->initialize($Controller);
+		$Crud->mapAction('add', 'add');
+
+		$Crud->addListener('redirect');
+		$Crud->listener('redirect');
+
+		$Action = $Crud->action('add');
+
+		$CrudSubject = $Crud->getSubject();
+		$CrudSubject->success = true;
+		$CrudSubject->created = true;
+		$CrudSubject->id = 69;
+
+		$this->setReflectionClassInstance($Action);
+		$this->callProtectedMethod('_redirect', array($CrudSubject, array('action' => 'index')), $Action);
+
+		$expected = array('action' => 'edit', 69);
+		$this->assertEquals($expected, $CrudSubject->url);
 	}
 
 }
