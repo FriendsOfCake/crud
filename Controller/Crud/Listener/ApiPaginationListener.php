@@ -26,13 +26,13 @@ class ApiPaginationListener extends CrudListener {
 	}
 
 /**
- * Appends the pagination information to the JSON or XML output
+ * Appends the pagination information to the JSON or XML output and HTTP Response Headers
  *
  * @param CakeEvent $event
  * @return void
  */
 	public function beforeRender(CakeEvent $event) {
-		$request = $this->_request();
+        $request = $this->_request();
 		if (!$request->is('api')) {
 			return;
 		}
@@ -55,5 +55,47 @@ class ApiPaginationListener extends CrudListener {
 
 		$this->_action()->config('serialize.pagination', 'pagination');
 		$this->_controller()->set('pagination', $pagination);
+
+        /* Add pagination in http response header Link */
+        $this->controller = $this->_controller();
+        $options =  $_pagination['prevPage'] +  $_pagination['nextPage']*2;
+
+        //if options is 10 or 11
+        if($options % 2){
+            $links[]=$this->createLink($this->getPageUrl(),'first');
+            $links[]=$this->createLink($this->getPageUrl($_pagination['page']-1),'prev');
+        }
+
+        //if options is 01 or 11
+        if($options >= 2){
+            $links[]=$this->createLink($this->getPageUrl($_pagination['page']+1),'next');
+            $links[]=$this->createLink($this->getPageUrl($_pagination['pageCount']),'last');
+        }
+        if($options){//Not paging
+            $this->controller->response->header('Link', implode(',',$links));
+        }
 	}
+
+/**
+ * Returns a string with the HTTP Response Link format
+ *
+ *
+ * @return string
+ */
+  public function createLink($url,$type){
+    $format ='<%s>;rel="%s"';
+    return sprintf($format,$url,$type);
+  }
+
+/**
+ * Returns a router URL for pagination
+ *
+ *
+ * @return string
+ */
+  public function getPageUrl($index = NULL){
+      $this->controller = $this->_controller();
+      if(is_null($index)) return Router::url(array('ext' => $this->controller->RequestHandler->ext),true);
+      return Router::url(array('?' => "page=$index",'ext' => $this->controller->RequestHandler->ext),true);
+  }
 }
