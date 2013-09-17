@@ -54,6 +54,18 @@ class EditCrudAction extends CrudAction {
 				'text' => 'Could not update {name}'
 			)
 		),
+		'redirect' => array(
+			'post_add' => array(
+				'reader' => 'request.data',
+				'key' => '_add',
+				'url' => array('action' => 'add')
+			),
+			'post_edit' => array(
+				'reader' => 'request.data',
+				'key' => '_edit',
+				'url' => array('action' => 'edit', array('subject.key', 'id'))
+			)
+		),
 		'api' => array(
 			'methods' => array('put', 'post'),
 			'success' => array(
@@ -128,15 +140,7 @@ class EditCrudAction extends CrudAction {
 		if (call_user_func(array($model, $this->saveMethod()), $request->data, $this->saveOptions())) {
 			$this->setFlash('success');
 			$subject = $this->_trigger('afterSave', array('id' => $id, 'success' => true, 'created' => false));
-
-			if ($request->data('_add')) {
-				return $this->_redirect($subject, array('action' => 'add'));
-			} elseif ($request->data('_edit')) {
-				return $this->_redirect($subject, array('action' => $request->action, $id));
-			}
-
-			$controller = $this->_controller();
-			return $this->_redirect($subject, $controller->referer(array('action' => 'index')));
+			return $this->_redirect($subject, array('action' => 'index'));
 		}
 
 		$this->setFlash('error');
@@ -160,8 +164,8 @@ class EditCrudAction extends CrudAction {
 		if (!$findMethod) {
 			$findMethod = $this->_getFindMethod($findMethod);
 		}
-		$subject = $this->_trigger('beforeFind', compact('query', 'findMethod'));
 
+		$subject = $this->_trigger('beforeFind', compact('query', 'findMethod'));
 		return $model->find($subject->findMethod, $subject->query);
 	}
 
@@ -244,13 +248,13 @@ class EditCrudAction extends CrudAction {
 	}
 
 /**
- * Is the passed ID valid ?
+ * Is the passed ID valid?
  *
  * Validate the id in the url (the parent function) and then validate the id in the data.
  *
- * The data-id check is independent of the config setting `validateId` this checks whether
- * The id in the url matches the id in the submitted data (a type insensitive check). If
- * The id is different, this probably indicates a malicious form submission, attempting
+ * The data-id check is independent of the config setting `validateId`; this checks whether
+ * the id in the url matches the id in the submitted data (a type insensitive check). If
+ * the id is different, this probably indicates a malicious form submission, attempting
  * to add/edit a record the user doesn't have permission for by submitting to a url they
  * do have permission to access
  *

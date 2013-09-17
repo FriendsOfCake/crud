@@ -51,12 +51,6 @@ class DeleteCrudActionTest extends CrudTestCase {
 			->setMethods(array('escapeField', 'find', 'delete'))
 			->getMock();
 
-		$Controller = $this
-			->getMockBuilder('Controller')
-			->disableOriginalConstructor()
-			->setMethods(array('referer'))
-			->getMock();
-
 		$query = array('conditions' => array('Model.id' => 1));
 
 		$CrudSubject = new CrudSubject();
@@ -68,7 +62,7 @@ class DeleteCrudActionTest extends CrudTestCase {
 			->disableOriginalConstructor()
 			->setMethods(array(
 				'_request', '_model', '_validateId', '_getFindMethod',
-				'_trigger', 'setFlash', '_redirect', '_controller'
+				'_trigger', 'setFlash', '_redirect'
 			))
 			->getMock();
 		$Action
@@ -125,132 +119,11 @@ class DeleteCrudActionTest extends CrudTestCase {
 			->method('_trigger')
 			->with('afterDelete', array('id' => 1, 'success' => true))
 			->will($this->returnValue($CrudSubject));
-		$Action
-			->expects($this->at($i++))
-			->method('_controller')
-			->with()
-			->will($this->returnValue($Controller));
-		$Controller
-			->expects($this->once())
-			->method('referer')
-			->with(array('action' => 'index'))
-			->will($this->returnValue(array('action' => 'index')));
 		$Action
 			->expects($this->at($i++))
 			->method('_redirect')
 			->with($CrudSubject, array('action' => 'index'));
 		return $Action;
-	}
-
-/**
- * testActiondeleteWithAddRedirect
- *
- * test the best-case flow with add redirection
- *
- * @covers DeleteCrudAction::_delete
- * @return void
- */
-	public function testActiondeleteWithAddRedirect() {
-		$data = array(
-			'_edit' => '_edit',
-		);
-
-		$Request = $this->getMock('CakeRequest');
-		$Request->setMethods(array('data'));
-		$Request->data = $data;
-
-		$Model = $this
-			->getMockBuilder('Model')
-			->disableOriginalConstructor()
-			->setMethods(array('escapeField', 'find', 'delete'))
-			->getMock();
-
-		$Controller = $this
-			->getMockBuilder('Controller')
-			->disableOriginalConstructor()
-			->setMethods(array('referer'))
-			->getMock();
-
-		$query = array('conditions' => array('Model.id' => 1));
-
-		$CrudSubject = new CrudSubject();
-
-		$i = 0;
-
-		$Action = $this
-			->getMockBuilder('DeleteCrudAction')
-			->disableOriginalConstructor()
-			->setMethods(array(
-				'_request', '_model', '_validateId', '_getFindMethod',
-				'_trigger', 'setFlash', '_redirect', '_controller'
-			))
-			->getMock();
-		$Action
-			->expects($this->at($i++))
-			->method('_validateId')
-			->with(1)
-			->will($this->returnValue(true));
-		$Action
-			->expects($this->at($i++))
-			->method('_request')
-			->with()
-			->will($this->returnValue($Request));
-		$Action
-			->expects($this->at($i++))
-			->method('_model')
-			->with()
-			->will($this->returnValue($Model));
-		$Model
-			->expects($this->once())
-			->method('escapeField')
-			->with()
-			->will($this->returnValue('Model.id'));
-		$Action
-			->expects($this->at($i++))
-			->method('_getFindMethod')
-			->with('count')
-			->will($this->returnValue('count'));
-		$Action
-			->expects($this->at($i++))
-			->method('_trigger')
-			->with('beforeFind', array('id' => 1, 'query' => $query, 'findMethod' => 'count'))
-			->will($this->returnValue(new CrudSubject(array('query' => $query, 'findMethod' => 'count'))));
-		$Model
-			->expects($this->once())
-			->method('find')
-			->with('count', $query)
-			->will($this->returnValue(1));
-		$Action
-			->expects($this->at($i++))
-			->method('_trigger')
-			->with('beforeDelete', array('id' => 1))
-			->will($this->returnValue(new CrudSubject(array('stopped' => false))));
-		$Model
-			->expects($this->once())
-			->method('delete')
-			->with()
-			->will($this->returnValue(true));
-		$Action
-			->expects($this->at($i++))
-			->method('setFlash')
-			->with('success');
-		$Action
-			->expects($this->at($i++))
-			->method('_trigger')
-			->with('afterDelete', array('id' => 1, 'success' => true))
-			->will($this->returnValue($CrudSubject));
-		$Request
-			->expects($this->at(0))
-			->method('data')
-			->with('_add')
-			->will($this->returnValue(true));
-		$Action
-			->expects($this->at($i++))
-			->method('_redirect')
-			->with($CrudSubject, array('action' => 'add'));
-
-		$this->setReflectionClassInstance($Action);
-		$this->callProtectedMethod('_delete', array(1), $Action);
 	}
 
 /**
@@ -362,12 +235,6 @@ class DeleteCrudActionTest extends CrudTestCase {
 			->setMethods(array('escapeField', 'find', 'delete'))
 			->getMock();
 
-		$Controller = $this
-			->getMockBuilder('Controller')
-			->disableOriginalConstructor()
-			->setMethods(array('referer'))
-			->getMock();
-
 		$query = array('conditions' => array('Model.id' => 1));
 
 		$CrudSubject = new CrudSubject();
@@ -379,7 +246,7 @@ class DeleteCrudActionTest extends CrudTestCase {
 			->disableOriginalConstructor()
 			->setMethods(array(
 				'_request', '_model', '_validateId', '_getFindMethod',
-				'_trigger', 'setFlash', '_redirect', '_controller'
+				'_trigger', 'setFlash', '_redirect'
 			))
 			->getMock();
 		$Action
@@ -438,16 +305,6 @@ class DeleteCrudActionTest extends CrudTestCase {
 			->will($this->returnValue($CrudSubject));
 		$Action
 			->expects($this->at($i++))
-			->method('_controller')
-			->with()
-			->will($this->returnValue($Controller));
-		$Controller
-			->expects($this->once())
-			->method('referer')
-			->with(array('action' => 'index'))
-			->will($this->returnValue(array('action' => 'index')));
-		$Action
-			->expects($this->at($i++))
 			->method('_redirect')
 			->with($CrudSubject, array('action' => 'index'));
 
@@ -473,12 +330,6 @@ class DeleteCrudActionTest extends CrudTestCase {
 			->setMethods(array('escapeField', 'find', 'delete'))
 			->getMock();
 
-		$Controller = $this
-			->getMockBuilder('Controller')
-			->disableOriginalConstructor()
-			->setMethods(array('referer'))
-			->getMock();
-
 		$query = array('conditions' => array('Model.id' => 1));
 
 		$CrudSubject = new CrudSubject();
@@ -490,7 +341,7 @@ class DeleteCrudActionTest extends CrudTestCase {
 			->disableOriginalConstructor()
 			->setMethods(array(
 				'_request', '_model', '_validateId', '_getFindMethod',
-				'_trigger', 'setFlash', '_redirect', '_controller'
+				'_trigger', 'setFlash', '_redirect'
 			))
 			->getMock();
 		$Action
@@ -540,16 +391,6 @@ class DeleteCrudActionTest extends CrudTestCase {
 			->expects($this->at($i++))
 			->method('setFlash')
 			->with('error');
-		$Action
-			->expects($this->at($i++))
-			->method('_controller')
-			->with()
-			->will($this->returnValue($Controller));
-		$Controller
-			->expects($this->once())
-			->method('referer')
-			->with(array('action' => 'index'))
-			->will($this->returnValue(array('action' => 'index')));
 		$CrudSubject->stopped = true;
 		$Action
 			->expects($this->at($i++))
