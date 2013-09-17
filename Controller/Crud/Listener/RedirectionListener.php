@@ -24,7 +24,7 @@ class RedirectionListener extends CrudListener {
 
 /**
  * Returns a list of all events that will fire in the controller during its lifecycle.
- * You can override this function to add you own listener callbacks
+ * You can override this function to add your own listener callbacks
  *
  * @return array
  */
@@ -137,7 +137,7 @@ class RedirectionListener extends CrudListener {
  * @param array $config
  * @return array
  */
-	protected function _getUrl(CrudSubject $subject, $url) {
+	protected function _getUrl(CrudSubject $subject, array $url) {
 		foreach ($url as $key => $value) {
 			if (!is_array($value)) {
 				continue;
