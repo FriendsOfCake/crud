@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="generator" content="ApiGen 2.8.0" />
 
-	<title>Class ApiQueryLogListener | FriendsOfCake/crud (develop)</title>
+	<title>Class RedirectListener | FriendsOfCake/crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
 	<script type="text/javascript" src="elementlist.js?1410936603"></script>
@@ -68,7 +68,7 @@
 				<li><a href="class-ApiFieldFilterListener.html">ApiFieldFilterListener</a></li>
 				<li><a href="class-ApiListener.html">ApiListener</a></li>
 				<li><a href="class-ApiPaginationListener.html">ApiPaginationListener</a></li>
-				<li class="active"><a href="class-ApiQueryLogListener.html">ApiQueryLogListener</a></li>
+				<li><a href="class-ApiQueryLogListener.html">ApiQueryLogListener</a></li>
 				<li><a href="class-ApiTransformationListener.html">ApiTransformationListener</a></li>
 				<li><a href="class-CrudAction.html">CrudAction</a></li>
 				<li><a href="class-CrudBaseObject.html">CrudBaseObject</a></li>
@@ -84,7 +84,7 @@
 				<li><a href="class-DeleteCrudAction.html">DeleteCrudAction</a></li>
 				<li><a href="class-EditCrudAction.html">EditCrudAction</a></li>
 				<li><a href="class-IndexCrudAction.html">IndexCrudAction</a></li>
-				<li><a href="class-RedirectListener.html">RedirectListener</a></li>
+				<li class="active"><a href="class-RedirectListener.html">RedirectListener</a></li>
 				<li><a href="class-RelatedModelsListener.html">RelatedModelsListener</a></li>
 				<li><a href="class-ScaffoldListener.html">ScaffoldListener</a></li>
 				<li><a href="class-SearchListener.html">SearchListener</a></li>
@@ -109,16 +109,14 @@
 <div id="right">
 	<div id="rightInner">
 <div id="content" class="class">
-	<h1>Class ApiQueryLogListener</h1>
+	<h1>Class RedirectListener</h1>
 
 
 	<div class="description">
 	
-<p>When loaded Crud API will include query logs in the response</p>
+<p>Redirect Listener</p>
 
-<p>Very much like the DebugKit version, the SQL log will only be appended if the
-following conditions is true: 1) The request must be 'api' (.json/.xml) 2) The
-debug level must be 2 or above</p>
+<p>Listener to improve upon the default redirection behavior of Crud actions</p>
 
 <p>Licensed under The MIT License For full copyright and license information,
 please see the LICENSE.txt</p>
@@ -149,7 +147,7 @@ Object
 		</dd>
 		<dd style="padding-left:90px">
 			<img src="resources/inherit.png" alt="Extended by" />
-<b><span>ApiQueryLogListener</span></b>			
+<b><span>RedirectListener</span></b>			
 			
 			
 		</dd>
@@ -168,7 +166,7 @@ Object
 		
 		
 
-		<b>Located at</b> <a href="source-class-ApiQueryLogListener.html#6-100" title="Go to source code">Controller/Crud/Listener/ApiQueryLogListener.php</a><br />
+		<b>Located at</b> <a href="source-class-RedirectListener.html#6-176" title="Go to source code">Controller/Crud/Listener/RedirectListener.php</a><br />
 	</div>
 
 
@@ -186,21 +184,19 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#_implementedEvents">#</a>
-			<code><a href="source-class-ApiQueryLogListener.html#19-31" title="Go to source code">implementedEvents</a>( )</code>
+			<code><a href="source-class-RedirectListener.html#25-35" title="Go to source code">implementedEvents</a>( )</code>
 
 			<div class="description short">
 				
 <p>Returns a list of all events that will fire in the controller during its
-lifecycle. You can override this function to add you own listener callbacks</p>
+lifecycle. You can override this function to add your own listener callbacks</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
 <p>Returns a list of all events that will fire in the controller during its
-lifecycle. You can override this function to add you own listener callbacks</p>
-
-<p>We attach at priority 10 so normal bound events can run before us</p>
+lifecycle. You can override this function to add your own listener callbacks</p>
 
 
 
@@ -218,7 +214,7 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="beforeRender" id="_beforeRender">
+		<tr data-order="setup" id="_setup">
 
 			<td class="attributes"><code>
 				 public 
@@ -228,18 +224,101 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#_beforeRender">#</a>
-			<code><a href="source-class-ApiQueryLogListener.html#33-52" title="Go to source code">beforeRender</a>( <span>CakeEvent <var>$event</var></span> )</code>
+			<a class="anchor" href="#_setup">#</a>
+			<code><a href="source-class-RedirectListener.html#37-86" title="Go to source code">setup</a>( )</code>
 
 			<div class="description short">
 				
-<p>Appends the query log to the JSON or XML output</p>
+<p>Setup method</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Appends the query log to the JSON or XML output</p>
+<p>Setup method</p>
+
+<p>Called when the listener is initialized</p>
+
+<p>Setup the default readers</p>
+
+
+
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="reader" id="_reader">
+
+			<td class="attributes"><code>
+				 public 
+				mixed
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_reader">#</a>
+			<code><a href="source-class-RedirectListener.html#88-101" title="Go to source code">reader</a>( <span>string <var>$key</var></span>, <span>mixed <var>$reader</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				
+<p>Add or replace a reader</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Add or replace a reader</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$key</var></dt>
+						<dd><code>string</code><br>$key</dd>
+						<dt><var>$reader</var></dt>
+						<dd><code>mixed</code><br>$reader</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>mixed</code><br />
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="beforeRedirect" id="_beforeRedirect">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_beforeRedirect">#</a>
+			<code><a href="source-class-RedirectListener.html#103-128" title="Go to source code">beforeRedirect</a>( <span>CakeEvent <var>$event</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Redirect callback</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Redirect callback</p>
+
+<p>If a special redirect key is provided, change the redirection URL target</p>
 
 
 
@@ -256,7 +335,7 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 			</div>
 			</div></td>
 		</tr>
-		<tr data-order="_getQueryLogs" id="__getQueryLogs">
+		<tr data-order="_getUrl" id="__getUrl">
 
 			<td class="attributes"><code>
 				 protected 
@@ -266,113 +345,88 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#__getQueryLogs">#</a>
-			<code><a href="source-class-ApiQueryLogListener.html#54-77" title="Go to source code">_getQueryLogs</a>( )</code>
+			<a class="anchor" href="#__getUrl">#</a>
+			<code><a href="source-class-RedirectListener.html#130-155" title="Go to source code">_getUrl</a>( <span><code><a href="class-CrudSubject.html">CrudSubject</a></code> <var>$subject</var></span>, <span>array <var>$url</var></span> )</code>
 
 			<div class="description short">
 				
-<p>Get the query logs for all sources</p>
+<p>Get the new redirect URL</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Get the query logs for all sources</p>
+<p>Get the new redirect URL</p>
 
-
-
-
-					<h4>Returns</h4>
-					<div class="list">
-						<code>array</code><br />
-					</div>
-
-
-
-
-			</div>
-			</div></td>
-		</tr>
-		<tr data-order="_getSources" id="__getSources">
-
-			<td class="attributes"><code>
-				 protected 
-				array
-				
-				</code>
-			</td>
-
-			<td class="name"><div>
-			<a class="anchor" href="#__getSources">#</a>
-			<code><a href="source-class-ApiQueryLogListener.html#79-87" title="Go to source code">_getSources</a>( )</code>
-
-			<div class="description short">
-				
-<p>Get a list of sources defined in database.php</p>
-
-			</div>
-
-			<div class="description detailed hidden">
-				
-<p>Get a list of sources defined in database.php</p>
-
-
-
-
-					<h4>Returns</h4>
-					<div class="list">
-						<code>array</code><br />
-					</div>
-
-
-					<h4>CodeCoverageIgnore</h4>
-					<div class="list">
-					</div>
-
-
-			</div>
-			</div></td>
-		</tr>
-		<tr data-order="_getSource" id="__getSource">
-
-			<td class="attributes"><code>
-				 protected 
-				DataSource
-				
-				</code>
-			</td>
-
-			<td class="name"><div>
-			<a class="anchor" href="#__getSource">#</a>
-			<code><a href="source-class-ApiQueryLogListener.html#89-98" title="Go to source code">_getSource</a>( <span>string <var>$source</var></span> )</code>
-
-			<div class="description short">
-				
-<p>Get a specific data source</p>
-
-			</div>
-
-			<div class="description detailed hidden">
-				
-<p>Get a specific data source</p>
+<p>Expand configurations where possible and replace the placeholder with the
+actual value</p>
 
 
 
 					<h4>Parameters</h4>
 					<div class="list"><dl>
-						<dt><var>$source</var></dt>
-						<dd><code>string</code><br>$source Datasource name</dd>
+						<dt><var>$subject</var></dt>
+						<dd><code><code><a href="class-CrudSubject.html">CrudSubject</a></code></code><br>$subject</dd>
+						<dt><var>$url</var></dt>
+						<dd><code>array</code><br>$config</dd>
 					</dl></div>
 
 					<h4>Returns</h4>
 					<div class="list">
-						<code>DataSource</code><br />
+						<code>array</code><br />
 					</div>
 
 
-					<h4>CodeCoverageIgnore</h4>
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="_getKey" id="__getKey">
+
+			<td class="attributes"><code>
+				 protected 
+				mixed
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#__getKey">#</a>
+			<code><a href="source-class-RedirectListener.html#157-174" title="Go to source code">_getKey</a>( <span><code><a href="class-CrudSubject.html">CrudSubject</a></code> <var>$subject</var></span>, <span>string <var>$reader</var></span>, <span>string <var>$key</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Return the value of <code>$type</code> with <code>$key</code></p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Return the value of <code>$type</code> with <code>$key</code></p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$subject</var></dt>
+						<dd><code><code><a href="class-CrudSubject.html">CrudSubject</a></code></code><br>$subject</dd>
+						<dt><var>$reader</var></dt>
+						<dd><code>string</code><br>$reader</dd>
+						<dt><var>$key</var></dt>
+						<dd><code>string</code><br>$key</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
 					<div class="list">
+						<code>mixed</code><br />
 					</div>
+
+					<h4>Throws</h4>
+					<div class="list">
+						<code>Exception</code><br>if the reader is invalid<br />
+					</div>
+
 
 
 			</div>
@@ -410,11 +464,38 @@ lifecycle. You can override this function to add you own listener callbacks</p>
 
 
 		<h2>Properties summary</h2>
+		<table class="summary table table-bordered table-striped" id="properties">
+		<tr data-order="_settings" id="$_settings">
+			<td class="attributes"><code>
+				protected  
+				array
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-RedirectListener.html#16-23" title="Go to source code"><var>$_settings</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$_settings" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>Settings</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>Settings</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		</table>
 
 		<h3>Properties inherited from <a href="class-CrudBaseObject.html#properties">CrudBaseObject</a></h3>
 		<p class="elementList">
-			<code><a href="class-CrudBaseObject.html#$_container"><var>$_container</var></a></code>, 
-			<code><a href="class-CrudBaseObject.html#$_settings"><var>$_settings</var></a></code>
+			<code><a href="class-CrudBaseObject.html#$_container"><var>$_container</var></a></code>
 		</p>
 
 

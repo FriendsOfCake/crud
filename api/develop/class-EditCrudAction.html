@@ -7,7 +7,7 @@
 	<title>Class EditCrudAction | FriendsOfCake/crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?3468173570"></script>
+	<script type="text/javascript" src="elementlist.js?1410936603"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -84,6 +84,7 @@
 				<li><a href="class-DeleteCrudAction.html">DeleteCrudAction</a></li>
 				<li class="active"><a href="class-EditCrudAction.html">EditCrudAction</a></li>
 				<li><a href="class-IndexCrudAction.html">IndexCrudAction</a></li>
+				<li><a href="class-RedirectListener.html">RedirectListener</a></li>
 				<li><a href="class-RelatedModelsListener.html">RelatedModelsListener</a></li>
 				<li><a href="class-ScaffoldListener.html">ScaffoldListener</a></li>
 				<li><a href="class-SearchListener.html">SearchListener</a></li>
@@ -163,7 +164,7 @@ Object
 		
 		
 
-		<b>Located at</b> <a href="source-class-EditCrudAction.html#5-289" title="Go to source code">Controller/Crud/Action/EditCrudAction.php</a><br />
+		<b>Located at</b> <a href="source-class-EditCrudAction.html#5-293" title="Go to source code">Controller/Crud/Action/EditCrudAction.php</a><br />
 	</div>
 
 
@@ -181,7 +182,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#__get">#</a>
-			<code><a href="source-class-EditCrudAction.html#79-104" title="Go to source code">_get</a>( <span>string <var>$id</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-EditCrudAction.html#91-116" title="Go to source code">_get</a>( <span>string <var>$id</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -223,7 +224,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#__put">#</a>
-			<code><a href="source-class-EditCrudAction.html#106-145" title="Go to source code">_put</a>( <span>mixed <var>$id</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-EditCrudAction.html#118-149" title="Go to source code">_put</a>( <span>mixed <var>$id</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -261,7 +262,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#__findRecord">#</a>
-			<code><a href="source-class-EditCrudAction.html#147-166" title="Go to source code">_findRecord</a>( <span>string <var>$id</var></span>, <span>string <var>$findMethod</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-EditCrudAction.html#151-170" title="Go to source code">_findRecord</a>( <span>string <var>$id</var></span>, <span>string <var>$findMethod</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -305,7 +306,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#__notFound">#</a>
-			<code><a href="source-class-EditCrudAction.html#168-181" title="Go to source code">_notFound</a>( <span>string <var>$id</var></span> )</code>
+			<code><a href="source-class-EditCrudAction.html#172-185" title="Go to source code">_notFound</a>( <span>string <var>$id</var></span> )</code>
 
 			<div class="description short">
 				
@@ -347,7 +348,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#__post">#</a>
-			<code><a href="source-class-EditCrudAction.html#183-193" title="Go to source code">_post</a>( <span>mixed <var>$id</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-EditCrudAction.html#187-197" title="Go to source code">_post</a>( <span>mixed <var>$id</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -387,7 +388,7 @@ Object
 
 			<td class="name"><div>
 			<a class="anchor" href="#__injectPrimaryKey">#</a>
-			<code><a href="source-class-EditCrudAction.html#195-244" title="Go to source code">_injectPrimaryKey</a>( <span>array <var>$data</var></span>, <span>mixed <var>$id</var></span>, <span>Model <var>$model</var></span> )</code>
+			<code><a href="source-class-EditCrudAction.html#199-248" title="Go to source code">_injectPrimaryKey</a>( <span>array <var>$data</var></span>, <span>mixed <var>$id</var></span>, <span>Model <var>$model</var></span> )</code>
 
 			<div class="description short">
 				
@@ -452,7 +453,7 @@ array('stuff' =&gt; 'here', 'id' =&gt; $id)</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#__validateId">#</a>
-			<code><a href="source-class-EditCrudAction.html#246-287" title="Go to source code">_validateId</a>( <span>mixed <var>$id</var></span> )</code>
+			<code><a href="source-class-EditCrudAction.html#250-291" title="Go to source code">_validateId</a>( <span>mixed <var>$id</var></span> )</code>
 
 			<div class="description short">
 				
@@ -514,6 +515,7 @@ permission to access</p>
 			<code><a href="class-CrudAction.html#_handle">handle()</a></code>, 
 			<code><a href="class-CrudAction.html#_implementedEvents">implementedEvents()</a></code>, 
 			<code><a href="class-CrudAction.html#_message">message()</a></code>, 
+			<code><a href="class-CrudAction.html#_redirectConfig">redirectConfig()</a></code>, 
 			<code><a href="class-CrudAction.html#_relatedModels">relatedModels()</a></code>, 
 			<code><a href="class-CrudAction.html#_saveMethod">saveMethod()</a></code>, 
 			<code><a href="class-CrudAction.html#_saveOptions">saveOptions()</a></code>, 
@@ -551,7 +553,7 @@ permission to access</p>
 
 			<td class="attributes"><code>integer</code></td>
 			<td class="name"><code>
-					<a href="source-class-EditCrudAction.html#72-77" title="Go to source code"><b>ACTION_SCOPE</b></a>
+					<a href="source-class-EditCrudAction.html#84-89" title="Go to source code"><b>ACTION_SCOPE</b></a>
 			</code></td>
 			<td class="value"><code><code><a href="class-CrudAction.html#SCOPE_RECORD">CrudAction::<b>SCOPE_RECORD</b></a></code></code></td>
 			<td class="description"><div>
@@ -590,7 +592,7 @@ permission to access</p>
 			</code></td>
 
 			<td class="name">
-					<a href="source-class-EditCrudAction.html#13-70" title="Go to source code"><var>$_settings</var></a>
+					<a href="source-class-EditCrudAction.html#13-82" title="Go to source code"><var>$_settings</var></a>
 			</td>
 			<td class="description"><div>
 				<a href="#$_settings" class="anchor">#</a>
