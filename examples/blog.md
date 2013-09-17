@@ -73,6 +73,8 @@ Create `app/Model/Post.php`
 
 {% highlight php %}
 <?php
+App::uses('AppModel', 'Model');
+
 class Post extends AppModel {
     public $validate = array(
         'title' => array(
@@ -92,7 +94,6 @@ Create `app/Controller/PostsController.php`
 
 {% highlight php %}
 <?php
-
 App::uses('AppController', 'Controller');
 
 class PostsController extends AppController {
@@ -113,11 +114,11 @@ That was it.. the 15 minute blog tutorial done with Crud.
 
 Obviously there isn't a huge win in this small example, but read on and see how much awesome features Crud can provide.
 
-Read on and lets add a API layer on top of our new Blog.
+Read on and let's add a API layer on top of our new Blog.
 
 # Adding API
 
-Since our new blog is super webscale, and we want people to be able to consume our content through a nice API we want to add some JSON and XML response formats.
+Since our new blog is super webscale, and we want people to be able to consume our content through a nice API, we want to add some JSON and XML response formats.
 
 ## Route configuration
 
@@ -149,7 +150,7 @@ public $components = array(
 ?>
 {% endhighlight %}
 
-And thats its.. we now got a nice REST api for our posts controller, or any other controller your application could have.
+And that's it.. we now got a nice REST api for our posts controller, or any other controller your application could have.
 
 ## Using the new API
 
