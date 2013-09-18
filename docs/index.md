@@ -7,48 +7,48 @@ layout: default
 
 Crud was built to be [scaffolding](http://book.cakephp.org/2.0/en/controllers/scaffolding.html) on
 steroids, and allow developers to have enough flexibility to use it for both rapid prototyping and
-production applications, even on the same code base - saving you even more time.
+production applications, even on the same code base -- saving you time.
 
-Crud is [very fast to install]({{site.url}}/docs/installation.html), 2 minutes tops.
+* Crud is [very fast to install]({{site.url}}/docs/installation.html), a few minutes tops.
 
-Crud is very flexible, and has tons of [configuration options]({{site.url}}/docs/configuration.html)
+* Crud is very flexible and has tons of [configuration options]({{site.url}}/docs/configuration.html).
 
-Crud aims to not get in your way, and if it happens to get in your way, you can change the behavior
-you don't like very easily.
+* Crud aims to stay out of your way, and if it happens to get in your way, you can change the undesired
+behavior very easily.
 
-Crud relies heavily on Cake events, and it's possible to override, extend or disable almost all
-of Cruds functionality either globally or for just one specific action.
+* Crud relies heavily on Cake events and is possible to override, extend, or disable almost all
+of Crud's functionality either globally or for one specific action.
 
-Usually the basic code for controller CRUD actions is very simple, and always look the same - this
-plugin will add the actions to your controller so you don't have to re-implement them over and over.
+* Usually, the basic code for controller CRUD actions are very simple and always looks the same. Crud
+will add the actions to your controller so you don't have to reimplement them over and over again.
 
-Crud does not have the same limitations as Cake's own scaffolding, which is 'their way or the
-highway'. Crud allows you to hook into all stages of a request, only building the controller code
+* Crud does not have the same limitations as Cake's own scaffolding, which is "my way or the
+highway." Crud allows you to hook into all stages of a request, only building the controller code
 needed specifically for your business logic, outsourcing all the heavy boilerplating to Crud.
 
-Less boilerplate code means less code to maintain, and less code to spend time unit testing.
+* Less boilerplate code means less code to maintain, and less code to spend time unit testing.
 
-Crud allows you to both use your own views, from bake or hand-crafted, as well as only adding the
+* Crud allows you to use your own views, baked or hand-crafted, in addition to adding the
 code needed to fulfill your application logic, using [events]({{site.url}}/docs/events.html). It is
 by default compatible with Cake's baked views.
 
-Crud also provides built in features for JSON and XML [API]({{site.url}}/docs/listeners/api.html)
-for any action you have enabled through Crud - that means no more double work maintaining both a
-HTML frontend and a JSON and/or XML interface for your applications - saving you tons of time and
+* Crud also provides built in features for JSON and XML [API]({{site.url}}/docs/listeners/api.html)
+for any action you have enabled through Crud, which eliminates maintaining both a
+HTML frontend and a JSON and/or XML interface for your applications -- saving you tons of time and
 having a leaner code base.
 
 # Bugs
 
 If you happen to stumble upon a bug, please feel free to create a pull request with a fix
-(optionally with a test), a description of the bug and how it was resolved,
+(optionally with a test), and a description of the bug and how it was resolved.
 
-You can also just create an issue, with a description of the bug and I'll see if I can fix it asap.
+You can also create an issue with a description of the bug and I'll see if I can fix it ASAP.
 
 # Features
 
-If you have an good idea for a Crud feature, please chat me up on IRC, and let's discuss it - Pull
-Requests are always more than welcome.
+If you have a good idea for a Crud feature, please chat me up on IRC, and let's discuss it. Pull
+requests are always more than welcome.
 
-# Support / questions
+# Support / Questions
 
-You can always hit me up on IRC in the #FriendsOfCake channel - I lurk there as 'Jippi'.
+You can always hit me up on IRC in the #FriendsOfCake channel -- I lurk there as 'Jippi'.
