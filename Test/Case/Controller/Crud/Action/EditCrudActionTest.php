@@ -1012,7 +1012,6 @@ class EditCrudActionTest extends CrudTestCase {
 		);
 	}
 
-
 /**
  * Test redirection logic for "add"
  *

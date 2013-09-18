@@ -477,7 +477,6 @@ class ApiListenerTest extends CrudTestCase {
 		$this->callProtectedMethod('_ensureSerialize', array(), $listener);
 	}
 
-
 /**
  * test_ensureSerializeAlreadySet
  *
