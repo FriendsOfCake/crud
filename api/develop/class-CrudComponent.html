@@ -1062,7 +1062,7 @@ indicated using the dot notation.</p>
 
 			<td class="name"><div>
 			<a class="anchor" href="#_defaults">#</a>
-			<code><a href="source-class-CrudComponent.html#558-582" title="Go to source code">defaults</a>( <span>string <var>$type</var></span>, <span>mixed <var>$name</var></span>, <span>mixed <var>$config</var> = <span class="php-keyword1">null</span></span> )</code>
+			<code><a href="source-class-CrudComponent.html#558-582" title="Go to source code">defaults</a>( <span>string <var>$type</var></span>, <span>string|array <var>$name</var></span>, <span>mixed <var>$config</var> = <span class="php-keyword1">null</span></span> )</code>
 
 			<div class="description short">
 				
@@ -1081,7 +1081,7 @@ indicated using the dot notation.</p>
 						<dt><var>$type</var></dt>
 						<dd><code>string</code><br>$type Can be anything, but 'listeners' or 'actions' is currently only used.</dd>
 						<dt><var>$name</var></dt>
-						<dd><code>mixed</code><br>$name The name of the $type - e.g. 'api', 'relatedModels' or an array ('api',
+						<dd><code>string|array</code><br>$name The name of the $type - e.g. 'api', 'relatedModels' or an array ('api',
 'relatedModels'). If $name is an array, the $config will be applied to each
 entry in the $name array.</dd>
 						<dt><var>$config</var></dt>

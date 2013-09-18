@@ -128,7 +128,7 @@
 </span><span id="16" class="l"><a class="l" href="#16">16 </a><span class="php-comment">/**
 </span></span><span id="17" class="l"><a class="l" href="#17">17 </a><span class="php-comment"> * How many validation errors are there?
 </span></span><span id="18" class="l"><a class="l" href="#18">18 </a><span class="php-comment"> *
-</span></span><span id="19" class="l"><a class="l" href="#19">19 </a><span class="php-comment"> * @var int
+</span></span><span id="19" class="l"><a class="l" href="#19">19 </a><span class="php-comment"> * @var integer
 </span></span><span id="20" class="l"><a class="l" href="#20">20 </a><span class="php-comment"> */</span>
 </span><span id="21" class="l"><a class="l" href="#21">21 </a>    <span class="php-keyword1">protected</span> <span class="php-var"><a id="$_validationErrorCount" href="#$_validationErrorCount">$_validationErrorCount</a></span> = <span class="php-num">0</span>;
 </span><span id="22" class="l"><a class="l" href="#22">22 </a>
@@ -136,7 +136,7 @@
 </span></span><span id="24" class="l"><a class="l" href="#24">24 </a><span class="php-comment"> * Constructor
 </span></span><span id="25" class="l"><a class="l" href="#25">25 </a><span class="php-comment"> *
 </span></span><span id="26" class="l"><a class="l" href="#26">26 </a><span class="php-comment"> * @param array $error list of validation errors
-</span></span><span id="27" class="l"><a class="l" href="#27">27 </a><span class="php-comment"> * @param int $code code to report to client
+</span></span><span id="27" class="l"><a class="l" href="#27">27 </a><span class="php-comment"> * @param integer $code code to report to client
 </span></span><span id="28" class="l"><a class="l" href="#28">28 </a><span class="php-comment"> * @return void
 </span></span><span id="29" class="l"><a class="l" href="#29">29 </a><span class="php-comment"> **/</span>
 </span><span id="30" class="l"><a class="l" href="#30">30 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="___construct" href="#___construct">__construct</a>(<span class="php-var">$errors</span>, <span class="php-var">$code</span> = <span class="php-num">412</span>) {
@@ -160,8 +160,8 @@
 </span></span><span id="48" class="l"><a class="l" href="#48">48 </a><span class="php-comment"> * Also change the response code to be that of the validation rule if defined
 </span></span><span id="49" class="l"><a class="l" href="#49">49 </a><span class="php-comment"> *
 </span></span><span id="50" class="l"><a class="l" href="#50">50 </a><span class="php-comment"> * @param array $errors
-</span></span><span id="51" class="l"><a class="l" href="#51">51 </a><span class="php-comment"> * @param int $code
-</span></span><span id="52" class="l"><a class="l" href="#52">52 </a><span class="php-comment"> * @return int
+</span></span><span id="51" class="l"><a class="l" href="#51">51 </a><span class="php-comment"> * @param integer $code
+</span></span><span id="52" class="l"><a class="l" href="#52">52 </a><span class="php-comment"> * @return integer
 </span></span><span id="53" class="l"><a class="l" href="#53">53 </a><span class="php-comment"> */</span>
 </span><span id="54" class="l"><a class="l" href="#54">54 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__deriveRuleSpecific" href="#__deriveRuleSpecific">_deriveRuleSpecific</a>(<span class="php-var">$errors</span> = <span class="php-keyword1">array</span>(), <span class="php-var">$code</span> = <span class="php-num">412</span>) {
 </span><span id="55" class="l"><a class="l" href="#55">55 </a>        <span class="php-var">$model</span> = <span class="php-keyword2">key</span>(<span class="php-var">$errors</span>);
@@ -201,7 +201,7 @@
 </span><span id="89" class="l"><a class="l" href="#89">89 </a><span class="php-comment">/**
 </span></span><span id="90" class="l"><a class="l" href="#90">90 </a><span class="php-comment"> * How many validation errors are there?
 </span></span><span id="91" class="l"><a class="l" href="#91">91 </a><span class="php-comment"> *
-</span></span><span id="92" class="l"><a class="l" href="#92">92 </a><span class="php-comment"> * @return int
+</span></span><span id="92" class="l"><a class="l" href="#92">92 </a><span class="php-comment"> * @return integer
 </span></span><span id="93" class="l"><a class="l" href="#93">93 </a><span class="php-comment"> */</span>
 </span><span id="94" class="l"><a class="l" href="#94">94 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_getValidationErrorCount" href="#_getValidationErrorCount">getValidationErrorCount</a>() {
 </span><span id="95" class="l"><a class="l" href="#95">95 </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;_validationErrorCount;
