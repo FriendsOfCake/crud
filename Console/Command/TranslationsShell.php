@@ -78,7 +78,7 @@ class TranslationsShell extends AppShell {
  * If the doc block already exists - return false
  *
  * @param string $message
- * @return bool success
+ * @return boolean Success
  */
 	protected function _addDocBlock($message) {
 		$message = " * $message";
