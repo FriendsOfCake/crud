@@ -5,7 +5,7 @@ layout: default
 
 # Introduction
 
-This is a Crud version of the cakephp blog tutorial [part one](http://book.cakephp.org/2.0/en/tutorials-and-examples/blog/blog.html) and [part two](http://book.cakephp.org/2.0/en/tutorials-and-examples/blog/part-two.html)
+This is a Crud version of the cakephp blog tutorial [part one](http://book.cakephp.org/2.0/en/tutorials-and-examples/blog/blog.html) and [part two](http://book.cakephp.org/2.0/en/tutorials-and-examples/blog/part-two.html).
 
 It's meant to show that everything the example does in Controller is done automatically by Crud, and that it even provides a more flexible and robust solution.
 
@@ -43,11 +43,11 @@ class AppController extends Controller {
 
 # Basic tutorial
 
-This part covers the basic introductional blog example, nothing more, nothing less
+This part covers the basic introductional blog example, nothing more, nothing less.
 
 ## Initialize the database
 
-Create a table with some sample data with the following sql:
+Create a table with some sample data with the following SQL:
 
 {% highlight sql %}
 CREATE TABLE posts (
@@ -73,6 +73,8 @@ Create `app/Model/Post.php`
 
 {% highlight php %}
 <?php
+App::uses('AppModel', 'Model');
+
 class Post extends AppModel {
     public $validate = array(
         'title' => array(
@@ -92,7 +94,6 @@ Create `app/Controller/PostsController.php`
 
 {% highlight php %}
 <?php
-
 App::uses('AppController', 'Controller');
 
 class PostsController extends AppController {
@@ -109,19 +110,19 @@ Since Crud is bake compatible, we can just bake the views:
 
 ## Done
 
-That was it.. the 15 minute blog tutorial done with Crud.
+That was it... the 15 minute blog tutorial done with Crud.
 
 Obviously there isn't a huge win in this small example, but read on and see how much awesome features Crud can provide.
 
-Read on and lets add a API layer on top of our new Blog.
+Read on and let's add an API layer on top of our new Blog.
 
 # Adding API
 
-Since our new blog is super webscale, and we want people to be able to consume our content through a nice API we want to add some JSON and XML response formats.
+Since our new blog is super webscale, and we want people to be able to consume our content through a nice API, we want to add some JSON and XML response formats.
 
 ## Route configuration
 
-We need to tell CakePHP router that we want to [handle JSON and XML extensions](http://book.cakephp.org/2.0/en/development/routing.html#file-extensions)
+We need to tell CakePHP router that we want to [handle JSON and XML extensions](http://book.cakephp.org/2.0/en/development/routing.html#file-extensions).
 
 {% highlight php %}
 <?php
@@ -131,7 +132,7 @@ Router::parseExtensions('json', 'xml');
 
 ## Modify AppController
 
-We need to attach the [cakephp request handler](http://book.cakephp.org/2.0/en/core-libraries/components/request-handling.html) and the [crud api listener]({{site.url}}/docs/listeners/api.html) by modifying the `AppController::$components` array
+We need to attach the [cakephp request handler](http://book.cakephp.org/2.0/en/core-libraries/components/request-handling.html) and the [crud api listener]({{site.url}}/docs/listeners/api.html) by modifying the `AppController::$components` array.
 
 {% highlight php %}
 <?php
@@ -149,15 +150,15 @@ public $components = array(
 ?>
 {% endhighlight %}
 
-And thats its.. we now got a nice REST api for our posts controller, or any other controller your application could have.
+And that's it... we've now got a nice REST API for our posts controller, or any other controller your application could have.
 
 ## Using the new API
 
-Reading posts in XML or JSON is as easy as using http://your-site-domain.com/posts.xml for XML or http://your-site-domain.com/posts.json for JSON
+Reading posts in XML or JSON is as easy as using http://your-site-domain.com/posts.xml for XML or http://your-site-domain.com/posts.json for JSON.
 
 ### JSON API
 
-By adding '.json' to your URLs CakePHP and Crud will make sure that all responses is in JSON
+By adding '.json' to your URLs CakePHP and Crud will make sure that all responses is in JSON.
 
 #### List posts
 
