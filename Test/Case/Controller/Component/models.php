@@ -23,7 +23,7 @@ class CrudExample extends Model {
 	);
 
 	protected function _findPublished($state, $query, $results = array()) {
-		if ($state == 'before') {
+		if ($state === 'before') {
 			$query['conditions']['published'] = 'Y';
 			return $query;
 		}
@@ -31,7 +31,7 @@ class CrudExample extends Model {
 	}
 
 	protected function _findUnpublished($state, $query, $results = array()) {
-		if ($state == 'before') {
+		if ($state === 'before') {
 			$query['conditions']['published'] = 'N';
 			return $query;
 		}
@@ -39,7 +39,7 @@ class CrudExample extends Model {
 	}
 
 	protected function _findFirstPublished($state, $query, $results = array()) {
-		if ($state == 'before') {
+		if ($state === 'before') {
 			$query['conditions']['published'] = 'Y';
 			return parent::_findFirst($state, $query, $results);
 		}
@@ -47,7 +47,7 @@ class CrudExample extends Model {
 	}
 
 	protected function _findFirstUnpublished($state, $query, $results = array()) {
-		if ($state == 'before') {
+		if ($state === 'before') {
 			$query['conditions']['published'] = 'N';
 			return parent::_findFirst($state, $query, $results);
 		}

@@ -16,7 +16,7 @@ class CrudValidationException extends CakeException {
 /**
  * How many validation errors are there?
  *
- * @var int
+ * @var integer
  */
 	protected $_validationErrorCount = 0;
 
@@ -24,7 +24,7 @@ class CrudValidationException extends CakeException {
  * Constructor
  *
  * @param array $error list of validation errors
- * @param int $code code to report to client
+ * @param integer $code code to report to client
  * @return void
  **/
 	public function __construct($errors, $code = 412) {
@@ -48,8 +48,8 @@ class CrudValidationException extends CakeException {
  * Also change the response code to be that of the validation rule if defined
  *
  * @param array $errors
- * @param int $code
- * @return int
+ * @param integer $code
+ * @return integer
  */
 	protected function _deriveRuleSpecific($errors = array(), $code = 412) {
 		$model = key($errors);
@@ -89,7 +89,7 @@ class CrudValidationException extends CakeException {
 /**
  * How many validation errors are there?
  *
- * @return int
+ * @return integer
  */
 	public function getValidationErrorCount() {
 		return $this->_validationErrorCount;
