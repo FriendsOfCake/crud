@@ -42,13 +42,13 @@ having a leaner code base.
 If you happen to stumble upon a bug, please feel free to create a pull request with a fix
 (optionally with a test), and a description of the bug and how it was resolved.
 
-You can also create an issue with a description of the bug and I'll see if I can fix it ASAP.
+You can also create an issue with a description to raise awareness of the bug.
 
 # Features
 
-If you have a good idea for a Crud feature, please chat me up on IRC, and let's discuss it. Pull
+If you have a good idea for a Crud feature, please join us on IRC and let's discuss it. Pull
 requests are always more than welcome.
 
 # Support / Questions
 
-You can always hit me up on IRC in the #FriendsOfCake channel -- I lurk there as 'Jippi'.
+You can join us on IRC in the #FriendsOfCake channel for any support or questions.
