@@ -559,7 +559,7 @@ class CrudComponent extends Component {
  * Set or get defaults for listeners and actions.
  *
  * @param string $type Can be anything, but 'listeners' or 'actions' is currently only used.
- * @param mixed $name The name of the $type - e.g. 'api', 'relatedModels'
+ * @param string $name The name of the $type - e.g. 'api', 'relatedModels'
  * 	or an array ('api', 'relatedModels'). If $name is an array, the $config will be applied
  * 	to each entry in the $name array.
  * @param mixed $config If NULL, the defaults is returned, else the defaults are changed.

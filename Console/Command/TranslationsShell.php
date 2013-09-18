@@ -157,14 +157,14 @@ class TranslationsShell extends AppShell {
  * Set or retrieve the path to write the output file to
  * Defaults to APP/Config/i18n_crud.php
  *
- * @param mixed $path
+ * @param string $path
  * @return string
  */
 	public function path($path = null) {
 		if ($path) {
 			$this->_path = $path;
 		} elseif (!$this->_path) {
-			$this->_path = APP . 'Config/i18n_crud.php';
+			$this->_path = APP . 'Config' . DS . 'i18n_crud.php';
 		}
 		return $this->_path;
 	}

@@ -49,7 +49,7 @@ class IndexCrudAction extends CrudAction {
  * Change the name of the view variable name
  * of the data when its sent to the view
  *
- * @param mixed $method
+ * @param mixed $name
  * @return mixed
  */
 	public function viewVar($name = null) {
