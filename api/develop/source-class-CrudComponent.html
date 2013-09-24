@@ -750,7 +750,7 @@
 </span><span id="638" class="l"><a class="l" href="#638">638 </a>        <span class="php-var">$models</span> = ClassRegistry::keys();
 </span><span id="639" class="l"><a class="l" href="#639">639 </a>        <span class="php-keyword1">foreach</span> (<span class="php-var">$models</span> <span class="php-keyword1">as</span> <span class="php-var">$currentModel</span>) {
 </span><span id="640" class="l"><a class="l" href="#640">640 </a>            <span class="php-var">$currentObject</span> = ClassRegistry::getObject(<span class="php-var">$currentModel</span>);
-</span><span id="641" class="l"><a class="l" href="#641">641 </a>            <span class="php-keyword1">if</span> (<span class="php-keyword2">is_a</span>(<span class="php-var">$currentObject</span>, <span class="php-quote">'Model'</span>)) {
+</span><span id="641" class="l"><a class="l" href="#641">641 </a>            <span class="php-keyword1">if</span> (<span class="php-var">$currentObject</span> <span class="php-keyword1">instanceof</span> Model) {
 </span><span id="642" class="l"><a class="l" href="#642">642 </a>                <span class="php-var">$return</span>[<span class="php-var">$currentObject</span>-&gt;alias] = <span class="php-var">$currentObject</span>-&gt;validationErrors;
 </span><span id="643" class="l"><a class="l" href="#643">643 </a>            }
 </span><span id="644" class="l"><a class="l" href="#644">644 </a>        }
