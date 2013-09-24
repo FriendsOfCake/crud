@@ -127,7 +127,7 @@ abstract class CrudBaseObject extends Object implements CakeEventListener {
 /**
  * Proxy method for `$this->_crud()->action()`
  *
- * Primary here to ease unit testing
+ * Primarily here to ease unit testing
  *
  * @codeCoverageIgnore
  * @param string $name
@@ -140,7 +140,7 @@ abstract class CrudBaseObject extends Object implements CakeEventListener {
 /**
  * Proxy method for `$this->_crud()->trigger()`
  *
- * Primary here to ease unit testing
+ * Primarily here to ease unit testing
  *
  * @codeCoverageIgnore
  * @param string $eventName
@@ -154,7 +154,7 @@ abstract class CrudBaseObject extends Object implements CakeEventListener {
 /**
  * Proxy method for `$this->_crud()->listener()`
  *
- * Primary here to ease unit testing
+ * Primarily here to ease unit testing
  *
  * @codeCoverageIgnore
  * @param string $name
@@ -167,7 +167,7 @@ abstract class CrudBaseObject extends Object implements CakeEventListener {
 /**
  * Proxy method for `$this->_crud()->Session`
  *
- * Primary here to ease unit testing
+ * Primarily here to ease unit testing
  *
  * @codeCoverageIgnore
  * @return SessionComponent
@@ -179,7 +179,7 @@ abstract class CrudBaseObject extends Object implements CakeEventListener {
 /**
  * Proxy method for `$this->_container->_controller`
  *
- * Primary here to ease unit testing
+ * Primarily here to ease unit testing
  *
  * @codeCoverageIgnore
  * @return Controller
@@ -191,7 +191,7 @@ abstract class CrudBaseObject extends Object implements CakeEventListener {
 /**
  * Proxy method for `$this->_container->_request`
  *
- * Primary here to ease unit testing
+ * Primarily here to ease unit testing
  *
  * @codeCoverageIgnore
  * @return CakeRequest
@@ -203,7 +203,7 @@ abstract class CrudBaseObject extends Object implements CakeEventListener {
 /**
  * Proxy method for `$this->_container->_model`
  *
- * Primary here to ease unit testing
+ * Primarily here to ease unit testing
  *
  * @codeCoverageIgnore
  * @return Model
@@ -235,7 +235,7 @@ abstract class CrudBaseObject extends Object implements CakeEventListener {
 /**
  * Proxy method for `$this->_crud()->validationErrors()`
  *
- * Primary here to ease unit testing
+ * Primarily here to ease unit testing
  *
  * @codeCoverageIgnore
  * @return array
