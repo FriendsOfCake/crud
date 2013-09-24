@@ -638,7 +638,7 @@ class CrudComponent extends Component {
 		$models = ClassRegistry::keys();
 		foreach ($models as $currentModel) {
 			$currentObject = ClassRegistry::getObject($currentModel);
-			if (is_a($currentObject, 'Model')) {
+			if ($currentObject instanceof Model) {
 				$return[$currentObject->alias] = $currentObject->validationErrors;
 			}
 		}
