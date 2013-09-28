@@ -22,7 +22,7 @@ matrix:
         - COVERALLS=1
     - php: 5.4
       env:
-        - PHPCS=1
+        - PHPCS=1 PHPCS_IGNORE="*/Test/*"
 
 before_script:
   - git clone https://github.com/FriendsOfCake/travis.git --depth 1 ../travis
