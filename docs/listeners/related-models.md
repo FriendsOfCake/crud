@@ -59,19 +59,19 @@ It's possible to dynamically reconfigure the `relatedModels` listener
 // This can be changed in beforeFilter and the controller action
 public function beforeFilter() {
   // Automatically executes find('list') on the User ($users) and Tag ($tags) models
-  $this->Crud->action($action)->relatedModels(array('User', 'Tag'));
+  $this->Crud->action('your_action')->relatedModels(array('User', 'Tag'));
 
   // Automatically executes find('list') on the User ($users) model
-  $this->Crud->action($action)->relatedModels(array('User'));
+  $this->Crud->action('your_action')->relatedModels(array('User'));
 
   // Fetch related data from all model relations (default)
-  $this->Crud->action($action)->relatedModels(true);
+  $this->Crud->action('your_action')->relatedModels(true);
 
   // Don't fetch any related data
-  $this->Crud->action($action)->relatedModels(false);
+  $this->Crud->action('your_action')->relatedModels(false);
 
   // Get the current configuration
-  $config = $this->Crud->action($action)->relatedModels();
+  $config = $this->Crud->action('your_action')->relatedModels();
 }
 ?>
 {% endhighlight %}
