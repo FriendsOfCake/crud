@@ -101,6 +101,9 @@ class ScaffoldListener extends CrudListener {
 		$singularHumanName = Inflector::humanize(Inflector::underscore($modelClass));
 		$pluralHumanName = Inflector::humanize(Inflector::underscore($controller->name));
 		$scaffoldFields = array_keys($model->schema());
+		if(in_array($request->action , array('index','view'))) {
+			$scaffoldFields = array_merge($scaffoldFields,array_keys($model->virtualFields));
+		} 
 		$associations = $this->_associations($model);
 
 		$controller->set(compact(
