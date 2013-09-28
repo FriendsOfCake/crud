@@ -245,7 +245,7 @@ class ApiFieldFilterListener extends CrudListener {
 		$isPrimary = $modelName === $model->alias;
 
 		// If the model name is the local one, check if the field exists
-		if ($isPrimary && !$model->hasField($fieldName)) {
+		if ($isPrimary && !$model->hasField($fieldName, true)) {
 			return false;
 		}
 
