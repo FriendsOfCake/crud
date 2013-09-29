@@ -344,7 +344,7 @@ class ApiListener extends CrudListener {
 /**
  * setFlash
  *
- * An api request doesn't need flash messages - so stop them being processed
+ * An API request doesn't need flash messages - so stop them being processed
  *
  * @param CakeEvent $event
  */
