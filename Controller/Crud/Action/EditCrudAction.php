@@ -209,7 +209,7 @@ class EditCrudAction extends CrudAction {
  *
  *     array('stuff' => 'here')
  *
- * The latter is most appropriate for api calls.
+ * The latter is most appropriate for API calls.
  *
  * If either the first array key is Capitalized, or the model alias is present in the form data,
  * The id will be injected under the model-alias key:
