@@ -8,7 +8,7 @@ layout: default
 A `CrudAction` is a class that handles a specific kind of crud action type (index, add, edit, view,
 delete) in isolation.
 
-Each `CrudAction` have it's own unique configuration and events it uses.
+Each `CrudAction` has its own unique configuration and events it uses.
 
 If you don't like how a specific `CrudAction` behaves, you can very easily replace it with your own.
 
@@ -16,7 +16,7 @@ If you don't like how a specific `CrudAction` behaves, you can very easily repla
 
 ## Caveat
 
-The class names `Index`, `View`, `Add`, `Edit` and `Delete` is reserved for CrudComponent
+The class names `Index`, `View`, `Add`, `Edit` and `Delete` are reserved for CrudComponent
 
 You can't create your own versions of these CrudActions with the same name.
 
