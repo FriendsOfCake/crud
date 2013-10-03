@@ -102,7 +102,7 @@ class CrudSubject {
 	}
 
 /**
- * Returns whether the specified event is in the list the list of events
+ * Returns whether the specified event is in the list of events
  * this subject has passed through
  *
  * @param string $name name of event
