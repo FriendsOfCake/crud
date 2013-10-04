@@ -45,18 +45,18 @@ class ViewCrudActionTest extends CrudTestCase {
 		$i = 0;
 
 		$Action = $this
-    	->getMockBuilder('ViewCrudAction')
-      ->disableOriginalConstructor()
-      ->setMethods(array(
-      		'_validateId', '_controller', '_model',
-      		'_trigger', 'viewVar', '_getFindMethod'
-      	))
-      ->getMock();
+			->getMockBuilder('ViewCrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array(
+				'_validateId', '_controller', '_model',
+				'_trigger', 'viewVar', '_getFindMethod'
+      		))
+      		->getMock();
 		$Action
-      ->expects($this->at($i++))
-      ->method('_validateId')
-      ->with(1)
-      ->will($this->returnValue(true));
+			->expects($this->at($i++))
+			->method('_validateId')
+			->with(1)
+			->will($this->returnValue(true));
 		$Action
 			->expects($this->at($i++))
 			->method('_model')
@@ -120,8 +120,8 @@ class ViewCrudActionTest extends CrudTestCase {
 			->method('_trigger')
 			->with('beforeRender');
 
-    $this->setReflectionClassInstance($Action);
-    $this->callProtectedMethod('_get', array(1), $Action);
+		$this->setReflectionClassInstance($Action);
+		$this->callProtectedMethod('_get', array(1), $Action);
 	}
 
 /**
@@ -153,18 +153,18 @@ class ViewCrudActionTest extends CrudTestCase {
 		$i = 0;
 
 		$Action = $this
-    	->getMockBuilder('ViewCrudAction')
-      ->disableOriginalConstructor()
-      ->setMethods(array(
-      		'_validateId', '_controller', '_model',
-      		'_trigger', 'viewVar', '_getFindMethod'
-      	))
-      ->getMock();
+			->getMockBuilder('ViewCrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array(
+				'_validateId', '_controller', '_model',
+				'_trigger', 'viewVar', '_getFindMethod'
+			))
+			->getMock();
 		$Action
-      ->expects($this->at($i++))
-      ->method('_validateId')
-      ->with(1)
-      ->will($this->returnValue(true));
+			->expects($this->at($i++))
+			->method('_validateId')
+			->with(1)
+			->will($this->returnValue(true));
 		$Action
 			->expects($this->at($i++))
 			->method('_model')
@@ -227,8 +227,8 @@ class ViewCrudActionTest extends CrudTestCase {
 			->method('_trigger')
 			->with('beforeRender');
 
-    $this->setReflectionClassInstance($Action);
-    $this->callProtectedMethod('_get', array(1), $Action);
+		$this->setReflectionClassInstance($Action);
+		$this->callProtectedMethod('_get', array(1), $Action);
 	}
 
 /**
@@ -263,19 +263,19 @@ class ViewCrudActionTest extends CrudTestCase {
 		$i = 0;
 
 		$Action = $this
-    	->getMockBuilder('ViewCrudAction')
-      ->disableOriginalConstructor()
-      ->setMethods(array(
-      		'_validateId', '_controller', '_model',
-      		'_trigger', 'viewVar', '_getFindMethod',
-      		'message'
-      	))
-      ->getMock();
+			->getMockBuilder('ViewCrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array(
+					'_validateId', '_controller', '_model',
+					'_trigger', 'viewVar', '_getFindMethod',
+					'message'
+				))
+			->getMock();
 		$Action
-      ->expects($this->at($i++))
-      ->method('_validateId')
-      ->with(1)
-      ->will($this->returnValue(true));
+			->expects($this->at($i++))
+			->method('_validateId')
+			->with(1)
+			->will($this->returnValue(true));
 		$Action
 			->expects($this->at($i++))
 			->method('_model')
@@ -324,8 +324,8 @@ class ViewCrudActionTest extends CrudTestCase {
 			->expects($this->never())
 			->method('set');
 
-    $this->setReflectionClassInstance($Action);
-    $this->callProtectedMethod('_get', array(1), $Action);
+		$this->setReflectionClassInstance($Action);
+		$this->callProtectedMethod('_get', array(1), $Action);
 	}
 
 /**
@@ -341,15 +341,15 @@ class ViewCrudActionTest extends CrudTestCase {
  */
 	public function test_getGetInvalidId() {
 		$Action = $this
-    	->getMockBuilder('ViewCrudAction')
-      ->disableOriginalConstructor()
-      ->setMethods(array('_validateId', '_model', 'beforeRender', '_trigger'))
-      ->getMock();
+			->getMockBuilder('ViewCrudAction')
+			->disableOriginalConstructor()
+			->setMethods(array('_validateId', '_model', 'beforeRender', '_trigger'))
+			->getMock();
 		$Action
-      ->expects($this->once())
-      ->method('_validateId')
-      ->with(1)
-      ->will($this->returnValue(false));
+			->expects($this->once())
+			->method('_validateId')
+			->with(1)
+			->will($this->returnValue(false));
 		$Action
 			->expects($this->never())
 			->method('_model');
@@ -357,9 +357,9 @@ class ViewCrudActionTest extends CrudTestCase {
 			->expects($this->never())
 			->method('_trigger');
 
-    $this->setReflectionClassInstance($Action);
-    $result = $this->callProtectedMethod('_get', array(1), $Action);
-    $this->assertFalse($result);
+		$this->setReflectionClassInstance($Action);
+		$result = $this->callProtectedMethod('_get', array(1), $Action);
+		$this->assertFalse($result);
 	}
 
 }

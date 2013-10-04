@@ -38,7 +38,7 @@ class RelatedModelListenerTest extends CrudTestCase {
 		$Listener
 			->expects($this->once())
 			->method('_action')
-			->with(NULL)
+			->with(null)
 			->will($this->returnValue($Action));
 
 		$result = $Listener->models();
@@ -71,7 +71,7 @@ class RelatedModelListenerTest extends CrudTestCase {
 		$Listener
 			->expects($this->once())
 			->method('_action')
-			->with(NULL)
+			->with(null)
 			->will($this->returnValue($Action));
 
 		$result = $Listener->models();
@@ -104,7 +104,7 @@ class RelatedModelListenerTest extends CrudTestCase {
 		$Listener
 			->expects($this->once())
 			->method('_action')
-			->with(NULL)
+			->with(null)
 			->will($this->returnValue($Action));
 
 		$result = $Listener->models();
@@ -143,7 +143,7 @@ class RelatedModelListenerTest extends CrudTestCase {
 		$Listener
 			->expects($this->once())
 			->method('_action')
-			->with(NULL)
+			->with(null)
 			->will($this->returnValue($Action));
 		$Listener
 			->expects($this->once())
@@ -680,7 +680,7 @@ class RelatedModelListenerTest extends CrudTestCase {
 		$Listener
 			->expects($this->at($i++))
 			->method('models')
-			->with(NULL)
+			->with(null)
 			->will($this->returnValue(array('Post')));
 		$Listener
 			->expects($this->at($i++))
@@ -743,7 +743,7 @@ class RelatedModelListenerTest extends CrudTestCase {
 		$Listener
 			->expects($this->once())
 			->method('models')
-			->with(NULL)
+			->with(null)
 			->will($this->returnValue(false));
 		$Listener
 			->expects($this->never())
@@ -790,7 +790,7 @@ class RelatedModelListenerTest extends CrudTestCase {
 		$Listener
 			->expects($this->at($i++))
 			->method('models')
-			->with(NULL)
+			->with(null)
 			->will($this->returnValue(array('Post')));
 		$Listener
 			->expects($this->at($i++))
