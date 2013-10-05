@@ -27,7 +27,6 @@ class SearchListenerTest extends CakeTestCase {
 				$this->markTestSkipped('Search plugin not available');
 			}
 		}
-
 	}
 
 /**
@@ -97,12 +96,12 @@ class SearchListenerTest extends CakeTestCase {
  * @return void
  */
 	public function testBeforePaginate() {
-    $Action = $this->getMock('stdClass', array('config'));
-    $Crud = $this->getMock('stdClass', array('action'));
-    $Crud
-      ->expects($this->once())
-      ->method('action')
-      ->will($this->returnValue($Action));
+		$Action = $this->getMock('stdClass', array('config'));
+		$Crud = $this->getMock('stdClass', array('action'));
+		$Crud
+			->expects($this->once())
+			->method('action')
+			->will($this->returnValue($Action));
 
 		$Model = new Model();
 		$Request = new CakeRequest();
@@ -160,12 +159,12 @@ class SearchListenerTest extends CakeTestCase {
  * @return void
  */
 	public function testBeforePaginateWithModelFilterArgs() {
-    $Action = $this->getMock('stdClass', array('config'));
-    $Crud = $this->getMock('stdClass', array('action'));
-    $Crud
-      ->expects($this->once())
-      ->method('action')
-      ->will($this->returnValue($Action));
+		$Action = $this->getMock('stdClass', array('config'));
+		$Crud = $this->getMock('stdClass', array('action'));
+		$Crud
+			->expects($this->once())
+			->method('action')
+			->will($this->returnValue($Action));
 
 		$Model = new Model();
 		$Model->filterArgs = array('sample' => 'test');
@@ -224,12 +223,12 @@ class SearchListenerTest extends CakeTestCase {
  * @return void
  */
 	public function testBeforePaginateWithUndefinedQueryScope() {
-    $Action = $this->getMock('stdClass', array('config'));
-    $Crud = $this->getMock('stdClass', array('action'));
-    $Crud
-      ->expects($this->once())
-      ->method('action')
-      ->will($this->returnValue($Action));
+		$Action = $this->getMock('stdClass', array('config'));
+		$Crud = $this->getMock('stdClass', array('action'));
+		$Crud
+			->expects($this->once())
+			->method('action')
+			->will($this->returnValue($Action));
 
 		$Model = new Model();
 		$Model->filterArgs = array('sample' => 'test');
@@ -403,12 +402,12 @@ class SearchListenerTest extends CakeTestCase {
  * @return void
  */
 	public function testCheckRequiredPlugins() {
-    $Action = $this->getMock('stdClass', array('config'));
-    $Crud = $this->getMock('stdClass', array('action'));
-    $Crud
-      ->expects($this->once())
-      ->method('action')
-      ->will($this->returnValue($Action));
+		$Action = $this->getMock('stdClass', array('config'));
+		$Crud = $this->getMock('stdClass', array('action'));
+		$Crud
+			->expects($this->once())
+			->method('action')
+			->will($this->returnValue($Action));
 
 		$Model = new Model();
 		$Model->filterArgs = array('sample' => 'test');
