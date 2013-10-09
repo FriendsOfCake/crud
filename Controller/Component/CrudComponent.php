@@ -491,7 +491,7 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Add a log entry for the event event.
+ * Add a log entry for the event.
  *
  * @param string $eventName
  * @param array $data
