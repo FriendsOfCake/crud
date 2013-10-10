@@ -96,7 +96,7 @@ abstract class AppController extends Controller {
 /**
  * Dispatches the controller action. Checks that the action exists and isn't private.
  *
- * If Cake raises MissingActionException we attempt to execute Crud
+ * If CakePHP raises MissingActionException we attempt to execute Crud
  *
  * @param CakeRequest $request
  * @return mixed The resulting response.
