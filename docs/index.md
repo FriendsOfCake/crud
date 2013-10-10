@@ -16,13 +16,13 @@ production applications, even on the same code base -- saving you time.
 * Crud aims to stay out of your way, and if it happens to get in your way, you can change the undesired
 behavior very easily.
 
-* Crud relies heavily on Cake events and is possible to override, extend, or disable almost all
+* Crud relies heavily on CakePHP events and is possible to override, extend, or disable almost all
 of Crud's functionality either globally or for one specific action.
 
 * Usually, the basic code for controller CRUD actions are very simple and always looks the same. Crud
 will add the actions to your controller so you don't have to reimplement them over and over again.
 
-* Crud does not have the same limitations as Cake's own scaffolding, which is "my way or the
+* Crud does not have the same limitations as CakePHP's own scaffolding, which is "my way or the
 highway." Crud allows you to hook into all stages of a request, only building the controller code
 needed specifically for your business logic, outsourcing all the heavy boilerplating to Crud.
 
@@ -30,7 +30,7 @@ needed specifically for your business logic, outsourcing all the heavy boilerpla
 
 * Crud allows you to use your own views, baked or hand-crafted, in addition to adding the
 code needed to fulfill your application logic, using [events]({{site.url}}/docs/events.html). It is
-by default compatible with Cake's baked views.
+by default compatible with CakePHP's baked views.
 
 * Crud also provides built in features for JSON and XML [API]({{site.url}}/docs/listeners/api.html)
 for any action you have enabled through Crud, which eliminates maintaining both a
