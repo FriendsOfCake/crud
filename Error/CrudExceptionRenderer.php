@@ -15,7 +15,7 @@ class CrudExceptionRenderer extends ExceptionRenderer {
  *
  * @param ValidationErrorException $error
  * @return void
- **/
+ */
 	public function crudValidation($error) {
 		$url = $this->controller->request->here();
 		$status = $code = $error->getCode();
