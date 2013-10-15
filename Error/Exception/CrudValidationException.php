@@ -3,14 +3,14 @@
  * Exception containing validation errors from the model. Useful for API
  * responses where you need an error code in response
  *
- **/
+ */
 class CrudValidationException extends CakeException {
 
 /**
  * List of validation errors that occurred in the model
  *
  * @var array
- **/
+ */
 	protected $_validationErrors = array();
 
 /**
@@ -26,7 +26,7 @@ class CrudValidationException extends CakeException {
  * @param array $error list of validation errors
  * @param integer $code code to report to client
  * @return void
- **/
+ */
 	public function __construct($errors, $code = 412) {
 		$this->_validationErrors = array_filter($errors);
 		$flat = Hash::flatten($this->_validationErrors);
@@ -81,7 +81,7 @@ class CrudValidationException extends CakeException {
  * Returns the list of validation errors
  *
  * @return array
- **/
+ */
 	public function getValidationErrors() {
 		return $this->_validationErrors;
 	}
