@@ -25,7 +25,7 @@ class EditCrudAction extends CrudAction {
  * of model associations to be fetched
  *
  * `validateId` ID Argument validation - by default it will inspect your model's primary key
- * and based on its data type either use integer or uuid validation.
+ * and based on its data type either use integer or UUID validation.
  * Can be disabled by setting it to "false". Supports "integer" and "uuid" configuration
  * By default its configuration is NULL, which means "auto detect"
  *
@@ -197,7 +197,7 @@ class EditCrudAction extends CrudAction {
 	}
 
 /**
- * Inject the id (from the url) into the data to be saved.
+ * Inject the id (from the URL) into the data to be saved.
  *
  * Determine what the format of the data is there are two formats accepted by cake:
  *
@@ -209,7 +209,7 @@ class EditCrudAction extends CrudAction {
  *
  *     array('stuff' => 'here')
  *
- * The latter is most appropriate for api calls.
+ * The latter is most appropriate for API calls.
  *
  * If either the first array key is Capitalized, or the model alias is present in the form data,
  * The id will be injected under the model-alias key:
@@ -250,12 +250,12 @@ class EditCrudAction extends CrudAction {
 /**
  * Is the passed ID valid?
  *
- * Validate the id in the url (the parent function) and then validate the id in the data.
+ * Validate the id in the URL (the parent function) and then validate the id in the data.
  *
  * The data-id check is independent of the config setting `validateId`; this checks whether
- * the id in the url matches the id in the submitted data (a type insensitive check). If
+ * the id in the URL matches the id in the submitted data (a type insensitive check). If
  * the id is different, this probably indicates a malicious form submission, attempting
- * to add/edit a record the user doesn't have permission for by submitting to a url they
+ * to add/edit a record the user doesn't have permission for by submitting to a URL they
  * do have permission to access
  *
  * @param mixed $id

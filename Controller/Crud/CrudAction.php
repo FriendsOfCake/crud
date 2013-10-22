@@ -169,7 +169,7 @@ abstract class CrudAction extends CrudBaseObject {
  * $config should contain the following keys:
  *  - type : name of the reader
  *  - key  : the key to read inside the reader
- *  - url  : the url to redirect to
+ *  - url  : the URL to redirect to
  *
  * @param null|string $name Name of the redirection rule
  * @param null|array $config Redirection configuration

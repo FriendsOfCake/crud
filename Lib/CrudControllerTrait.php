@@ -19,7 +19,7 @@ trait CrudControllerTrait {
 /**
  * Dispatches the controller action. Checks that the action exists and isn't private.
  *
- * If Cake raises MissingActionException we attempt to execute Crud
+ * If CakePHP raises MissingActionException we attempt to execute Crud
  *
  * @param CakeRequest $request
  * @return mixed The resulting response.
@@ -56,7 +56,7 @@ trait CrudControllerTrait {
 				}
 			}
 
-			// No additional callbacks, re-throw the normal Cake exception
+			// No additional callbacks, re-throw the normal CakePHP exception
 			throw $e;
 		}
 	}

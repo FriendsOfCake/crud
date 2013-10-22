@@ -195,7 +195,7 @@ class AddCrudActionTest extends CrudTestCase {
 		$Action
 			->expects($this->at($i++))
 			->method('_trigger')
-			->with('afterSave', array('success' => false, 'created' =>false))
+			->with('afterSave', array('success' => false, 'created' => false))
 			->will($this->returnValue($AfterSaveSubject));
 		$Action
 			->expects($this->at($i++))

@@ -3,20 +3,20 @@
  * Exception containing validation errors from the model. Useful for API
  * responses where you need an error code in response
  *
- **/
+ */
 class CrudValidationException extends CakeException {
 
 /**
  * List of validation errors that occurred in the model
  *
  * @var array
- **/
+ */
 	protected $_validationErrors = array();
 
 /**
  * How many validation errors are there?
  *
- * @var int
+ * @var integer
  */
 	protected $_validationErrorCount = 0;
 
@@ -24,9 +24,9 @@ class CrudValidationException extends CakeException {
  * Constructor
  *
  * @param array $error list of validation errors
- * @param int $code code to report to client
+ * @param integer $code code to report to client
  * @return void
- **/
+ */
 	public function __construct($errors, $code = 412) {
 		$this->_validationErrors = array_filter($errors);
 		$flat = Hash::flatten($this->_validationErrors);
@@ -48,8 +48,8 @@ class CrudValidationException extends CakeException {
  * Also change the response code to be that of the validation rule if defined
  *
  * @param array $errors
- * @param int $code
- * @return int
+ * @param integer $code
+ * @return integer
  */
 	protected function _deriveRuleSpecific($errors = array(), $code = 412) {
 		$model = key($errors);
@@ -81,7 +81,7 @@ class CrudValidationException extends CakeException {
  * Returns the list of validation errors
  *
  * @return array
- **/
+ */
 	public function getValidationErrors() {
 		return $this->_validationErrors;
 	}
@@ -89,7 +89,7 @@ class CrudValidationException extends CakeException {
 /**
  * How many validation errors are there?
  *
- * @return int
+ * @return integer
  */
 	public function getValidationErrorCount() {
 		return $this->_validationErrorCount;

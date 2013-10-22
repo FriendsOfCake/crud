@@ -83,8 +83,8 @@ class CrudExamplesController extends Controller {
 /**
  * Make it possible to dynamically define the components array during tests
  *
- * @param mixed $request
- * @param mixed $response
+ * @param CakeRequest $request
+ * @param CakeResponse $response
  * @return void
  */
 	public function __construct($request = null, $response = null) {

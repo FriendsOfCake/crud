@@ -60,6 +60,7 @@ abstract class CrudTestCase extends CakeTestCase {
  *
  * @param string $class
  * @return Object
+ * @throws Exception When the reflection instance cannot be found
  */
 	public function getReflectionInstance($class) {
 		$class = $this->_getReflectionTargetClass($class);
@@ -139,6 +140,7 @@ abstract class CrudTestCase extends CakeTestCase {
  *
  * @param string $class
  * @return string
+ * @throws Exception When the reflection target cannot be found
  */
 	protected function _getReflectionTargetClass($class) {
 		if (is_object($class)) {
