@@ -540,7 +540,7 @@ class RelatedModelListenerTest extends CrudTestCase {
 
 		$this->setReflectionClassInstance($Listener);
 		$result = $this->callProtectedMethod('_getBaseQuery', array($Associated, 'belongsTo'), $Listener);
-		$expected = array('conditions' => array('is_active' => true));
+		$expected = array('conditions' => array(array('is_active' => true)));
 		$this->assertEquals($expected, $result);
 	}
 
@@ -641,7 +641,7 @@ class RelatedModelListenerTest extends CrudTestCase {
 			'valuePath' => null,
 			'spacer' => '_',
 			'recursive' => -1,
-			'conditions' => array('is_active' => true)
+			'conditions' => array(array('is_active' => true))
 		);
 		$this->assertEquals($expected, $result);
 	}
