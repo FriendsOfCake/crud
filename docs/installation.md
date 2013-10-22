@@ -63,7 +63,7 @@ App::uses('CrudControllerTrait', 'Crud.Lib');
 ?>
 {% endhighlight %}
 
-and add the `CrudControllerTrait` inside you `AppController` class
+and add the `CrudControllerTrait` inside your `AppController` class
 
 {% highlight php %}
 <?php
