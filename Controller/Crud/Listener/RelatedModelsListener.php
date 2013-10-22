@@ -118,7 +118,7 @@ class RelatedModelsListener extends CrudListener {
 
 		if ($associationType === 'belongsTo') {
 			$PrimaryModel = $this->_model();
-			$query['conditions'] = $PrimaryModel->belongsTo[$associatedModel->alias]['conditions'];
+			$query['conditions'][] = $PrimaryModel->belongsTo[$associatedModel->alias]['conditions'];
 		}
 
 		if ($this->_hasTreeBehavior($associatedModel)) {
@@ -131,7 +131,7 @@ class RelatedModelsListener extends CrudListener {
 			);
 
 			if (empty($query['conditions'])) {
-				$query['conditions'] = $TreeBehavior->settings[$associatedModel->alias]['scope'];
+				$query['conditions'][] = $TreeBehavior->settings[$associatedModel->alias]['scope'];
 			}
 		}
 
