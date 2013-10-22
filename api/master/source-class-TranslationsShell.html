@@ -190,7 +190,7 @@
 </span></span><span id="78" class="l"><a class="l" href="#78"> 78 </a><span class="php-comment"> * If the doc block already exists - return false
 </span></span><span id="79" class="l"><a class="l" href="#79"> 79 </a><span class="php-comment"> *
 </span></span><span id="80" class="l"><a class="l" href="#80"> 80 </a><span class="php-comment"> * @param string $message
-</span></span><span id="81" class="l"><a class="l" href="#81"> 81 </a><span class="php-comment"> * @return bool success
+</span></span><span id="81" class="l"><a class="l" href="#81"> 81 </a><span class="php-comment"> * @return boolean Success
 </span></span><span id="82" class="l"><a class="l" href="#82"> 82 </a><span class="php-comment"> */</span>
 </span><span id="83" class="l"><a class="l" href="#83"> 83 </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__addDocBlock" href="#__addDocBlock">_addDocBlock</a>(<span class="php-var">$message</span>) {
 </span><span id="84" class="l"><a class="l" href="#84"> 84 </a>        <span class="php-var">$message</span> = <span class="php-quote">&quot; * </span><span class="php-var">$message</span><span class="php-quote">&quot;</span>;
@@ -269,14 +269,14 @@
 </span></span><span id="157" class="l"><a class="l" href="#157">157 </a><span class="php-comment"> * Set or retrieve the path to write the output file to
 </span></span><span id="158" class="l"><a class="l" href="#158">158 </a><span class="php-comment"> * Defaults to APP/Config/i18n_crud.php
 </span></span><span id="159" class="l"><a class="l" href="#159">159 </a><span class="php-comment"> *
-</span></span><span id="160" class="l"><a class="l" href="#160">160 </a><span class="php-comment"> * @param mixed $path
+</span></span><span id="160" class="l"><a class="l" href="#160">160 </a><span class="php-comment"> * @param string $path
 </span></span><span id="161" class="l"><a class="l" href="#161">161 </a><span class="php-comment"> * @return string
 </span></span><span id="162" class="l"><a class="l" href="#162">162 </a><span class="php-comment"> */</span>
 </span><span id="163" class="l"><a class="l" href="#163">163 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_path" href="#_path">path</a>(<span class="php-var">$path</span> = <span class="php-keyword1">null</span>) {
 </span><span id="164" class="l"><a class="l" href="#164">164 </a>        <span class="php-keyword1">if</span> (<span class="php-var">$path</span>) {
 </span><span id="165" class="l"><a class="l" href="#165">165 </a>            <span class="php-var">$this</span>-&gt;_path = <span class="php-var">$path</span>;
 </span><span id="166" class="l"><a class="l" href="#166">166 </a>        } <span class="php-keyword1">elseif</span> (!<span class="php-var">$this</span>-&gt;_path) {
-</span><span id="167" class="l"><a class="l" href="#167">167 </a>            <span class="php-var">$this</span>-&gt;_path = APP . <span class="php-quote">'Config/i18n_crud.php'</span>;
+</span><span id="167" class="l"><a class="l" href="#167">167 </a>            <span class="php-var">$this</span>-&gt;_path = APP . <span class="php-quote">'Config'</span> . DS . <span class="php-quote">'i18n_crud.php'</span>;
 </span><span id="168" class="l"><a class="l" href="#168">168 </a>        }
 </span><span id="169" class="l"><a class="l" href="#169">169 </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;_path;
 </span><span id="170" class="l"><a class="l" href="#170">170 </a>    }

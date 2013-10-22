@@ -603,7 +603,7 @@
 </span><span id="491" class="l"><a class="l" href="#491">491 </a>    }
 </span><span id="492" class="l"><a class="l" href="#492">492 </a>
 </span><span id="493" class="l"><a class="l" href="#493">493 </a><span class="php-comment">/**
-</span></span><span id="494" class="l"><a class="l" href="#494">494 </a><span class="php-comment"> * Add a log entry for the event event.
+</span></span><span id="494" class="l"><a class="l" href="#494">494 </a><span class="php-comment"> * Add a log entry for the event.
 </span></span><span id="495" class="l"><a class="l" href="#495">495 </a><span class="php-comment"> *
 </span></span><span id="496" class="l"><a class="l" href="#496">496 </a><span class="php-comment"> * @param string $eventName
 </span></span><span id="497" class="l"><a class="l" href="#497">497 </a><span class="php-comment"> * @param array $data
@@ -671,7 +671,7 @@
 </span></span><span id="559" class="l"><a class="l" href="#559">559 </a><span class="php-comment"> * Set or get defaults for listeners and actions.
 </span></span><span id="560" class="l"><a class="l" href="#560">560 </a><span class="php-comment"> *
 </span></span><span id="561" class="l"><a class="l" href="#561">561 </a><span class="php-comment"> * @param string $type Can be anything, but 'listeners' or 'actions' is currently only used.
-</span></span><span id="562" class="l"><a class="l" href="#562">562 </a><span class="php-comment"> * @param mixed $name The name of the $type - e.g. 'api', 'relatedModels'
+</span></span><span id="562" class="l"><a class="l" href="#562">562 </a><span class="php-comment"> * @param string|array $name The name of the $type - e.g. 'api', 'relatedModels'
 </span></span><span id="563" class="l"><a class="l" href="#563">563 </a><span class="php-comment"> *  or an array ('api', 'relatedModels'). If $name is an array, the $config will be applied
 </span></span><span id="564" class="l"><a class="l" href="#564">564 </a><span class="php-comment"> *  to each entry in the $name array.
 </span></span><span id="565" class="l"><a class="l" href="#565">565 </a><span class="php-comment"> * @param mixed $config If NULL, the defaults is returned, else the defaults are changed.
@@ -750,7 +750,7 @@
 </span><span id="638" class="l"><a class="l" href="#638">638 </a>        <span class="php-var">$models</span> = ClassRegistry::keys();
 </span><span id="639" class="l"><a class="l" href="#639">639 </a>        <span class="php-keyword1">foreach</span> (<span class="php-var">$models</span> <span class="php-keyword1">as</span> <span class="php-var">$currentModel</span>) {
 </span><span id="640" class="l"><a class="l" href="#640">640 </a>            <span class="php-var">$currentObject</span> = ClassRegistry::getObject(<span class="php-var">$currentModel</span>);
-</span><span id="641" class="l"><a class="l" href="#641">641 </a>            <span class="php-keyword1">if</span> (<span class="php-keyword2">is_a</span>(<span class="php-var">$currentObject</span>, <span class="php-quote">'Model'</span>)) {
+</span><span id="641" class="l"><a class="l" href="#641">641 </a>            <span class="php-keyword1">if</span> (<span class="php-var">$currentObject</span> <span class="php-keyword1">instanceof</span> Model) {
 </span><span id="642" class="l"><a class="l" href="#642">642 </a>                <span class="php-var">$return</span>[<span class="php-var">$currentObject</span>-&gt;alias] = <span class="php-var">$currentObject</span>-&gt;validationErrors;
 </span><span id="643" class="l"><a class="l" href="#643">643 </a>            }
 </span><span id="644" class="l"><a class="l" href="#644">644 </a>        }
