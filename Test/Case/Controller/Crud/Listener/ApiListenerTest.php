@@ -77,13 +77,17 @@ class ApiListenerTest extends CrudTestCase {
 	public function testSetup() {
 		$listener = $this
 			->getMockBuilder('ApiListener')
-			->setMethods(array('setupDetectors'))
+			->setMethods(array('setupDetectors', 'registerExceptionHandler'))
 			->disableOriginalConstructor()
 			->getMock();
 
 		$listener
-			->expects($this->once())
+			->expects($this->at(0))
 			->method('setupDetectors');
+
+		$listener
+			->expects($this->at(1))
+			->method('registerExceptionHandler');
 
 		$listener->setup();
 	}
@@ -1105,12 +1109,32 @@ class ApiListenerTest extends CrudTestCase {
 	}
 
 /**
- * testRegisterExceptionHandler
+ * testRegisterExceptionHandler with Api request
  *
  * @return void
  */
-	public function testRegisterExceptionHandler() {
-		$listener = new ApiListener(new CrudSubject());
+	public function testRegisterExceptionHandlerWithApi() {
+		$listener = $this->getMockBuilder('ApiListener')
+			->setMethods(array('_request'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$request = $this->getMockBuilder('CakeRequest')
+			->setMethods(array('is'))
+			->disableOriginalConstructor()
+			->getMock();
+		$request
+			->expects($this->at(0))
+			->method('is')
+			->with('api')
+			->will($this->returnValue(true));
+
+		$listener
+			->expects($this->once())
+			->method('_request')
+			->with()
+			->will($this->returnValue($request));
+
 		$listener->registerExceptionHandler();
 
 		$expected = 'Crud.CrudExceptionRenderer';
@@ -1118,6 +1142,40 @@ class ApiListenerTest extends CrudTestCase {
 		$this->assertEquals($expected, $result);
 	}
 
+
+/**
+ * testRegisterExceptionHandler without Api request
+ *
+ * @return void
+ */
+	public function testRegisterExceptionHandlerWithoutApi() {
+		$listener = $this->getMockBuilder('ApiListener')
+			->setMethods(array('_request'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$request = $this->getMockBuilder('CakeRequest')
+			->setMethods(array('is'))
+			->disableOriginalConstructor()
+			->getMock();
+		$request
+			->expects($this->at(0))
+			->method('is')
+			->with('api')
+			->will($this->returnValue(false));
+
+		$listener
+			->expects($this->once())
+			->method('_request')
+			->with()
+			->will($this->returnValue($request));
+
+		$listener->registerExceptionHandler();
+
+		$expected = 'ExceptionRenderer';
+		$result = Configure::read('Exception.renderer');
+		$this->assertEquals($expected, $result);
+	}
 /**
  * data provider for test_checkRequestMethods
  *
