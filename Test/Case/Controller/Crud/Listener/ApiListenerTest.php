@@ -4,7 +4,7 @@ App::uses('CakeEvent', 'Event');
 App::uses('CakeRequest', 'Network');
 App::uses('CakeResponse', 'Network');
 App::uses('Controller', 'Controller');
-App::uses('RequestHandler', 'Controller/Component');
+App::uses('RequestHandlerComponent', 'Controller/Component');
 App::uses('CrudComponent', 'Crud.Controller/Component');
 App::uses('ApiListener', 'Crud.Controller/Crud/Listener');
 App::uses('CrudSubject', 'Crud.Controller/Crud');
