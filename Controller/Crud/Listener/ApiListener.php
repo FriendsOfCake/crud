@@ -62,6 +62,7 @@ class ApiListener extends CrudListener {
  */
 	public function setup() {
 		$this->setupDetectors();
+		$this->registerExceptionHandler();
 	}
 
 /**
@@ -87,7 +88,6 @@ class ApiListener extends CrudListener {
 			return;
 		}
 
-		$this->registerExceptionHandler();
 		$this->_checkRequestMethods();
 	}
 
@@ -121,6 +121,10 @@ class ApiListener extends CrudListener {
  * @return void
  */
 	public function registerExceptionHandler() {
+		if (!$this->_request()->is('api')) {
+			return;
+		}
+
 		App::uses('CrudExceptionRenderer', 'Crud.Error');
 		Configure::write('Exception.renderer', 'Crud.CrudExceptionRenderer');
 	}
