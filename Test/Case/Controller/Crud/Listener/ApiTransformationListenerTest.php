@@ -1045,7 +1045,9 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeTime' => false,
 			'castNumbers' => false,
 			'keyMethods' => array(),
-			'valueMethods' => array(function($value, $key) { return strtoupper($value); }),
+			'valueMethods' => array(function($value, $key) {
+				return strtoupper($value);
+			}),
 			'replaceMap' => array()
 		);
 

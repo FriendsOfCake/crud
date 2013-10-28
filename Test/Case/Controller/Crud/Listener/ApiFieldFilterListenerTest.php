@@ -77,7 +77,9 @@ class ApiFieldFilterListenerTest extends CakeTestCase {
 		$Controller->Components = new StdClass;
 
 		$Request = new CakeRequest();
-		$Request->addDetector('api', array('callback' => function() { return true; }));
+		$Request->addDetector('api', array('callback' => function() {
+			return true;
+		}));
 
 		$Paginator = $this->PaginatorMock
 			->disableOriginalConstructor()
