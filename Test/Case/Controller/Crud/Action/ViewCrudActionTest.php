@@ -50,8 +50,8 @@ class ViewCrudActionTest extends CrudTestCase {
 			->setMethods(array(
 				'_validateId', '_controller', '_model',
 				'_trigger', 'viewVar', '_getFindMethod'
-      		))
-      		->getMock();
+					))
+					->getMock();
 		$Action
 			->expects($this->at($i++))
 			->method('_validateId')

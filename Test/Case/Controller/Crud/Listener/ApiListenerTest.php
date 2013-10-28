@@ -938,7 +938,9 @@ class ApiListenerTest extends CrudTestCase {
  */
 	public function testFlashMessageSupressed() {
 		$Request = new CakeRequest();
-		$Request->addDetector('api', array('callback' => function() { return true; }));
+		$Request->addDetector('api', array('callback' => function() {
+			return true;
+		}));
 
 		$subject = new CrudSubject(array('request' => $Request));
 
