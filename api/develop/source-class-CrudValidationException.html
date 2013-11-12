@@ -147,7 +147,7 @@
 </span><span id="35" class="l"><a class="l" href="#35">35 </a>        <span class="php-var">$this</span>-&gt;message = __dn(<span class="php-quote">'crud'</span>, <span class="php-quote">'A validation error occurred'</span>, <span class="php-quote">'%d validation errors occurred'</span>, <span class="php-var">$errorCount</span>, <span class="php-keyword1">array</span>(<span class="php-var">$errorCount</span>));
 </span><span id="36" class="l"><a class="l" href="#36">36 </a>
 </span><span id="37" class="l"><a class="l" href="#37">37 </a>        <span class="php-keyword1">if</span> (<span class="php-var">$errorCount</span> === <span class="php-num">1</span>) {
-</span><span id="38" class="l"><a class="l" href="#38">38 </a>            <span class="php-var">$code</span> = <span class="php-var">$this</span>-&gt;_deriveRuleSpecific(<span class="php-var">$errors</span>, <span class="php-var">$code</span>);
+</span><span id="38" class="l"><a class="l" href="#38">38 </a>            <span class="php-var">$code</span> = <span class="php-var">$this</span>-&gt;_deriveRuleSpecific(<span class="php-var">$this</span>-&gt;_validationErrors, <span class="php-var">$code</span>);
 </span><span id="39" class="l"><a class="l" href="#39">39 </a>        }
 </span><span id="40" class="l"><a class="l" href="#40">40 </a>
 </span><span id="41" class="l"><a class="l" href="#41">41 </a>        parent::__construct(<span class="php-var">$this</span>-&gt;message, <span class="php-var">$code</span>);
