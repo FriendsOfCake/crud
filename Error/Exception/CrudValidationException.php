@@ -35,7 +35,7 @@ class CrudValidationException extends CakeException {
 		$this->message = __dn('crud', 'A validation error occurred', '%d validation errors occurred', $errorCount, array($errorCount));
 
 		if ($errorCount === 1) {
-			$code = $this->_deriveRuleSpecific($errors, $code);
+			$code = $this->_deriveRuleSpecific($this->_validationErrors, $code);
 		}
 
 		parent::__construct($this->message, $code);

@@ -681,13 +681,16 @@ class CrudComponent extends Component {
 
 				if ($type === 'listeners' && strpos($name, '.') !== false) {
 					unset($this->settings[$type][$name]);
+					$settings['className'] = $name;
 
 					list($plugin, $name) = pluginSplit($name);
 					$name = Inflector::camelize($name);
 				}
 
 				$className = $this->_handlerClassName($name, $className);
-				$settings['className'] = $className;
+				if (empty($settings['className'])) {
+					$settings['className'] = $className;
+				}
 				$this->settings[$type][$name] = $settings;
 			}
 		}
