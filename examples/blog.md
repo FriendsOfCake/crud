@@ -97,7 +97,7 @@ Create `app/Controller/PostsController.php`
 App::uses('AppController', 'Controller');
 
 class PostsController extends AppController {
-
+	public $components = array('Paginator');
 }
 ?>
 {% endhighlight %}
