@@ -106,7 +106,7 @@ class PostsController extends AppController {
 
 Since Crud is bake compatible, we can just bake the views:
 
-`Console/cake bake view Post --public`
+`Console/cake bake view Post`
 
 ## Done
 
