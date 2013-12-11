@@ -184,7 +184,10 @@ class ApiListener extends CrudListener {
 		$this->_ensureSerialize();
 
 		$controller = $this->_controller();
-		$controller->RequestHandler->renderAs($controller, $controller->RequestHandler->ext);
+		if (!empty($controller->RequestHandler->ext)) {
+			$controller->RequestHandler->renderAs($controller, $controller->RequestHandler->ext);
+		}
+
 		return $controller->render();
 	}
 
