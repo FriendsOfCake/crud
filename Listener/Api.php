@@ -2,6 +2,7 @@
 
 namespace Crud\Listener;
 
+use \Crud\Event\Subject;
 use \Cake\Event\Event;
 use \Cake\Network\Request;
 
@@ -22,8 +23,8 @@ class Api extends Base {
  */
 	protected $_settings = array(
 		'viewClasses' => array(
-			'json' => 'Crud.CrudJson',
-			'xml' => 'Crud.CrudXml'
+			'json' => 'Json',
+			'xml' => 'Xml'
 		),
 		'detectors' => array(
 			'json' => array('ext' => 'json', 'accepts' => 'application/json'),
@@ -46,13 +47,13 @@ class Api extends Base {
  * @return array
  */
 	public function implementedEvents() {
-		return array(
-			'Crud.beforeHandle' => array('callable' => 'beforeHandle', 'priority' => 10),
-			'Crud.setFlash' => array('callable' => 'setFlash', 'priority' => 5),
+		return [
+			'Crud.beforeHandle' => ['callable' => [$this, 'beforeHandle'], 'priority' => 10],
+			'Crud.setFlash' => ['callable' => [$this, 'setFlash'], 'priority' => 5],
 
-			'Crud.beforeRender' => array('callable' => 'respond', 'priority' => 100),
-			'Crud.beforeRedirect' => array('callable' => 'respond', 'priority' => 100)
-		);
+			'Crud.beforeRender' => ['callable' => [$this, 'respond'], 'priority' => 100],
+			'Crud.beforeRedirect' => ['callable' => [$this, 'respond'], 'priority' => 100]
+		];
 	}
 
 /**
@@ -85,12 +86,36 @@ class Api extends Base {
 				if ($name === 'Crud.beforeHandle') {
 					continue;
 				}
+
 				$eventManager->detach($this, $name);
 			}
+
 			return;
 		}
 
 		$this->_checkRequestMethods();
+	}
+
+/**
+ * Handle response
+ *
+ * @param \Cake\Event\Event $event
+ * @return CakeResponse
+ */
+	public function respond(Event $event) {
+		$subject = $event->subject;
+		$action = $this->_action();
+
+		$key = $subject->success ? 'success' : 'error';
+		$apiConfig = $action->config('api.' . $key);
+
+		if (isset($apiConfig['exception'])) {
+			return $this->_exceptionResponse($apiConfig['exception']);
+		}
+
+		$response = $this->render($event->subject);
+		$response->statusCode($apiConfig['code']);
+		return $response;
 	}
 
 /**
@@ -127,30 +152,8 @@ class Api extends Base {
 			return;
 		}
 
-		App::uses('CrudExceptionRenderer', 'Crud.Error');
-		Configure::write('Exception.renderer', 'Crud.CrudExceptionRenderer');
-	}
-
-/**
- * Handle response
- *
- * @param CakeEvent $event
- * @return CakeResponse
- */
-	public function respond(CakeEvent $event) {
-		$subject = $event->subject;
-		$action = $this->_action();
-
-		$key = $subject->success ? 'success' : 'error';
-		$apiConfig = $action->config('api.' . $key);
-
-		if (isset($apiConfig['exception'])) {
-			return $this->_exceptionResponse($apiConfig['exception']);
-		}
-
-		$response = $this->render($event->subject);
-		$response->statusCode($apiConfig['code']);
-		return $response;
+		// App::uses('CrudExceptionRenderer', 'Crud.Error');
+		// Configure::write('Exception.renderer', 'Crud.CrudExceptionRenderer');
 	}
 
 /**
@@ -179,7 +182,7 @@ class Api extends Base {
  * @param CrudSubject $subject
  * @return CakeResponse
  */
-	public function render(CrudSubject $subject) {
+	public function render(Subject $subject) {
 		$this->injectViewClasses();
 		$this->_ensureSuccess($subject);
 		$this->_ensureData($subject);
@@ -226,7 +229,7 @@ class Api extends Base {
  * @param CrudSubject $subject
  * @return void
  */
-	protected function _ensureSuccess(CrudSubject $subject) {
+	protected function _ensureSuccess(Subject $subject) {
 		$controller = $this->_controller();
 
 		if (isset($controller->viewVars['success'])) {
@@ -242,7 +245,7 @@ class Api extends Base {
  * @param CrudSubject $subject
  * @return void
  */
-	protected function _ensureData(CrudSubject $subject) {
+	protected function _ensureData(Subject $subject) {
 		$controller = $this->_controller();
 
 		// Don't touch existing data properties
