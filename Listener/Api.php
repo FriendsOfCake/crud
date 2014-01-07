@@ -3,6 +3,7 @@
 namespace Crud\Listener;
 
 use \Crud\Event\Subject;
+use \Cake\Core\Configure;
 use \Cake\Event\Event;
 use \Cake\Network\Request;
 
@@ -152,8 +153,7 @@ class Api extends Base {
 			return;
 		}
 
-		// App::uses('CrudExceptionRenderer', 'Crud.Error');
-		// Configure::write('Exception.renderer', 'Crud.CrudExceptionRenderer');
+		Configure::write('Error.exceptionRenderer', 'Crud\Error\ExceptionRenderer');
 	}
 
 /**
@@ -382,7 +382,7 @@ class Api extends Base {
 		foreach ($detectors as $name => $config) {
 
 			$request->addDetector($name, array('callback' => function(Request $request) use ($config) {
-				if (isset($request->params['ext']) && $request->params['ext'] === $config['ext']) {
+				if (isset($request->params['_ext']) && $request->params['_ext'] === $config['ext']) {
 					return true;
 				}
 
