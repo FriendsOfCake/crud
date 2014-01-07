@@ -1,4 +1,7 @@
 <?php
+
+namespace Crud;
+
 /**
  * Enable Crud to catch MissingActionException and attempt to generate response
  * using Crud.
@@ -6,7 +9,7 @@
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-trait CrudControllerTrait {
+trait ControllerTrait {
 
 /**
  * List of components that are capable of dispatching an action that is
@@ -26,10 +29,10 @@ trait CrudControllerTrait {
  * @throws PrivateActionException When actions are not public or prefixed by _
  * @throws MissingActionException When actions are not defined and scaffolding and CRUD is not enabled.
  */
-	public function invokeAction(CakeRequest $request) {
+	public function invokeAction(\Cake\Network\Request $request) {
 		try {
 			return parent::invokeAction($request);
-		} catch (MissingActionException $e) {
+		} catch (\Cake\Error\MissingActionException $e) {
 			if (!empty($this->dispatchComponents)) {
 				foreach ($this->dispatchComponents as $component => $enabled) {
 					if (empty($enabled)) {

@@ -1,6 +1,6 @@
 <?php
 
-App::uses('CrudAction', 'Crud.Controller/Crud');
+namespace Crud\Action;
 
 /**
  * Handles 'Add' Crud actions
@@ -8,7 +8,7 @@ App::uses('CrudAction', 'Crud.Controller/Crud');
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class AddCrudAction extends CrudAction {
+class Add extends Base {
 
 /**
  * Default settings for 'add' actions
@@ -30,7 +30,7 @@ class AddCrudAction extends CrudAction {
  */
 	protected $_settings = array(
 		'enabled' => true,
-		'saveMethod' => 'saveAssociated',
+		'saveMethod' => 'save',
 		'view' => null,
 		'relatedModels' => true,
 		'saveOptions' => array(
@@ -80,7 +80,7 @@ class AddCrudAction extends CrudAction {
  *
  * @var integer
  */
-	const ACTION_SCOPE = CrudAction::SCOPE_MODEL;
+	const ACTION_SCOPE = Base::SCOPE_MODEL;
 
 /**
  * HTTP GET handler
@@ -91,8 +91,8 @@ class AddCrudAction extends CrudAction {
 		$request = $this->_request();
 		$model = $this->_model();
 
-		$model->create();
-		$request->data = $model->data;
+		// $model->create();
+		// $request->data = $model->data;
 		$this->_trigger('beforeRender', array('success' => false));
 	}
 

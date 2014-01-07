@@ -1,6 +1,8 @@
 <?php
 
-App::uses('CrudAction', 'Crud.Controller/Crud');
+namespace Crud\Action;
+
+use \Cake\Utility\Inflector;
 
 /**
  * Handles 'Index' Crud actions
@@ -8,7 +10,7 @@ App::uses('CrudAction', 'Crud.Controller/Crud');
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class IndexCrudAction extends CrudAction {
+class Index extends Base {
 
 /**
  * Default settings for 'index' actions
@@ -43,7 +45,7 @@ class IndexCrudAction extends CrudAction {
  *
  * @var integer
  */
-	const ACTION_SCOPE = CrudAction::SCOPE_MODEL;
+	const ACTION_SCOPE = Base::SCOPE_MODEL;
 
 /**
  * Change the name of the view variable name

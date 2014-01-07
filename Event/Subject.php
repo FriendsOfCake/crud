@@ -1,4 +1,7 @@
 <?php
+
+namespace Crud\Event;
+
 /**
  * Crud subject
  *
@@ -7,7 +10,7 @@
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class CrudSubject {
+class Subject {
 
 /**
  * Instance of the crud component

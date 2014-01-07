@@ -1,7 +1,9 @@
 <?php
 
-App::uses('CrudListener', 'Crud.Controller/Crud');
-App::uses('CrudValidationException', 'Crud.Error/Exception');
+namespace Crud\Listener;
+
+use \Cake\Event\Event;
+use \Cake\Network\Request;
 
 /**
  * Enabled Crud to respond in a computer readable format like JSON or XML
@@ -11,7 +13,7 @@ App::uses('CrudValidationException', 'Crud.Error/Exception');
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class ApiListener extends CrudListener {
+class Api extends Base {
 
 /**
  * Default configuration
@@ -73,7 +75,7 @@ class ApiListener extends CrudListener {
  * @param CakeEvent $event
  * @return void
  */
-	public function beforeHandle(CakeEvent $event) {
+	public function beforeHandle(Event $event) {
 		parent::beforeHandle($event);
 
 		if (!$this->_request()->is('api')) {
@@ -376,7 +378,7 @@ class ApiListener extends CrudListener {
 
 		foreach ($detectors as $name => $config) {
 
-			$request->addDetector($name, array('callback' => function(CakeRequest $request) use ($config) {
+			$request->addDetector($name, array('callback' => function(Request $request) use ($config) {
 				if (isset($request->params['ext']) && $request->params['ext'] === $config['ext']) {
 					return true;
 				}
@@ -386,7 +388,7 @@ class ApiListener extends CrudListener {
 
 		}
 
-		$request->addDetector('api', array('callback' => function(CakeRequest $request) use ($detectors) {
+		$request->addDetector('api', array('callback' => function(Request $request) use ($detectors) {
 			foreach ($detectors as $name => $config) {
 				if ($request->is($name)) {
 					return true;

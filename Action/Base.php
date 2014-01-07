@@ -1,8 +1,9 @@
 <?php
 
-App::uses('CrudBaseObject', 'Crud.Controller/Crud');
-App::uses('Hash', 'Utility');
-App::uses('Validation', 'Utility');
+namespace Crud\Action;
+
+use \Crud\Core\Object;
+use \Crud\Event\Subject;
 
 /**
  * Base Crud class
@@ -10,7 +11,7 @@ App::uses('Validation', 'Utility');
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-abstract class CrudAction extends CrudBaseObject {
+abstract class Base extends Object {
 
 /**
  * Constant representing a model-level action
@@ -31,11 +32,11 @@ abstract class CrudAction extends CrudBaseObject {
  *
  * Called when the action is loaded
  *
- * @param CrudSubject $subject
+ * @param \Crud\Event\Subject $subject
  * @param array $defaults
  * @return void
  */
-	public function __construct(CrudSubject $subject, array $defaults = array()) {
+	public function __construct(Subject $subject, array $defaults = array()) {
 		parent::__construct($subject, $defaults);
 		$this->_settings['action'] = $subject->action;
 	}
@@ -50,10 +51,10 @@ abstract class CrudAction extends CrudBaseObject {
  * execution flow continues
  *
  * @throws NotImplementedException if the action can't handle the request
- * @param CakeEvent $event
+ * @param \Crud\Event\Subject $event
  * @return mixed
  */
-	public function handle(CrudSubject $subject) {
+	public function handle(Subject $subject) {
 		if (!$this->config('enabled')) {
 			return false;
 		}

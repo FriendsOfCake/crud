@@ -1,6 +1,8 @@
 <?php
 
-App::uses('CrudBaseObject', 'Crud.Controller/Crud');
+namespace Crud\Listener;
+
+use \Crud\Core\Object;
 
 /**
  * The Base Crud Listener
@@ -10,7 +12,7 @@ App::uses('CrudBaseObject', 'Crud.Controller/Crud');
  *
  * @codeCoverageIgnore
  */
-abstract class CrudListener extends CrudBaseObject {
+abstract class Base extends Object {
 
 /**
  * Returns a list of all events that will fire in the controller during its life cycle.
