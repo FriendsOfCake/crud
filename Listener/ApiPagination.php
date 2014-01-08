@@ -1,6 +1,8 @@
 <?php
 
-App::uses('CrudListener', 'Crud.Controller/Crud');
+namespace Crud\Listener;
+
+use Cake\Event\Event;
 
 /**
  * When loaded Crud API Pagination Listener will include
@@ -9,7 +11,7 @@ App::uses('CrudListener', 'Crud.Controller/Crud');
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class ApiPaginationListener extends CrudListener {
+class ApiPagination extends Base {
 
 /**
  * Returns a list of all events that will fire in the controller during its lifecycle.
@@ -20,9 +22,9 @@ class ApiPaginationListener extends CrudListener {
  * @return array
  */
 	public function implementedEvents() {
-		return array(
-			'Crud.beforeRender' => array('callable' => 'beforeRender', 'priority' => 75)
-		);
+		return [
+			'Crud.beforeRender' => ['callable' => 'beforeRender', 'priority' => 75]
+		];
 	}
 
 /**
@@ -31,7 +33,7 @@ class ApiPaginationListener extends CrudListener {
  * @param CakeEvent $event
  * @return void
  */
-	public function beforeRender(CakeEvent $event) {
+	public function beforeRender(Event $event) {
 		$request = $this->_request();
 		if (!$request->is('api')) {
 			return;
@@ -44,14 +46,14 @@ class ApiPaginationListener extends CrudListener {
 
 		$_pagination = $_pagination[$event->subject->modelClass];
 
-		$pagination = array(
+		$pagination = [
 			'page_count' => $_pagination['pageCount'],
 			'current_page' => $_pagination['page'],
 			'has_next_page' => $_pagination['nextPage'],
 			'has_prev_page' => $_pagination['prevPage'],
 			'count' => $_pagination['count'],
 			'limit' => $_pagination['limit']
-		);
+		];
 
 		$this->_action()->config('serialize.pagination', 'pagination');
 		$this->_controller()->set('pagination', $pagination);
