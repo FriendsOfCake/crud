@@ -63,51 +63,19 @@ class Index extends Base {
 	}
 
 /**
- * Compute pagination settings
- *
- * Initializes PaginatorComponent if it isn't loaded already
- * Modified the findType based on the CrudAction configuration
- *
- * @return array The Paginator settings
- */
-	public function paginationConfig() {
-		$controller = $this->_controller();
-
-		if (!isset($controller->Paginator)) {
-			$pagination = isset($controller->paginate) ? $controller->paginate : array();
-			$controller->Paginator = $controller->Components->load('Paginator', $pagination);
-		}
-
-		$Paginator = $controller->Paginator;
-		$settings = &$Paginator->settings;
-
-		if (isset($settings[$controller->modelClass])) {
-			if (empty($settings[$controller->modelClass]['findType'])) {
-				$settings[$controller->modelClass]['findType'] = $this->_getFindMethod('all');
-			}
-		} elseif (empty($settings['findType'])) {
-			$settings['findType'] = $this->_getFindMethod('all');
-		}
-
-		return $settings;
-	}
-
-/**
  * HTTP GET handler
  *
  * @return void
  */
 	protected function _get() {
-		$this->paginationConfig();
-
 		$controller = $this->_controller();
 
 		$success = true;
 		$viewVar = $this->viewVar();
 
-		$subject = $this->_trigger('beforePaginate', array('paginator' => $controller->Paginator, 'success' => $success, 'viewVar' => $viewVar));
+		$subject = $this->_trigger('beforePaginate', ['success' => $success, 'viewVar' => $viewVar]);
 		$items = $controller->paginate($this->_model());
-		$subject = $this->_trigger('afterPaginate', array('success' => $subject->success, 'viewVar' => $subject->viewVar, 'items' => $items));
+		$subject = $this->_trigger('afterPaginate', ['success' => $subject->success, 'viewVar' => $subject->viewVar, 'items' => $items]);
 
 		$items = $subject->items;
 
@@ -115,7 +83,7 @@ class Index extends Base {
 			$items = iterator_to_array($items);
 		}
 
-		$controller->set(array('success' => $subject->success, $subject->viewVar => $items));
+		$controller->set(['success' => $subject->success, $subject->viewVar => $items]);
 		$this->_trigger('beforeRender', $subject);
 	}
 

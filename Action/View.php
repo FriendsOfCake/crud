@@ -1,6 +1,8 @@
 <?php
 
-App::uses('CrudAction', 'Crud.Controller/Crud');
+namespace Crud\Action;
+
+use \Cake\Utility\Inflector;
 
 /**
  * Handles 'View' Crud actions
@@ -8,7 +10,7 @@ App::uses('CrudAction', 'Crud.Controller/Crud');
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class ViewCrudAction extends CrudAction {
+class View extends Base {
 
 /**
  * Default settings for 'view' actions
@@ -24,7 +26,7 @@ class ViewCrudAction extends CrudAction {
  */
 	protected $_settings = array(
 		'enabled' => true,
-		'findMethod' => 'first',
+		'findMethod' => 'all',
 		'view' => null,
 		'viewVar' => null,
 		'serialize' => array()
@@ -35,7 +37,7 @@ class ViewCrudAction extends CrudAction {
  *
  * @var integer
  */
-	const ACTION_SCOPE = CrudAction::SCOPE_RECORD;
+	const ACTION_SCOPE = Base::SCOPE_RECORD;
 
 /**
  * Change the name of the view variable name
@@ -46,7 +48,7 @@ class ViewCrudAction extends CrudAction {
  */
 	public function viewVar($name = null) {
 		if (empty($name)) {
-			return $this->config('viewVar') ?: Inflector::variable($this->_model()->name);
+			return $this->config('viewVar') ?: Inflector::variable($this->_model()->alias());
 		}
 
 		return $this->config('viewVar', $name);
@@ -64,23 +66,28 @@ class ViewCrudAction extends CrudAction {
 			return false;
 		}
 
-		$model = $this->_model();
+		$repository = $this->_repository();
 
-		$query = array();
-		$query['conditions'] = array($model->escapeField() => $id);
+		$findMethod = $this->_getFindMethod();
 
-		$findMethod = $this->_getFindMethod('first');
+		$query = $repository
+			->find($findMethod)
+			->limit(1)
+			->where([
+				$repository->primaryKey() => $id
+			]);
+
 		$subject = $this->_trigger('beforeFind', compact('id', 'query', 'findMethod'));
 
-		$item = $model->find($subject->findMethod, $subject->query);
-
-		if (empty($item)) {
+		$item = $query->toArray();
+		if (empty($item[0])) {
 			$this->_trigger('recordNotFound', compact('id'));
 
-			$message = $this->message('recordNotFound', array('id' => $id));
+			$message = $this->message('recordNotFound', compact('id'));
 			$exceptionClass = $message['class'];
 			throw new $exceptionClass($message['text'], $message['code']);
 		}
+		$item = current($item);
 
 		$success = true;
 		$viewVar = $this->viewVar();

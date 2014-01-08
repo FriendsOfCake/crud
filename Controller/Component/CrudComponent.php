@@ -117,17 +117,17 @@ class CrudComponent extends \Cake\Controller\Component {
 			'domain' => 'crud',
 			'invalidId' => array(
 				'code' => 400,
-				'class' => 'BadRequestException',
+				'class' => 'Cake\Error\BadRequestException',
 				'text' => 'Invalid id'
 			),
 			'recordNotFound' => array(
 				'code' => 404,
-				'class' => 'NotFoundException',
+				'class' => 'Cake\Error\NotFoundException',
 				'text' => 'Not found'
 			),
 			'badRequestMethod' => array(
 				'code' => 405,
-				'class' => 'MethodNotAllowedException',
+				'class' => 'Cake\Error\MethodNotAllowedException',
 				'text' => 'Method not allowed. This action permits only {methods}'
 			)
 		),
@@ -591,6 +591,14 @@ class CrudComponent extends \Cake\Controller\Component {
 		list(, $modelName) = pluginSplit($modelName);
 		$this->_model = $this->_controller->{$modelName};
 		$this->_modelName = $this->_model->name;
+	}
+
+	public function repository() {
+		return $this->_controller->{$this->_modelName};
+	}
+
+	public function entity() {
+		return $this->repository()->newEntity();
 	}
 
 /**

@@ -92,6 +92,14 @@ trait ProxyTrait {
 		return $this->_container->model;
 	}
 
+	protected function _repository() {
+		return $this->_crud()->repository();
+	}
+
+	protected function _entity() {
+		return $this->_crud()->entity();
+	}
+
 /**
  * Proxy method for `$this->_crud()->getSubject()`
  *

@@ -1,6 +1,6 @@
 <?php
 
-App::uses('CrudAction', 'Crud.Controller/Crud');
+namespace Crud\Action;
 
 /**
  * Handles 'Delete' Crud actions
@@ -8,7 +8,7 @@ App::uses('CrudAction', 'Crud.Controller/Crud');
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class DeleteCrudAction extends CrudAction {
+class Delete extends Base {
 
 /**
  * Default settings for 'add' actions
@@ -45,7 +45,7 @@ class DeleteCrudAction extends CrudAction {
  *
  * @var integer
  */
-	const ACTION_SCOPE = CrudAction::SCOPE_RECORD;
+	const ACTION_SCOPE = Base::SCOPE_RECORD;
 
 /**
  * HTTP DELETE handler

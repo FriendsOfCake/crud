@@ -2,8 +2,11 @@
 
 namespace Crud\Action;
 
-use \Crud\Core\Object;
-use \Crud\Event\Subject;
+use Crud\Core\Object;
+use Crud\Event\Subject;
+use Cake\Utility\Hash;
+use Cake\Utility\Inflector;
+use Cake\Utility\String;
 
 /**
  * Base Crud class
@@ -225,7 +228,7 @@ abstract class Base extends Object {
 		), $config);
 
 		if (!isset($config['text'])) {
-			throw new CakeException(sprintf('Invalid message config for "%s" no text key found', $type));
+			throw new \Exception(sprintf('Invalid message config for "%s" no text key found', $type));
 		}
 
 		$config['params']['original'] = ucfirst(str_replace('{name}', $config['name'], $config['text']));
@@ -328,42 +331,6 @@ abstract class Base extends Object {
 	}
 
 /**
- * Automatically detect primary key data type for `_validateId()`
- *
- * Binary or string with length of 36 chars will be detected as UUID
- * If the primary key is a number, integer validation will be used
- *
- * If no reliable detection can be made, no validation will be made
- *
- * @param Model $model
- * @return string
- * @throws CakeException If unable to get model object
- */
-	public function detectPrimaryKeyFieldType(Model $model = null) {
-		if (empty($model)) {
-			$model = $this->_model();
-			if (empty($model)) {
-				throw new CakeException('Missing model object, cant detect primary key field type');
-			}
-		}
-
-		$fInfo = $model->schema($model->primaryKey);
-		if (empty($fInfo)) {
-			return false;
-		}
-
-		if ($fInfo['length'] == 36 && ($fInfo['type'] === 'string' || $fInfo['type'] === 'binary')) {
-			return 'uuid';
-		}
-
-		if ($fInfo['type'] === 'integer') {
-			return 'integer';
-		}
-
-		return false;
-	}
-
-/**
  * Return the human name of the model
  *
  * By default it uses Inflector::humanize, but can be changed
@@ -373,7 +340,7 @@ abstract class Base extends Object {
  */
 	protected function _getResourceName() {
 		if (empty($this->_settings['name'])) {
-			$this->_settings['name'] = strtolower(Inflector::humanize(Inflector::underscore($this->_model()->name)));
+			$this->_settings['name'] = strtolower(Inflector::humanize(Inflector::underscore($this->_model()->alias())));
 		}
 
 		return $this->_settings['name'];
@@ -415,6 +382,42 @@ abstract class Base extends Object {
 		$message = $this->message('invalidId');
 		$exceptionClass = $message['class'];
 		throw new $exceptionClass($message['text'], $message['code']);
+	}
+
+/**
+ * Automatically detect primary key data type for `_validateId()`
+ *
+ * Binary or string with length of 36 chars will be detected as UUID
+ * If the primary key is a number, integer validation will be used
+ *
+ * If no reliable detection can be made, no validation will be made
+ *
+ * @param Model $model
+ * @return string
+ * @throws CakeException If unable to get model object
+ */
+	public function detectPrimaryKeyFieldType(Model $model = null) {
+		if (empty($model)) {
+			$model = $this->_model();
+			if (empty($model)) {
+				throw new CakeException('Missing model object, cant detect primary key field type');
+			}
+		}
+
+		$fInfo = $model->schema()->column($model->primaryKey());
+		if (empty($fInfo)) {
+			return false;
+		}
+
+		if ($fInfo['length'] == 36 && ($fInfo['type'] === 'string' || $fInfo['type'] === 'binary')) {
+			return 'uuid';
+		}
+
+		if ($fInfo['type'] === 'integer') {
+			return 'integer';
+		}
+
+		return false;
 	}
 
 /**
