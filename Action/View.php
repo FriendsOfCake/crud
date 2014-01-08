@@ -57,9 +57,9 @@ class View extends Base {
 /**
  * HTTP GET handler
  *
- * @throws NotFoundException If record not found
  * @param string $id
  * @return void
+ * @throws NotFoundException If record not found
  */
 	protected function _get($id = null) {
 		if (!$this->_validateId($id)) {
@@ -67,34 +67,27 @@ class View extends Base {
 		}
 
 		$repository = $this->_repository();
+		$query = $repository->find($this->_getFindMethod());
+		$query->where([$repository->primaryKey() => $id]);
+		$query->limit(1);
 
-		$findMethod = $this->_getFindMethod();
+		$subject = $this->_trigger('beforeFind', compact('id', 'query'));
 
-		$query = $repository
-			->find($findMethod)
-			->limit(1)
-			->where([
-				$repository->primaryKey() => $id
-			]);
-
-		$subject = $this->_trigger('beforeFind', compact('id', 'query', 'findMethod'));
-
-		$item = $query->toArray();
-		if (empty($item[0])) {
+		$item = $query->first();
+		if (empty($item)) {
 			$this->_trigger('recordNotFound', compact('id'));
 
 			$message = $this->message('recordNotFound', compact('id'));
 			$exceptionClass = $message['class'];
 			throw new $exceptionClass($message['text'], $message['code']);
 		}
-		$item = current($item);
 
 		$success = true;
 		$viewVar = $this->viewVar();
 
 		$subject = $this->_trigger('afterFind', compact('id', 'viewVar', 'success', 'item'));
 
-		$this->_controller()->set(array('success' => $subject->success, $subject->viewVar => $subject->item));
+		$this->_controller()->set(['success' => $subject->success, $subject->viewVar => $subject->item]);
 		$this->_trigger('beforeRender', $subject);
 	}
 
