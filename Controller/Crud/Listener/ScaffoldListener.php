@@ -16,6 +16,13 @@ App::uses('CrudListener', 'Crud.Controller/Crud');
 class ScaffoldListener extends CrudListener {
 
 /**
+ * control if virtualFields should show or not.
+ *
+ * @var boolean	Default virtualFields are off
+ */
+	protected $_useVirtualFields = false;
+
+/**
  * List of events implemented by this class
  *
  * @return array
@@ -101,6 +108,9 @@ class ScaffoldListener extends CrudListener {
 		$singularHumanName = Inflector::humanize(Inflector::underscore($modelClass));
 		$pluralHumanName = Inflector::humanize(Inflector::underscore($controller->name));
 		$scaffoldFields = array_keys($model->schema());
+		if ($request->isGet() && !$this->_action()->config('saveMethod')) {
+			$scaffoldFields = array_merge($scaffoldFields, array_keys($model->virtualFields));
+		}
 		$associations = $this->_associations($model);
 
 		$controller->set(compact(
@@ -155,5 +165,21 @@ class ScaffoldListener extends CrudListener {
 
 		return $associations;
 	}
+
+/**
+ * Function to activate the use of virtualFields. If run without arguments, it returs current status.
+ * Use : $this->Crud->listener('Scaffold')->useVirtualFields(true) from a controller to activate
+ * 
+ * @param boolean $activate
+ * @return mixed
+ */
+	public function useVirtualFields($activate = null) {
+		if ($activate == null) {
+			return $this->_useVirtualFields;
+		}
+		$this->_useVirtualFields = $activate;
+	}
+
+}
 
 }
