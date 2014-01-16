@@ -1,7 +1,10 @@
 <?php
 
-App::uses('ConnectionManager', 'Model');
-App::uses('CrudListener', 'Crud.Controller/Crud');
+namespace Crud\Listener;
+
+use Cake\Core\Configure;
+use Cake\Event\Event;
+use Cake\Database\ConnectionManager;
 
 /**
  * When loaded Crud API will include query logs in the response
@@ -14,7 +17,7 @@ App::uses('CrudListener', 'Crud.Controller/Crud');
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class ApiQueryLogListener extends CrudListener {
+class ApiQueryLog extends Base {
 
 /**
  * Returns a list of all events that will fire in the controller during its lifecycle.
@@ -25,9 +28,23 @@ class ApiQueryLogListener extends CrudListener {
  * @return array
  */
 	public function implementedEvents() {
-		return array(
-			'Crud.beforeRender' => array('callable' => 'beforeRender', 'priority' => 75)
-		);
+		return [
+			'Crud.initialize' => ['callable' => [$this, 'setupLogging'], 'priority' => 1],
+			'Crud.beforeRender' => ['callable' => [$this, 'beforeRender'], 'priority' => 75]
+		];
+	}
+
+/**
+ * Setup logging for all connections
+ *
+ * @param  Event  $event
+ * @return void
+ */
+	public function setupLogging(Event $event) {
+		foreach ($this->_getSources() as $connectionName) {
+			$this->_getSource($connectionName)->logQueries(true);
+			$this->_getSource($connectionName)->logger(new \Crud\Log\QueryLogger());
+		}
 	}
 
 /**
@@ -36,7 +53,7 @@ class ApiQueryLogListener extends CrudListener {
  * @param CakeEvent $event
  * @return void
  */
-	public function beforeRender(CakeEvent $event) {
+	public function beforeRender(Event $event) {
 		if (Configure::read('debug') < 2) {
 			return;
 		}
@@ -45,10 +62,13 @@ class ApiQueryLogListener extends CrudListener {
 			return;
 		}
 
-		$this->_action()->config('serialize.queryLog', 'queryLog');
+		$this
+			->_action()
+			->config('serialize.queryLog', 'queryLog');
 
-		$queryLog = $this->_getQueryLogs();
-		$this->_controller()->set('queryLog', $queryLog);
+		$this
+			->_controller()
+			->set('queryLog', $this->_getQueryLogs());
 	}
 
 /**
@@ -57,20 +77,14 @@ class ApiQueryLogListener extends CrudListener {
  * @return array
  */
 	protected function _getQueryLogs() {
-		if (!class_exists('ConnectionManager', false)) {
+		if (!class_exists('Cake\Database\ConnectionManager', false)) {
 			return array();
 		}
 
 		$sources = $this->_getSources();
-		$queryLog = array();
+		$queryLog = [];
 		foreach ($sources as $source) {
-			$db = $this->_getSource($source);
-
-			if (!method_exists($db, 'getLog')) {
-				continue;
-			}
-
-			$queryLog[$source] = $db->getLog(false, false);
+			$queryLog[$source] = $this->_getSource($source)->logger()->getLogs();
 		}
 
 		return $queryLog;
@@ -83,7 +97,7 @@ class ApiQueryLogListener extends CrudListener {
  * @return array
  */
 	protected function _getSources() {
-		return ConnectionManager::sourceList();
+		return ConnectionManager::configured();
 	}
 
 /**

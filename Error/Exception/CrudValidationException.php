@@ -1,10 +1,15 @@
 <?php
+
+namespace Crud\Error\Exception;
+
+use Cake\Utility\Hash;
+
 /**
  * Exception containing validation errors from the model. Useful for API
  * responses where you need an error code in response
  *
  */
-class CrudValidationException extends CakeException {
+class CrudValidationException extends \Cake\Error\BaseException {
 
 /**
  * List of validation errors that occurred in the model

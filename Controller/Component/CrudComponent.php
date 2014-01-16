@@ -632,6 +632,7 @@ class CrudComponent extends \Cake\Controller\Component {
  */
 	public function validationErrors() {
 		$return = array();
+		return $return;
 
 		$models = ClassRegistry::keys();
 		foreach ($models as $currentModel) {

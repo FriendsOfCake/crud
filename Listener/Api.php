@@ -6,6 +6,8 @@ use \Crud\Event\Subject;
 use \Cake\Core\Configure;
 use \Cake\Event\Event;
 use \Cake\Network\Request;
+use \Cake\Utility\Hash;
+use \Cake\Utility\String;
 
 /**
  * Enabled Crud to respond in a computer readable format like JSON or XML
@@ -164,6 +166,7 @@ class Api extends Base {
  * @return void
  */
 	protected function _exceptionResponse($exceptionConfig) {
+		return;
 		$exceptionConfig = array_merge($this->config('exception'), $exceptionConfig);
 
 		$class = $exceptionConfig['class'];
@@ -302,8 +305,8 @@ class Api extends Base {
  * @param string $path
  * @return string
  */
-	protected function _expandPath(CrudSubject $subject, $path) {
-		$keys = array();
+	protected function _expandPath(\Crud\Event\Subject $subject, $path) {
+		$keys = [];
 		$subjectArray = (array)$subject;
 
 		foreach (array_keys($subjectArray) as $key) {

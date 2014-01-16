@@ -66,10 +66,9 @@ class View extends Base {
 			return false;
 		}
 
-		$repository = $this->_repository();
-		$query = $repository->find($this->_getFindMethod());
-		$query->where([$repository->primaryKey() => $id]);
-		$query->limit(1);
+		$table = $this->_repository();
+		$query = $table->find($this->_getFindMethod());
+		$query->where([$table->primaryKey() => $id]);
 
 		$subject = $this->_trigger('beforeFind', compact('id', 'query'));
 

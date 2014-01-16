@@ -88,12 +88,12 @@ class Add extends Base {
  * @return void
  */
 	protected function _get() {
-		$request = $this->_request();
-		$model = $this->_model();
+		// $request = $this->_request();
+		// $model = $this->_model();
 
 		// $model->create();
 		// $request->data = $model->data;
-		$this->_trigger('beforeRender', array('success' => false));
+		$this->_trigger('beforeRender', ['success' => true]);
 	}
 
 /**
@@ -106,15 +106,15 @@ class Add extends Base {
 		$model = $this->_model();
 
 		$this->_trigger('beforeSave');
-		if (call_user_func(array($model, $this->saveMethod()), $request->data, $this->saveOptions())) {
+		if (call_user_func([$model, $this->saveMethod()], $request->data, $this->saveOptions())) {
 			$this->setFlash('success');
-			$subject = $this->_trigger('afterSave', array('success' => true, 'created' => true, 'id' => $model->id));
-			return $this->_redirect($subject, array('action' => 'index'));
+			$subject = $this->_trigger('afterSave', ['success' => true, 'created' => true, 'id' => $model->id]);
+			return $this->_redirect($subject, ['action' => 'index']);
 		}
 
 		$this->setFlash('error');
 
-		$subject = $this->_trigger('afterSave', array('success' => false, 'created' => false));
+		$subject = $this->_trigger('afterSave', ['success' => false, 'created' => false]);
 		$request->data = Hash::merge($request->data, $model->data);
 		$this->_trigger('beforeRender', $subject);
 	}

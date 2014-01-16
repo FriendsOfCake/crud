@@ -1,6 +1,8 @@
 <?php
 
-App::uses('CrudAction', 'Crud.Controller/Crud');
+namespace Crud\Action;
+
+use Cake\Utility\Hash;
 
 /**
  * Handles 'Edit' Crud actions
@@ -8,7 +10,7 @@ App::uses('CrudAction', 'Crud.Controller/Crud');
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class EditCrudAction extends CrudAction {
+class Edit extends Base {
 
 /**
  * Default settings for 'edit' actions
@@ -37,7 +39,7 @@ class EditCrudAction extends CrudAction {
  */
 	protected $_settings = array(
 		'enabled' => true,
-		'findMethod' => 'first',
+		'findMethod' => 'all',
 		'saveMethod' => 'saveAssociated',
 		'view' => null,
 		'relatedModels' => true,
@@ -74,7 +76,7 @@ class EditCrudAction extends CrudAction {
 			'error' => array(
 				'exception' => array(
 					'type' => 'validate',
-					'class' => 'CrudValidationException'
+					'class' => '\Crud\Error\Exception\CrudValidationException'
 				)
 			)
 		),
@@ -86,7 +88,7 @@ class EditCrudAction extends CrudAction {
  *
  * @var integer
  */
-	const ACTION_SCOPE = CrudAction::SCOPE_RECORD;
+	const ACTION_SCOPE = Base::SCOPE_RECORD;
 
 /**
  * HTTP GET handler
@@ -101,8 +103,6 @@ class EditCrudAction extends CrudAction {
 		}
 
 		$request = $this->_request();
-		$model = $this->_model();
-
 		$request->data = $this->_findRecord($id);
 		if (empty($request->data)) {
 			return $this->_notFound($id);
@@ -110,7 +110,6 @@ class EditCrudAction extends CrudAction {
 
 		$item = $request->data;
 		$subject = $this->_trigger('afterFind', compact('id', 'item'));
-		$request->data = Hash::merge($request->data, $model->data, $subject->item);
 
 		$this->_trigger('beforeRender');
 	}
@@ -130,10 +129,13 @@ class EditCrudAction extends CrudAction {
 		$model = $this->_model();
 
 		$existing = $this->_findRecord($id, 'count');
+		die('hi');
 		if (empty($existing)) {
+			die('hi');
 			return $this->_notFound($id);
 		}
 
+		die('hi');
 		$request->data = $this->_injectPrimaryKey($request->data, $id, $model);
 
 		$this->_trigger('beforeSave', compact('id'));
@@ -156,17 +158,12 @@ class EditCrudAction extends CrudAction {
  * @return array
  */
 	protected function _findRecord($id, $findMethod = null) {
-		$model = $this->_model();
-
-		$query = array();
-		$query['conditions'] = array($model->escapeField() => $id);
-
-		if (!$findMethod) {
-			$findMethod = $this->_getFindMethod($findMethod);
-		}
+		$table = $this->_repository();
+		$query = $table->find();
+		$query->where([$table->primaryKey() => $id]);
 
 		$subject = $this->_trigger('beforeFind', compact('query', 'findMethod'));
-		return $model->find($subject->findMethod, $subject->query);
+		return $query->first();
 	}
 
 /**
