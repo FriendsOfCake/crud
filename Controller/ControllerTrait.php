@@ -1,6 +1,6 @@
 <?php
 
-namespace Crud;
+namespace Crud\Controller;
 
 /**
  * Enable Crud to catch MissingActionException and attempt to generate response
