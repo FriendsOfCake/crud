@@ -133,12 +133,14 @@ class Edit extends Base {
 			return $this->_notFound($id);
 		}
 
+		$subject->set(['item' => $Entity]);
+
 		$Entity->accessible('*', true);
 		$Entity->set($this->_request()->data);
 
 		$this->_trigger('beforeSave', $subject);
 		if (call_user_func([$this->_repository(), $this->saveMethod()], $Entity, $this->saveOptions())) {
-			$subject->set(['success' => true, 'created' => false, 'item '=> $Entity]);
+			$subject->set(['success' => true, 'created' => false]);
 
 			$this->setFlash('success', $subject);
 			$this->_trigger('afterSave', $subject);
@@ -146,10 +148,9 @@ class Edit extends Base {
 			return $this->_redirect($subject, ['action' => 'index']);
 		}
 
-		$subject->set(['success' => false, 'created' => false, 'item' => $Entity]);
-
+		$subject->set(['success' => false, 'created' => false]);
 		$this->setFlash('error', $subject);
-		$subject = $this->_trigger('afterSave', $subject);
+		$this->_trigger('afterSave', $subject);
 		$this->_trigger('beforeRender', $subject);
 	}
 
