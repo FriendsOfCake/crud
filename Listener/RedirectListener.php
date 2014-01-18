@@ -18,9 +18,9 @@ class RedirectListener extends CrudListener {
  *
  * @var array
  */
-	protected $_settings = array(
-		'readers' => array()
-	);
+	protected $_settings = [
+		'readers' => []
+	];
 
 /**
  * Returns a list of all events that will fire in the controller during its lifecycle.
@@ -29,9 +29,9 @@ class RedirectListener extends CrudListener {
  * @return array
  */
 	public function implementedEvents() {
-		return array(
-			'Crud.beforeRedirect' => array('callable' => 'beforeRedirect', 'priority' => 90)
-		);
+		return [
+			'Crud.beforeRedirect' => ['callable' => 'beforeRedirect', 'priority' => 90]
+		];
 	}
 
 /**

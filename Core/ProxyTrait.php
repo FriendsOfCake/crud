@@ -131,7 +131,7 @@ trait ProxyTrait {
  * @return Crud\Controller\Component\CrudComponent
  */
 	protected function _crud() {
-		return $this->_Crud;
+		return $this->_crud;
 	}
 
 }

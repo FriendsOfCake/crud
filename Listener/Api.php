@@ -25,22 +25,22 @@ class Api extends Base {
  *
  * @var array
  */
-	protected $_settings = array(
-		'viewClasses' => array(
+	protected $_settings = [
+		'viewClasses' => [
 			'json' => 'Json',
 			'xml' => 'Xml'
-		),
-		'detectors' => array(
-			'json' => array('ext' => 'json', 'accepts' => 'application/json'),
-			'xml' => array('ext' => 'xml', 'accepts' => 'text/xml')
-		),
-		'exception' => array(
+		],
+		'detectors' => [
+			'json' => ['ext' => 'json', 'accepts' => 'application/json'],
+			'xml' => ['ext' => 'xml', 'accepts' => 'text/xml']
+		],
+		'exception' => [
 			'type' => 'default',
 			'class' => 'Cake\Error\BadRequestException',
 			'message' => 'Unknown error',
 			'code' => 0
-		)
-	);
+		]
+	];
 
 /**
  * Returns a list of all events that will fire in the controller during its lifecycle.
@@ -198,7 +198,7 @@ class Api extends Base {
 
 		$action = $this->_action();
 
-		$serialize = array();
+		$serialize = [];
 		$serialize[] = 'success';
 
 		if (method_exists($action, 'viewVar')) {
@@ -382,17 +382,17 @@ class Api extends Base {
 
 		foreach ($detectors as $name => $config) {
 
-			$request->addDetector($name, array('callback' => function(Request $request) use ($config) {
+			$request->addDetector($name, ['callback' => function(Request $request) use ($config) {
 				if (isset($request->params['_ext']) && $request->params['_ext'] === $config['ext']) {
 					return true;
 				}
 
 				return $request->accepts($config['accepts']);
-			}));
+			}]);
 
 		}
 
-		$request->addDetector('api', array('callback' => function(Request $request) use ($detectors) {
+		$request->addDetector('api', ['callback' => function(Request $request) use ($detectors) {
 			foreach ($detectors as $name => $config) {
 				if ($request->is($name)) {
 					return true;
@@ -400,7 +400,7 @@ class Api extends Base {
 			}
 
 			return false;
-		}));
+		}]);
 	}
 
 }

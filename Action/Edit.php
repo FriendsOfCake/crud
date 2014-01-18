@@ -128,18 +128,18 @@ class Edit extends Base {
 
 		$subject = $this->_subject(['id' => $id]);
 
-		$Entity = $this->_findRecord($id, $subject);
-		if (!$Entity) {
+		$entity = $this->_findRecord($id, $subject);
+		if (!$entity) {
 			return $this->_notFound($id);
 		}
 
-		$subject->set(['item' => $Entity]);
+		$subject->set(['item' => $entity]);
 
-		$Entity->accessible('*', true);
-		$Entity->set($this->_request()->data);
+		$entity->accessible('*', true);
+		$entity->set($this->_request()->data);
 
 		$this->_trigger('beforeSave', $subject);
-		if (call_user_func([$this->_repository(), $this->saveMethod()], $Entity, $this->saveOptions())) {
+		if (call_user_func([$this->_repository(), $this->saveMethod()], $entity, $this->saveOptions())) {
 			$subject->set(['success' => true, 'created' => false]);
 
 			$this->setFlash('success', $subject);

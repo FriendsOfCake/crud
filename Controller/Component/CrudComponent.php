@@ -4,6 +4,7 @@ namespace Crud\Controller\Component;
 use Cake\Controller\ComponentRegistry;
 use Cake\Event\Event;
 use Cake\Utility\Hash;
+use Cake\Controller\Component;
 use Crud\Event\Subject;
 
 /**
@@ -14,14 +15,14 @@ use Crud\Event\Subject;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class CrudComponent extends \Cake\Controller\Component {
+class CrudComponent extends Component {
 
 /**
  * Reference to a Session component.
  *
  * @var array
  */
-	public $components = array('Session');
+	public $components = [];
 
 /**
  * The current controller action.
@@ -49,7 +50,7 @@ class CrudComponent extends \Cake\Controller\Component {
  *
  * @var array
  */
-	protected $_eventLog = array();
+	protected $_eventLog = [];
 
 /**
  * Reference to the current event manager.
@@ -79,14 +80,14 @@ class CrudComponent extends \Cake\Controller\Component {
  *
  * @var array
  */
-	protected $_listenerInstances = array();
+	protected $_listenerInstances = [];
 
 /**
  * List of crud actions.
  *
  * @var array
  */
-	protected $_actionInstances = array();
+	protected $_actionInstances = [];
 
 /**
  * Components settings.
@@ -106,32 +107,30 @@ class CrudComponent extends \Cake\Controller\Component {
  *
  * @var array
  */
-	public $settings = array(
-		'actions' => array(),
+	public $settings = [
+		'actions' => [],
 		'eventPrefix' => 'Crud',
-		'listeners' => array(
-
-		),
-		'messages' => array(
+		'listeners' => [],
+		'messages' => [
 			'domain' => 'crud',
-			'invalidId' => array(
+			'invalidId' => [
 				'code' => 400,
 				'class' => 'Cake\Error\BadRequestException',
 				'text' => 'Invalid id'
-			),
-			'recordNotFound' => array(
+			],
+			'recordNotFound' => [
 				'code' => 404,
 				'class' => 'Cake\Error\NotFoundException',
 				'text' => 'Not found'
-			),
-			'badRequestMethod' => array(
+			],
+			'badRequestMethod' => [
 				'code' => 405,
 				'class' => 'Cake\Error\MethodNotAllowedException',
 				'text' => 'Method not allowed. This action permits only {methods}'
-			)
-		),
+			]
+		],
 		'eventLogging' => false
-	);
+	];
 
 /**
  * Constructor
@@ -140,7 +139,7 @@ class CrudComponent extends \Cake\Controller\Component {
  * @param array $settings Array of configuration settings.
  * @return void
  */
-	public function __construct(ComponentRegistry $collection, $settings = array()) {
+	public function __construct(ComponentRegistry $collection, $settings = []) {
 		parent::__construct($collection, $this->_mergeConfig($this->settings, $settings));
 	}
 
@@ -202,8 +201,8 @@ class CrudComponent extends \Cake\Controller\Component {
 		}
 
 		try {
-			$Event = $this->trigger('beforeHandle', compact('args', 'action'));
-			$response = $this->action($Event->subject->action)->handle($Event);
+			$event = $this->trigger('beforeHandle', compact('args', 'action'));
+			$response = $this->action($event->subject->action)->handle($event);
 			if ($response instanceof \Cake\Network\Response) {
 				return $response;
 			}
@@ -216,9 +215,9 @@ class CrudComponent extends \Cake\Controller\Component {
 		}
 
 		$view = null;
-		$CrudAction = $this->action($action);
-		if (method_exists($CrudAction, 'view')) {
-			$view = $CrudAction->view();
+		$crudAction = $this->action($action);
+		if (method_exists($crudAction, 'view')) {
+			$view = $crudAction->view();
 		}
 
 		return $this->_controller->response = $this->_controller->render($view);
@@ -410,14 +409,14 @@ class CrudComponent extends \Cake\Controller\Component {
  * @param array $defaults Any default settings for a listener.
  * @return void
  */
-	public function addListener($name, $class = null, $defaults = array()) {
+	public function addListener($name, $class = null, $defaults = []) {
 		if (strpos($name, '.') !== false) {
 			list($plugin, $name) = pluginSplit($name);
 			$name = strtolower($name);
 			$class = $plugin . '.' . ucfirst($name);
 		}
 
-		$this->config(sprintf('listeners.%s', $name), array('className' => $class) + $defaults);
+		$this->config(sprintf('listeners.%s', $name), ['className' => $class] + $defaults);
 	}
 
 /**
@@ -631,7 +630,7 @@ class CrudComponent extends \Cake\Controller\Component {
  */
 	protected function _normalizeConfig($types = null) {
 		if (!$types) {
-			$types = array('listeners', 'actions');
+			$types = ['listeners', 'actions'];
 		}
 
 		foreach ((array)$types as $type) {
@@ -645,10 +644,10 @@ class CrudComponent extends \Cake\Controller\Component {
 
 				$className = null;
 				if (empty($settings)) {
-					$settings = array();
+					$settings = [];
 				} elseif (is_string($settings)) {
 					$className = $settings;
-					$settings = array();
+					$settings = [];
 				}
 
 				if ($type === 'listeners' && strpos($name, '.') !== false) {

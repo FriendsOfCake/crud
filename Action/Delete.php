@@ -57,8 +57,8 @@ class Delete extends Base {
 		}
 
 		$subject = $this->_subject(['id' => $id]);
-		$Entity = $this->_findRecord($id, $subject);
-		if (!$Entity) {
+		$entity = $this->_findRecord($id, $subject);
+		if (!$entity) {
 			$this->_trigger('recordNotFound', compact('id'));
 
 			$message = $this->message('recordNotFound', ['id' => $id]);
@@ -66,15 +66,15 @@ class Delete extends Base {
 			throw new $exceptionClass($message['text'], $message['code']);
 		}
 
-		$subject->set(['item' => $Entity]);
+		$subject->set(['item' => $entity]);
 
-		$Event = $this->_trigger('beforeDelete', $subject);
-		if ($Event->stopped) {
+		$event = $this->_trigger('beforeDelete', $subject);
+		if ($event->stopped) {
 			$this->setFlash('error');
 			return $this->_redirect($subject, ['action' => 'index']);
 		}
 
-		if ($this->_repository()->delete($Entity)) {
+		if ($this->_repository()->delete($entity)) {
 			$subject->set(['success' => true]);
 
 			$this->setFlash('success', $subject);

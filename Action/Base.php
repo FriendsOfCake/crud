@@ -18,20 +18,6 @@ use Crud\Controller\Component\CrudComponent;
 abstract class Base extends Object {
 
 /**
- * Constant representing a model-level action
- *
- * @var integer
- */
-	const SCOPE_MODEL = 0;
-
-/**
- * Constant representing a record-level action
- *
- * @var integer
- */
-	const SCOPE_RECORD = 1;
-
-/**
  * Startup method
  *
  * Called when the action is loaded
@@ -40,7 +26,7 @@ abstract class Base extends Object {
  * @param array $defaults
  * @return void
  */
-	public function __construct(CrudComponent $Crud, Subject $subject, array $defaults = array()) {
+	public function __construct(CrudComponent $Crud, Subject $subject, array $defaults = []) {
 		parent::__construct($Crud, $subject, $defaults);
 		$this->_settings['action'] = $subject->action;
 	}
@@ -85,12 +71,12 @@ abstract class Base extends Object {
 	public function disable() {
 		$this->config('enabled', false);
 
-		$Controller = $this->_controller();
+		$controller = $this->_controller();
 		$actionName = $this->config('action');
 
-		$pos = array_search($actionName, $Controller->methods);
+		$pos = array_search($actionName, $controller->methods);
 		if ($pos !== false) {
-			unset($Controller->methods[$pos]);
+			unset($controller->methods[$pos]);
 		}
 	}
 
@@ -102,11 +88,11 @@ abstract class Base extends Object {
 	public function enable() {
 		$this->config('enabled', true);
 
-		$Controller = $this->_controller();
+		$controller = $this->_controller();
 		$actionName = $this->config('action');
 
-		if (!in_array($actionName, $Controller->methods)) {
-			$Controller->methods[] = $actionName;
+		if (!in_array($actionName, $controller->methods)) {
+			$controller->methods[] = $actionName;
 		}
 	}
 
@@ -215,7 +201,7 @@ abstract class Base extends Object {
 			return true;
 		}
 
-		$subject = $this->_trigger('invalidId', compact('id'));
+		$this->_trigger('invalidId', compact('id'));
 
 		$message = $this->message('invalidId');
 		$exceptionClass = $message['class'];

@@ -36,52 +36,52 @@ class Add extends Base {
  *
  * @var array
  */
-	protected $_settings = array(
+	protected $_settings = [
 		'enabled' => true,
 		'saveMethod' => 'save',
 		'view' => null,
 		'relatedModels' => true,
-		'saveOptions' => array(
+		'saveOptions' => [
 			'validate' => true,
 			'atomic' => true
-		),
-		'api' => array(
-			'methods' => array('put', 'post'),
-			'success' => array(
+		],
+		'api' => [
+			'methods' => ['put', 'post'],
+			'success' => [
 				'code' => 201,
-				'data' => array(
-					'entity' => array('id')
-				)
-			),
-			'error' => array(
-				'exception' => array(
+				'data' => [
+					'entity' => ['id']
+				]
+			],
+			'error' => [
+				'exception' => [
 					'type' => 'validate',
 					'class' => '\Crud\Error\Exception\CrudValidationException'
-				)
-			)
-		),
-		'redirect' => array(
-			'post_add' => array(
+				]
+			]
+		],
+		'redirect' => [
+			'post_add' => [
 				'reader' => 'request.data',
 				'key' => '_add',
-				'url' => array('action' => 'add')
-			),
-			'post_edit' => array(
+				'url' => ['action' => 'add']
+			],
+			'post_edit' => [
 				'reader' => 'request.data',
 				'key' => '_edit',
-				'url' => array('action' => 'edit', array('subject.key', 'id'))
-			)
-		),
-		'messages' => array(
-			'success' => array(
+				'url' => ['action' => 'edit', ['subject.key', 'id']]
+			]
+		],
+		'messages' => [
+			'success' => [
 				'text' => 'Successfully created {name}'
-			),
-			'error' => array(
+			],
+			'error' => [
 				'text' => 'Could not create {name}'
-			)
-		),
-		'serialize' => array()
-	);
+			]
+		],
+		'serialize' => []
+	];
 
 /**
  * HTTP GET handler
@@ -103,24 +103,27 @@ class Add extends Base {
  * @return void
  */
 	protected function _post() {
-		$Entity = $this->_entity();
-		$Entity->accessible('*', true);
-		$Entity->set($this->_request()->data);
+		$entity = $this->_entity();
+		$entity->accessible('*', true);
+		$entity->set($this->_request()->data);
 
-		$Subject = $this->_subject(['entity' => $Entity]);
+		$subject = $this->_subject(['item' => $entity]);
 
-		$this->_trigger('beforeSave', $Subject);
-		if (call_user_func([$this->_repository(), $this->saveMethod()], $Entity, $this->saveOptions())) {
-			$Subject->set(['success' => true, 'created' => true]);
-			$this->setFlash('success', $Subject);
-			$this->_trigger('afterSave', $Subject);
-			return $this->_redirect($Subject, ['action' => 'index']);
+		$this->_trigger('beforeSave', $subject);
+		if (call_user_func([$this->_repository(), $this->saveMethod()], $entity, $this->saveOptions())) {
+			$subject->set(['success' => true, 'created' => true]);
+
+			$this->setFlash('success', $subject);
+			$this->_trigger('afterSave', $subject);
+
+			return $this->_redirect($subject, ['action' => 'index']);
 		}
 
-		$Subject->set(['success' => false, 'created' => false]);
-		$this->setFlash('error', $Subject);
-		$this->_trigger('afterSave', $Subject);
-		$this->_trigger('beforeRender', $Subject);
+		$subject->set(['success' => false, 'created' => false]);
+
+		$this->setFlash('error', $subject);
+		$this->_trigger('afterSave', $subject);
+		$this->_trigger('beforeRender', $subject);
 	}
 
 /**

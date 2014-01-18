@@ -78,7 +78,7 @@ class ApiQueryLog extends Base {
  */
 	protected function _getQueryLogs() {
 		if (!class_exists('Cake\Database\ConnectionManager', false)) {
-			return array();
+			return [];
 		}
 
 		$sources = $this->_getSources();

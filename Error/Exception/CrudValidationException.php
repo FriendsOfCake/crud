@@ -34,8 +34,8 @@ class CrudValidationException extends BaseException {
  * @param integer $code code to report to client
  * @return void
  */
-	public function __construct(Entity $Entity, $code = 412) {
-		$this->_validationErrors = array_filter($Entity->errors());
+	public function __construct(Entity $entity, $code = 412) {
+		$this->_validationErrors = array_filter($entity->errors());
 		$flat = Hash::flatten($this->_validationErrors);
 
 		$errorCount = $this->_validationErrorCount = count($flat);

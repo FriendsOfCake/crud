@@ -17,7 +17,7 @@ class Subject {
  *
  * @var array
  */
-	protected $_events = array();
+	protected $_events = [];
 
 /**
  * Constructor
@@ -25,7 +25,7 @@ class Subject {
  * @param array $fields
  * @return void
  */
-	public function __construct($fields = array()) {
+	public function __construct($fields = []) {
 		$this->set($fields);
 	}
 
@@ -86,9 +86,9 @@ class Subject {
  * @return boolean
  * @throws CakeException In case of invalid mode
  */
-	public function shouldProcess($mode, $actions = array()) {
+	public function shouldProcess($mode, $actions = []) {
 		if (is_string($actions)) {
-			$actions = array($actions);
+			$actions = [$actions];
 		}
 
 		switch ($mode) {

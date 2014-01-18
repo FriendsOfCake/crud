@@ -30,7 +30,7 @@ abstract class Base extends Object {
  * @return array
  */
 	public function implementedEvents() {
-		$eventMap = array(
+		$eventMap = [
 			'Crud.initialize' => 'initialize',
 			'Crud.startup' => 'startup',
 
@@ -54,9 +54,9 @@ abstract class Base extends Object {
 
 			'Crud.beforeDelete' => 'beforeDelete',
 			'Crud.afterDelete' => 'afterDelete',
-		);
+		];
 
-		$events = array();
+		$events = [];
 		foreach ($eventMap as $event => $method) {
 			if (method_exists($this, $method)) {
 				$events[$event] = $method;

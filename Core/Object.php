@@ -26,7 +26,7 @@ abstract class Object extends \Cake\Core\Object implements EventListener {
  *
  * @var Crud\Controller\Component\CrudComponent
  */
-	protected $_Crud;
+	protected $_crud;
 
 /**
  * Constructor
@@ -36,7 +36,7 @@ abstract class Object extends \Cake\Core\Object implements EventListener {
  * @return void
  */
 	public function __construct(CrudComponent $Crud, Subject $subject, $defaults = array()) {
-		$this->_Crud = $Crud;
+		$this->_crud = $Crud;
 
 		if (!empty($defaults)) {
 			$this->config($defaults);
