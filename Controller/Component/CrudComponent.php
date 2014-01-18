@@ -626,7 +626,7 @@ class CrudComponent extends \Cake\Controller\Component {
 	}
 
 /**
- * Return all vaidation errors.
+ * Return all validation errors.
  *
  * @return array
  */
