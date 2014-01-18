@@ -1,6 +1,8 @@
 <?php
-
 namespace Crud\Action;
+
+use Crud\Event\Subject;
+use Crud\Traits\RedirectTrait;
 
 /**
  * Handles 'Delete' Crud actions
@@ -9,6 +11,8 @@ namespace Crud\Action;
  * For full copyright and license information, please see the LICENSE.txt
  */
 class Delete extends Base {
+
+	use RedirectTrait;
 
 /**
  * Default settings for 'add' actions
@@ -19,33 +23,26 @@ class Delete extends Base {
  *
  * @var array
  */
-	protected $_settings = array(
+	protected $_settings = [
 		'enabled' => true,
 		'findMethod' => 'count',
-		'messages' => array(
-			'success' => array(
+		'messages' => [
+			'success' => [
 				'text' => 'Successfully deleted {name}'
-			),
-			'error' => array(
+			],
+			'error' => [
 				'text' => 'Could not delete {name}'
-			)
-		),
-		'api' => array(
-			'success' => array(
+			]
+		],
+		'api' => [
+			'success' => [
 				'code' => 200
-			),
-			'error' => array(
+			],
+			'error' => [
 				'code' => 400
-			)
-		)
-	);
-
-/**
- * Constant representing the scope of this action
- *
- * @var integer
- */
-	const ACTION_SCOPE = Base::SCOPE_RECORD;
+			]
+		]
+	];
 
 /**
  * HTTP DELETE handler
@@ -59,40 +56,37 @@ class Delete extends Base {
 			return false;
 		}
 
-		$request = $this->_request();
-		$model = $this->_model();
-
-		$query = array();
-		$query['conditions'] = array($model->escapeField() => $id);
-
-		$findMethod = $this->_getFindMethod('count');
-		$subject = $this->_trigger('beforeFind', compact('id', 'query', 'findMethod'));
-		$query = $subject->query;
-
-		$count = $model->find($subject->findMethod, $query);
-		if (empty($count)) {
+		$subject = $this->_subject(['id' => $id]);
+		$Entity = $this->_findRecord($id, $subject);
+		if (!$Entity) {
 			$this->_trigger('recordNotFound', compact('id'));
 
-			$message = $this->message('recordNotFound', array('id' => $id));
+			$message = $this->message('recordNotFound', ['id' => $id]);
 			$exceptionClass = $message['class'];
 			throw new $exceptionClass($message['text'], $message['code']);
 		}
 
-		$subject = $this->_trigger('beforeDelete', compact('id'));
-		if ($subject->stopped) {
+		$subject->set(['item' => $Entity]);
+
+		$Event = $this->_trigger('beforeDelete', $subject);
+		if ($Event->stopped) {
 			$this->setFlash('error');
-			return $this->_redirect($subject, array('action' => 'index'));
+			return $this->_redirect($subject, ['action' => 'index']);
 		}
 
-		if ($model->delete($id)) {
-			$this->setFlash('success');
-			$subject = $this->_trigger('afterDelete', array('id' => $id, 'success' => true));
+		if ($this->_repository()->delete($Entity)) {
+			$subject->set(['success' => true]);
+
+			$this->setFlash('success', $subject);
+			$this->_trigger('afterDelete', $subject);
 		} else {
+			$subject->set(['success' => false]);
+
 			$this->setFlash('error');
-			$subject = $this->_trigger('afterDelete', array('id' => $id, 'success' => false));
+			$this->_trigger('afterDelete', $subject);
 		}
 
-		$this->_redirect($subject, array('action' => 'index'));
+		$this->_redirect($subject, ['action' => 'index']);
 	}
 
 /**
@@ -103,6 +97,24 @@ class Delete extends Base {
  */
 	protected function _post($id = null) {
 		return $this->_delete($id);
+	}
+
+/**
+ * Find a record from the ID
+ *
+ * @param string $id
+ * @param string $findMethod
+ * @return array
+ */
+	protected function _findRecord($id, Subject $subject) {
+		$repository = $this->_repository();
+		$query = $repository->find();
+		$query->where([$repository->primaryKey() => $id]);
+
+		$subject->set(['repository' => $repository, 'query' => $query]);
+
+		$this->_trigger('beforeFind', $subject);
+		return $query->first();
 	}
 
 }
