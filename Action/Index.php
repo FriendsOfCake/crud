@@ -1,8 +1,9 @@
 <?php
-
 namespace Crud\Action;
 
-use \Cake\Utility\Inflector;
+use Cake\Utility\Inflector;
+use Crud\Traits\ViewTrait;
+use Crud\Traits\ViewVarTrait;
 
 /**
  * Handles 'Index' Crud actions
@@ -12,79 +13,49 @@ use \Cake\Utility\Inflector;
  */
 class Index extends Base {
 
+	use ViewTrait;
+	use ViewVarTrait;
+
 /**
  * Default settings for 'index' actions
  *
  * `enabled` Is this crud action enabled or disabled
- *
- * `findMethod` The default `Model::find()` method for reading data
  *
  * `view` A map of the controller action and the view to render
  * If `NULL` (the default) the controller action name will be used
  *
  * @var array
  */
-	protected $_settings = array(
+	protected $_settings = [
 		'enabled' => true,
-		'findMethod' => 'all',
 		'view' => null,
 		'viewVar' => null,
-		'serialize' => array(),
-		'api' => array(
-			'success' => array(
+		'serialize' => [],
+		'api' => [
+			'success' => [
 				'code' => 200
-			),
-			'error' => array(
+			],
+			'error' => [
 				'code' => 400
-			)
-		)
-	);
+			]
+		]
+	];
 
 /**
- * Constant representing the scope of this action
- *
- * @var integer
- */
-	const ACTION_SCOPE = Base::SCOPE_MODEL;
-
-/**
- * Change the name of the view variable name
- * of the data when its sent to the view
- *
- * @param mixed $name
- * @return mixed
- */
-	public function viewVar($name = null) {
-		if (empty($name)) {
-			return $this->config('viewVar') ?: Inflector::variable($this->_controller()->name);
-		}
-
-		return $this->config('viewVar', $name);
-	}
-
-/**
- * HTTP GET handler
+ * Generic handler
  *
  * @return void
  */
-	protected function _get() {
-		$controller = $this->_controller();
+	protected function _handle() {
+		$Subject = $this->_subject(['success' => true, 'viewVar' => $this->viewVar()]);
 
-		$success = true;
-		$viewVar = $this->viewVar();
+		$Event = $this->_trigger('beforePaginate', $Subject);
+		$items = $this->_controller()->paginate();
+		$Subject->set(['items' => $items]);
+		$Event = $this->_trigger('afterPaginate', $Subject);
 
-		$subject = $this->_trigger('beforePaginate', ['success' => $success, 'viewVar' => $viewVar]);
-		$items = $controller->paginate($this->_model());
-		$subject = $this->_trigger('afterPaginate', ['success' => $subject->success, 'viewVar' => $subject->viewVar, 'items' => $items]);
-
-		$items = $subject->items;
-
-		if ($items instanceof Iterator) {
-			$items = iterator_to_array($items);
-		}
-
-		$controller->set(['success' => $subject->success, $subject->viewVar => $items]);
-		$this->_trigger('beforeRender', $subject);
+		$this->_controller()->set(['success' => $Subject->success, $Subject->viewVar => $items]);
+		$this->_trigger('beforeRender', $Subject);
 	}
 
 }

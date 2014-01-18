@@ -3,8 +3,6 @@
 namespace Crud\Action;
 
 use Crud\Traits\SaveMethodTrait;
-use Crud\Traits\SaveOptionsTrait;
-use Crud\Traits\RedirectTrait;
 
 /**
  * Handles 'Add' Crud actions
@@ -15,8 +13,6 @@ use Crud\Traits\RedirectTrait;
 class Add extends Base {
 
 	use SaveMethodTrait;
-	use SaveOptionsTrait;
-	use RedirectTrait;
 
 /**
  * Default settings for 'add' actions
@@ -50,7 +46,7 @@ class Add extends Base {
 			'success' => array(
 				'code' => 201,
 				'data' => array(
-					'entity' => array('id')
+					'subject' => array('id')
 				)
 			),
 			'error' => array(
@@ -84,6 +80,13 @@ class Add extends Base {
 	);
 
 /**
+ * Constant representing the scope of this action
+ *
+ * @var integer
+ */
+	const ACTION_SCOPE = Base::SCOPE_MODEL;
+
+/**
  * HTTP GET handler
  *
  * @return void
@@ -103,24 +106,29 @@ class Add extends Base {
  * @return void
  */
 	protected function _post() {
-		$Entity = $this->_entity();
-		$Entity->accessible('*', true);
-		$Entity->set($this->_request()->data);
+		$entity = $this->_entity();
+		$entity->accessible('*', true);
 
-		$Subject = $this->_subject(['entity' => $Entity]);
+		$request = $this->_request();
+		$entity->set($request->data);
 
-		$this->_trigger('beforeSave', $Subject);
-		if (call_user_func([$this->_repository(), $this->saveMethod()], $Entity, $this->saveOptions())) {
-			$Subject->set(['success' => true, 'created' => true]);
-			$this->setFlash('success', $Subject);
-			$this->_trigger('afterSave', $Subject);
-			return $this->_redirect($Subject, ['action' => 'index']);
+		$subject = $this->_subject(['entity' => $entity]);
+
+		$this->_trigger('beforeSave', $subject);
+		if (call_user_func([$this->_repository(), $this->saveMethod()], $entity, $this->saveOptions())) {
+			$this->setFlash('success');
+
+			$subject->set(['success' => true, 'created' => true]);
+			$this->_trigger('afterSave', $subject);
+
+			return $this->_redirect($subject, ['action' => 'index']);
 		}
 
-		$Subject->set(['success' => false, 'created' => false]);
-		$this->setFlash('error', $Subject);
-		$this->_trigger('afterSave', $Subject);
-		$this->_trigger('beforeRender', $Subject);
+		$this->setFlash('error');
+
+		$subject->set(['success' => false, 'created' => false]);
+		$this->_trigger('afterSave', $subject);
+		$this->_trigger('beforeRender', $subject);
 	}
 
 /**

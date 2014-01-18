@@ -1,13 +1,13 @@
 <?php
-
 namespace Crud\Listener;
 
-use \Crud\Event\Subject;
-use \Cake\Core\Configure;
-use \Cake\Event\Event;
-use \Cake\Network\Request;
-use \Cake\Utility\Hash;
-use \Cake\Utility\String;
+use Cake\Core\Configure;
+use Cake\Event\Event;
+use Cake\Network\Request;
+use Cake\Utility\Hash;
+use Cake\Utility\String;
+use Cake\ORM\Entity;
+use Crud\Event\Subject;
 
 /**
  * Enabled Crud to respond in a computer readable format like JSON or XML
@@ -50,6 +50,12 @@ class Api extends Base {
  * @return array
  */
 	public function implementedEvents() {
+		$this->setupDetectors();
+
+		if (!$this->_request()->is('api')) {
+			return [];
+		}
+
 		return [
 			'Crud.beforeHandle' => ['callable' => [$this, 'beforeHandle'], 'priority' => 10],
 			'Crud.setFlash' => ['callable' => [$this, 'setFlash'], 'priority' => 5],
@@ -67,7 +73,6 @@ class Api extends Base {
  * @return void
  */
 	public function setup() {
-		$this->setupDetectors();
 		$this->registerExceptionHandler();
 	}
 
@@ -80,22 +85,6 @@ class Api extends Base {
  * @return void
  */
 	public function beforeHandle(Event $event) {
-		parent::beforeHandle($event);
-
-		if (!$this->_request()->is('api')) {
-			$events = $this->implementedEvents();
-			$eventManager = $this->_controller()->getEventManager();
-			foreach (array_keys($events) as $name) {
-				if ($name === 'Crud.beforeHandle') {
-					continue;
-				}
-
-				$eventManager->detach($this, $name);
-			}
-
-			return;
-		}
-
 		$this->_checkRequestMethods();
 	}
 
@@ -106,14 +95,11 @@ class Api extends Base {
  * @return CakeResponse
  */
 	public function respond(Event $event) {
-		$subject = $event->subject;
-		$action = $this->_action();
-
-		$key = $subject->success ? 'success' : 'error';
-		$apiConfig = $action->config('api.' . $key);
+		$key = $event->subject->success ? 'success' : 'error';
+		$apiConfig = $this->_action()->config('api.' . $key);
 
 		if (isset($apiConfig['exception'])) {
-			return $this->_exceptionResponse($apiConfig['exception']);
+			return $this->_exceptionResponse($apiConfig['exception'], $event);
 		}
 
 		$response = $this->render($event->subject);
@@ -165,15 +151,13 @@ class Api extends Base {
  * @param array $exceptionConfig
  * @return void
  */
-	protected function _exceptionResponse($exceptionConfig) {
-		return;
+	protected function _exceptionResponse($exceptionConfig, Event $Event) {
 		$exceptionConfig = array_merge($this->config('exception'), $exceptionConfig);
 
 		$class = $exceptionConfig['class'];
 
 		if ($exceptionConfig['type'] === 'validate') {
-			$errors = $this->_validationErrors();
-			throw new $class($errors);
+			throw new $class($Event->subject->entity);
 		}
 
 		throw new $class($exceptionConfig['message'], $exceptionConfig['code']);
@@ -262,14 +246,13 @@ class Api extends Base {
 		$config = $this->_action()->config('api.' . $key);
 
 		// New, empty, data array
-		$data = array();
+		$data = [];
 
 		// If fields should be extracted from the subject
 		if (isset($config['data']['subject'])) {
 			$config['data']['subject'] = Hash::normalize((array)$config['data']['subject']);
 
 			$subjectArray = (array)$subject;
-
 			foreach ($config['data']['subject'] as $keyPath => $valuePath) {
 				if ($valuePath === null) {
 					$valuePath = $keyPath;
@@ -282,14 +265,28 @@ class Api extends Base {
 			}
 		}
 
+		if (isset($config['data']['entity'])) {
+			$config['data']['entity'] = Hash::normalize((array)$config['data']['entity']);
+
+			foreach ($config['data']['entity'] as $keyPath => $valuePath) {
+				if ($valuePath === null) {
+					$valuePath = $keyPath;
+				}
+
+				if (method_exists($subject->entity, $valuePath)) {
+					$data = Hash::insert($data, $keyPath, call_user_func([$subject->entity, $valuePath]));
+				} elseif (isset($subject->entity->{$valuePath})) {
+					$data = Hash::insert($data, $keyPath, $subject->entity->{$valuePath});
+				}
+			}
+		}
+
 		// Raw (hardcoded) key/values
 		if (isset($config['data']['raw'])) {
-
 			foreach ($config['data']['raw'] as $path => $value) {
 				$path = $this->_expandPath($subject, $path);
 				$data = Hash::insert($data, $path, $value);
 			}
-
 		}
 
 		// Publish the new data
@@ -363,7 +360,7 @@ class Api extends Base {
  *
  * @param CakeEvent $event
  */
-	public function setFlash(CakeEvent $event) {
+	public function setFlash(Event $event) {
 		$event->stopPropagation();
 	}
 
@@ -405,47 +402,4 @@ class Api extends Base {
 		}));
 	}
 
-/**
- * Automatically create REST resource routes for all controllers found in your main
- * application or in a specific plugin to provide access to your resources
- * using /controller/id.json instead of the default /controller/view/id.json.
- *
- * If called with no arguments, all controllers in the main application will be mapped.
- * If called with a valid plugin name all controllers in that plugin will be mapped.
- * If combined both controllers from the application and the plugin(s) will be mapped.
- *
- * This function needs to be called from your application's app/Config/routes.php:
- *
- * ```
- *     App::uses('ApiListener', 'Crud.Controller/Crud/Listener');
- *
- *     ApiListener::mapResources();
- *     ApiListener::mapResources('DebugKit');
- *     Router::setExtensions(array('json', 'xml'));
- *     Router::parseExtensions();
- * ```
- *
- * @static
- * @param string $plugin
- * @return void
- */
-	public static function mapResources($plugin = null) {
-		$key = 'Controller';
-		if ($plugin) {
-			$key = $plugin . '.Controller';
-		}
-
-		$controllers = array();
-		foreach (App::objects($key) as $controller) {
-			if ($controller !== $plugin . 'AppController') {
-				if ($plugin) {
-					$controller = $plugin . '.' . $controller;
-				}
-
-				array_push($controllers, str_replace('Controller', '', $controller));
-			}
-		}
-
-		Router::mapResources($controllers);
-	}
 }

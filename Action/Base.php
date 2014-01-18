@@ -1,12 +1,12 @@
 <?php
-
 namespace Crud\Action;
 
+use Cake\Utility\Hash;
+use Cake\Utility\String;
+use Cake\Event\Event;
 use Crud\Core\Object;
 use Crud\Event\Subject;
-use Cake\Utility\Hash;
-use Cake\Utility\Inflector;
-use Cake\Utility\String;
+use Crud\Controller\Component\CrudComponent;
 
 /**
  * Base Crud class
@@ -39,8 +39,8 @@ abstract class Base extends Object {
  * @param array $defaults
  * @return void
  */
-	public function __construct(Subject $subject, array $defaults = array()) {
-		parent::__construct($subject, $defaults);
+	public function __construct(CrudComponent $Crud, Subject $subject, array $defaults = array()) {
+		parent::__construct($Crud, $subject, $defaults);
 		$this->_settings['action'] = $subject->action;
 	}
 
@@ -54,10 +54,10 @@ abstract class Base extends Object {
  * execution flow continues
  *
  * @throws NotImplementedException if the action can't handle the request
- * @param \Crud\Event\Subject $event
+ * @param \Cake\Event\Event $Event
  * @return mixed
  */
-	public function handle(Subject $subject) {
+	public function handle(Event $Event) {
 		if (!$this->config('enabled')) {
 			return false;
 		}
@@ -66,11 +66,11 @@ abstract class Base extends Object {
 		$method = '_' . strtolower($requestMethod);
 
 		if (method_exists($this, $method)) {
-			return call_user_func_array(array($this, $method), $subject->args);
+			return call_user_func_array([$this, $method], $Event->subject->args);
 		}
 
 		if (method_exists($this, '_handle')) {
-			return call_user_func_array(array($this, '_handle'), $subject->args);
+			return call_user_func_array([$this, '_handle'], $Event->subject->args);
 		}
 
 		throw new NotImplementedException(sprintf('Action %s does not implement a handler for HTTP verb %s', get_class($this), $requestMethod));
@@ -107,89 +107,6 @@ abstract class Base extends Object {
 		if (!in_array($actionName, $Controller->methods)) {
 			$Controller->methods[] = $actionName;
 		}
-	}
-
-/**
- * Change the find() method
- *
- * If `$method` is NULL the current value is returned
- * else the `findMethod` is changed
- *
- * @param mixed $method
- * @return mixed
- */
-	public function findMethod($method = null) {
-		if ($method === null) {
-			return $this->config('findMethod');
-		}
-
-		return $this->config('findMethod', $method);
-	}
-
-/**
- * Change the save() method
- *
- * If `$method` is NULL the current value is returned
- * else the `saveMethod` is changed
- *
- * @param mixed $method
- * @return mixed
- */
-	public function saveMethod($method = null) {
-		if ($method === null) {
-			return $this->config('saveMethod');
-		}
-
-		return $this->config('saveMethod', $method);
-	}
-
-/**
- * Set or get the related models that should be found
- * for the action
- *
- * @param mixed $related Everything but `null` will change the configuration
- * @return mixed
- */
-	public function relatedModels($related = null) {
-		if ($related === null) {
-			return $this->config('relatedModels');
-		}
-
-		return $this->config('relatedModels', $related, false);
-	}
-
-/**
- * Change redirect configuration
- *
- * If both `$name` and `$config` is empty all redirection
- * rules will be returned.
- *
- * If `$name` is provided and `$config` is null, the named
- * redirection configuration is returned.
- *
- * If both `$name` and `$config` is provided, the configuration
- * is changed for the named rule.
- *
- * $config should contain the following keys:
- *  - type : name of the reader
- *  - key  : the key to read inside the reader
- *  - url  : the URL to redirect to
- *
- * @param null|string $name Name of the redirection rule
- * @param null|array $config Redirection configuration
- * @return mixed
- */
-	public function redirectConfig($name = null, $config = null) {
-		if ($name === null && $config === null) {
-			return $this->config('redirect');
-		}
-
-		$path = sprintf('redirect.%s', $name);
-		if ($config === null) {
-			return $this->config($path);
-		}
-
-		return $this->config($path, $config);
 	}
 
 /**
@@ -251,99 +168,19 @@ abstract class Base extends Object {
 	}
 
 /**
- * Change the saveOptions configuration
- *
- * This is the 2nd argument passed to saveAll()
- *
- * if `$config` is NULL the current config is returned
- * else the `saveOptions` is changed
- *
- * @param mixed $config
- * @return mixed
- */
-	public function saveOptions($config = null) {
-		if (empty($config)) {
-			return $this->config('saveOptions');
-		}
-
-		return $this->config('saveOptions', $config);
-	}
-
-/**
- * Change the view to be rendered
- *
- * If `$view` is NULL the current view is returned
- * else the `$view` is changed
- *
- * If no view is configured, it will use the action
- * name from the request object
- *
- * @param mixed $view
- * @return mixed
- */
-	public function view($view = null) {
-		if (empty($view)) {
-			return $this->config('view') ?: $this->_request()->action;
-		}
-
-		return $this->config('view', $view);
-	}
-
-/**
- * List of implemented events
- *
- * @return array
- */
-	public function implementedEvents() {
-		return array();
-	}
-
-/**
- * Get the model find method for a current controller action
- *
- * @param string $default The default find method in case it hasn't been mapped
- * @return string The find method used in ->_model->find($method)
- */
-	protected function _getFindMethod($default = null) {
-		$findMethod = $this->findMethod();
-		if (!empty($findMethod)) {
-			return $findMethod;
-		}
-
-		return $default;
-	}
-
-/**
  * Wrapper for Session::setFlash
  *
  * @param string $type Message type
  * @return void
  */
-	public function setFlash($type) {
-		$config = $this->message($type);
-
-		$subject = $this->_trigger('setFlash', $config);
-		if (!empty($subject->stopped)) {
+	public function setFlash($type, $subject) {
+		$subject->set($this->message($type));
+		$event = $this->_trigger('setFlash', $subject);
+		if (!empty($event->stopped)) {
 			return;
 		}
 
 		$this->_session()->setFlash($subject->text, $subject->element, $subject->params, $subject->key);
-	}
-
-/**
- * Return the human name of the model
- *
- * By default it uses Inflector::humanize, but can be changed
- * using the "name" configuration property
- *
- * @return string
- */
-	protected function _getResourceName() {
-		if (empty($this->_settings['name'])) {
-			$this->_settings['name'] = strtolower(Inflector::humanize(Inflector::underscore($this->_model()->alias())));
-		}
-
-		return $this->_settings['name'];
 	}
 
 /**
@@ -418,28 +255,6 @@ abstract class Base extends Object {
 		}
 
 		return false;
-	}
-
-/**
- * Called for all redirects inside CRUD
- *
- * @param CrudSubject $subject
- * @param string|array $url
- * @param integer $status
- * @param boolean $exit
- * @return void
- */
-	protected function _redirect(CrudSubject $subject, $url = null, $status = null, $exit = true) {
-		$url = $this->_redirectUrl($url);
-
-		$subject->url = $url;
-		$subject->status = $status;
-		$subject->exit = $exit;
-		$subject = $this->_trigger('beforeRedirect', $subject);
-
-		$controller = $this->_controller();
-		$controller->redirect($subject->url, $subject->status, $subject->exit);
-		return $controller->response;
 	}
 
 }

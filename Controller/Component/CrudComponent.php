@@ -1,11 +1,10 @@
 <?php
-
 namespace Crud\Controller\Component;
 
-use \Cake\Controller\ComponentRegistry;
-use \Cake\Event\Event;
-use \Cake\Utility\Hash;
-use \Crud\Event\Subject;
+use Cake\Controller\ComponentRegistry;
+use Cake\Event\Event;
+use Cake\Utility\Hash;
+use Crud\Event\Subject;
 
 /**
  * Crud component
@@ -203,13 +202,12 @@ class CrudComponent extends \Cake\Controller\Component {
 		}
 
 		try {
-			$subject = $this->trigger('beforeHandle', compact('args', 'action'));
-
-			$response = $this->action($subject->action)->handle($subject);
-			if ($response instanceof CakeResponse) {
+			$Event = $this->trigger('beforeHandle', compact('args', 'action'));
+			$response = $this->action($Event->subject->action)->handle($Event);
+			if ($response instanceof \Cake\Network\Response) {
 				return $response;
 			}
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			if (isset($e->response)) {
 				return $e->response;
 			}
@@ -217,7 +215,12 @@ class CrudComponent extends \Cake\Controller\Component {
 			throw $e;
 		}
 
-		$view = $this->action($action)->view();
+		$view = null;
+		$CrudAction = $this->action($action);
+		if (method_exists($CrudAction, 'view')) {
+			$view = $CrudAction->view();
+		}
+
 		return $this->_controller->response = $this->_controller->render($view);
 	}
 
@@ -452,32 +455,28 @@ class CrudComponent extends \Cake\Controller\Component {
  * @param string $eventName
  * @param array $data
  * @throws Exception if any event listener return a CakeResponse object.
- * @return CrudSubject
+ * @return \Cake\Event\Event
  */
-	public function trigger($eventName, $data = array()) {
+	public function trigger($eventName, $data = []) {
 		$eventName = $this->settings['eventPrefix'] . '.' . $eventName;
-		$subject = $data instanceof CrudSubject ? $data : $this->getSubject($data);
-		$subject->addEvent($eventName);
+
+		$Subject = $data instanceof \Crud\Event\Subject ? $data : $this->getSubject($data);
+		$Subject->addEvent($eventName);
 
 		if (!empty($this->settings['eventLogging'])) {
 			$this->logEvent($eventName, $data);
 		}
 
-		$event = new Event($eventName, $subject);
-		$this->_eventManager->dispatch($event);
+		$Event = new Event($eventName, $Subject);
+		$this->_eventManager->dispatch($Event);
 
-		if ($event->result instanceof CakeResponse) {
-			$exception = new Exception();
-			$exception->response = $event->result;
-			throw $exception;
+		if ($Event->result instanceof \Cake\Network\Response) {
+			$Exception = new \Exception();
+			$Exception->response = $Event->result;
+			throw $Exception;
 		}
 
-		$subject->stopped = false;
-		if ($event->isStopped()) {
-			$subject->stopped = true;
-		}
-
-		return $subject;
+		return $Event;
 	}
 
 /**
@@ -487,11 +486,8 @@ class CrudComponent extends \Cake\Controller\Component {
  * @param array $data
  * @return void
  */
-	public function logEvent($eventName, $data = array()) {
-		$this->_eventLog[] = array(
-			$eventName,
-			$data
-		);
+	public function logEvent($eventName, $data = []) {
+		$this->_eventLog[] = [$eventName, $data];
 	}
 
 /**
@@ -558,7 +554,7 @@ class CrudComponent extends \Cake\Controller\Component {
 	public function defaults($type, $name, $config = null) {
 		if ($config !== null) {
 			if (!is_array($name)) {
-				$name = array($name);
+				$name = [$name];
 			}
 
 			foreach ($name as $realName) {
@@ -597,8 +593,12 @@ class CrudComponent extends \Cake\Controller\Component {
 		return $this->_controller->{$this->_modelName};
 	}
 
-	public function entity() {
-		return $this->repository()->newEntity();
+	public function entity(array $data = []) {
+		return $this->repository()->newEntity($data);
+	}
+
+	public function controller() {
+		return $this->_controller;
 	}
 
 /**
@@ -607,42 +607,15 @@ class CrudComponent extends \Cake\Controller\Component {
  * @param array $additional Additional properties for the subject.
  * @return CrudSubject
  */
-	public function getSubject($additional = array()) {
+	public function getSubject($additional = []) {
 		if (empty($this->_model) || empty($this->_modelName)) {
 			$this->_setModelProperties();
 		}
 
 		$subject = new Subject();
-		$subject->crud = $this;
-		$subject->controller = $this->_controller;
-		$subject->model = $this->_model;
-		$subject->modelClass = $this->_modelName;
-		$subject->action = $this->_action;
-		$subject->request = $this->_request;
-		$subject->response = $this->_controller->response;
 		$subject->set($additional);
 
 		return $subject;
-	}
-
-/**
- * Return all validation errors.
- *
- * @return array
- */
-	public function validationErrors() {
-		$return = array();
-		return $return;
-
-		$models = ClassRegistry::keys();
-		foreach ($models as $currentModel) {
-			$currentObject = ClassRegistry::getObject($currentModel);
-			if ($currentObject instanceof Model) {
-				$return[$currentObject->alias] = $currentObject->validationErrors;
-			}
-		}
-
-		return $return;
 	}
 
 /**
@@ -742,9 +715,10 @@ class CrudComponent extends \Cake\Controller\Component {
 			}
 
 			$subject = $this->getSubject();
-			$this->_listenerInstances[$name] = new $config['className']($subject, $config);
+			$this->_listenerInstances[$name] = new $config['className']($this, $subject, $config);
 			$this->_eventManager->attach($this->_listenerInstances[$name]);
-			if (is_callable(array($this->_listenerInstances[$name], 'setup'))) {
+
+			if (is_callable([$this->_listenerInstances[$name], 'setup'])) {
 				$this->_listenerInstances[$name]->setup();
 			}
 		}
@@ -767,8 +741,8 @@ class CrudComponent extends \Cake\Controller\Component {
 				throw new CakeException(sprintf('Action "%s" has not been mapped', $name));
 			}
 
-			$subject = $this->getSubject(array('action' => $name));
-			$this->_actionInstances[$name] = new $config['className']($subject, $config);
+			$subject = $this->getSubject(['action' => $name]);
+			$this->_actionInstances[$name] = new $config['className']($this, $subject, $config);
 			$this->_eventManager->attach($this->_actionInstances[$name]);
 		}
 

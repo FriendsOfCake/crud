@@ -2,6 +2,8 @@
 
 namespace Crud\Error\Exception;
 
+use Cake\Error\BaseException;
+use Cake\ORM\Entity;
 use Cake\Utility\Hash;
 
 /**
@@ -9,14 +11,14 @@ use Cake\Utility\Hash;
  * responses where you need an error code in response
  *
  */
-class CrudValidationException extends \Cake\Error\BaseException {
+class CrudValidationException extends BaseException {
 
 /**
  * List of validation errors that occurred in the model
  *
  * @var array
  */
-	protected $_validationErrors = array();
+	protected $_validationErrors = [];
 
 /**
  * How many validation errors are there?
@@ -32,54 +34,14 @@ class CrudValidationException extends \Cake\Error\BaseException {
  * @param integer $code code to report to client
  * @return void
  */
-	public function __construct($errors, $code = 412) {
-		$this->_validationErrors = array_filter($errors);
+	public function __construct(Entity $Entity, $code = 412) {
+		$this->_validationErrors = array_filter($Entity->errors());
 		$flat = Hash::flatten($this->_validationErrors);
 
 		$errorCount = $this->_validationErrorCount = count($flat);
-		$this->message = __dn('crud', 'A validation error occurred', '%d validation errors occurred', $errorCount, array($errorCount));
-
-		if ($errorCount === 1) {
-			$code = $this->_deriveRuleSpecific($this->_validationErrors, $code);
-		}
+		$this->message = __dn('crud', 'A validation error occurred', '%d validation errors occurred', $errorCount, [$errorCount]);
 
 		parent::__construct($this->message, $code);
-	}
-
-/**
- * _deriveRuleSpecific
- *
- * If there is only one error, change the exception message to be rule specific
- * Also change the response code to be that of the validation rule if defined
- *
- * @param array $errors
- * @param integer $code
- * @return integer
- */
-	protected function _deriveRuleSpecific($errors = array(), $code = 412) {
-		$model = key($errors);
-		$field = key($errors[$model]);
-		$error = $errors[$model][$field][0];
-
-		$instance = ClassRegistry::getObject($model);
-		if (!isset($instance->validate[$field])) {
-			return $code;
-		}
-
-		foreach ($instance->validate[$field] as $key => $rule) {
-			$matchesMessage = (isset($rule['message']) && $error === $rule['message']);
-			if ($key !== $error && !$matchesMessage) {
-				continue;
-			}
-
-			$this->message = sprintf('%s.%s : %s', $model, $field, $error);
-			if (!empty($rule['code'])) {
-				$code = $rule['code'];
-			}
-			break;
-		}
-
-		return $code;
 	}
 
 /**

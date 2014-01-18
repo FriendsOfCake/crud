@@ -1,10 +1,11 @@
 <?php
-
 namespace Crud\Core;
 
-use \Cake\Event\EventListener;
-use \Cake\Event\Event;
-use \Crud\Event\Subject;
+use Cake\Event\Event;
+use Cake\Event\EventListener;
+use Cake\Utility\Inflector;
+use Crud\Event\Subject;
+use Crud\Controller\Component\CrudComponent;
 
 /**
  * Crud Base Class
@@ -23,9 +24,9 @@ abstract class Object extends \Cake\Core\Object implements EventListener {
  * Container with reference to all objects
  * needed within the CrudListener and CrudAction
  *
- * @var CrudSubject
+ * @var Crud\Controller\Component\CrudComponent
  */
-	protected $_container;
+	protected $_Crud;
 
 /**
  * Constructor
@@ -34,8 +35,8 @@ abstract class Object extends \Cake\Core\Object implements EventListener {
  * @param array $defaults Default settings
  * @return void
  */
-	public function __construct(Subject $subject, $defaults = array()) {
-		$this->_container = $subject;
+	public function __construct(CrudComponent $Crud, Subject $subject, $defaults = array()) {
+		$this->_Crud = $Crud;
 
 		if (!empty($defaults)) {
 			$this->config($defaults);
@@ -43,55 +44,28 @@ abstract class Object extends \Cake\Core\Object implements EventListener {
 	}
 
 /**
- * initialize callback
- *
- * @param CakeEvent $event
- * @return void
- */
-	public function beforeHandle(Event $event) {
-		$this->_container = $event->subject;
-	}
-
-/**
- * Returns a list of all events that will fire during the objects lifecycle.
- * You can override this function to add you own listener callbacks
+ * List of implemented events
  *
  * @return array
  */
 	public function implementedEvents() {
-		return array(
-			'Crud.initialize' => 'initialize'
-		);
+		return [];
 	}
 
 /**
- * Returns the redirect_url for this request, with a fallback to the referring page
+ * Return the human name of the model
  *
- * @param string $default Default URL to use redirect_url is not found in request or data
- * @param boolean $local If true, restrict referring URLs to local server
- * @return mixed
- */
-	protected function _refererRedirectUrl($default = null) {
-		$controller = $this->_controller();
-		return $this->_redirectUrl($controller->referer($default, true));
-	}
-
-/**
- * Returns the redirect_url for this request.
+ * By default it uses Inflector::humanize, but can be changed
+ * using the "name" configuration property
  *
- * @param string $default Default URL to use redirect_url is not found in request or data
- * @return mixed
+ * @return string
  */
-	protected function _redirectUrl($default = null) {
-		$url = $default;
-		$request = $this->_request();
-		if (!empty($request->data['redirect_url'])) {
-			$url = $request->data['redirect_url'];
-		} elseif (!empty($request->query['redirect_url'])) {
-			$url = $request->query['redirect_url'];
+	protected function _getResourceName() {
+		if (empty($this->_settings['name'])) {
+			$this->_settings['name'] = strtolower(Inflector::humanize(Inflector::underscore($this->_repository()->alias())));
 		}
 
-		return $url;
+		return $this->_settings['name'];
 	}
 
 }

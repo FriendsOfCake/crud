@@ -2,6 +2,8 @@
 
 namespace Crud\Core;
 
+use Cake\Event\Event;
+
 trait ProxyTrait {
 
 /**
@@ -11,7 +13,7 @@ trait ProxyTrait {
  *
  * @codeCoverageIgnore
  * @param string $name
- * @return CrudAction
+ * @return \Crud\Action\Base
  */
 	protected function _action($name = null) {
 		return $this->_crud()->action($name);
@@ -25,9 +27,9 @@ trait ProxyTrait {
  * @codeCoverageIgnore
  * @param string $eventName
  * @param array $data
- * @return CrudSubject
+ * @return \Cake\Event\Event
  */
-	protected function _trigger($eventName, $data = array()) {
+	protected function _trigger($eventName, $data = []) {
 		return $this->_crud()->trigger($eventName, $data);
 	}
 
@@ -38,7 +40,7 @@ trait ProxyTrait {
  *
  * @codeCoverageIgnore
  * @param string $name
- * @return CrudListener
+ * @return \Crud\Listener\Base
  */
 	protected function _listener($name) {
 		return $this->_crud()->listener($name);
@@ -50,7 +52,7 @@ trait ProxyTrait {
  * Primarily here to ease unit testing
  *
  * @codeCoverageIgnore
- * @return SessionComponent
+ * @return \Cake\Controller\Component\SessionComponent
  */
 	protected function _session() {
 		return $this->_crud()->Session;
@@ -62,10 +64,10 @@ trait ProxyTrait {
  * Primarily here to ease unit testing
  *
  * @codeCoverageIgnore
- * @return Controller
+ * @return \Cake\Controller\Controller
  */
 	protected function _controller() {
-		return $this->_container->controller;
+		return $this->_crud()->controller();
 	}
 
 /**
@@ -74,10 +76,10 @@ trait ProxyTrait {
  * Primarily here to ease unit testing
  *
  * @codeCoverageIgnore
- * @return CakeRequest
+ * @return \Cake\Network\Request
  */
 	protected function _request() {
-		return $this->_container->request;
+		return $this->_controller()->request;
 	}
 
 /**
@@ -89,15 +91,15 @@ trait ProxyTrait {
  * @return Model
  */
 	protected function _model() {
-		return $this->_container->model;
+		return $this->_crud()->model;
 	}
 
 	protected function _repository() {
 		return $this->_crud()->repository();
 	}
 
-	protected function _entity() {
-		return $this->_crud()->entity();
+	protected function _entity(array $data = []) {
+		return $this->_crud()->entity($data);
 	}
 
 /**
@@ -105,19 +107,10 @@ trait ProxyTrait {
  *
  * @codeCoverageIgnore
  * @param array $additional
- * @return CrudSUbject
+ * @return \Crud\Event\Subject
  */
-	protected function _subject($additional = array()) {
+	protected function _subject($additional = []) {
 		return $this->_crud()->getSubject($additional);
-	}
-
-/**
- * Proxy method for `$this->_container->_crud`
- *
- * @return CrudComponent
- */
-	protected function _crud() {
-		return $this->_container->crud;
 	}
 
 /**
@@ -130,6 +123,15 @@ trait ProxyTrait {
  */
 	protected function _validationErrors() {
 		return $this->_crud()->validationErrors();
+	}
+
+/**
+ * Proxy method for `$this->_container->_crud`
+ *
+ * @return Crud\Controller\Component\CrudComponent
+ */
+	protected function _crud() {
+		return $this->_Crud;
 	}
 
 }
