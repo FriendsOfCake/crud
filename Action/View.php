@@ -1,8 +1,11 @@
 <?php
-
 namespace Crud\Action;
 
-use \Cake\Utility\Inflector;
+use Cake\Utility\Inflector;
+use Crud\Event\Subject;
+use Crud\Traits\FindMethodTrait;
+use Crud\Traits\ViewTrait;
+use Crud\Traits\ViewVarTrait;
 
 /**
  * Handles 'View' Crud actions
@@ -11,6 +14,10 @@ use \Cake\Utility\Inflector;
  * For full copyright and license information, please see the LICENSE.txt
  */
 class View extends Base {
+
+	use FindMethodTrait;
+	use ViewTrait;
+	use ViewVarTrait;
 
 /**
  * Default settings for 'view' actions
@@ -24,35 +31,13 @@ class View extends Base {
  *
  * @var array
  */
-	protected $_settings = array(
+	protected $_settings = [
 		'enabled' => true,
 		'findMethod' => 'all',
 		'view' => null,
 		'viewVar' => null,
-		'serialize' => array()
-	);
-
-/**
- * Constant representing the scope of this action
- *
- * @var integer
- */
-	const ACTION_SCOPE = Base::SCOPE_RECORD;
-
-/**
- * Change the name of the view variable name
- * of the data when its sent to the view
- *
- * @param mixed $name
- * @return mixed
- */
-	public function viewVar($name = null) {
-		if (empty($name)) {
-			return $this->config('viewVar') ?: Inflector::variable($this->_model()->alias());
-		}
-
-		return $this->config('viewVar', $name);
-	}
+		'serialize' => []
+	];
 
 /**
  * HTTP GET handler
@@ -66,28 +51,39 @@ class View extends Base {
 			return false;
 		}
 
-		$table = $this->_repository();
-		$query = $table->find($this->_getFindMethod());
-		$query->where([$table->primaryKey() => $id]);
-
-		$subject = $this->_trigger('beforeFind', compact('id', 'query'));
-
-		$item = $query->first();
+		$subject = $this->_subject(['id' => $id]);
+		$item = $this->_findRecord($id, $subject);
 		if (empty($item)) {
-			$this->_trigger('recordNotFound', compact('id'));
+			$this->_trigger('recordNotFound', $subject);
 
-			$message = $this->message('recordNotFound', compact('id'));
+			$message = $this->message('recordNotFound', ['id' => $id]);
 			$exceptionClass = $message['class'];
 			throw new $exceptionClass($message['text'], $message['code']);
 		}
 
-		$success = true;
-		$viewVar = $this->viewVar();
-
-		$subject = $this->_trigger('afterFind', compact('id', 'viewVar', 'success', 'item'));
+		$subject->set(['item' => $item, 'success' => true, 'viewVar' => $this->viewVar()]);
+		$this->_trigger('afterFind', compact('id', 'viewVar', 'success', 'item'));
 
 		$this->_controller()->set(['success' => $subject->success, $subject->viewVar => $subject->item]);
 		$this->_trigger('beforeRender', $subject);
+	}
+
+/**
+ * Find a record from the ID
+ *
+ * @param string $id
+ * @param string $findMethod
+ * @return array
+ */
+	protected function _findRecord($id, Subject $subject) {
+		$repository = $this->_repository();
+		$query = $repository->find();
+		$query->where([$repository->primaryKey() => $id]);
+
+		$subject->set(['repository' => $repository, 'query' => $query]);
+
+		$this->_trigger('beforeFind', $subject);
+		return $query->first();
 	}
 
 }

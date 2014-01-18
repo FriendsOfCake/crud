@@ -3,6 +3,10 @@
 namespace Crud\Action;
 
 use Cake\Utility\Hash;
+use Crud\Event\Subject;
+use Crud\Traits\SaveMethodTrait;
+use Crud\Traits\SaveOptionsTrait;
+use Crud\Traits\RedirectTrait;
 
 /**
  * Handles 'Edit' Crud actions
@@ -11,6 +15,10 @@ use Cake\Utility\Hash;
  * For full copyright and license information, please see the LICENSE.txt
  */
 class Edit extends Base {
+
+	use SaveMethodTrait;
+	use SaveOptionsTrait;
+	use RedirectTrait;
 
 /**
  * Default settings for 'edit' actions
@@ -37,58 +45,51 @@ class Edit extends Base {
  *
  * @var array
  */
-	protected $_settings = array(
+	protected $_settings = [
 		'enabled' => true,
 		'findMethod' => 'all',
-		'saveMethod' => 'saveAssociated',
+		'saveMethod' => 'save',
 		'view' => null,
 		'relatedModels' => true,
 		'validateId' => null,
-		'saveOptions' => array(
-			'validate' => 'first',
+		'saveOptions' => [
+			'validate' => true,
 			'atomic' => true
-		),
-		'messages' => array(
-			'success' => array(
+		],
+		'messages' => [
+			'success' => [
 				'text' => 'Successfully updated {name}'
-			),
-			'error' => array(
+			],
+			'error' => [
 				'text' => 'Could not update {name}'
-			)
-		),
-		'redirect' => array(
-			'post_add' => array(
+			]
+		],
+		'redirect' => [
+			'post_add' => [
 				'reader' => 'request.data',
 				'key' => '_add',
-				'url' => array('action' => 'add')
-			),
-			'post_edit' => array(
+				'url' => ['action' => 'add']
+			],
+			'post_edit' => [
 				'reader' => 'request.data',
 				'key' => '_edit',
-				'url' => array('action' => 'edit', array('subject.key', 'id'))
-			)
-		),
-		'api' => array(
-			'methods' => array('put', 'post'),
-			'success' => array(
+				'url' => ['action' => 'edit', ['subject.key', 'id']]
+			]
+		],
+		'api' => [
+			'methods' => ['put', 'post'],
+			'success' => [
 				'code' => 200
-			),
-			'error' => array(
-				'exception' => array(
+			],
+			'error' => [
+				'exception' => [
 					'type' => 'validate',
 					'class' => '\Crud\Error\Exception\CrudValidationException'
-				)
-			)
-		),
-		'serialize' => array()
-	);
-
-/**
- * Constant representing the scope of this action
- *
- * @var integer
- */
-	const ACTION_SCOPE = Base::SCOPE_RECORD;
+				]
+			]
+		],
+		'serialize' => []
+	];
 
 /**
  * HTTP GET handler
@@ -125,28 +126,30 @@ class Edit extends Base {
 			return false;
 		}
 
-		$request = $this->_request();
-		$model = $this->_model();
+		$subject = $this->_subject(['id' => $id]);
 
-		$existing = $this->_findRecord($id, 'count');
-		die('hi');
-		if (empty($existing)) {
-			die('hi');
+		$Entity = $this->_findRecord($id, $subject);
+		if (!$Entity) {
 			return $this->_notFound($id);
 		}
 
-		die('hi');
-		$request->data = $this->_injectPrimaryKey($request->data, $id, $model);
+		$Entity->accessible('*', true);
+		$Entity->set($this->_request()->data);
 
-		$this->_trigger('beforeSave', compact('id'));
-		if (call_user_func(array($model, $this->saveMethod()), $request->data, $this->saveOptions())) {
-			$this->setFlash('success');
-			$subject = $this->_trigger('afterSave', array('id' => $id, 'success' => true, 'created' => false));
-			return $this->_redirect($subject, array('action' => 'index'));
+		$this->_trigger('beforeSave', $subject);
+		if (call_user_func([$this->_repository(), $this->saveMethod()], $Entity, $this->saveOptions())) {
+			$subject->set(['success' => true, 'created' => false, 'item '=> $Entity]);
+
+			$this->setFlash('success', $subject);
+			$this->_trigger('afterSave', $subject);
+
+			return $this->_redirect($subject, ['action' => 'index']);
 		}
 
-		$this->setFlash('error');
-		$subject = $this->_trigger('afterSave', array('id' => $id, 'success' => false, 'created' => false));
+		$subject->set(['success' => false, 'created' => false, 'item' => $Entity]);
+
+		$this->setFlash('error', $subject);
+		$subject = $this->_trigger('afterSave', $subject);
 		$this->_trigger('beforeRender', $subject);
 	}
 
@@ -157,12 +160,14 @@ class Edit extends Base {
  * @param string $findMethod
  * @return array
  */
-	protected function _findRecord($id, $findMethod = null) {
-		$table = $this->_repository();
-		$query = $table->find();
-		$query->where([$table->primaryKey() => $id]);
+	protected function _findRecord($id, Subject $subject) {
+		$repository = $this->_repository();
+		$query = $repository->find();
+		$query->where([$repository->primaryKey() => $id]);
 
-		$subject = $this->_trigger('beforeFind', compact('query', 'findMethod'));
+		$subject->set(['repository' => $repository, 'query' => $query]);
+
+		$this->_trigger('beforeFind', $subject);
 		return $query->first();
 	}
 
@@ -231,14 +236,14 @@ class Edit extends Base {
  * @param Model $model
  * @return array
  */
-	protected function _injectPrimaryKey($data, $id, $model) {
+	protected function _injectPrimaryKey($data, $id, $repository) {
 		$key = key($data);
 		$keyIsModelAlias = (strtoupper($key[0]) === $key[0]);
 
-		if (isset($data[$model->alias]) || $keyIsModelAlias) {
-			$data[$model->alias][$model->primaryKey] = $id;
+		if (isset($data[$repository->alias()]) || $keyIsModelAlias) {
+			$data[$repository->alias()][$model->primaryKey()] = $id;
 		} else {
-			$data[$model->primaryKey] = $id;
+			$data[$repository->primaryKey()] = $id;
 		}
 
 		return $data;
@@ -268,9 +273,9 @@ class Edit extends Base {
 		}
 
 		$dataId = null;
-		$model = $this->_model();
+		$repository = $this->_repository();
 
-		$dataId = $request->data($model->alias . '.' . $model->primaryKey) ?: $request->data($model->primaryKey);
+		$dataId = $request->data($repository->alias() . '.' . $repository->primaryKey()) ?: $request->data($repository->primaryKey());
 		if ($dataId === null) {
 			return true;
 		}

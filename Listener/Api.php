@@ -7,6 +7,7 @@ use Cake\Network\Request;
 use Cake\Utility\Hash;
 use Cake\Utility\String;
 use Cake\ORM\Entity;
+use Cake\Error\BadRequestException;
 use Crud\Event\Subject;
 
 /**
@@ -35,7 +36,7 @@ class Api extends Base {
 		),
 		'exception' => array(
 			'type' => 'default',
-			'class' => 'BadRequestException',
+			'class' => 'Cake\Error\BadRequestException',
 			'message' => 'Unknown error',
 			'code' => 0
 		)

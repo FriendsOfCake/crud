@@ -235,13 +235,13 @@ abstract class Base extends Object {
  */
 	public function detectPrimaryKeyFieldType(Model $model = null) {
 		if (empty($model)) {
-			$model = $this->_model();
-			if (empty($model)) {
-				throw new CakeException('Missing model object, cant detect primary key field type');
+			$repository = $this->_repository();
+			if (empty($repository)) {
+				throw new \Cake\Error\Exception('Missing repository object, cant detect primary key field type');
 			}
 		}
 
-		$fInfo = $model->schema()->column($model->primaryKey());
+		$fInfo = $repository->schema()->column($repository->primaryKey());
 		if (empty($fInfo)) {
 			return false;
 		}
