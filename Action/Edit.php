@@ -200,57 +200,6 @@ class Edit extends Base {
 	}
 
 /**
- * Inject the id (from the URL) into the data to be saved.
- *
- * Determine what the format of the data is there are two formats accepted by cake:
- *
- *     array(
- *         'Model' => array('stuff' => 'here')
- *     );
- *
- * and
- *
- *     array('stuff' => 'here')
- *
- * The latter is most appropriate for API calls.
- *
- * If either the first array key is Capitalized, or the model alias is present in the form data,
- * The id will be injected under the model-alias key:
- *
- *     array(
- *         'Model' => array('stuff' => 'here', 'id' => $id)
- *     );
- *
- *     // HABTM example
- *     array(
- *         'Category' => array('Category' => array(123)),
- *         'Model' => array('id' => $id) // <- added
- *     );
- *
- * If the model-alias key is absent AND the first array key is not capitalized, inject in the root:
- *
- *     array('stuff' => 'here', 'id' => $id)
- *
- *
- * @param array $data
- * @param mixed $id
- * @param Model $model
- * @return array
- */
-	protected function _injectPrimaryKey($data, $id, $repository) {
-		$key = key($data);
-		$keyIsModelAlias = (strtoupper($key[0]) === $key[0]);
-
-		if (isset($data[$repository->alias()]) || $keyIsModelAlias) {
-			$data[$repository->alias()][$model->primaryKey()] = $id;
-		} else {
-			$data[$repository->primaryKey()] = $id;
-		}
-
-		return $data;
-	}
-
-/**
  * Is the passed ID valid?
  *
  * Validate the id in the URL (the parent function) and then validate the id in the data.
@@ -286,7 +235,7 @@ class Edit extends Base {
 			return true;
 		}
 
-		$this->_trigger('invalidId', array('id' => $dataId));
+		$this->_trigger('invalidId', ['id' => $dataId]);
 
 		$message = $this->message('invalidId');
 		$exceptionClass = $message['class'];

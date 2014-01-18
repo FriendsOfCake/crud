@@ -4,6 +4,7 @@ namespace Crud\Action;
 use Cake\Utility\Hash;
 use Cake\Utility\String;
 use Cake\Event\Event;
+use Cake\Error\NotImplementedException;
 use Crud\Core\Object;
 use Crud\Event\Subject;
 use Crud\Controller\Component\CrudComponent;
@@ -246,7 +247,7 @@ abstract class Base extends Object {
 			return false;
 		}
 
-		if ($fInfo['length'] == 36 && ($fInfo['type'] === 'string' || $fInfo['type'] === 'binary')) {
+		if ($fInfo['type'] == 'uuid') {
 			return 'uuid';
 		}
 
