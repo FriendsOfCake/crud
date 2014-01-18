@@ -82,7 +82,7 @@ class Delete extends Base {
 		} else {
 			$subject->set(['success' => false]);
 
-			$this->setFlash('error');
+			$this->setFlash('error', $subject);
 			$this->_trigger('afterDelete', $subject);
 		}
 
