@@ -2,12 +2,12 @@
 namespace Crud\Listener;
 
 use Cake\Core\Configure;
+use Cake\Error\BadRequestException;
 use Cake\Event\Event;
 use Cake\Network\Request;
+use Cake\ORM\Entity;
 use Cake\Utility\Hash;
 use Cake\Utility\String;
-use Cake\ORM\Entity;
-use Cake\Error\BadRequestException;
 use Crud\Event\Subject;
 
 /**
@@ -235,7 +235,6 @@ class Api extends Base {
 	protected function _ensureData(Subject $subject) {
 		$controller = $this->_controller();
 
-		// Don't touch existing data properties
 		if (isset($controller->viewVars['data'])) {
 			return;
 		}
@@ -245,10 +244,8 @@ class Api extends Base {
 		// Load configuration
 		$config = $this->_action()->config('api.' . $key);
 
-		// New, empty, data array
 		$data = [];
 
-		// If fields should be extracted from the subject
 		if (isset($config['data']['subject'])) {
 			$config['data']['subject'] = Hash::normalize((array)$config['data']['subject']);
 
@@ -281,7 +278,6 @@ class Api extends Base {
 			}
 		}
 
-		// Raw (hardcoded) key/values
 		if (isset($config['data']['raw'])) {
 			foreach ($config['data']['raw'] as $path => $value) {
 				$path = $this->_expandPath($subject, $path);
@@ -289,7 +285,6 @@ class Api extends Base {
 			}
 		}
 
-		// Publish the new data
 		$controller->set('data', $data);
 	}
 
@@ -320,7 +315,6 @@ class Api extends Base {
 /**
  * Inject view classes into RequestHandler
  *
- * @see http://book.cakephp.org/2.0/en/core-libraries/components/request-handling.html#using-custom-viewclasses
  * @return void
  */
 	public function injectViewClasses() {
@@ -340,7 +334,6 @@ class Api extends Base {
  * 		the response format for the `$type`. Normal
  * 		CakePHP plugin "dot" notation is supported
  *
- * @see http://book.cakephp.org/2.0/en/core-libraries/components/request-handling.html#using-custom-viewclasses
  * @param string $type
  * @param string $class
  * @return mixed
@@ -380,7 +373,6 @@ class Api extends Base {
 		$detectors = $this->config('detectors');
 
 		foreach ($detectors as $name => $config) {
-
 			$request->addDetector($name, ['callback' => function(Request $request) use ($config) {
 				if (isset($request->params['_ext']) && $request->params['_ext'] === $config['ext']) {
 					return true;
@@ -388,7 +380,6 @@ class Api extends Base {
 
 				return $request->accepts($config['accepts']);
 			}]);
-
 		}
 
 		$request->addDetector('api', ['callback' => function(Request $request) use ($detectors) {

@@ -2,8 +2,8 @@
 
 namespace Crud\Action;
 
-use Crud\Traits\SaveMethodTrait;
 use Crud\Traits\RedirectTrait;
+use Crud\Traits\SaveMethodTrait;
 
 /**
  * Handles 'Add' Crud actions
@@ -13,8 +13,8 @@ use Crud\Traits\RedirectTrait;
  */
 class Add extends Base {
 
-	use SaveMethodTrait;
 	use RedirectTrait;
+	use SaveMethodTrait;
 
 /**
  * Default settings for 'add' actions

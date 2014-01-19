@@ -5,8 +5,8 @@ namespace Crud\Action;
 use Cake\Utility\Hash;
 use Crud\Event\Subject;
 use Crud\Traits\FindMethodTrait;
-use Crud\Traits\SaveMethodTrait;
 use Crud\Traits\RedirectTrait;
+use Crud\Traits\SaveMethodTrait;
 
 /**
  * Handles 'Edit' Crud actions
@@ -17,8 +17,8 @@ use Crud\Traits\RedirectTrait;
 class Edit extends Base {
 
 	use FindMethodTrait;
-	use SaveMethodTrait;
 	use RedirectTrait;
+	use SaveMethodTrait;
 
 /**
  * Default settings for 'edit' actions

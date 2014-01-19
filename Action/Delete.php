@@ -2,8 +2,8 @@
 namespace Crud\Action;
 
 use Crud\Event\Subject;
-use Crud\Traits\RedirectTrait;
 use Crud\Traits\FindMethodTrait;
+use Crud\Traits\RedirectTrait;
 
 /**
  * Handles 'Delete' Crud actions

@@ -4,8 +4,8 @@ namespace Crud\Core;
 use Cake\Event\Event;
 use Cake\Event\EventListener;
 use Cake\Utility\Inflector;
-use Crud\Event\Subject;
 use Crud\Controller\Component\CrudComponent;
+use Crud\Event\Subject;
 
 /**
  * Crud Base Class

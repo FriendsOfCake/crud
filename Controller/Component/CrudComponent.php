@@ -1,10 +1,10 @@
 <?php
 namespace Crud\Controller\Component;
 
+use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
 use Cake\Event\Event;
 use Cake\Utility\Hash;
-use Cake\Controller\Component;
 use Crud\Event\Subject;
 
 /**

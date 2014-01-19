@@ -3,8 +3,8 @@
 namespace Crud\Listener;
 
 use Cake\Core\Configure;
-use Cake\Event\Event;
 use Cake\Database\ConnectionManager;
+use Cake\Event\Event;
 
 /**
  * When loaded Crud API will include query logs in the response

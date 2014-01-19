@@ -2,7 +2,7 @@
 
 namespace Crud\Listener;
 
-use \Crud\Core\Object;
+use Crud\Core\Object;
 
 /**
  * The Base Crud Listener
