@@ -120,16 +120,16 @@ abstract class Base extends Object {
 		}
 
 		if (is_string($config)) {
-			$config = array('text' => $config);
+			$config = ['text' => $config];
 		}
 
-		$config = Hash::merge(array(
+		$config = Hash::merge([
 			'element' => 'default',
-			'params' => array('class' => 'message'),
+			'params' => ['class' => 'message'],
 			'key' => 'flash',
 			'type' => $this->config('action') . '.' . $type,
 			'name' => $this->_getResourceName()
-		), $config);
+		], $config);
 
 		if (!isset($config['text'])) {
 			throw new \Exception(sprintf('Invalid message config for "%s" no text key found', $type));
@@ -146,8 +146,8 @@ abstract class Base extends Object {
 
 		$config['text'] = String::insert(
 			$config['text'],
-			$replacements + array('name' => $config['name']),
-			array('before' => '{', 'after' => '}')
+			$replacements + ['name' => $config['name']],
+			['before' => '{', 'after' => '}']
 		);
 
 		$config['params']['class'] .= ' ' . $type;

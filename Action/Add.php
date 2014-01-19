@@ -3,7 +3,6 @@
 namespace Crud\Action;
 
 use Crud\Traits\SaveMethodTrait;
-use Crud\Traits\SaveOptionsTrait;
 use Crud\Traits\RedirectTrait;
 
 /**
@@ -15,7 +14,6 @@ use Crud\Traits\RedirectTrait;
 class Add extends Base {
 
 	use SaveMethodTrait;
-	use SaveOptionsTrait;
 	use RedirectTrait;
 
 /**
@@ -89,11 +87,7 @@ class Add extends Base {
  * @return void
  */
 	protected function _get() {
-		// $request = $this->_request();
-		// $model = $this->_model();
-
-		// $model->create();
-		// $request->data = $model->data;
+		$request->data = $this->_entity();
 		$this->_trigger('beforeRender', ['success' => true]);
 	}
 

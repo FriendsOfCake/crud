@@ -4,6 +4,7 @@ namespace Crud\Action;
 
 use Cake\Utility\Hash;
 use Crud\Event\Subject;
+use Crud\Traits\FindMethodTrait;
 use Crud\Traits\SaveMethodTrait;
 use Crud\Traits\SaveOptionsTrait;
 use Crud\Traits\RedirectTrait;
@@ -16,6 +17,7 @@ use Crud\Traits\RedirectTrait;
  */
 class Edit extends Base {
 
+	use FindMethodTrait;
 	use SaveMethodTrait;
 	use SaveOptionsTrait;
 	use RedirectTrait;
@@ -103,14 +105,8 @@ class Edit extends Base {
 			return false;
 		}
 
-		$request = $this->_request();
-		$request->data = $this->_findRecord($id);
-		if (empty($request->data)) {
-			return $this->_notFound($id);
-		}
-
-		$item = $request->data;
-		$subject = $this->_trigger('afterFind', compact('id', 'item'));
+		$subject = $this->_subject(['id' => $id]);
+		$this->_request()->data = $this->_findRecord($id, $subject);
 
 		$this->_trigger('beforeRender');
 	}
@@ -127,13 +123,7 @@ class Edit extends Base {
 		}
 
 		$subject = $this->_subject(['id' => $id]);
-
 		$entity = $this->_findRecord($id, $subject);
-		if (!$entity) {
-			return $this->_notFound($id);
-		}
-
-		$subject->set(['item' => $entity]);
 
 		$entity->accessible('*', true);
 		$entity->set($this->_request()->data);
@@ -152,39 +142,6 @@ class Edit extends Base {
 		$this->setFlash('error', $subject);
 		$this->_trigger('afterSave', $subject);
 		$this->_trigger('beforeRender', $subject);
-	}
-
-/**
- * Find a record from the ID
- *
- * @param string $id
- * @param string $findMethod
- * @return array
- */
-	protected function _findRecord($id, Subject $subject) {
-		$repository = $this->_repository();
-		$query = $repository->find();
-		$query->where([$repository->primaryKey() => $id]);
-
-		$subject->set(['repository' => $repository, 'query' => $query]);
-
-		$this->_trigger('beforeFind', $subject);
-		return $query->first();
-	}
-
-/**
- * Throw exception if a record is not found
- *
- * @throws Exception
- * @param string $id
- * @return void
- */
-	protected function _notFound($id) {
-		$this->_trigger('recordNotFound', compact('id'));
-
-		$message = $this->message('recordNotFound', compact('id'));
-		$exceptionClass = $message['class'];
-		throw new $exceptionClass($message['text'], $message['code']);
 	}
 
 /**
