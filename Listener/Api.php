@@ -105,7 +105,6 @@ class Api extends Base {
 
 		$response = $this->render($event->subject);
 		$response->statusCode($apiConfig['code']);
-		return $response;
 	}
 
 /**
@@ -181,7 +180,7 @@ class Api extends Base {
 			$controller->RequestHandler->renderAs($controller, $controller->RequestHandler->ext);
 		}
 
-		return $controller->render();
+		return $controller->response;
 	}
 
 /**

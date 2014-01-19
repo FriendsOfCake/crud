@@ -163,7 +163,7 @@ abstract class Base extends Object {
 	public function setFlash($type, $subject) {
 		$subject->set($this->message($type));
 		$event = $this->_trigger('setFlash', $subject);
-		if (!empty($event->stopped)) {
+		if ($event->isStopped()) {
 			return;
 		}
 

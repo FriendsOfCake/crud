@@ -6,7 +6,6 @@ use Cake\Utility\Hash;
 use Crud\Event\Subject;
 use Crud\Traits\FindMethodTrait;
 use Crud\Traits\SaveMethodTrait;
-use Crud\Traits\SaveOptionsTrait;
 use Crud\Traits\RedirectTrait;
 
 /**
@@ -19,7 +18,6 @@ class Edit extends Base {
 
 	use FindMethodTrait;
 	use SaveMethodTrait;
-	use SaveOptionsTrait;
 	use RedirectTrait;
 
 /**

@@ -42,7 +42,7 @@ class Index extends Base {
 	];
 
 /**
- * Generic handler
+ * Generic handler for all HTTP verbs
  *
  * @return void
  */

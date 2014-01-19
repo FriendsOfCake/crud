@@ -3,6 +3,7 @@ namespace Crud\Action;
 
 use Crud\Event\Subject;
 use Crud\Traits\RedirectTrait;
+use Crud\Traits\FindMethodTrait;
 
 /**
  * Handles 'Delete' Crud actions
@@ -12,6 +13,7 @@ use Crud\Traits\RedirectTrait;
  */
 class Delete extends Base {
 
+	use FindMethodTrait;
 	use RedirectTrait;
 
 /**
@@ -58,18 +60,9 @@ class Delete extends Base {
 
 		$subject = $this->_subject(['id' => $id]);
 		$entity = $this->_findRecord($id, $subject);
-		if (!$entity) {
-			$this->_trigger('recordNotFound', compact('id'));
-
-			$message = $this->message('recordNotFound', ['id' => $id]);
-			$exceptionClass = $message['class'];
-			throw new $exceptionClass($message['text'], $message['code']);
-		}
-
-		$subject->set(['item' => $entity]);
 
 		$event = $this->_trigger('beforeDelete', $subject);
-		if ($event->stopped) {
+		if ($event->isStopped()) {
 			$this->setFlash('error');
 			return $this->_redirect($subject, ['action' => 'index']);
 		}
@@ -97,24 +90,6 @@ class Delete extends Base {
  */
 	protected function _post($id = null) {
 		return $this->_delete($id);
-	}
-
-/**
- * Find a record from the ID
- *
- * @param string $id
- * @param string $findMethod
- * @return array
- */
-	protected function _findRecord($id, Subject $subject) {
-		$repository = $this->_repository();
-		$query = $repository->find();
-		$query->where([$repository->primaryKey() => $id]);
-
-		$subject->set(['repository' => $repository, 'query' => $query]);
-
-		$this->_trigger('beforeFind', $subject);
-		return $query->first();
 	}
 
 }
