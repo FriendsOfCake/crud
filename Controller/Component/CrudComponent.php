@@ -186,7 +186,6 @@ class CrudComponent extends Component {
  *
  * @deprecated Will be removed in Crud 3.1
  * @param string $controllerAction Override the controller action to execute as.
- * @param array $arguments List of arguments to pass to the CRUD action (Usually an ID to edit / delete).
  * @return CakeResponse
  * @throws CakeException If an action is not mapped.
  */
@@ -198,7 +197,6 @@ class CrudComponent extends Component {
  * Execute a Crud action
  *
  * @param string $controllerAction Override the controller action to execute as.
- * @param array $arguments List of arguments to pass to the CRUD action (Usually an ID to edit / delete).
  * @return CakeResponse
  * @throws CakeException If an action is not mapped.
  */
@@ -248,7 +246,7 @@ class CrudComponent extends Component {
 /**
  * Enable one or multiple CRUD actions.
  *
- * @param string|array $actions The action to enable.
+ * @param string $actions The action to enable.
  * @return void
  */
 	public function enable($actions) {
@@ -336,7 +334,7 @@ class CrudComponent extends Component {
  * Map action to an internal request type.
  *
  * @param string $action The Controller action to provide an implementation for.
- * @param string|array $setting Settings array or one of the CRUD events (index, add, edit, delete, view).
+ * @param string|array $settings Settings array or one of the CRUD events (index, add, edit, delete, view).
  * @param boolean $enable Should the mapping be enabled right away?
  * @return void
  */
@@ -433,7 +431,7 @@ class CrudComponent extends Component {
  * This will also detach it from the EventManager if it's attached.
  *
  * @param string $name
- * @return boolean
+ * @return false|null
  */
 	public function removeListener($name) {
 		$listeners = $this->config('listeners');
@@ -523,7 +521,7 @@ class CrudComponent extends Component {
  * If $key is a string, the value will be inserted in the specified
  * slot as indicated using the dot notation.
  *
- * @param mixed $key
+ * @param string $key
  * @param mixed $value
  * @return mixed|CrudComponent
  */
@@ -653,7 +651,7 @@ class CrudComponent extends Component {
  * try to compute it by exploding on action name on '_' and take the last chunk
  * as CrudClass identifier.
  *
- * @param mixed $types Class type(s).
+ * @param string $types Class type(s).
  * @return void
  * @throws CakeException If className is missing for listener.
  */

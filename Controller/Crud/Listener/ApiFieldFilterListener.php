@@ -151,7 +151,7 @@ class ApiFieldFilterListener extends CrudListener {
  *
  * @param boolean $permit
  * @param string $action
- * @return boolean
+ * @return boolean|null
  */
 	public function allowNoFilter($permit = null, $action = null) {
 		if (empty($permit)) {

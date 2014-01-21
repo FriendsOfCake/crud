@@ -89,7 +89,7 @@ class RedirectListener extends CrudListener {
  * Add or replace a reader
  *
  * @param string $key
- * @param mixed $reader
+ * @param Closure $reader
  * @return mixed
  */
 	public function reader($key, $reader = null) {
@@ -134,7 +134,6 @@ class RedirectListener extends CrudListener {
  * placeholder with the actual value
  *
  * @param CrudSubject $subject
- * @param array $config
  * @return array
  */
 	protected function _getUrl(CrudSubject $subject, array $url) {

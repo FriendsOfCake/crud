@@ -23,7 +23,7 @@ class CrudValidationException extends CakeException {
 /**
  * Constructor
  *
- * @param array $error list of validation errors
+ * @param array $errors list of validation errors
  * @param integer $code code to report to client
  * @return void
  */

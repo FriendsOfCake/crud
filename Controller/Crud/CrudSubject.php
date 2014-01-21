@@ -106,7 +106,7 @@ class CrudSubject {
  * this subject has passed through
  *
  * @param string $name name of event
- * @return array
+ * @return boolean
  */
 	public function hasEvent($name) {
 		return in_array($name, $this->_events);

@@ -52,7 +52,7 @@ class DeleteCrudAction extends CrudAction {
  *
  * @throws NotFoundException If record not found
  * @param string $id
- * @return void
+ * @return false|null
  */
 	protected function _delete($id = null) {
 		if (!$this->_validateId($id)) {
@@ -99,7 +99,7 @@ class DeleteCrudAction extends CrudAction {
  * HTTP POST handler
  *
  * @param mixed $id
- * @return void
+ * @return false|null
  */
 	protected function _post($id = null) {
 		return $this->_delete($id);

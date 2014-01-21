@@ -50,7 +50,6 @@ abstract class CrudAction extends CrudBaseObject {
  * execution flow continues
  *
  * @throws NotImplementedException if the action can't handle the request
- * @param CakeEvent $event
  * @return mixed
  */
 	public function handle(CrudSubject $subject) {

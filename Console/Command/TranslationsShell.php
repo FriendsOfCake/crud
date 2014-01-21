@@ -45,7 +45,7 @@ class TranslationsShell extends AppShell {
 /**
  * Create or update the file containing the translation strings for CRUD component usage
  *
- * @return void
+ * @return null|string
  */
 	public function generate() {
 		$controllers = $this->_getControllers($this->args);
@@ -99,7 +99,7 @@ class TranslationsShell extends AppShell {
  * Otherwise, assume the arguments are a list of file paths to plugin model dirs or an individual plugin model
  *
  * @param array $args File paths to controllers to process
- * @return array
+ * @return string
  */
 	protected function _getControllers($args = array()) {
 		$objectType = 'Controller';
