@@ -8,7 +8,7 @@ filter:
         - 'app/*'
         - 'bin/*'
         - 'library/*'
-	- 'Test/*'
+        - 'Test/*'
 
     paths: {  }
 tools:
@@ -23,7 +23,7 @@ tools:
                 - 'app/*'
                 - 'bin/*'
                 - 'library/*'
-	        - 'Test/*'
+                - 'Test/*'
             paths: {  }
         path_configs: {  }
     php_cpd:
@@ -33,7 +33,7 @@ tools:
             - app
             - bin
             - library
-	    - Test
+            - Test
         enabled: true
         command: phpcpd
         names:
@@ -47,7 +47,7 @@ tools:
                 - 'app/*'
                 - 'bin/*'
                 - 'library/*'
-	        - 'Test/*'
+                - 'Test/*'
             paths: {  }
     php_pdepend:
         excluded_dirs:
@@ -56,7 +56,7 @@ tools:
             - app
             - bin
             - library
-	    - Test
+            - Test
         enabled: true
         command: pdepend
         configuration_file: null
