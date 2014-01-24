@@ -1,13 +1,14 @@
 <?php
+namespace Crud\Test\TestCase\Error;
 
-App::uses('Controller', 'Controller');
-App::uses('CakeRequest', 'Network');
-App::uses('CakeResponse', 'Network');
-App::uses('CrudExceptionRenderer', 'Crud.Error');
-App::uses('CrudValidationException', 'Crud.Error/Exception');
-App::uses('ConnectionManager', 'Model');
+use Cake\Controller\Controller;
+use Cake\Network\Request;
+use Cake\Network\Response;
+use Cake\TestSuite\TestCase;
+use Crud\Error\CrudExceptionRenderer;
+use Crud\Error\Exception\CrudValidationException;
 
-class CrudExceptionRendererTest extends CakeTestCase {
+class CrudExceptionRendererTest extends TestCase {
 
 	public $fixtures = array('core.post');
 
