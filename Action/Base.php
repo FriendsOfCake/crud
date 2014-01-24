@@ -244,4 +244,8 @@ abstract class Base extends Object {
 		return false;
 	}
 
+	public function scope() {
+		return $this->config('scope');
+	}
+
 }

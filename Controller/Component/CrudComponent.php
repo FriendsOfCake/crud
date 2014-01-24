@@ -5,6 +5,7 @@ use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
 use Cake\Event\Event;
 use Cake\Utility\Hash;
+use Cake\Utility\Inflector;
 use Crud\Event\Subject;
 
 /**
@@ -637,33 +638,16 @@ class CrudComponent extends Component {
 			$this->settings[$type] = Hash::normalize($this->settings[$type]);
 
 			foreach ($this->settings[$type] as $name => $settings) {
-				if (is_array($settings) && !empty($settings['className'])) {
-					$this->settings[$type][$name] = $settings;
-					continue;
-				}
-
-				$className = null;
 				if (empty($settings)) {
 					$settings = [];
-				} elseif (is_string($settings)) {
-					$className = $settings;
-					$settings = [];
 				}
 
-				if ($type === 'listeners' && strpos($name, '.') !== false) {
-					unset($this->settings[$type][$name]);
-					$settings['className'] = $name;
+				$settings['className'] = $this->_handlerClassName($type, $name);
+				list(,$newName) = pluginSplit($name);
+				$newName = strtolower($newName);
 
-					list($plugin, $name) = pluginSplit($name);
-					$name = Inflector::camelize($name);
-				}
-
-				$className = $this->_handlerClassName($type, $name, $className);
-				if (empty($settings['className'])) {
-					$settings['className'] = $className;
-				}
-
-				$this->settings[$type][$name] = $settings;
+				$this->settings[$type][$newName] = $settings;
+				unset($this->settings[$type][$name]);
 			}
 		}
 	}
@@ -671,17 +655,20 @@ class CrudComponent extends Component {
 /**
  * Generate valid class name for action and listener handler.
  *
- * @param string $action
- * @param string $className
+ * @param string $type
+ * @param string $name
  * @return string Class name
  */
-	protected function _handlerClassName($type, $action, $className) {
-		if ($type === 'actions' && false === strpos($className, '\\')) {
-			$className = '\\Crud\\Action\\' . ucfirst($action);
+	protected function _handlerClassName($type, $name) {
+		if ($type === 'listeners') {
+			$type = 'Listener';
+		} elseif ($type === 'actions') {
+			$type = 'Action';
 		}
 
-		if ($type === 'listeners' && false === strpos($className, '\\')) {
-			$className = '\\Crud\\Listener\\' . ucfirst($action);
+		$className = \Cake\Core\App::classname($name, $type);
+		if ($className === false) {
+			throw new \Exception(sprintf('Failed to load class "%s" of type "%s"', $name, $type));
 		}
 
 		return $className;
@@ -710,7 +697,7 @@ class CrudComponent extends Component {
 			$config = $this->config('listeners.' . $name);
 
 			if (empty($config)) {
-				throw new CakeException(sprintf('Listener "%s" is not configured', $name));
+				throw new \Cake\Error\BaseException(sprintf('Listener "%s" is not configured', $name));
 			}
 
 			$subject = $this->getSubject();

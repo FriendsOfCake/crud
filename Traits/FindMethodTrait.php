@@ -33,7 +33,7 @@ trait FindMethodTrait {
 		$repository = $this->_repository();
 
 		$query = $repository->find();
-		$query->where([$repository->primaryKey() => $id]);
+		$query->where([current($query->aliasField($repository->primaryKey())) => $id]);
 
 		$subject->set([
 			'repository' => $repository,

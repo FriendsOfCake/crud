@@ -47,6 +47,7 @@ class Edit extends Base {
  */
 	protected $_settings = [
 		'enabled' => true,
+		'scope' => 'entity',
 		'findMethod' => 'all',
 		'saveMethod' => 'save',
 		'view' => null,

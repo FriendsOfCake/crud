@@ -27,6 +27,7 @@ class Delete extends Base {
  */
 	protected $_settings = [
 		'enabled' => true,
+		'scope' => 'entity',
 		'findMethod' => 'count',
 		'messages' => [
 			'success' => [

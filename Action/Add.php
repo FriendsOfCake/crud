@@ -36,6 +36,7 @@ class Add extends Base {
  */
 	protected $_settings = [
 		'enabled' => true,
+		'scope' => 'repository',
 		'saveMethod' => 'save',
 		'view' => null,
 		'relatedModels' => true,
@@ -87,7 +88,7 @@ class Add extends Base {
  * @return void
  */
 	protected function _get() {
-		$request->data = $this->_entity();
+		$this->_request()->data = $this->_entity();
 		$this->_trigger('beforeRender', ['success' => true]);
 	}
 

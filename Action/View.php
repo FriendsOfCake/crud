@@ -33,6 +33,7 @@ class View extends Base {
  */
 	protected $_settings = [
 		'enabled' => true,
+		'scope' => 'entity',
 		'findMethod' => 'all',
 		'view' => null,
 		'viewVar' => null,
