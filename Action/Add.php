@@ -1,9 +1,9 @@
 <?php
-
 namespace Crud\Action;
 
 use Crud\Traits\RedirectTrait;
 use Crud\Traits\SaveMethodTrait;
+use Crud\Event\Subject;
 
 /**
  * Handles 'Add' Crud actions
@@ -98,27 +98,16 @@ class Add extends Base {
  * @return void
  */
 	protected function _post() {
-		$entity = $this->_entity();
-		$entity->accessible('*', true);
-		$entity->set($this->_request()->data);
-
-		$subject = $this->_subject(['item' => $entity]);
+		$entity = $this->_getEntity();
+		$subject = $this->_subject();
+		$subject->set(['item' => $entity]);
 
 		$this->_trigger('beforeSave', $subject);
 		if (call_user_func([$this->_repository(), $this->saveMethod()], $entity, $this->saveOptions())) {
-			$subject->set(['success' => true, 'created' => true]);
-
-			$this->setFlash('success', $subject);
-			$this->_trigger('afterSave', $subject);
-
-			return $this->_redirect($subject, ['action' => 'index']);
+			return $this->_success($subject);
 		}
 
-		$subject->set(['success' => false, 'created' => false]);
-
-		$this->setFlash('error', $subject);
-		$this->_trigger('afterSave', $subject);
-		$this->_trigger('beforeRender', $subject);
+		return $this->_error($subject);
 	}
 
 /**
@@ -128,6 +117,49 @@ class Add extends Base {
  */
 	protected function _put() {
 		return $this->_post();
+	}
+
+/**
+ * Post success callback
+ *
+ * @param  Subject $subject
+ * @return \Cake\Network\Response
+ */
+	protected function _success(Subject $subject) {
+		$subject->set(['success' => true, 'created' => true]);
+
+		$this->setFlash('success', $subject);
+
+		$this->_trigger('afterSave', $subject);
+		$this->_redirect($subject, ['action' => 'index']);
+	}
+
+/**
+ * Post error callback
+ *
+ * @param  Subject $subject
+ * @return void
+ */
+	protected function _error(Subject $subject) {
+		$subject->set(['success' => false, 'created' => false]);
+
+		$this->setFlash('error', $subject);
+
+		$this->_trigger('afterSave', $subject);
+		$this->_trigger('beforeRender', $subject);
+	}
+
+/**
+ * Get entity instance with POST data
+ *
+ * @return \Cake\ORM\Entity
+ */
+	protected function _getEntity() {
+		$entity = $this->_entity();
+		$entity->accessible('*', true);
+		$entity->set($this->_request()->data);
+
+		return $entity;
 	}
 
 }

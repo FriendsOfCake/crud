@@ -1,11 +1,14 @@
 <?php
+namespace Crud\TestSuite;
+
+use Cake\TestSuite\ControllerTestCase;
 
 /**
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-abstract class CrudTestCase extends CakeTestCase {
+abstract class ControllerTestCase extends ControllerTestCase {
 
 /**
  * List of Reflection properties made public
@@ -141,6 +144,7 @@ abstract class CrudTestCase extends CakeTestCase {
  * @param string $class
  * @return string
  * @throws Exception When the reflection target cannot be found
+ *
  */
 	protected function _getReflectionTargetClass($class) {
 		if (is_object($class)) {

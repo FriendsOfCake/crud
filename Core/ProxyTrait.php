@@ -82,18 +82,6 @@ trait ProxyTrait {
 		return $this->_controller()->request;
 	}
 
-/**
- * Proxy method for `$this->_container->_model`
- *
- * Primarily here to ease unit testing
- *
- * @codeCoverageIgnore
- * @return Model
- */
-	protected function _model() {
-		return $this->_crud()->model;
-	}
-
 	protected function _repository() {
 		return $this->_crud()->repository();
 	}

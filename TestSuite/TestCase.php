@@ -1,36 +1,54 @@
 <?php
+namespace Crud\Testsuite;
+
+use Cake\TestSuite\TestCase as CakeTestCase;
 
 /**
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-abstract class CrudControllerTestCase extends ControllerTestCase {
+abstract class TestCase extends CakeTestCase {
 
 /**
  * List of Reflection properties made public
  *
  * @var array
  */
-	protected $_reflectionPropertyCache = array();
+	protected $_reflectionPropertyCache = [];
 
 /**
  * List of Reflection methods made public
  *
  * @var array
  */
-	protected $_reflectionMethodCache = array();
+	protected $_reflectionMethodCache = [];
 
 /**
  * List of class name <=> instance used for invocation
  *
  * @var array
  */
-	protected $_reflectionInstanceCache = array();
+	protected $_reflectionInstanceCache = [];
+
+	protected $_expectsSerials = [];
 
 	public function setUp() {
 		parent::setUp();
 		$this->resetReflectionCache();
+		$this->_expectsSerials = [];
+	}
+
+	public function next($name) {
+		if (is_object($name)) {
+			$name = get_class($name);
+		}
+
+		if (!isset($this->_expectsSerials[$name])) {
+			$this->_expectsSerials[$name] = 0;
+		}
+
+		return $this->at($this->_expectsSerials[$name]++);
 	}
 
 /**
@@ -39,9 +57,9 @@ abstract class CrudControllerTestCase extends ControllerTestCase {
  * @return void
  */
 	public function resetReflectionCache() {
-		$this->_reflectionPropertyCache = array();
-		$this->_reflectionMethodCache = array();
-		$this->_reflectionInstanceCache = array();
+		$this->_reflectionPropertyCache = [];
+		$this->_reflectionMethodCache = [];
+		$this->_reflectionInstanceCache = [];
 	}
 
 /**
@@ -65,7 +83,7 @@ abstract class CrudControllerTestCase extends ControllerTestCase {
 	public function getReflectionInstance($class) {
 		$class = $this->_getReflectionTargetClass($class);
 		if (empty($this->_reflectionInstanceCache[$class])) {
-			throw new Exception(sprintf('Unable to find instance of %s in the reflection cache. Have you added it using "setReflectionClassInstance"?', $class));
+			throw new \Exception(sprintf('Unable to find instance of %s in the reflection cache. Have you added it using "setReflectionClassInstance"?', $class));
 		}
 
 		return $this->_reflectionInstanceCache[$class];
@@ -79,12 +97,12 @@ abstract class CrudControllerTestCase extends ControllerTestCase {
  * @param string $class Target reflection class
  * @return mixed
  */
-	public function callProtectedMethod($method, $args = array(), $class = null) {
+	public function callProtectedMethod($method, $args = [], $class = null) {
 		$class = $this->_getReflectionTargetClass($class);
 		$cacheKey = $class . '_' . $method;
 
 		if (!in_array($cacheKey, $this->_reflectionMethodCache)) {
-			$this->_reflectionMethodCache[$cacheKey] = new ReflectionMethod($class, $method);
+			$this->_reflectionMethodCache[$cacheKey] = new \ReflectionMethod($class, $method);
 			$this->_reflectionMethodCache[$cacheKey]->setAccessible(true);
 		}
 
@@ -128,7 +146,7 @@ abstract class CrudControllerTestCase extends ControllerTestCase {
 		$cacheKey = $class . '_' . $property;
 
 		if (!in_array($cacheKey, $this->_reflectionPropertyCache)) {
-			$this->_reflectionPropertyCache[$cacheKey] = new ReflectionProperty($class, $property);
+			$this->_reflectionPropertyCache[$cacheKey] = new \ReflectionProperty($class, $property);
 			$this->_reflectionPropertyCache[$cacheKey]->setAccessible(true);
 		}
 
@@ -141,7 +159,6 @@ abstract class CrudControllerTestCase extends ControllerTestCase {
  * @param string $class
  * @return string
  * @throws Exception When the reflection target cannot be found
- * 
  */
 	protected function _getReflectionTargetClass($class) {
 		if (is_object($class)) {
@@ -160,7 +177,7 @@ abstract class CrudControllerTestCase extends ControllerTestCase {
 		}
 
 		if (empty($class)) {
-			throw new Exception(sprintf('Unable to find reflection target; have you set $defaultRelfectionTarget or passed in class name?', $class));
+			throw new \Exception(sprintf('Unable to find reflection target; have you set $defaultRelfectionTarget or passed in class name?', $class));
 		}
 
 		return $class;
