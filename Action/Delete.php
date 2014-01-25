@@ -50,7 +50,6 @@ class Delete extends Base {
 /**
  * HTTP DELETE handler
  *
- * @throws NotFoundException If record not found
  * @param string $id
  * @return void
  */
@@ -69,15 +68,9 @@ class Delete extends Base {
 		}
 
 		if ($this->_repository()->delete($entity)) {
-			$subject->set(['success' => true]);
-
-			$this->setFlash('success', $subject);
-			$this->_trigger('afterDelete', $subject);
+			$this->_success($subject);
 		} else {
-			$subject->set(['success' => false]);
-
-			$this->setFlash('error', $subject);
-			$this->_trigger('afterDelete', $subject);
+			$this->_error($subject);
 		}
 
 		$this->_redirect($subject, ['action' => 'index']);
@@ -91,6 +84,22 @@ class Delete extends Base {
  */
 	protected function _post($id = null) {
 		return $this->_delete($id);
+	}
+
+	protected function _success($subject) {
+		$subject->set(['success' => true]);
+
+		$this->setFlash('success', $subject);
+
+		$this->_trigger('afterDelete', $subject);
+	}
+
+	protected function _error($subject) {
+		$subject->set(['success' => false]);
+
+		$this->setFlash('error', $subject);
+
+		$this->_trigger('afterDelete', $subject);
 	}
 
 }

@@ -1,18 +1,14 @@
 <?php
+namespace Crud\Test\TestCase\Action;
 
-App::uses('Model', 'Model');
-App::uses('Controller', 'Controller');
-App::uses('CakeRequest', 'Network');
-App::uses('CrudSubject', 'Crud.Controller/Crud');
-App::uses('DeleteCrudAction', 'Crud.Controller/Crud/Action');
-App::uses('CrudTestCase', 'Crud.Test/Support');
+use Crud\TestSuite\TestCase;
 
 /**
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class DeleteCrudActionTest extends CrudTestCase {
+class DeleteTest extends TestCase {
 
 /**
  * testDelete
