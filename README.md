@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/friendsofcake/crud.png?label=ready)](https://waffle.io/friendsofcake/crud)
 [![Build Status](https://travis-ci.org/FriendsOfCake/crud.png?branch=master)](https://travis-ci.org/FriendsOfCake/crud)
 [![Coverage Status](https://coveralls.io/repos/FriendsOfCake/crud/badge.png?branch=master)](https://coveralls.io/r/FriendsOfCake/crud?branch=master)
 [![Total Downloads](https://poser.pugx.org/FriendsOfCake/crud/d/total.png)](https://packagist.org/packages/FriendsOfCake/crud)
