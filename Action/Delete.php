@@ -53,18 +53,19 @@ class Delete extends Base {
  * @param string $id
  * @return void
  */
-	protected function _delete($id = null) {
+	protected function _handle($id = null) {
 		if (!$this->_validateId($id)) {
 			return false;
 		}
 
-		$subject = $this->_subject(['id' => $id]);
+		$subject = $this->_subject();
+		$subject->set(['id' => $id]);
+
 		$entity = $this->_findRecord($id, $subject);
 
 		$event = $this->_trigger('beforeDelete', $subject);
 		if ($event->isStopped()) {
-			$this->setFlash('error');
-			return $this->_redirect($subject, ['action' => 'index']);
+			return $this->_stopped($subject);
 		}
 
 		if ($this->_repository()->delete($entity)) {
@@ -77,16 +78,12 @@ class Delete extends Base {
 	}
 
 /**
- * HTTP POST handler
+ * Success callback
  *
- * @param mixed $id
+ * @param  Subject $subject
  * @return void
  */
-	protected function _post($id = null) {
-		return $this->_delete($id);
-	}
-
-	protected function _success($subject) {
+	protected function _success(Subject $subject) {
 		$subject->set(['success' => true]);
 
 		$this->setFlash('success', $subject);
@@ -94,12 +91,29 @@ class Delete extends Base {
 		$this->_trigger('afterDelete', $subject);
 	}
 
-	protected function _error($subject) {
+/**
+ * Error callback
+ *
+ * @param  Subject $subject
+ * @return void
+ */
+	protected function _error(Subject $subject) {
 		$subject->set(['success' => false]);
 
 		$this->setFlash('error', $subject);
 
 		$this->_trigger('afterDelete', $subject);
+	}
+
+/**
+ * Stopped callback
+ *
+ * @param  Subject $subject
+ * @return \Cake\Network\Response
+ */
+	protected function _stopped(Subject $subject) {
+		$this->setFlash('error');
+		return $this->_redirect($subject, ['action' => 'index']);
 	}
 
 }
