@@ -93,6 +93,7 @@ class ViewTest extends TestCase {
  * This test assumes that the id for the view
  * action does not exist in the database
  *
+ * @covers \Crud\Action\View::_get
  * @return void
  */
 	public function test_getGetInvalidId() {
