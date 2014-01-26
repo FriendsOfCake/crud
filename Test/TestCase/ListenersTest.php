@@ -4,10 +4,10 @@ namespace Crud\Test\TestSuite;
 use Cake\TestSuite\TestSuite;
 use Cake\Core\App;
 
-class ActionsTest extends \PHPUnit_Framework_TestSuite {
+class ListenersTest extends \PHPUnit_Framework_TestSuite {
 
 	public static function suite() {
-		$suite = new TestSuite('All CRUD action tests');
+		$suite = new TestSuite('All CRUD listener tests');
 
 		$path = App::pluginPath('Crud');
 		$testPath = $path . DS . 'Test' . DS . 'TestCase';
@@ -15,7 +15,7 @@ class ActionsTest extends \PHPUnit_Framework_TestSuite {
 			return $suite;
 		}
 
-		$suite->addTestDirectoryRecursive($testPath . DS . 'Action');
+		$suite->addTestDirectoryRecursive($testPath . DS . 'Listener');
 		return $suite;
 	}
 
