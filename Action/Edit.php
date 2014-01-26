@@ -104,10 +104,12 @@ class Edit extends Base {
 			return false;
 		}
 
-		$subject = $this->_subject(['id' => $id]);
+		$subject = $this->_subject();
+		$subject->set(['id' => $id]);
+
 		$this->_request()->data = $this->_findRecord($id, $subject);
 
-		$this->_trigger('beforeRender');
+		$this->_trigger('beforeRender', $subject);
 	}
 
 /**
@@ -121,26 +123,22 @@ class Edit extends Base {
 			return false;
 		}
 
-		$subject = $this->_subject(['id' => $id]);
+		$subject = $this->_subject();
+		$subject->set(['id' => $id]);
+
 		$entity = $this->_findRecord($id, $subject);
 
+		$request = $this->_request();
 		$entity->accessible('*', true);
-		$entity->set($this->_request()->data);
+		$entity->set($request->data);
+		$request->data = $entity;
 
 		$this->_trigger('beforeSave', $subject);
 		if (call_user_func([$this->_repository(), $this->saveMethod()], $entity, $this->saveOptions())) {
-			$subject->set(['success' => true, 'created' => false]);
-
-			$this->setFlash('success', $subject);
-			$this->_trigger('afterSave', $subject);
-
-			return $this->_redirect($subject, ['action' => 'index']);
+			return $this->_success($subject);
 		}
 
-		$subject->set(['success' => false, 'created' => false]);
-		$this->setFlash('error', $subject);
-		$this->_trigger('afterSave', $subject);
-		$this->_trigger('beforeRender', $subject);
+		return $this->_error($subject);
 	}
 
 /**
@@ -156,6 +154,36 @@ class Edit extends Base {
 	}
 
 /**
+ * Success callback
+ *
+ * @param  Subject $subject
+ * @return \Cake\Network\Response
+ */
+	protected function _success(Subject $subject) {
+		$subject->set(['success' => true, 'created' => false]);
+		$this->_trigger('afterSave', $subject);
+
+		$this->setFlash('success', $subject);
+
+		return $this->_redirect($subject, ['action' => 'index']);
+	}
+
+/**
+ * Error callback
+ *
+ * @param  Subject $subject
+ * @return void
+ */
+	protected function _error(Subject $subject) {
+		$subject->set(['success' => false, 'created' => false]);
+		$this->_trigger('afterSave', $subject);
+
+		$this->setFlash('error', $subject);
+
+		$this->_trigger('beforeRender', $subject);
+	}
+
+/**
  * Is the passed ID valid?
  *
  * Validate the id in the URL (the parent function) and then validate the id in the data.
@@ -166,9 +194,9 @@ class Edit extends Base {
  * to add/edit a record the user doesn't have permission for by submitting to a URL they
  * do have permission to access
  *
+ * @throws BadRequestException If id is invalid
  * @param mixed $id
  * @return boolean
- * @throws BadRequestException If id is invalid
  */
 	protected function _validateId($id) {
 		parent::_validateId($id);
@@ -178,10 +206,9 @@ class Edit extends Base {
 			return true;
 		}
 
-		$dataId = null;
 		$repository = $this->_repository();
-
-		$dataId = $request->data($repository->alias() . '.' . $repository->primaryKey()) ?: $request->data($repository->primaryKey());
+		$primaryKey = $repository->primaryKey();
+		$dataId = $request->data($repository->alias() . '.' . $primaryKey) ?: $request->data($primaryKey);
 		if ($dataId === null) {
 			return true;
 		}
@@ -192,7 +219,6 @@ class Edit extends Base {
 		}
 
 		$this->_trigger('invalidId', ['id' => $dataId]);
-
 		$message = $this->message('invalidId');
 		$exceptionClass = $message['class'];
 		throw new $exceptionClass($message['text'], $message['code']);
