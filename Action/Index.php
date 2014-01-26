@@ -48,14 +48,18 @@ class Index extends Base {
  * @return void
  */
 	protected function _handle() {
-		$subject = $this->_subject(['success' => true, 'viewVar' => $this->viewVar()]);
+		$subject = $this->_subject();
+		$subject->set(['success' => true, 'viewVar' => $this->viewVar()]);
 
 		$this->_trigger('beforePaginate', $subject);
-		$items = $this->_controller()->paginate();
+
+		$controller = $this->_controller();
+		$items = $controller->paginate();
 		$subject->set(['items' => $items]);
+
 		$this->_trigger('afterPaginate', $subject);
 
-		$this->_controller()->set(['success' => $subject->success, $subject->viewVar => $subject->items]);
+		$controller->set(['success' => $subject->success, $subject->viewVar => $subject->items]);
 		$this->_trigger('beforeRender', $subject);
 	}
 

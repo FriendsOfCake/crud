@@ -8,7 +8,7 @@ use Crud\TestSuite\TestCase;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class EditCrudActionTest extends TestCase {
+class EditTest extends TestCase {
 
 /**
  * Test the normal HTTP GET flow of _get
