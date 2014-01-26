@@ -51,7 +51,8 @@ class View extends Base {
 			return false;
 		}
 
-		$subject = $this->_subject(['id' => $id, 'viewVar' => $this->viewVar()]);
+		$subject = $this->_subject();
+		$subject->set(['id' => $id, 'viewVar' => $this->viewVar()]);
 
 		$this->_findRecord($id, $subject);
 		$this->_controller()->set(['success' => $subject->success, $subject->viewVar => $subject->item]);
