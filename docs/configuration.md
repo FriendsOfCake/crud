@@ -25,7 +25,7 @@ class AppController extends Controller {
         // The controller action 'add' will map to the AddCrudAction
         'add'   => 'Crud.Add',
         // The controller action 'edit' will map to the EditCrudAction
-        'edit'  => 'Crud.edit',
+        'edit'  => 'Crud.Edit',
         // The controller action 'view' will map to the ViewCrudAction
         'view'  => 'Crud.View'
       ]
@@ -52,7 +52,7 @@ class AppController extends Controller {
         // The controller action 'add' will map to the MyPlugin.Controller/Crud/Action/MyIndexCrudAction
         'add'   => ['className' => 'MyPlugin.MyIndex']
         // The controller action 'edit' will map to the EditCrudAction
-        'edit'  => 'Crud.edit',
+        'edit'  => 'Crud.Edit',
         // The controller action 'view' will map to the ViewCrudAction
         'view'  => 'Crud.View'
       ]
@@ -434,11 +434,11 @@ class AppController extends Controller {
        // All actions but delete() will be implemented
       'actions' => [
         // The controller action 'add' will map to the MyPlugin.Controller/Crud/Action/MyIndexCrudAction
-        'index' => ['className' => 'MyPlugin.MyIndex']
+        'index' => ['className' => 'MyPlugin.MyIndex'],
         // The controller action 'add' will map to the MyPlugin.Controller/Crud/Action/MyAddCrudAction
-        'add'   => ['className' => 'MyPlugin.MyAdd']
+        'add'   => ['className' => 'MyPlugin.MyAdd'],
         // The controller action 'edit' will map to the MyPlugin.Controller/Crud/Action/MyEditCrudAction
-        'edit'  => ['className' => 'MyPlugin.MyEdit']
+        'edit'  => ['className' => 'MyPlugin.MyEdit'],
         // The controller action 'view' will map to the MyPlugin.Controller/Crud/Action/MyViewCrudAction
         'view'  => ['className' => 'MyPlugin.MyView']
       ]
