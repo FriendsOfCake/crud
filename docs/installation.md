@@ -71,6 +71,14 @@ class AppController extends Controller {
 
 	use CrudControllerTrait;
 
+	public $components = array(
+		'Crud.Crud' => array(
+			'actions' => array(
+				'index', 'add', 'edit', 'view', 'delete'
+			)
+		)
+	);
+
 }
 ?>
 {% endhighlight %}
