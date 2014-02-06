@@ -96,7 +96,7 @@ class CrudComponent extends Component {
  * By default no actions are enabled.
  *
  * `listeners` List of internal-name => ${plugin}.${class} listeners
- * that will be bound automatically in Crud. By default the related model's events
+ * that will be bound automatically in Crud. By default the related models' events
  * are bound. Events will always assume to be in the Controller/Event folder.
  *
  * `eventLogging` boolean to determine whether the class should log triggered events.
