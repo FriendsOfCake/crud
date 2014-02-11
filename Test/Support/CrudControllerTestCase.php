@@ -75,7 +75,7 @@ abstract class CrudControllerTestCase extends ControllerTestCase {
  * Helper method to call a protected method
  *
  * @param string $method
- * @param array $args Argument list to call $method with (call_user_func_array style)
+ * @param string[] $args Argument list to call $method with (call_user_func_array style)
  * @param string $class Target reflection class
  * @return mixed
  */

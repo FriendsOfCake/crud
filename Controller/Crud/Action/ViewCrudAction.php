@@ -57,7 +57,7 @@ class ViewCrudAction extends CrudAction {
  *
  * @throws NotFoundException If record not found
  * @param string $id
- * @return void
+ * @return false|null
  */
 	protected function _get($id = null) {
 		if (!$this->_validateId($id)) {

@@ -224,8 +224,6 @@ class ApiTransformationListener extends CrudListener {
  *   Post -> post (singular)
  *
  * @param array $variable
- * @param string|integer $key
- * @param mixed $value
  * @return void
  */
 	protected function _replaceKeys(array $variable) {

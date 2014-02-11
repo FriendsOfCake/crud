@@ -248,7 +248,6 @@ abstract class CrudBaseObject extends Object implements CakeEventListener {
  * Returns the redirect_url for this request, with a fallback to the referring page
  *
  * @param string $default Default URL to use redirect_url is not found in request or data
- * @param boolean $local If true, restrict referring URLs to local server
  * @return mixed
  */
 	protected function _refererRedirectUrl($default = null) {

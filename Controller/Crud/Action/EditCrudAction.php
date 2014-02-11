@@ -93,7 +93,7 @@ class EditCrudAction extends CrudAction {
  *
  * @throws NotFoundException If record not found
  * @param string $id
- * @return void
+ * @return false|null
  */
 	protected function _get($id = null) {
 		if (!$this->_validateId($id)) {
@@ -119,7 +119,7 @@ class EditCrudAction extends CrudAction {
  * HTTP PUT handler
  *
  * @param mixed $id
- * @return void
+ * @return false|null
  */
 	protected function _put($id = null) {
 		if (!$this->_validateId($id)) {
@@ -190,7 +190,7 @@ class EditCrudAction extends CrudAction {
  * Thin proxy for _put
  *
  * @param mixed $id
- * @return void
+ * @return false|null
  */
 	protected function _post($id = null) {
 		return $this->_put($id);

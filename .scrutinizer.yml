@@ -1,0 +1,73 @@
+imports:
+    - php
+
+filter:
+    excluded_paths:
+        - 'vendor/*'
+        - 'tests/*'
+        - 'app/*'
+        - 'bin/*'
+        - 'library/*'
+        - 'Test/*'
+
+    paths: {  }
+tools:
+    php_analyzer:
+        enabled: true
+        extensions:
+            - php
+        filter:
+            excluded_paths:
+                - 'vendor/*'
+                - 'tests/*'
+                - 'app/*'
+                - 'bin/*'
+                - 'library/*'
+                - 'Test/*'
+            paths: {  }
+        path_configs: {  }
+    php_cpd:
+        excluded_dirs:
+            - vendor
+            - tests
+            - app
+            - bin
+            - library
+            - Test
+        enabled: true
+        command: phpcpd
+        names:
+            - '*.php'
+        min_lines: 5
+        min_tokens: 70
+        filter:
+            excluded_paths:
+                - 'vendor/*'
+                - 'tests/*'
+                - 'app/*'
+                - 'bin/*'
+                - 'library/*'
+                - 'Test/*'
+            paths: {  }
+    php_pdepend:
+        excluded_dirs:
+            - vendor
+            - tests
+            - app
+            - bin
+            - library
+            - Test
+        enabled: true
+        command: pdepend
+        configuration_file: null
+        suffixes:
+            - php
+changetracking:
+    bug_patterns:
+        - '\bfix(?:es|ed)?\b'
+    feature_patterns:
+        - '\badd(?:s|ed)?\b'
+        - '\bimplement(?:s|ed)?\b'
+before_commands: {  }
+after_commands: {  }
+artifacts: {  }
