@@ -10,7 +10,7 @@ The `index` CrudAction [paginates](http://book.cakephp.org/2.0/en/core-libraries
 Relevant links:
 	[PHP source code]({{ site.github_url }}/Controller/Crud/Action/IndexCrudAction.php)
 	|
-	[API documentation]({{site.site}}/cakephp-crud/api/develop/class-IndexCrudAction.html)
+	[API documentation]({{site.site}}/crud/api/develop/class-IndexCrudAction.html)
 
 # Events
 

@@ -11,7 +11,7 @@ ID that is part of the request exist in the database.
 Relevant links:
 	[PHP source code]({{ site.github_url }}/Controller/Crud/Action/DeleteCrudAction.php)
 	|
-	[API documentation]({{site.site}}/cakephp-crud/api/develop/class-DeleteCrudAction.html)
+	[API documentation]({{site.site}}/crud/api/develop/class-DeleteCrudAction.html)
 
 
 # Events

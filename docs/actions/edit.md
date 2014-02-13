@@ -7,7 +7,7 @@ layout: default
 
 The `edit` CrudAction will update an existing record if the request is `HTTP POST` or `HTTP PUT` and the data validates.
 
-Relevant links: [PHP source code]({{ site.github_url }}/Controller/Crud/Action/EditCrudAction.php) | [API documentation]({{site.site}}/cakephp-crud/api/develop/class-EditCrudAction.html)
+Relevant links: [PHP source code]({{ site.github_url }}/Controller/Crud/Action/EditCrudAction.php) | [API documentation]({{site.site}}/crud/api/develop/class-EditCrudAction.html)
 
 # Events
 
