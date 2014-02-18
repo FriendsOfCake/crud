@@ -6,7 +6,7 @@
 Welcome to crud's documentation!
 ======================================
 
-Contents: Epic hello world epics
+Contents: Epic hello world epics sample test of rebuild
 
 .. toctree::
    :maxdepth: 2
