@@ -5,8 +5,8 @@ Contents
    :maxdepth: 3
 
    index
-   configuration
    installation
+   configuration
    events
    actions
    listeners
