@@ -45,6 +45,7 @@ Or add it as a git module, this is recommended over `git clone` since it's easie
 
 		git submodule add git://github.com/FriendsOfCake/crud.git Plugin/Crud
 
+
 Loading the plugin
 ------------------
 
@@ -53,6 +54,7 @@ Add the following to your /App/Config/bootstrap.php
 .. code-block:: phpinline
 
 	CakePlugin::load('Crud');
+
 
 Configuring the controller
 --------------------------
@@ -66,7 +68,17 @@ In your AppController add the following code
 
 	class AppController extends \Cake\Controller\Controller {
 
-		# this line
 		use Crud\Controller\ControllerTrait;
 
 	}
+
+.. note::
+
+	It's not required to add the ``ControllerTrait`` to ``AppController`` - you can add it to any specific controller
+	as well if you don't want Crud installed application wide
+
+Adding the ``ControllerTrait`` itself do not enable anything CRUD, but simply installs the code to handle
+the ``\Cake\Error\MissingActionException`` exception so you don't have to implement an action in your controller
+for Crud to work. This will make a lot of sense later.
+
+On the :doc:`Configuration page</configuration>` I'll explain how to setup and configure the Crud component

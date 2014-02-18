@@ -7,8 +7,8 @@ Contents
    index
    installation
    configuration
-   events
    actions
    listeners
+   events
 
 .. todolist::
