@@ -6,6 +6,7 @@ Contents
 
    index
    installation
+   quick-start
    configuration
    actions
    listeners
