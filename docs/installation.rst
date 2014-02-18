@@ -68,7 +68,7 @@ In your AppController add the following code
 
 	class AppController extends \Cake\Controller\Controller {
 
-		use Crud\Controller\ControllerTrait;
+		use \Crud\Controller\ControllerTrait;
 
 	}
 
