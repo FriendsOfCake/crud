@@ -24,7 +24,7 @@ Crud was built to be http://book.cakephp.org/2.0/en/controllers/scaffolding.html
 
 * Crud allows you to use your own views, baked or hand-crafted, in addition to adding the code needed to fulfill your application logic, using :doc:`events<events>`. It is by default compatible with CakePHP's baked views.
 
-* Crud also provides built in features for JSON and XML :doc:APIs`<listener/api> for any action you have enabled through Crud, which eliminates maintaining both a HTML frontend and a JSON and/or XML interface for your applications -- saving you tons of time and having a leaner code base.
+* Crud also provides built in features for JSON and XML :doc:`APIs<listener/api>` for any action you have enabled through Crud, which eliminates maintaining both a HTML frontend and a JSON and/or XML interface for your applications -- saving you tons of time and having a leaner code base.
 
 Bugs
 ====

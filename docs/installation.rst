@@ -21,7 +21,7 @@ The recommended installation method for this plugin is by using composer.
 
 Using the inline require for composer
 
-.. code-block:: shell
+.. code-block:: sh
 
 	composer require friendsofcake/crud:4.*
 
@@ -41,7 +41,7 @@ Using git submodule
 
 Or add it as a git module, this is recommended over `git clone` since it's easier to keep up to date with development that way
 
-.. code-block:: shell
+.. code-block:: sh
 
 		git submodule add git://github.com/FriendsOfCake/crud.git Plugin/Crud
 
