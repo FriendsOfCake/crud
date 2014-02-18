@@ -4,13 +4,13 @@ Installation
 Installing composer is quick and simple
 
 Requirements
-============
+------------
 
 * CakePHP 3.x
 * PHP 5.4
 
 Getting the source code
-=======================
+-----------------------
 
 You can get the Crud source code using either composer or git
 
@@ -46,7 +46,7 @@ Or add it as a git module, this is recommended over `git clone` since it's easie
 		git submodule add git://github.com/FriendsOfCake/crud.git Plugin/Crud
 
 Loading the plugin
-==================
+------------------
 
 Add the following to your /App/Config/bootstrap.php
 
@@ -55,7 +55,7 @@ Add the following to your /App/Config/bootstrap.php
 	CakePlugin::load('Crud');
 
 Configuring the controller
-==========================
+--------------------------
 
 In your AppController add the following code
 

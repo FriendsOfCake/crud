@@ -27,7 +27,7 @@ Crud was built to be http://book.cakephp.org/2.0/en/controllers/scaffolding.html
 * Crud also provides built in features for JSON and XML :doc:`APIs<listener/api>` for any action you have enabled through Crud, which eliminates maintaining both a HTML frontend and a JSON and/or XML interface for your applications -- saving you tons of time and having a leaner code base.
 
 Bugs
-====
+----
 
 If you happen to stumble upon a bug, please feel free to create a pull request with a fix
 (optionally with a test), and a description of the bug and how it was resolved.
@@ -35,12 +35,12 @@ If you happen to stumble upon a bug, please feel free to create a pull request w
 You can also create an issue with a description to raise awareness of the bug.
 
 Features
-========
+--------
 
 If you have a good idea for a Crud feature, please join us on IRC and let's discuss it. Pull
 requests are always more than welcome.
 
 Support / Questions
-===================
+-------------------
 
 You can join us on IRC in the #FriendsOfCake channel for any support or questions.
