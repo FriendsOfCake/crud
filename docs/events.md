@@ -91,8 +91,8 @@ class DemoController extends AppController {
 
 	public function beforeFilter() {
 		$this->Crud->on('beforePaginate', function(CakeEvent $event) {
-			$event->subject->query['conditions'] = array('is_active' => true);
-			debug($event->subject->query);
+			$event->subject->paginator->settings['conditions'] = array('is_active' => true);
+			debug($event->subject->paginator->settings);
 		});
 
 		parent::beforeFilter();
@@ -123,8 +123,8 @@ class DemoController extends AppController {
 	}
 
 	public function _demoCallback(CakeEvent $event) {
-		$event->subject->query['conditions']['is_active'] = true;
-		debug($event->subject->query);
+		$event->subject->paginator->settings['conditions']['is_active'] = true;
+		debug($event->subject->paginator->settings);
 	}
 
 }
