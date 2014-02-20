@@ -7,6 +7,31 @@ App::uses('CakeResponse', 'Network');
 class OptionsFilterTest extends CakeTestCase {
 
 /**
+ * testNoop
+ *
+ * @return void
+ */
+	public function testNoop() {
+		Router::reload();
+		Router::connect('/:controller/:action/*');
+
+		$filter = new OptionsFilter();
+		$response = $this->getMock('CakeResponse', array('_sendHeader'));
+
+		$request = new CakeRequest('controller/action/1');
+		$request->addDetector('options', array(
+			'callback' => function() {
+				return false;
+			}
+		));
+
+		$event = new CakeEvent('OptionsFilterTest', $this, compact('request', 'response'));
+
+		$this->assertNull($filter->beforeDispatch($event), 'The Options filter should return null if it does nothing');
+		$this->assertFalse($event->isStopped(), 'The Options filter should not stop the event for !OPTIONS requests');
+	}
+
+/**
  * testSimple
  *
  * @return void
