@@ -91,7 +91,9 @@ class HttpMethodFilter extends DispatcherFilter {
 
 		$response = $event->data['response'];
 
-		$length = $response->header('Content-length');
+		$headers = $response->header();
+		$length = isset($headers['Content-length']) ? $headers['Content-length'] : null;
+
 		$bodyLength = strlen($response->body());
 		if ($length === null && $bodyLength) {
 			$response->header('Content-length', $bodyLength);
