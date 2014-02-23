@@ -1,8 +1,8 @@
 Add
 ====
 
-The ``Add Crud Action`` will create a new record if the request is ``POST`` and the data validates - otherwise it will attempt
-to render a form to the end-user.
+The ``Add Crud Action`` will create a new record if the request is ``POST``
+and the data validates - otherwise it will attempt to render a form to the end-user.
 
 Events
 ------
@@ -26,6 +26,6 @@ Configuration
 .. include:: /_partials/actions/configuration_intro.rst
 .. include:: /_partials/actions/configuration/enabled.rst
 .. include:: /_partials/actions/configuration/view.rst
-.. include:: /_partials/actions/configuration/related_models.rst
 .. include:: /_partials/actions/configuration/save_options.rst
 .. include:: /_partials/actions/configuration/serialize.rst
+.. include:: /_partials/actions/configuration/related_models.rst

@@ -100,10 +100,6 @@ class Edit extends Base {
  * @return void
  */
 	protected function _get($id = null) {
-		if (!$this->_validateId($id)) {
-			return false;
-		}
-
 		$subject = $this->_subject();
 		$subject->set(['id' => $id]);
 
@@ -119,10 +115,6 @@ class Edit extends Base {
  * @return void
  */
 	protected function _put($id = null) {
-		if (!$this->_validateId($id)) {
-			return false;
-		}
-
 		$subject = $this->_subject();
 		$subject->set(['id' => $id]);
 
@@ -181,47 +173,6 @@ class Edit extends Base {
 		$this->setFlash('error', $subject);
 
 		$this->_trigger('beforeRender', $subject);
-	}
-
-/**
- * Is the passed ID valid?
- *
- * Validate the id in the URL (the parent function) and then validate the id in the data.
- *
- * The data-id check is independent of the config setting `validateId`; this checks whether
- * the id in the URL matches the id in the submitted data (a type insensitive check). If
- * the id is different, this probably indicates a malicious form submission, attempting
- * to add/edit a record the user doesn't have permission for by submitting to a URL they
- * do have permission to access
- *
- * @throws BadRequestException If id is invalid
- * @param mixed $id
- * @return boolean
- */
-	protected function _validateId($id) {
-		parent::_validateId($id);
-
-		$request = $this->_request();
-		if (!$request->data) {
-			return true;
-		}
-
-		$repository = $this->_repository();
-		$primaryKey = $repository->primaryKey();
-		$dataId = $request->data($repository->alias() . '.' . $primaryKey) ?: $request->data($primaryKey);
-		if ($dataId === null) {
-			return true;
-		}
-
-		// deliberately type insensitive
-		if ($dataId == $id) {
-			return true;
-		}
-
-		$this->_trigger('invalidId', ['id' => $dataId]);
-		$message = $this->message('invalidId');
-		$exceptionClass = $message['class'];
-		throw new $exceptionClass($message['text'], $message['code']);
 	}
 
 }
