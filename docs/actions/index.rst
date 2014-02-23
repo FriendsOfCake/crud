@@ -1,7 +1,9 @@
 Index
 =====
 
-The ``index`` CrudAction paginates over the primary model in the controller.
+The ``Index Crud Action`` paginates over the primary model in the controller.
+
+On a high level it's basically just calling ``Controller::paginate``.
 
 Events
 ------
@@ -16,7 +18,6 @@ how to use the event system correctly.
 .. include:: /_partials/events/before_paginate.rst
 .. include:: /_partials/events/after_paginate.rst
 .. include:: /_partials/events/before_render.rst
-
 
 Configuration
 -------------
