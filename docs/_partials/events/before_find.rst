@@ -3,8 +3,7 @@ Crud.beforeFind
 
 The event is triggered before calling the find method in the table.
 
-The :ref:`Crud Subject <crud-subject>` contains two objects that allows you to modify the query in the callback, as well
-as the ``id`` from the request URL:
+The :ref:`Crud Subject <crud-subject>` contains the following keys:
 
 - **id** The ID that was originally passed to the action and usually the primary key value of your table.
 - **repository** An instance of the ``Repository`` (``Table``) the query will be executed against.

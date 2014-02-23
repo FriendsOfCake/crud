@@ -16,6 +16,8 @@ how to use the event system correctly.
 .. include:: /_partials/events/initialize.rst
 .. include:: /_partials/events/before_save.rst
 .. include:: /_partials/events/after_save.rst
+.. include:: /_partials/events/set_flash.rst
+.. include:: /_partials/events/before_redirect.rst
 .. include:: /_partials/events/before_render.rst
 
 Configuration
