@@ -15,7 +15,8 @@ App Controller
 
 Since CRUD is awesome, and you already started to kinda love it, we want to enable CRUD for our entire application.
 
-Let's setup CRUD to handle all ``index()``, ``add()``, ``edit()``, ``view()`` and ``delete()`` actions automatically
+Let's setup CRUD to handle all ``index()``, ``add()``, ``edit()``, ``view()`` and ``delete()`` actions automatically,
+we do this by enabling Crud in the ``AppController`` with the correct ``actions`` configuration.
 
 .. code-block:: php
 
@@ -66,3 +67,8 @@ But... since CRUD doesn't provide any views (yet), you will have to bake the vie
 
 Let's check out our new application, go to ``/posts`` and behold, a nice paginated ``ìndex()`` template, all without any code
 in your controller.
+
+You should now be able to navigate to ``/posts/add`` as well and create your first post.
+
+Creating an API
+---------------

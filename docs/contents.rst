@@ -11,5 +11,6 @@ Contents
    actions
    listeners
    events
+   unit-testing
 
 .. todolist::
