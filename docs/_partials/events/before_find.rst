@@ -1,7 +1,7 @@
 Crud.beforeFind
 ^^^^^^^^^^^^^^^
 
-The event is triggered just before executing a ``SELECT ... WHERE`` query to the data layer.
+The event is triggered before calling the find method in the table.
 
 The :ref:`Crud Subject <crud-subject>` contains two objects that allows you to modify the query in the callback, as well
 as the ``id`` from the request URL:
