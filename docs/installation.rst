@@ -82,4 +82,4 @@ Adding the ``ControllerTrait`` itself do not enable anything CRUD, but simply in
 the ``\Cake\Error\MissingActionException`` exception so you don't have to implement an action in your controller
 for Crud to work. This will make a lot of sense later.
 
-On the :doc:`Configuration page</configuration>` I'll explain how to setup and configure the Crud component
+The :doc:`Configuration page</configuration>` explains how to setup and configure the Crud component.
