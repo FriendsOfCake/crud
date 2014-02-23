@@ -34,11 +34,6 @@ class Edit extends Base {
  * to be used in select boxes. An array as value means it is enabled and represent the list
  * of model associations to be fetched
  *
- * `validateId` ID Argument validation - by default it will inspect your model's primary key
- * and based on its data type either use integer or UUID validation.
- * Can be disabled by setting it to "false". Supports "integer" and "uuid" configuration
- * By default its configuration is NULL, which means "auto detect"
- *
  * `saveOptions` Raw array passed as 2nd argument to saveAll() in `add` and `edit` method
  * If you configure a key with your action name, it will override the default settings.
  * This is useful for adding fieldList to enhance security in saveAll.
@@ -52,7 +47,6 @@ class Edit extends Base {
 		'saveMethod' => 'save',
 		'view' => null,
 		'relatedModels' => true,
-		'validateId' => null,
 		'saveOptions' => [
 			'validate' => true,
 			'atomic' => true
