@@ -1,7 +1,7 @@
 Quick Start
 ===========
 
-So, you are busy, and you just want to ``get things done™``, so let's get going.
+You are busy, and you just want to ``get things done™``, so let's get going.
 
 After the :doc:`installation<installation>` is done, we are ready to CRUD-ify our app.
 
