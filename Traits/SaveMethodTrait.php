@@ -32,7 +32,7 @@ trait SaveMethodTrait {
  * @return mixed
  */
 	public function saveOptions($config = null) {
-		if (empty($config)) {
+		if ($config === null) {
 			return $this->config('saveOptions');
 		}
 
