@@ -43,5 +43,5 @@ The ``enable`` and ``disable`` method can take a string or an array, for easy ma
 
 .. warning::
 
-	While it's possible to update the ``enabled`` property directly on an action, it's not recommend, as important cleanup
-	logic will not be applied if you use the ``config()`` method directly.
+	While it's possible to update the ``enabled`` property directly on an action using the ``config`` methods,
+	it's not recommend, as important cleanup logic will not be applied if you use the ``config()`` method directly.
