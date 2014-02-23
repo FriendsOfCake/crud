@@ -16,7 +16,7 @@ how to use the event system correctly.
 .. include:: /_partials/events/initialize.rst
 .. include:: /_partials/events/before_find.rst
 .. include:: /_partials/events/after_find.rst
-.. include:: /_partials/events/not_found.rst
+.. include:: /_partials/events/record_not_found.rst
 .. include:: /_partials/events/before_render.rst
 
 Configuration
