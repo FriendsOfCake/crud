@@ -3,7 +3,7 @@ view
 
 Get or set the view file to render at the end of the request.
 
-The view setting is passed directly and unmodified to ``Controller::render`` unmodified.
+The view setting is passed directly and unmodified to ``Controller::render()`` unmodified.
 
 To get the current configured ``view`` call the ``view`` method without any arguments.
 

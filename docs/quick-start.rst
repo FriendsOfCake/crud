@@ -1,9 +1,9 @@
 Quick Start
 ===========
 
-So, you are busy, and you just want to ``get things done™``, so let's get going
+So, you are busy, and you just want to ``get things done™``, so let's get going.
 
-After the :doc:`installation<installation>` is done, we are ready to CRUD-ify our app
+After the :doc:`installation<installation>` is done, we are ready to CRUD-ify our app.
 
 The application
 --------------
@@ -72,3 +72,5 @@ You should now be able to navigate to ``/posts/add`` as well and create your fir
 
 Creating an API
 ---------------
+
+This section is WIP.
