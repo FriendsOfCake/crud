@@ -3,7 +3,7 @@ Quick Start
 
 You are busy, and you just want to ``get things done™``, so let's get going.
 
-After the :doc:`installation<installation>` is done, we are ready to CRUD-ify our app.
+After :doc:`installation<installation>`, you are ready to CRUD-ify your app.
 
 The application
 --------------
