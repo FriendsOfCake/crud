@@ -14,7 +14,7 @@ Crud was built to be http://book.cakephp.org/2.0/en/controllers/scaffolding.html
 
 * Crud aims to stay out of your way, and if it happens to get in your way, you can change the undesired behavior very easily.
 
-* Crud relies heavily on CakePHP events and is possible to override, extend, or disable almost all of Crud's functionality either globally or for one specific action.
+* Crud relies heavily on CakePHP events making it possible to override, extend, or disable almost all of Crud's functionality either globally or for one specific action.
 
 * Usually, the basic code for controller CRUD actions are very simple and always looks the same. Crud will add the actions to your controller so you don't have to reimplement them over and over again.
 
