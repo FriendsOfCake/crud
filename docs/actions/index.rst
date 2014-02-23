@@ -3,7 +3,7 @@ Index
 
 The ``Index Crud Action`` paginates over the primary model in the controller.
 
-On a high level it's basically just calling ``Controller::paginate``.
+On a high level it's basically just calling ``Controller::paginate()``.
 
 Events
 ------

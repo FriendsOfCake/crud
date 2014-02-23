@@ -1,7 +1,7 @@
 Installation
 ============
 
-Installing composer is quick and simple
+Installing composer is quick and simple.
 
 Requirements
 ------------
@@ -12,14 +12,14 @@ Requirements
 Getting the source code
 -----------------------
 
-You can get the Crud source code using either composer or git
+You can get the Crud source code using either composer or git.
 
 Using composer
 --------------
 
 The recommended installation method for this plugin is by using composer.
 
-Using the inline require for composer
+Using the inline require for composer:
 
 .. code-block:: sh
 
@@ -39,7 +39,8 @@ Or add this to your composer.json configuration:
 Using git submodule
 -------------------
 
-Or add it as a git module, this is recommended over `git clone` since it's easier to keep up to date with development that way
+Or add it as a git module, this is recommended over ``git clone`` since it's
+easier to keep up to date with development that way:
 
 .. code-block:: sh
 
@@ -59,7 +60,7 @@ Add the following to your /App/Config/bootstrap.php
 Configuring the controller
 --------------------------
 
-In your AppController add the following code
+In your AppController add the following code:
 
 .. code-block:: php
 

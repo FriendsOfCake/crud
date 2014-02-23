@@ -2,9 +2,9 @@ Configuration
 =============
 
 Configuration of Crud is done through the Crud ``component`` - either on the fly anywhere in you application,
-or by providing the configuration in the ``Controller::$components`` property
+or by providing the configuration in the ``Controller::$components`` property.
 
-Assuming you have followed the :doc:`installation guide<installation>` we will now being the actual configuration of Crud.
+Assuming you have followed the :doc:`installation guide<installation>` we will now begin the actual configuration of Crud.
 
 Crud is loaded like any other ``Component`` in CakePHP - simply by adding it to the ``$components`` variable in the controller
 
@@ -25,9 +25,9 @@ Actions
 
 Configuring Crud to handle actions is simple.
 
-The list of actions is provided either as ``Component`` configuration, or on the fly
+The list of actions is provided either as ``Component`` configuration, or on the fly.
 
-An example of ``Component`` configuration
+An example of ``Component`` configuration:
 
 .. code-block:: phpinline
 
@@ -41,7 +41,7 @@ An example of ``Component`` configuration
 
   }
 
-An example of on the fly enabling an Crud action
+An example of on the fly enabling an Crud action:
 
 .. code-block:: phpinline
 
@@ -53,7 +53,7 @@ An example of on the fly enabling an Crud action
 
   }
 
-The examples above are functionally identically, and instructs Crud to handle the ``inde`` action in app controllers.
+The examples above are functionally identically, and instructs Crud to handle the ``index`` action in controllers.
 
 .. note::
 

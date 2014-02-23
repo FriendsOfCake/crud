@@ -3,7 +3,7 @@ serialize
 
 .. note::
 
-	This setting is only relevant if you use the :doc:`API listener</listeners/api>`
+	This setting is only relevant if you use the :doc:`API listener</listeners/api>`.
 
 .. note::
 

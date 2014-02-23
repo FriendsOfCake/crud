@@ -43,4 +43,4 @@ requests are always more than welcome.
 Support / Questions
 -------------------
 
-You can join us on IRC in the #FriendsOfCake channel for any support or questions.
+You can join us on IRC in the #FriendsOfCake channel on irc.freenode.net for any support or questions.
