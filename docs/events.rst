@@ -3,7 +3,7 @@ Events
 
 lalalla
 
-.. crud-subject:
+.. _crud-subject:
 
 Subject
 -------
