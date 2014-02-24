@@ -1,6 +1,12 @@
 Actions
 =========
 
+.. note::
+
+	CRUD already provides the basic ``Index``, ``View``, ``Add``, ``Edit`` and
+	``Delete`` actions,	so you do not need to implement these on your own.
+	You can find the documentation for these actions in the menu to the left.
+
 Actions are the backbone of Crud - this is where most of the logic happens.
 
 A ``Crud Action`` contains more or less the exact same code as a normal
@@ -80,7 +86,7 @@ and inject your own application logic. These events are in no way magical, they
 are simply normal CakePHP events, dispatched like all other events in CakePHP.
 
 You can for example listen for the ``beforePaginate`` event and add conditions
-to your paginated result set, just with a few lines of code. Those few lines
+to your pagination query, just with a few lines of code. Those few lines
 of code is what makes your application unique, the rest of the code you would
 normally have, is simply repeated boiler plate code.
 
@@ -93,8 +99,9 @@ Boiler plate
 ------------
 
 Only the code that you would normally have in your controller is left now.
+
 While these 3 lines seem simple, and the whole Crud implementation a bit overkill
-at first, the true power of this setup will be obvious when your application
+at first, the true power of this setup will be clear when your application
 grow and the requirements increase.
 
 .. literalinclude:: _code/action_index.php
@@ -102,8 +109,9 @@ grow and the requirements increase.
    :linenos:
    :emphasize-lines: 17,18,23
 
-For example adding an API to your entire application 6 months later will be
-non-trivial for an application with many controllers - that do not use crud.
+For example adding an API layer to your application later in time will be
+non-trivial and time consuming if you do not use crud - especially if you have
+many controllers.
 
 Using Crud it would be as simple as loading the :doc:`API listener<listeners/api>`
 and everything would be taken care of. All validation, exceptions, success
