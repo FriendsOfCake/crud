@@ -14,16 +14,20 @@ The anatomy of an Action
 
 Below is the code for the :doc:`Index Crud Action<actions/index>`
 
+In the new few sections we will walk through the code and explain how it works,
+and what every single line of code does.
+
+For each section, the relevant lines of code will be highlighted.
+
 .. literalinclude:: _code/action_index.php
    :language: php
    :linenos:
 
-Let's break the file down into logical chunks of code.
-
-All build-in actions in Crud live in the ``Crud\Action`` namespace.
 
 Class and namespace
 -------------------
+
+All build-in actions in Crud live in the ``Crud\Action`` namespace.
 
 All actions in Crud, even your own, should inherit from the ``Base`` class.
 This class is ``abstract`` and provide numerous auxiliary methods which can be
