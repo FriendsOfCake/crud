@@ -54,7 +54,7 @@ Add the following to your /App/Config/bootstrap.php
 
 .. code-block:: phpinline
 
-	CakePlugin::load('Crud');
+	Plugin::load('Crud');
 
 
 Configuring the controller
