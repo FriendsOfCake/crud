@@ -638,16 +638,24 @@ class CrudComponent extends Component {
 			$this->settings[$type] = Hash::normalize($this->settings[$type]);
 
 			foreach ($this->settings[$type] as $name => $settings) {
+				list($plugin, $newName) = pluginSplit($name);
+				if (empty($plugin)) {
+					$plugin = 'Crud';
+				}
+
+				$newName = $plugin . '.' . Inflector::classify($newName);
+
 				if (empty($settings)) {
 					$settings = [];
 				}
 
-				$settings['className'] = $this->_handlerClassName($type, $name);
-				list(,$newName) = pluginSplit($name);
-				$newName = strtolower($newName);
+				$settings['className'] = $this->_handlerClassName($newName, $type);
 
-				$this->settings[$type][$newName] = $settings;
 				unset($this->settings[$type][$name]);
+
+				list(, $newName) = pluginSplit($newName);
+				$newName = strtolower($newName);
+				$this->settings[$type][$newName] = $settings;
 			}
 		}
 	}
@@ -655,11 +663,11 @@ class CrudComponent extends Component {
 /**
  * Generate valid class name for action and listener handler.
  *
- * @param string $type
  * @param string $name
+ * @param string $type
  * @return string Class name
  */
-	protected function _handlerClassName($type, $name) {
+	protected function _handlerClassName($name, $type) {
 		if ($type === 'listeners') {
 			$type = 'Listener';
 		} elseif ($type === 'actions') {
