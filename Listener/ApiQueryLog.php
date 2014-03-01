@@ -3,7 +3,7 @@
 namespace Crud\Listener;
 
 use Cake\Core\Configure;
-use Cake\Database\ConnectionManager;
+use Cake\Datasource\ConnectionManager;
 use Cake\Event\Event;
 
 /**
@@ -77,7 +77,7 @@ class ApiQueryLog extends Base {
  * @return array
  */
 	protected function _getQueryLogs() {
-		if (!class_exists('Cake\Database\ConnectionManager', false)) {
+		if (!class_exists('Cake\Datasource\ConnectionManager', false)) {
 			return [];
 		}
 
