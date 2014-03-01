@@ -40,11 +40,12 @@ class ApiPagination extends Base {
 		}
 
 		$_pagination = $request->paging;
-		if (empty($_pagination) || !array_key_exists($event->subject->modelClass, $_pagination)) {
+		$modelClass = $this->_controller()->modelClass;
+		if (empty($_pagination) || !array_key_exists($modelClass, $_pagination)) {
 			return;
 		}
 
-		$_pagination = $_pagination[$event->subject->modelClass];
+		$_pagination = $_pagination[$modelClass];
 
 		$pagination = [
 			'page_count' => $_pagination['pageCount'],
