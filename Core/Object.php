@@ -75,7 +75,7 @@ abstract class Object extends \Cake\Core\Object implements EventListener {
  * @return boolean
  */
 	protected function _checkRequestType($method) {
-		return $this->_request->is($method);
+		return $this->_request()->is($method);
 	}
 
 }
