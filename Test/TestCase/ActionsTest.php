@@ -10,12 +10,12 @@ class ActionsTest extends \PHPUnit_Framework_TestSuite {
 		$suite = new TestSuite('All CRUD action tests');
 
 		$path = App::pluginPath('Crud');
-		$testPath = $path . DS . 'Test' . DS . 'TestCase';
+		$testPath = $path . '/Test/TestCase';
 		if (!is_dir($testPath)) {
 			return $suite;
 		}
 
-		$suite->addTestDirectoryRecursive($testPath . DS . 'Action');
+		$suite->addTestDirectoryRecursive($testPath . '/Action');
 		return $suite;
 	}
 
