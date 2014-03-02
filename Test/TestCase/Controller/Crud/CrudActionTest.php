@@ -1,42 +1,18 @@
 <?php
+namespace Crud\TestCase\Controller\Crud;
 
-App::uses('CakeEvent', 'Event');
-App::uses('ComponentCollection', 'Controller');
-App::uses('Controller', 'Controller');
-App::uses('SessionComponent', 'Controller/Component');
-App::uses('CrudAction', 'Crud.Controller/Crud');
-App::uses('CrudSubject', 'Crud.Controller/Crud');
-App::uses('CrudComponent', 'Crud.Controller/Component');
-App::uses('CrudTestCase', 'Crud.Test/Support');
-
-class TestHandleCrudAction extends CrudAction {
-
-	protected $_settings = array(
-		'enabled' => true,
-	);
-
-	protected function _handle() {
-		return false;
-	}
-
-}
-
-class TestExceptionHandlerCrudAction extends CrudAction {
-
-	protected $_settings = array(
-		'enabled' => true,
-	);
-
-}
+use Crud\TestSuite\TestCase;
 
 /**
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class CrudActionTest extends CrudTestCase {
+class CrudActionTest extends TestCase {
 
 	public function setUp() {
+		$this->skipIf(true);
+
 		parent::setUp();
 
 		$this->Request = $this->getMock('CakeRequest');

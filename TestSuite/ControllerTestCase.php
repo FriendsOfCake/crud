@@ -1,14 +1,12 @@
 <?php
 namespace Crud\TestSuite;
 
-use Cake\TestSuite\ControllerTestCase;
-
 /**
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-abstract class ControllerTestCase extends ControllerTestCase {
+abstract class ControllerTestCase extends \Cake\TestSuite\ControllerTestCase {
 
 /**
  * List of Reflection properties made public

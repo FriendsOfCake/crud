@@ -14,6 +14,8 @@ class ApiTest extends TestCase {
 	protected $_config;
 
 	public function setUp() {
+		$this->skipIf(true);
+
 		parent::setUp();
 		$this->_config = Configure::read();
 	}

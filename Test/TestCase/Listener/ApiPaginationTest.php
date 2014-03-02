@@ -20,44 +20,18 @@ class ApiPaginationTest extends TestCase {
 		$Instance = $this
 			->getMockBuilder('\Crud\Listener\ApiPagination')
 			->disableOriginalConstructor()
-			->setMethods(null)
+			->setMethods(['_checkRequestType'])
 			->getMock();
+		$Instance
+			->expects($this->once())
+			->method('_checkRequestType')
+			->will($this->returnValue(true));
 
 		$result = $Instance->implementedEvents();
 		$expected = [
 			'Crud.beforeRender' => ['callable' => 'beforeRender', 'priority' => 75]
 		];
 		$this->assertEquals($expected, $result);
-	}
-
-/**
- * Test that non-API requests don't get processed
- *
- * @covers \Crud\Listener\ApiPagination::beforeRender
- * @return void
- */
-	public function testBeforeRenderNotApi() {
-		$Request = $this
-			->getMockBuilder('\Cake\Network\Request')
-			->setMethods(['is'])
-			->getMock();
-		$Request
-			->expects($this->once())
-			->method('is')
-			->with('api')
-			->will($this->returnValue(false));
-
-		$Instance = $this
-			->getMockBuilder('\Crud\Listener\ApiPagination')
-			->disableOriginalConstructor()
-			->setMethods(['_request'])
-			->getMock();
-		$Instance
-			->expects($this->once())
-			->method('_request')
-			->will($this->returnValue($Request));
-
-		$Instance->beforeRender(new \Cake\Event\Event('something'));
 	}
 
 /**
@@ -70,13 +44,8 @@ class ApiPaginationTest extends TestCase {
 	public function testBeforeRenderNoPaginationData() {
 		$Request = $this
 			->getMockBuilder('\Cake\Network\Request')
-			->setMethods(['is'])
+			->setMethods(null)
 			->getMock();
-		$Request
-			->expects($this->once())
-			->method('is')
-			->with('api')
-			->will($this->returnValue(true));
 
 		$Controller = $this
 			->getMockBuilder('\Cake\Controller\Controller')
@@ -114,17 +83,6 @@ class ApiPaginationTest extends TestCase {
 	public function testBeforeRenderPaginationDataIsNull() {
 		$Request = $this
 			->getMockBuilder('\Cake\Network\Request')
-			->setMethods(['is'])
-			->getMock();
-		$Request
-			->expects($this->once())
-			->method('is')
-			->with('api')
-			->will($this->returnValue(true));
-
-		$Controller = $this
-			->getMockBuilder('\Cake\Controller\Controller')
-			->disableOriginalConstructor()
 			->setMethods(null)
 			->getMock();
 
@@ -138,12 +96,10 @@ class ApiPaginationTest extends TestCase {
 			->method('_request')
 			->will($this->returnValue($Request));
 		$Instance
-			->expects($this->once())
-			->method('_controller')
-			->will($this->returnValue($Controller));
+			->expects($this->never())
+			->method('_controller');
 
 		$Request->paging = null;
-		$Controller->modelClass = 'MyModel';
 
 		$Instance->beforeRender(new \Cake\Event\Event('something'));
 	}
@@ -158,13 +114,8 @@ class ApiPaginationTest extends TestCase {
 	public function testBeforeRenderWithPaginationData() {
 		$Request = $this
 			->getMockBuilder('\Cake\Network\Request')
-			->setMethods(['is'])
+			->setMethods(null)
 			->getMock();
-		$Request
-			->expects($this->once())
-			->method('is')
-			->with('api')
-			->will($this->returnValue(true));
 		$Request->paging = [
 			'MyModel' => [
 				'pageCount' => 10,

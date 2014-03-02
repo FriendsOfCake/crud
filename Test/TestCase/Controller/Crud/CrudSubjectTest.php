@@ -1,16 +1,19 @@
 <?php
+namespace Crud\TestCase\Controller\Crud;
 
-App::uses('CrudSubject', 'Crud.Controller/Crud');
+use Crud\TestSuite\TestCase;
 
 /**
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class CrudSubjectTest extends CakeTestCase {
+class CrudSubjectTest extends TestCase {
 
 	public function setup() {
 		parent::setup();
+
+		$this->skipIf(true);
 
 		$this->Subject = new CrudSubject(array('action' => 'index'));
 	}

@@ -37,13 +37,14 @@ class ApiPagination extends Base {
  * @return void
  */
 	public function beforeRender(Event $event) {
-		$controller = $this->_controller();
-
-		$modelClass = $controller->modelClass;
+		$request = $this->_request();
 
 		if (empty($request->paging)) {
 			return;
 		}
+
+		$controller = $this->_controller();
+		$modelClass = $controller->modelClass;
 
 		if (!array_key_exists($modelClass, $request->paging)) {
 			return;
