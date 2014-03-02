@@ -48,6 +48,11 @@
   "suggest":{
 
   },
+  "autoload": {
+		"psr-0": {
+			"Crud\\": "./"
+		}
+	},
   "support":{
     "source":"https://github.com/FriendsOfCake/crud",
     "issues":"https://github.com/FriendsOfCake/crud/issues",
