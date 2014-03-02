@@ -39,6 +39,10 @@ abstract class TestCase extends CakeTestCase {
 		$this->_expectsSerials = [];
 	}
 
+	public function then($name) {
+		return $name->expects($this->next($name));
+	}
+
 	public function next($name) {
 		if (is_object($name)) {
 			$name = get_class($name);

@@ -47,10 +47,6 @@ class View extends Base {
  * @return void
  */
 	protected function _get($id = null) {
-		if (!$this->_validateId($id)) {
-			return false;
-		}
-
 		$subject = $this->_subject();
 		$subject->set(['id' => $id, 'viewVar' => $this->viewVar()]);
 

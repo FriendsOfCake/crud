@@ -13,7 +13,8 @@ use Crud\Event\Subject;
 /**
  * Enabled Crud to respond in a computer readable format like JSON or XML
  *
- * It tries to enforce some REST principles and keep some string conventions in the output format
+ * It tries to enforce some REST principles and keep some string conventions
+ * in the output format
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
@@ -53,7 +54,7 @@ class Api extends Base {
 	public function implementedEvents() {
 		$this->setupDetectors();
 
-		if (!$this->_request()->is('api')) {
+		if (!$this->_checkRequestType('api')) {
 			return [];
 		}
 
@@ -74,6 +75,10 @@ class Api extends Base {
  * @return void
  */
 	public function setup() {
+		if (!$this->_checkRequestType('api')) {
+			return;
+		}
+
 		$this->registerExceptionHandler();
 	}
 
@@ -137,10 +142,6 @@ class Api extends Base {
  * @return void
  */
 	public function registerExceptionHandler() {
-		if (!$this->_request()->is('api')) {
-			return;
-		}
-
 		Configure::write('Error.exceptionRenderer', 'Crud\Error\ExceptionRenderer');
 	}
 
