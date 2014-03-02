@@ -3,6 +3,15 @@ Delete
 
 The ``Delete Crud Action`` will delete a record by the id provided in the URL.
 
+Configuration
+-------------
+
+.. include:: /_partials/actions/configuration_intro.rst
+.. include:: /_partials/actions/configuration/enabled.rst
+.. include:: /_partials/actions/configuration/find_method.rst
+.. include:: /_partials/actions/configuration/secure_delete.rst
+.. include:: /_partials/actions/configuration/serialize.rst
+
 Events
 ------
 
@@ -19,12 +28,3 @@ properties and how to use the event system correctly.
 .. include:: /_partials/events/before_delete.rst
 .. include:: /_partials/events/after_delete.rst
 .. include:: /_partials/events/before_redirect.rst
-
-Configuration
--------------
-
-.. include:: /_partials/actions/configuration_intro.rst
-.. include:: /_partials/actions/configuration/enabled.rst
-.. include:: /_partials/actions/configuration/find_method.rst
-.. include:: /_partials/actions/configuration/secure_delete.rst
-.. include:: /_partials/actions/configuration/serialize.rst

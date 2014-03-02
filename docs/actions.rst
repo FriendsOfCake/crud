@@ -130,3 +130,4 @@ More On Actions
 	actions/add
 	actions/edit
 	actions/delete
+	actions/custom
