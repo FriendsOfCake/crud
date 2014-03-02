@@ -83,7 +83,11 @@ trait ProxyTrait {
 	}
 
 	protected function _repository() {
-		return $this->_crud()->repository();
+		return $this->_crud()->table();
+	}
+
+	protected function _table() {
+		return $this->_crud()->table();
 	}
 
 	protected function _entity(array $data = []) {

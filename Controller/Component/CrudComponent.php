@@ -589,12 +589,12 @@ class CrudComponent extends Component {
 		$this->_modelName = $this->_model->name;
 	}
 
-	public function repository() {
+	public function table() {
 		return $this->_controller->{$this->_modelName};
 	}
 
 	public function entity(array $data = []) {
-		return $this->repository()->newEntity($data);
+		return $this->table()->newEntity($data);
 	}
 
 	public function controller() {

@@ -10,28 +10,24 @@ use Crud\TestSuite\TestCase;
  */
 class RelatedModelTest extends TestCase {
 
-	public function setUp() {
-		$this->skipIf(true);
-	}
-
 /**
  * testModels
  *
- * @covers RelatedModelsListener::models
+ * @covers \Crud\Listener\RelatedModels::models
  * @return void
  */
 	public function testModels() {
 		$Action = $this
-			->getMockBuilder('CrudAction')
+			->getMockBuilder('\Crud\Action\Base')
 			->disableOriginalConstructor()
-			->setMethods(array('_handle'))
+			->setMethods(null)
 			->getMock();
-		$Action->config('relatedModels', array('Post', 'User'));
+		$Action->config('relatedModels', ['Post', 'User']);
 
 		$Listener = $this
-			->getMockBuilder('RelatedModelsListener')
+			->getMockBuilder('\Crud\Listener\RelatedModels')
 			->disableOriginalConstructor()
-			->setMethods(array('_action'))
+			->setMethods(['_action'])
 			->getMock();
 
 		$Listener
@@ -41,7 +37,7 @@ class RelatedModelTest extends TestCase {
 			->will($this->returnValue($Action));
 
 		$result = $Listener->models();
-		$expected = array('Post', 'User');
+		$expected = ['Post', 'User'];
 		$this->assertEquals($expected, $result);
 	}
 
@@ -50,19 +46,19 @@ class RelatedModelTest extends TestCase {
  *
  * Test behavior when 'relatedModels' is empty
  *
- * @covers RelatedModelsListener::models
+ * @covers \Crud\Listener\RelatedModels::models
  * @return void
  */
 	public function testModelsEmpty() {
 		$Action = $this
-			->getMockBuilder('CrudAction')
+			->getMockBuilder('\Crud\Action\Base')
 			->disableOriginalConstructor()
 			->setMethods(array('_handle'))
 			->getMock();
 		$Action->config('relatedModels', null);
 
 		$Listener = $this
-			->getMockBuilder('RelatedModelsListener')
+			->getMockBuilder('\Crud\Listener\RelatedModels')
 			->disableOriginalConstructor()
 			->setMethods(array('_action'))
 			->getMock();
@@ -83,19 +79,19 @@ class RelatedModelTest extends TestCase {
  *
  * Test behavior when 'relatedModels' is a string
  *
- * @covers RelatedModelsListener::models
+ * @covers \Crud\Listener\RelatedModels::models
  * @return void
  */
 	public function testModelsString() {
 		$Action = $this
-			->getMockBuilder('CrudAction')
+			->getMockBuilder('\Crud\Action\Base')
 			->disableOriginalConstructor()
 			->setMethods(array('_handle'))
 			->getMock();
 		$Action->config('relatedModels', 'Post');
 
 		$Listener = $this
-			->getMockBuilder('RelatedModelsListener')
+			->getMockBuilder('\Crud\Listener\RelatedModels')
 			->disableOriginalConstructor()
 			->setMethods(array('_action'))
 			->getMock();
@@ -116,25 +112,25 @@ class RelatedModelTest extends TestCase {
  *
  * Test behavior when 'relatedModels' is true
  *
- * @covers RelatedModelsListener::models
+ * @covers \Crud\Listener\RelatedModels::models
  * @return void
  */
 	public function testModelsTrue() {
 		$Model = $this
-			->getMockBuilder('Model')
+			->getMockBuilder('\Cake\ORM\Table')
 			->disableOriginalConstructor()
 			->setMethods(array('getAssociated'))
 			->getMock();
 
 		$Action = $this
-			->getMockBuilder('CrudAction')
+			->getMockBuilder('\Crud\Action\Base')
 			->disableOriginalConstructor()
 			->setMethods(array('_handle'))
 			->getMock();
 		$Action->config('relatedModels', true);
 
 		$Listener = $this
-			->getMockBuilder('RelatedModelsListener')
+			->getMockBuilder('\Crud\Listener\RelatedModels')
 			->disableOriginalConstructor()
 			->setMethods(array('_action', '_model'))
 			->getMock();
@@ -170,18 +166,18 @@ class RelatedModelTest extends TestCase {
  *
  * Test behavior for a model without a TreeBehavior
  *
- * @covers RelatedModelsListener::_findRelatedItems
+ * @covers \Crud\Listener\RelatedModels::_findRelatedItems
  * @return void
  */
 	public function test_findRelatedItems() {
 		$Model = $this
-			->getMockBuilder('Model')
+			->getMockBuilder('\Cake\ORM\Table')
 			->disableOriginalConstructor()
 			->setMethods(array('find'))
 			->getMock();
 
 		$Listener = $this
-			->getMockBuilder('RelatedModelsListener')
+			->getMockBuilder('\Crud\Listener\RelatedModels')
 			->disableOriginalConstructor()
 			->setMethods(array('_hasTreeBehavior'))
 			->getMock();
@@ -216,18 +212,18 @@ class RelatedModelTest extends TestCase {
  *
  * Test behavior for a model with TreeBehavior
  *
- * @covers RelatedModelsListener::_findRelatedItems
+ * @covers \Crud\Listener\RelatedModels::_findRelatedItems
  * @return void
  */
 	public function test_findRelatedItemsTreeBehavior() {
 		$Model = $this
-			->getMockBuilder('Model')
+			->getMockBuilder('\Cake\ORM\Table')
 			->disableOriginalConstructor()
 			->setMethods(array('generateTreeList'))
 			->getMock();
 
 		$Listener = $this
-			->getMockBuilder('RelatedModelsListener')
+			->getMockBuilder('\Crud\Listener\RelatedModels')
 			->disableOriginalConstructor()
 			->setMethods(array('_hasTreeBehavior'))
 			->getMock();
@@ -264,18 +260,18 @@ class RelatedModelTest extends TestCase {
 /**
  * test_getAssociationType
  *
- * @covers RelatedModelsListener::_getAssociationType
+ * @covers \Crud\Listener\RelatedModels::_getAssociationType
  * @return void
  */
 	public function test_getAssociationType() {
 		$Model = $this
-			->getMockBuilder('Model')
+			->getMockBuilder('\Cake\ORM\Table')
 			->disableOriginalConstructor()
 			->setMethods(array('getAssociated'))
 			->getMock();
 
 		$Listener = $this
-			->getMockBuilder('RelatedModelsListener')
+			->getMockBuilder('\Crud\Listener\RelatedModels')
 			->disableOriginalConstructor()
 			->setMethods(array('_model'))
 			->getMock();
@@ -309,18 +305,18 @@ class RelatedModelTest extends TestCase {
  *
  * Test that the associated model exist in the Primary Model
  *
- * @covers RelatedModelsListener::_getModelInstance
+ * @covers \Crud\Listener\RelatedModels::_getModelInstance
  * @return void
  */
 	public function test_getModelInstance() {
 		$Model = $this
-			->getMockBuilder('Model')
+			->getMockBuilder('\Cake\ORM\Table')
 			->disableOriginalConstructor()
 			->getMock();
 		$Model->Post = 'PostModel';
 
 		$Listener = $this
-			->getMockBuilder('RelatedModelsListener')
+			->getMockBuilder('\Crud\Listener\RelatedModels')
 			->disableOriginalConstructor()
 			->setMethods(array('_model', '_controller'))
 			->getMock();
@@ -344,29 +340,29 @@ class RelatedModelTest extends TestCase {
  *
  * Get the model from the controller
  *
- * @covers RelatedModelsListener::_getModelInstance
+ * @covers \Crud\Listener\RelatedModels::_getModelInstance
  * @return void
  */
 	public function test_getModelInstanceThroughController() {
 		$Model = $this
-			->getMockBuilder('Model')
+			->getMockBuilder('\Cake\ORM\Table')
 			->disableOriginalConstructor()
 			->getMock();
 
 		$PostModel = $this
-			->getMockBuilder('Model')
+			->getMockBuilder('\Cake\ORM\Table')
 			->disableOriginalConstructor()
 			->getMock();
 
 		$Controller = $this
-			->getMockBuilder('Controller')
+			->getMockBuilder('\Cake\Controller\Controller')
 			->disableOriginalConstructor()
 			->setMethods(array('food'))
 			->getMock();
 		$Controller->Post = $PostModel;
 
 		$Listener = $this
-			->getMockBuilder('RelatedModelsListener')
+			->getMockBuilder('\Crud\Listener\RelatedModels')
 			->disableOriginalConstructor()
 			->setMethods(array('_model', '_controller', '_classRegistryInit'))
 			->getMock();
@@ -396,12 +392,12 @@ class RelatedModelTest extends TestCase {
  * Get the model through ClassRegistry from associated
  * model className
  *
- * @covers RelatedModelsListener::_getModelInstance
+ * @covers \Crud\Listener\RelatedModels::_getModelInstance
  * @return void
  */
 	public function test_getModelInstanceThroughModelAssociation() {
 		$Model = $this
-			->getMockBuilder('Model')
+			->getMockBuilder('\Cake\ORM\Table')
 			->disableOriginalConstructor()
 			->getMock();
 		$Model->belongsTo = array(
@@ -411,18 +407,18 @@ class RelatedModelTest extends TestCase {
 		);
 
 		$PostModel = $this
-			->getMockBuilder('Model')
+			->getMockBuilder('\Cake\ORM\Table')
 			->disableOriginalConstructor()
 			->getMock();
 
 		$Controller = $this
-			->getMockBuilder('Controller')
+			->getMockBuilder('\Cake\Controller\Controller')
 			->disableOriginalConstructor()
 			->setMethods(array('food'))
 			->getMock();
 
 		$Listener = $this
-			->getMockBuilder('RelatedModelsListener')
+			->getMockBuilder('\Crud\Listener\RelatedModels')
 			->disableOriginalConstructor()
 			->setMethods(array('_model', '_controller', '_classRegistryInit'))
 			->getMock();
@@ -453,28 +449,28 @@ class RelatedModelTest extends TestCase {
  *
  * Get the model directly from ClassRegistry
  *
- * @covers RelatedModelsListener::_getModelInstance
+ * @covers \Crud\Listener\RelatedModels::_getModelInstance
  * @return void
  */
 	public function test_getModelInstanceThroughClassRegistry() {
 		$Model = $this
-			->getMockBuilder('Model')
+			->getMockBuilder('\Cake\ORM\Table')
 			->disableOriginalConstructor()
 			->getMock();
 
 		$PostModel = $this
-			->getMockBuilder('Model')
+			->getMockBuilder('\Cake\ORM\Table')
 			->disableOriginalConstructor()
 			->getMock();
 
 		$Controller = $this
-			->getMockBuilder('Controller')
+			->getMockBuilder('\Cake\Controller\Controller')
 			->disableOriginalConstructor()
 			->setMethods(array('food'))
 			->getMock();
 
 		$Listener = $this
-			->getMockBuilder('RelatedModelsListener')
+			->getMockBuilder('\Crud\Listener\RelatedModels')
 			->disableOriginalConstructor()
 			->setMethods(array('_model', '_controller', '_classRegistryInit'))
 			->getMock();
@@ -505,24 +501,24 @@ class RelatedModelTest extends TestCase {
  *
  * Test a belongsTo relation
  *
- * @covers RelatedModelsListener::_getBaseQuery
+ * @covers \Crud\Listener\RelatedModels::_getBaseQuery
  * @return void
  */
 	public function test_getBaseQuery() {
 		$Model = $this
-			->getMockBuilder('Model')
+			->getMockBuilder('\Cake\ORM\Table')
 			->disableOriginalConstructor()
 			->getMock();
 		$Model->belongsTo = array('Post' => array('conditions' => array('is_active' => true)));
 
 		$Associated = $this
-			->getMockBuilder('Model')
+			->getMockBuilder('\Cake\ORM\Table')
 			->disableOriginalConstructor()
 			->getMock();
 		$Associated->alias = 'Post';
 
 		$Listener = $this
-			->getMockBuilder('RelatedModelsListener')
+			->getMockBuilder('\Crud\Listener\RelatedModels')
 			->disableOriginalConstructor()
 			->setMethods(array('_model', '_hasTreeBehavior'))
 			->getMock();
@@ -549,23 +545,23 @@ class RelatedModelTest extends TestCase {
  * Test a hasMany relation that no conditions
  * will be added by default
  *
- * @covers RelatedModelsListener::_getBaseQuery
+ * @covers \Crud\Listener\RelatedModels::_getBaseQuery
  * @return void
  */
 	public function test_getBaseQueryHasMany() {
 		$Model = $this
-			->getMockBuilder('Model')
+			->getMockBuilder('\Cake\ORM\Table')
 			->disableOriginalConstructor()
 			->getMock();
 
 		$Associated = $this
-			->getMockBuilder('Model')
+			->getMockBuilder('\Cake\ORM\Table')
 			->disableOriginalConstructor()
 			->getMock();
 		$Associated->alias = 'Post';
 
 		$Listener = $this
-			->getMockBuilder('RelatedModelsListener')
+			->getMockBuilder('\Crud\Listener\RelatedModels')
 			->disableOriginalConstructor()
 			->setMethods(array('_model', '_hasTreeBehavior'))
 			->getMock();
@@ -590,17 +586,17 @@ class RelatedModelTest extends TestCase {
  * Test a relation where associated model has
  * TreeBehavior bound
  *
- * @covers RelatedModelsListener::_getBaseQuery
+ * @covers \Crud\Listener\RelatedModels::_getBaseQuery
  * @return void
  */
 	public function test_getBaseQueryTreeBehavior() {
 		$Model = $this
-			->getMockBuilder('Model')
+			->getMockBuilder('\Cake\ORM\Table')
 			->disableOriginalConstructor()
 			->getMock();
 
 		$Associated = $this
-			->getMockBuilder('Model')
+			->getMockBuilder('\Cake\ORM\Table')
 			->disableOriginalConstructor()
 			->getMock();
 		$Associated->alias = 'Post';
@@ -615,7 +611,7 @@ class RelatedModelTest extends TestCase {
 		);
 
 		$Listener = $this
-			->getMockBuilder('RelatedModelsListener')
+			->getMockBuilder('\Crud\Listener\RelatedModels')
 			->disableOriginalConstructor()
 			->setMethods(array('_model', '_hasTreeBehavior', '_getTreeBehavior'))
 			->getMock();
@@ -648,18 +644,18 @@ class RelatedModelTest extends TestCase {
 /**
  * testPublishRelatedModels
  *
- * @covers RelatedModelsListener::publishRelatedModels
+ * @covers \Crud\Listener\RelatedModels::publishRelatedModels
  * @return void
  */
 	public function testPublishRelatedModels() {
 		$Controller = $this
-			->getMockBuilder('Controller')
+			->getMockBuilder('\Cake\Controller\Controller')
 			->disableOriginalConstructor()
 			->setMethods(array('set'))
 			->getMock();
 
 		$Post = $this
-			->getMockBuilder('Model')
+			->getMockBuilder('\Cake\ORM\Table')
 			->disableOriginalConstructor()
 			->getMock();
 		$Post->alias = 'Post';
@@ -669,7 +665,7 @@ class RelatedModelTest extends TestCase {
 		$i = 0;
 
 		$Listener = $this
-			->getMockBuilder('RelatedModelsListener')
+			->getMockBuilder('\Crud\Listener\RelatedModels')
 			->disableOriginalConstructor()
 			->setMethods(array(
 				'models', '_controller', '_getAssociationType', '_getModelInstance',
@@ -705,7 +701,7 @@ class RelatedModelTest extends TestCase {
 			->expects($this->at($i++))
 			->method('_trigger')
 			->with('beforeRelatedModel', array('modelName' => 'Post', 'query' => $postQuery, 'viewVar' => 'posts', 'associationType' => 'belongsTo', 'associatedModel' => $Post))
-			->will($this->returnValue(new CrudSubject(array('query' => $postQuery + array('_callback' => true)))));
+			->will($this->returnValue(new \Crud\Event\Subject(array('query' => $postQuery + array('_callback' => true)))));
 		$Listener
 			->expects($this->at($i++))
 			->method('_findRelatedItems')
@@ -715,7 +711,7 @@ class RelatedModelTest extends TestCase {
 			->expects($this->at($i++))
 			->method('_trigger')
 			->with('afterRelatedModel', array('modelName' => 'Post', 'items' => array(1, 2, 3), 'viewVar' => 'posts', 'associationType' => 'belongsTo', 'associatedModel' => $Post))
-			->will($this->returnValue(new CrudSubject(array('items' => array(1, 2, 3), 'viewVar' => 'posts'))));
+			->will($this->returnValue(new \Crud\Event\Subject(array('items' => array(1, 2, 3), 'viewVar' => 'posts'))));
 		$Controller
 			->expects($this->once())
 			->method('set')
@@ -730,12 +726,12 @@ class RelatedModelTest extends TestCase {
  * Test that nothing happens if the related models
  * array is empty
  *
- * @covers RelatedModelsListener::publishRelatedModels
+ * @covers \Crud\Listener\RelatedModels::publishRelatedModels
  * @return void
  */
 	public function testPublishRelatedModelsNoModels() {
 		$Listener = $this
-			->getMockBuilder('RelatedModelsListener')
+			->getMockBuilder('\Crud\Listener\RelatedModels')
 			->disableOriginalConstructor()
 			->setMethods(array('models', '_controller'))
 			->getMock();
@@ -757,19 +753,19 @@ class RelatedModelTest extends TestCase {
  * Test that nothing will be done if the related models
  * viewVar already exists in Controller::$viewVars
  *
- * @covers RelatedModelsListener::publishRelatedModels
+ * @covers \Crud\Listener\RelatedModels::publishRelatedModels
  * @return void
  */
 	public function testPublishRelatedModelsViewVarExists() {
 		$Controller = $this
-			->getMockBuilder('Controller')
+			->getMockBuilder('\Cake\Controller\Controller')
 			->disableOriginalConstructor()
 			->setMethods(array('set'))
 			->getMock();
 		$Controller->viewVars['posts'] = array(1, 2, 3);
 
 		$Post = $this
-			->getMockBuilder('Model')
+			->getMockBuilder('\Cake\ORM\Table')
 			->disableOriginalConstructor()
 			->getMock();
 		$Post->alias = 'Post';
@@ -779,7 +775,7 @@ class RelatedModelTest extends TestCase {
 		$i = 0;
 
 		$Listener = $this
-			->getMockBuilder('RelatedModelsListener')
+			->getMockBuilder('\Crud\Listener\RelatedModels')
 			->disableOriginalConstructor()
 			->setMethods(array(
 				'models', '_controller', '_getAssociationType', '_getModelInstance',
