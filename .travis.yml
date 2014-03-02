@@ -1,36 +1,15 @@
 language: php
 
 php:
-  - 5.3
   - 5.4
   - 5.5
 
-env:
-  global:
-    - PLUGIN_NAME=Crud
-    - DB=mysql CAKE_VERSION=3.0
-
-  matrix:
-    - DB=mysql CAKE_VERSION=3.0
-
-matrix:
-  include:
-    - php: 5.4
-      env:
-        - COVERALLS=1
-    - php: 5.4
-      env:
-        - PHPCS=1 PHPCS_IGNORE="*/Test/*"
-
 before_script:
-  - git clone https://github.com/FriendsOfCake/travis.git --depth 1 ../travis
-  - ../travis/before_script.sh
+  - composer install --dev
+  - mv phpunit.xml.dist phpunit.xml
 
 script:
-  - ../travis/script.sh
-
-after_success:
-  - ../travis/after_success.sh
+  - phpunit
 
 notifications:
   email: false

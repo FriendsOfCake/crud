@@ -39,17 +39,20 @@
       "homepage":"https://github.com/admad"
     }
   ],
+	"require":{
+    "composer/installers":"*"
+  },
+  "require-dev": {
+  	"cakephp/cakephp": "3.0.x-dev"
+	},
   "suggest":{
-    "cakedc/search":"If you want to use the Search Listener"
+
   },
   "support":{
     "source":"https://github.com/FriendsOfCake/crud",
     "issues":"https://github.com/FriendsOfCake/crud/issues",
     "wiki":"http://cakephp.nu/cakephp-crud/",
     "irc":"irc://irc.freenode.org/friendsofcake"
-  },
-  "require":{
-    "composer/installers":"*"
   },
   "extra": {
     "installer-name": "Crud"
