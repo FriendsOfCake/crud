@@ -9,7 +9,7 @@ before_script:
   - mv phpunit.xml.dist phpunit.xml
 
 script:
-  - phpunit Test/ActionsTest.php
+  - phpunit Test/TestCase/ActionsTest.php
 
 notifications:
   email: false
