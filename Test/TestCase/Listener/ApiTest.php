@@ -896,15 +896,19 @@ class ApiTest extends TestCase {
  */
 	public function testFlashMessageSupressed() {
 		$Request = new \Cake\Network\Request();
-		$Request->addDetector('api', array('callback' => function() {
+		$Request->addDetector('api', ['callback' => function() {
 			return true;
-		}));
+		}]);
 
 		$subject = new \Crud\Event\Subject(array('request' => $Request));
 
-		$apiListener = new \Crud\Listener\Api($subject);
+		$apiListener = 		$listener = $this
+			->getMockBuilder('\Crud\Listener\Api')
+			->setMethods(null)
+			->disableOriginalConstructor()
+			->getMock();
 
-		$event = new CakeEvent('Crud.setFlash', $subject);
+		$event = new \Cake\Event\Event('Crud.setFlash', $subject);
 		$apiListener->setFlash($event);
 
 		$stopped = $event->isStopped();
@@ -1094,31 +1098,16 @@ class ApiTest extends TestCase {
  * @return void
  */
 	public function testRegisterExceptionHandlerWithoutApi() {
-		$listener = $this->getMockBuilder('\Crud\Listener\Api')
-			->setMethods(array('_request'))
+		$listener = $this
+			->getMockBuilder('\Crud\Listener\Api')
+			->setMethods(null)
 			->disableOriginalConstructor()
 			->getMock();
-
-		$request = $this->getMockBuilder('\Cake\Network\Request')
-			->setMethods(array('is'))
-			->disableOriginalConstructor()
-			->getMock();
-		$request
-			->expects($this->at(0))
-			->method('is')
-			->with('api')
-			->will($this->returnValue(false));
-
-		$listener
-			->expects($this->once())
-			->method('_request')
-			->with()
-			->will($this->returnValue($request));
 
 		$listener->registerExceptionHandler();
 
-		$expected = 'ExceptionRenderer';
-		$result = Configure::read('Exception.renderer');
+		$expected = 'Crud\Error\ExceptionRenderer';
+		$result = Configure::read('Error.exceptionRenderer');
 		$this->assertEquals($expected, $result);
 	}
 /**
@@ -1140,7 +1129,7 @@ class ApiTest extends TestCase {
 			),
 			'invalid post' => array(
 				array('methods' => array('post')),
-				'BadRequestException',
+				'Cake\Error\BadRequestException',
 				array('post' => false)
 			),
 			'valid put' => array(
@@ -1160,19 +1149,19 @@ class ApiTest extends TestCase {
 	public function test_checkRequestMethods($apiConfig, $exception, $requestMethods) {
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\Api')
-			->setMethods(array('_action', '_request'))
+			->setMethods(['_action', '_request'])
 			->disableOriginalConstructor()
 			->getMock();
 
 		$action = $this
 			->getMockBuilder('CrudAction')
-			->setMethods(array('config'))
+			->setMethods(['config'])
 			->disableOriginalConstructor()
 			->getMock();
 
 		$request = $this
 			->getMockBuilder('\Cake\Network\Request')
-			->setMethods(array('is'))
+			->setMethods(['is'])
 			->disableOriginalConstructor()
 			->getMock();
 
@@ -1269,16 +1258,30 @@ class ApiTest extends TestCase {
 	public function testInjectViewClasses() {
 		$controller = $this
 			->getMockBuilder('Controller')
-			->setMethods(array('foo')) // need to mock *something* to make Controller::__set work
+			->setMethods(['foo'])
 			->disableOriginalConstructor()
 			->getMock();
 
-		$controller->RequestHandler = $this->getMock('RequestHandler', array('viewClassMap'));
-		$controller->RequestHandler->expects($this->at(0))->method('viewClassMap')->with('json', 'Crud.CrudJson');
-		$controller->RequestHandler->expects($this->at(1))->method('viewClassMap')->with('xml', 'Crud.CrudXml');
+		$controller->RequestHandler = $this->getMock('RequestHandler', ['viewClassMap']);
+		$controller->RequestHandler
+			->expects($this->at(0))
+			->method('viewClassMap')
+			->with('json', 'Json');
+		$controller->RequestHandler
+			->expects($this->at(1))
+			->method('viewClassMap')
+			->with('xml', 'Xml');
 
-		$apiListener = $this->getMock('\Crud\Listener\Api', array('_controller'), array(new \Crud\Event\Subject()));
-		$apiListener->expects($this->once())->method('_controller')->will($this->returnValue($controller));
+		$apiListener = $this->getMockBuilder('\Crud\Listener\Api')
+			->disableOriginalConstructor()
+			->setMethods(['_controller'])
+			->getMock();
+
+		$apiListener
+			->expects($this->once())
+			->method('_controller')
+			->will($this->returnValue($controller));
+
 		$apiListener->injectViewClasses();
 	}
 
