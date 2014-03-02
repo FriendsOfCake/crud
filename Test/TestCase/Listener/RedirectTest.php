@@ -151,7 +151,7 @@ class RedirectTest extends TestCase {
 		$listener->setup();
 
 		$subject = new CrudSubject();
-		$subject->request = new CakeRequest();
+		$subject->request = new \Cake\Network\Request();
 		$subject->request->params['action'] = 'index';
 
 		$reader = $listener->reader('request.key');
@@ -177,7 +177,7 @@ class RedirectTest extends TestCase {
 		$listener->setup();
 
 		$subject = new CrudSubject();
-		$subject->request = new CakeRequest();
+		$subject->request = new \Cake\Network\Request();
 		$subject->request->data = array('hello' => 'world');
 
 		$reader = $listener->reader('request.data');
@@ -203,7 +203,7 @@ class RedirectTest extends TestCase {
 		$listener->setup();
 
 		$subject = new CrudSubject();
-		$subject->request = new CakeRequest();
+		$subject->request = new \Cake\Network\Request();
 		$subject->request->query = array('hello' => 'world');
 
 		$reader = $listener->reader('request.query');
@@ -441,10 +441,10 @@ class RedirectTest extends TestCase {
 	}
 
 	public function dataProvider_getUrl() {
-		$CakeRequest = new CakeRequest;
-		$CakeRequest->params['action'] = 'index';
-		$CakeRequest->query['parent_id'] = 10;
-		$CakeRequest->data['epic'] = 'jippi';
+		$Request = new \Cake\Network\Request;
+		$Request->params['action'] = 'index';
+		$Request->query['parent_id'] = 10;
+		$Request->data['epic'] = 'jippi';
 
 		$Model = new Model;
 		$Model->id = 69;
@@ -463,17 +463,17 @@ class RedirectTest extends TestCase {
 				array('controller' => 'posts', 'action' => 'index')
 			),
 			array(
-				new CrudSubject(array('request' => $CakeRequest)),
+				new CrudSubject(array('request' => $Request)),
 				array('action' => array('request.key', 'action')),
 				array('action' => 'index')
 			),
 			array(
-				new CrudSubject(array('request' => $CakeRequest)),
+				new CrudSubject(array('request' => $Request)),
 				array('action' => array('request.data', 'epic')),
 				array('action' => 'jippi')
 			),
 			array(
-				new CrudSubject(array('request' => $CakeRequest)),
+				new CrudSubject(array('request' => $Request)),
 				array('action' => array('request.query', 'parent_id')),
 				array('action' => 10)
 			),

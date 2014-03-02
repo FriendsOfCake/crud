@@ -45,7 +45,7 @@ class ApiQueryLogTest extends TestCase {
 	public function testBeforeRenderDebugZero() {
 		Configure::write('debug', 0);
 
-		$Request = $this->getMock('CakeRequest', array('is'));
+		$Request = $this->getMock('\Cake\Network\Request', array('is'));
 		$Request
 			->expects($this->never())
 			->method('is');
@@ -64,7 +64,7 @@ class ApiQueryLogTest extends TestCase {
 	public function testBeforeRenderDebugOne() {
 		Configure::write('debug', 1);
 
-		$Request = $this->getMock('CakeRequest', array('is'));
+		$Request = $this->getMock('\Cake\Network\Request', array('is'));
 		$Request
 			->expects($this->never())
 			->method('is');
@@ -84,7 +84,7 @@ class ApiQueryLogTest extends TestCase {
 	public function testBeforeRenderDebugTwo() {
 		Configure::write('debug', 2);
 
-		$Request = $this->getMock('CakeRequest', array('is'));
+		$Request = $this->getMock('\Cake\Network\Request', array('is'));
 		$Request
 			->expects($this->once())
 			->method('is')
@@ -110,7 +110,7 @@ class ApiQueryLogTest extends TestCase {
 	public function testBeforeRenderDebugTwoAsApi() {
 		Configure::write('debug', 2);
 
-		$Request = $this->getMock('CakeRequest', array('is'));
+		$Request = $this->getMock('\Cake\Network\Request', array('is'));
 		$Request
 			->expects($this->once())
 			->method('is')

@@ -1,5 +1,4 @@
 <?php
-
 namespace Crud\Listener;
 
 use Cake\Event\Event;
@@ -14,7 +13,7 @@ use Cake\Event\Event;
 class ApiPagination extends Base {
 
 /**
- * Returns a list of all events that will fire in the controller during its lifecycle.
+ * Returns a list of all events that will fire in the controller during its life-cycle.
  * You can override this function to add you own listener callbacks
  *
  * We attach at priority 10 so normal bound events can run before us
@@ -39,23 +38,34 @@ class ApiPagination extends Base {
 			return;
 		}
 
-		$_pagination = $request->paging;
-		if (empty($_pagination) || !array_key_exists($event->subject->modelClass, $_pagination)) {
+		$controller = $this->_controller();
+
+		$modelClass = $controller->modelClass;
+
+		if (empty($request->paging)) {
 			return;
 		}
 
-		$_pagination = $_pagination[$event->subject->modelClass];
+		if (!array_key_exists($modelClass, $request->paging)) {
+			return;
+		}
 
-		$pagination = [
-			'page_count' => $_pagination['pageCount'],
-			'current_page' => $_pagination['page'],
-			'has_next_page' => $_pagination['nextPage'],
-			'has_prev_page' => $_pagination['prevPage'],
-			'count' => $_pagination['count'],
-			'limit' => $_pagination['limit']
+		$pagination = $request->paging[$modelClass];
+		if (empty($pagination)) {
+			return;
+		}
+
+		$paginationResponse = [
+			'page_count' => $pagination['pageCount'],
+			'current_page' => $pagination['page'],
+			'has_next_page' => $pagination['nextPage'],
+			'has_prev_page' => $pagination['prevPage'],
+			'count' => $pagination['count'],
+			'limit' => $pagination['limit']
 		];
 
+		$controller->set('pagination', $paginationResponse);
 		$this->_action()->config('serialize.pagination', 'pagination');
-		$this->_controller()->set('pagination', $pagination);
 	}
+
 }
