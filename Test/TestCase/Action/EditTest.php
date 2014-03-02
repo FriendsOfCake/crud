@@ -19,7 +19,7 @@ class EditTest extends TestCase {
 		$Action = $this
 			->getMockBuilder('\Crud\Action\Edit')
 			->disableOriginalConstructor()
-			->setMethods(['_validateId', '_subject', '_request', '_findRecord', '_trigger'])
+			->setMethods(['_subject', '_request', '_findRecord', '_trigger'])
 			->getMock();
 		$Subject = $this
 			->getMockBuilder('\Crud\Event\Subject')
@@ -37,11 +37,6 @@ class EditTest extends TestCase {
 			->setMethods(null)
 			->getMock();
 
-		$Action
-			->expects($this->next($Action))
-			->method('_validateId')
-			->with(1337)
-			->will($this->returnValue(true));
 		$Action
 			->expects($this->next($Action))
 			->method('_subject')
@@ -81,7 +76,7 @@ class EditTest extends TestCase {
 			->getMockBuilder('\Crud\Action\Edit')
 			->disableOriginalConstructor()
 			->setMethods([
-				'_validateId', '_subject', '_request', '_findRecord',
+				'_subject', '_request', '_findRecord',
 				'_trigger', '_success', '_error', '_repository'
 			])
 			->getMock();
@@ -106,11 +101,6 @@ class EditTest extends TestCase {
 			->setMethods(null)
 			->getMock();
 
-		$Action
-			->expects($this->next($Action))
-			->method('_validateId')
-			->with(1337)
-			->will($this->returnValue(true));
 		$Action
 			->expects($this->next($Action))
 			->method('_subject')
@@ -166,7 +156,7 @@ class EditTest extends TestCase {
 			->getMockBuilder('\Crud\Action\Edit')
 			->disableOriginalConstructor()
 			->setMethods([
-				'_validateId', '_subject', '_request', '_findRecord',
+				'_subject', '_request', '_findRecord',
 				'_trigger', '_success', '_error', '_repository'
 			])
 			->getMock();
@@ -191,11 +181,6 @@ class EditTest extends TestCase {
 			->setMethods(null)
 			->getMock();
 
-		$Action
-			->expects($this->next($Action))
-			->method('_validateId')
-			->with(1337)
-			->will($this->returnValue(true));
 		$Action
 			->expects($this->next($Action))
 			->method('_subject')
@@ -260,202 +245,6 @@ class EditTest extends TestCase {
 
 		$this->setReflectionClassInstance($Action);
 		$this->callProtectedMethod('_post', [1337], $Action);
-	}
-
-/**
- * test_validateId
- *
- * @covers \Crud\Action\Edit::_validateId
- * @return void
- */
-	public function test_validateId() {
-		$Request = $this->getMock('\Cake\Network\Request');
-		$Request->data = null;
-		$Request->params['pass'][0] = 1;
-
-		$Action = $this
-			->getMockBuilder('\Crud\Action\Edit')
-			->disableOriginalConstructor()
-			->setMethods(['_request', '_model', '_trigger', 'message'])
-			->getMock();
-		$Action->config('validateId', false);
-		$Action
-			->expects($this->next($Action))
-			->method('_request')
-			->will($this->returnValue($Request));
-
-		$this->setReflectionClassInstance($Action);
-		$return = $this->callProtectedMethod('_validateId', array(1), $Action);
-		$this->assertTrue($return, 'If there\'s no data, there should be no data check');
-	}
-
-/**
- * test_validateIdMatches
- *
- * @covers \Crud\Action\Edit::_validateId
- * @return void
- */
-	public function test_validateIdMatches() {
-		$Request = $this
-			->getMockBuilder('\Cake\Network\Request')
-			->disableOriginalConstructor()
-			->setMethods(null)
-			->getMock();
-		$Request->data = ['Model' => ['id' => '1337']];
-
-		$Repository = $this
-			->getMockBuilder('\Cake\ORM\Table')
-			->setMethods(['alias', 'primaryKey'])
-			->getMock();
-
-		$Action = $this
-			->getMockBuilder('\Crud\Action\Edit')
-			->disableOriginalConstructor()
-			->setMethods(['_request', '_repository', '_trigger'])
-			->getMock();
-		$Action->config('validateId', false);
-
-		$Action
-			->expects($this->next($Action))
-			->method('_request')
-			->will($this->returnValue($Request));
-		$Action
-			->expects($this->next($Action))
-			->method('_repository')
-			->will($this->returnValue($Repository));
-		$Repository
-			->expects($this->next($Repository))
-			->method('primaryKey')
-			->will($this->returnValue('id'));
-		$Repository
-			->expects($this->next($Repository))
-			->method('alias')
-			->will($this->returnValue('Model'));
-		$Action
-			->expects($this->never())
-			->method('_trigger');
-
-		$this->setReflectionClassInstance($Action);
-		$return = $this->callProtectedMethod('_validateId', [1337], $Action);
-		$this->assertTrue($return, 'If there\'s data and it matches, there should be no exception');
-	}
-
-/**
- * test_validateIdManipulated
- *
- * @expectedException \Cake\Error\BadRequestException
- * @expectedExceptionMessage Invalid id
- * @expectedExceptionCode 400
- * @covers \Crud\Action\Edit::_validateId
- * @return void
- */
-	public function test_validateIdManipulated() {
-		$Request = $this
-			->getMockBuilder('\Cake\Network\Request')
-			->disableOriginalConstructor()
-			->setMethods(null)
-			->getMock();
-		$Request->data = ['Model' => ['id' => '1337', 'some' => 'data']];
-
-		$Repository = $this
-			->getMockBuilder('\Cake\ORM\Table')
-			->setMethods(['alias', 'primaryKey'])
-			->getMock();
-
-		$Action = $this
-			->getMockBuilder('\Crud\Action\Edit')
-			->disableOriginalConstructor()
-			->setMethods(['_request', '_repository', '_trigger', 'message'])
-			->getMock();
-		$Action->config('validateId', false);
-
-		$Action
-			->expects($this->next($Action))
-			->method('_request')
-			->will($this->returnValue($Request));
-		$Action
-			->expects($this->next($Action))
-			->method('_repository')
-			->will($this->returnValue($Repository));
-		$Repository
-			->expects($this->next($Repository))
-			->method('primaryKey')
-			->will($this->returnValue('id'));
-		$Repository
-			->expects($this->next($Repository))
-			->method('alias')
-			->will($this->returnValue('Model'));
-		$Action
-			->expects($this->next($Action))
-			->method('_trigger')
-			->with('invalidId', ['id' => '1337']);
-		$Action
-			->expects($this->next($Action))
-			->method('message')
-			->with('invalidId')
-			->will($this->returnValue(['class' => '\Cake\Error\BadRequestException', 'code' => 400, 'text' => 'Invalid id']));
-
-		$this->setReflectionClassInstance($Action);
-		$this->callProtectedMethod('_validateId', [1338], $Action);
-	}
-
-/**
- * test_validateIdManipulatedShortData
- *
- * @expectedException \Cake\Error\BadRequestException
- * @expectedExceptionMessage Invalid id
- * @expectedExceptionCode 400
- * @covers \Crud\Action\Edit::_validateId
- * @return void
- */
-	public function test_validateIdManipulatedShortData() {
-		$Request = $this
-			->getMockBuilder('\Cake\Network\Request')
-			->disableOriginalConstructor()
-			->setMethods(null)
-			->getMock();
-		$Request->data = ['id' => '1337', 'some' => 'data'];
-
-		$Repository = $this
-			->getMockBuilder('\Cake\ORM\Table')
-			->setMethods(['alias', 'primaryKey'])
-			->getMock();
-
-		$Action = $this
-			->getMockBuilder('\Crud\Action\Edit')
-			->disableOriginalConstructor()
-			->setMethods(['_request', '_repository', '_trigger', 'message'])
-			->getMock();
-		$Action->config('validateId', false);
-
-		$Action
-			->expects($this->next($Action))
-			->method('_request')
-			->will($this->returnValue($Request));
-		$Action
-			->expects($this->next($Action))
-			->method('_repository')
-			->will($this->returnValue($Repository));
-		$Repository
-			->expects($this->next($Repository))
-			->method('primaryKey')
-			->will($this->returnValue('id'));
-		$Repository
-			->expects($this->next($Repository))
-			->method('alias')
-			->will($this->returnValue('Model'));
-		$Action
-			->expects($this->next($Action))
-			->method('_trigger')
-			->with('invalidId', ['id' => '1337']);
-		$Action
-			->expects($this->next($Action))
-			->method('message')
-			->with('invalidId')
-			->will($this->returnValue(['class' => '\Cake\Error\BadRequestException', 'code' => 400, 'text' => 'Invalid id']));
-
-		$this->setReflectionClassInstance($Action);
-		$this->callProtectedMethod('_validateId', [1338], $Action);
 	}
 
 }

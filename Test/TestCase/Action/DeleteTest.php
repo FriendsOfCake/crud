@@ -23,7 +23,7 @@ class DeleteTest extends TestCase {
 			->getMockBuilder('\Crud\Action\Delete')
 			->disableOriginalConstructor()
 			->setMethods([
-					'_validateId', '_subject', '_findRecord', '_trigger',
+					'_subject', '_findRecord', '_trigger',
 					'_repository', '_success', '_error', '_redirect'
 				])
 			->getMock();
@@ -52,11 +52,6 @@ class DeleteTest extends TestCase {
 			->setMethods(['delete'])
 			->getMock();
 
-		$Action
-			->expects($this->next($Action))
-			->method('_validateId')
-			->with(1337)
-			->will($this->returnValue(true));
 		$Action
 			->expects($this->next($Action))
 			->method('_subject')
@@ -110,7 +105,7 @@ class DeleteTest extends TestCase {
 			->getMockBuilder('\Crud\Action\Delete')
 			->disableOriginalConstructor()
 			->setMethods([
-					'_validateId', '_subject', '_findRecord', '_trigger',
+					'_subject', '_findRecord', '_trigger',
 					'_repository', '_success', '_error', '_redirect'
 				])
 			->getMock();
@@ -139,11 +134,6 @@ class DeleteTest extends TestCase {
 			->setMethods(['delete'])
 			->getMock();
 
-		$Action
-			->expects($this->next($Action))
-			->method('_validateId')
-			->with(1337)
-			->will($this->returnValue(true));
 		$Action
 			->expects($this->next($Action))
 			->method('_subject')
@@ -198,7 +188,7 @@ class DeleteTest extends TestCase {
 			->getMockBuilder('\Crud\Action\Delete')
 			->disableOriginalConstructor()
 			->setMethods([
-					'_validateId', '_subject', '_findRecord', '_trigger',
+					'_subject', '_findRecord', '_trigger',
 					'_repository', '_success', '_error', '_redirect', '_stopped'
 				])
 			->getMock();
@@ -229,11 +219,6 @@ class DeleteTest extends TestCase {
 
 		$Action
 			->expects($this->next($Action))
-			->method('_validateId')
-			->with(1337)
-			->will($this->returnValue(true));
-		$Action
-			->expects($this->next($Action))
 			->method('_subject')
 			->will($this->returnValue($Subject));
 		$Action
@@ -257,33 +242,6 @@ class DeleteTest extends TestCase {
 			->expects($this->next($Action))
 			->method('_stopped')
 			->with($Subject);
-
-		$this->setReflectionClassInstance($Action);
-		$this->callProtectedMethod('_handle', [1337], $Action);
-	}
-
-/**
- * test_deleteInvalidId
- *
- * Test the behavior when the ID is invalid
- *
- * @covers DeleteCrudAction::_delete
- * @return void
- */
-	public function test_deleteInvalidId() {
-		$Action = $this
-			->getMockBuilder('\Crud\Action\Delete')
-			->disableOriginalConstructor()
-			->setMethods(['_validateId', '_subject'])
-			->getMock();
-		$Action
-			->expects($this->once())
-			->method('_validateId')
-			->with(1337)
-			->will($this->returnValue(false));
-		$Action
-			->expects($this->never())
-			->method('_subject');
 
 		$this->setReflectionClassInstance($Action);
 		$this->callProtectedMethod('_handle', [1337], $Action);

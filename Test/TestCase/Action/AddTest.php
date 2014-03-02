@@ -17,8 +17,8 @@ class AddTest extends TestCase {
  * @return void
  */
 	public function testActionGet() {
-		$Request = $this->getMock('Request');
-		$Entity = $this->getMock('Entity');
+		$Request = $this->getMock('\Cake\Network\Request');
+		$Entity = $this->getMock('\Cake\ORM\Entity');
 
 		$Action = $this
 			->getMockBuilder('\Crud\Action\Add')
@@ -71,7 +71,7 @@ class AddTest extends TestCase {
 		$Entity = $this
 			->getMockBuilder('\Cake\ORM\Entity')
 			->disableOriginalConstructor()
-			->setMethods(['set'])
+			->setMethods(null)
 			->getMock();
 
 		$Action = $this
@@ -80,7 +80,7 @@ class AddTest extends TestCase {
 			->setMethods([
 				'_request', '_entity', '_trigger',
 				'_subject', '_repository', 'setFlash',
-				'_redirect'
+				'_redirect', '_getResourceName'
 			])
 			->getMock();
 
@@ -92,10 +92,6 @@ class AddTest extends TestCase {
 			->expects($this->next($Action))
 			->method('_request')
 			->will($this->returnValue($Request));
-		$Entity
-			->expects($this->next($Entity))
-			->method('set')
-			->with($Request->data);
 		$Action
 			->expects($this->next($Action))
 			->method('_subject')
@@ -115,12 +111,12 @@ class AddTest extends TestCase {
 			->will($this->returnValue(true));
 		$Action
 			->expects($this->next($Action))
-			->method('setFlash')
-			->with('success', $Subject);
-		$Action
-			->expects($this->next($Action))
 			->method('_trigger')
 			->with('afterSave', $Subject);
+		$Action
+			->expects($this->next($Action))
+			->method('setFlash')
+			->with('success', $Subject);
 		$Action
 			->expects($this->next($Action))
 			->method('_redirect')

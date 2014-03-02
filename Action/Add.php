@@ -87,7 +87,7 @@ class Add extends Base {
  * @return void
  */
 	protected function _get() {
-		// $this->_request()->data = $this->_entity();
+		$this->_request()->data = $this->_entity();
 		$this->_trigger('beforeRender', ['success' => true]);
 	}
 
