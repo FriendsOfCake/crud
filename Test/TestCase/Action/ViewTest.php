@@ -28,7 +28,7 @@ class ViewTest extends TestCase {
 			->getMockBuilder('\Crud\Action\View')
 			->disableOriginalConstructor()
 			->setMethods([
-				'_validateId', '_subject', '_findRecord',
+				'_subject', '_findRecord',
 				'_controller', '_trigger', 'viewVar'
 			])
 			->getMock();
@@ -48,10 +48,6 @@ class ViewTest extends TestCase {
 			->setMethods(['set'])
 			->getMock();
 
-		$Action
-			->expects($this->next($Action))
-			->method('_validateId')
-			->will($this->returnValue(true));
 		$Action
 			->expects($this->next($Action))
 			->method('_subject')
@@ -82,38 +78,6 @@ class ViewTest extends TestCase {
 
 		$this->setReflectionClassInstance($Action);
 		$this->callProtectedMethod('_get', [1337], $Action);
-	}
-
-/**
- * test_getGetInvalidId
- *
- * Test that calling HTTP GET on an view action
- * will trigger the appropriate events
- *
- * This test assumes that the id for the view
- * action does not exist in the database
- *
- * @covers \Crud\Action\View::_get
- * @return void
- */
-	public function test_getGetInvalidId() {
-		$Action = $this
-			->getMockBuilder('\Crud\Action\View')
-			->disableOriginalConstructor()
-			->setMethods(['_validateId', '_subject'])
-			->getMock();
-		$Action
-			->expects($this->once())
-			->method('_validateId')
-			->with(1337)
-			->will($this->returnValue(false));
-		$Action
-			->expects($this->never())
-			->method('_subject');
-
-		$this->setReflectionClassInstance($Action);
-		$result = $this->callProtectedMethod('_get', [1337], $Action);
-		$this->assertFalse($result);
 	}
 
 }
