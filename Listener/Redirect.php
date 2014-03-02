@@ -1,7 +1,7 @@
 <?php
+namespace Crud\Listener;
 
-App::uses('CakeEvent', 'Event');
-App::uses('CrudListener', 'Crud.Controller/Crud');
+use Cake\Utility\Hash;
 
 /**
  * Redirect Listener
@@ -11,7 +11,7 @@ App::uses('CrudListener', 'Crud.Controller/Crud');
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class RedirectListener extends CrudListener {
+class Redirect extends Base {
 
 /**
  * Settings
@@ -44,7 +44,7 @@ class RedirectListener extends CrudListener {
  * @return void
  */
 	public function setup() {
-		$this->reader('request.key', function(CrudSubject $subject, $key = null) {
+		$this->reader('request.key', function(\Crud\Event\Subject $subject, $key = null) {
 			if (!isset($subject->request->{$key})) {
 				return null;
 			}
@@ -52,15 +52,15 @@ class RedirectListener extends CrudListener {
 			return $subject->request->{$key};
 		});
 
-		$this->reader('request.data', function(CrudSubject $subject, $key = null) {
+		$this->reader('request.data', function(\Crud\Event\Subject $subject, $key = null) {
 			return $subject->request->data($key);
 		});
 
-		$this->reader('request.query', function(CrudSubject $subject, $key = null) {
+		$this->reader('request.query', function(\Crud\Event\Subject $subject, $key = null) {
 			return $subject->request->query($key);
 		});
 
-		$this->reader('model.key', function(CrudSubject $subject, $key = null) {
+		$this->reader('model.key', function(\Crud\Event\Subject $subject, $key = null) {
 			if (!isset($subject->model->{$key})) {
 				return null;
 			}
@@ -68,15 +68,15 @@ class RedirectListener extends CrudListener {
 			return $subject->model->{$key};
 		});
 
-		$this->reader('model.data', function(CrudSubject $subject, $key = null) {
+		$this->reader('model.data', function(\Crud\Event\Subject $subject, $key = null) {
 			return Hash::get($subject->model->data, $key);
 		});
 
-		$this->reader('model.field', function(CrudSubject $subject, $key = null) {
+		$this->reader('model.field', function(\Crud\Event\Subject $subject, $key = null) {
 			return $subject->model->field($key);
 		});
 
-		$this->reader('subject.key', function(CrudSubject $subject, $key = null) {
+		$this->reader('subject.key', function(\Crud\Event\Subject $subject, $key = null) {
 			if (!isset($subject->{$key})) {
 				return null;
 			}
@@ -106,10 +106,10 @@ class RedirectListener extends CrudListener {
  * If a special redirect key is provided, change the
  * redirection URL target
  *
- * @param CakeEvent $event
+ * @param \Cake\Event\Event $event
  * @return void
  */
-	public function beforeRedirect(CakeEvent $event) {
+	public function beforeRedirect(\Cake\Event\Event $event) {
 		$subject = $event->subject;
 
 		$redirects = $this->_action()->redirectConfig();
@@ -133,11 +133,11 @@ class RedirectListener extends CrudListener {
  * Expand configurations where possible and replace the
  * placeholder with the actual value
  *
- * @param CrudSubject $subject
+ * @param \Crud\Event\Subject $subject
  * @param array $config
  * @return array
  */
-	protected function _getUrl(CrudSubject $subject, array $url) {
+	protected function _getUrl(\Crud\Event\Subject $subject, array $url) {
 		foreach ($url as $key => $value) {
 			if (!is_array($value)) {
 				continue;
@@ -158,16 +158,16 @@ class RedirectListener extends CrudListener {
  * Return the value of `$type` with `$key`
  *
  * @throws Exception if the reader is invalid
- * @param CrudSubject $subject
+ * @param \Crud\Event\Subject $subject
  * @param string $reader
  * @param string $key
  * @return mixed
  */
-	protected function _getKey(CrudSubject $subject, $reader, $key) {
+	protected function _getKey(\Crud\Event\Subject $subject, $reader, $key) {
 		$callable = $this->reader($reader);
 
 		if ($callable === null || !is_callable($callable)) {
-			throw new Exception('Invalid reader: ' . $reader);
+			throw new \Exception('Invalid reader: ' . $reader);
 		}
 
 		return $callable($subject, $key);
