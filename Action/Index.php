@@ -2,8 +2,6 @@
 namespace Crud\Action;
 
 use Cake\Utility\Inflector;
-use Crud\Traits\ViewTrait;
-use Crud\Traits\ViewVarTrait;
 
 /**
  * Handles 'Index' Crud actions
@@ -13,8 +11,9 @@ use Crud\Traits\ViewVarTrait;
  */
 class Index extends Base {
 
-	use ViewTrait;
-	use ViewVarTrait;
+	use \Crud\Traits\SerializeTrait;
+	use \Crud\Traits\ViewTrait;
+	use \Crud\Traits\ViewVarTrait;
 
 /**
  * Default settings for 'index' actions

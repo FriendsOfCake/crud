@@ -1,6 +1,6 @@
 <?php
 
-namespace Crud\Error\Exception;
+namespace Crud\Error;
 
 use Cake\Error\BaseException;
 use Cake\ORM\Entity;
@@ -35,7 +35,7 @@ class CrudValidationException extends BaseException {
  * @return void
  */
 	public function __construct(Entity $entity, $code = 412) {
-		$this->_validationErrors = array_filter($entity->errors());
+		$this->_validationErrors = array_filter((array)$entity->errors());
 		$flat = Hash::flatten($this->_validationErrors);
 
 		$errorCount = $this->_validationErrorCount = count($flat);

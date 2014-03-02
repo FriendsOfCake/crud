@@ -1,17 +1,14 @@
 <?php
+namespace Crud\Test\TestCase\Listener;
 
-App::uses('Controller', 'Controller');
-App::uses('CakeEvent', 'Event');
-App::uses('CakeRequest', 'Network');
-App::uses('CrudSubject', 'Crud.Controller/Crud');
-App::uses('ApiQueryLogListener', 'Crud.Controller/Crud/Listener');
+use Crud\TestSuite\TestCase;
 
 /**
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class ApiQueryLogListenerTest extends CakeTestCase {
+class ApiQueryLogTest extends TestCase {
 
 	protected $_debug;
 

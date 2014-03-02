@@ -37,7 +37,7 @@ abstract class Base extends Object {
  * Based on the requested controller action,
  * decide if we should handle the request or not.
  *
- * By returning false the handling is cancelled and the
+ * By returning false the handling is canceled and the
  * execution flow continues
  *
  * @throws NotImplementedException if the action can't handle the request
@@ -45,7 +45,7 @@ abstract class Base extends Object {
  * @return mixed
  */
 	public function handle(Event $Event) {
-		if (!$this->config('enabled')) {
+		if (!$this->enabled()) {
 			return false;
 		}
 
@@ -64,6 +64,31 @@ abstract class Base extends Object {
 	}
 
 /**
+ * Enable the Crud action
+ *
+ * @return void
+ */
+	public function enable() {
+		$this->config('enabled', true);
+
+		$controller = $this->_controller();
+		$actionName = $this->config('action');
+
+		if (!in_array($actionName, $controller->methods)) {
+			$controller->methods[] = $actionName;
+		}
+	}
+
+/**
+ * Test if a Crud action is enabled or not
+ *
+ * @return boolean
+ */
+	public function enabled() {
+		return $this->config('enabled');
+	}
+
+/**
  * Disable the Crud action
  *
  * @return void
@@ -77,22 +102,6 @@ abstract class Base extends Object {
 		$pos = array_search($actionName, $controller->methods);
 		if ($pos !== false) {
 			unset($controller->methods[$pos]);
-		}
-	}
-
-/**
- * Enable the Crud action
- *
- * @return void
- */
-	public function enable() {
-		$this->config('enabled', true);
-
-		$controller = $this->_controller();
-		$actionName = $this->config('action');
-
-		if (!in_array($actionName, $controller->methods)) {
-			$controller->methods[] = $actionName;
 		}
 	}
 

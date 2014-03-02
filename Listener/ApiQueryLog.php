@@ -28,6 +28,10 @@ class ApiQueryLog extends Base {
  * @return array
  */
 	public function implementedEvents() {
+		if (!$this->_request()->is('api')) {
+			return [];
+		}
+
 		return [
 			'Crud.initialize' => ['callable' => [$this, 'setupLogging'], 'priority' => 1],
 			'Crud.beforeRender' => ['callable' => [$this, 'beforeRender'], 'priority' => 75]
@@ -108,7 +112,7 @@ class ApiQueryLog extends Base {
  * @return DataSource
  */
 	protected function _getSource($source) {
-		return ConnectionManager::getDataSource($source);
+		return ConnectionManager::get($source);
 	}
 
 }

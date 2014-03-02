@@ -1,19 +1,14 @@
 <?php
+namespace Crud\Test\TestCase\Listener;
 
-App::uses('Model', 'Model');
-App::uses('Controller', 'Controller');
-App::uses('TreeBehavior', 'Model/Behavior');
-App::uses('CrudAction', 'Crud.Controller/Crud');
-App::uses('RelatedModelsListener', 'Crud.Controller/Crud/Listener');
-App::uses('CrudSubject', 'Crud.Controller/Crud');
-App::uses('CrudTestCase', 'Crud.Test/Support');
+use Crud\TestSuite\TestCase;
 
 /**
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class RelatedModelListenerTest extends CrudTestCase {
+class RelatedModelTest extends TestCase {
 
 /**
  * testModels

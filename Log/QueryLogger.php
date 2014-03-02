@@ -19,6 +19,7 @@ class QueryLogger extends \Cake\Database\Log\QueryLogger {
  */
 	protected function _log($query) {
 		$this->_logs[] = $query;
+		parent::_log($query);
 	}
 
 }

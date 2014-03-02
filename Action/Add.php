@@ -1,8 +1,6 @@
 <?php
 namespace Crud\Action;
 
-use Crud\Traits\RedirectTrait;
-use Crud\Traits\SaveMethodTrait;
 use Crud\Event\Subject;
 
 /**
@@ -13,8 +11,9 @@ use Crud\Event\Subject;
  */
 class Add extends Base {
 
-	use RedirectTrait;
-	use SaveMethodTrait;
+	use \Crud\Traits\RedirectTrait;
+	use \Crud\Traits\SaveMethodTrait;
+	use \Crud\Traits\SerializeTrait;
 
 /**
  * Default settings for 'add' actions
@@ -88,7 +87,7 @@ class Add extends Base {
  * @return void
  */
 	protected function _get() {
-		$this->_request()->data = $this->_entity();
+		// $this->_request()->data = $this->_entity();
 		$this->_trigger('beforeRender', ['success' => true]);
 	}
 
@@ -100,10 +99,14 @@ class Add extends Base {
 	protected function _post() {
 		$entity = $this->_getEntity();
 		$subject = $this->_subject();
-		$subject->set(['item' => $entity]);
+		$subject->set([
+			'item' => $entity,
+			'saveMethod' => $this->saveMethod(),
+			'saveOptions' => $this->saveOptions()
+		]);
 
 		$this->_trigger('beforeSave', $subject);
-		if (call_user_func([$this->_repository(), $this->saveMethod()], $entity, $this->saveOptions())) {
+		if (call_user_func([$this->_repository(), $subject->saveMethod], $entity, $subject->saveOptions)) {
 			return $this->_success($subject);
 		}
 
@@ -128,9 +131,9 @@ class Add extends Base {
 	protected function _success(Subject $subject) {
 		$subject->set(['success' => true, 'created' => true]);
 
+		$this->_trigger('afterSave', $subject);
 		$this->setFlash('success', $subject);
 
-		$this->_trigger('afterSave', $subject);
 		$this->_redirect($subject, ['action' => 'index']);
 	}
 

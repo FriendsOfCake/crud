@@ -1,17 +1,14 @@
 <?php
+namespace Crud\Test\TestCase\Listener;
 
-App::uses('CakeRequest', 'Network');
-App::uses('Model', 'Model');
-App::uses('CrudTestCase', 'Crud.Test/Support');
-App::uses('CrudSubject', 'Crud.Controller/Crud');
-App::uses('RedirectListener', 'Crud.Controller/Crud/Listener');
+use Crud\TestSuite\TestCase;
 
 /**
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class RedirectListenerTest extends CrudTestCase {
+class RedirectTest extends TestCase {
 
 /**
  * Test the correct events is bound
