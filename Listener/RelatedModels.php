@@ -47,10 +47,10 @@ class RelatedModels extends Base {
 				continue;
 			}
 
-			$query = $association->target()->find('all');
+			$query = $association->target()->find('list');
 			$event = $this->_trigger('relatedModel', compact('name', 'viewVar', 'query', 'association'));
 
-			$controller->set($event->subject->viewVar, $associatedModel->findList($query));
+			$controller->set($event->subject->viewVar, $event->subject->query);
 		}
 	}
 
@@ -61,7 +61,7 @@ class RelatedModels extends Base {
  * @return array
  */
 	public function models($action = null) {
-		$settings = $this->relatedModels();
+		$settings = $this->relatedModels(null, $action);
 
 		if ($settings === true) {
 			return $this->getAssociatedByType(['oneToOne', 'belongsToMany']);
@@ -83,6 +83,7 @@ class RelatedModels extends Base {
  * for the action
  *
  * @param mixed $related Everything but `null` will change the configuration
+ * @param string $action The action to configure
  * @return mixed
  */
 	public function relatedModels($related = null, $action = null) {
