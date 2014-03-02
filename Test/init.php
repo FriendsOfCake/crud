@@ -7,4 +7,4 @@ Cake\Core\Configure::write('App', [
 	'namespace' => 'App'
 ]);
 
-Cake\Core\Plugin::load('Crud');
+Cake\Core\Plugin::load('Crud', ['path' => './']);
