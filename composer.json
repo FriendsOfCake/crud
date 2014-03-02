@@ -49,8 +49,8 @@
 
   },
   "autoload": {
-		"psr-0": {
-			"Crud\\": "./"
+		"psr-4": {
+			"Crud\\": "."
 		}
 	},
   "support":{
