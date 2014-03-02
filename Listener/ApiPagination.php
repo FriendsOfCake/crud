@@ -21,6 +21,10 @@ class ApiPagination extends Base {
  * @return array
  */
 	public function implementedEvents() {
+		if (!$this->_checkRequestType('api')) {
+			return;
+		}
+
 		return [
 			'Crud.beforeRender' => ['callable' => 'beforeRender', 'priority' => 75]
 		];
@@ -33,11 +37,6 @@ class ApiPagination extends Base {
  * @return void
  */
 	public function beforeRender(Event $event) {
-		$request = $this->_request();
-		if (!$request->is('api')) {
-			return;
-		}
-
 		$controller = $this->_controller();
 
 		$modelClass = $controller->modelClass;

@@ -2,6 +2,7 @@
 namespace Crud\Test\TestCase\Listener;
 
 use Crud\TestSuite\TestCase;
+use Cake\Core\Configure;
 
 /**
  *
@@ -25,13 +26,51 @@ class ApiQueryLogTest extends TestCase {
 /**
  * Test implemented events
  *
- * @covers ApiQueryLogListener::implementedEvents
+ * @covers Crud\Listener\ApiQueryLog::implementedEvents
  * @return void
  */
 	public function testImplementedEvents() {
-		$Instance = new ApiQueryLogListener(new CrudSubject());
+		$Instance = $this
+			->getMockBuilder('\Crud\Listener\ApiQueryLog')
+			->disableOriginalConstructor()
+			->setMethods(['_checkRequestType'])
+			->getMock();
+		$Instance
+			->expects($this->once())
+			->method('_checkRequestType')
+			->with('api')
+			->will($this->returnValue(true));
+
 		$result = $Instance->implementedEvents();
-		$expected = array('Crud.beforeRender' => array('callable' => 'beforeRender', 'priority' => 75));
+		$expected = [
+			'Crud.initialize' => ['callable' => [$Instance, 'setupLogging'], 'priority' => 1],
+			'Crud.beforeRender' => ['callable' => [$Instance, 'beforeRender'], 'priority' => 75]
+		];
+
+		$this->assertEquals($expected, $result);
+	}
+
+/**
+ * Test implemented events without API request
+ *
+ * @covers Crud\Listener\ApiQueryLog::implementedEvents
+ * @return void
+ */
+	public function testImplementedEventsNotApiRequest() {
+		$Instance = $this
+			->getMockBuilder('\Crud\Listener\ApiQueryLog')
+			->disableOriginalConstructor()
+			->setMethods(['_checkRequestType'])
+			->getMock();
+		$Instance
+			->expects($this->once())
+			->method('_checkRequestType')
+			->with('api')
+			->will($this->returnValue(false));
+
+		$result = $Instance->implementedEvents();
+		$expected = [];
+
 		$this->assertEquals($expected, $result);
 	}
 
@@ -45,13 +84,16 @@ class ApiQueryLogTest extends TestCase {
 	public function testBeforeRenderDebugZero() {
 		Configure::write('debug', 0);
 
-		$Request = $this->getMock('\Cake\Network\Request', array('is'));
-		$Request
+		$Instance = $this
+			->getMockBuilder('\Crud\Listener\ApiQueryLog')
+			->disableOriginalConstructor()
+			->setMethods(['_getQueryLogs'])
+			->getMock();
+		$Instance
 			->expects($this->never())
-			->method('is');
+			->method('_getQueryLogs');
 
-		$Instance = new ApiQueryLogListener(new CrudSubject(array('request' => $Request)));
-		$Instance->beforeRender(new CakeEvent('something'));
+		$Instance->beforeRender(new \Cake\Event\Event('something'));
 	}
 
 /**
@@ -64,13 +106,16 @@ class ApiQueryLogTest extends TestCase {
 	public function testBeforeRenderDebugOne() {
 		Configure::write('debug', 1);
 
-		$Request = $this->getMock('\Cake\Network\Request', array('is'));
-		$Request
+		$Instance = $this
+			->getMockBuilder('\Crud\Listener\ApiQueryLog')
+			->disableOriginalConstructor()
+			->setMethods(['_getQueryLogs'])
+			->getMock();
+		$Instance
 			->expects($this->never())
-			->method('is');
+			->method('_getQueryLogs');
 
-		$Instance = new ApiQueryLogListener(new CrudSubject(array('request' => $Request)));
-		$Instance->beforeRender(new CakeEvent('something'));
+		$Instance->beforeRender(new \Cake\Event\Event('something'));
 	}
 
 /**
@@ -84,110 +129,84 @@ class ApiQueryLogTest extends TestCase {
 	public function testBeforeRenderDebugTwo() {
 		Configure::write('debug', 2);
 
-		$Request = $this->getMock('\Cake\Network\Request', array('is'));
-		$Request
-			->expects($this->once())
-			->method('is')
-			->will($this->returnValue(false));
-
-		$Crud = $this->getMock('stdClass', array('action'));
-		$Crud
-			->expects($this->never())
-			->method('action');
-
-		$Instance = new ApiQueryLogListener(new CrudSubject(array('request' => $Request, 'crud' => $Crud)));
-		$Instance->beforeRender(new CakeEvent('something'));
-	}
-
-/**
- * Test that calling beforeRender with debug 2
- * will ask for request type and set the serialize configuration
- * since it's an API request
- *
- * @covers ApiQueryLogListener::beforeRender
- * @return void
- */
-	public function testBeforeRenderDebugTwoAsApi() {
-		Configure::write('debug', 2);
-
-		$Request = $this->getMock('\Cake\Network\Request', array('is'));
-		$Request
-			->expects($this->once())
-			->method('is')
-			->will($this->returnValue(true));
-
-		$Controller = $this->getMock('stdClass', array('set'));
-		$Controller
-			->expects($this->once())
-			->method('set')
-			->with('queryLog');
-
-		$Action = $this->getMock('stdClass', array('config'));
+		$Action = $this
+			->getMockBuilder('\Crud\Action\Base')
+			->disableOriginalConstructor()
+			->setMethods(['config'])
+			->getMock();
 		$Action
 			->expects($this->once())
 			->method('config')
 			->with('serialize.queryLog', 'queryLog');
 
-		$Crud = $this->getMock('stdClass', array('action'));
-		$Crud
+		$Controller = $this
+			->getMockBuilder('\Cake\Controller\Controller')
+			->disableOriginalConstructor()
+			->setMethods(['set'])
+			->getMock();
+		$Controller
 			->expects($this->once())
-			->method('action')
-			->will($this->returnValue($Action));
+			->method('set')
+			->with('queryLog', []);
 
-		$CrudSubject = new CrudSubject(array('request' => $Request, 'crud' => $Crud, 'controller' => $Controller));
-
-		$Instance = $this->getMock('ApiQueryLogListener', array('_getQueryLogs'), array($CrudSubject));
+		$Instance = $this
+			->getMockBuilder('\Crud\Listener\ApiQueryLog')
+			->disableOriginalConstructor()
+			->setMethods(['_getQueryLogs', '_action', '_controller'])
+			->getMock();
 		$Instance
 			->expects($this->once())
-			->method('_getQueryLogs');
+			->method('_action')
+			->will($this->returnValue($Action));
+		$Instance
+			->expects($this->once())
+			->method('_controller')
+			->will($this->returnValue($Controller));
+		$Instance
+			->expects($this->once())
+			->method('_getQueryLogs')
+			->will($this->returnValue([]));
 
-		$Instance->beforeRender(new CakeEvent('something'));
+		$Instance->beforeRender(new \Cake\Event\Event('something'));
 	}
 
 /**
- * Check if get query logs method works as expected
+ * Test setting up the query loggers
  *
- * @covers ApiQueryLogListener::_getQueryLogs
+ * @covers ApiQueryLogListener::setupLogging
  * @return void
  */
-	public function testGetQueryLogs() {
-		// Implements getLog, should be called
-		$defaultSource = $this->getMock('stdClass', array('getLog'));
-		$defaultSource
+	public function testSetupLogging() {
+		$DefaultSource = $this
+			->getMockBuilder('\Cake\Database\Connection')
+			->disableOriginalConstructor()
+			->setMethods(['logQueries', 'logger'])
+			->getMock();
+		$DefaultSource
 			->expects($this->once())
-			->method('getLog')
-			->with(false, false)
-			->will($this->returnValue(array()));
+			->method('logQueries')
+			->with(true);
+		$DefaultSource
+			->expects($this->once())
+			->method('logger')
+			->with($this->isInstanceOf('\Crud\Log\QueryLogger'));
 
-		// Does not implement getLog, should not be called
-		$testSource = $this->getMock('stdClass', array());
-		$testSource
-			->expects($this->never())
-			->method('getLog');
-
-		$Instance = $this->getMock('ApiQueryLogListener', array('_getSources', '_getSource'), array(new CrudSubject()));
+		$Instance = $this
+			->getMockBuilder('\Crud\Listener\ApiQueryLog')
+			->disableOriginalConstructor()
+			->setMethods(['_getSources', '_getSource'])
+			->getMock();
 		$Instance
-			->expects($this->at(0))
+			->expects($this->once())
 			->method('_getSources')
-			->will($this->returnValue(array('default', 'test')));
+			->will($this->returnValue(['default']));
 		$Instance
-			->expects($this->at(1))
+			->expects($this->any())
 			->method('_getSource')
 			->with('default')
-			->will($this->returnValue($defaultSource));
-		$Instance
-			->expects($this->at(2))
-			->method('_getSource')
-			->with('test')
-			->will($this->returnValue($testSource));
+			->will($this->returnValue($DefaultSource));
 
-		$Method = new ReflectionMethod($Instance, '_getQueryLogs');
-		$Method->setAccessible(true);
-
-		$result = $Method->invoke($Instance);
-		$expected = array('default' => array());
-
-		$this->assertEquals($expected, $result);
+		$Instance->setupLogging(new \Cake\Event\Event('something'));
 	}
 
 }

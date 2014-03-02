@@ -68,4 +68,14 @@ abstract class Object extends \Cake\Core\Object implements EventListener {
 		return $this->_settings['name'];
 	}
 
+/**
+ * Convenient method for Request::is
+ *
+ * @param  string|array $method
+ * @return boolean
+ */
+	protected function _checkRequestType($method) {
+		return $this->_request->is($method);
+	}
+
 }

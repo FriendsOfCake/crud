@@ -1,5 +1,4 @@
 <?php
-
 namespace Crud\Listener;
 
 use Cake\Core\Configure;
@@ -28,7 +27,7 @@ class ApiQueryLog extends Base {
  * @return array
  */
 	public function implementedEvents() {
-		if (!$this->_request()->is('api')) {
+		if (!$this->_checkRequestType('api')) {
 			return [];
 		}
 
@@ -62,17 +61,8 @@ class ApiQueryLog extends Base {
 			return;
 		}
 
-		if (!$this->_request()->is('api')) {
-			return;
-		}
-
-		$this
-			->_action()
-			->config('serialize.queryLog', 'queryLog');
-
-		$this
-			->_controller()
-			->set('queryLog', $this->_getQueryLogs());
+		$this->_action()->config('serialize.queryLog', 'queryLog');
+		$this->_controller()->set('queryLog', $this->_getQueryLogs());
 	}
 
 /**
@@ -81,11 +71,8 @@ class ApiQueryLog extends Base {
  * @return array
  */
 	protected function _getQueryLogs() {
-		if (!class_exists('Cake\Datasource\ConnectionManager', false)) {
-			return [];
-		}
-
 		$sources = $this->_getSources();
+
 		$queryLog = [];
 		foreach ($sources as $source) {
 			$queryLog[$source] = $this->_getSource($source)->logger()->getLogs();
