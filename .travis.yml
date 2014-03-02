@@ -6,7 +6,7 @@ php:
 
 before_script:
   - composer install --dev
-  - mv phpunit.xml.dist phpunit.xml
+  - cp phpunit.xml.dist phpunit.xml
 
 script:
   - phpunit Test/TestCase/ActionsTest.php
