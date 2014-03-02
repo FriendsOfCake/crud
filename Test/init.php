@@ -6,3 +6,5 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 Cake\Core\Configure::write('App', [
 	'namespace' => 'App'
 ]);
+
+Cake\Core\Plugin::load('Crud');
