@@ -28,7 +28,7 @@ the ``implementedEvents()`` method or extend ``\Crud\Listener\Base``.
 
 Below is the code for a simple CRUD listener.
 
-In the new few sections we will walk through the code and explain how it works,
+In the next few sections we will walk through the code and explain how it works,
 and what every single line of code does.
 
 For each section, the relevant lines of code will be highlighted.

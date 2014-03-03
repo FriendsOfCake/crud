@@ -20,7 +20,7 @@ The Anatomy Of An Action
 
 Below is the code for the :doc:`Index Crud Action<actions/index>`
 
-In the new few sections we will walk through the code and explain how it works,
+In the next few sections we will walk through the code and explain how it works,
 and what every single line of code does.
 
 For each section, the relevant lines of code will be highlighted.
