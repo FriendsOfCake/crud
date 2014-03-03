@@ -7,13 +7,13 @@ Actions
 	``Delete`` actions,	so you do not need to implement these on your own.
 	You can find the documentation for these actions in the menu to the left.
 
-Actions are the backbone of Crud - this is where most of the logic happens.
+Actions are the backbone of CRUD - this is where most of the logic happens.
 
 A ``Crud Action`` contains more or less the exact same code as a normal
 controller action.
 
-The main difference between your normal Controller actions and a Crud Action
-is that the Crud Action is highly generic and flexible.
+The main difference between your normal Controller actions and a CRUD Action
+is that the CRUD Action is highly generic and flexible.
 
 The Anatomy Of An Action
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -35,7 +35,8 @@ Class And Namespace
 
 All build-in actions in Crud live in the ``Crud\Action`` namespace.
 
-All actions in Crud, even your own, should inherit from the ``Base`` class.
+All actions in Crud, even your own, should inherit from the
+``Crud\Action\Base`` class.
 This class is ``abstract`` and provides numerous auxiliary methods which can be
 useful for you both as a developer as an action creator.
 

@@ -1,5 +1,4 @@
 <?php
-
 namespace Crud\Listener;
 
 use Crud\Core\Object;

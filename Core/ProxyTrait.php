@@ -82,6 +82,18 @@ trait ProxyTrait {
 		return $this->_controller()->request;
 	}
 
+/**
+ * Proxy method for `$this->_controller()->response`
+ *
+ * Primarily here to ease unit testing
+ *
+ * @codeCoverageIgnore
+ * @return \Cake\Network\Response
+ */
+	protected function _response() {
+		return $this->_controller()->response;
+	}
+
 	protected function _repository() {
 		return $this->_crud()->table();
 	}
