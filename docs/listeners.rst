@@ -23,7 +23,7 @@ CakePHP, and all the official documentation and usage also applies to CRUD.
 The CRUD event system uses two methods ``trigger()`` and ``on()`` to interface
 the underlying CakePHP event system.
 
-The only hard requirement for a CRUD listener is that it need to either implement
+The only hard requirement for a CRUD listener is that it needs to either implement
 the ``implementedEvents()`` method or extend ``\Crud\Listener\Base``.
 
 Below is the code for a simple CRUD listener.
@@ -40,12 +40,12 @@ For each section, the relevant lines of code will be highlighted.
 Class And Namespace
 -------------------
 
-All build-in listeners in CRUD live in the ``Crud\Listener`` namespace.
+All built-in listeners in CRUD live in the ``Crud\Listener`` namespace.
 
 All listeners in CRUD, even your own, should inherit from the
 ``Crud\Listener\Base`` class.
 This class is ``abstract`` and provides numerous auxiliary methods which can be
-useful for you both as a developer as an action creator.
+useful for you both as a developer and as an action creator.
 
 .. literalinclude:: _code/listener_example.php
    :language: php
@@ -72,7 +72,7 @@ every time a ``Crud.beforeRender`` event is emitted.
 	same name, but ``Crud.beforeRender`` is called first, and can halt the entire
 	rendering process
 
-The callback
+The Callback
 ------------
 
 This method gets executed every time a ``Crud.beforeRender`` event is emitted
