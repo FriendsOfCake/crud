@@ -25,3 +25,16 @@ If a record is found the ``Crud.afterFind`` is emitted.
 .. warning::
 
 	If no record is found in the database, the :doc:`Crud.recordNotFound` event is emitted instead of ``Crud.afterFind``.
+
+Add conditions
+--------------
+
+.. code-block:: phpinline
+
+	public function delete($id) {
+		$this->Crud->on('beforeFind', function(\Cake\Event\Event $event) {
+			$event->subject->query->where(['author' => $this->Auth->user('id')]);
+		});
+
+		return $this->Crud->execute();
+	}

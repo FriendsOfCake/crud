@@ -7,3 +7,20 @@ The :ref:`Crud Subject <crud-subject>` contains two keys:
 
 - ``id`` The ID that was originally passed to the action and are usually the primary key of your model.
 - ``item`` The record that was found in the database.
+
+.. note::
+
+	If an entity is not found, the ``RecordNotFound`` event is emitted instead.
+
+Log found item
+--------------
+
+.. code-block:: phpinline
+
+	public function delete($id) {
+		$this->Crud->on('afterFind', function(\Cake\Event\Event $event) {
+			$this->log("Found item: $event->subject->item->id in the database");
+		});
+
+		return $this->Crud->execute();
+	}
