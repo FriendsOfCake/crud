@@ -26,7 +26,7 @@ If a record is found the ``Crud.afterFind`` event is emitted.
 
 	If no record is found in the database, the :doc:`Crud.recordNotFound` event is emitted instead of ``Crud.afterFind``.
 
-Add Donditions
+Add Conditions
 --------------
 
 .. code-block:: phpinline
