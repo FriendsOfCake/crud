@@ -1,11 +1,11 @@
 Crud.afterPaginate
 ^^^^^^^^^^^^^^^^^^
 
-This event is triggered right after the call to ``Controller::paginate()``.
+This event is emitted right after the call to ``Controller::paginate()``.
 
-The ``items`` property of event object contains all the database record found in the pagination call.
+The ``items`` property of the event object contains all the database records found in the pagination call.
 
-Modify the result
+Modify the Result
 -----------------
 
 .. code-block:: phpinline

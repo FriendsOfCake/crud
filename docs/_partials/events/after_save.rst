@@ -3,9 +3,9 @@ Crud.afterSave
 
 .. note::
 
-	Do not confuse this event with the ``afterSave`` callback in the ORM layer
+	Do not confuse this event with the ``afterSave`` callback in the ORM layer.
 
-This event is triggered right after the call to ``Table::save()``.
+This event is emitted right after the call to ``Table::save()``.
 
 The :ref:`Crud Subject <crud-subject>` contains the following keys:
 
@@ -14,7 +14,7 @@ The :ref:`Crud Subject <crud-subject>` contains the following keys:
 - **created** ``true`` if the record was ``created`` and ``false`` if the record was ``updated``.
 - **item** An ``entity`` object marshaled with the ``HTTP POST`` data from the request and the ``save()`` logic.
 
-Check created status
+Check Created Status
 --------------------
 
 .. code-block:: phpinline
@@ -31,7 +31,7 @@ Check created status
 		return $this->Crud->execute();
 	}
 
-Check success status
+Check Success Status
 --------------------
 
 .. code-block:: phpinline
@@ -48,7 +48,7 @@ Check success status
 		return $this->Crud->execute();
 	}
 
-Get entity ID
+Get Entity ID
 -------------
 
 .. code-block:: phpinline

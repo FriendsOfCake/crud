@@ -1,9 +1,9 @@
 Crud.beforePaginate
 ^^^^^^^^^^^^^^^^^^^
 
-Triggered before ``Controller::paginate()`` is called.
+This event is emitted before ``Controller::paginate()`` is called.
 
-Add conditions
+Add Conditions
 --------------
 
 .. code-block:: phpinline
