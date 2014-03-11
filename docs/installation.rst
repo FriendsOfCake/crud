@@ -53,6 +53,7 @@ easier to keep up to date with development that way:
 .. code-block:: sh
 
 		git submodule add git://github.com/FriendsOfCake/crud.git Plugin/Crud
+		cd Plugin/Crud
 		git checkout cake3
 
 
