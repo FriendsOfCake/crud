@@ -1,12 +1,12 @@
 Crud.beforeFind
 ^^^^^^^^^^^^^^^
 
-The event is triggered before calling the find method in the table.
+The event is emitted before calling the find method in the table.
 
 The :ref:`Crud Subject <crud-subject>` contains the following keys:
 
 - **id** The ID that was originally passed to the action and usually the primary key value of your table.
-- **repository** An instance of the ``Repository`` (``Table``) the query will be executed against.
+- **repository** An instance of the ``Repository`` (``Table``) which the query will be executed against.
 - **query** A ``Query`` object from the ``Repository`` where ``$PrimaryKey => $IdFromRequest`` is already added to the conditions.
 
 This is the last place you can modify the query before it's executed against the database.
@@ -20,13 +20,13 @@ This is the last place you can modify the query before it's executed against the
 
 After the event has emitted, the database query is executed with ``LIMIT 1``.
 
-If a record is found the ``Crud.afterFind`` is emitted.
+If a record is found the ``Crud.afterFind`` event is emitted.
 
 .. warning::
 
 	If no record is found in the database, the :doc:`Crud.recordNotFound` event is emitted instead of ``Crud.afterFind``.
 
-Add conditions
+Add Conditions
 --------------
 
 .. code-block:: phpinline

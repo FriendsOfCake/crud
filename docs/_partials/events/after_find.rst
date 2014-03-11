@@ -5,15 +5,15 @@ After the query has been executed, and a record has been found this event is emi
 
 The :ref:`Crud Subject <crud-subject>` contains two keys:
 
-- ``id`` The ID that was originally passed to the action and are usually the primary key of your model.
+- ``id`` The ID that was originally passed to the action and is usually the primary key of your model.
 - ``item`` The record that was found in the database.
 
 .. note::
 
 	If an entity is not found, the ``RecordNotFound`` event is emitted instead.
 
-Log found item
---------------
+Logging the Found Item
+----------------------
 
 .. code-block:: phpinline
 
