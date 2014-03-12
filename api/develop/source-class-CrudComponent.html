@@ -8,7 +8,7 @@
 	<title>File Controller/Component/CrudComponent.php | FriendsOfCake/crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
-	<script type="text/javascript" src="elementlist.js?1410936603"></script>
+	<script type="text/javascript" src="elementlist.js?2412803428"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/bootstrap.min.css?260161822" />
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?2015443609" />
 
@@ -85,6 +85,8 @@
 				<li><a href="class-DebugKitListener.html">DebugKitListener</a></li>
 				<li><a href="class-DeleteCrudAction.html">DeleteCrudAction</a></li>
 				<li><a href="class-EditCrudAction.html">EditCrudAction</a></li>
+				<li><a href="class-FakeHeadFilter.html">FakeHeadFilter</a></li>
+				<li><a href="class-HttpMethodFilter.html">HttpMethodFilter</a></li>
 				<li><a href="class-IndexCrudAction.html">IndexCrudAction</a></li>
 				<li><a href="class-RedirectListener.html">RedirectListener</a></li>
 				<li><a href="class-RelatedModelsListener.html">RelatedModelsListener</a></li>
@@ -208,7 +210,7 @@
 </span></span><span id="96" class="l"><a class="l" href="#96"> 96 </a><span class="php-comment"> * By default no actions are enabled.
 </span></span><span id="97" class="l"><a class="l" href="#97"> 97 </a><span class="php-comment"> *
 </span></span><span id="98" class="l"><a class="l" href="#98"> 98 </a><span class="php-comment"> * `listeners` List of internal-name =&gt; ${plugin}.${class} listeners
-</span></span><span id="99" class="l"><a class="l" href="#99"> 99 </a><span class="php-comment"> * that will be bound automatically in Crud. By default the related model event
+</span></span><span id="99" class="l"><a class="l" href="#99"> 99 </a><span class="php-comment"> * that will be bound automatically in Crud. By default the related models' events
 </span></span><span id="100" class="l"><a class="l" href="#100">100 </a><span class="php-comment"> * are bound. Events will always assume to be in the Controller/Event folder.
 </span></span><span id="101" class="l"><a class="l" href="#101">101 </a><span class="php-comment"> *
 </span></span><span id="102" class="l"><a class="l" href="#102">102 </a><span class="php-comment"> * `eventLogging` boolean to determine whether the class should log triggered events.
@@ -384,7 +386,7 @@
 </span><span id="272" class="l"><a class="l" href="#272">272 </a><span class="php-comment">/**
 </span></span><span id="273" class="l"><a class="l" href="#273">273 </a><span class="php-comment"> * Map the view file to use for a controller action.
 </span></span><span id="274" class="l"><a class="l" href="#274">274 </a><span class="php-comment"> *
-</span></span><span id="275" class="l"><a class="l" href="#275">275 </a><span class="php-comment"> * To map multiple action views in one go pass an array as first argument and no second argument.
+</span></span><span id="275" class="l"><a class="l" href="#275">275 </a><span class="php-comment"> * To map multiple action views in one go pass an array as the first argument with no second argument.
 </span></span><span id="276" class="l"><a class="l" href="#276">276 </a><span class="php-comment"> *
 </span></span><span id="277" class="l"><a class="l" href="#277">277 </a><span class="php-comment"> * @param string|array $action
 </span></span><span id="278" class="l"><a class="l" href="#278">278 </a><span class="php-comment"> * @param string $view
@@ -405,7 +407,7 @@
 </span><span id="293" class="l"><a class="l" href="#293">293 </a><span class="php-comment">/**
 </span></span><span id="294" class="l"><a class="l" href="#294">294 </a><span class="php-comment"> * Change the viewVar name for one or multiple actions.
 </span></span><span id="295" class="l"><a class="l" href="#295">295 </a><span class="php-comment"> *
-</span></span><span id="296" class="l"><a class="l" href="#296">296 </a><span class="php-comment"> * To map multiple action viewVars in one go pass an array as first argument and no second argument.
+</span></span><span id="296" class="l"><a class="l" href="#296">296 </a><span class="php-comment"> * To map multiple action viewVars in one go pass an array as the first argument with no second argument.
 </span></span><span id="297" class="l"><a class="l" href="#297">297 </a><span class="php-comment"> *
 </span></span><span id="298" class="l"><a class="l" href="#298">298 </a><span class="php-comment"> * @param string|array $action
 </span></span><span id="299" class="l"><a class="l" href="#299">299 </a><span class="php-comment"> * @param string $viewVar
@@ -426,7 +428,7 @@
 </span><span id="314" class="l"><a class="l" href="#314">314 </a><span class="php-comment">/**
 </span></span><span id="315" class="l"><a class="l" href="#315">315 </a><span class="php-comment"> * Map a controller action to a Model::find($method).
 </span></span><span id="316" class="l"><a class="l" href="#316">316 </a><span class="php-comment"> *
-</span></span><span id="317" class="l"><a class="l" href="#317">317 </a><span class="php-comment"> * To map multiple findMethods in one go pass an array as first argument and no second argument.
+</span></span><span id="317" class="l"><a class="l" href="#317">317 </a><span class="php-comment"> * To map multiple findMethods in one go pass an array as the first argument with no second argument.
 </span></span><span id="318" class="l"><a class="l" href="#318">318 </a><span class="php-comment"> *
 </span></span><span id="319" class="l"><a class="l" href="#319">319 </a><span class="php-comment"> * @param string|array $action
 </span></span><span id="320" class="l"><a class="l" href="#320">320 </a><span class="php-comment"> * @param string $method
@@ -563,11 +565,11 @@
 </span><span id="451" class="l"><a class="l" href="#451">451 </a>    }
 </span><span id="452" class="l"><a class="l" href="#452">452 </a>
 </span><span id="453" class="l"><a class="l" href="#453">453 </a><span class="php-comment">/**
-</span></span><span id="454" class="l"><a class="l" href="#454">454 </a><span class="php-comment"> * Triggers a Crud event by creating a new subject and filling it with $data
+</span></span><span id="454" class="l"><a class="l" href="#454">454 </a><span class="php-comment"> * Triggers a Crud event by creating a new subject and filling it with $data,
 </span></span><span id="455" class="l"><a class="l" href="#455">455 </a><span class="php-comment"> * if $data is an instance of CrudSubject it will be reused as the subject
 </span></span><span id="456" class="l"><a class="l" href="#456">456 </a><span class="php-comment"> * object for this event.
 </span></span><span id="457" class="l"><a class="l" href="#457">457 </a><span class="php-comment"> *
-</span></span><span id="458" class="l"><a class="l" href="#458">458 </a><span class="php-comment"> * If Event listeners return a CakeResponse object, the this method will throw an
+</span></span><span id="458" class="l"><a class="l" href="#458">458 </a><span class="php-comment"> * If Event listeners return a CakeResponse object this method will throw an
 </span></span><span id="459" class="l"><a class="l" href="#459">459 </a><span class="php-comment"> * exception and fill a 'response' property on it with a reference to the response
 </span></span><span id="460" class="l"><a class="l" href="#460">460 </a><span class="php-comment"> * object.
 </span></span><span id="461" class="l"><a class="l" href="#461">461 </a><span class="php-comment"> *
@@ -670,11 +672,11 @@
 </span><span id="558" class="l"><a class="l" href="#558">558 </a><span class="php-comment">/**
 </span></span><span id="559" class="l"><a class="l" href="#559">559 </a><span class="php-comment"> * Set or get defaults for listeners and actions.
 </span></span><span id="560" class="l"><a class="l" href="#560">560 </a><span class="php-comment"> *
-</span></span><span id="561" class="l"><a class="l" href="#561">561 </a><span class="php-comment"> * @param string $type Can be anything, but 'listeners' or 'actions' is currently only used.
+</span></span><span id="561" class="l"><a class="l" href="#561">561 </a><span class="php-comment"> * @param string $type Can be anything, but 'listeners' or 'actions' are only currently used.
 </span></span><span id="562" class="l"><a class="l" href="#562">562 </a><span class="php-comment"> * @param string|array $name The name of the $type - e.g. 'api', 'relatedModels'
 </span></span><span id="563" class="l"><a class="l" href="#563">563 </a><span class="php-comment"> *  or an array ('api', 'relatedModels'). If $name is an array, the $config will be applied
 </span></span><span id="564" class="l"><a class="l" href="#564">564 </a><span class="php-comment"> *  to each entry in the $name array.
-</span></span><span id="565" class="l"><a class="l" href="#565">565 </a><span class="php-comment"> * @param mixed $config If NULL, the defaults is returned, else the defaults are changed.
+</span></span><span id="565" class="l"><a class="l" href="#565">565 </a><span class="php-comment"> * @param mixed $config If NULL, the defaults are returned, else the defaults are changed.
 </span></span><span id="566" class="l"><a class="l" href="#566">566 </a><span class="php-comment"> * @return mixed
 </span></span><span id="567" class="l"><a class="l" href="#567">567 </a><span class="php-comment"> */</span>
 </span><span id="568" class="l"><a class="l" href="#568">568 </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_defaults" href="#_defaults">defaults</a>(<span class="php-var">$type</span>, <span class="php-var">$name</span>, <span class="php-var">$config</span> = <span class="php-keyword1">null</span>) {
