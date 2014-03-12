@@ -4,6 +4,10 @@
 [![Total Downloads](https://poser.pugx.org/FriendsOfCake/crud/d/total.png)](https://packagist.org/packages/FriendsOfCake/crud)
 [![Latest Stable Version](https://poser.pugx.org/FriendsOfCake/crud/v/stable.png)](https://packagist.org/packages/FriendsOfCake/crud)
 
+# Version notice
+
+The master and develop branches only works for CakePHP 2.x - please use the [cake3 branch](https://github.com/FriendsOfCake/crud/tree/cake3) for CakePHP 3.x
+
 # Introduction
 
 Crud was built to be [scaffolding](http://book.cakephp.org/2.0/en/controllers/scaffolding.html) on
