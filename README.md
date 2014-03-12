@@ -3,15 +3,19 @@
 [![Total Downloads](https://poser.pugx.org/FriendsOfCake/crud/d/total.png)](https://packagist.org/packages/FriendsOfCake/crud)
 [![Latest Stable Version](https://poser.pugx.org/FriendsOfCake/crud/v/stable.png)](https://packagist.org/packages/FriendsOfCake/crud)
 
+# Version notice
+
+This cake3 branch only works for **cake3** - please use the master or develop branch for cakephp 2.x
+
 # Introduction
 
 Crud was built to be [scaffolding](http://book.cakephp.org/2.0/en/controllers/scaffolding.html) on
 steroids, and allow developers to have enough flexibility to use it for both rapid prototyping and
 production applications, even on the same code base -- saving you time.
 
-* Crud is [very fast to install](http://friendsofcake.com/crud/docs/installation.html), a few minutes tops.
+* Crud is [very fast to install](http://crud.readthedocs.org/en/latest/installation.html), a few minutes tops.
 
-* Crud is very flexible and has tons of [configuration options](http://friendsofcake.com/crud/docs/configuration.html).
+* Crud is very flexible and has tons of [configuration options](http://crud.readthedocs.org/en/latest/configuration.html).
 
 * Crud aims to stay out of your way, and if it happens to get in your way, you can change the undesired
 behavior very easily.
@@ -29,10 +33,10 @@ needed specifically for your business logic, outsourcing all the heavy boilerpla
 * Less boilerplate code means less code to maintain, and less code to spend time unit testing.
 
 * Crud allows you to use your own views, baked or hand-crafted, in addition to adding the
-code needed to fulfill your application logic, using [events](http://friendsofcake.com/crud/docs/events.html). It is
+code needed to fulfill your application logic, using [events](http://crud.readthedocs.org/en/latest/events.html). It is
 by default compatible with CakePHP's baked views.
 
-* Crud also provides built in features for JSON and XML [API](http://friendsofcake.com/crud/docs/listeners/api.html)
+* Crud also provides built in features for JSON and XML [API](http://crud.readthedocs.org/en/latest/listeners/api.html)
 for any action you have enabled through Crud, which eliminates maintaining both a
 HTML frontend and a JSON and/or XML interface for your applications -- saving you tons of time and
 having a leaner code base.
