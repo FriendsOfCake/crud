@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="generator" content="ApiGen 2.8.0" />
 
-	<title>Class CrudListener | FriendsOfCake/crud (develop)</title>
+	<title>Class HttpMethodFilter | FriendsOfCake/crud (develop)</title>
 
 	<script type="text/javascript" src="resources/combined.js?2215515190"></script>
 	<script type="text/javascript" src="elementlist.js?2412803428"></script>
@@ -75,7 +75,7 @@
 				<li><a href="class-CrudComponent.html">CrudComponent</a></li>
 				<li><a href="class-CrudExceptionRenderer.html">CrudExceptionRenderer</a></li>
 				<li><a href="class-CrudJsonView.html">CrudJsonView</a></li>
-				<li class="active"><a href="class-CrudListener.html">CrudListener</a></li>
+				<li><a href="class-CrudListener.html">CrudListener</a></li>
 				<li><a href="class-CrudPanel.html">CrudPanel</a></li>
 				<li><a href="class-CrudSubject.html">CrudSubject</a></li>
 				<li><a href="class-CrudValidationException.html">CrudValidationException</a></li>
@@ -84,7 +84,7 @@
 				<li><a href="class-DeleteCrudAction.html">DeleteCrudAction</a></li>
 				<li><a href="class-EditCrudAction.html">EditCrudAction</a></li>
 				<li><a href="class-FakeHeadFilter.html">FakeHeadFilter</a></li>
-				<li><a href="class-HttpMethodFilter.html">HttpMethodFilter</a></li>
+				<li class="active"><a href="class-HttpMethodFilter.html">HttpMethodFilter</a></li>
 				<li><a href="class-IndexCrudAction.html">IndexCrudAction</a></li>
 				<li><a href="class-RedirectListener.html">RedirectListener</a></li>
 				<li><a href="class-RelatedModelsListener.html">RelatedModelsListener</a></li>
@@ -111,57 +111,32 @@
 <div id="right">
 	<div id="rightInner">
 <div id="content" class="class">
-	<h1>Class CrudListener</h1>
+	<h1>Class HttpMethodFilter</h1>
 
 
 	<div class="description">
 	
-<p>The Base Crud Listener</p>
+<p>HttpMethodFilter</p>
 
-<p>Licensed under The MIT License For full copyright and license information,
-please see the LICENSE.txt</p>
+<p>Automatically handle OPTIONS and HEAD requests</p>
 
 	</div>
 
 	<dl class="tree well">
 		<dd style="padding-left:0px">
-Object
+DispatcherFilter
 			
 			
 		</dd>
 		<dd style="padding-left:30px">
 			<img src="resources/inherit.png" alt="Extended by" />
-			<a href="class-CrudBaseObject.html"><span>CrudBaseObject</span></a>
-			
-			 implements 
-<span>CakeEventListener</span>
-			
-			
-		</dd>
-		<dd style="padding-left:60px">
-			<img src="resources/inherit.png" alt="Extended by" />
-<b><span>CrudListener</span></b>			
+<b><span>HttpMethodFilter</span></b>			
 			
 			
 		</dd>
 	</dl>
 
 
-	<div>
-		<h3>Direct known subclasses</h3>
-		<p class="elementList">
-			<code><a href="class-ApiFieldFilterListener.html">ApiFieldFilterListener</a></code>, 
-			<code><a href="class-ApiListener.html">ApiListener</a></code>, 
-			<code><a href="class-ApiPaginationListener.html">ApiPaginationListener</a></code>, 
-			<code><a href="class-ApiQueryLogListener.html">ApiQueryLogListener</a></code>, 
-			<code><a href="class-ApiTransformationListener.html">ApiTransformationListener</a></code>, 
-			<code><a href="class-DebugKitListener.html">DebugKitListener</a></code>, 
-			<code><a href="class-RedirectListener.html">RedirectListener</a></code>, 
-			<code><a href="class-RelatedModelsListener.html">RelatedModelsListener</a></code>, 
-			<code><a href="class-ScaffoldListener.html">ScaffoldListener</a></code>, 
-			<code><a href="class-SearchListener.html">SearchListener</a></code>
-		</p>
-	</div>
 
 
 
@@ -169,99 +144,112 @@ Object
 
 
 	<div class="alert alert-info">
-		<b>Abstract</b><br />
+		
 		
 		
 		
 
-				<b>CodeCoverageIgnore</b>
-				<br />
-		<b>Located at</b> <a href="source-class-CrudListener.html#5-67" title="Go to source code">Controller/Crud/CrudListener.php</a><br />
+		<b>Located at</b> <a href="source-class-HttpMethodFilter.html#5-104" title="Go to source code">Routing/Filter/HttpMethodFilter.php</a><br />
 	</div>
 
 
 
 		<h2>Methods summary</h2>
 		<table class="summary table table-bordered table-striped" id="methods">
-		<tr data-order="implementedEvents" id="_implementedEvents">
+		<tr data-order="beforeDispatch" id="_beforeDispatch">
 
 			<td class="attributes"><code>
 				 public 
-				array
+				CakeResponse|null
 				
 				</code>
 			</td>
 
 			<td class="name"><div>
-			<a class="anchor" href="#_implementedEvents">#</a>
-			<code><a href="source-class-CrudListener.html#15-65" title="Go to source code">implementedEvents</a>( )</code>
+			<a class="anchor" href="#_beforeDispatch">#</a>
+			<code><a href="source-class-HttpMethodFilter.html#39-73" title="Go to source code">beforeDispatch</a>( <span>CakeEvent <var>$event</var></span> )</code>
 
 			<div class="description short">
 				
-<p>Returns a list of all events that will fire in the controller during its life
-cycle. You can override this function to add you own listener callbacks.</p>
+<p>Handle OPTIONS requests</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
-<p>Returns a list of all events that will fire in the controller during its life
-cycle. You can override this function to add you own listener callbacks.</p>
+<p>Handle OPTIONS requests</p>
 
-<ul>
-	<li>initialize: Called at the same time as CrudComponent::initialize()</li>
-
-	<li>startup: Called at the same time as CrudComponent::startup()</li>
-
-	<li>beforeHandle : Called before CrudAction is executed</li>
-
-	<li>recordNotFound : Called if a find() did not return any records</li>
-
-	<li>beforePaginate : Called right before any paginate() method</li>
-
-	<li>afterPaginate : Called right after any paginate() method</li>
-
-	<li>invalidId : Called if the ID format validation failed</li>
-
-	<li>setFlash : Called before any CakeSession::setFlash()</li>
-</ul>
+<p>If it's an options request, loop on the configured http verbs and add an
+Access-Control-Allow-Methods header with the verbs the application is configured
+to respond to.</p>
 
 
 
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$event</var></dt>
+						<dd><code>CakeEvent</code><br>$event</dd>
+					</dl></div>
 
 					<h4>Returns</h4>
 					<div class="list">
-						<code>array</code><br />
+						<code>CakeResponse|null</code><br />
 					</div>
 
 
 
-					<h4>Overrides</h4>
-					<div class="list"><code><a href="class-CrudBaseObject.html#_implementedEvents">CrudBaseObject::implementedEvents</a></code></div>
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="afterDispatch" id="_afterDispatch">
+
+			<td class="attributes"><code>
+				 public 
+				CakeResponse|null
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_afterDispatch">#</a>
+			<code><a href="source-class-HttpMethodFilter.html#75-103" title="Go to source code">afterDispatch</a>( <span>CakeEvent <var>$event</var></span> )</code>
+
+			<div class="description short">
+				
+<p>Handle HEAD requests</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Handle HEAD requests</p>
+
+<p>A head request cannot have a body, if it hasn't been handled automatically
+it's assumed to have been handled as a GET request. Remove the body before
+responding, and add a content-length header</p>
+
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$event</var></dt>
+						<dd><code>CakeEvent</code><br>$event</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						<code>CakeResponse|null</code><br />
+					</div>
+
+
+
 
 			</div>
 			</div></td>
 		</tr>
 		</table>
 
-		<h3>Methods inherited from <a href="class-CrudBaseObject.html#methods">CrudBaseObject</a></h3>
-		<p class="elementList">
-			<code><a href="class-CrudBaseObject.html#___construct">__construct()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#__action">_action()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#__controller">_controller()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#__crud">_crud()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#__listener">_listener()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#__model">_model()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#__redirectUrl">_redirectUrl()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#__refererRedirectUrl">_refererRedirectUrl()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#__request">_request()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#__session">_session()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#__subject">_subject()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#__trigger">_trigger()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#__validationErrors">_validationErrors()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#_beforeHandle">beforeHandle()</a></code>, 
-			<code><a href="class-CrudBaseObject.html#_config">config()</a></code>
-		</p>
 
 
 		<h3>Magic methods summary</h3>
@@ -274,12 +262,67 @@ cycle. You can override this function to add you own listener callbacks.</p>
 
 
 		<h2>Properties summary</h2>
+		<table class="summary table table-bordered table-striped" id="properties">
+		<tr data-order="priority" id="$priority">
+			<td class="attributes"><code>
+				public  
+				integer
+			</code></td>
 
-		<h3>Properties inherited from <a href="class-CrudBaseObject.html#properties">CrudBaseObject</a></h3>
-		<p class="elementList">
-			<code><a href="class-CrudBaseObject.html#$_container"><var>$_container</var></a></code>, 
-			<code><a href="class-CrudBaseObject.html#$_settings"><var>$_settings</var></a></code>
-		</p>
+			<td class="name">
+					<a href="source-class-HttpMethodFilter.html#12-20" title="Go to source code"><var>$priority</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$priority" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>priority</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>priority</p>
+
+<p>Run last, allowing for another filter to add more headers to the response if
+necessary by running with a lower priority</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		<tr data-order="defaultVerbs" id="$defaultVerbs">
+			<td class="attributes"><code>
+				public  
+				array
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-HttpMethodFilter.html#22-37" title="Go to source code"><var>$defaultVerbs</var></a>
+			</td>
+			<td class="description"><div>
+				<a href="#$defaultVerbs" class="anchor">#</a>
+
+				<div class="description short">
+					
+<p>defaultVerbs</p>
+
+				</div>
+
+				<div class="description detailed hidden">
+					
+<p>defaultVerbs</p>
+
+<p>The list of verbs to check, if not overwritten by calling:<br />
+Configure::write('Crud.HttpMethodFilter.verbs', ['list', 'of', 'verbs']);</p>
+
+
+				</div>
+			</div></td>
+		</tr>
+		</table>
+
 
 
 
