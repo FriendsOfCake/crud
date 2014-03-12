@@ -161,6 +161,7 @@ class TestListener extends CrudListener {
 	public function setup() {
 		$this->callCount += 1;
 	}
+
 }
 
 /**

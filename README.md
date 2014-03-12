@@ -1,7 +1,12 @@
+[![Stories in Ready](https://badge.waffle.io/friendsofcake/crud.png?label=ready)](https://waffle.io/friendsofcake/crud)
 [![Build Status](https://travis-ci.org/FriendsOfCake/crud.png?branch=master)](https://travis-ci.org/FriendsOfCake/crud)
 [![Coverage Status](https://coveralls.io/repos/FriendsOfCake/crud/badge.png?branch=master)](https://coveralls.io/r/FriendsOfCake/crud?branch=master)
 [![Total Downloads](https://poser.pugx.org/FriendsOfCake/crud/d/total.png)](https://packagist.org/packages/FriendsOfCake/crud)
 [![Latest Stable Version](https://poser.pugx.org/FriendsOfCake/crud/v/stable.png)](https://packagist.org/packages/FriendsOfCake/crud)
+
+# Version notice
+
+The master and develop branches only works for CakePHP 2.x - please use the [cake3 branch](https://github.com/FriendsOfCake/crud/tree/cake3) for CakePHP 3.x
 
 # Introduction
 
