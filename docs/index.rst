@@ -1,30 +1,33 @@
-.. crud documentation master file, created by
-   sphinx-quickstart on Tue Jan 18 12:54:14 2011.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Introduction
 ============
 
-Crud was built to be http://book.cakephp.org/2.0/en/controllers/scaffolding.html on steroids, and allow developers to have enough flexibility to use it for both rapid prototyping and production applications, even on the same code base -- saving you time.
+CRUD was built to be `scaffolding <http://book.cakephp.org/2.0/en/controllers/scaffolding.html>`_
+on steroids, and allow developers to have enough flexibility to use it for both
+rapid prototyping and production applications, even on the same code base --
+saving you time.
 
-* Crud is :doc:`very fast to install</installation>`, a few minutes tops.
+Why Use Crud
+------------
 
-* Crud is very flexible and has tons of :doc:`configuration options</configuration>`.
+* CRUD is :doc:`very fast to install</installation>`, a few minutes tops.
 
-* Crud aims to stay out of your way, and if it happens to get in your way, you can change the undesired behavior very easily.
+* CRUD is very flexible and has tons of :doc:`configuration options</configuration>` (but very sane defaults, just like CakePHP).
 
-* Crud relies heavily on CakePHP events making it possible to override, extend, or disable almost all of Crud's functionality either globally or for one specific action.
+* CRUD aims to stay out of your way, and if it happens to get in your way, you can change the undesired behavior very easily.
 
-* Usually, the basic code for controller CRUD actions is very simple and always looks the same. Crud will add the actions to your controller so you don't have to reimplement them over and over again.
+* CRUD relies heavily on CakePHP events making it possible to override, extend, or disable almost all of CRUD's functionality either globally or for one specific action.
 
-* Crud does not have the same limitations as CakePHP's own scaffolding, which is "my way or the highway." Crud allows you to hook into all stages of a request, only building the controller code needed specifically for your business logic, outsourcing all the heavy boilerplating to Crud.
+* CRUD removes the boilerplate code from your controllers, which mean less code to maintain, and less code to spend time unit testing.
 
-* Less boilerplate code means less code to maintain, and less code to spend time unit testing.
+* CRUD will dynamically add the actions to your controller so you don't have to re-implement them over and over again.
 
-* Crud allows you to use your own views, baked or hand-crafted, in addition to adding the code needed to fulfill your application logic, using :doc:`events<events>`. It is by default compatible with CakePHP's baked views.
+* CRUD does not have the same limitations as CakePHP's own scaffolding, which is "my way or the highway." CRUD allows you to hook into all stages of a request, only building the controller code needed specifically for your business logic, outsourcing all the heavy boiler-plating to CRUD.
 
-* Crud also provides built in features for JSON and XML :doc:`APIs<listener/api>` for any action you have enabled through Crud, which eliminates maintaining both a HTML frontend and a JSON and/or XML interface for your applications -- saving you tons of time and having a leaner code base.
+* CRUD allows you to use your own views, baked or hand-crafted, in addition to adding the code needed to fulfill your application logic, using :doc:`events<events>`. It is by default compatible with CakePHP's baked views.
+
+* CRUD also provides built in features for JSON :doc:`API<listener/api>` for any action you have enabled through CRUD, which eliminates maintaining both a HTML frontend and a JSON and/or XML interface for your applications -- saving you tons of time and having a leaner code base.
+
+* CRUD uses the MIT license, just like CakePHP.
 
 Bugs
 ----

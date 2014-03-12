@@ -34,8 +34,8 @@ and what every single line of code does.
 For each section, the relevant lines of code will be highlighted.
 
 .. literalinclude:: _code/listener_example.php
-   :language: php
-   :linenos:
+	 :language: php
+	 :linenos:
 
 Class And Namespace
 -------------------
@@ -48,9 +48,9 @@ This class is ``abstract`` and provides numerous auxiliary methods which can be
 useful for you both as a developer and as an action creator.
 
 .. literalinclude:: _code/listener_example.php
-   :language: php
-   :linenos:
-   :emphasize-lines: 2-4, 28
+	 :language: php
+	 :linenos:
+	 :emphasize-lines: 2-4, 28
 
 Implemented Events
 ------------------
@@ -62,9 +62,9 @@ In this example, we simply request that ``beforeRender`` in our class is execute
 every time a ``Crud.beforeRender`` event is emitted.
 
 .. literalinclude:: _code/listener_example.php
-   :language: php
-   :linenos:
-   :emphasize-lines: 6-16
+	 :language: php
+	 :linenos:
+	 :emphasize-lines: 6-16
 
 .. note::
 
@@ -82,14 +82,18 @@ When the event is emitted, we append a header to the client HTTP response named
 ``X-Powered-By`` with the value ``CRUD 4.0``.
 
 .. literalinclude:: _code/listener_example.php
-   :language: php
-   :linenos:
-   :emphasize-lines: 18-26
+	 :language: php
+	 :linenos:
+	 :emphasize-lines: 18-26
 
 More on listeners
 ^^^^^^^^^^^^^^^^^
 
 .. toctree::
-	:glob:
 
-	listeners/*
+	listeners/api
+	listeners/api-pagination
+	listeners/api-query-log
+	listeners/redirect
+	listeners/related-models
+	listeners/custom

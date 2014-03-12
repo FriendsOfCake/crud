@@ -42,14 +42,14 @@ automatically.
 	<?php
 	class DemoController extends AppController {
 
-	  public $components = [
-	    'Crud.Crud' => [
-	      'actions' => [
-	        'add' => ['relatedModels' => ['Author']],
-	        'edit' => ['relatedModels' => ['Tag', 'Cms.Page']]
-	      ]
-	    ]
-	  ];
+		public $components = [
+			'Crud.Crud' => [
+				'actions' => [
+					'add' => ['relatedModels' => ['Author']],
+					'edit' => ['relatedModels' => ['Tag', 'Cms.Page']]
+				]
+			]
+		];
 
 	}
 
@@ -60,20 +60,20 @@ It’s possible to dynamically reconfigure the relatedModels listener
 	<?php
 	// This can be changed in beforeFilter and the controller action
 	public function beforeFilter() {
-	  // Automatically executes find('list') on the User ($users) and Tag ($tags) tables
-	  $this->Crud->listener('relatedModels')->relatedModels(['User', 'Tag'], 'your_action');
+		// Automatically executes find('list') on the User ($users) and Tag ($tags) tables
+		$this->Crud->listener('relatedModels')->relatedModels(['User', 'Tag'], 'your_action');
 
-	  // Automatically executes find('list') on the User ($users) table
-	  $this->Crud->listener('relatedModels')->relatedModels(['User'], 'your_action');
+		// Automatically executes find('list') on the User ($users) table
+		$this->Crud->listener('relatedModels')->relatedModels(['User'], 'your_action');
 
-	  // Fetch related data from all table relations (default)
-	  $this->Crud->listener(relatedModels')->relatedModels(true);
+		// Fetch related data from all table relations (default)
+		$this->Crud->listener('relatedModels')->relatedModels(true);
 
-	  // Don't fetch any related data
-	  $this->Crud->listener('relatedModels')->relatedModels(false);
+		// Don't fetch any related data
+		$this->Crud->listener('relatedModels')->relatedModels(false);
 
-	  // Get the current configuration
-	  $config = $this->Crud->listener('relatedModels')->relatedModels();
+		// Get the current configuration
+		$config = $this->Crud->listener('relatedModels')->relatedModels();
 	}
 
 Events
@@ -98,16 +98,16 @@ Example
 	<?php
 	class DemoController extends AppController {
 
-	  public function beforeFilter() {
-	    parent::beforeFilter();
+		public function beforeFilter() {
+			parent::beforeFilter();
 
-	    $this->Crud->on('relatedModel', function(\Cake\Event\Event $event) {
-	      if ($event->subject->name === 'Authors') {
-	        $event->subject->query->limit(3);
-	        $event->subject->query->where(['is_active' => true]);
-	      }
-	    });
+			$this->Crud->on('relatedModel', function(\Cake\Event\Event $event) {
+				if ($event->subject->name === 'Authors') {
+					$event->subject->query->limit(3);
+					$event->subject->query->where(['is_active' => true]);
+				}
+			});
 
-	  }
+		}
 
 	}

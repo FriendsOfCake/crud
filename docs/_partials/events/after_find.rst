@@ -10,17 +10,17 @@ The :ref:`Crud Subject <crud-subject>` contains two keys:
 
 .. note::
 
-	If an entity is not found, the ``RecordNotFound`` event is emitted instead.
+  If an entity is not found, the ``RecordNotFound`` event is emitted instead.
 
 Logging the Found Item
-----------------------
+""""""""""""""""""""""
 
 .. code-block:: phpinline
 
-	public function delete($id) {
-		$this->Crud->on('afterFind', function(\Cake\Event\Event $event) {
-			$this->log("Found item: $event->subject->item->id in the database");
-		});
+  public function delete($id) {
+    $this->Crud->on('afterFind', function(\Cake\Event\Event $event) {
+      $this->log("Found item: $event->subject->item->id in the database");
+    });
 
-		return $this->Crud->execute();
-	}
+    return $this->Crud->execute();
+  }

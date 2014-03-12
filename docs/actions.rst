@@ -1,5 +1,5 @@
 Actions
-=========
+=======
 
 .. note::
 
@@ -15,6 +15,17 @@ controller action.
 The main difference between your normal Controller actions and a CRUD Action
 is that the CRUD Action is highly generic and flexible.
 
+What Is An Action?
+^^^^^^^^^^^^^^^^^^
+
+A CRUD action roughly translates to a normal Controller action.
+
+The primary difference is that CRUD actions are made to be as generic and secure
+out of the box as possible.
+
+You can consider a CRUD action as a more flexible PHP trait that fits nicely
+withing the CakePHP eco system.
+
 The Anatomy Of An Action
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -26,8 +37,8 @@ and what every single line of code does.
 For each section, the relevant lines of code will be highlighted.
 
 .. literalinclude:: _code/action_index.php
-   :language: php
-   :linenos:
+	 :language: php
+	 :linenos:
 
 
 Class And Namespace
@@ -41,9 +52,9 @@ This class is ``abstract`` and provides numerous auxiliary methods which can be
 useful for you both as a developer as an action creator.
 
 .. literalinclude:: _code/action_index.php
-   :language: php
-   :linenos:
-   :emphasize-lines: 2-4, 25-27
+	 :language: php
+	 :linenos:
+	 :emphasize-lines: 2-4, 25-27
 
 Request Methods
 ---------------
@@ -57,9 +68,9 @@ If no HTTP verb specific method is found in the class, ``_handle()`` will be
 executed.
 
 .. literalinclude:: _code/action_index.php
-   :language: php
-   :linenos:
-   :emphasize-lines: 6-11,25
+	 :language: php
+	 :linenos:
+	 :emphasize-lines: 6-11,25
 
 You can treat the ``_handle()`` method as a catch-all, if your crud action
 wants to process all possible HTTP verbs.
@@ -92,9 +103,9 @@ of code is what makes your application unique. The rest of the code you would
 normally have is simply repeated boiler plate code.
 
 .. literalinclude:: _code/action_index.php
-   :language: php
-   :linenos:
-   :emphasize-lines: 12-15,19,21,24
+	 :language: php
+	 :linenos:
+	 :emphasize-lines: 12-15,19,21,24
 
 Boilerplate
 -----------
@@ -106,9 +117,9 @@ at first, the true power of this setup will be clear when your application
 grows and the requirements increase.
 
 .. literalinclude:: _code/action_index.php
-   :language: php
-   :linenos:
-   :emphasize-lines: 17,18,23
+	 :language: php
+	 :linenos:
+	 :emphasize-lines: 17,18,23
 
 For example adding an API layer to your application later in time will be
 non-trivial and time consuming if you do not use crud - especially if you have

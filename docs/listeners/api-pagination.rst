@@ -1,4 +1,4 @@
-Api Pagination
+API Pagination
 ==============
 
 .. note::
@@ -19,10 +19,10 @@ you want to attach it only to specific controllers and actions
 	<?php
 	class SamplesController extends AppController {
 
-	  public function beforeFilter() {
-	    $this->Crud->addListener('Crud.Api'); // Required
-	    $this->Crud->addListener('Crud.ApiPagination');
-	  }
+		public function beforeFilter() {
+			$this->Crud->addListener('Crud.Api'); // Required
+			$this->Crud->addListener('Crud.ApiPagination');
+		}
 
 	}
 
@@ -34,14 +34,14 @@ attach it to all controllers, application wide
 	<?php
 	class SamplesController extends AppController {
 
-	  public $components = [
-	    'RequestHandler',
-	    'Crud.Crud' => [
-	      'listeners' => [
-	      	'Crud.Api', // Required
-	      	'Crud.ApiPagination'
-	      ]
-	    ];
+		public $components = [
+			'RequestHandler',
+			'Crud.Crud' => [
+				'listeners' => [
+					'Crud.Api', // Required
+					'Crud.ApiPagination'
+				]
+			];
 
 	}
 

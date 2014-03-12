@@ -13,10 +13,10 @@ This is the last place you can modify the query before it's executed against the
 
 .. note::
 
-	**An example**
+  **An example**
 
-	Given the URL: ``/posts/view/10`` the ``repository`` object will be an instance of ``PostsTable`` and the ``query``
-	includes a ``WHERE`` condition with ``Posts.id = 10``
+  Given the URL: ``/posts/view/10`` the ``repository`` object will be an instance of ``PostsTable`` and the ``query``
+  includes a ``WHERE`` condition with ``Posts.id = 10``
 
 After the event has emitted, the database query is executed with ``LIMIT 1``.
 
@@ -24,17 +24,17 @@ If a record is found the ``Crud.afterFind`` event is emitted.
 
 .. warning::
 
-	If no record is found in the database, the :doc:`Crud.recordNotFound` event is emitted instead of ``Crud.afterFind``.
+  If no record is found in the database, the :doc:`Crud.recordNotFound` event is emitted instead of ``Crud.afterFind``.
 
 Add Conditions
---------------
+""""""""""""""
 
 .. code-block:: phpinline
 
-	public function delete($id) {
-		$this->Crud->on('beforeFind', function(\Cake\Event\Event $event) {
-			$event->subject->query->where(['author' => $this->Auth->user('id')]);
-		});
+  public function delete($id) {
+    $this->Crud->on('beforeFind', function(\Cake\Event\Event $event) {
+      $event->subject->query->where(['author' => $this->Auth->user('id')]);
+    });
 
-		return $this->Crud->execute();
-	}
+    return $this->Crud->execute();
+  }

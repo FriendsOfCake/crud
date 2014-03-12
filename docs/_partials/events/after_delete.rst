@@ -10,16 +10,16 @@ The :ref:`Crud Subject <crud-subject>` contains two keys:
 - **item** The record that was found in the database.
 
 Check Success
--------------
+"""""""""""""
 
 .. code-block:: phpinline
 
-	public function delete($id) {
-		$this->Crud->on('afterDelete', function(\Cake\Event\Event $event) {
-			if (!$event->subject->success) {
-				$this->log("Delete failed for entity $event->subject->id");
-			}
-		});
+  public function delete($id) {
+    $this->Crud->on('afterDelete', function(\Cake\Event\Event $event) {
+      if (!$event->subject->success) {
+        $this->log("Delete failed for entity $event->subject->id");
+      }
+    });
 
-		return $this->Crud->execute();
-	}
+    return $this->Crud->execute();
+  }
