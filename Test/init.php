@@ -1,12 +1,24 @@
 <?php
-define('DS', DIRECTORY_SEPARATOR);
-$root = dirname(dirname(__DIR__));
-if (!is_dir($root . '/vendor/cakephp/cakephp')) {
+function find_root() {
+	$root = dirname(__DIR__);
+	if (is_dir($root . '/vendor/cakephp/cakephp')) {
+		return $root;
+	}
+
+	$root = dirname(dirname(__DIR__));
+	if (is_dir($root . '/vendor/cakephp/cakephp')) {
+		return $root;
+	}
+
 	$root = dirname(dirname(dirname(__DIR__)));
+	if (is_dir($root . '/vendor/cakephp/cakephp')) {
+		return $root;
+	}
 }
 
-define('ROOT', $root);
-define('APP_DIR', basename($root));
+define('DS', DIRECTORY_SEPARATOR);
+define('ROOT', find_root());
+define('APP_DIR', basename(ROOT));
 define('WEBROOT_DIR', 'webroot');
 define('APP', ROOT . DS . APP_DIR . DS);
 define('WWW_ROOT', ROOT . DS . WEBROOT_DIR . DS);
