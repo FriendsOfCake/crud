@@ -1,7 +1,12 @@
 <?php
 define('DS', DIRECTORY_SEPARATOR);
-define('ROOT', dirname(dirname(__DIR__)));
-define('APP_DIR', basename(dirname(__DIR__)));
+$root = dirname(dirname(__DIR__));
+if (!is_dir($root . '/vendor/cakephp/cakephp')) {
+	$root = dirname(dirname(dirname(__DIR__)));
+}
+
+define('ROOT', $root);
+define('APP_DIR', basename($root));
 define('WEBROOT_DIR', 'webroot');
 define('APP', ROOT . DS . APP_DIR . DS);
 define('WWW_ROOT', ROOT . DS . WEBROOT_DIR . DS);
@@ -13,8 +18,8 @@ define('CAKE_CORE_INCLUDE_PATH', ROOT . '/vendor/cakephp/cakephp');
 define('CORE_PATH', CAKE_CORE_INCLUDE_PATH . DS);
 define('CAKE', CORE_PATH . 'src' . DS);
 
-require dirname(__DIR__) . '/vendor/cakephp/cakephp/src/basics.php';
-require dirname(__DIR__) . '/vendor/autoload.php';
+require ROOT . '/vendor/cakephp/cakephp/src/basics.php';
+require ROOT . '/vendor/autoload.php';
 
 Cake\Core\Configure::write('App', [
 	'namespace' => 'App'
