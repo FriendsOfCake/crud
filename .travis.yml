@@ -6,7 +6,6 @@ php:
 
 before_script:
   - composer install --dev
-  - ls -Rl
   - cp phpunit.xml.dist phpunit.xml
 
 script:

@@ -35,6 +35,11 @@ require ROOT . '/vendor/autoload.php';
 
 Cake\Core\Configure::write('App', ['namespace' => 'App']);
 
+$TMP = new \Cake\Utility\Folder(TMP);
+$TMP->create(TMP . 'cache/models', 0777);
+$TMP->create(TMP . 'cache/persistent', 0777);
+$TMP->create(TMP . 'cache/views', 0777);
+
 $cache = [
 	'default' => [
 		'engine' => 'File'
