@@ -27,7 +27,7 @@ class Index extends Base {
  */
 	protected $_settings = [
 		'enabled' => true,
-		'scope' => 'repository',
+		'scope' => 'table',
 		'view' => null,
 		'viewVar' => null,
 		'serialize' => [],
