@@ -103,7 +103,7 @@ trait ProxyTrait {
 	}
 
 	protected function _entity(array $data = []) {
-		return $this->_table()->newEntity($data);
+		return $this->_crud()->entity($data);
 	}
 
 /**

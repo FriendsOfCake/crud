@@ -2,10 +2,6 @@
 namespace Crud\Action;
 
 use Crud\Event\Subject;
-use \Crud\Traits\RedirectTrait;
-use \Crud\Traits\SaveMethodTrait;
-use \Crud\Traits\SerializeTrait;
-use \Crud\Traits\ViewVarTrait;
 
 /**
  * Handles 'Add' Crud actions
@@ -15,10 +11,9 @@ use \Crud\Traits\ViewVarTrait;
  */
 class Add extends Base {
 
-	use RedirectTrait;
-	use SaveMethodTrait;
-	use SerializeTrait;
-	use ViewVarTrait;
+	use \Crud\Traits\RedirectTrait;
+	use \Crud\Traits\SaveMethodTrait;
+	use \Crud\Traits\SerializeTrait;
 
 /**
  * Default settings for 'add' actions
@@ -40,7 +35,7 @@ class Add extends Base {
  */
 	protected $_settings = [
 		'enabled' => true,
-		'scope' => 'entity',
+		'scope' => 'repository',
 		'saveMethod' => 'save',
 		'view' => null,
 		'relatedModels' => true,
@@ -92,7 +87,7 @@ class Add extends Base {
  * @return void
  */
 	protected function _get() {
-		$this->_controller()->set($this->viewVar(), $this->_entity());
+		$this->_request()->data = $this->_entity();
 		$this->_trigger('beforeRender', ['success' => true]);
 	}
 
@@ -109,8 +104,6 @@ class Add extends Base {
 			'saveMethod' => $this->saveMethod(),
 			'saveOptions' => $this->saveOptions()
 		]);
-
-		$this->_controller()->set($this->viewVar(), $entity);
 
 		$this->_trigger('beforeSave', $subject);
 		if (call_user_func([$this->_repository(), $subject->saveMethod], $entity, $subject->saveOptions)) {

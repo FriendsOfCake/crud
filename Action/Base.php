@@ -176,7 +176,7 @@ abstract class Base extends Object {
 			return;
 		}
 
-		$this->_controller()->Session->setFlash($subject->text, null, $subject->params, $subject->key);
+		$this->_session()->setFlash($subject->text, $subject->element, $subject->params, $subject->key);
 	}
 
 /**

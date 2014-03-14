@@ -14,18 +14,10 @@ trait ViewVarTrait {
  */
 	public function viewVar($name = null) {
 		if (empty($name)) {
-			return $this->config('viewVar') ?: $this->_derriveViewVar();
+			return $this->config('viewVar') ?: Inflector::variable($this->_controller()->name);
 		}
 
 		return $this->config('viewVar', $name);
-	}
-
-	protected function _derriveViewVar() {
-		if ($this->scope() === 'table') {
-			return Inflector::variable($this->_controller()->name);
-		}
-
-		return Inflector::singularize($this->_controller()->name);
 	}
 
 }
