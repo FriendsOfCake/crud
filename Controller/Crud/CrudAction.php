@@ -38,6 +38,20 @@ abstract class CrudAction extends CrudBaseObject {
 	public function __construct(CrudSubject $subject, array $defaults = array()) {
 		parent::__construct($subject, $defaults);
 		$this->_settings['action'] = $subject->action;
+
+		// Allow override messages
+		$subject = $this->_trigger('rewriteMessages');
+
+		if(!empty($subject->messages))
+		{
+			foreach ($subject->messages as $key => $value) {
+				if($key == $this->_settings['action'])
+				{
+					$this->_settings['messages']['error']['text'] = $value['error'];
+					$this->_settings['messages']['success']['text'] = $value['success'];
+				}
+			}
+		}
 	}
 
 /**
