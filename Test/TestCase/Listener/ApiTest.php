@@ -308,7 +308,7 @@ class ApiTest extends TestCase {
  * @param array $validationErrors
  * @return void
  */
-	public function test_exceptionResponse($apiConfig, $exceptionClass, $exceptionMessage, $exceptionCode, $validationErrors = array()) {
+	public function test_exceptionResponse($apiConfig, $exceptionClass, $exceptionMessage, $exceptionCode, $validationErrors = []) {
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\Api')
 			->disableOriginalConstructor()
@@ -318,8 +318,16 @@ class ApiTest extends TestCase {
 		$event = new \Cake\Event\Event('Crud.Exception', new \Crud\Event\Subject());
 
 		if (isset($apiConfig['type']) && $apiConfig['type'] === 'validate') {
-			$event->subject->set(['entity' => $this->getMock('\Cake\ORM\Entity', ['errors'])]);
-			$event->subject->entity->expects($this->any())->method('errors')->will($this->returnValue($validationErrors));
+
+			$event->subject->set([
+				'entity' => $this->getMock('\Cake\ORM\Entity', ['errors'])
+			]);
+
+			$event->subject->entity
+				->expects($this->any())
+				->method('errors')
+				->will($this->returnValue($validationErrors));
+
 		} else {
 			$listener->expects($this->never())->method('_validationErrors');
 		}
