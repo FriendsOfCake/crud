@@ -29,12 +29,16 @@ abstract class Base extends Object {
  * execution flow continues
  *
  * @throws NotImplementedException if the action can't handle the request
- * @param \Cake\Event\Event $Event
+ * @param array $args
  * @return mixed
  */
-	public function handle(Event $Event) {
+	public function handle($args = []) {
 		if (!$this->enabled()) {
 			return false;
+		}
+
+		if (!is_array($args)) {
+			$args = (array)$args;
 		}
 
 		$method = '_' . strtolower($this->_request()->method());
@@ -42,13 +46,13 @@ abstract class Base extends Object {
 		if (method_exists($this, $method)) {
 			$this->_responding = true;
 			$this->_controller()->getEventManager()->attach($this);
-			return call_user_func_array([$this, $method], $Event->subject->args);
+			return call_user_func_array([$this, $method], $args);
 		}
 
 		if (method_exists($this, '_handle')) {
 			$this->_responding = true;
 			$this->_controller()->getEventManager()->attach($this);
-			return call_user_func_array([$this, '_handle'], $Event->subject->args);
+			return call_user_func_array([$this, '_handle'], $args);
 		}
 
 		throw new NotImplementedException(sprintf('Action %s does not implement a handler for HTTP verb %s', get_class($this), $requestMethod));

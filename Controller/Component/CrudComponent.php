@@ -703,7 +703,8 @@ class CrudComponent extends Component {
 				throw new \Cake\Error\BaseException(sprintf('Listener "%s" is not configured', $name));
 			}
 
-			$this->_listenerInstances[$name] = new $config['className']($this->_controller, $config);
+			$this->_listenerInstances[$name] = new $config['className']($this->_controller);
+			$this->_listenerInstances[$name]->config($config);
 			$this->_eventManager->attach($this->_listenerInstances[$name]);
 
 			if (is_callable([$this->_listenerInstances[$name], 'setup'])) {
@@ -730,7 +731,8 @@ class CrudComponent extends Component {
 			}
 
 			$config += ['action' => $name];
-			$this->_actionInstances[$name] = new $config['className']($this->_controller, $config);
+			$this->_actionInstances[$name] = new $config['className']($this->_controller);
+			$this->_actionInstances[$name]->config($config);
 		}
 
 		return $this->_actionInstances[$name];

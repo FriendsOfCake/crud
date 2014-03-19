@@ -35,12 +35,8 @@ abstract class Object extends \Cake\Core\Object implements EventListener {
  * @param array $defaults Default settings
  * @return void
  */
-	public function __construct(Controller $Controller, $defaults = []) {
+	public function __construct(Controller $Controller) {
 		$this->_controller = $Controller;
-
-		if (!empty($defaults)) {
-			$this->config($defaults);
-		}
 	}
 
 /**
