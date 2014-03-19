@@ -41,15 +41,15 @@ trait FindMethodTrait {
 		]);
 
 		$this->_trigger('beforeFind', $subject);
-		$item = $query->first();
+		$entity = $query->first();
 
-		if (!$item) {
+		if (!$entity) {
 			return $this->_notFound($id, $subject);
 		}
 
-		$subject->set(['item' => $item, 'success' => true]);
+		$subject->set(['entity' => $entity, 'success' => true]);
 		$this->_trigger('afterFind', $subject);
-		return $item;
+		return $entity;
 	}
 
 /**

@@ -67,7 +67,7 @@ trait ProxyTrait {
  * @return \Cake\Controller\Controller
  */
 	protected function _controller() {
-		return $this->_crud()->controller();
+		return $this->_controller;
 	}
 
 /**
@@ -135,7 +135,11 @@ trait ProxyTrait {
  * @return Crud\Controller\Component\CrudComponent
  */
 	protected function _crud() {
-		return $this->_crud;
+		if (!$this->_controller->Crud) {
+			return $this->_controller->Components->loadComponent('Crud.Crud');
+		}
+
+		return $this->_controller->Crud;
 	}
 
 }

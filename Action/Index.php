@@ -27,7 +27,7 @@ class Index extends Base {
  */
 	protected $_settings = [
 		'enabled' => true,
-		'scope' => 'repository',
+		'scope' => 'table',
 		'view' => null,
 		'viewVar' => null,
 		'serialize' => [],
@@ -47,18 +47,13 @@ class Index extends Base {
  * @return void
  */
 	protected function _handle() {
-		$subject = $this->_subject();
-		$subject->set(['success' => true, 'viewVar' => $this->viewVar()]);
+		$subject = $this->_subject(['success' => true]);
 
 		$this->_trigger('beforePaginate', $subject);
-
-		$controller = $this->_controller();
-		$items = $controller->paginate();
-		$subject->set(['items' => $items]);
+		$items = $this->_controller()->paginate();
+		$subject->set(['entities' => $items]);
 
 		$this->_trigger('afterPaginate', $subject);
-
-		$controller->set(['success' => $subject->success, $subject->viewVar => $subject->items]);
 		$this->_trigger('beforeRender', $subject);
 	}
 

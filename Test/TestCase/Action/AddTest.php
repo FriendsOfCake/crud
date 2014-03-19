@@ -17,34 +17,43 @@ class AddTest extends TestCase {
  * @return void
  */
 	public function testActionGet() {
-		$Request = $this->getMock('\Cake\Network\Request');
+		$Controller = $this
+			->getMockBuilder('\Cake\Controller\Controller')
+			->disableOriginalConstructor()
+			->setMethods(['set'])
+			->getMock();
+		$Controller->name = 'Posts';
+
 		$Entity = $this->getMock('\Cake\ORM\Entity');
 
 		$Action = $this
 			->getMockBuilder('\Crud\Action\Add')
 			->disableOriginalConstructor()
-			->setMethods(['_request', '_entity', '_trigger'])
+			->setMethods(['_controller', '_entity', '_trigger'])
 			->getMock();
 
 		$Action
-			->expects($this->next($Action))
-			->method('_request')
-			->will($this->returnValue($Request));
+			->expects($this->any())
+			->method('_controller')
+			->will($this->returnValue($Controller));
 
 		$Action
-			->expects($this->next($Action))
+			->expects($this->any())
 			->method('_entity')
 			->will($this->returnValue($Entity));
 
+		$Controller
+			->expects($this->once())
+			->method('set')
+			->with('post', $Entity);
+
 		$Action
-			->expects($this->next($Action))
+			->expects($this->once())
 			->method('_trigger')
 			->with('beforeRender', ['success' => true]);
 
 		$this->setReflectionClassInstance($Action);
 		$this->callProtectedMethod('_get', [], $Action);
-
-		$this->assertSame($Entity, $Request->data);
 	}
 
 /**

@@ -4,7 +4,7 @@ namespace Crud\Core;
 use Cake\Event\Event;
 use Cake\Event\EventListener;
 use Cake\Utility\Inflector;
-use Crud\Controller\Component\CrudComponent;
+use Cake\Controller\Controller;
 use Crud\Event\Subject;
 
 /**
@@ -24,9 +24,9 @@ abstract class Object extends \Cake\Core\Object implements EventListener {
  * Container with reference to all objects
  * needed within the CrudListener and CrudAction
  *
- * @var Crud\Controller\Component\CrudComponent
+ * @var \Cake\Controller\Controller
  */
-	protected $_crud;
+	protected $_controller;
 
 /**
  * Constructor
@@ -35,8 +35,8 @@ abstract class Object extends \Cake\Core\Object implements EventListener {
  * @param array $defaults Default settings
  * @return void
  */
-	public function __construct(CrudComponent $Crud, Subject $subject, $defaults = array()) {
-		$this->_crud = $Crud;
+	public function __construct(Controller $Controller, $defaults = []) {
+		$this->_controller = $Controller;
 
 		if (!empty($defaults)) {
 			$this->config($defaults);

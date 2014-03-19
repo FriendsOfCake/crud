@@ -203,11 +203,14 @@ class CrudComponent extends Component {
 
 		try {
 			$event = $this->trigger('beforeHandle', compact('args', 'action'));
+
 			$response = $this->action($event->subject->action)->handle($event);
 			if ($response instanceof \Cake\Network\Response) {
 				return $response;
 			}
+
 		} catch (\Exception $e) {
+
 			if (isset($e->response)) {
 				return $e->response;
 			}
@@ -700,8 +703,7 @@ class CrudComponent extends Component {
 				throw new \Cake\Error\BaseException(sprintf('Listener "%s" is not configured', $name));
 			}
 
-			$subject = $this->getSubject();
-			$this->_listenerInstances[$name] = new $config['className']($this, $subject, $config);
+			$this->_listenerInstances[$name] = new $config['className']($this->_controller, $config);
 			$this->_eventManager->attach($this->_listenerInstances[$name]);
 
 			if (is_callable([$this->_listenerInstances[$name], 'setup'])) {
@@ -727,9 +729,8 @@ class CrudComponent extends Component {
 				throw new CakeException(sprintf('Action "%s" has not been mapped', $name));
 			}
 
-			$subject = $this->getSubject(['action' => $name]);
-			$this->_actionInstances[$name] = new $config['className']($this, $subject, $config);
-			$this->_eventManager->attach($this->_actionInstances[$name]);
+			$config += ['action' => $name];
+			$this->_actionInstances[$name] = new $config['className']($this->_controller, $config);
 		}
 
 		return $this->_actionInstances[$name];

@@ -28,7 +28,7 @@ class Delete extends Base {
 	protected $_settings = [
 		'enabled' => true,
 		'scope' => 'entity',
-		'findMethod' => 'count',
+		'findMethod' => 'all',
 		'messages' => [
 			'success' => [
 				'text' => 'Successfully deleted {name}'
@@ -81,9 +81,7 @@ class Delete extends Base {
  */
 	protected function _success(Subject $subject) {
 		$subject->set(['success' => true]);
-
 		$this->setFlash('success', $subject);
-
 		$this->_trigger('afterDelete', $subject);
 	}
 
@@ -95,9 +93,7 @@ class Delete extends Base {
  */
 	protected function _error(Subject $subject) {
 		$subject->set(['success' => false]);
-
 		$this->setFlash('error', $subject);
-
 		$this->_trigger('afterDelete', $subject);
 	}
 

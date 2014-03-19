@@ -1,11 +1,11 @@
 <?php
 namespace Crud\Action;
 
+use Cake\Controller\Controller;
 use Cake\Error\NotImplementedException;
 use Cake\Event\Event;
 use Cake\Utility\Hash;
 use Cake\Utility\String;
-use Crud\Controller\Component\CrudComponent;
 use Crud\Core\Object;
 use Crud\Event\Subject;
 
@@ -17,19 +17,7 @@ use Crud\Event\Subject;
  */
 abstract class Base extends Object {
 
-/**
- * Startup method
- *
- * Called when the action is loaded
- *
- * @param \Crud\Event\Subject $subject
- * @param array $defaults
- * @return void
- */
-	public function __construct(CrudComponent $Crud, Subject $subject, array $defaults = []) {
-		parent::__construct($Crud, $subject, $defaults);
-		$this->_settings['action'] = $subject->action;
-	}
+	protected $_responding = false;
 
 /**
  * Handle callback
@@ -49,18 +37,25 @@ abstract class Base extends Object {
 			return false;
 		}
 
-		$requestMethod = $this->_request()->method();
-		$method = '_' . strtolower($requestMethod);
+		$method = '_' . strtolower($this->_request()->method());
 
 		if (method_exists($this, $method)) {
+			$this->_responding = true;
+			$this->_controller()->getEventManager()->attach($this);
 			return call_user_func_array([$this, $method], $Event->subject->args);
 		}
 
 		if (method_exists($this, '_handle')) {
+			$this->_responding = true;
+			$this->_controller()->getEventManager()->attach($this);
 			return call_user_func_array([$this, '_handle'], $Event->subject->args);
 		}
 
 		throw new NotImplementedException(sprintf('Action %s does not implement a handler for HTTP verb %s', get_class($this), $requestMethod));
+	}
+
+	public function responding() {
+		return (bool)$this->_responding;
 	}
 
 /**
@@ -213,8 +208,40 @@ abstract class Base extends Object {
 		return $this->config($path, $config);
 	}
 
+/**
+ * Get the action scope
+ *
+ * Usually it's 'table' or 'entity'
+ *
+ * @return string
+ */
 	public function scope() {
 		return $this->config('scope');
+	}
+
+	public function publishSuccess(\Cake\Event\Event $event) {
+		if (!isset($event->subject->success)) {
+			return false;
+		}
+
+		$this->_controller()->set('success', $event->subject->success);
+	}
+
+/**
+ * Additional auxiliary events emitted if certain traits are loaded
+ *
+ * @return array
+ */
+	public function implementedEvents() {
+		$events = parent::implementedEvents();
+
+		$events['Crud.beforeRender'][] = ['callable' => [$this, 'publishSuccess']];
+
+		if (method_exists($this, 'viewVar')) {
+			$events['Crud.beforeRender'][] = ['callable' => [$this, 'publishViewVar']];
+		}
+
+		return $events;
 	}
 
 }

@@ -48,10 +48,9 @@ class View extends Base {
  */
 	protected function _get($id = null) {
 		$subject = $this->_subject();
-		$subject->set(['id' => $id, 'viewVar' => $this->viewVar()]);
+		$subject->set(['id' => $id]);
 
 		$this->_findRecord($id, $subject);
-		$this->_controller()->set(['success' => $subject->success, $subject->viewVar => $subject->item]);
 		$this->_trigger('beforeRender', $subject);
 	}
 

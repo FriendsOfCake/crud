@@ -2,6 +2,10 @@
 namespace Crud\Action;
 
 use Crud\Event\Subject;
+use Crud\Traits\RedirectTrait;
+use Crud\Traits\SaveMethodTrait;
+use Crud\Traits\SerializeTrait;
+use Crud\Traits\ViewVarTrait;
 
 /**
  * Handles 'Add' Crud actions
@@ -11,9 +15,10 @@ use Crud\Event\Subject;
  */
 class Add extends Base {
 
-	use \Crud\Traits\RedirectTrait;
-	use \Crud\Traits\SaveMethodTrait;
-	use \Crud\Traits\SerializeTrait;
+	use RedirectTrait;
+	use SaveMethodTrait;
+	use SerializeTrait;
+	use ViewVarTrait;
 
 /**
  * Default settings for 'add' actions
@@ -35,9 +40,10 @@ class Add extends Base {
  */
 	protected $_settings = [
 		'enabled' => true,
-		'scope' => 'repository',
+		'scope' => 'entity',
 		'saveMethod' => 'save',
 		'view' => null,
+		'viewVar' => null,
 		'relatedModels' => true,
 		'saveOptions' => [
 			'validate' => true,
@@ -54,7 +60,7 @@ class Add extends Base {
 			'error' => [
 				'exception' => [
 					'type' => 'validate',
-					'class' => '\Crud\Error\Exception\CrudValidationException'
+					'class' => '\Crud\Error\CrudValidationException'
 				]
 			]
 		],
@@ -87,8 +93,12 @@ class Add extends Base {
  * @return void
  */
 	protected function _get() {
-		$this->_request()->data = $this->_entity();
-		$this->_trigger('beforeRender', ['success' => true]);
+		$subject = $this->_subject([
+			'success' => true,
+			'entity' => $this->_entity()
+		]);
+
+		$this->_trigger('beforeRender', $subject);
 	}
 
 /**
@@ -98,15 +108,18 @@ class Add extends Base {
  */
 	protected function _post() {
 		$entity = $this->_getEntity();
-		$subject = $this->_subject();
+		$subject = $this->_subject(['entity' => $entity]);
+
 		$subject->set([
-			'item' => $entity,
+			'entity' => $entity,
 			'saveMethod' => $this->saveMethod(),
 			'saveOptions' => $this->saveOptions()
 		]);
 
 		$this->_trigger('beforeSave', $subject);
-		if (call_user_func([$this->_repository(), $subject->saveMethod], $entity, $subject->saveOptions)) {
+
+		$saveCallback = [$this->_repository(), $subject->saveMethod];
+		if (call_user_func($saveCallback, $entity, $subject->saveOptions)) {
 			return $this->_success($subject);
 		}
 
