@@ -204,7 +204,7 @@ class CrudComponent extends Component {
 		try {
 			$event = $this->trigger('beforeHandle', compact('args', 'action'));
 
-			$response = $this->action($event->subject->action)->handle($event);
+			$response = $this->action($event->subject->action)->handle($event->subject->args);
 			if ($response instanceof \Cake\Network\Response) {
 				return $response;
 			}
