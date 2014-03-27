@@ -512,11 +512,12 @@ class CrudComponent extends Component {
  * If $key is a string, the value will be inserted in the specified
  * slot as indicated using the dot notation.
  *
- * @param mixed $key
- * @param mixed $value
+ * @param string|array|null $key the key to get/set, or a complete array of configs
+ * @param mixed|null $value the value to set
+ * @param bool $merge Whether to merge or overwrite existing config defaults to true
  * @return mixed|CrudComponent
  */
-	public function config($key = null, $value = null) {
+	public function config($key = null, $value = null, $merge = true) {
 		if ($key === null && $value === null) {
 			return $this->settings;
 		}
