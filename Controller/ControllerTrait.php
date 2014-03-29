@@ -46,7 +46,7 @@ trait ControllerTrait {
 					}
 
 					// Skip if the action isn't mapped
-					if (!$this->{$component}->isActionMapped($request->action)) {
+					if (!$this->{$component}->isActionMapped($this->request->action)) {
 						continue;
 					}
 
