@@ -95,7 +95,7 @@ trait ProxyTrait {
 	}
 
 	protected function _repository() {
-		return $this->_crud()->table();
+		return $this->_table();
 	}
 
 	protected function _table() {
