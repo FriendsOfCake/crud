@@ -17,7 +17,7 @@ trait ControllerTrait {
  *
  * @var string
  */
-	public $dispatchComponents = array();
+	public $dispatchComponents = [];
 
 /**
  * Dispatches the controller action. Checks that the action exists and isn't private.
@@ -46,7 +46,7 @@ trait ControllerTrait {
 					}
 
 					// Skip if the action isn't mapped
-					if (!$this->{$component}->isActionMapped($this->request->action)) {
+					if (!$this->{$component}->isActionMapped()) {
 						continue;
 					}
 

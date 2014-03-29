@@ -163,7 +163,7 @@ class CrudComponent extends Component {
 		$this->_eventManager = $this->_controller->getEventManager();
 
 		if (!isset($this->_controller->dispatchComponents)) {
-			$this->_controller->dispatchComponents = array();
+			$this->_controller->dispatchComponents = [];
 		}
 
 		$this->_controller->dispatchComponents['Crud'] = true;
