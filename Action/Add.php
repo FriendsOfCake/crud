@@ -110,7 +110,7 @@ class Add extends Base {
  */
 	protected function _post() {
 		$subject = $this->_subject([
-			'entity' => $this->_getEntity(),
+			'entity' => $this->_entity($this->_request()->data),
 			'saveMethod' => $this->saveMethod(),
 			'saveOptions' => $this->saveOptions()
 		]);
@@ -162,19 +162,6 @@ class Add extends Base {
 
 		$this->_trigger('afterSave', $subject);
 		$this->_trigger('beforeRender', $subject);
-	}
-
-/**
- * Get entity instance with POST data
- *
- * @return \Cake\ORM\Entity
- */
-	protected function _getEntity() {
-		$entity = $this->_entity();
-		$entity->accessible('*', true);
-		$entity->set($this->_request()->data);
-
-		return $entity;
 	}
 
 }
