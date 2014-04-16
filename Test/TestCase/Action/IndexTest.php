@@ -30,17 +30,13 @@ class IndexTest extends TestCase {
 		$Action = $this
 			->getMockBuilder('\Crud\Action\Index')
 			->disableOriginalConstructor()
-			->setMethods(['_subject', '_controller', '_trigger', 'viewVar'])
+			->setMethods(['_subject', '_controller', '_trigger'])
 			->getMock();
 
 		$Action
 			->expects($this->next($Action))
 			->method('_subject')
 			->will($this->returnValue($Subject));
-		$Action
-			->expects($this->next($Action))
-			->method('viewVar')
-			->will($this->returnValue('posts'));
 		$Action
 			->expects($this->next($Action))
 			->method('_trigger')

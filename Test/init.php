@@ -17,8 +17,8 @@ function find_root() {
 }
 
 define('DS', DIRECTORY_SEPARATOR);
-define('ROOT', find_root());
-define('APP_DIR', basename(ROOT));
+define('ROOT', dirname(dirname(dirname(dirname(__FILE__)))));
+define('APP_DIR', 'App');
 define('WEBROOT_DIR', 'webroot');
 define('APP', ROOT . DS . APP_DIR . DS);
 define('WWW_ROOT', ROOT . DS . WEBROOT_DIR . DS);
@@ -62,3 +62,21 @@ $cache = [
 
 Cake\Cache\Cache::config($cache);
 Cake\Core\Plugin::load('Crud', ['path' => './']);
+
+$datasources = [
+	'test' => [
+		'className' => 'Cake\Database\Connection',
+		'driver' => 'Cake\Database\Driver\Mysql',
+		'persistent' => false,
+		'host' => 'localhost',
+		'login' => 'crud3',
+		'password' => 'crud3',
+		'database' => 'crud3_test',
+		'prefix' => false,
+		'encoding' => 'utf8',
+	]
+];
+
+$datasources['default'] = $datasources['test'];
+
+Cake\Datasource\ConnectionManager::config($datasources);

@@ -1,8 +1,8 @@
 <?php
-
 namespace Crud\Core;
 
 use Cake\Event\Event;
+use Crud\Event\Subject;
 
 trait ProxyTrait {
 
@@ -94,27 +94,34 @@ trait ProxyTrait {
 		return $this->_controller()->response;
 	}
 
-	protected function _repository() {
-		return $this->_crud()->table();
-	}
-
+/**
+ * Get a table instance
+ *
+ * @return \Cake\ORM\Table
+ */
 	protected function _table() {
-		return $this->_crud()->table();
+		$controller = $this->_controller();
+		return $controller->{$controller->modelClass};
 	}
 
+/**
+ * Get a fresh entity instance from the primary Table
+ *
+ * @param  array $data
+ * @return \Cake\ORM\Entity
+ */
 	protected function _entity(array $data = []) {
-		return $this->_crud()->entity($data);
+		return $this->_table()->newEntity($data);
 	}
 
 /**
  * Proxy method for `$this->_crud()->getSubject()`
  *
- * @codeCoverageIgnore
  * @param array $additional
  * @return \Crud\Event\Subject
  */
 	protected function _subject($additional = []) {
-		return $this->_crud()->getSubject($additional);
+		return new Subject($additional);
 	}
 
 /**

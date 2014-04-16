@@ -1,14 +1,24 @@
 <?php
 namespace Crud\Test\TestCase\Action;
 
-use Crud\TestSuite\TestCase;
+use Crud\Test\App\Controller\BlogsController;
+use Crud\TestSuite\ControllerTestCase;
 
 /**
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class AddTest extends TestCase {
+class AddTest extends ControllerTestCase {
+
+/**
+ * fixtures property
+ *
+ * @var array
+ */
+	public $fixtures = [
+		'crud.blog'
+	];
 
 /**
  * Test the normal HTTP GET flow of _get
@@ -17,43 +27,11 @@ class AddTest extends TestCase {
  * @return void
  */
 	public function testActionGet() {
-		$Controller = $this
-			->getMockBuilder('\Cake\Controller\Controller')
-			->disableOriginalConstructor()
-			->setMethods(['set'])
-			->getMock();
-		$Controller->name = 'Posts';
-
-		$Entity = $this->getMock('\Cake\ORM\Entity');
-
-		$Action = $this
-			->getMockBuilder('\Crud\Action\Add')
-			->disableOriginalConstructor()
-			->setMethods(['_controller', '_entity', '_trigger'])
-			->getMock();
-
-		$Action
-			->expects($this->any())
-			->method('_controller')
-			->will($this->returnValue($Controller));
-
-		$Action
-			->expects($this->any())
-			->method('_entity')
-			->will($this->returnValue($Entity));
-
-		$Controller
-			->expects($this->once())
-			->method('set')
-			->with('post', $Entity);
-
-		$Action
-			->expects($this->once())
-			->method('_trigger')
-			->with('beforeRender', ['success' => true]);
-
-		$this->setReflectionClassInstance($Action);
-		$this->callProtectedMethod('_get', [], $Action);
+		$controller = $this->generate('\Crud\Test\App\Controller\BlogsController');
+		$this->_testAction('/blogs/add');
+		die('sup');
+		// $controller = new BlogsController();
+		// $controller->
 	}
 
 /**
@@ -69,9 +47,7 @@ class AddTest extends TestCase {
 		$Request = $this->getMock('\Cake\Network\Request');
 		$Request->data = ['name' => 'Hello World'];
 
-		$Subject = $this->getMock('\Crud\Event\Subject', null);
-
-		$Repository = $this
+		$Table = $this
 			->getMockBuilder('\Cake\ORM\Table')
 			->disableOriginalConstructor()
 			->setMethods(['save'])
@@ -87,56 +63,30 @@ class AddTest extends TestCase {
 			->getMockBuilder('\Crud\Action\Add')
 			->disableOriginalConstructor()
 			->setMethods([
-				'_request', '_entity', '_trigger',
-				'_subject', '_repository', 'setFlash',
-				'_redirect', '_getResourceName'
+				'_getEntity', '_trigger', '_table', '_redirect', 'setFlash'
 			])
 			->getMock();
 
 		$Action
 			->expects($this->next($Action))
-			->method('_entity')
+			->method('_getEntity')
 			->will($this->returnValue($Entity));
 		$Action
 			->expects($this->next($Action))
-			->method('_request')
-			->will($this->returnValue($Request));
-		$Action
-			->expects($this->next($Action))
-			->method('_subject')
-			->will($this->returnValue($Subject));
-		$Action
-			->expects($this->next($Action))
 			->method('_trigger')
-			->with('beforeSave', $Subject);
+			->with('beforeSave');
 		$Action
 			->expects($this->next($Action))
-			->method('_repository')
-			->will($this->returnValue($Repository));
-		$Repository
-			->expects($this->next($Repository))
+			->method('_table')
+			->will($this->returnValue($Table));
+		$Table
+			->expects($this->next($Table))
 			->method('save')
 			->with($Entity, ['validate' => true, 'atomic' => true])
 			->will($this->returnValue(true));
-		$Action
-			->expects($this->next($Action))
-			->method('_trigger')
-			->with('afterSave', $Subject);
-		$Action
-			->expects($this->next($Action))
-			->method('setFlash')
-			->with('success', $Subject);
-		$Action
-			->expects($this->next($Action))
-			->method('_redirect')
-			->with($Subject, ['action' => 'index']);
 
 		$this->setReflectionClassInstance($Action);
 		$this->callProtectedMethod('_post', [], $Action);
-
-		$this->assertTrue($Subject->success);
-		$this->assertTrue($Subject->created);
-		$this->assertSame($Entity, $Subject->item);
 	}
 
 /**

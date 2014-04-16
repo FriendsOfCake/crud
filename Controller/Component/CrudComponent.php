@@ -607,14 +607,12 @@ class CrudComponent extends Component {
 /**
  * Create a CakeEvent subject with the required properties.
  *
+ * @todo Merge with ProxyTrait instance
+ *
  * @param array $additional Additional properties for the subject.
- * @return CrudSubject
+ * @return \Crud\Event\Subject
  */
 	public function getSubject($additional = []) {
-		if (empty($this->_model) || empty($this->_modelName)) {
-			$this->_setModelProperties();
-		}
-
 		$subject = new Subject();
 		$subject->set($additional);
 
@@ -736,26 +734,6 @@ class CrudComponent extends Component {
 		}
 
 		return $this->_actionInstances[$name];
-	}
-
-/**
- * Set internal model properties from the controller.
- *
- * @return void
- * @throws CakeException If unable to get model instance.
- */
-	protected function _setModelProperties() {
-		$this->_modelName = $this->_controller->modelClass;
-		if (empty($this->_modelName)) {
-			$this->_model = null;
-			$this->_modelName = null;
-			return;
-		}
-
-		$this->_model = $this->_controller->{$this->_modelName};
-		if (empty($this->_model)) {
-			throw new CakeException('No model loaded in the Controller by the name "' . $this->_modelName . '". Please add it to $uses.');
-		}
 	}
 
 /**

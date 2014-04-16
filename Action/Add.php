@@ -107,19 +107,16 @@ class Add extends Base {
  * @return void
  */
 	protected function _post() {
-		$entity = $this->_getEntity();
-		$subject = $this->_subject(['entity' => $entity]);
-
-		$subject->set([
-			'entity' => $entity,
+		$subject = $this->_subject([
+			'entity' => $this->_getEntity(),
 			'saveMethod' => $this->saveMethod(),
 			'saveOptions' => $this->saveOptions()
 		]);
 
 		$this->_trigger('beforeSave', $subject);
 
-		$saveCallback = [$this->_repository(), $subject->saveMethod];
-		if (call_user_func($saveCallback, $entity, $subject->saveOptions)) {
+		$saveCallback = [$this->_table(), $subject->saveMethod];
+		if (call_user_func($saveCallback, $subject->entity, $subject->saveOptions)) {
 			return $this->_success($subject);
 		}
 

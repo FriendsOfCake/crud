@@ -1,65 +1,66 @@
 {
-  "name":"friendsofcake/crud",
-  "version": "4.0.0",
-  "description":"CakePHP Application development on steroids - rapid prototyping / scaffolding & production ready code - XML / JSON APIs and more",
-  "type":"cakephp-plugin",
-  "keywords":[
-    "cakephp",
-    "crud",
-    "create",
-    "retrieve",
-    "update",
-    "delete",
-    "bake",
-    "cake",
-    "scaffold",
-    "scaffolding"
-  ],
-  "homepage":"https://github.com/FriendsOfCake/crud",
-  "license":"MIT",
-  "authors":[
-    {
-      "name":"Christian Winther",
-      "role":"Author",
-      "homepage":"http://cakephp.nu/"
-    },
-    {
-      "name":"José Lorenzo Rodríguez",
-      "role":"Contributor",
-      "homepage":"https://github.com/lorenzo"
-    },
-    {
-      "name":"Andy Dawson",
-      "role":"Contributor",
-      "homepage":"https://github.com/ad7six"
-    },
-    {
-      "name":"ADmad",
-      "role":"Contributor",
-      "homepage":"https://github.com/admad"
-    }
-  ],
+	"name":"friendsofcake/crud",
+	"version": "4.0.0",
+	"description":"CakePHP Application development on steroids - rapid prototyping / scaffolding & production ready code - XML / JSON APIs and more",
+	"type":"cakephp-plugin",
+	"keywords":[
+		"cakephp",
+		"crud",
+		"create",
+		"retrieve",
+		"update",
+		"delete",
+		"bake",
+		"cake",
+		"scaffold",
+		"scaffolding"
+	],
+	"homepage":"https://github.com/FriendsOfCake/crud",
+	"license":"MIT",
+	"authors":[
+		{
+			"name":"Christian Winther",
+			"role":"Author",
+			"homepage":"http://cakephp.nu/"
+		},
+		{
+			"name":"José Lorenzo Rodríguez",
+			"role":"Contributor",
+			"homepage":"https://github.com/lorenzo"
+		},
+		{
+			"name":"Andy Dawson",
+			"role":"Contributor",
+			"homepage":"https://github.com/ad7six"
+		},
+		{
+			"name":"ADmad",
+			"role":"Contributor",
+			"homepage":"https://github.com/admad"
+		}
+	],
 	"require":{
-    "composer/installers":"*"
-  },
-  "require-dev": {
-  	"cakephp/cakephp": "3.0.x-dev"
+		"composer/installers":"*"
 	},
-  "suggest":{
+	"require-dev": {
+		"cakephp/cakephp": "3.0.x-dev"
+		"cakephp/app": "3.0.x-dev"
+	},
+	"suggest":{
 
-  },
-  "autoload": {
+	},
+	"autoload": {
 		"psr-4": {
 			"Crud\\": "."
 		}
 	},
-  "support":{
-    "source":"https://github.com/FriendsOfCake/crud",
-    "issues":"https://github.com/FriendsOfCake/crud/issues",
-    "wiki":"http://cakephp.nu/cakephp-crud/",
-    "irc":"irc://irc.freenode.org/friendsofcake"
-  },
-  "extra": {
-    "installer-name": "Crud"
-  }
+	"support":{
+		"source":"https://github.com/FriendsOfCake/crud",
+		"issues":"https://github.com/FriendsOfCake/crud/issues",
+		"wiki":"http://cakephp.nu/cakephp-crud/",
+		"irc":"irc://irc.freenode.org/friendsofcake"
+	},
+	"extra": {
+		"installer-name": "Crud"
+	}
 }
