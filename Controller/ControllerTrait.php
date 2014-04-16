@@ -17,21 +17,22 @@ trait ControllerTrait {
  *
  * @var string
  */
-	public $dispatchComponents = array();
+	public $dispatchComponents = [];
 
 /**
  * Dispatches the controller action. Checks that the action exists and isn't private.
  *
  * If CakePHP raises MissingActionException we attempt to execute Crud
  *
- * @param CakeRequest $request
  * @return mixed The resulting response.
- * @throws PrivateActionException When actions are not public or prefixed by _
- * @throws MissingActionException When actions are not defined and scaffolding and CRUD is not enabled.
+ * @throws \Cake\Error\Exception When request is not set.
+ * @throws \Cake\Error\PrivateActionException When actions are not public or prefixed by _
+ * @throws \Cake\Error\MissingActionException When actions are not defined and scaffolding
+ * and CRUD is not enabled.
  */
-	public function invokeAction(\Cake\Network\Request $request) {
+	public function invokeAction() {
 		try {
-			return parent::invokeAction($request);
+			return parent::invokeAction();
 		} catch (\Cake\Error\MissingActionException $e) {
 			if (!empty($this->dispatchComponents)) {
 				foreach ($this->dispatchComponents as $component => $enabled) {
@@ -45,7 +46,7 @@ trait ControllerTrait {
 					}
 
 					// Skip if the action isn't mapped
-					if (!$this->{$component}->isActionMapped($request->action)) {
+					if (!$this->{$component}->isActionMapped()) {
 						continue;
 					}
 

@@ -99,6 +99,10 @@ trait ProxyTrait {
  *
  * @return \Cake\ORM\Table
  */
+	protected function _repository() {
+		return $this->_table();
+	}
+
 	protected function _table() {
 		$controller = $this->_controller();
 		return $controller->{$controller->modelClass};

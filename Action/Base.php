@@ -1,13 +1,11 @@
 <?php
 namespace Crud\Action;
 
-use Cake\Controller\Controller;
 use Cake\Error\NotImplementedException;
 use Cake\Event\Event;
 use Cake\Utility\Hash;
 use Cake\Utility\String;
 use Crud\Core\Object;
-use Crud\Event\Subject;
 
 /**
  * Base Crud class
@@ -223,7 +221,7 @@ abstract class Base extends Object {
 		return $this->config('scope');
 	}
 
-	public function publishSuccess(\Cake\Event\Event $event) {
+	public function publishSuccess(Event $event) {
 		if (!isset($event->subject->success)) {
 			return false;
 		}

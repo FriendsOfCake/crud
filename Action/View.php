@@ -1,8 +1,6 @@
 <?php
 namespace Crud\Action;
 
-use Cake\Utility\Inflector;
-use Crud\Event\Subject;
 use Crud\Traits\FindMethodTrait;
 use Crud\Traits\ViewTrait;
 use Crud\Traits\ViewVarTrait;

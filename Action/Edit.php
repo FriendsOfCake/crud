@@ -2,7 +2,6 @@
 
 namespace Crud\Action;
 
-use Cake\Utility\Hash;
 use Crud\Event\Subject;
 use Crud\Traits\FindMethodTrait;
 use Crud\Traits\RedirectTrait;
