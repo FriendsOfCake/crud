@@ -43,7 +43,7 @@
 		"composer/installers":"*"
 	},
 	"require-dev": {
-		"cakephp/cakephp": "3.0.x-dev"
+		"cakephp/cakephp": "3.0.x-dev",
 		"cakephp/app": "3.0.x-dev"
 	},
 	"suggest":{

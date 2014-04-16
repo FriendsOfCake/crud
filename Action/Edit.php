@@ -6,6 +6,7 @@ use Crud\Event\Subject;
 use Crud\Traits\FindMethodTrait;
 use Crud\Traits\RedirectTrait;
 use Crud\Traits\SaveMethodTrait;
+use Crud\Traits\ViewTrait;
 
 /**
  * Handles 'Edit' Crud actions
@@ -18,6 +19,7 @@ class Edit extends Base {
 	use FindMethodTrait;
 	use RedirectTrait;
 	use SaveMethodTrait;
+	use ViewTrait;
 
 /**
  * Default settings for 'edit' actions

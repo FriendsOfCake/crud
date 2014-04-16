@@ -5,6 +5,7 @@ use Crud\Event\Subject;
 use Crud\Traits\RedirectTrait;
 use Crud\Traits\SaveMethodTrait;
 use Crud\Traits\SerializeTrait;
+use Crud\Traits\ViewTrait;
 use Crud\Traits\ViewVarTrait;
 
 /**
@@ -18,6 +19,7 @@ class Add extends Base {
 	use RedirectTrait;
 	use SaveMethodTrait;
 	use SerializeTrait;
+	use ViewTrait;
 	use ViewVarTrait;
 
 /**
