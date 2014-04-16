@@ -33,7 +33,7 @@ trait ControllerTrait {
 	public function invokeAction() {
 		try {
 			return parent::invokeAction();
-		} catch (\Cake\Error\MissingActionException $e) {
+		} catch (\Cake\Controller\Error\MissingActionException $e) {
 			if (!empty($this->dispatchComponents)) {
 				foreach ($this->dispatchComponents as $component => $enabled) {
 					if (empty($enabled)) {
