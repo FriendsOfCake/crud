@@ -146,7 +146,7 @@ class Add extends Base {
 		$this->_trigger('afterSave', $subject);
 		$this->setFlash('success', $subject);
 
-		$this->_redirect($subject, ['action' => 'index']);
+		return $this->_redirect($subject, ['action' => 'index']);
 	}
 
 /**

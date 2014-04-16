@@ -85,7 +85,7 @@ trait RedirectTrait {
 		$subject->url = $url;
 		$subject->status = $status;
 		$subject->exit = $exit;
-		$subject = $this->_trigger('beforeRedirect', $subject);
+		$this->_trigger('beforeRedirect', $subject);
 
 		$controller = $this->_controller();
 		$controller->redirect($subject->url, $subject->status, $subject->exit);
