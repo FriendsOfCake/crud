@@ -6,6 +6,8 @@ use Crud\Event\Subject;
 
 trait ProxyTrait {
 
+	protected $_entity;
+
 /**
  * Proxy method for `$this->_crud()->action()`
  *
@@ -115,6 +117,10 @@ trait ProxyTrait {
  * @return \Cake\ORM\Entity
  */
 	protected function _entity(array $data = []) {
+		if ($this->_entity && empty($data)) {
+			return $this->_entity;
+		}
+
 		return $this->_table()->newEntity($data);
 	}
 

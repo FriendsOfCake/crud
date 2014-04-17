@@ -97,7 +97,7 @@ class Add extends Base {
 	protected function _get() {
 		$subject = $this->_subject([
 			'success' => true,
-			'entity' => $this->_entity()
+			'entity' => $this->_entity($this->_request()->query)
 		]);
 
 		$this->_trigger('beforeRender', $subject);

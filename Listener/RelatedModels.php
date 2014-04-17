@@ -32,6 +32,7 @@ class RelatedModels extends Base {
  */
 	public function publishRelatedModels($action = null) {
 		$models = $this->models($action);
+		// debug($models);
 
 		if (empty($models)) {
 			return;
@@ -50,7 +51,7 @@ class RelatedModels extends Base {
 			$query = $association->target()->find('list');
 			$event = $this->_trigger('relatedModel', compact('name', 'viewVar', 'query', 'association'));
 
-			$controller->set($event->subject->viewVar, $event->subject->query);
+			$controller->set($event->subject->viewVar, $event->subject->query->toArray());
 		}
 	}
 
