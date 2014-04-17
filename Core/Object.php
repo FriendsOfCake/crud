@@ -3,7 +3,6 @@ namespace Crud\Core;
 
 use Cake\Event\Event;
 use Cake\Event\EventListener;
-use Cake\Utility\Inflector;
 use Cake\Controller\Controller;
 use Crud\Event\Subject;
 
@@ -46,22 +45,6 @@ abstract class Object extends \Cake\Core\Object implements EventListener {
  */
 	public function implementedEvents() {
 		return [];
-	}
-
-/**
- * Return the human name of the model
- *
- * By default it uses Inflector::humanize, but can be changed
- * using the "name" configuration property
- *
- * @return string
- */
-	protected function _getResourceName() {
-		if (empty($this->_settings['name'])) {
-			$this->_settings['name'] = strtolower(Inflector::humanize(Inflector::underscore($this->_repository()->alias())));
-		}
-
-		return $this->_settings['name'];
 	}
 
 /**

@@ -7,6 +7,7 @@ use Crud\Traits\FindMethodTrait;
 use Crud\Traits\RedirectTrait;
 use Crud\Traits\SaveMethodTrait;
 use Crud\Traits\ViewTrait;
+use Crud\Traits\ViewVarTrait;
 
 /**
  * Handles 'Edit' Crud actions
@@ -20,6 +21,7 @@ class Edit extends Base {
 	use RedirectTrait;
 	use SaveMethodTrait;
 	use ViewTrait;
+	use ViewVarTrait;
 
 /**
  * Default settings for 'edit' actions
@@ -97,8 +99,7 @@ class Edit extends Base {
 	protected function _get($id = null) {
 		$subject = $this->_subject();
 		$subject->set(['id' => $id]);
-
-		$this->_request()->data = $this->_findRecord($id, $subject);
+		$subject->set(['entity' => $this->_findRecord($id, $subject)]);
 
 		$this->_trigger('beforeRender', $subject);
 	}
@@ -116,8 +117,7 @@ class Edit extends Base {
 		$entity = $this->_findRecord($id, $subject);
 
 		$request = $this->_request();
-		$entity->accessible('*', true);
-		$entity->set($request->data);
+		$entity->set($request->data, ['useSetters' => false]);
 		$request->data = $entity;
 
 		$this->_trigger('beforeSave', $subject);

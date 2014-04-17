@@ -4,6 +4,7 @@ namespace Crud\Action;
 use Cake\Error\NotImplementedException;
 use Cake\Event\Event;
 use Cake\Utility\Hash;
+use Cake\Utility\Inflector;
 use Cake\Utility\String;
 use Crud\Core\Object;
 
@@ -134,7 +135,7 @@ abstract class Base extends Object {
 			'params' => ['class' => 'message'],
 			'key' => 'flash',
 			'type' => $this->config('action') . '.' . $type,
-			'name' => $this->_getResourceName()
+			'name' => $this->resourceName()
 		], $config);
 
 		if (!isset($config['text'])) {
@@ -173,7 +174,7 @@ abstract class Base extends Object {
 			return;
 		}
 
-		$this->_controller()->Session->setFlash($subject->text, null, $subject->params, $subject->key);
+		$this->_controller()->Session->setFlash($subject->text, $subject->element, $subject->params, $subject->key);
 	}
 
 /**
@@ -227,6 +228,34 @@ abstract class Base extends Object {
 		}
 
 		$this->_controller()->set('success', $event->subject->success);
+	}
+
+/**
+ * Return the human name of the model
+ *
+ * By default it uses Inflector::humanize, but can be changed
+ * using the "name" configuration property
+ *
+ * @return string
+ */
+	public function resourceName($value = null) {
+		if (!empty($value)) {
+			return $this->_settings['name'] = $value;
+		}
+
+		if (empty($this->_settings['name'])) {
+			$this->_settings['name'] = $this->_deriveResourceName();
+		}
+
+		return $this->_settings['name'];
+	}
+
+	protected function _deriveResourceName() {
+		if ($this->scope() === 'entity') {
+			return strtolower(Inflector::humanize(Inflector::singularize(Inflector::underscore($this->_repository()->alias()))));
+		}
+
+		return strtolower(Inflector::humanize(Inflector::underscore($this->_repository()->alias())));
 	}
 
 /**

@@ -65,4 +65,24 @@ abstract class Base extends Object {
 		return $events;
 	}
 
+/**
+ * Return the human name of the model
+ *
+ * By default it uses Inflector::humanize, but can be changed
+ * using the "name" configuration property
+ *
+ * @return string
+ */
+	public function resourceName($value = null) {
+		if (!empty($value)) {
+			return $this->_action()->resourceName($value);
+		}
+
+		if (empty($this->_settings['name'])) {
+			$this->_settings['name'] = $this->_action()->resourceName();
+		}
+
+		return $this->_settings['name'];
+	}
+
 }
