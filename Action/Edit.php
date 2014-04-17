@@ -114,14 +114,10 @@ class Edit extends Base {
 		$subject = $this->_subject();
 		$subject->set(['id' => $id]);
 
-		$entity = $this->_findRecord($id, $subject);
-
-		$request = $this->_request();
-		$entity->set($request->data, ['useSetters' => false]);
-		$request->data = $entity;
+		$entity = $this->_table()->patchEntity($this->_findRecord($id, $subject), $this->_request()->data);
 
 		$this->_trigger('beforeSave', $subject);
-		if (call_user_func([$this->_repository(), $this->saveMethod()], $entity, $this->saveOptions())) {
+		if (call_user_func([$this->_table(), $this->saveMethod()], $entity, $this->saveOptions())) {
 			return $this->_success($subject);
 		}
 

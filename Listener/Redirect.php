@@ -44,36 +44,26 @@ class Redirect extends Base {
  * @return void
  */
 	public function setup() {
-		$this->reader('request.key', function(\Crud\Event\Subject $subject, $key = null) {
-			if (!isset($subject->request->{$key})) {
+		$request = $this->_request();
+
+		$this->reader('request.key', function(\Crud\Event\Subject $subject, $key = null) use ($request) {
+			if (!isset($request->{$key})) {
 				return null;
 			}
 
-			return $subject->request->{$key};
+			return $request->{$key};
 		});
 
-		$this->reader('request.data', function(\Crud\Event\Subject $subject, $key = null) {
-			return $subject->request->data($key);
+		$this->reader('request.data', function(\Crud\Event\Subject $subject, $key = null) use ($request) {
+			return $request->data($key);
 		});
 
-		$this->reader('request.query', function(\Crud\Event\Subject $subject, $key = null) {
-			return $subject->request->query($key);
+		$this->reader('request.query', function(\Crud\Event\Subject $subject, $key = null) use ($request) {
+			return $request->query($key);
 		});
 
-		$this->reader('model.key', function(\Crud\Event\Subject $subject, $key = null) {
-			if (!isset($subject->model->{$key})) {
-				return null;
-			}
-
-			return $subject->model->{$key};
-		});
-
-		$this->reader('model.data', function(\Crud\Event\Subject $subject, $key = null) {
-			return Hash::get($subject->model->data, $key);
-		});
-
-		$this->reader('model.field', function(\Crud\Event\Subject $subject, $key = null) {
-			return $subject->model->field($key);
+		$this->reader('entity.field', function(\Crud\Event\Subject $subject, $key = null) {
+			return $subject->entity->get($key);
 		});
 
 		$this->reader('subject.key', function(\Crud\Event\Subject $subject, $key = null) {

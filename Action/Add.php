@@ -75,7 +75,7 @@ class Add extends Base {
 			'post_edit' => [
 				'reader' => 'request.data',
 				'key' => '_edit',
-				'url' => ['action' => 'edit', ['subject.key', 'id']]
+				'url' => ['action' => 'edit', ['entity.field', 'id']]
 			]
 		],
 		'messages' => [
