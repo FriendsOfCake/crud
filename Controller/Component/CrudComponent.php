@@ -129,6 +129,9 @@ class CrudComponent extends Component {
 		$settings['actions'] = ($this->normalizeArray($settings['actions']));
 		$settings['listeners'] = ($this->normalizeArray($settings['listeners']));
 
+		$this->_controller = $collection->getController();
+		$this->_eventManager = $this->_controller->getEventManager();
+
 		parent::__construct($collection, $settings);
 	}
 
@@ -161,11 +164,9 @@ class CrudComponent extends Component {
  * @return void
  */
 	public function initialize(Event $event) {
-		$this->_controller = $event->subject;
 		$this->_controller->methods = array_keys(array_flip($this->_controller->methods) + array_flip(array_keys($this->settings['actions'])));
 		$this->_action = $this->_controller->request->action;
 		$this->_request = $this->_controller->request;
-		$this->_eventManager = $this->_controller->getEventManager();
 
 		if (!isset($this->_controller->dispatchComponents)) {
 			$this->_controller->dispatchComponents = [];

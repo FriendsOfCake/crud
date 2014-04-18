@@ -512,10 +512,14 @@ class RedirectTest extends TestCase {
 	public function test_getUrl(\Crud\Event\Subject $subject, $url, $expected) {
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\Redirect')
-			->setMethods(null)
+			->setMethods(['_request'])
 			->disableoriginalConstructor()
 			->getMock();
-
+		$listener
+			->expects($this->once())
+			->method('_request')
+			->with()
+			->will($this->returnValue(new \Cake\Network\Request()));
 		$listener->setup();
 
 		$this->setReflectionClassInstance($listener);

@@ -1,9 +1,14 @@
 <?php
 namespace Crud\Test\App\Controller;
 
-class BlogsController extends \Cake\Controller\Controller {
+use Cake\Controller\Controller;
+use Crud\Controller\ControllerTrait;
 
-	use \Crud\Controller\ControllerTrait;
+class BlogsController extends Controller {
+
+	use ControllerTrait;
+
+	public $uses = ['Blog'];
 
 	public $components = [
 		'RequestHandler',
@@ -22,7 +27,5 @@ class BlogsController extends \Cake\Controller\Controller {
 			]
 		]
 	];
-
-	public $uses = ['Blog'];
 
 }

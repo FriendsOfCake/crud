@@ -7,6 +7,7 @@ class BlogFixture extends TestFixture {
 
 	public $fields = [
 		'id' => ['type' => 'integer'],
+		'is_active' => ['type' => 'boolean', 'default' => true, 'null' => false],
 		'name' => ['type' => 'string', 'length' => 255,  'null' => false],
 		'body' => ['type' => 'text', 'null' => false],
 		'_constraints' => [
@@ -14,11 +15,6 @@ class BlogFixture extends TestFixture {
 		]
 	];
 
-/**
- * records property
- *
- * @var array
- */
 	public $records = [
 		['id' => 1, 'name' => '1st post', 'body' => '1st post body'],
 		['id' => 2, 'name' => '2nd post', 'body' => '2nd post body'],

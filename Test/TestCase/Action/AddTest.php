@@ -16,186 +16,92 @@ class AddTest extends ControllerTestCase {
  *
  * @var array
  */
-	public $fixtures = [
-		'crud.blog'
-	];
+	public $fixtures = ['plugin.crud.blog'];
+
+	protected $_controllerClass = '\Crud\Test\App\Controller\BlogsController';
 
 /**
  * Test the normal HTTP GET flow of _get
  *
- * @covers \Crud\Action\Add::_get
  * @return void
  */
 	public function testActionGet() {
-		$controller = $this->generate('\Crud\Test\App\Controller\BlogsController');
-		$this->_testAction('/blogs/add');
-		die('sup');
-		// $controller = new BlogsController();
-		// $controller->
+		$controller = $this->generate($this->_controllerClass);
+		$result = $this->_testAction('/blogs/add');
+
+		$expected = ['tag' => 'legend', 'content' => 'New Blog'];
+		$this->assertTag($expected, $result, 'legend do not match the expected value');
+
+		$expected = ['id' => 'id', 'attributes' => ['value' => '']];
+		$this->assertTag($expected, $result, '"id" do not match the expected value');
+
+		$expected = ['id' => 'name', 'attributes' => ['value' => '']];
+		$this->assertTag($expected, $result, '"name" do not match the expected value');
+
+		$expected = ['id' => 'body', 'attributes' => ['value' => '']];
+		$this->assertTag($expected, $result, '"body" do not match the expected value');
 	}
 
 /**
- * Test that calling HTTP POST on an add action
- * will trigger multiple events on success
+ * Test the normal HTTP GET flow of _get with query args
  *
- * @covers \Crud\Action\Add::_post
- * @covers \Crud\Action\Add::_getEntity
- * @covers \Crud\Action\Add::_success
+ * Providing ?name=test should fill out the value in the 'name' input field
+ *
  * @return void
  */
-	public function testActionPostSuccess() {
-		$Request = $this->getMock('\Cake\Network\Request');
-		$Request->data = ['name' => 'Hello World'];
+	public function testActionGetWithQueryArgs() {
+		$controller = $this->generate($this->_controllerClass);
+		$result = $this->_testAction('/blogs/add?name=test');
 
-		$Table = $this
-			->getMockBuilder('\Cake\ORM\Table')
-			->disableOriginalConstructor()
-			->setMethods(['save'])
-			->getMock();
+		$expected = ['tag' => 'legend', 'content' => 'New Blog'];
+		$this->assertTag($expected, $result, 'legend do not match the expected value');
 
-		$Entity = $this
-			->getMockBuilder('\Cake\ORM\Entity')
-			->disableOriginalConstructor()
-			->setMethods(null)
-			->getMock();
+		$expected = ['id' => 'id', 'attributes' => ['value' => '']];
+		$this->assertTag($expected, $result, '"id" do not match the expected value');
 
-		$Action = $this
-			->getMockBuilder('\Crud\Action\Add')
-			->disableOriginalConstructor()
-			->setMethods([
-				'_getEntity', '_trigger', '_table', '_redirect', 'setFlash'
-			])
-			->getMock();
+		$expected = ['id' => 'name', 'attributes' => ['value' => 'test']];
+		$this->assertTag($expected, $result, '"name" do not match the expected value');
 
-		$Action
-			->expects($this->next($Action))
-			->method('_getEntity')
-			->will($this->returnValue($Entity));
-		$Action
-			->expects($this->next($Action))
-			->method('_trigger')
-			->with('beforeSave');
-		$Action
-			->expects($this->next($Action))
-			->method('_table')
-			->will($this->returnValue($Table));
-		$Table
-			->expects($this->next($Table))
-			->method('save')
-			->with($Entity, ['validate' => true, 'atomic' => true])
-			->will($this->returnValue(true));
-
-		$this->setReflectionClassInstance($Action);
-		$this->callProtectedMethod('_post', [], $Action);
+		$expected = ['id' => 'body', 'attributes' => ['value' => '']];
+		$this->assertTag($expected, $result, '"body" do not match the expected value');
 	}
 
 /**
- * Test that calling HTTP POST on an add action
- * will trigger multiple events on error
+ * Test POST will create a record
  *
- * @covers \Crud\Action\Add::_post
- * @covers \Crud\Action\Add::_getEntity
- * @covers \Crud\Action\Add::_error
  * @return void
  */
-	public function testActionPostError() {
-		$Request = $this->getMock('\Cake\Network\Request');
-		$Request->data = ['name' => 'Hello World'];
+	public function testActionPost() {
+		$controller = $this->generate($this->_controllerClass, [
+			'components' => ['Session' => ['setFlash']]
+		]);
 
-		$Subject = $this->getMock('\Crud\Event\Subject', null);
+		$subject = null;
+		$controller->Crud->on('afterSave', function($event) use (&$subject) {
+			$subject = $event->subject;
+		});
 
-		$Repository = $this
-			->getMockBuilder('\Cake\ORM\Table')
-			->disableOriginalConstructor()
-			->setMethods(['save'])
-			->getMock();
-
-		$Entity = $this
-			->getMockBuilder('\Cake\ORM\Entity')
-			->disableOriginalConstructor()
-			->setMethods(['set'])
-			->getMock();
-
-		$Action = $this
-			->getMockBuilder('\Crud\Action\Add')
-			->disableOriginalConstructor()
-			->setMethods([
-				'_request', '_entity', '_trigger',
-				'_subject', '_repository', 'setFlash',
-				'_redirect'
-			])
-			->getMock();
-
-		$Action
-			->expects($this->next($Action))
-			->method('_entity')
-			->will($this->returnValue($Entity));
-		$Action
-			->expects($this->next($Action))
-			->method('_request')
-			->will($this->returnValue($Request));
-		$Entity
-			->expects($this->next($Entity))
-			->method('set')
-			->with($Request->data);
-		$Action
-			->expects($this->next($Action))
-			->method('_subject')
-			->will($this->returnValue($Subject));
-		$Action
-			->expects($this->next($Action))
-			->method('_trigger')
-			->with('beforeSave', $Subject);
-		$Action
-			->expects($this->next($Action))
-			->method('_repository')
-			->will($this->returnValue($Repository));
-		$Repository
-			->expects($this->next($Repository))
-			->method('save')
-			->with($Entity, ['validate' => true, 'atomic' => true])
-			->will($this->returnValue(false));
-		$Action
-			->expects($this->next($Action))
+		$controller->Session
+			->expects($this->once())
 			->method('setFlash')
-			->with('error', $Subject);
-		$Action
-			->expects($this->next($Action))
-			->method('_trigger')
-			->with('afterSave', $Subject);
-		$Action
-			->expects($this->next($Action))
-			->method('_trigger')
-			->with('beforeRender', $Subject);
+			->with(
+				'Successfully created blog',
+				'default',
+				[
+					'class' => 'message success',
+					'original' => 'Successfully created blog'
+				],
+				'flash'
+			);
 
+		$result = $this->_testAction('/blogs/add', [
+			'method' => 'POST',
+			'data' => ['name' => 'Hello World', 'body' => 'Pretty hot body']
+		]);
 
-		$this->setReflectionClassInstance($Action);
-		$this->callProtectedMethod('_post', [], $Action);
-
-		$this->assertFalse($Subject->success);
-		$this->assertFalse($Subject->created);
-		$this->assertSame($Entity, $Subject->item);
-	}
-
-/**
- * Check that _PUT maps to _POST
- *
- * @covers \Crud\Action\Add::_put
- * @return void
- */
-	public function testPutMapsToPost() {
-		$Action = $this
-			->getMockBuilder('\Crud\Action\Add')
-			->disableOriginalConstructor()
-			->setMethods(['_post'])
-			->getMock();
-
-		$Action
-			->expects($this->next($Action))
-			->method('_post');
-
-		$this->setReflectionClassInstance($Action);
-		$this->callProtectedMethod('_put', [], $Action);
+		$this->assertTrue($subject->success);
+		$this->assertTrue($subject->created);
+		$this->assertEquals('/blogs', $controller->response->location(), 'Was not redirected to index()');
 	}
 
 }

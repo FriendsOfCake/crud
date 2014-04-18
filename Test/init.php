@@ -34,6 +34,7 @@ require ROOT . '/vendor/cakephp/cakephp/src/basics.php';
 require ROOT . '/vendor/autoload.php';
 
 Cake\Core\Configure::write('App', ['namespace' => 'App']);
+Cake\Core\Configure::write('debug', 2);
 
 $TMP = new \Cake\Utility\Folder(TMP);
 $TMP->create(TMP . 'cache/models', 0777);
