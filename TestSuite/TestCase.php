@@ -1,6 +1,10 @@
 <?php
 namespace Crud\Testsuite;
 
+use Crud\TestSuite\Traits\CrudTestTrait;
+use FriendsOfCake\TestUtilities\AccessibilityHelperTrait;
+use FriendsOfCake\TestUtilities\CounterHelperTrait;
+
 /**
  *
  * Licensed under The MIT License
@@ -8,8 +12,9 @@ namespace Crud\Testsuite;
  */
 abstract class TestCase extends \Cake\TestSuite\TestCase {
 
-	use \FriendsOfCake\TestUtilities\AccessibilityHelperTrait;
-	use \FriendsOfCake\TestUtilities\CounterHelperTrait;
+	use AccessibilityHelperTrait;
+	use CounterHelperTrait;
+	use CrudTestTrait;
 
 	public function setUp() {
 		parent::setUp();

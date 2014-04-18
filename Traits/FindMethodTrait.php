@@ -30,7 +30,7 @@ trait FindMethodTrait {
  * @return array
  */
 	protected function _findRecord($id, Subject $subject) {
-		$repository = $this->_repository();
+		$repository = $this->_table();
 
 		$query = $repository->find($this->findMethod());
 		$query->where([current($query->aliasField($repository->primaryKey())) => $id]);

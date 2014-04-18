@@ -3,6 +3,7 @@ namespace Crud\TestSuite;
 
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
+use Crud\TestSuite\Traits\CrudTestTrait;
 use FriendsOfCake\TestUtilities\AccessibilityHelperTrait;
 use FriendsOfCake\TestUtilities\CounterHelperTrait;
 
@@ -15,6 +16,7 @@ abstract class ControllerTestCase extends \Cake\TestSuite\ControllerTestCase {
 
 	use AccessibilityHelperTrait;
 	use CounterHelperTrait;
+	use CrudTestTrait;
 
 	public function setUp() {
 		parent::setUp();

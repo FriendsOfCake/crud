@@ -158,9 +158,8 @@ class Add extends Base {
 	protected function _error(Subject $subject) {
 		$subject->set(['success' => false, 'created' => false]);
 
-		$this->setFlash('error', $subject);
-
 		$this->_trigger('afterSave', $subject);
+		$this->setFlash('error', $subject);
 		$this->_trigger('beforeRender', $subject);
 	}
 

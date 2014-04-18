@@ -252,10 +252,10 @@ abstract class Base extends Object {
 
 	protected function _deriveResourceName() {
 		if ($this->scope() === 'entity') {
-			return strtolower(Inflector::humanize(Inflector::singularize(Inflector::underscore($this->_repository()->alias()))));
+			return strtolower(Inflector::humanize(Inflector::singularize(Inflector::underscore($this->_table()->alias()))));
 		}
 
-		return strtolower(Inflector::humanize(Inflector::underscore($this->_repository()->alias())));
+		return strtolower(Inflector::humanize(Inflector::underscore($this->_table()->alias())));
 	}
 
 /**

@@ -64,7 +64,7 @@ class Delete extends Base {
 			return $this->_stopped($subject);
 		}
 
-		if ($this->_repository()->delete($entity)) {
+		if ($this->_table()->delete($entity)) {
 			$this->_success($subject);
 		} else {
 			$this->_error($subject);

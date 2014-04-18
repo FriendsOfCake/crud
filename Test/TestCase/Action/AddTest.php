@@ -18,7 +18,9 @@ class AddTest extends ControllerTestCase {
  */
 	public $fixtures = ['plugin.crud.blog'];
 
-	protected $_controllerClass = '\Crud\Test\App\Controller\BlogsController';
+	public $controllerClass = '\Crud\Test\App\Controller\BlogsController';
+
+	public $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
 
 /**
  * Test the normal HTTP GET flow of _get
@@ -26,7 +28,7 @@ class AddTest extends ControllerTestCase {
  * @return void
  */
 	public function testActionGet() {
-		$controller = $this->generate($this->_controllerClass);
+		$controller = $this->generate($this->controllerClass);
 		$result = $this->_testAction('/blogs/add');
 
 		$expected = ['tag' => 'legend', 'content' => 'New Blog'];
@@ -50,7 +52,7 @@ class AddTest extends ControllerTestCase {
  * @return void
  */
 	public function testActionGetWithQueryArgs() {
-		$controller = $this->generate($this->_controllerClass);
+		$controller = $this->generate($this->controllerClass);
 		$result = $this->_testAction('/blogs/add?name=test');
 
 		$expected = ['tag' => 'legend', 'content' => 'New Blog'];
@@ -72,25 +74,19 @@ class AddTest extends ControllerTestCase {
  * @return void
  */
 	public function testActionPost() {
-		$controller = $this->generate($this->_controllerClass, [
+		$this->controller = $this->generate($this->controllerClass, [
 			'components' => ['Session' => ['setFlash']]
 		]);
 
-		$subject = null;
-		$controller->Crud->on('afterSave', function($event) use (&$subject) {
-			$subject = $event->subject;
-		});
+		$this->_subscribeToEvents();
 
-		$controller->Session
+		$this->controller->Session
 			->expects($this->once())
 			->method('setFlash')
 			->with(
 				'Successfully created blog',
 				'default',
-				[
-					'class' => 'message success',
-					'original' => 'Successfully created blog'
-				],
+				['class' => 'message success', 'original' => 'Successfully created blog'],
 				'flash'
 			);
 
@@ -99,10 +95,96 @@ class AddTest extends ControllerTestCase {
 			'data' => ['name' => 'Hello World', 'body' => 'Pretty hot body']
 		]);
 
-		var_dump($subject);
-		$this->assertTrue($subject->success);
-		$this->assertTrue($subject->created);
-		$this->assertEquals('/blogs', $controller->response->location(), 'Was not redirected to index()');
+		$this->assertEvents(['beforeSave', 'afterSave',	'setFlash', 'beforeRedirect']);
+		$this->assertTrue($this->_subject->success);
+		$this->assertTrue($this->_subject->created);
+		$this->assertRedirect('/blogs');
+	}
+
+/**
+ * Test POST with unsuccessful save()
+ *
+ * @return void
+ */
+	public function testActionPostErrorSave() {
+		$this->generate($this->controllerClass, [
+			'components' => ['Session' => ['setFlash']]
+		]);
+
+		$this->_subscribeToEvents();
+
+		$this->controller->Blogs = $this->getModel($this->tableClass, ['save'], 'Blogs', 'blogs');
+
+		$this->controller->Blogs
+			->expects($this->once())
+			->method('save')
+			->will($this->returnValue(false));
+
+		$this->controller->Session
+			->expects($this->once())
+			->method('setFlash')
+			->with(
+				'Could not create blog',
+				'default',
+				['class' => 'message error', 'original' => 'Could not create blog'],
+				'flash'
+			);
+
+		$result = $this->_testAction('/blogs/add', [
+			'method' => 'POST',
+			'data' => ['name' => 'Hello World', 'body' => 'Pretty hot body']
+		]);
+
+		$this->assertEvents(['beforeSave', 'afterSave', 'setFlash', 'beforeRender']);
+		$this->assertFalse($this->_subject->success);
+		$this->assertFalse($this->_subject->created);
+	}
+
+/**
+ * Test POST with validation errors
+ *
+ * @return void
+ */
+	public function testActionPostValidationErrors() {
+		$this->generate($this->controllerClass, [
+			'components' => ['Session' => ['setFlash']]
+		]);
+
+		$this->_subscribeToEvents();
+
+		$this->controller->Blogs = $this->getModel($this->tableClass, null, 'Blogs', 'blogs');
+		$this->controller->Blogs
+			->validator()
+			->validatePresence('name')
+			->add('name', [
+				'length' => [
+					'rule' => ['minLength', 10],
+					'message' => 'Name need to be at least 10 characters long',
+				]
+			]);
+
+		$this->controller->Session
+			->expects($this->once())
+			->method('setFlash')
+			->with(
+				'Could not create blog',
+				'default',
+				['class' => 'message error', 'original' => 'Could not create blog'],
+				'flash'
+			);
+
+		$result = $this->_testAction('/blogs/add', [
+			'method' => 'POST',
+			'data' => ['name' => 'Hello', 'body' => 'Pretty hot body']
+		]);
+
+		$this->assertEvents(['beforeSave', 'afterSave', 'setFlash', 'beforeRender']);
+
+		$this->assertFalse($this->_subject->success);
+		$this->assertFalse($this->_subject->created);
+
+		$expected = ['class' => 'error-message', 'content' => 'Name need to be at least 10 characters long'];
+		$this->assertTag($expected, $result, 'Could not find validation error in HTML');
 	}
 
 }
