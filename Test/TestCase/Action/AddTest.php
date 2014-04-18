@@ -99,6 +99,7 @@ class AddTest extends ControllerTestCase {
 			'data' => ['name' => 'Hello World', 'body' => 'Pretty hot body']
 		]);
 
+		var_dump($subject);
 		$this->assertTrue($subject->success);
 		$this->assertTrue($subject->created);
 		$this->assertEquals('/blogs', $controller->response->location(), 'Was not redirected to index()');
