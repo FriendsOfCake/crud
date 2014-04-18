@@ -18,7 +18,7 @@ class Redirect extends Base {
  *
  * @var array
  */
-	protected $_settings = [
+	protected $_defaultConfig = [
 		'readers' => []
 	];
 

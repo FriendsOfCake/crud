@@ -26,7 +26,7 @@ class Api extends Base {
  *
  * @var array
  */
-	protected $_settings = [
+	protected $_defaultConfig = [
 		'viewClasses' => [
 			'json' => 'Json',
 			'xml' => 'Xml'

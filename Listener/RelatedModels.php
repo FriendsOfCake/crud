@@ -32,7 +32,6 @@ class RelatedModels extends Base {
  */
 	public function publishRelatedModels($action = null) {
 		$models = $this->models($action);
-		// debug($models);
 
 		if (empty($models)) {
 			return;

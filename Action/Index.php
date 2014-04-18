@@ -27,7 +27,7 @@ class Index extends Base {
  *
  * @var array
  */
-	protected $_settings = [
+	protected $_defaultConfig = [
 		'enabled' => true,
 		'scope' => 'table',
 		'view' => null,

@@ -78,11 +78,7 @@ abstract class Base extends Object {
 			return $this->_action()->resourceName($value);
 		}
 
-		if (empty($this->_settings['name'])) {
-			$this->_settings['name'] = $this->_action()->resourceName();
-		}
-
-		return $this->_settings['name'];
+		return $this->_action()->resourceName();
 	}
 
 }

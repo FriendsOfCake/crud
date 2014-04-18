@@ -240,14 +240,14 @@ abstract class Base extends Object {
  */
 	public function resourceName($value = null) {
 		if (!empty($value)) {
-			return $this->_settings['name'] = $value;
+			return $this->config('name', $value);
 		}
 
-		if (empty($this->_settings['name'])) {
-			$this->_settings['name'] = $this->_deriveResourceName();
+		if (empty($this->_config['name'])) {
+			$this->config('name', $this->_deriveResourceName());
 		}
 
-		return $this->_settings['name'];
+		return $this->config('name');
 	}
 
 	protected function _deriveResourceName() {

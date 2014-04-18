@@ -29,7 +29,7 @@ class View extends Base {
  *
  * @var array
  */
-	protected $_settings = [
+	protected $_defaultConfig = [
 		'enabled' => true,
 		'scope' => 'entity',
 		'findMethod' => 'all',

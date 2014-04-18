@@ -4,6 +4,7 @@ namespace Crud\Core;
 use Cake\Event\Event;
 use Cake\Event\EventListener;
 use Cake\Controller\Controller;
+use Cake\Core\InstanceConfigTrait;
 use Crud\Event\Subject;
 
 /**
@@ -17,7 +18,7 @@ use Crud\Event\Subject;
 abstract class Object extends \Cake\Core\Object implements EventListener {
 
 	use ProxyTrait;
-	use ConfigTrait;
+	use InstanceConfigTrait;
 
 /**
  * Container with reference to all objects
@@ -26,6 +27,13 @@ abstract class Object extends \Cake\Core\Object implements EventListener {
  * @var \Cake\Controller\Controller
  */
 	protected $_controller;
+
+/**
+ * Default configuration
+ *
+ * @var array
+ */
+	protected $_defaultConfig = [];
 
 /**
  * Constructor
