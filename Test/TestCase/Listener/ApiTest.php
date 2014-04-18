@@ -273,23 +273,23 @@ class ApiTest extends TestCase {
 			),
 
 			'Validate case #1 - no validation errors' => array(
-				array('class' => '\Crud\Error\CrudValidationException', 'type' => 'validate'),
-				'\Crud\Error\CrudValidationException',
+				array('class' => '\Crud\Error\Exception\ValidationException', 'type' => 'validate'),
+				'\Crud\Error\Exception\ValidationException',
 				'0 validation errors occurred',
 				0
 			),
 
 			'Validate case #2 - one validation error' => array(
-				array('class' => '\Crud\Error\CrudValidationException', 'type' => 'validate'),
-				'\Crud\Error\CrudValidationException',
+				array('class' => '\Crud\Error\Exception\ValidationException', 'type' => 'validate'),
+				'\Crud\Error\Exception\ValidationException',
 				'A validation error occurred',
 				0,
 				array(array('id' => 'hello world'))
 			),
 
 			'Validate case #3 - two validation errors' => array(
-				array('class' => '\Crud\Error\CrudValidationException', 'type' => 'validate'),
-				'\Crud\Error\CrudValidationException',
+				array('class' => '\Crud\Error\Exception\ValidationException', 'type' => 'validate'),
+				'\Crud\Error\Exception\ValidationException',
 				'2 validation errors occurred',
 				0,
 				array(array('id' => 'hello world', 'name' => 'fail me'))
@@ -332,7 +332,7 @@ class ApiTest extends TestCase {
 			$listener->expects($this->never())->method('_validationErrors');
 		}
 
-		$this->expectException($exceptionClass, $exceptionMessage, $exceptionCode);
+		$this->setExpectedException($exceptionClass, $exceptionMessage, $exceptionCode);
 
 		$this->setReflectionClassInstance($listener);
 		$this->callProtectedMethod('_exceptionResponse', [$apiConfig, $event], $listener);
@@ -1204,7 +1204,7 @@ class ApiTest extends TestCase {
 		}
 
 		if (is_string($exception)) {
-			$this->expectException($exception);
+			$this->setExpectedException($exception);
 		}
 
 		$this->setReflectionClassInstance($listener);

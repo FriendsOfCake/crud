@@ -6,8 +6,8 @@ use Cake\Network\Request;
 use Cake\Network\Response;
 use Cake\TestSuite\TestCase;
 use Cake\Core\Configure;
-use Crud\Error\CrudExceptionRenderer;
-use Crud\Error\Exception\CrudValidationException;
+use Crud\Error\ECrudExceptionRenderer;
+use Crud\Error\Exception\ValidationException;
 
 class CrudExceptionRendererTest extends TestCase {
 
@@ -331,7 +331,7 @@ class CrudExceptionRendererTest extends TestCase {
 		);
 		$Model->invalidate('field', 'boom');
 
-		$Exception = new CrudValidationException(array(
+		$Exception = new ValidationException(array(
 			'Alias' => array(
 				'field' => array(
 					'boom'
@@ -368,7 +368,7 @@ class CrudExceptionRendererTest extends TestCase {
 				)
 			),
 			'exception' => array(
-				'class' => 'CrudValidationException',
+				'class' => 'ValidationException',
 				'code' => 412,
 				'message' => 'Alias.field : boom'
 			)
@@ -389,7 +389,7 @@ class CrudExceptionRendererTest extends TestCase {
 		);
 		$Model->invalidate('field', 'boom');
 
-		$Exception = new CrudValidationException(array(
+		$Exception = new ValidationException(array(
 			'Alias' => array(
 				'field' => array(
 					'boom'
@@ -426,7 +426,7 @@ class CrudExceptionRendererTest extends TestCase {
 				)
 			),
 			'exception' => array(
-				'class' => 'CrudValidationException',
+				'class' => 'ValidationException',
 				'code' => 1000,
 				'message' => 'Alias.field : boom'
 			)
@@ -435,7 +435,7 @@ class CrudExceptionRendererTest extends TestCase {
 	}
 
 	public function testValidationErrorMultipleMessages() {
-		$Exception = new CrudValidationException(array(
+		$Exception = new ValidationException(array(
 			'Alias' => array(
 				'field' => array(
 					'something wrong with this field'
@@ -478,7 +478,7 @@ class CrudExceptionRendererTest extends TestCase {
 				)
 			),
 			'exception' => array(
-				'class' => 'CrudValidationException',
+				'class' => 'ValidationException',
 				'code' => 412,
 				'message' => '2 validation errors occurred',
 			)
@@ -487,7 +487,7 @@ class CrudExceptionRendererTest extends TestCase {
 	}
 
 	public function testValidationErrorUnknownModel() {
-		$Exception = new CrudValidationException(array(
+		$Exception = new ValidationException(array(
 			'Alias' => array(
 				'field' => array(
 					'something wrong with this field'
@@ -524,7 +524,7 @@ class CrudExceptionRendererTest extends TestCase {
 				)
 			),
 			'exception' => array(
-				'class' => 'CrudValidationException',
+				'class' => 'ValidationException',
 				'code' => 412,
 				'message' => 'A validation error occurred',
 			)

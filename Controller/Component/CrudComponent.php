@@ -19,13 +19,6 @@ use Crud\Event\Subject;
 class CrudComponent extends Component {
 
 /**
- * Reference to a Session component.
- *
- * @var array
- */
-	public $components = [];
-
-/**
  * The current controller action.
  *
  * @var string
@@ -67,14 +60,6 @@ class CrudComponent extends Component {
  * @var string
  */
 	protected $_modelName;
-
-/**
- * Cached property for the current model instance. Instance
- * of Controller::$modelClass.
- *
- * @var Model
- */
-	protected $_model;
 
 /**
  * List of listener objects attached to Crud.
@@ -141,7 +126,29 @@ class CrudComponent extends Component {
  * @return void
  */
 	public function __construct(ComponentRegistry $collection, $settings = []) {
-		parent::__construct($collection, $this->_mergeConfig($this->settings, $settings));
+		$settings['actions'] = ($this->normalizeArray($settings['actions']));
+		$settings['listeners'] = ($this->normalizeArray($settings['listeners']));
+
+		parent::__construct($collection, $settings);
+	}
+
+	public function normalizeArray($objects) {
+		$normal = [];
+
+		foreach ($objects as $i => $objectName) {
+			$config = [];
+
+			if (!is_int($i)) {
+				$config = (array)$objectName;
+				$objectName = $i;
+			}
+
+			list(, $name) = pluginSplit($objectName);
+			$name = strtolower($name);
+			$normal[$name] = ['className' => $objectName, 'config' => $config];
+		}
+
+		return $normal;
 	}
 
 /**
@@ -154,8 +161,6 @@ class CrudComponent extends Component {
  * @return void
  */
 	public function initialize(Event $event) {
-		$this->_normalizeConfig();
-
 		$this->_controller = $event->subject;
 		$this->_controller->methods = array_keys(array_flip($this->_controller->methods) + array_flip(array_keys($this->settings['actions'])));
 		$this->_action = $this->_controller->request->action;
@@ -338,7 +343,6 @@ class CrudComponent extends Component {
  */
 	public function mapAction($action, $settings, $enable = true) {
 		$this->config('actions.' . $action, $settings);
-		$this->_normalizeConfig('actions');
 
 		if ($enable) {
 			$this->enable($action);
@@ -536,12 +540,6 @@ class CrudComponent extends Component {
 		}
 
 		$this->settings = Hash::insert($this->settings, $key, $value);
-		foreach (array('listeners', 'actions') as $type) {
-			if (strpos($key, $type . '.') === 0) {
-				$this->_normalizeConfig($type);
-			}
-		}
-
 		return $this;
 	}
 
@@ -589,7 +587,6 @@ class CrudComponent extends Component {
 	public function useModel($modelName) {
 		$this->_controller->loadModel($modelName);
 		list(, $modelName) = pluginSplit($modelName);
-		$this->_model = $this->_controller->{$modelName};
 		$this->_modelName = $this->_model->name;
 	}
 
@@ -621,62 +618,6 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Normalize action configuration
- *
- * If an action doesn't have a CrudClass specified (the value part of the array)
- * try to compute it by exploding on action name on '_' and take the last chunk
- * as CrudClass identifier.
- *
- * @param mixed $types Class type(s).
- * @return void
- * @throws CakeException If className is missing for listener.
- */
-	protected function _normalizeConfig($types = null) {
-		if (!$types) {
-			$types = ['listeners', 'actions'];
-		}
-
-		foreach ((array)$types as $type) {
-			$this->settings[$type] = Hash::normalize($this->settings[$type]);
-
-			foreach ($this->settings[$type] as $name => $settings) {
-				if (empty($settings)) {
-					$settings = [];
-				}
-
-				$settings['className'] = $this->_handlerClassName($type, $name);
-				list(,$newName) = pluginSplit($name);
-				$newName = strtolower($newName);
-
-				$this->settings[$type][$newName] = $settings;
-				unset($this->settings[$type][$name]);
-			}
-		}
-	}
-
-/**
- * Generate valid class name for action and listener handler.
- *
- * @param string $type
- * @param string $name
- * @return string Class name
- */
-	protected function _handlerClassName($type, $name) {
-		if ($type === 'listeners') {
-			$type = 'Listener';
-		} elseif ($type === 'actions') {
-			$type = 'Action';
-		}
-
-		$className = \Cake\Core\App::classname($name, $type);
-		if ($className === false) {
-			throw new \Exception(sprintf('Failed to load class "%s" of type "%s"', $name, $type));
-		}
-
-		return $className;
-	}
-
-/**
  * Load all event classes attached to Crud.
  *
  * @return void
@@ -699,11 +640,17 @@ class CrudComponent extends Component {
 			$config = $this->config('listeners.' . $name);
 
 			if (empty($config)) {
-				throw new \Cake\Error\BaseException(sprintf('Listener "%s" is not configured', $name));
+				throw new \Crud\Error\Exception\ListenerNotConfiguredException(sprintf('Listener "%s" is not configured', $name));
+			}
+
+			$config['className'] = \Cake\Core\App::classname($config['className'], 'Listener');
+			if (empty($config['className'])) {
+				throw new \Crud\Error\Exception\MissingListenerException('Could not find listener class: ' . $config['className']);
 			}
 
 			$this->_listenerInstances[$name] = new $config['className']($this->_controller);
-			$this->_listenerInstances[$name]->config($config);
+			$this->_listenerInstances[$name]->config($config['config']);
+
 			$this->_eventManager->attach($this->_listenerInstances[$name]);
 
 			if (is_callable([$this->_listenerInstances[$name], 'setup'])) {
@@ -726,42 +673,19 @@ class CrudComponent extends Component {
 			$config = $this->config('actions.' . $name);
 
 			if (empty($config)) {
-				throw new CakeException(sprintf('Action "%s" has not been mapped', $name));
+				throw new \Crud\Error\Exception\ActionNotConfiguredException(sprintf('Action "%s" has not been mapped', $name));
 			}
 
-			$config += ['action' => $name];
+			$config['className'] = \Cake\Core\App::classname($config['className'], 'Action');
+			if (empty($config['className'])) {
+				throw new \Crud\Error\Exception\MissingListenerException('Could not find action class: ' . $config['className']);
+			}
+
 			$this->_actionInstances[$name] = new $config['className']($this->_controller);
-			$this->_actionInstances[$name]->config($config);
+			$this->_actionInstances[$name]->config($config['config']);
 		}
 
 		return $this->_actionInstances[$name];
-	}
-
-/**
- * Merge configuration arrays.
- *
- * Allow us to change e.g. a listener config without losing defaults.
- *
- * This is like merge_array_recursive - with the difference that
- * duplicate keys aren't changed to an array with both values, but
- * overridden.
- *
- * @param array $array1
- * @param array $array2
- * @return array
- */
-	protected function _mergeConfig(array $array1, array $array2) {
-		$merged = $array1;
-		foreach ($array2 as $key => $value) {
-			if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
-				$merged[$key] = $this->_mergeConfig($merged[$key], $value);
-				continue;
-			}
-
-			$merged[$key] = $value;
-		}
-
-		return $merged;
 	}
 
 }

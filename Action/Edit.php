@@ -82,7 +82,7 @@ class Edit extends Base {
 			'error' => [
 				'exception' => [
 					'type' => 'validate',
-					'class' => '\Crud\Error\Exception\CrudValidationException'
+					'class' => '\Crud\Error\Exception\ValidationException'
 				]
 			]
 		],
