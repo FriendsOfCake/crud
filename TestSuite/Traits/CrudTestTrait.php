@@ -5,6 +5,12 @@ use Cake\Controller\Controller;
 use Cake\Datasource\ConnectionManager;
 use Crud\Event\Subject;
 
+/**
+ * Utility methods for easier testing with Crud in CakePHP & PHPUnit
+ *
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ */
 trait CrudTestTrait {
 
 /**
