@@ -644,12 +644,12 @@ class CrudComponent extends Component {
 				throw new \Crud\Error\Exception\ListenerNotConfiguredException(sprintf('Listener "%s" is not configured', $name));
 			}
 
-			$config['className'] = \Cake\Core\App::classname($config['className'], 'Listener');
-			if (empty($config['className'])) {
+			$className = \Cake\Core\App::classname($config['className'], 'Listener', 'Listener');
+			if (empty($className)) {
 				throw new \Crud\Error\Exception\MissingListenerException('Could not find listener class: ' . $config['className']);
 			}
 
-			$this->_listenerInstances[$name] = new $config['className']($this->_controller);
+			$this->_listenerInstances[$name] = new $className($this->_controller);
 			$this->_listenerInstances[$name]->config($config['config']);
 
 			$this->_eventManager->attach($this->_listenerInstances[$name]);
@@ -677,7 +677,7 @@ class CrudComponent extends Component {
 				throw new \Crud\Error\Exception\ActionNotConfiguredException(sprintf('Action "%s" has not been mapped', $name));
 			}
 
-			$config['className'] = \Cake\Core\App::classname($config['className'], 'Action');
+			$config['className'] = \Cake\Core\App::classname($config['className'], 'Action', 'Action');
 			if (empty($config['className'])) {
 				throw new \Crud\Error\Exception\MissingListenerException('Could not find action class: ' . $config['className']);
 			}

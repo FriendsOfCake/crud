@@ -1,34 +1,31 @@
 <?php
-
 namespace Crud\Action;
 
 use Crud\Event\Subject;
-use Crud\Traits\FindMethodTrait;
 use Crud\Traits\RedirectTrait;
 use Crud\Traits\SaveMethodTrait;
+use Crud\Traits\SerializeTrait;
 use Crud\Traits\ViewTrait;
 use Crud\Traits\ViewVarTrait;
 
 /**
- * Handles 'Edit' Crud actions
+ * Handles 'Add' Crud actions
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class Edit extends Base {
+class AddAction extends BaseAction {
 
-	use FindMethodTrait;
 	use RedirectTrait;
 	use SaveMethodTrait;
+	use SerializeTrait;
 	use ViewTrait;
 	use ViewVarTrait;
 
 /**
- * Default settings for 'edit' actions
+ * Default settings for 'add' actions
  *
  * `enabled` Is this crud action enabled or disabled
- *
- * `findMethod` The default `Model::find()` method for reading data
  *
  * `view` A map of the controller action and the view to render
  * If `NULL` (the default) the controller action name will be used
@@ -46,20 +43,27 @@ class Edit extends Base {
 	protected $_defaultConfig = [
 		'enabled' => true,
 		'scope' => 'entity',
-		'findMethod' => 'all',
 		'saveMethod' => 'save',
 		'view' => null,
+		'viewVar' => null,
 		'relatedModels' => true,
 		'saveOptions' => [
 			'validate' => true,
 			'atomic' => true
 		],
-		'messages' => [
+		'api' => [
+			'methods' => ['put', 'post'],
 			'success' => [
-				'text' => 'Successfully updated {name}'
+				'code' => 201,
+				'data' => [
+					'entity' => ['id']
+				]
 			],
 			'error' => [
-				'text' => 'Could not update {name}'
+				'exception' => [
+					'type' => 'validate',
+					'class' => '\Crud\Error\Exception\ValidationException'
+				]
 			]
 		],
 		'redirect' => [
@@ -71,19 +75,15 @@ class Edit extends Base {
 			'post_edit' => [
 				'reader' => 'request.data',
 				'key' => '_edit',
-				'url' => ['action' => 'edit', ['subject.key', 'id']]
+				'url' => ['action' => 'edit', ['entity.field', 'id']]
 			]
 		],
-		'api' => [
-			'methods' => ['put', 'post'],
+		'messages' => [
 			'success' => [
-				'code' => 200
+				'text' => 'Successfully created {name}'
 			],
 			'error' => [
-				'exception' => [
-					'type' => 'validate',
-					'class' => '\Crud\Error\Exception\ValidationException'
-				]
+				'text' => 'Could not create {name}'
 			]
 		],
 		'serialize' => []
@@ -92,32 +92,33 @@ class Edit extends Base {
 /**
  * HTTP GET handler
  *
- * @throws NotFoundException If record not found
- * @param string $id
  * @return void
  */
-	protected function _get($id = null) {
-		$subject = $this->_subject();
-		$subject->set(['id' => $id]);
-		$subject->set(['entity' => $this->_findRecord($id, $subject)]);
+	protected function _get() {
+		$subject = $this->_subject([
+			'success' => true,
+			'entity' => $this->_entity($this->_request()->query)
+		]);
 
 		$this->_trigger('beforeRender', $subject);
 	}
 
 /**
- * HTTP PUT handler
+ * HTTP POST handler
  *
- * @param mixed $id
  * @return void
  */
-	protected function _put($id = null) {
-		$subject = $this->_subject();
-		$subject->set(['id' => $id]);
-
-		$entity = $this->_table()->patchEntity($this->_findRecord($id, $subject), $this->_request()->data);
+	protected function _post() {
+		$subject = $this->_subject([
+			'entity' => $this->_entity($this->_request()->data),
+			'saveMethod' => $this->saveMethod(),
+			'saveOptions' => $this->saveOptions()
+		]);
 
 		$this->_trigger('beforeSave', $subject);
-		if (call_user_func([$this->_table(), $this->saveMethod()], $entity, $this->saveOptions())) {
+
+		$saveCallback = [$this->_table(), $subject->saveMethod];
+		if (call_user_func($saveCallback, $subject->entity, $subject->saveOptions)) {
 			return $this->_success($subject);
 		}
 
@@ -125,44 +126,40 @@ class Edit extends Base {
 	}
 
 /**
- * HTTP POST handler
+ * HTTP PUT handler
  *
- * Thin proxy for _put
- *
- * @param mixed $id
  * @return void
  */
-	protected function _post($id = null) {
-		return $this->_put($id);
+	protected function _put() {
+		return $this->_post();
 	}
 
 /**
- * Success callback
+ * Post success callback
  *
  * @param  Subject $subject
  * @return \Cake\Network\Response
  */
 	protected function _success(Subject $subject) {
-		$subject->set(['success' => true, 'created' => false]);
-		$this->_trigger('afterSave', $subject);
+		$subject->set(['success' => true, 'created' => true]);
 
+		$this->_trigger('afterSave', $subject);
 		$this->setFlash('success', $subject);
 
 		return $this->_redirect($subject, ['action' => 'index']);
 	}
 
 /**
- * Error callback
+ * Post error callback
  *
  * @param  Subject $subject
  * @return void
  */
 	protected function _error(Subject $subject) {
 		$subject->set(['success' => false, 'created' => false]);
+
 		$this->_trigger('afterSave', $subject);
-
 		$this->setFlash('error', $subject);
-
 		$this->_trigger('beforeRender', $subject);
 	}
 

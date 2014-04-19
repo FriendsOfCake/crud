@@ -14,7 +14,7 @@ use Crud\Core\Object;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-abstract class Base extends Object {
+abstract class BaseAction extends Object {
 
 	protected $_responding = false;
 

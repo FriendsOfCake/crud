@@ -10,7 +10,7 @@ use Cake\Utility\Inflector;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class RelatedModels extends Base {
+class RelatedModelsListener extends BaseListener {
 
 /**
  * Fetches related models' list and sets them to a variable for the view

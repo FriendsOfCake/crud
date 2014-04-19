@@ -11,7 +11,7 @@ use Cake\Utility\Hash;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class Redirect extends Base {
+class RedirectListener extends BaseListener {
 
 /**
  * Settings

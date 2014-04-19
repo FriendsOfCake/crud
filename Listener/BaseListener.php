@@ -11,7 +11,7 @@ use Crud\Core\Object;
  *
  * @codeCoverageIgnore
  */
-abstract class Base extends Object {
+abstract class BaseListener extends Object {
 
 /**
  * Returns a list of all events that will fire in the controller during its life cycle.

@@ -1,28 +1,26 @@
 <?php
 namespace Crud\Action;
 
-use Crud\Traits\FindMethodTrait;
+use Crud\Traits\SerializeTrait;
 use Crud\Traits\ViewTrait;
 use Crud\Traits\ViewVarTrait;
 
 /**
- * Handles 'View' Crud actions
+ * Handles 'Index' Crud actions
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class View extends Base {
+class IndexAction extends BaseAction {
 
-	use FindMethodTrait;
+	use SerializeTrait;
 	use ViewTrait;
 	use ViewVarTrait;
 
 /**
- * Default settings for 'view' actions
+ * Default settings for 'index' actions
  *
  * `enabled` Is this crud action enabled or disabled
- *
- * `findMethod` The default `Model::find()` method for reading data
  *
  * `view` A map of the controller action and the view to render
  * If `NULL` (the default) the controller action name will be used
@@ -31,24 +29,33 @@ class View extends Base {
  */
 	protected $_defaultConfig = [
 		'enabled' => true,
-		'scope' => 'entity',
-		'findMethod' => 'all',
+		'scope' => 'table',
 		'view' => null,
 		'viewVar' => null,
-		'serialize' => []
+		'serialize' => [],
+		'api' => [
+			'success' => [
+				'code' => 200
+			],
+			'error' => [
+				'code' => 400
+			]
+		]
 	];
 
 /**
- * HTTP GET handler
+ * Generic handler for all HTTP verbs
  *
- * @param string $id
  * @return void
  */
-	protected function _get($id = null) {
-		$subject = $this->_subject();
-		$subject->set(['id' => $id]);
+	protected function _handle() {
+		$subject = $this->_subject(['success' => true]);
 
-		$this->_findRecord($id, $subject);
+		$this->_trigger('beforePaginate', $subject);
+		$items = $this->_controller()->paginate();
+		$subject->set(['entities' => $items]);
+
+		$this->_trigger('afterPaginate', $subject);
 		$this->_trigger('beforeRender', $subject);
 	}
 

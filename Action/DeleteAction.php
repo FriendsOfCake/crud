@@ -11,7 +11,7 @@ use Crud\Traits\RedirectTrait;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class Delete extends Base {
+class DeleteAction extends BaseAction {
 
 	use FindMethodTrait;
 	use RedirectTrait;

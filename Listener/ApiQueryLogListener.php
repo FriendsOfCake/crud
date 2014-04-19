@@ -16,7 +16,7 @@ use Cake\Event\Event;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class ApiQueryLog extends Base {
+class ApiQueryLogListener extends BaseListener {
 
 /**
  * Returns a list of all events that will fire in the controller during its lifecycle.
