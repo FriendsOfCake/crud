@@ -38,18 +38,18 @@ class EditActionTest extends ControllerTestCase {
  */
 	public function testActionGet() {
 		$controller = $this->generate($this->controllerClass);
-		$result = $this->_testAction('/blogs/add');
+		$result = $this->_testAction('/blogs/edit/1');
 
-		$expected = ['tag' => 'legend', 'content' => 'New Blog'];
+		$expected = ['tag' => 'legend', 'content' => 'Edit Blog'];
 		$this->assertTag($expected, $result, 'legend do not match the expected value');
 
-		$expected = ['id' => 'id', 'attributes' => ['value' => '']];
+		$expected = ['id' => 'id', 'attributes' => ['value' => '1']];
 		$this->assertTag($expected, $result, '"id" do not match the expected value');
 
-		$expected = ['id' => 'name', 'attributes' => ['value' => '']];
+		$expected = ['id' => 'name', 'attributes' => ['value' => '1st post']];
 		$this->assertTag($expected, $result, '"name" do not match the expected value');
 
-		$expected = ['id' => 'body', 'attributes' => ['value' => '']];
+		$expected = ['id' => 'body', 'content' => '1st post body'];
 		$this->assertTag($expected, $result, '"body" do not match the expected value');
 	}
 
@@ -62,18 +62,18 @@ class EditActionTest extends ControllerTestCase {
  */
 	public function testActionGetWithQueryArgs() {
 		$controller = $this->generate($this->controllerClass);
-		$result = $this->_testAction('/blogs/add?name=test');
+		$result = $this->_testAction('/blogs/edit/1?name=test');
 
-		$expected = ['tag' => 'legend', 'content' => 'New Blog'];
+		$expected = ['tag' => 'legend', 'content' => 'Edit Blog'];
 		$this->assertTag($expected, $result, 'legend do not match the expected value');
 
-		$expected = ['id' => 'id', 'attributes' => ['value' => '']];
+		$expected = ['id' => 'id', 'attributes' => ['value' => '1']];
 		$this->assertTag($expected, $result, '"id" do not match the expected value');
 
-		$expected = ['id' => 'name', 'attributes' => ['value' => 'test']];
+		$expected = ['id' => 'name', 'attributes' => ['value' => '1st post']];
 		$this->assertTag($expected, $result, '"name" do not match the expected value');
 
-		$expected = ['id' => 'body', 'attributes' => ['value' => '']];
+		$expected = ['id' => 'body', 'content' => '1st post body'];
 		$this->assertTag($expected, $result, '"body" do not match the expected value');
 	}
 
@@ -93,20 +93,20 @@ class EditActionTest extends ControllerTestCase {
 			->expects($this->once())
 			->method('setFlash')
 			->with(
-				'Successfully created blog',
+				'Successfully updated blog',
 				'default',
-				['class' => 'message success', 'original' => 'Successfully created blog'],
+				['class' => 'message success', 'original' => 'Successfully updated blog'],
 				'flash'
 			);
 
-		$result = $this->_testAction('/blogs/add', [
+		$result = $this->_testAction('/blogs/edit/1', [
 			'method' => 'POST',
 			'data' => ['name' => 'Hello World', 'body' => 'Pretty hot body']
 		]);
 
-		$this->assertEvents(['beforeSave', 'afterSave',	'setFlash', 'beforeRedirect']);
+		$this->assertEvents(['beforeFind', 'afterFind',	'beforeSave', 'afterSave', 'setFlash', 'beforeRedirect']);
 		$this->assertTrue($this->_subject->success);
-		$this->assertTrue($this->_subject->created);
+		$this->assertFalse($this->_subject->created);
 		$this->assertRedirect('/blogs');
 	}
 
@@ -133,18 +133,18 @@ class EditActionTest extends ControllerTestCase {
 			->expects($this->once())
 			->method('setFlash')
 			->with(
-				'Could not create blog',
+				'Could not update blog',
 				'default',
-				['class' => 'message error', 'original' => 'Could not create blog'],
+				['class' => 'message error', 'original' => 'Could not update blog'],
 				'flash'
 			);
 
-		$result = $this->_testAction('/blogs/add', [
+		$result = $this->_testAction('/blogs/edit/1', [
 			'method' => 'POST',
 			'data' => ['name' => 'Hello World', 'body' => 'Pretty hot body']
 		]);
 
-		$this->assertEvents(['beforeSave', 'afterSave', 'setFlash', 'beforeRender']);
+		$this->assertEvents(['beforeFind', 'afterFind',	'beforeSave', 'afterSave', 'setFlash', 'beforeRender']);
 		$this->assertFalse($this->_subject->success);
 		$this->assertFalse($this->_subject->created);
 	}
@@ -176,18 +176,18 @@ class EditActionTest extends ControllerTestCase {
 			->expects($this->once())
 			->method('setFlash')
 			->with(
-				'Could not create blog',
+				'Could not update blog',
 				'default',
-				['class' => 'message error', 'original' => 'Could not create blog'],
+				['class' => 'message error', 'original' => 'Could not update blog'],
 				'flash'
 			);
 
-		$result = $this->_testAction('/blogs/add', [
+		$result = $this->_testAction('/blogs/edit/1', [
 			'method' => 'POST',
 			'data' => ['name' => 'Hello', 'body' => 'Pretty hot body']
 		]);
 
-		$this->assertEvents(['beforeSave', 'afterSave', 'setFlash', 'beforeRender']);
+		$this->assertEvents(['beforeFind', 'afterFind',	'beforeSave', 'afterSave', 'setFlash', 'beforeRender']);
 
 		$this->assertFalse($this->_subject->success);
 		$this->assertFalse($this->_subject->created);
