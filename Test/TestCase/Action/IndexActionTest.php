@@ -33,27 +33,49 @@ class IndexActionTest extends ControllerTestCase {
 	public $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
 
 /**
- * Test the normal HTTP GET flow of _get
+ * Data provider with all HTTP verbs
+ *
+ * @return array
+ */
+	public function allHttpMethodProvider() {
+		return [
+			['get'],
+			['post'],
+			['put'],
+			['delete']
+		];
+	}
+
+/**
+ * Test the normal HTTP flow for all HTTP verbs
+ *
+ * @dataProvider allHttpMethodProvider
+ * @return void
+ */
+	public function testGet($method) {
+		$controller = $this->generate($this->controllerClass);
+		$this->_subscribeToEvents();
+
+		$result = $this->_testAction('/blogs', compact('method'));
+		$this->assertContains('Page 1 of 2, showing 3 records out of 5 total', $result);
+		$this->assertEvents(['beforePaginate', 'afterPaginate',	'beforeRender']);
+		$this->assertEquals(['viewVar', 'blogs','success'], array_keys($this->vars));
+	}
+
+/**
+ * Test that changing the viewVar reflects in controller::$viewVar
  *
  * @return void
  */
-	public function testGet() {
+	public function testGetWithViewVar() {
 		$controller = $this->generate($this->controllerClass);
-		$result = $this->_testAction('/blogs');
+		$controller->Crud->action('index')->viewVar('items');
+		$this->_subscribeToEvents();
 
-		debug($result);
-
-		$expected = ['tag' => 'legend', 'content' => 'New Blog'];
-		$this->assertTag($expected, $result, 'legend do not match the expected value');
-
-		$expected = ['id' => 'id', 'attributes' => ['value' => '']];
-		$this->assertTag($expected, $result, '"id" do not match the expected value');
-
-		$expected = ['id' => 'name', 'attributes' => ['value' => '']];
-		$this->assertTag($expected, $result, '"name" do not match the expected value');
-
-		$expected = ['id' => 'body', 'attributes' => ['value' => '']];
-		$this->assertTag($expected, $result, '"body" do not match the expected value');
+		$result = $this->_testAction('/blogs', compact('method'));
+		$this->assertContains('Page 1 of 2, showing 3 records out of 5 total', $result);
+		$this->assertEvents(['beforePaginate', 'afterPaginate',	'beforeRender']);
+		$this->assertEquals(['viewVar', 'items','success'], array_keys($this->vars));
 	}
 
 }

@@ -7,7 +7,7 @@
 	</tr>
 </thead>
 <tbody>
-	<?php foreach ($blogs as $blog) : ?>
+	<?php foreach (${$viewVar} as $blog) : ?>
 
 		<tr>
 			<td><?= $blog->id; ?></td>
