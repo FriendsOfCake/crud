@@ -4,21 +4,20 @@ namespace Crud\Test\TestCase\Listener;
 use Crud\TestSuite\TestCase;
 
 /**
- *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class ApiPaginationTest extends TestCase {
+class ApiPaginationListenerTest extends TestCase {
 
 /**
  * Test implemented events
  *
- * @covers \Crud\Listener\ApiPagination::implementedEvents
+ * @covers \Crud\Listener\ApiPaginationListener::implementedEvents
  * @return void
  */
 	public function testImplementedEvents() {
 		$Instance = $this
-			->getMockBuilder('\Crud\Listener\ApiPagination')
+			->getMockBuilder('\Crud\Listener\ApiPaginationListener')
 			->disableOriginalConstructor()
 			->setMethods(['_checkRequestType'])
 			->getMock();
@@ -54,7 +53,7 @@ class ApiPaginationTest extends TestCase {
 			->getMock();
 
 		$Instance = $this
-			->getMockBuilder('\Crud\Listener\ApiPagination')
+			->getMockBuilder('\Crud\Listener\ApiPaginationListener')
 			->disableOriginalConstructor()
 			->setMethods(['_request', '_controller'])
 			->getMock();
@@ -87,7 +86,7 @@ class ApiPaginationTest extends TestCase {
 			->getMock();
 
 		$Instance = $this
-			->getMockBuilder('\Crud\Listener\ApiPagination')
+			->getMockBuilder('\Crud\Listener\ApiPaginationListener')
 			->disableOriginalConstructor()
 			->setMethods(['_request', '_controller'])
 			->getMock();
@@ -147,7 +146,7 @@ class ApiPaginationTest extends TestCase {
 			->with('pagination', $expected);
 
 		$Action = $this
-			->getMockBuilder('\Crud\Action\Base')
+			->getMockBuilder('\Crud\Action\BaseAction')
 			->disableOriginalConstructor()
 			->setMethods(['config'])
 			->getMock();
@@ -157,7 +156,7 @@ class ApiPaginationTest extends TestCase {
 			->with('serialize.pagination', 'pagination');
 
 		$Instance = $this
-			->getMockBuilder('\Crud\Listener\ApiPagination')
+			->getMockBuilder('\Crud\Listener\ApiPaginationListener')
 			->disableOriginalConstructor()
 			->setMethods(['_request', '_controller', '_action'])
 			->getMock();
