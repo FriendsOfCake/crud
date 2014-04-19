@@ -70,7 +70,7 @@ class DeleteAction extends BaseAction {
 			$this->_error($subject);
 		}
 
-		$this->_redirect($subject, ['action' => 'index']);
+		return $this->_redirect($subject, ['action' => 'index']);
 	}
 
 /**
@@ -81,8 +81,9 @@ class DeleteAction extends BaseAction {
  */
 	protected function _success(Subject $subject) {
 		$subject->set(['success' => true]);
-		$this->setFlash('success', $subject);
 		$this->_trigger('afterDelete', $subject);
+
+		$this->setFlash('success', $subject);
 	}
 
 /**
@@ -93,8 +94,9 @@ class DeleteAction extends BaseAction {
  */
 	protected function _error(Subject $subject) {
 		$subject->set(['success' => false]);
-		$this->setFlash('error', $subject);
 		$this->_trigger('afterDelete', $subject);
+
+		$this->setFlash('error', $subject);
 	}
 
 /**
@@ -104,7 +106,9 @@ class DeleteAction extends BaseAction {
  * @return \Cake\Network\Response
  */
 	protected function _stopped(Subject $subject) {
-		$this->setFlash('error');
+		$subject->set(['success' => false]);
+		$this->setFlash('error', $subject);
+
 		return $this->_redirect($subject, ['action' => 'index']);
 	}
 

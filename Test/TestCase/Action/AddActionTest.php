@@ -5,11 +5,10 @@ use Crud\Test\App\Controller\BlogsController;
 use Crud\TestSuite\ControllerTestCase;
 
 /**
- *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class AddTest extends ControllerTestCase {
+class AddActionTest extends ControllerTestCase {
 
 /**
  * fixtures property
@@ -18,8 +17,18 @@ class AddTest extends ControllerTestCase {
  */
 	public $fixtures = ['plugin.crud.blog'];
 
+/**
+ * Controller class to mock on
+ *
+ * @var string
+ */
 	public $controllerClass = '\Crud\Test\App\Controller\BlogsController';
 
+/**
+ * Table class to mock on
+ *
+ * @var string
+ */
 	public $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
 
 /**
