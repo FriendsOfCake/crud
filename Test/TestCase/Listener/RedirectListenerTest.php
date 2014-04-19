@@ -5,21 +5,20 @@ use Crud\TestSuite\TestCase;
 use Cake\Utility\Hash;
 
 /**
- *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class RedirectTest extends TestCase {
+class RedirectListenerTest extends TestCase {
 
 /**
  * Test the correct events is bound
  *
- * @covers \Crud\Listener\Redirect::implementedEvents
+ * @covers \Crud\Listener\RedirectListener::implementedEvents
  * @return void
  */
 	public function testImplementedEvents() {
 		$listener = $this
-			->getMockBuilder('\Crud\Listener\Redirect')
+			->getMockBuilder('\Crud\Listener\RedirectListener')
 			->setMethods(null)
 			->disableoriginalConstructor()
 			->getMock();
@@ -34,12 +33,12 @@ class RedirectTest extends TestCase {
 /**
  * Test that we got the default readers bound on setup
  *
- * @covers \Crud\Listener\Redirect::setup
+ * @covers \Crud\Listener\RedirectListener::setup
  * @return void
  */
 	public function testSetup() {
 		$listener = $this
-			->getMockBuilder('\Crud\Listener\Redirect')
+			->getMockBuilder('\Crud\Listener\RedirectListener')
 			->setMethods(null)
 			->disableoriginalConstructor()
 			->getMock();
@@ -49,7 +48,7 @@ class RedirectTest extends TestCase {
 		$result = $listener->config('readers');
 
 		$result['request'] = array_keys($result['request']);
-		$result['model'] = array_keys($result['model']);
+		$result['entity'] = array_keys($result['entity']);
 		$result['subject'] = array_keys($result['subject']);
 
 		$expected = array(
@@ -58,9 +57,7 @@ class RedirectTest extends TestCase {
 				'data',
 				'query'
 			),
-			'model' => array(
-				'key',
-				'data',
+			'entity' => array(
 				'field'
 			),
 			'subject' => array(
@@ -73,12 +70,12 @@ class RedirectTest extends TestCase {
 /**
  * Test getting an existing reader by name works
  *
- * @covers \Crud\Listener\Redirect::reader
+ * @covers \Crud\Listener\RedirectListener::reader
  * @return void
  */
 	public function testReaderGetWorks() {
 		$listener = $this
-			->getMockBuilder('\Crud\Listener\Redirect')
+			->getMockBuilder('\Crud\Listener\RedirectListener')
 			->setMethods(null)
 			->disableoriginalConstructor()
 			->getMock();
@@ -94,12 +91,12 @@ class RedirectTest extends TestCase {
 /**
  * Test getting a non-existing reader by name fails
  *
- * @covers \Crud\Listener\Redirect::reader
+ * @covers \Crud\Listener\RedirectListener::reader
  * @return void
  */
 	public function testReaderGetFails() {
 		$listener = $this
-			->getMockBuilder('\Crud\Listener\Redirect')
+			->getMockBuilder('\Crud\Listener\RedirectListener')
 			->setMethods(null)
 			->disableoriginalConstructor()
 			->getMock();
@@ -114,12 +111,12 @@ class RedirectTest extends TestCase {
 /**
  * Test setting a reader by name works
  *
- * @covers \Crud\Listener\Redirect::reader
+ * @covers \Crud\Listener\RedirectListener::reader
  * @return void
  */
 	public function testReaderSetWorks() {
 		$listener = $this
-			->getMockBuilder('\Crud\Listener\Redirect')
+			->getMockBuilder('\Crud\Listener\RedirectListener')
 			->setMethods(null)
 			->disableoriginalConstructor()
 			->getMock();
@@ -144,16 +141,18 @@ class RedirectTest extends TestCase {
  */
 	public function testReaderRequestKey() {
 		$listener = $this
-			->getMockBuilder('\Crud\Listener\Redirect')
-			->setMethods(null)
+			->getMockBuilder('\Crud\Listener\RedirectListener')
+			->setMethods(['_request'])
 			->disableoriginalConstructor()
 			->getMock();
 
 		$listener->setup();
 
 		$subject = new \Crud\Event\Subject();
-		$subject->request = new \Cake\Network\Request();
-		$subject->request->params['action'] = 'index';
+		$request = new \Cake\Network\Request();
+		$request->params['action'] = 'index';
+
+		$listener->expects($this->any())->method('_request')->will($this->returnValue($request));
 
 		$reader = $listener->reader('request.key');
 		$result = $reader($subject, 'action');
@@ -170,16 +169,18 @@ class RedirectTest extends TestCase {
  */
 	public function testReaderRequestData() {
 		$listener = $this
-			->getMockBuilder('\Crud\Listener\Redirect')
-			->setMethods(null)
+			->getMockBuilder('\Crud\Listener\RedirectListener')
+			->setMethods(['_request'])
 			->disableoriginalConstructor()
 			->getMock();
 
 		$listener->setup();
 
 		$subject = new \Crud\Event\Subject();
-		$subject->request = new \Cake\Network\Request();
-		$subject->request->data = array('hello' => 'world');
+		$request = new \Cake\Network\Request();
+		$request->data = array('hello' => 'world');
+
+		$listener->expects($this->any())->method('_request')->will($this->returnValue($request));
 
 		$reader = $listener->reader('request.data');
 		$result = $reader($subject, 'hello');
@@ -196,16 +197,18 @@ class RedirectTest extends TestCase {
  */
 	public function testReaderRequestQuery() {
 		$listener = $this
-			->getMockBuilder('\Crud\Listener\Redirect')
-			->setMethods(null)
+			->getMockBuilder('\Crud\Listener\RedirectListener')
+			->setMethods(['_request'])
 			->disableoriginalConstructor()
 			->getMock();
 
 		$listener->setup();
 
 		$subject = new \Crud\Event\Subject();
-		$subject->request = new \Cake\Network\Request();
-		$subject->request->query = array('hello' => 'world');
+		$request = new \Cake\Network\Request();
+		$request->query = array('hello' => 'world');
+
+		$listener->expects($this->any())->method('_request')->will($this->returnValue($request));
 
 		$reader = $listener->reader('request.query');
 		$result = $reader($subject, 'hello');
@@ -216,13 +219,13 @@ class RedirectTest extends TestCase {
 	}
 
 /**
- * Test the reader "model.key"
+ * Test the reader "entity.field"
  *
  * @return void
  */
-	public function testReaderModelKey() {
+	public function testReaderEntityField() {
 		$listener = $this
-			->getMockBuilder('\Crud\Listener\Redirect')
+			->getMockBuilder('\Crud\Listener\RedirectListener')
 			->setMethods(null)
 			->disableoriginalConstructor()
 			->getMock();
@@ -230,70 +233,18 @@ class RedirectTest extends TestCase {
 		$listener->setup();
 
 		$subject = new \Crud\Event\Subject();
-		$subject->model = new \Cake\ORM\Entity();
-		$subject->model->data = array('hello' => 'world');
-
-		$reader = $listener->reader('model.key');
-		$result = $reader($subject, 'data');
-		$this->assertEquals(array('hello' => 'world'), $result);
-
-		$result = $reader($subject, 'something_wrong');
-		$this->assertNull($result);
-	}
-
-/**
- * Test the reader "model.data"
- *
- * @return void
- */
-	public function testReaderModelData() {
-		$listener = $this
-			->getMockBuilder('\Crud\Listener\Redirect')
-			->setMethods(null)
+		$subject->entity = $this
+			->getMockBuilder('\Cake\ORM\Entity')
+			->setMethods(array('get'))
 			->disableoriginalConstructor()
 			->getMock();
-
-		$listener->setup();
-
-		$subject = new \Crud\Event\Subject();
-		$subject->model = new \Cake\ORM\Entity();
-		$subject->model->data = array('hello' => 'world');
-
-		$reader = $listener->reader('model.data');
-		$result = $reader($subject, 'hello');
-		$this->assertEquals('world', $result);
-
-		$result = $reader($subject, 'something_wrong');
-		$this->assertNull($result);
-	}
-
-/**
- * Test the reader "model.field"
- *
- * @return void
- */
-	public function testReaderModelField() {
-		$listener = $this
-			->getMockBuilder('\Crud\Listener\Redirect')
-			->setMethods(null)
-			->disableoriginalConstructor()
-			->getMock();
-
-		$listener->setup();
-
-		$subject = new \Crud\Event\Subject();
-		$subject->model = $this
-			->getMockBuilder('Model')
-			->setMethods(array('field'))
-			->disableoriginalConstructor()
-			->getMock();
-		$subject->model
+		$subject->entity
 			->expects($this->once())
-			->method('field')
+			->method('get')
 			->with('slug')
 			->will($this->returnValue('ok-slug-is-ok'));
 
-		$reader = $listener->reader('model.field');
+		$reader = $listener->reader('entity.field');
 		$result = $reader($subject, 'slug');
 		$this->assertEquals('ok-slug-is-ok', $result);
 	}
@@ -305,7 +256,7 @@ class RedirectTest extends TestCase {
  */
 	public function testReaderSubjectKey() {
 		$listener = $this
-			->getMockBuilder('\Crud\Listener\Redirect')
+			->getMockBuilder('\Crud\Listener\RedirectListener')
 			->setMethods(null)
 			->disableoriginalConstructor()
 			->getMock();
@@ -327,18 +278,18 @@ class RedirectTest extends TestCase {
  * Test how `redirect` handles an action without any
  * redirect configuration
  *
- * @covers \Crud\Listener\Redirect::beforeRedirect
+ * @covers \Crud\Listener\RedirectListener::beforeRedirect
  * @return void
  */
 	public function testRedirectWithNoConfig() {
 		$action = $this
-			->getMockBuilder('\Crud\Action\Base')
+			->getMockBuilder('\Crud\Action\BaseAction')
 			->setMethods(null)
 			->disableoriginalConstructor()
 			->getMock();
 
 		$listener = $this
-			->getMockBuilder('\Crud\Listener\Redirect')
+			->getMockBuilder('\Crud\Listener\RedirectListener')
 			->setMethods(array('_action', '_getKey'))
 			->disableoriginalConstructor()
 			->getMock();
@@ -359,12 +310,12 @@ class RedirectTest extends TestCase {
  * Test how `redirect` handles an action with action redirect
  * configuration
  *
- * @covers \Crud\Listener\Redirect::beforeRedirect
+ * @covers \Crud\Listener\RedirectListener::beforeRedirect
  * @return void
  */
 	public function testRedirectWithConfigButNoValidKey() {
 		$action = $this
-			->getMockBuilder('\Crud\Action\Base')
+			->getMockBuilder('\Crud\Action\BaseAction')
 			->setMethods(null)
 			->disableoriginalConstructor()
 			->getMock();
@@ -374,7 +325,7 @@ class RedirectTest extends TestCase {
 		$subject = new \Crud\Event\Subject();
 
 		$listener = $this
-			->getMockBuilder('\Crud\Listener\Redirect')
+			->getMockBuilder('\Crud\Listener\RedirectListener')
 			->setMethods(['_action', '_getKey', '_getUrl'])
 			->disableoriginalConstructor()
 			->getMock();
@@ -398,12 +349,12 @@ class RedirectTest extends TestCase {
  * Test how `redirect` handles an action with action redirect
  * configuration
  *
- * @covers \Crud\Listener\Redirect::beforeRedirect
+ * @covers \Crud\Listener\RedirectListener::beforeRedirect
  * @return void
  */
 	public function testRedirectWithConfigAndValidKey() {
 		$action = $this
-			->getMockBuilder('\Crud\Action\Base')
+			->getMockBuilder('\Crud\Action\BaseAction')
 			->setMethods(null)
 			->disableoriginalConstructor()
 			->getMock();
@@ -417,7 +368,7 @@ class RedirectTest extends TestCase {
 		$subject = new \Crud\Event\Subject();
 
 		$listener = $this
-			->getMockBuilder('\Crud\Listener\Redirect')
+			->getMockBuilder('\Crud\Listener\RedirectListener')
 			->setMethods(array('_action', '_getKey', '_getUrl'))
 			->disableoriginalConstructor()
 			->getMock();
@@ -479,21 +430,6 @@ class RedirectTest extends TestCase {
 				array('action' => 10)
 			),
 			array(
-				new \Crud\Event\Subject(array('model' => $Model)),
-				array('action' => 'edit', array('model.key', 'id')),
-				array('action' => 'edit', 69)
-			),
-			array(
-				new \Crud\Event\Subject(array('model' => $Model)),
-				array('action' => 'edit', array('model.data', 'slug')),
-				array('action' => 'edit', 'epic')
-			),
-			array(
-				new \Crud\Event\Subject(array('model' => $Model)),
-				array('action' => 'edit', '?' => array('name' => array('model.data', 'slug'))),
-				array('action' => 'edit', '?' => array('name' => 'epic'))
-			),
-			array(
 				new \Crud\Event\Subject(array('id' => 69)),
 				array('action' => 'edit', array('subject.key', 'id')),
 				array('action' => 'edit', 69)
@@ -505,21 +441,28 @@ class RedirectTest extends TestCase {
  * Test _getUrl
  *
  * @dataProvider dataProvider_getUrl
- * @covers \Crud\Listener\Redirect::_getUrl
- * @covers \Crud\Listener\Redirect::_getKey
+ * @covers \Crud\Listener\RedirectListener::_getUrl
+ * @covers \Crud\Listener\RedirectListener::_getKey
  * @return void
  */
 	public function test_getUrl(\Crud\Event\Subject $subject, $url, $expected) {
 		$listener = $this
-			->getMockBuilder('\Crud\Listener\Redirect')
+			->getMockBuilder('\Crud\Listener\RedirectListener')
 			->setMethods(['_request'])
 			->disableoriginalConstructor()
 			->getMock();
+
+		if (empty($subject->request)) {
+			$request = new \Cake\Network\Request();
+		} else {
+			$request = $subject->request;
+		}
+
 		$listener
-			->expects($this->once())
+			->expects($this->any())
 			->method('_request')
 			->with()
-			->will($this->returnValue(new \Cake\Network\Request()));
+			->will($this->returnValue($request));
 		$listener->setup();
 
 		$this->setReflectionClassInstance($listener);

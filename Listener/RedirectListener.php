@@ -44,9 +44,9 @@ class RedirectListener extends BaseListener {
  * @return void
  */
 	public function setup() {
-		$request = $this->_request();
+		$this->reader('request.key', function(\Crud\Event\Subject $subject, $key = null) {
+			$request = $this->_request();
 
-		$this->reader('request.key', function(\Crud\Event\Subject $subject, $key = null) use ($request) {
 			if (!isset($request->{$key})) {
 				return null;
 			}
@@ -54,11 +54,13 @@ class RedirectListener extends BaseListener {
 			return $request->{$key};
 		});
 
-		$this->reader('request.data', function(\Crud\Event\Subject $subject, $key = null) use ($request) {
+		$this->reader('request.data', function(\Crud\Event\Subject $subject, $key = null) {
+			$request = $this->_request();
 			return $request->data($key);
 		});
 
-		$this->reader('request.query', function(\Crud\Event\Subject $subject, $key = null) use ($request) {
+		$this->reader('request.query', function(\Crud\Event\Subject $subject, $key = null) {
+			$request = $this->_request();
 			return $request->query($key);
 		});
 
