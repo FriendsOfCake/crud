@@ -8,17 +8,17 @@ use Crud\TestSuite\TestCase;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class RelatedModelTest extends TestCase {
+class RelatedModelListenerTest extends TestCase {
 
 /**
  * testModels
  *
- * @covers \Crud\Listener\RelatedModels::models
+ * @covers \Crud\Listener\RelatedModelsListener::models
  * @return void
  */
 	public function testModels() {
 		$listener = $this
-			->getMockBuilder('\Crud\Listener\RelatedModels')
+			->getMockBuilder('\Crud\Listener\RelatedModelsListener')
 			->disableOriginalConstructor()
 			->setMethods(['relatedModels'])
 			->getMock();
@@ -39,12 +39,12 @@ class RelatedModelTest extends TestCase {
  *
  * Test behavior when 'relatedModels' is empty
  *
- * @covers \Crud\Listener\RelatedModels::models
+ * @covers \Crud\Listener\RelatedModelsListener::models
  * @return void
  */
 	public function testModelsEmpty() {
 		$listener = $this
-			->getMockBuilder('\Crud\Listener\RelatedModels')
+			->getMockBuilder('\Crud\Listener\RelatedModelsListener')
 			->disableOriginalConstructor()
 			->setMethods(['relatedModels'])
 			->getMock();
@@ -65,12 +65,12 @@ class RelatedModelTest extends TestCase {
  *
  * Test behavior when 'relatedModels' is a string
  *
- * @covers \Crud\Listener\RelatedModels::models
+ * @covers \Crud\Listener\RelatedModelsListener::models
  * @return void
  */
 	public function testModelsString() {
 		$listener = $this
-			->getMockBuilder('\Crud\Listener\RelatedModels')
+			->getMockBuilder('\Crud\Listener\RelatedModelsListener')
 			->disableOriginalConstructor()
 			->setMethods(['relatedModels', 'getAssociatedByName'])
 			->getMock();
@@ -92,12 +92,12 @@ class RelatedModelTest extends TestCase {
  *
  * Test behavior when 'relatedModels' is true
  *
- * @covers \Crud\Listener\RelatedModels::models
+ * @covers \Crud\Listener\RelatedModelsListener::models
  * @return void
  */
 	public function testModelsTrue() {
 		$listener = $this
-			->getMockBuilder('\Crud\Listener\RelatedModels')
+			->getMockBuilder('\Crud\Listener\RelatedModelsListener')
 			->disableOriginalConstructor()
 			->setMethods(['relatedModels', 'getAssociatedByType'])
 			->getMock();
