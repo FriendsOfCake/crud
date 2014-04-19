@@ -9,6 +9,7 @@ use Crud\TestSuite\ControllerTestCase;
  * For full copyright and license information, please see the LICENSE.txt
  */
 class DeleteActionTest extends ControllerTestCase {
+
 /**
  * fixtures property
  *

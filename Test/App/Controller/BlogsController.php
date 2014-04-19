@@ -10,6 +10,8 @@ class BlogsController extends Controller {
 
 	public $uses = ['Blog'];
 
+	public $paginate = ['limit' => 3];
+
 	public $components = [
 		'RequestHandler',
 		'Crud.Crud' => [
