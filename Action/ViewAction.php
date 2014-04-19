@@ -39,12 +39,12 @@ class ViewAction extends BaseAction {
 	];
 
 /**
- * HTTP GET handler
+ * Generic HTTP handler
  *
  * @param string $id
  * @return void
  */
-	protected function _get($id = null) {
+	protected function _handle($id = null) {
 		$subject = $this->_subject();
 		$subject->set(['id' => $id]);
 
