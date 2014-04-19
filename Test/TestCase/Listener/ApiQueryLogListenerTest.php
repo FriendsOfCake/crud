@@ -9,7 +9,7 @@ use Cake\Core\Configure;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class ApiQueryLogTest extends TestCase {
+class ApiQueryLogListenerTest extends TestCase {
 
 	protected $_debug;
 
@@ -31,7 +31,7 @@ class ApiQueryLogTest extends TestCase {
  */
 	public function testImplementedEvents() {
 		$Instance = $this
-			->getMockBuilder('\Crud\Listener\ApiQueryLog')
+			->getMockBuilder('\Crud\Listener\ApiQueryLogListener')
 			->disableOriginalConstructor()
 			->setMethods(['_checkRequestType'])
 			->getMock();
@@ -58,7 +58,7 @@ class ApiQueryLogTest extends TestCase {
  */
 	public function testImplementedEventsNotApiRequest() {
 		$Instance = $this
-			->getMockBuilder('\Crud\Listener\ApiQueryLog')
+			->getMockBuilder('\Crud\Listener\ApiQueryLogListener')
 			->disableOriginalConstructor()
 			->setMethods(['_checkRequestType'])
 			->getMock();
@@ -85,7 +85,7 @@ class ApiQueryLogTest extends TestCase {
 		Configure::write('debug', 0);
 
 		$Instance = $this
-			->getMockBuilder('\Crud\Listener\ApiQueryLog')
+			->getMockBuilder('\Crud\Listener\ApiQueryLogListener')
 			->disableOriginalConstructor()
 			->setMethods(['_getQueryLogs'])
 			->getMock();
@@ -107,7 +107,7 @@ class ApiQueryLogTest extends TestCase {
 		Configure::write('debug', 1);
 
 		$Instance = $this
-			->getMockBuilder('\Crud\Listener\ApiQueryLog')
+			->getMockBuilder('\Crud\Listener\ApiQueryLogListener')
 			->disableOriginalConstructor()
 			->setMethods(['_getQueryLogs'])
 			->getMock();
@@ -130,7 +130,7 @@ class ApiQueryLogTest extends TestCase {
 		Configure::write('debug', 2);
 
 		$Action = $this
-			->getMockBuilder('\Crud\Action\Base')
+			->getMockBuilder('\Crud\Action\BaseAction')
 			->disableOriginalConstructor()
 			->setMethods(['config'])
 			->getMock();
@@ -150,7 +150,7 @@ class ApiQueryLogTest extends TestCase {
 			->with('queryLog', []);
 
 		$Instance = $this
-			->getMockBuilder('\Crud\Listener\ApiQueryLog')
+			->getMockBuilder('\Crud\Listener\ApiQueryLogListener')
 			->disableOriginalConstructor()
 			->setMethods(['_getQueryLogs', '_action', '_controller'])
 			->getMock();
@@ -192,7 +192,7 @@ class ApiQueryLogTest extends TestCase {
 			->with($this->isInstanceOf('\Crud\Log\QueryLogger'));
 
 		$Instance = $this
-			->getMockBuilder('\Crud\Listener\ApiQueryLog')
+			->getMockBuilder('\Crud\Listener\ApiQueryLogListener')
 			->disableOriginalConstructor()
 			->setMethods(['_getSources', '_getSource'])
 			->getMock();
