@@ -6,6 +6,9 @@ php:
   - 5.6
 
 env:
+  global:
+    - DEFAULT=1
+
   - DB=mysql db_class='Cake\Database\Driver\Mysql' db_dsn='mysql:host=0.0.0.0;dbname=cakephp_test' db_database='cakephp_test' db_login='travis' db_password=''
   - DB=pgsql db_class='Cake\Database\Driver\Postgres' db_dsn='pgsql:host=127.0.0.1;dbname=cakephp_test' db_database="cakephp_test" db_login='postgres' db_password=''
   - DB=sqlite db_class='Cake\Database\Driver\Sqlite' db_dsn='sqlite::memory:'
@@ -18,10 +21,10 @@ matrix:
 
   include:
     - php: 5.4
-      env: PHPCS=1
+      env: PHPCS=1 DEFAULT=0
 
     - php: 5.4
-      env: COVERALLS=1
+      env: COVERALLS=1 DEFAULT=0
 
     - php: hhvm
       env: HHVM=1 DB=sqlite db_class='Cake\Database\Driver\Sqlite' db_dsn='sqlite::memory:'
@@ -51,8 +54,9 @@ before_script:
   - cp phpunit.xml.dist phpunit.xml
 
 script:
-  - sh -c "if [ '$PHPCS' != '1' ]; then phpunit --stderr; fi"
+  - sh -c "if [ '$COVERALLS' = '1' ]; then phpunit --stderr --coverage-clover build/logs/clover.xml; fi"
   - sh -c "if [ '$PHPCS' = '1' ]; then phpcs -p --extensions=php --standard=CakePHP --ignore=vendor --ignore=Test --ignore=docs . ; fi"
+  - sh -c "if [ '$DEFAULT' = '1' ]; then phpunit --stderr; fi"
 
 after_success:
   -sh -c "if [ '$COVERALLS' = '1' ]; then php vendor/bin/coveralls -c .coveralls.yml -v; fi"
