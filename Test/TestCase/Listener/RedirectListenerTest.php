@@ -13,7 +13,6 @@ class RedirectListenerTest extends TestCase {
 /**
  * Test the correct events is bound
  *
- * @covers \Crud\Listener\RedirectListener::implementedEvents
  * @return void
  */
 	public function testImplementedEvents() {
@@ -33,7 +32,6 @@ class RedirectListenerTest extends TestCase {
 /**
  * Test that we got the default readers bound on setup
  *
- * @covers \Crud\Listener\RedirectListener::setup
  * @return void
  */
 	public function testSetup() {
@@ -70,7 +68,6 @@ class RedirectListenerTest extends TestCase {
 /**
  * Test getting an existing reader by name works
  *
- * @covers \Crud\Listener\RedirectListener::reader
  * @return void
  */
 	public function testReaderGetWorks() {
@@ -91,7 +88,6 @@ class RedirectListenerTest extends TestCase {
 /**
  * Test getting a non-existing reader by name fails
  *
- * @covers \Crud\Listener\RedirectListener::reader
  * @return void
  */
 	public function testReaderGetFails() {
@@ -111,7 +107,6 @@ class RedirectListenerTest extends TestCase {
 /**
  * Test setting a reader by name works
  *
- * @covers \Crud\Listener\RedirectListener::reader
  * @return void
  */
 	public function testReaderSetWorks() {
@@ -278,7 +273,6 @@ class RedirectListenerTest extends TestCase {
  * Test how `redirect` handles an action without any
  * redirect configuration
  *
- * @covers \Crud\Listener\RedirectListener::beforeRedirect
  * @return void
  */
 	public function testRedirectWithNoConfig() {
@@ -310,7 +304,6 @@ class RedirectListenerTest extends TestCase {
  * Test how `redirect` handles an action with action redirect
  * configuration
  *
- * @covers \Crud\Listener\RedirectListener::beforeRedirect
  * @return void
  */
 	public function testRedirectWithConfigButNoValidKey() {
@@ -349,7 +342,6 @@ class RedirectListenerTest extends TestCase {
  * Test how `redirect` handles an action with action redirect
  * configuration
  *
- * @covers \Crud\Listener\RedirectListener::beforeRedirect
  * @return void
  */
 	public function testRedirectWithConfigAndValidKey() {
@@ -441,8 +433,6 @@ class RedirectListenerTest extends TestCase {
  * Test _getUrl
  *
  * @dataProvider dataProvider_getUrl
- * @covers \Crud\Listener\RedirectListener::_getUrl
- * @covers \Crud\Listener\RedirectListener::_getKey
  * @return void
  */
 	public function test_getUrl(\Crud\Event\Subject $subject, $url, $expected) {

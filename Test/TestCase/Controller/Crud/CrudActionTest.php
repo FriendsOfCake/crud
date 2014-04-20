@@ -104,7 +104,6 @@ class CrudActionTest extends TestCase {
 /**
  * Test that we get the expected events
  *
- * @covers CrudAction::implementedEvents
  * @return void
  */
 	public function testImplementedEvents() {
@@ -116,7 +115,6 @@ class CrudActionTest extends TestCase {
 /**
  * Test that an enabled action will call _handle
  *
- * @covers CrudAction::handle
  * @return void
  */
 	public function testEnabledActionWorks() {
@@ -160,7 +158,6 @@ class CrudActionTest extends TestCase {
  * Test that calling disable() on the action object
  * disables the action and makes the handle method return false
  *
- * @covers CrudAction::disable
  * @return void
  */
 	public function testDisable() {
@@ -205,7 +202,6 @@ class CrudActionTest extends TestCase {
  * Test that calling enable() on the action object
  * enables the action
  *
- * @covers CrudAction::enable
  * @return void
  */
 	public function testEnable() {
@@ -246,7 +242,6 @@ class CrudActionTest extends TestCase {
 /**
  * Test that getting the findMethod will execute config()
  *
- * @covers CrudAction::findMethod
  * @return void
  */
 	public function testFindMethodGet() {
@@ -266,7 +261,6 @@ class CrudActionTest extends TestCase {
 /**
  * Test that setting the findMethod will execute config()
  *
- * @covers CrudAction::findMethod
  * @return void
  */
 	public function testFindMethodSet() {
@@ -286,7 +280,6 @@ class CrudActionTest extends TestCase {
 /**
  * Test that getting the saveMethod will execute config()
  *
- * @covers CrudAction::saveMethod
  * @return void
  */
 	public function testSaveMethodGet() {
@@ -306,7 +299,6 @@ class CrudActionTest extends TestCase {
 /**
  * Test that setting the saveMethod will execute config()
  *
- * @covers CrudAction::saveMethod
  * @return void
  */
 	public function testSaveMethodSet() {
@@ -326,7 +318,6 @@ class CrudActionTest extends TestCase {
 /**
  * Test that getting the saveOptions will execute config()
  *
- * @covers CrudAction::saveOptions
  * @return void
  */
 	public function testSaveOptionsGet() {
@@ -342,7 +333,6 @@ class CrudActionTest extends TestCase {
 /**
  * Test that setting the saveOptions will execute config()
  *
- * @covers CrudAction::saveOptions
  * @return void
  */
 	public function testSaveOptionsSet() {
@@ -361,7 +351,6 @@ class CrudActionTest extends TestCase {
  * Since there is no view configured, it will call config('action')
  * and use the return value as the view name.
  *
- * @covers CrudAction::view
  * @return void
  */
 	public function testViewGetWithoutConfiguredView() {
@@ -383,7 +372,6 @@ class CrudActionTest extends TestCase {
  * Since a view has been configured, the view value will be
  * returned and it won't use action
  *
- * @covers CrudAction::view
  * @return void
  */
 	public function testViewGetWithConfiguredView() {
@@ -402,7 +390,6 @@ class CrudActionTest extends TestCase {
 /**
  * Test that setting the saveOptions will execute config()
  *
- * @covers CrudAction::view
  * @return void
  */
 	public function testViewSet() {
@@ -418,7 +405,6 @@ class CrudActionTest extends TestCase {
 /**
  * Test that setFlash triggers the correct methods
  *
- * @covers CrudAction::setFlash
  * @return void
  */
 	public function testSetFlash() {
@@ -458,7 +444,6 @@ class CrudActionTest extends TestCase {
  * Test that detecting the correct validation strategy for validateId
  * works as expected
  *
- * @covers CrudAction::detectPrimaryKeyFieldType
  * @return void
  */
 	public function testDetectPrimaryKeyFieldType() {
@@ -496,7 +481,6 @@ class CrudActionTest extends TestCase {
 /**
  * Test default saveAll options works when modified
  *
- * @covers CrudAction::saveOptions
  * @return void
  */
 	public function testGetSaveAllOptionsDefaults() {
@@ -533,7 +517,6 @@ class CrudActionTest extends TestCase {
  * Test that defining specific action configuration for saveAll takes
  * precedence over default configurations
  *
- * @covers CrudAction::saveOptions
  * @return void
  */
 	public function testGetSaveAllOptionsCustomAction() {
@@ -550,7 +533,6 @@ class CrudActionTest extends TestCase {
 /**
  * testEmptyMessage
  *
- * @covers CrudAction::message
  * @expectedException CakeException
  * @expectedExceptionMessage Missing message type
  */
@@ -561,7 +543,6 @@ class CrudActionTest extends TestCase {
 /**
  * testUndefinedMessage
  *
- * @covers CrudAction::message
  * @expectedException CakeException
  * @expectedExceptionMessage Invalid message type "not defined"
  */
@@ -572,7 +553,6 @@ class CrudActionTest extends TestCase {
 /**
  * testBadMessageConfig
  *
- * @covers CrudAction::message
  * @expectedException CakeException
  * @expectedExceptionMessage Invalid message config for "badConfig" no text key found
  */
@@ -607,7 +587,6 @@ class CrudActionTest extends TestCase {
 /**
  * testOverridenSimpleMessage
  *
- * @covers CrudAction::message
  * @return void
  */
 	public function testOverridenSimpleMessage() {
@@ -632,7 +611,6 @@ class CrudActionTest extends TestCase {
 /**
  * testSimpleMessage
  *
- * @covers CrudAction::message
  * @return void
  */
 	public function testSimpleMessage() {
@@ -656,7 +634,6 @@ class CrudActionTest extends TestCase {
 /**
  * testSimpleMessageWithPlaceholders
  *
- * @covers CrudAction::message
  * @return void
  */
 	public function testSimpleMessageWithPlaceholders() {
@@ -680,7 +657,6 @@ class CrudActionTest extends TestCase {
 /**
  * testInvalidIdMessage
  *
- * @covers CrudAction::message
  * @return void
  */
 	public function testInvalidIdMessage() {
@@ -704,7 +680,6 @@ class CrudActionTest extends TestCase {
 /**
  * testMessageNotFound
  *
- * @covers CrudAction::message
  * @return void
  */
 	public function testRecordNotFoundMessage() {
@@ -728,7 +703,6 @@ class CrudActionTest extends TestCase {
 /**
  * testBadRequestMethodMessage
  *
- * @covers CrudAction::message
  * @return void
  */
 	public function testBadRequestMethodMessage() {
@@ -755,7 +729,6 @@ class CrudActionTest extends TestCase {
  * Test that calling handle will invoke _handle
  * when the action is enabbled
  *
- * @covers CrudAction::handle
  * @return void
  */
 	public function testHandle() {
@@ -794,7 +767,6 @@ class CrudActionTest extends TestCase {
  * Test that calling handle will not invoke _handle
  * when the action is disabled
  *
- * @covers CrudAction::handle
  * @return void
  */
 	public function testHandleDisabled() {
@@ -823,7 +795,6 @@ class CrudActionTest extends TestCase {
  * Test that calling handle will invoke _handle
  * when the requestType handler is not available
  *
- * @covers CrudAction::handle
  * @return void
  */
 	public function testGenericHandle() {
@@ -862,7 +833,6 @@ class CrudActionTest extends TestCase {
  * Test that calling handle will not invoke _handle
  * when the action is disabled
  *
- * @covers CrudAction::handle
  * @expectedException NotImplementedException
  * @return void
  */
@@ -925,7 +895,6 @@ class CrudActionTest extends TestCase {
 /**
  * Test that getting the saveMethod will execute config()
  *
- * @covers CrudAction::relatedModels
  * @return void
  */
 	public function testRelatedModelsGet() {
@@ -945,7 +914,6 @@ class CrudActionTest extends TestCase {
 /**
  * Test that setting the saveMethod will execute config()
  *
- * @covers CrudAction::relatedModels
  * @return void
  */
 	public function testRelatedModelsSet() {

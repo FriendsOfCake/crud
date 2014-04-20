@@ -13,7 +13,6 @@ class ApiListenerTest extends TestCase {
 /**
  * Test implementedEvents with API request
  *
- * @covers \Crud\Listener\ApiListener::implementedEvents
  * @return void
  */
 	public function testImplementedEvents() {
@@ -45,7 +44,6 @@ class ApiListenerTest extends TestCase {
 /**
  * Test implementedEvents without API request
  *
- * @covers \Crud\Listener\ApiListener::implementedEvents
  * @return void
  */
 	public function testImplementedEventsWithoutApi() {

@@ -26,7 +26,6 @@ class ApiQueryLogListenerTest extends TestCase {
 /**
  * Test implemented events
  *
- * @covers Crud\Listener\ApiQueryLog::implementedEvents
  * @return void
  */
 	public function testImplementedEvents() {
@@ -53,7 +52,6 @@ class ApiQueryLogListenerTest extends TestCase {
 /**
  * Test implemented events without API request
  *
- * @covers Crud\Listener\ApiQueryLog::implementedEvents
  * @return void
  */
 	public function testImplementedEventsNotApiRequest() {
@@ -78,7 +76,6 @@ class ApiQueryLogListenerTest extends TestCase {
  * Test that calling beforeRender with debug 0
  * will not ask for request type
  *
- * @covers ApiQueryLogListener::beforeRender
  * @return void
  */
 	public function testBeforeRenderDebugZero() {
@@ -100,7 +97,6 @@ class ApiQueryLogListenerTest extends TestCase {
  * Test that calling beforeRender with debug 1
  * will not ask for request type
  *
- * @covers ApiQueryLogListener::beforeRender
  * @return void
  */
 	public function testBeforeRenderDebugOne() {
@@ -123,7 +119,6 @@ class ApiQueryLogListenerTest extends TestCase {
  * will ask for request type but won't ask for serialize configuration
  * since it's not an API request
  *
- * @covers ApiQueryLogListener::beforeRender
  * @return void
  */
 	public function testBeforeRenderDebugTwo() {
@@ -173,7 +168,6 @@ class ApiQueryLogListenerTest extends TestCase {
 /**
  * Test setting up the query loggers
  *
- * @covers ApiQueryLogListener::setupLogging
  * @return void
  */
 	public function testSetupLogging() {
