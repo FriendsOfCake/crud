@@ -194,7 +194,7 @@ class ApiListenerTest extends TestCase {
 		$listener
 			->expects($this->next($listener))
 			->method('_exceptionResponse')
-			->with('SomethingExceptional', $event);
+			->with($event, 'SomethingExceptional');
 		$listener
 			->expects($this->never())
 			->method('render');
@@ -332,7 +332,7 @@ class ApiListenerTest extends TestCase {
 		$this->setExpectedException($exceptionClass, $exceptionMessage, $exceptionCode);
 
 		$this->setReflectionClassInstance($listener);
-		$this->callProtectedMethod('_exceptionResponse', [$apiConfig, $event], $listener);
+		$this->callProtectedMethod('_exceptionResponse', [$event, $apiConfig], $listener);
 	}
 
 /**
