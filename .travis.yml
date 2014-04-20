@@ -42,7 +42,7 @@ before_script:
   - cp phpunit.xml.dist phpunit.xml
 
 script:
-  - sh -c "if [ '$PHPCS' != '1' ]; then phpunit --stderr; else phpcs -p --extensions=php --standard=CakePHP ./src ./tests; fi"
+  - sh -c "if [ '$PHPCS' != '1' ]; then phpunit --stderr; else phpcs -p --extensions=php --standard=CakePHP --ignore=vendor . ; fi"
 
 notifications:
   email: false
