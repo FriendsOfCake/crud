@@ -74,20 +74,18 @@ $cache = [
 Cake\Cache\Cache::config($cache);
 Cake\Core\Plugin::load('Crud', ['path' => './']);
 
-$datasources = [
-	'test' => [
-		'className' => 'Cake\Database\Connection',
-		'driver' => 'Cake\Database\Driver\Mysql',
-		'persistent' => false,
-		'host' => 'localhost',
-		'login' => 'crud3',
-		'password' => 'crud3',
-		'database' => 'crud3_test',
-		'prefix' => false,
-		'encoding' => 'utf8',
-	]
-];
+// Ensure default test connection is defined
+if (!getenv('db_class')) {
+	putenv('db_class=Cake\Database\Driver\Sqlite');
+	putenv('db_dsn=sqlite::memory:');
+}
 
-$datasources['default'] = $datasources['test'];
-
-Cake\Datasource\ConnectionManager::config($datasources);
+Cake\Datasource\ConnectionManager::config('test', [
+	'className' => 'Cake\Database\Connection',
+	'driver' => getenv('db_class'),
+	'dsn' => getenv('db_dsn'),
+	'database' => getenv('db_database'),
+	'login' => getenv('db_login'),
+	'password' => getenv('db_password'),
+	'timezone' => 'UTC'
+]);
