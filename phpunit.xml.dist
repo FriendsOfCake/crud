@@ -1,20 +1,22 @@
-<phpunit backupGlobals="false"
-         backupStaticAttributes="true"
-         bootstrap="./Test/init.php"
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         processIsolation="false"
-         stopOnError="false"
-         stopOnFailure="false"
-         stopOnIncomplete="false"
-         stopOnSkipped="false"
-         syntaxCheck="false">
+<phpunit
+	colors="true"
+	processIsolation="false"
+	stopOnFailure="false"
+	syntaxCheck="false"
+	bootstrap="./Test/init.php">
 
-    <testsuites>
-        <testsuite name="Crud">
-            <directory>./Test/</directory>
-        </testsuite>
-    </testsuites>
+	<testsuites>
+		<testsuite name="Crud">
+			<directory>./Test/</directory>
+		</testsuite>
+	</testsuites>
+
+	<listeners>
+		<listener class="\Cake\TestSuite\Fixture\FixtureInjector">
+			<arguments>
+				<object class="\Cake\TestSuite\Fixture\FixtureManager" />
+			</arguments>
+		</listener>
+	</listeners>
+
 </phpunit>
