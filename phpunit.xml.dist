@@ -21,8 +21,9 @@
 
 	<filter>
 		<blacklist>
-			<directory suffix=".php">vendor/</directory>
-			<directory suffix=".php">Test/</directory>
+			<directory>./vendor/</directory>
+			<directory>./Test/</directory>
+			<directory>./TestSuite/</directory>
 		</blacklist>
 	</filter>
 
