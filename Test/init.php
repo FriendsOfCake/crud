@@ -16,9 +16,19 @@ function find_root() {
 	}
 }
 
+function find_app() {
+	if (is_dir(ROOT . '/App')) {
+		return 'App';
+	}
+
+	if (is_dir(ROOT . '/vendor/cakephp/app/App')) {
+		return 'vendor/cakephp/app/App';
+	}
+}
+
 define('DS', DIRECTORY_SEPARATOR);
-define('ROOT', dirname(dirname(dirname(dirname(__FILE__)))));
-define('APP_DIR', 'App');
+define('ROOT', find_root());
+define('APP_DIR', find_app());
 define('WEBROOT_DIR', 'webroot');
 define('APP', ROOT . DS . APP_DIR . DS);
 define('WWW_ROOT', ROOT . DS . WEBROOT_DIR . DS);
