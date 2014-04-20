@@ -3,3 +3,4 @@ docs/_build
 phpunit.xml
 vendor/
 composer.lock
+tmp
