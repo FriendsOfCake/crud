@@ -19,4 +19,11 @@
 		</listener>
 	</listeners>
 
+	<filter>
+		<blacklist>
+			<directory suffix=".php">vendor/</directory>
+			<directory suffix=".php">Test/</directory>
+		</blacklist>
+	</filter>
+
 </phpunit>
