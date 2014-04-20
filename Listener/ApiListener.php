@@ -87,7 +87,7 @@ class ApiListener extends BaseListener {
  *
  * Called before the crud action is executed
  *
- * @param CakeEvent $event
+ * @param \Cake\Event\Event $event
  * @return void
  */
 	public function beforeHandle(Event $event) {
@@ -105,7 +105,7 @@ class ApiListener extends BaseListener {
 		$apiConfig = $this->_action()->config('api.' . $key);
 
 		if (isset($apiConfig['exception'])) {
-			return $this->_exceptionResponse($apiConfig['exception'], $event);
+			return $this->_exceptionResponse($event, $apiConfig['exception']);
 		}
 
 		$response = $this->render($event->subject);
@@ -115,7 +115,7 @@ class ApiListener extends BaseListener {
 /**
  * Check for allowed HTTP request types
  *
- * @throws BadRequestException
+ * @throws \Cake\Error\BadRequestException
  * @return boolean
  */
 	protected function _checkRequestMethods() {
@@ -148,11 +148,12 @@ class ApiListener extends BaseListener {
 /**
  * Throw an exception based on API configuration
  *
- * @throws CakeException
- * @param array $exceptionConfig
+ * @throws
+ * @param  \Cake\Event\Event $Event
+ * @param  array             $exceptionConfig
  * @return void
  */
-	protected function _exceptionResponse($exceptionConfig, Event $Event) {
+	protected function _exceptionResponse(Event $Event, $exceptionConfig) {
 		$exceptionConfig = array_merge($this->config('exception'), $exceptionConfig);
 
 		$class = $exceptionConfig['class'];
@@ -167,8 +168,8 @@ class ApiListener extends BaseListener {
 /**
  * Selects an specific Crud view class to render the output
  *
- * @param CrudSubject $subject
- * @return CakeResponse
+ * @param \Crud\Event\Subject $subject
+ * @return \Cake\Network\Response
  */
 	public function render(Subject $subject) {
 		$this->injectViewClasses();
@@ -214,7 +215,7 @@ class ApiListener extends BaseListener {
 /**
  * Ensure success key is present in Controller::$viewVars
  *
- * @param CrudSubject $subject
+ * @param \Crud\Event\Subject $subject
  * @return void
  */
 	protected function _ensureSuccess(Subject $subject) {
@@ -230,7 +231,7 @@ class ApiListener extends BaseListener {
 /**
  * Ensure data key is present in Controller:$viewVars
  *
- * @param CrudSubject $subject
+ * @param \Crud\Event\Subject $subject
  * @return void
  */
 	protected function _ensureData(Subject $subject) {
@@ -294,8 +295,8 @@ class ApiListener extends BaseListener {
  * and use them for a String::insert() interpolation
  * of a path
  *
- * @param CrudSubject $subject
- * @param string $path
+ * @param  \Crud\Event\Subject $subject
+ * @param  string              $path
  * @return string
  */
 	protected function _expandPath(\Crud\Event\Subject $subject, $path) {

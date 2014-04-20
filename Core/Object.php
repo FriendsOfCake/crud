@@ -1,10 +1,10 @@
 <?php
 namespace Crud\Core;
 
-use Cake\Event\Event;
-use Cake\Event\EventListener;
 use Cake\Controller\Controller;
 use Cake\Core\InstanceConfigTrait;
+use Cake\Event\Event;
+use Cake\Event\EventListener;
 use Crud\Event\Subject;
 
 /**
@@ -17,8 +17,8 @@ use Crud\Event\Subject;
  */
 abstract class Object implements EventListener {
 
-	use ProxyTrait;
 	use InstanceConfigTrait;
+	use ProxyTrait;
 
 /**
  * Container with reference to all objects

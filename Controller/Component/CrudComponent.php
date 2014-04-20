@@ -606,8 +606,6 @@ class CrudComponent extends Component {
 /**
  * Create a CakeEvent subject with the required properties.
  *
- * @todo Merge with ProxyTrait instance
- *
  * @param array $additional Additional properties for the subject.
  * @return \Crud\Event\Subject
  */
@@ -632,9 +630,10 @@ class CrudComponent extends Component {
 /**
  * Load a single event class attached to Crud.
  *
+ * @throws \Crud\Error\Exception\ListenerNotConfiguredException
+ * @throws \Crud\Error\Exception\MissingListenerException
  * @param string $name
  * @return CrudListener
- * @throws CakeException
  */
 	protected function _loadListener($name) {
 		if (!isset($this->_listenerInstances[$name])) {
@@ -665,9 +664,10 @@ class CrudComponent extends Component {
 /**
  * Load a CrudAction instance.
  *
+ * @throws \Crud\Error\Exception\ActionNotConfiguredException
+ * @throws \Crud\Error\Exception\MissingListenerException
  * @param string $name The controller action name.
  * @return CrudAction
- * @throws CakeException If action is not mapped.
  */
 	protected function _loadAction($name) {
 		if (!isset($this->_actionInstances[$name])) {

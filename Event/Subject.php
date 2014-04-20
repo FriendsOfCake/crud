@@ -81,10 +81,10 @@ class Subject {
  * only => only if in array (white list)
  * not	=> only if NOT in array (blacklist)
  *
+ * @throws \Exception In case of invalid mode
  * @param string $mode
  * @param mixed $actions
  * @return boolean
- * @throws CakeException In case of invalid mode
  */
 	public function shouldProcess($mode, $actions = []) {
 		if (is_string($actions)) {
@@ -99,7 +99,7 @@ class Subject {
 				return !in_array($this->action, $actions);
 
 			default:
-				throw new CakeException('Invalid mode');
+				throw new \Exception('Invalid mode');
 		}
 	}
 

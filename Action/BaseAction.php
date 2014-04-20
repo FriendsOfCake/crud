@@ -27,7 +27,7 @@ abstract class BaseAction extends Object {
  * By returning false the handling is canceled and the
  * execution flow continues
  *
- * @throws NotImplementedException if the action can't handle the request
+ * @throws \Cake\Error\NotImplementedException if the action can't handle the request
  * @param array $args
  * @return mixed
  */
@@ -106,14 +106,14 @@ abstract class BaseAction extends Object {
 /**
  * return the config for a given message type
  *
+ * @throws \Exception for a missing or undefined message type
  * @param string $type
  * @param array $replacements
  * @return array
- * @throws CakeException for a missing or undefined message type
  */
 	public function message($type, array $replacements = array()) {
 		if (empty($type)) {
-			throw new CakeException('Missing message type');
+			throw new \Exception('Missing message type');
 		}
 
 		$crud = $this->_crud();
@@ -122,7 +122,7 @@ abstract class BaseAction extends Object {
 		if (empty($config)) {
 			$config = $crud->config('messages.' . $type);
 			if (empty($config)) {
-				throw new CakeException(sprintf('Invalid message type "%s"', $type));
+				throw new \Exception(sprintf('Invalid message type "%s"', $type));
 			}
 		}
 
