@@ -21,9 +21,14 @@
 
 	<filter>
 		<blacklist>
-			<directory suffix="*">./vendor/</directory>
-			<directory suffix="*">./Test/</directory>
-			<directory suffix="*">./TestSuite/</directory>
+			<directory suffix=".php">./vendor/</directory>
+			<directory suffix=".ctp">./vendor/</directory>
+
+			<directory suffix=".php">./Test/</directory>
+			<directory suffix=".ctp">./Test/</directory>
+
+			<directory suffix=".php">./TestSuite/</directory>
+			<directory suffix=".ctp">./TestSuite/</directory>
 		</blacklist>
 	</filter>
 
