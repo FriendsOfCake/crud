@@ -200,7 +200,6 @@ class ApiListener extends BaseListener {
 			return;
 		}
 
-
 		$serialize = [];
 		$serialize[] = 'success';
 
