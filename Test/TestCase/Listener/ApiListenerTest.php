@@ -336,65 +336,6 @@ class ApiListenerTest extends TestCase {
 	}
 
 /**
- * Test render
- *
- * @return void
- */
-	public function testRender() {
-		$listener = $this
-			->getMockBuilder('\Crud\Listener\ApiListener')
-			->setMethods([
-				'injectViewClasses', '_ensureSuccess', '_ensureData',
-				'_ensureSerialize', '_controller'
-			])
-			->disableOriginalConstructor()
-			->getMock();
-
-		$subject = new \Crud\Event\Subject();
-
-		$requestHandler = $this
-			->getMockBuilder('\Cake\Controller\Component\RequestHandlerComponent')
-			->setMethods(['renderAs'])
-			->disableOriginalConstructor()
-			->getMock();
-		$controller = $this
-			->getMockBuilder('\Cake\Controller\Controller')
-			->setMethods(null)
-			->disableOriginalConstructor()
-			->getMock();
-
-		$controller->RequestHandler = $requestHandler;
-		$controller->RequestHandler->ext = 'json';
-
-		$listener
-			->expects($this->next($listener))
-			->method('injectViewClasses')
-			->with();
-		$listener
-			->expects($this->next($listener))
-			->method('_ensureSuccess')
-			->with($subject);
-		$listener
-			->expects($this->next($listener))
-			->method('_ensureData')
-			->with($subject);
-		$listener
-			->expects($this->next($listener))
-			->method('_ensureSerialize')
-			->with();
-		$listener
-			->expects($this->next($listener))
-			->method('_controller')
-			->with()
-			->will($this->returnValue($controller));
-		$requestHandler
-			->expects($this->once())
-			->method('renderAs')
-			->with($controller, 'json');
-		$listener->render($subject);
-	}
-
-/**
  * test_ensureSerializeWithViewVar
  *
  * @return void
