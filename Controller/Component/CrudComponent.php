@@ -417,17 +417,17 @@ class CrudComponent extends Component {
  *
  * @param string $name
  * @param string $class Normal CakePHP plugin-dot annotation supported.
- * @param array $defaults Any default settings for a listener.
+ * @param array $config Any default settings for a listener.
  * @return void
  */
-	public function addListener($name, $class = null, $defaults = []) {
+	public function addListener($name, $className = null, $config = []) {
 		if (strpos($name, '.') !== false) {
 			list($plugin, $name) = pluginSplit($name);
 			$name = strtolower($name);
-			$class = $plugin . '.' . ucfirst($name);
+			$className = $plugin . '.' . ucfirst($name);
 		}
 
-		$this->config(sprintf('listeners.%s', $name), ['className' => $class] + $defaults);
+		$this->config(sprintf('listeners.%s', $name), compact('className', 'config'));
 	}
 
 /**

@@ -112,6 +112,82 @@ class AddActionTest extends ControllerTestCase {
 	}
 
 /**
+ * Test POST will create a record and redirect to /blogs/add again
+ * if _POST['_add'] is present
+ *
+ * @return void
+ */
+	public function testActionPostWithAddRedirect() {
+		$controller = $this->generate($this->controllerClass, [
+			'components' => ['Session' => ['setFlash']]
+		]);
+		$this->_subscribeToEvents();
+
+		$controller->Crud->addListener('Redirect', 'Crud.Redirect');
+		$controller->Session
+			->expects($this->once())
+			->method('setFlash')
+			->with(
+				'Successfully created blog',
+				'default',
+				['class' => 'message success', 'original' => 'Successfully created blog'],
+				'flash'
+			);
+
+		$result = $this->_testAction('/blogs/add', [
+			'method' => 'POST',
+			'data' => [
+				'name' => 'Hello World',
+				'body' => 'Pretty hot body',
+				'_add' => 1
+			]
+		]);
+
+		$this->assertEvents(['beforeSave', 'afterSave',	'setFlash', 'beforeRedirect']);
+		$this->assertTrue($this->_subject->success);
+		$this->assertTrue($this->_subject->created);
+		$this->assertRedirect('/blogs/add');
+	}
+
+/**
+ * Test POST will create a record and redirect to /blogs/edit/$id
+ * if _POST['_edit'] is present
+ *
+ * @return void
+ */
+	public function testActionPostWithEditRedirect() {
+		$controller = $this->generate($this->controllerClass, [
+			'components' => ['Session' => ['setFlash']]
+		]);
+		$this->_subscribeToEvents();
+
+		$controller->Crud->addListener('Redirect', 'Crud.Redirect');
+		$controller->Session
+			->expects($this->once())
+			->method('setFlash')
+			->with(
+				'Successfully created blog',
+				'default',
+				['class' => 'message success', 'original' => 'Successfully created blog'],
+				'flash'
+			);
+
+		$result = $this->_testAction('/blogs/add', [
+			'method' => 'POST',
+			'data' => [
+				'name' => 'Hello World',
+				'body' => 'Pretty hot body',
+				'_edit' => 1
+			]
+		]);
+
+		$this->assertEvents(['beforeSave', 'afterSave',	'setFlash', 'beforeRedirect']);
+		$this->assertTrue($this->_subject->success);
+		$this->assertTrue($this->_subject->created);
+		$this->assertRedirect('/blogs/edit/6');
+	}
+
+/**
  * Test POST with unsuccessful save()
  *
  * @return void
@@ -123,7 +199,12 @@ class AddActionTest extends ControllerTestCase {
 
 		$this->_subscribeToEvents();
 
-		$this->controller->Blogs = $this->getModel($this->tableClass, ['save'], 'Blogs', 'blogs');
+		$this->controller->Blogs = $this->getModel(
+			$this->tableClass,
+			['save'],
+			'Blogs',
+			'blogs'
+		);
 
 		$this->controller->Blogs
 			->expects($this->once())
@@ -193,7 +274,10 @@ class AddActionTest extends ControllerTestCase {
 		$this->assertFalse($this->_subject->success);
 		$this->assertFalse($this->_subject->created);
 
-		$expected = ['class' => 'error-message', 'content' => 'Name need to be at least 10 characters long'];
+		$expected = [
+			'class' => 'error-message',
+			'content' => 'Name need to be at least 10 characters long'
+		];
 		$this->assertTag($expected, $result, 'Could not find validation error in HTML');
 	}
 
@@ -220,7 +304,10 @@ class AddActionTest extends ControllerTestCase {
 		$controller = $this->generate($this->controllerClass);
 		Router::parseExtensions('json');
 		$controller->Crud->addListener('api', 'Crud.Api');
-		$this->setExpectedException('Cake\Error\BadRequestException', 'Wrong request method');
+		$this->setExpectedException(
+			'Cake\Error\BadRequestException',
+			'Wrong request method'
+		);
 		$this->_testAction('/blogs/add.json', ['method' => $method]);
 	}
 
@@ -265,7 +352,10 @@ class AddActionTest extends ControllerTestCase {
 		$this->assertEvents(['beforeSave', 'afterSave', 'setFlash', 'beforeRedirect']);
 		$this->assertTrue($this->_subject->success);
 		$this->assertTrue($this->_subject->created);
-		$this->assertEquals(['success' => true, 'data' => ['id' => 6]], json_decode($body, true));
+		$this->assertEquals(
+			['success' => true, 'data' => ['id' => 6]],
+			json_decode($body, true)
+		);
 	}
 
 /**
@@ -308,7 +398,7 @@ class AddActionTest extends ControllerTestCase {
 			'A validation error occurred'
 		);
 
-		$body = $this->_testAction('/blogs/add.json', compact('method', 'data'));
+		$this->_testAction('/blogs/add.json', compact('method', 'data'));
 	}
 
 /**
@@ -350,7 +440,7 @@ class AddActionTest extends ControllerTestCase {
 			'Crud\Error\Exception\ValidationException',
 			'2 validation errors occurred'
 		);
-		$body = $this->_testAction('/blogs/add.json', compact('method', 'data'));
+		$this->_testAction('/blogs/add.json', compact('method', 'data'));
 	}
 
 }
