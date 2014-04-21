@@ -126,8 +126,10 @@ class CrudComponent extends Component {
  * @return void
  */
 	public function __construct(ComponentRegistry $collection, $settings = []) {
-		$settings['actions'] = ($this->normalizeArray($settings['actions']));
-		$settings['listeners'] = ($this->normalizeArray($settings['listeners']));
+		$settings = array_merge(['actions' => [], 'listeners' => []], $settings);
+
+		$settings['actions'] = $this->normalizeArray($settings['actions']);
+		$settings['listeners'] = $this->normalizeArray($settings['listeners']);
 
 		$this->_controller = $collection->getController();
 		$this->_eventManager = $this->_controller->getEventManager();
