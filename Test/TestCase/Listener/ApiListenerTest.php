@@ -249,8 +249,8 @@ class ApiListenerTest extends TestCase {
 			),
 
 			'change exception class' => array(
-				array('class' => '\Cake\Error\BaseException'),
-				'\Cake\Error\BaseException',
+				array('class' => '\Cake\Error\Exception'),
+				'\Cake\Error\Exception',
 				'Unknown error',
 				0
 			),

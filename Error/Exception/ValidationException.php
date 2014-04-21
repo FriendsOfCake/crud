@@ -1,7 +1,7 @@
 <?php
 namespace Crud\Error\Exception;
 
-use Cake\Error\BaseException;
+use Cake\Error\Exception;
 use Cake\ORM\Entity;
 use Cake\Utility\Hash;
 
@@ -10,7 +10,7 @@ use Cake\Utility\Hash;
  * responses where you need an error code in response
  *
  */
-class ValidationException extends BaseException {
+class ValidationException extends Exception {
 
 /**
  * List of validation errors that occurred in the model
