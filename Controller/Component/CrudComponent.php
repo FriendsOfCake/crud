@@ -86,7 +86,7 @@ class CrudComponent extends Component {
  * By default no actions are enabled.
  *
  * `listeners` List of internal-name => ${plugin}.${class} listeners
- * that will be bound automatically in Crud. By default the related model event
+ * that will be bound automatically in Crud. By default the related models' events
  * are bound. Events will always assume to be in the Controller/Event folder.
  *
  * `eventLogging` boolean to determine whether the class should log triggered events.
@@ -274,7 +274,7 @@ class CrudComponent extends Component {
 /**
  * Map the view file to use for a controller action.
  *
- * To map multiple action views in one go pass an array as first argument and no second argument.
+ * To map multiple action views in one go pass an array as the first argument with no second argument.
  *
  * @param string|array $action
  * @param string $view
@@ -295,7 +295,7 @@ class CrudComponent extends Component {
 /**
  * Change the viewVar name for one or multiple actions.
  *
- * To map multiple action viewVars in one go pass an array as first argument and no second argument.
+ * To map multiple action viewVars in one go pass an array as the first argument with no second argument.
  *
  * @param string|array $action
  * @param string $viewVar
@@ -316,7 +316,7 @@ class CrudComponent extends Component {
 /**
  * Map a controller action to a Model::find($method).
  *
- * To map multiple findMethods in one go pass an array as first argument and no second argument.
+ * To map multiple findMethods in one go pass an array as the first argument with no second argument.
  *
  * @param string|array $action
  * @param string $method
@@ -452,11 +452,11 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Triggers a Crud event by creating a new subject and filling it with $data
+ * Triggers a Crud event by creating a new subject and filling it with $data,
  * if $data is an instance of CrudSubject it will be reused as the subject
  * object for this event.
  *
- * If Event listeners return a CakeResponse object, the this method will throw an
+ * If Event listeners return a CakeResponse object this method will throw an
  * exception and fill a 'response' property on it with a reference to the response
  * object.
  *
@@ -547,11 +547,11 @@ class CrudComponent extends Component {
 /**
  * Set or get defaults for listeners and actions.
  *
- * @param string $type Can be anything, but 'listeners' or 'actions' is currently only used.
+ * @param string $type Can be anything, but 'listeners' or 'actions' are only currently used.
  * @param string|array $name The name of the $type - e.g. 'api', 'relatedModels'
  * 	or an array ('api', 'relatedModels'). If $name is an array, the $config will be applied
  * 	to each entry in the $name array.
- * @param mixed $config If NULL, the defaults is returned, else the defaults are changed.
+ * @param mixed $config If NULL, the defaults are returned, else the defaults are changed.
  * @return mixed
  */
 	public function defaults($type, $name, $config = null) {
