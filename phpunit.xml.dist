@@ -21,9 +21,9 @@
 
 	<filter>
 		<blacklist>
-			<directory>./vendor/</directory>
-			<directory>./Test/</directory>
-			<directory>./TestSuite/</directory>
+			<directory suffix="*">./vendor/</directory>
+			<directory suffix="*">./Test/</directory>
+			<directory suffix="*">./TestSuite/</directory>
 		</blacklist>
 	</filter>
 
