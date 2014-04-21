@@ -110,6 +110,8 @@ class ApiListener extends BaseListener {
 
 		$response = $this->render($event->subject);
 		$response->statusCode($apiConfig['code']);
+
+		return $response;
 	}
 
 /**
@@ -178,11 +180,12 @@ class ApiListener extends BaseListener {
 		$this->_ensureSerialize();
 
 		$controller = $this->_controller();
+
 		if (!empty($controller->RequestHandler->ext)) {
 			$controller->RequestHandler->renderAs($controller, $controller->RequestHandler->ext);
 		}
 
-		return $controller->response;
+		return $controller->render();
 	}
 
 /**
@@ -197,11 +200,11 @@ class ApiListener extends BaseListener {
 			return;
 		}
 
-		$action = $this->_action();
 
 		$serialize = [];
 		$serialize[] = 'success';
 
+		$action = $this->_action();
 		if (method_exists($action, 'viewVar')) {
 			$serialize['data'] = $action->viewVar();
 		} else {
@@ -287,7 +290,14 @@ class ApiListener extends BaseListener {
 			}
 		}
 
-		$controller->set('data', $data);
+		$action = $this->_action();
+		if (method_exists($action, 'viewVar')) {
+			$viewVar = $action->viewVar();
+		} else {
+			$viewVar = 'data';
+		}
+
+		$controller->set($viewVar, $data);
 	}
 
 /**

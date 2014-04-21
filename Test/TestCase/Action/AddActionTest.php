@@ -1,6 +1,7 @@
 <?php
 namespace Crud\Test\TestCase\Action;
 
+use Cake\Routing\Router;
 use Crud\Test\App\Controller\BlogsController;
 use Crud\TestSuite\ControllerTestCase;
 
@@ -194,6 +195,77 @@ class AddActionTest extends ControllerTestCase {
 
 		$expected = ['class' => 'error-message', 'content' => 'Name need to be at least 10 characters long'];
 		$this->assertTag($expected, $result, 'Could not find validation error in HTML');
+	}
+
+/**
+ * Data provider with GET and DELETE verbs
+ *
+ * @return array
+ */
+	public function apiGetHttpMethodProvider() {
+		return [
+			['get'],
+			['delete']
+		];
+	}
+
+/**
+ * Test HTTP & DELETE verbs using API Listener
+ *
+ * @dataProvider apiGetHttpMethodProvider
+ * @param  string $method
+ * @return void
+ */
+	public function testApiGet($method) {
+		$controller = $this->generate($this->controllerClass);
+		Router::parseExtensions('json');
+		$controller->Crud->addListener('api', 'Crud.Api');
+		$this->setExpectedException('Cake\Error\BadRequestException', 'Wrong request method');
+		$this->_testAction('/blogs/add.json', ['method' => $method]);
+	}
+
+/**
+ * Data provider with PUT and POST verbs
+ *
+ * @return array
+ */
+	public function apiUpdateHttpMethodProvider() {
+		return [
+			['put'],
+			['post']
+		];
+	}
+
+/**
+ * Test POST & PUT verbs using API Listener
+ *
+ * @dataProvider apiUpdateHttpMethodProvider
+ * @param  string $method
+ * @return void
+ */
+	public function testApiCreate($method) {
+		$controller = $this->generate($this->controllerClass,
+			['components' => ['Session' => ['setFlash']]
+		]);
+
+		Router::parseExtensions('json');
+		$controller->Crud->addListener('api', 'Crud.Api');
+		$this->_subscribeToEvents();
+
+		$this->controller->Session
+			->expects($this->never())
+			->method('setFlash');
+
+		$data = [
+			'name' => '6th blog post',
+			'body' => 'Amazing blog post'
+		];
+
+		$body = $this->_testAction('/blogs/add.json', compact('method', 'data'));
+		$this->assertEvents(['beforeSave', 'afterSave', 'setFlash', 'beforeRedirect']);
+		$this->assertTrue($this->_subject->success);
+		$this->assertTrue($this->_subject->created);
+		$this->assertEquals(['success' => true, 'data' => ['id' => 6]], json_decode($body, true));
 	}
 
 }
