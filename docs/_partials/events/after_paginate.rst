@@ -3,7 +3,7 @@ Crud.afterPaginate
 
 This event is emitted right after the call to ``Controller::paginate()``.
 
-The ``items`` property of the event object contains all the database records found in the pagination call.
+The ``entities`` property of the event object contains all the database records found in the pagination call.
 
 Modify the Result
 """""""""""""""""
@@ -12,8 +12,8 @@ Modify the Result
 
   public function index() {
     $this->Crud->on('afterPaginate', function(\Cake\Event\Event $event) {
-      foreach ($event->subject->items as $item) {
-        // $item is an entity
+      foreach ($event->subject->entities as $entity) {
+        // $entity is an entity
       }
     });
 
