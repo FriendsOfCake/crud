@@ -10,17 +10,15 @@ class BlogFixture extends TestFixture {
 		'is_active' => ['type' => 'boolean', 'default' => true, 'null' => false],
 		'name' => ['type' => 'string', 'length' => 255,  'null' => false],
 		'body' => ['type' => 'text', 'null' => false],
-		'_constraints' => [
-			'primary' => ['type' => 'primary', 'columns' => ['id']]
-		]
+		'_constraints' => ['primary' => ['type' => 'primary', 'columns' => ['id']]]
 	];
 
 	public $records = [
-		['id' => 1, 'name' => '1st post', 'body' => '1st post body'],
-		['id' => 2, 'name' => '2nd post', 'body' => '2nd post body'],
-		['id' => 3, 'name' => '3rd post', 'body' => '3rd post body'],
-		['id' => 4, 'name' => '4th post', 'body' => '4th post body'],
-		['id' => 5, 'name' => '5th post', 'body' => '5th post body']
+		['name' => '1st post', 'body' => '1st post body'],
+		['name' => '2nd post', 'body' => '2nd post body'],
+		['name' => '3rd post', 'body' => '3rd post body'],
+		['name' => '4th post', 'body' => '4th post body'],
+		['name' => '5th post', 'body' => '5th post body']
 	];
 
 }

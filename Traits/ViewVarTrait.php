@@ -45,6 +45,7 @@ trait ViewVarTrait {
  * Actions working on a single entity will use singular name,
  * and actions working on a full table will use plural name
  *
+ * @throws \Exception
  * @return string
  */
 	protected function _deriveViewVar() {
@@ -63,6 +64,7 @@ trait ViewVarTrait {
  * Derive the viewVar value based on the scope of the action
  * as well as the Event being handled
  *
+ * @throws \Exception
  * @param  Cake\Event\Event $event
  * @return mixed
  */

@@ -126,8 +126,10 @@ class CrudComponent extends Component {
  * @return void
  */
 	public function __construct(ComponentRegistry $collection, $settings = []) {
-		$settings['actions'] = ($this->normalizeArray($settings['actions']));
-		$settings['listeners'] = ($this->normalizeArray($settings['listeners']));
+		$settings = array_merge(['actions' => [], 'listeners' => []], $settings);
+
+		$settings['actions'] = $this->normalizeArray($settings['actions']);
+		$settings['listeners'] = $this->normalizeArray($settings['listeners']);
 
 		$this->_controller = $collection->getController();
 		$this->_eventManager = $this->_controller->getEventManager();
@@ -409,17 +411,17 @@ class CrudComponent extends Component {
  *
  * @param string $name
  * @param string $class Normal CakePHP plugin-dot annotation supported.
- * @param array $defaults Any default settings for a listener.
+ * @param array $config Any default settings for a listener.
  * @return void
  */
-	public function addListener($name, $class = null, $defaults = []) {
+	public function addListener($name, $className = null, $config = []) {
 		if (strpos($name, '.') !== false) {
 			list($plugin, $name) = pluginSplit($name);
 			$name = strtolower($name);
-			$class = $plugin . '.' . ucfirst($name);
+			$className = $plugin . '.' . ucfirst($name);
 		}
 
-		$this->config(sprintf('listeners.%s', $name), ['className' => $class] + $defaults);
+		$this->config(sprintf('listeners.%s', $name), compact('className', 'config'));
 	}
 
 /**
@@ -600,8 +602,6 @@ class CrudComponent extends Component {
 /**
  * Create a CakeEvent subject with the required properties.
  *
- * @todo Merge with ProxyTrait instance
- *
  * @param array $additional Additional properties for the subject.
  * @return \Crud\Event\Subject
  */
@@ -626,9 +626,10 @@ class CrudComponent extends Component {
 /**
  * Load a single event class attached to Crud.
  *
+ * @throws \Crud\Error\Exception\ListenerNotConfiguredException
+ * @throws \Crud\Error\Exception\MissingListenerException
  * @param string $name
  * @return CrudListener
- * @throws CakeException
  */
 	protected function _loadListener($name) {
 		if (!isset($this->_listenerInstances[$name])) {
@@ -659,9 +660,10 @@ class CrudComponent extends Component {
 /**
  * Load a CrudAction instance.
  *
+ * @throws \Crud\Error\Exception\ActionNotConfiguredException
+ * @throws \Crud\Error\Exception\MissingListenerException
  * @param string $name The controller action name.
  * @return CrudAction
- * @throws CakeException If action is not mapped.
  */
 	protected function _loadAction($name) {
 		if (!isset($this->_actionInstances[$name])) {

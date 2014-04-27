@@ -29,7 +29,6 @@ class CrudSubjectTest extends TestCase {
  *
  * Our action is "index"
  *
- * @covers CrudSubject::shouldProcess
  * @return void
  */
 	public function testShouldProcess() {
@@ -48,9 +47,6 @@ class CrudSubjectTest extends TestCase {
 /**
  * Test that event adding works
  *
- * @covers CrudSubject::addEvent
- * @covers CrudSubject::getEvents
- * @covers CrudSubject::hasEvent
  * @return void
  */
 	public function testEventNames() {
@@ -74,7 +70,6 @@ class CrudSubjectTest extends TestCase {
 /**
  * testInvalidMode
  *
- * @covers CrudSubject::shouldProcess
  * @expectedException CakeException
  * @expectedExceptionMessage Invalid mode
  * @return void

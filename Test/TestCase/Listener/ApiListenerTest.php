@@ -13,7 +13,6 @@ class ApiListenerTest extends TestCase {
 /**
  * Test implementedEvents with API request
  *
- * @covers \Crud\Listener\ApiListener::implementedEvents
  * @return void
  */
 	public function testImplementedEvents() {
@@ -45,7 +44,6 @@ class ApiListenerTest extends TestCase {
 /**
  * Test implementedEvents without API request
  *
- * @covers \Crud\Listener\ApiListener::implementedEvents
  * @return void
  */
 	public function testImplementedEventsWithoutApi() {
@@ -196,7 +194,7 @@ class ApiListenerTest extends TestCase {
 		$listener
 			->expects($this->next($listener))
 			->method('_exceptionResponse')
-			->with('SomethingExceptional', $event);
+			->with($event, 'SomethingExceptional');
 		$listener
 			->expects($this->never())
 			->method('render');
@@ -251,8 +249,8 @@ class ApiListenerTest extends TestCase {
 			),
 
 			'change exception class' => array(
-				array('class' => '\Cake\Error\BaseException'),
-				'\Cake\Error\BaseException',
+				array('class' => '\Cake\Error\Exception'),
+				'\Cake\Error\Exception',
 				'Unknown error',
 				0
 			),
@@ -334,66 +332,7 @@ class ApiListenerTest extends TestCase {
 		$this->setExpectedException($exceptionClass, $exceptionMessage, $exceptionCode);
 
 		$this->setReflectionClassInstance($listener);
-		$this->callProtectedMethod('_exceptionResponse', [$apiConfig, $event], $listener);
-	}
-
-/**
- * Test render
- *
- * @return void
- */
-	public function testRender() {
-		$listener = $this
-			->getMockBuilder('\Crud\Listener\ApiListener')
-			->setMethods([
-				'injectViewClasses', '_ensureSuccess', '_ensureData',
-				'_ensureSerialize', '_controller'
-			])
-			->disableOriginalConstructor()
-			->getMock();
-
-		$subject = new \Crud\Event\Subject();
-
-		$requestHandler = $this
-			->getMockBuilder('\Cake\Controller\Component\RequestHandlerComponent')
-			->setMethods(['renderAs'])
-			->disableOriginalConstructor()
-			->getMock();
-		$controller = $this
-			->getMockBuilder('\Cake\Controller\Controller')
-			->setMethods(null)
-			->disableOriginalConstructor()
-			->getMock();
-
-		$controller->RequestHandler = $requestHandler;
-		$controller->RequestHandler->ext = 'json';
-
-		$listener
-			->expects($this->next($listener))
-			->method('injectViewClasses')
-			->with();
-		$listener
-			->expects($this->next($listener))
-			->method('_ensureSuccess')
-			->with($subject);
-		$listener
-			->expects($this->next($listener))
-			->method('_ensureData')
-			->with($subject);
-		$listener
-			->expects($this->next($listener))
-			->method('_ensureSerialize')
-			->with();
-		$listener
-			->expects($this->next($listener))
-			->method('_controller')
-			->with()
-			->will($this->returnValue($controller));
-		$requestHandler
-			->expects($this->once())
-			->method('renderAs')
-			->with($controller, 'json');
-		$listener->render($subject);
+		$this->callProtectedMethod('_exceptionResponse', [$event, $apiConfig], $listener);
 	}
 
 /**

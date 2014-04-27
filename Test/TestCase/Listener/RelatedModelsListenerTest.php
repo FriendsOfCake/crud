@@ -13,7 +13,6 @@ class RelatedModelListenerTest extends TestCase {
 /**
  * testModels
  *
- * @covers \Crud\Listener\RelatedModelsListener::models
  * @return void
  */
 	public function testModels() {
@@ -39,7 +38,6 @@ class RelatedModelListenerTest extends TestCase {
  *
  * Test behavior when 'relatedModels' is empty
  *
- * @covers \Crud\Listener\RelatedModelsListener::models
  * @return void
  */
 	public function testModelsEmpty() {
@@ -65,7 +63,6 @@ class RelatedModelListenerTest extends TestCase {
  *
  * Test behavior when 'relatedModels' is a string
  *
- * @covers \Crud\Listener\RelatedModelsListener::models
  * @return void
  */
 	public function testModelsString() {
@@ -92,7 +89,6 @@ class RelatedModelListenerTest extends TestCase {
  *
  * Test behavior when 'relatedModels' is true
  *
- * @covers \Crud\Listener\RelatedModelsListener::models
  * @return void
  */
 	public function testModelsTrue() {

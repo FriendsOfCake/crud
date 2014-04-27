@@ -12,7 +12,6 @@ class ApiPaginationListenerTest extends TestCase {
 /**
  * Test implemented events
  *
- * @covers \Crud\Listener\ApiPaginationListener::implementedEvents
  * @return void
  */
 	public function testImplementedEvents() {
@@ -37,7 +36,6 @@ class ApiPaginationListenerTest extends TestCase {
  * Test that API requests do not get processed
  * if there is no pagination data
  *
- * @covers \Crud\Listener\Api::beforeRender
  * @return void
  */
 	public function testBeforeRenderNoPaginationData() {
@@ -76,7 +74,6 @@ class ApiPaginationListenerTest extends TestCase {
  * Test that API requests do not get processed
  * if there if pagination data is NULL
  *
- * @covers \Crud\Listener\Api::beforeRender
  * @return void
  */
 	public function testBeforeRenderPaginationDataIsNull() {
@@ -107,7 +104,6 @@ class ApiPaginationListenerTest extends TestCase {
  * Test that API requests do get processed
  * if there is pagination data
  *
- * @covers \Crud\Listener\Api::beforeRender
  * @return void
  */
 	public function testBeforeRenderWithPaginationData() {
