@@ -20,11 +20,6 @@ class IndexAction extends BaseAction {
 /**
  * Default settings for 'index' actions
  *
- * `enabled` Is this crud action enabled or disabled
- *
- * `view` A map of the controller action and the view to render
- * If `NULL` (the default) the controller action name will be used
- *
  * @var array
  */
 	protected $_defaultConfig = [
@@ -49,10 +44,10 @@ class IndexAction extends BaseAction {
  * @return void
  */
 	protected function _handle() {
-		$subject = $this->_subject(['success' => true]);
+		$subject = $this->_subject(['success' => true, 'object' => null]);
 
 		$this->_trigger('beforePaginate', $subject);
-		$items = $this->_controller()->paginate();
+		$items = $this->_controller()->paginate($subject->object);
 		$subject->set(['entities' => $items]);
 
 		$this->_trigger('afterPaginate', $subject);

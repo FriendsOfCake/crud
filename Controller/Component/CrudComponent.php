@@ -361,18 +361,12 @@ class CrudComponent extends Component {
 			$action = $this->_action;
 		}
 
-		try {
-			$test = $this->config('actions.' . $action);
-			if (empty($test)) {
-				return false;
-			}
-
-			return $this->action($action)->config('enabled');
-		} catch (Exception $e) {
-
+		$test = $this->config('actions.' . $action);
+		if (empty($test)) {
+			return false;
 		}
 
-		return false;
+		return $this->action($action)->config('enabled');
 	}
 
 /**
