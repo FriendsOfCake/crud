@@ -15,7 +15,7 @@ env:
 
 matrix:
   allow_failures:
-    - php: hhvm, hhvm-nightly
+    - php: [ hhvm, hhvm-nightly ]
 
   fast_finish: true
 
