@@ -240,14 +240,19 @@ class ApiListener extends BaseListener {
 		$controller = $this->_controller();
 		$action = $this->_action();
 
-		if (isset($controller->viewVars[$action->viewVar()])) {
+		if (method_exists($action, 'viewVar')) {
+			$viewVar = $action->viewVar();
+		} else {
+			$viewVar = 'data';
+		}
+
+		if (isset($controller->viewVars[$viewVar])) {
 			return;
 		}
 
 		$key = $subject->success ? 'success' : 'error';
 
-		// Load configuration
-		$config = $this->_action()->config('api.' . $key);
+		$config = $action->config('api.' . $key);
 
 		$data = [];
 

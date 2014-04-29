@@ -74,11 +74,11 @@ abstract class BaseListener extends Object {
  * @return string
  */
 	public function resourceName($value = null) {
-		if (!empty($value)) {
-			return $this->_action()->resourceName($value);
+		if ($value === null) {
+			return $this->_action()->resourceName();
 		}
 
-		return $this->_action()->resourceName();
+		return $this->_action()->resourceName($value);
 	}
 
 }

@@ -43,10 +43,12 @@ class AddAction extends BaseAction {
 	protected $_defaultConfig = [
 		'enabled' => true,
 		'scope' => 'table',
+		'inflection' => 'singular',
 		'saveMethod' => 'save',
 		'view' => null,
 		'viewVar' => null,
 		'relatedModels' => true,
+		'entityKey' => 'entity',
 		'saveOptions' => [
 			'validate' => true,
 			'atomic' => true

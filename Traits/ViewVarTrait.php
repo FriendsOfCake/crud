@@ -69,15 +69,8 @@ trait ViewVarTrait {
  * @return mixed
  */
 	protected function _deriveViewValue(\Cake\Event\Event $event) {
-		if ($this->scope() === 'table') {
-			return $event->subject->entities;
-		}
-
-		if ($this->scope() === 'entity') {
-			return $event->subject->entity;
-		}
-
-		throw new \Exception('Unknown action scope: ' . $this->scope());
+		$key = $this->_action()->subjectEntityKey();
+		return $event->subject->{$key};
 	}
 
 }

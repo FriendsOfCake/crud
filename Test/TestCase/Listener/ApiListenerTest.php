@@ -758,46 +758,6 @@ class ApiListenerTest extends TestCase {
 	}
 
 /**
- * test_ensureDataExists
- *
- * @return void
- */
-	public function test_ensureDataExists() {
-		$listener = $this
-			->getMockBuilder('\Crud\Listener\ApiListener')
-			->setMethods(array('_controller', '_action'))
-			->disableOriginalConstructor()
-			->getMock();
-
-		$controller = $this
-			->getMockBuilder('Controller')
-			->setMethods(array('set'))
-			->disableOriginalConstructor()
-			->getMock();
-
-		$controller->viewVars['data'] = true;
-
-		$subject = new \Crud\Event\Subject();
-
-		$config = array();
-
-		$i = 0;
-		$listener
-			->expects($this->at($i++))
-			->method('_controller')
-			->will($this->returnValue($controller));
-		$listener
-			->expects($this->never())
-			->method('_action');
-		$controller
-			->expects($this->never())
-			->method('set');
-
-		$this->setReflectionClassInstance($listener);
-		$result = $this->callProtectedMethod('_ensureData', array($subject), $listener);
-	}
-
-/**
  * test_ensureSuccessAlreadySet
  *
  * @return void

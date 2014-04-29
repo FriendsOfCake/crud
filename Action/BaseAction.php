@@ -16,6 +16,11 @@ use Crud\Core\Object;
  */
 abstract class BaseAction extends Object {
 
+/**
+ * Check if the current action is responding to a request or not
+ *
+ * @var boolean
+ */
 	protected $_responding = false;
 
 /**
@@ -239,7 +244,7 @@ abstract class BaseAction extends Object {
  * @return string
  */
 	public function resourceName($value = null) {
-		if (!empty($value)) {
+		if ($value !== null) {
 			return $this->config('name', $value);
 		}
 
@@ -250,8 +255,19 @@ abstract class BaseAction extends Object {
 		return $this->config('name');
 	}
 
+/**
+ * Derive resource name
+ *
+ * @return string
+ */
 	protected function _deriveResourceName() {
-		if ($this->scope() === 'entity') {
+		$inflectionType = $this->config('inflection');
+
+		if ($inflectionType === null) {
+			$inflectionType = $this->scope() === 'entity' ? 'singular' : 'plural';
+		}
+
+		if ($inflectionType === 'singular') {
 			return strtolower(Inflector::humanize(Inflector::singularize(Inflector::underscore($this->_table()->alias()))));
 		}
 
@@ -274,5 +290,15 @@ abstract class BaseAction extends Object {
 
 		return $events;
 	}
+
+	public function subjectEntityKey() {
+		$key = $this->config('entityKey');
+		if ($key !== null) {
+			return $key;
+		}
+
+		return $this->scope() === 'entity' ? 'entity' : 'entities';
+	}
+
 
 }
