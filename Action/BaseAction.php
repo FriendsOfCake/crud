@@ -300,5 +300,4 @@ abstract class BaseAction extends Object {
 		return $this->scope() === 'entity' ? 'entity' : 'entities';
 	}
 
-
 }
