@@ -238,8 +238,9 @@ class ApiListener extends BaseListener {
  */
 	protected function _ensureData(Subject $subject) {
 		$controller = $this->_controller();
+		$action = $this->_action();
 
-		if (isset($controller->viewVars['data'])) {
+		if (isset($controller->viewVars[$action->viewVar()])) {
 			return;
 		}
 
@@ -289,7 +290,6 @@ class ApiListener extends BaseListener {
 			}
 		}
 
-		$action = $this->_action();
 		if (method_exists($action, 'viewVar')) {
 			$viewVar = $action->viewVar();
 		} else {

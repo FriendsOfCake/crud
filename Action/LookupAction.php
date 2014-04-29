@@ -1,10 +1,10 @@
 <?php
 namespace Crud\Action;
 
+use Cake\Event\Event;
 use Crud\Traits\SerializeTrait;
 use Crud\Traits\ViewTrait;
 use Crud\Traits\ViewVarTrait;
-use Cake\Event\Event;
 
 /**
  * Handles 'Lookup' Crud actions
