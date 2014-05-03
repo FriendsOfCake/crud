@@ -45,8 +45,9 @@
 	"require-dev": {
 		"cakephp/cakephp": "3.0.*-dev",
 		"cakephp/app": "dev-master",
-		"jippi/cakephp-test-utilities": "dev-master",
-		"phpunit/phpunit": "3.7.33"
+		"phpunit/phpunit": "3.7.33",
+
+		"friendsofcake/cakephp-test-utilities": "dev-master"
 	},
 	"suggest":{
 
