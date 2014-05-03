@@ -495,52 +495,6 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Sets a configuration variable into this component.
- *
- * If called with no arguments, all configuration values are
- * returned.
- *
- * $key is interpreted with dot notation, like the one used for
- * Configure::write().
- *
- * If $key is a string and $value is not passed, it will return the
- * value associated with such key.
- *
- * If $key is an array and $value is empty, then $key will
- * be interpreted as key => value dictionary of settings and
- * it will be merged directly with $this->settings.
- *
- * If $key is a string, the value will be inserted in the specified
- * slot as indicated using the dot notation.
- *
- * @param string|array|null $key the key to get/set, or a complete array of configs
- * @param mixed|null $value the value to set
- * @param bool $merge Whether to merge or overwrite existing config defaults to true
- * @return mixed|CrudComponent
- */
-	public function config($key = null, $value = null, $merge = true) {
-		if ($key === null && $value === null) {
-			return $this->settings;
-		}
-
-		if ($value === null) {
-			if (is_array($key)) {
-				$this->settings = Hash::merge($this->settings, $key);
-				return $this;
-			}
-
-			return Hash::get($this->settings, $key);
-		}
-
-		if (is_array($value)) {
-			$value = array_merge((array)Hash::get($this->settings, $key), $value);
-		}
-
-		$this->settings = Hash::insert($this->settings, $key, $value);
-		return $this;
-	}
-
-/**
  * Set or get defaults for listeners and actions.
  *
  * @param string $type Can be anything, but 'listeners' or 'actions' is currently only used.

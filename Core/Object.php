@@ -42,8 +42,9 @@ abstract class Object implements EventListener {
  * @param array $defaults Default settings
  * @return void
  */
-	public function __construct(Controller $Controller) {
+	public function __construct(Controller $Controller, $config = []) {
 		$this->_controller = $Controller;
+		$this->config($config);
 	}
 
 /**
