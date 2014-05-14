@@ -1,7 +1,7 @@
 API
 ===
 
-This listener allows you to easily create a JSON or XML Api build on top of Crud.
+This listener allows you to easily create a JSON or XML Api built on top of Crud.
 
 Introduction
 ^^^^^^^^^^^^
