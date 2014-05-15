@@ -14,7 +14,7 @@ The event system allows you to hook into the most important part of the
 needs.
 
 The Anatomy Of A Listener
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The listener system is simply the
 `Events System <http://book.cakephp.org/3.0/en/core-libraries/events.html>`_ from
