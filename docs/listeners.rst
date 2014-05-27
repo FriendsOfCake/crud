@@ -13,8 +13,8 @@ The event system allows you to hook into the most important part of the
 :doc:`CRUD action<actions>` flow and customize it to your unique application
 needs.
 
-The Anatomy Of An Listener
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+The Anatomy Of A Listener
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The listener system is simply the
 `Events System <http://book.cakephp.org/3.0/en/core-libraries/events.html>`_ from
