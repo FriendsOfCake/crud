@@ -259,7 +259,7 @@ class CrudComponentTest extends ControllerTestCase {
 	public function testOn() {
 		$this->Crud->on('event', 'fakeCallback');
 
-		$return = $this->controller->getEventManager()->listeners('Crud.event');
+		$return = $this->controller->eventManager()->listeners('Crud.event');
 
 		$expected = array(
 			array(
@@ -279,7 +279,7 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->Crud->on('event', 'fakeHighPriority', array('priority' => 1));
 		$this->Crud->on('event', 'fakeLowPriority', array('priority' => 99999));
 
-		$return = $this->controller->getEventManager()->listeners('Crud.event');
+		$return = $this->controller->eventManager()->listeners('Crud.event');
 
 		$expected = array(
 			array(
