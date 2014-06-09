@@ -24,7 +24,7 @@ The primary difference is that CRUD actions are made to be as generic and secure
 out of the box as possible.
 
 You can consider a CRUD action as a more flexible PHP trait that fits nicely
-withing the CakePHP eco system.
+within the CakePHP eco system.
 
 The Anatomy Of An Action
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -93,7 +93,7 @@ which contains the current state of the Crud request.
 
 The real beauty of Crud is the events and the flexibility they provide.
 
-All calls to ``_trigger()`` emits an event, that you as a developer can listen to
+All calls to ``_trigger()`` emit an event, that you as a developer can listen to
 and inject your own application logic. These events are in no way magical, they
 are simply normal CakePHP events, dispatched like all other events in CakePHP.
 
