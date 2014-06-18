@@ -89,12 +89,17 @@ class AppController extends Controller {
 <?php
 /**
  * Application wide controller
- *
- * @abstract
- * @package App.Controller
  */
-abstract class AppController extends Controller {
+class AppController extends Controller {
 
+	public $components = array(
+		'Crud.Crud' => array(
+			'actions' => array(
+				'index', 'add', 'edit', 'view', 'delete'
+			)
+		)
+	);
+	
 /**
  * List of components which can handle action invocation
  * @var array
