@@ -45,7 +45,7 @@
 	"require-dev": {
 		"cakephp/cakephp": "3.0.*-dev",
 		"cakephp/app": "dev-master",
-		"phpunit/phpunit": "3.7.33",
+		"phpunit/phpunit": "*",
 
 		"friendsofcake/cakephp-test-utilities": "dev-master"
 	},
@@ -54,7 +54,8 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Crud\\": "."
+			"Crud\\": "src",
+			"Crud\\Test\\": "tests"
 		}
 	},
 	"support":{

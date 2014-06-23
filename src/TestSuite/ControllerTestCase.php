@@ -23,7 +23,7 @@ abstract class ControllerTestCase extends \Cake\TestSuite\ControllerTestCase {
 		$this->resetReflectionCache();
 
 		$existing = Configure::read('App.paths.templates');
-		$existing[] = Plugin::path('Crud') . 'Test/App/Template/';
+		$existing[] = Plugin::path('Crud') . 'tests/App/Template/';
 		Configure::write('App.paths.templates', $existing);
 	}
 
