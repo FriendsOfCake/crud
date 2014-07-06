@@ -16,23 +16,13 @@ function find_root() {
 	}
 }
 
-function find_app() {
-	if (is_dir(ROOT . '/App')) {
-		return 'App';
-	}
-
-	if (is_dir(ROOT . '/vendor/cakephp/app/App')) {
-		return 'vendor/cakephp/app/App';
-	}
-}
-
 define('DS', DIRECTORY_SEPARATOR);
 define('ROOT', find_root());
-define('APP_DIR', find_app());
+define('APP_DIR', 'App');
 define('WEBROOT_DIR', 'webroot');
-define('APP', ROOT . DS . APP_DIR . DS);
+define('APP', ROOT . '/tests/App/');
 define('WWW_ROOT', ROOT . DS . WEBROOT_DIR . DS);
-define('TESTS', ROOT . DS . 'Test' . DS);
+define('TESTS', ROOT . DS . 'tests' . DS);
 define('TMP', ROOT . DS . 'tmp' . DS);
 define('LOGS', TMP . 'logs' . DS);
 define('CACHE', TMP . 'cache' . DS);
@@ -43,8 +33,8 @@ define('CAKE', CORE_PATH . 'src' . DS);
 require ROOT . '/vendor/cakephp/cakephp/src/basics.php';
 require ROOT . '/vendor/autoload.php';
 
-Cake\Core\Configure::write('App', ['namespace' => 'App']);
-Cake\Core\Configure::write('debug', 2);
+Cake\Core\Configure::write('App', ['namespace' => 'Crud\Test\App']);
+Cake\Core\Configure::write('debug', true);
 
 $TMP = new \Cake\Utility\Folder(TMP);
 $TMP->create(TMP . 'cache/models', 0777);
@@ -72,7 +62,14 @@ $cache = [
 ];
 
 Cake\Cache\Cache::config($cache);
-Cake\Core\Plugin::load('Crud', ['path' => './']);
+Cake\Core\Configure::write('Session', [
+	'defaults' => 'php'
+]);
+
+Cake\Core\Plugin::load('Crud', ['path' => ROOT . DS, 'autoload' => true]);
+
+Cake\Routing\DispatcherFactory::add('Routing');
+Cake\Routing\DispatcherFactory::add('ControllerFactory');
 
 // Ensure default test connection is defined
 if (!getenv('db_class')) {

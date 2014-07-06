@@ -1,9 +1,10 @@
 <?php
 namespace Crud\Test\TestCase\Action;
 
+use Cake\Routing\DispatcherFactory;
 use Cake\Routing\Router;
-use Crud\Test\App\Controller\BlogsController;
 use Crud\TestSuite\ControllerTestCase;
+use Crud\Test\App\Controller\BlogsController;
 
 /**
  * Licensed under The MIT License
@@ -302,12 +303,17 @@ class AddActionTest extends ControllerTestCase {
  */
 	public function testApiGet($method) {
 		$controller = $this->generate($this->controllerClass);
-		Router::parseExtensions('json');
 		$controller->Crud->addListener('api', 'Crud.Api');
 		$this->setExpectedException(
 			'Cake\Error\BadRequestException',
 			'Wrong request method'
 		);
+		Router::parseExtensions(['json']);
+		Router::scope('/', function($routes) {
+			$routes->extensions(['json']);
+			$routes->fallbacks();
+		});
+
 		$this->_testAction('/blogs/add.json', ['method' => $method]);
 	}
 

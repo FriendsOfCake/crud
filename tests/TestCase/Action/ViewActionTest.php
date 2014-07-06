@@ -1,15 +1,17 @@
 <?php
 namespace Crud\Test\TestCase\Action;
 
-use Crud\Test\App\Controller\BlogsController;
+use Cake\Routing\DispatcherFactory;
+use Cake\Routing\Router;
 use Crud\TestSuite\ControllerTestCase;
+use Crud\Test\App\Controller\BlogsController;
 
 /**
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class IndexActionTest extends ControllerTestCase {
+class ViewActionTest extends ControllerTestCase {
 
 /**
  * fixtures property
@@ -56,10 +58,10 @@ class IndexActionTest extends ControllerTestCase {
 		$controller = $this->generate($this->controllerClass);
 		$this->_subscribeToEvents();
 
-		$result = $this->_testAction('/blogs', compact('method'));
-		$this->assertContains('Page 1 of 2, showing 3 records out of 5 total', $result);
-		$this->assertEvents(['beforePaginate', 'afterPaginate',	'beforeRender']);
-		$this->assertEquals(['viewVar', 'blogs','success'], array_keys($this->vars));
+		$result = $this->_testAction('/blogs/view/1', compact('method'));
+
+		$this->assertEvents(['beforeFind', 'afterFind',	'beforeRender']);
+		$this->assertEquals(['viewVar', 'blog','success'], array_keys($this->vars));
 	}
 
 /**
@@ -69,13 +71,12 @@ class IndexActionTest extends ControllerTestCase {
  */
 	public function testGetWithViewVar() {
 		$controller = $this->generate($this->controllerClass);
-		$controller->Crud->action('index')->viewVar('items');
+		$controller->Crud->action('view')->viewVar('item');
 		$this->_subscribeToEvents();
 
-		$result = $this->_testAction('/blogs', compact('method'));
-		$this->assertContains('Page 1 of 2, showing 3 records out of 5 total', $result);
-		$this->assertEvents(['beforePaginate', 'afterPaginate',	'beforeRender']);
-		$this->assertEquals(['viewVar', 'items','success'], array_keys($this->vars));
+		$result = $this->_testAction('/blogs/view/1', compact('method'));
+		$this->assertEvents(['beforeFind', 'afterFind',	'beforeRender']);
+		$this->assertEquals(['viewVar', 'item','success'], array_keys($this->vars));
 	}
 
 }
