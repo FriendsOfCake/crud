@@ -72,6 +72,9 @@ $cache = [
 ];
 
 Cake\Cache\Cache::config($cache);
+Cake\Core\Configure::write('Session', [
+	'defaults' => 'php'
+]);
 
 Cake\Core\Plugin::load('Crud', ['path' => ROOT . DS, 'autoload' => true]);
 
