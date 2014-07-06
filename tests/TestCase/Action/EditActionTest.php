@@ -34,22 +34,6 @@ class EditActionTest extends ControllerTestCase {
 	public $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
 
 /**
- * Setup dispatcher filter and routes
- *
- * @return void
- */
-	public function setUp() {
-		parent::setUp();
-
-		DispatcherFactory::add('Routing');
-		DispatcherFactory::add('ControllerFactory');
-
-		Router::scope('/', function($routes) {
-			$routes->fallbacks();
-		});
-	}
-
-/**
  * Test the normal HTTP GET flow of _get
  *
  * @return void

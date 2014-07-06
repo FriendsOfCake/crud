@@ -49,22 +49,6 @@ class IndexActionTest extends ControllerTestCase {
 	}
 
 /**
- * Setup dispatcher filter and routes
- *
- * @return void
- */
-	public function setUp() {
-		parent::setUp();
-
-		DispatcherFactory::add('Routing');
-		DispatcherFactory::add('ControllerFactory');
-
-		Router::scope('/', function($routes) {
-			$routes->fallbacks();
-		});
-	}
-
-/**
  * Test the normal HTTP flow for all HTTP verbs
  *
  * @dataProvider allHttpMethodProvider

@@ -34,22 +34,6 @@ class AddActionTest extends ControllerTestCase {
 	public $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
 
 /**
- * Setup dispatcher filter and routes
- *
- * @return void
- */
-	public function setUp() {
-		parent::setUp();
-
-		DispatcherFactory::add('Routing');
-		DispatcherFactory::add('ControllerFactory');
-
-		Router::scope('/', function($routes) {
-			$routes->fallbacks();
-		});
-	}
-
-/**
  * Test the normal HTTP GET flow of _get
  *
  * @return void
@@ -319,12 +303,17 @@ class AddActionTest extends ControllerTestCase {
  */
 	public function testApiGet($method) {
 		$controller = $this->generate($this->controllerClass);
-		Router::parseExtensions('json');
 		$controller->Crud->addListener('api', 'Crud.Api');
 		$this->setExpectedException(
 			'Cake\Error\BadRequestException',
 			'Wrong request method'
 		);
+		Router::parseExtensions(['json']);
+		Router::scope('/', function($routes) {
+			$routes->extensions(['json']);
+			$routes->fallbacks();
+		});
+
 		$this->_testAction('/blogs/add.json', ['method' => $method]);
 	}
 

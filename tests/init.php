@@ -16,21 +16,11 @@ function find_root() {
 	}
 }
 
-function find_app() {
-	if (is_dir(ROOT . '/App')) {
-		return 'App';
-	}
-
-	if (is_dir(ROOT . '/vendor/cakephp/app/src')) {
-		return 'vendor/cakephp/app/src';
-	}
-}
-
 define('DS', DIRECTORY_SEPARATOR);
 define('ROOT', find_root());
-define('APP_DIR', find_app());
+define('APP_DIR', 'App');
 define('WEBROOT_DIR', 'webroot');
-define('APP', ROOT . DS . APP_DIR . DS);
+define('APP', ROOT . '/tests/App/');
 define('WWW_ROOT', ROOT . DS . WEBROOT_DIR . DS);
 define('TESTS', ROOT . DS . 'tests' . DS);
 define('TMP', ROOT . DS . 'tmp' . DS);
@@ -77,6 +67,9 @@ Cake\Core\Configure::write('Session', [
 ]);
 
 Cake\Core\Plugin::load('Crud', ['path' => ROOT . DS, 'autoload' => true]);
+
+Cake\Routing\DispatcherFactory::add('Routing');
+Cake\Routing\DispatcherFactory::add('ControllerFactory');
 
 // Ensure default test connection is defined
 if (!getenv('db_class')) {
