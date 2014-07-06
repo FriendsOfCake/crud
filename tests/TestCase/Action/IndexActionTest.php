@@ -1,8 +1,10 @@
 <?php
 namespace Crud\Test\TestCase\Action;
 
-use Crud\Test\App\Controller\BlogsController;
+use Cake\Routing\DispatcherFactory;
+use Cake\Routing\Router;
 use Crud\TestSuite\ControllerTestCase;
+use Crud\Test\App\Controller\BlogsController;
 
 /**
  *
@@ -44,6 +46,22 @@ class IndexActionTest extends ControllerTestCase {
 			['put'],
 			['delete']
 		];
+	}
+
+/**
+ * Setup dispatcher filter and routes
+ *
+ * @return void
+ */
+	public function setUp() {
+		parent::setUp();
+
+		DispatcherFactory::add('Routing');
+		DispatcherFactory::add('ControllerFactory');
+
+		Router::scope('/', function($routes) {
+			$routes->fallbacks();
+		});
 	}
 
 /**

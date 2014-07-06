@@ -1,9 +1,10 @@
 <?php
 namespace Crud\Test\TestCase\Action;
 
+use Cake\Routing\DispatcherFactory;
 use Cake\Routing\Router;
-use Crud\Test\App\Controller\BlogsController;
 use Crud\TestSuite\ControllerTestCase;
+use Crud\Test\App\Controller\BlogsController;
 
 /**
  * Licensed under The MIT License
@@ -31,6 +32,22 @@ class AddActionTest extends ControllerTestCase {
  * @var string
  */
 	public $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
+
+/**
+ * Setup dispatcher filter and routes
+ *
+ * @return void
+ */
+	public function setUp() {
+		parent::setUp();
+
+		DispatcherFactory::add('Routing');
+		DispatcherFactory::add('ControllerFactory');
+
+		Router::scope('/', function($routes) {
+			$routes->fallbacks();
+		});
+	}
 
 /**
  * Test the normal HTTP GET flow of _get
