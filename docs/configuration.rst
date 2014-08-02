@@ -53,7 +53,7 @@ An example of on the fly enabling an Crud action:
 
   }
 
-The examples above are functionally identically, and instructs Crud to handle the ``index`` action in controllers.
+The examples above are functionally identical, and instructs Crud to handle the ``index`` action in controllers.
 
 .. note::
 
