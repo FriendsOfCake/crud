@@ -104,7 +104,9 @@ class IndexCrudAction extends CrudAction {
 		$viewVar = $this->viewVar();
 
 		$subject = $this->_trigger('beforePaginate', array('paginator' => $controller->Paginator, 'success' => $success, 'viewVar' => $viewVar));
-		$items = $controller->paginate($this->_model());
+		$sortWhitelist = !empty($controller->Paginator->settings['sortWhitelist']) ? $controller->Paginator->settings['sortWhitelist'] : array();
+		unset($controller->Paginator->settings['sortWhitelist']);
+		$items = $controller->paginate($this->_model(), array(), $sortWhitelist);
 		$subject = $this->_trigger('afterPaginate', array('success' => $subject->success, 'viewVar' => $subject->viewVar, 'items' => $items));
 
 		$items = $subject->items;
