@@ -179,7 +179,11 @@ abstract class BaseAction extends Object {
 			return;
 		}
 
-		$this->_controller()->Session->setFlash($subject->text, $subject->element, $subject->params, $subject->key);
+		$this->_controller()->Flash->set($subject->text, [
+			"element" => $subject->element,
+			"params" => $subject->params,
+			"key" => $subject->key
+		]);
 	}
 
 /**
