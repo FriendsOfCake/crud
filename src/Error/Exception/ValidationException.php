@@ -38,7 +38,7 @@ class ValidationException extends Exception {
 		$flat = Hash::flatten($this->_validationErrors);
 
 		$errorCount = $this->_validationErrorCount = count($flat);
-		$this->message = __dn('crud', 'A validation error occurred', '%d validation errors occurred', $errorCount, [$errorCount]);
+		$this->message = __dn('crud', 'A validation error occurred', '{0} validation errors occurred', $errorCount, [$errorCount]);
 
 		parent::__construct($this->message, $code);
 	}
