@@ -55,18 +55,20 @@ class DeleteActionTest extends ControllerTestCase {
  */
 	public function testAllRequestMethods($method) {
 		$this->generate($this->controllerClass, [
-			'components' => ['Session' => ['setFlash']]
+			'components' => ['Flash' => ['set']]
 		]);
 		$this->_subscribeToEvents();
 
-		$this->controller->Session
+		$this->controller->Flash
 			->expects($this->once())
-			->method('setFlash')
+			->method('set')
 			->with(
 				'Successfully deleted blog',
-				'default',
-				['class' => 'message success', 'original' => 'Successfully deleted blog'],
-				'flash'
+				[
+					'element' => 'default',
+					'params' => ['class' => 'message success', 'original' => 'Successfully deleted blog'],
+					'key' => 'flash'
+				]
 			);
 
 		$this->controller->Blogs = $this->getModel($this->tableClass, ['delete'], 'Blogs', 'blogs');
@@ -89,7 +91,7 @@ class DeleteActionTest extends ControllerTestCase {
  */
 	public function testStopDelete() {
 		$this->generate($this->controllerClass, [
-			'components' => ['Session' => ['setFlash']]
+			'components' => ['Flash' => ['set']]
 		]);
 		$this->_subscribeToEvents();
 
@@ -102,14 +104,16 @@ class DeleteActionTest extends ControllerTestCase {
 			->expects($this->never())
 			->method('delete');
 
-		$this->controller->Session
+		$this->controller->Flash
 			->expects($this->once())
-			->method('setFlash')
+			->method('set')
 			->with(
 				'Could not delete blog',
-				'default',
-				['class' => 'message error', 'original' => 'Could not delete blog'],
-				'flash'
+				[
+					'element' => 'default',
+					'params' => ['class' => 'message error', 'original' => 'Could not delete blog'],
+					'key' => 'flash'
+				]
 			);
 
 		$result = $this->_testAction('/blogs/delete/1');

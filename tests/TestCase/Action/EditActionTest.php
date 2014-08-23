@@ -86,19 +86,21 @@ class EditActionTest extends ControllerTestCase {
  */
 	public function testActionPost() {
 		$this->controller = $this->generate($this->controllerClass, [
-			'components' => ['Session' => ['setFlash']]
+			'components' => ['Flash' => ['set']]
 		]);
 
 		$this->_subscribeToEvents();
 
-		$this->controller->Session
+		$this->controller->Flash
 			->expects($this->once())
-			->method('setFlash')
+			->method('set')
 			->with(
 				'Successfully updated blog',
-				'default',
-				['class' => 'message success', 'original' => 'Successfully updated blog'],
-				'flash'
+				[
+					'element' => 'default',
+					'params' => ['class' => 'message success', 'original' => 'Successfully updated blog'],
+					'key' => 'flash'
+				]
 			);
 
 		$result = $this->_testAction('/blogs/edit/1', [
@@ -119,7 +121,7 @@ class EditActionTest extends ControllerTestCase {
  */
 	public function testActionPostErrorSave() {
 		$this->generate($this->controllerClass, [
-			'components' => ['Session' => ['setFlash']]
+			'components' => ['Flash' => ['set']]
 		]);
 
 		$this->_subscribeToEvents();
@@ -131,14 +133,16 @@ class EditActionTest extends ControllerTestCase {
 			->method('save')
 			->will($this->returnValue(false));
 
-		$this->controller->Session
+		$this->controller->Flash
 			->expects($this->once())
-			->method('setFlash')
+			->method('set')
 			->with(
 				'Could not update blog',
-				'default',
-				['class' => 'message error', 'original' => 'Could not update blog'],
-				'flash'
+				[
+					'element' => 'default',
+					'params' => ['class' => 'message error', 'original' => 'Could not update blog'],
+					'key' => 'flash'
+				]
 			);
 
 		$result = $this->_testAction('/blogs/edit/1', [
@@ -158,7 +162,7 @@ class EditActionTest extends ControllerTestCase {
  */
 	public function testActionPostValidationErrors() {
 		$this->generate($this->controllerClass, [
-			'components' => ['Session' => ['setFlash']]
+			'components' => ['Flash' => ['set']]
 		]);
 
 		$this->_subscribeToEvents();
@@ -174,14 +178,16 @@ class EditActionTest extends ControllerTestCase {
 				]
 			]);
 
-		$this->controller->Session
+		$this->controller->Flash
 			->expects($this->once())
-			->method('setFlash')
+			->method('set')
 			->with(
 				'Could not update blog',
-				'default',
-				['class' => 'message error', 'original' => 'Could not update blog'],
-				'flash'
+				[
+					'element' => 'default',
+					'params' => ['class' => 'message error', 'original' => 'Could not update blog'],
+					'key' => 'flash'
+				]
 			);
 
 		$result = $this->_testAction('/blogs/edit/1', [

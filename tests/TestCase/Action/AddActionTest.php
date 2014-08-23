@@ -86,19 +86,21 @@ class AddActionTest extends ControllerTestCase {
  */
 	public function testActionPost() {
 		$this->controller = $this->generate($this->controllerClass, [
-			'components' => ['Session' => ['setFlash']]
+			'components' => ['Flash' => ['set']]
 		]);
 
 		$this->_subscribeToEvents();
 
-		$this->controller->Session
+		$this->controller->Flash
 			->expects($this->once())
-			->method('setFlash')
+			->method('set')
 			->with(
 				'Successfully created blog',
-				'default',
-				['class' => 'message success', 'original' => 'Successfully created blog'],
-				'flash'
+				[
+					'element' => 'default',
+					'params' => ['class' => 'message success', 'original' => 'Successfully created blog'],
+					'key' => 'flash'
+				]
 			);
 
 		$result = $this->_testAction('/blogs/add', [
@@ -120,19 +122,21 @@ class AddActionTest extends ControllerTestCase {
  */
 	public function testActionPostWithAddRedirect() {
 		$controller = $this->generate($this->controllerClass, [
-			'components' => ['Session' => ['setFlash']]
+			'components' => ['Flash' => ['set']]
 		]);
 		$this->_subscribeToEvents();
 
 		$controller->Crud->addListener('Redirect', 'Crud.Redirect');
-		$controller->Session
+		$controller->Flash
 			->expects($this->once())
-			->method('setFlash')
+			->method('set')
 			->with(
 				'Successfully created blog',
-				'default',
-				['class' => 'message success', 'original' => 'Successfully created blog'],
-				'flash'
+				[
+					'element' => 'default',
+					'params' => ['class' => 'message success', 'original' => 'Successfully created blog'],
+					'key' => 'flash'
+				]
 			);
 
 		$result = $this->_testAction('/blogs/add', [
@@ -158,19 +162,21 @@ class AddActionTest extends ControllerTestCase {
  */
 	public function testActionPostWithEditRedirect() {
 		$controller = $this->generate($this->controllerClass, [
-			'components' => ['Session' => ['setFlash']]
+			'components' => ['Flash' => ['set']]
 		]);
 		$this->_subscribeToEvents();
 
 		$controller->Crud->addListener('Redirect', 'Crud.Redirect');
-		$controller->Session
+		$controller->Flash
 			->expects($this->once())
-			->method('setFlash')
+			->method('set')
 			->with(
 				'Successfully created blog',
-				'default',
-				['class' => 'message success', 'original' => 'Successfully created blog'],
-				'flash'
+				[
+					'element' => 'default',
+					'params' => ['class' => 'message success', 'original' => 'Successfully created blog'],
+					'key' => 'flash'
+				]
 			);
 
 		$result = $this->_testAction('/blogs/add', [
@@ -195,7 +201,7 @@ class AddActionTest extends ControllerTestCase {
  */
 	public function testActionPostErrorSave() {
 		$this->generate($this->controllerClass, [
-			'components' => ['Session' => ['setFlash']]
+			'components' => ['Flash' => ['set']]
 		]);
 
 		$this->_subscribeToEvents();
@@ -212,14 +218,16 @@ class AddActionTest extends ControllerTestCase {
 			->method('save')
 			->will($this->returnValue(false));
 
-		$this->controller->Session
+		$this->controller->Flash
 			->expects($this->once())
-			->method('setFlash')
+			->method('set')
 			->with(
 				'Could not create blog',
-				'default',
-				['class' => 'message error', 'original' => 'Could not create blog'],
-				'flash'
+				[
+					'element' => 'default',
+					'params' => ['class' => 'message error', 'original' => 'Could not create blog'],
+					'key' => 'flash'
+				]
 			);
 
 		$result = $this->_testAction('/blogs/add', [
@@ -239,7 +247,7 @@ class AddActionTest extends ControllerTestCase {
  */
 	public function testActionPostValidationErrors() {
 		$this->generate($this->controllerClass, [
-			'components' => ['Session' => ['setFlash']]
+			'components' => ['Flash' => ['set']]
 		]);
 
 		$this->_subscribeToEvents();
@@ -255,14 +263,16 @@ class AddActionTest extends ControllerTestCase {
 				]
 			]);
 
-		$this->controller->Session
+		$this->controller->Flash
 			->expects($this->once())
-			->method('setFlash')
+			->method('set')
 			->with(
 				'Could not create blog',
-				'default',
-				['class' => 'message error', 'original' => 'Could not create blog'],
-				'flash'
+				[
+					'element' => 'default',
+					'params' => ['class' => 'message error', 'original' => 'Could not create blog'],
+					'key' => 'flash'
+				]
 			);
 
 		$result = $this->_testAction('/blogs/add', [
@@ -338,16 +348,16 @@ class AddActionTest extends ControllerTestCase {
  */
 	public function testApiCreate($method) {
 		$controller = $this->generate($this->controllerClass,
-			['components' => ['Session' => ['setFlash']]
+			['components' => ['Flash' => ['set']]
 		]);
 
 		Router::parseExtensions('json');
 		$controller->Crud->addListener('api', 'Crud.Api');
 		$this->_subscribeToEvents();
 
-		$this->controller->Session
+		$this->controller->Flash
 			->expects($this->never())
-			->method('setFlash');
+			->method('set');
 
 		$data = [
 			'name' => '6th blog post',
@@ -374,7 +384,7 @@ class AddActionTest extends ControllerTestCase {
  */
 	public function testApiCreateError($method) {
 		$controller = $this->generate($this->controllerClass,
-			['components' => ['Session' => ['setFlash']]
+			['components' => ['Flash' => ['set']]
 		]);
 		$controller->Blogs = $this->getModel($this->tableClass, null, 'Blogs', 'blogs');
 		$controller->Blogs
@@ -390,9 +400,9 @@ class AddActionTest extends ControllerTestCase {
 		$controller->Crud->addListener('api', 'Crud.Api');
 		$this->_subscribeToEvents();
 
-		$this->controller->Session
+		$this->controller->Flash
 			->expects($this->never())
-			->method('setFlash');
+			->method('set');
 
 		$data = [
 			'name' => 'too short',
@@ -417,7 +427,7 @@ class AddActionTest extends ControllerTestCase {
  */
 	public function testApiCreateErrors($method) {
 		$controller = $this->generate($this->controllerClass,
-			['components' => ['Session' => ['setFlash']]
+			['components' => ['Flash' => ['set']]
 		]);
 		$controller->Blogs = $this->getModel($this->tableClass, null, 'Blogs', 'blogs');
 		$controller->Blogs
@@ -434,9 +444,9 @@ class AddActionTest extends ControllerTestCase {
 		$controller->Crud->addListener('api', 'Crud.Api');
 		$this->_subscribeToEvents();
 
-		$this->controller->Session
+		$this->controller->Flash
 			->expects($this->never())
-			->method('setFlash');
+			->method('set');
 
 		$data = [
 			'name' => 'too short'

@@ -14,7 +14,7 @@ class BlogsController extends Controller {
 
 	public $components = [
 		'RequestHandler',
-		'Session',
+		'Flash',
 		'Crud.Crud' => [
 			'actions' => [
 				'Crud.Index',
