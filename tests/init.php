@@ -21,6 +21,7 @@ define('ROOT', find_root());
 define('APP_DIR', 'App');
 define('WEBROOT_DIR', 'webroot');
 define('APP', ROOT . '/tests/App/');
+define('CONFIG', ROOT . '/tests/config/');
 define('WWW_ROOT', ROOT . DS . WEBROOT_DIR . DS);
 define('TESTS', ROOT . DS . 'tests' . DS);
 define('TMP', ROOT . DS . 'tmp' . DS);
