@@ -1,5 +1,4 @@
 <?php
-
 namespace Crud\Error;
 
 use Cake\Core\Configure;
@@ -16,7 +15,7 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer {
 /**
  * Renders validation errors and sends a 412 error code
  *
- * @param ValidationErrorException $error
+ * @param \Exception $error Exception instance
  * @return void
  */
 	public function crudValidation($error) {

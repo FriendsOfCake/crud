@@ -32,9 +32,9 @@ abstract class BaseAction extends Object {
  * By returning false the handling is canceled and the
  * execution flow continues
  *
- * @throws \Cake\Error\NotImplementedException if the action can't handle the request
- * @param array $args
+ * @param array $args Arguments
  * @return mixed
+ * @throws \Cake\Error\NotImplementedException if the action can't handle the request
  */
 	public function handle($args = []) {
 		if (!$this->enabled()) {
@@ -62,6 +62,11 @@ abstract class BaseAction extends Object {
 		throw new NotImplementedException(sprintf('Action %s does not implement a handler for HTTP verb %s', get_class($this), $requestMethod));
 	}
 
+/**
+ * Getter for $_responding
+ *
+ * @return boolean
+ */
 	public function responding() {
 		return (bool)$this->_responding;
 	}
@@ -111,10 +116,10 @@ abstract class BaseAction extends Object {
 /**
  * return the config for a given message type
  *
- * @throws \Exception for a missing or undefined message type
- * @param string $type
- * @param array $replacements
+ * @param string $type Message type.
+ * @param array $replacements Replacements
  * @return array
+ * @throws \Exception for a missing or undefined message type
  */
 	public function message($type, array $replacements = array()) {
 		if (empty($type)) {
@@ -170,9 +175,10 @@ abstract class BaseAction extends Object {
  * Wrapper for Session::setFlash
  *
  * @param string $type Message type
+ * @param \Crud\Event\Subject $subject Event subject
  * @return void
  */
-	public function setFlash($type, $subject) {
+	public function setFlash($type, Subject $subject) {
 		$subject->set($this->message($type));
 		$event = $this->_trigger('setFlash', $subject);
 		if ($event->isStopped()) {
@@ -231,6 +237,12 @@ abstract class BaseAction extends Object {
 		return $this->config('scope');
 	}
 
+/**
+ * [publishSuccess description]
+ *
+ * @param \Crud\EventEvent $event Event
+ * @return void
+ */
 	public function publishSuccess(Event $event) {
 		if (!isset($event->subject->success)) {
 			return false;
@@ -245,6 +257,7 @@ abstract class BaseAction extends Object {
  * By default it uses Inflector::humanize, but can be changed
  * using the "name" configuration property
  *
+ * @param string $value Name to set
  * @return string
  */
 	public function resourceName($value = null) {
@@ -295,6 +308,11 @@ abstract class BaseAction extends Object {
 		return $events;
 	}
 
+/**
+ * Get entity key
+ *
+ * @return string
+ */
 	public function subjectEntityKey() {
 		$key = $this->config('entityKey');
 		if ($key !== null) {

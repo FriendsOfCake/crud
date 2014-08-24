@@ -43,7 +43,6 @@ trait RedirectTrait {
  * Returns the redirect_url for this request, with a fallback to the referring page
  *
  * @param string $default Default URL to use redirect_url is not found in request or data
- * @param boolean $local If true, restrict referring URLs to local server
  * @return mixed
  */
 	protected function _refererRedirectUrl($default = null) {
@@ -73,10 +72,10 @@ trait RedirectTrait {
 /**
  * Called for all redirects inside CRUD
  *
- * @param CrudSubject $subject
- * @param string|array $url
- * @param integer $status
- * @param boolean $exit
+ * @param \Crud\Event\Subject $subject Event subject
+ * @param string|array $url URL
+ * @param integer $status Status code
+ * @param boolean $exit Whether to exit script or not
  * @return void
  */
 	protected function _redirect(Subject $subject, $url = null, $status = null, $exit = true) {

@@ -9,7 +9,7 @@ trait ViewVarTrait {
  * Publish the viewVar so people can do $$viewVar and end up
  * wit the entity in the view
  *
- * @param \Cake\Event\Event $event
+ * @param \Cake\Event\Event $event Event
  * @return void
  */
 	public function publishViewVar(\Cake\Event\Event $event) {
@@ -28,7 +28,7 @@ trait ViewVarTrait {
  * Change the name of the view variable name
  * of the data when its sent to the view
  *
- * @param mixed $name
+ * @param mixed $name Var name
  * @return mixed
  */
 	public function viewVar($name = null) {
@@ -64,9 +64,9 @@ trait ViewVarTrait {
  * Derive the viewVar value based on the scope of the action
  * as well as the Event being handled
  *
- * @throws \Exception
- * @param  Cake\Event\Event $event
+ * @param Cake\Event\Event $event Event
  * @return mixed
+ * @throws \Exception
  */
 	protected function _deriveViewValue(\Cake\Event\Event $event) {
 		$key = $this->_action()->subjectEntityKey();

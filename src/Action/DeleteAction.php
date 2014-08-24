@@ -50,7 +50,7 @@ class DeleteAction extends BaseAction {
 /**
  * HTTP DELETE handler
  *
- * @param string $id
+ * @param string $id Record id
  * @return void
  */
 	protected function _handle($id = null) {
@@ -76,7 +76,7 @@ class DeleteAction extends BaseAction {
 /**
  * Success callback
  *
- * @param  Subject $subject
+ * @param \Crud\Event\Subject $subject Event subject
  * @return void
  */
 	protected function _success(Subject $subject) {
@@ -89,7 +89,7 @@ class DeleteAction extends BaseAction {
 /**
  * Error callback
  *
- * @param  Subject $subject
+ * @param \Crud\Event\Subject $subject Event subject
  * @return void
  */
 	protected function _error(Subject $subject) {
@@ -102,7 +102,7 @@ class DeleteAction extends BaseAction {
 /**
  * Stopped callback
  *
- * @param  Subject $subject
+ * @param \Crud\Event\Subject $subject Event subject
  * @return \Cake\Network\Response
  */
 	protected function _stopped(Subject $subject) {

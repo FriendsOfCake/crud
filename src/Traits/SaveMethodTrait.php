@@ -9,7 +9,7 @@ trait SaveMethodTrait {
  * If `$method` is NULL the current value is returned
  * else the `saveMethod` is changed
  *
- * @param mixed $method
+ * @param mixed $method Method name
  * @return mixed
  */
 	public function saveMethod($method = null) {
@@ -28,7 +28,7 @@ trait SaveMethodTrait {
  * if `$config` is NULL the current config is returned
  * else the `saveOptions` is changed
  *
- * @param mixed $config
+ * @param mixed $config Configuration array
  * @return mixed
  */
 	public function saveOptions($config = null) {

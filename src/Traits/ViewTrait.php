@@ -12,7 +12,7 @@ trait ViewTrait {
  * If no view is configured, it will use the action
  * name from the request object
  *
- * @param mixed $view
+ * @param mixed $view View name
  * @return mixed
  */
 	public function view($view = null) {

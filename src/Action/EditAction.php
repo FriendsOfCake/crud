@@ -1,5 +1,4 @@
 <?php
-
 namespace Crud\Action;
 
 use Crud\Event\Subject;
@@ -92,9 +91,9 @@ class EditAction extends BaseAction {
 /**
  * HTTP GET handler
  *
- * @throws NotFoundException If record not found
- * @param string $id
+ * @param string $id Record id
  * @return void
+ * @throws NotFoundException If record not found
  */
 	protected function _get($id = null) {
 		$subject = $this->_subject();
@@ -107,7 +106,7 @@ class EditAction extends BaseAction {
 /**
  * HTTP PUT handler
  *
- * @param mixed $id
+ * @param mixed $id Record id
  * @return void
  */
 	protected function _put($id = null) {
@@ -129,7 +128,7 @@ class EditAction extends BaseAction {
  *
  * Thin proxy for _put
  *
- * @param mixed $id
+ * @param mixed $id Record id
  * @return void
  */
 	protected function _post($id = null) {
@@ -139,7 +138,7 @@ class EditAction extends BaseAction {
 /**
  * Success callback
  *
- * @param  Subject $subject
+ * @param \Crud\Event\Subject $subject Event subject
  * @return \Cake\Network\Response
  */
 	protected function _success(Subject $subject) {
@@ -154,7 +153,7 @@ class EditAction extends BaseAction {
 /**
  * Error callback
  *
- * @param  Subject $subject
+ * @param \Crud\Event\Subject $subject Event subject
  * @return void
  */
 	protected function _error(Subject $subject) {

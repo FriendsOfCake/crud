@@ -1,5 +1,4 @@
 <?php
-
 namespace Crud\Event;
 
 /**
@@ -22,7 +21,7 @@ class Subject {
 /**
  * Constructor
  *
- * @param array $fields
+ * @param array $fields Fields
  * @return void
  */
 	public function __construct($fields = []) {
@@ -62,7 +61,7 @@ class Subject {
 /**
  * Set a list of key / values for this object
  *
- * @param array $fields
+ * @param array $fields Fields
  * @return \Crud\Event\Subject
  */
 	public function set($fields) {
@@ -81,10 +80,10 @@ class Subject {
  * only => only if in array (white list)
  * not	=> only if NOT in array (blacklist)
  *
- * @throws \Exception In case of invalid mode
- * @param string $mode
- * @param mixed $actions
+ * @param string $mode Mode
+ * @param mixed $actions Actions list
  * @return boolean
+ * @throws \Exception In case of invalid mode
  */
 	public function shouldProcess($mode, $actions = []) {
 		if (is_string($actions)) {

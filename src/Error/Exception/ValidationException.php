@@ -29,7 +29,7 @@ class ValidationException extends Exception {
 /**
  * Constructor
  *
- * @param array $error list of validation errors
+ * @param \Cake\ORM\Entity $entity Entity
  * @param integer $code code to report to client
  * @return void
  */

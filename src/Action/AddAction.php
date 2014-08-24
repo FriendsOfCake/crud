@@ -139,7 +139,7 @@ class AddAction extends BaseAction {
 /**
  * Post success callback
  *
- * @param  Subject $subject
+ * @param \Crud\Event\Subject $subject Event subject
  * @return \Cake\Network\Response
  */
 	protected function _success(Subject $subject) {
@@ -154,7 +154,7 @@ class AddAction extends BaseAction {
 /**
  * Post error callback
  *
- * @param  Subject $subject
+ * @param \Crud\Event\Subject $subject Event subject
  * @return void
  */
 	protected function _error(Subject $subject) {

@@ -11,7 +11,7 @@ trait SerializeTrait {
  * If `$keys` is NULL the current configuration is returned
  * else the `$serialize` configuration is changed.
  *
- * @param null|array $keys
+ * @param null|array $keys Keys to serialize
  * @return mixed
  */
 	public function serialize($keys = null) {

@@ -41,7 +41,7 @@ class ViewAction extends BaseAction {
 /**
  * Generic HTTP handler
  *
- * @param string $id
+ * @param string $id Record id
  * @return void
  */
 	protected function _handle($id = null) {

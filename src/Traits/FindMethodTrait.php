@@ -11,7 +11,7 @@ trait FindMethodTrait {
  * If `$method` is NULL the current value is returned
  * else the `findMethod` is changed
  *
- * @param mixed $method
+ * @param mixed $method Method name
  * @return mixed
  */
 	public function findMethod($method = null) {
@@ -25,9 +25,9 @@ trait FindMethodTrait {
 /**
  * Find a record from the ID
  *
- * @param string $id
- * @param string $findMethod
- * @return array
+ * @param string $id Record id
+ * @param \Crud\Event\Subject $subject Event subject
+ * @return \Cake\ORM\Entity
  */
 	protected function _findRecord($id, Subject $subject) {
 		$repository = $this->_table();
@@ -55,9 +55,10 @@ trait FindMethodTrait {
 /**
  * Throw exception if a record is not found
  *
- * @throws Exception
- * @param string $id
+ * @param string $id Record id
+ * @param \Crud\Event\Subject $subject Event subject
  * @return void
+ * @throws \Exception
  */
 	protected function _notFound($id, Subject $subject) {
 		$subject->set(['success' => false]);
