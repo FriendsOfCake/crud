@@ -7,6 +7,7 @@ use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Cake\Utility\String;
 use Crud\Core\Object;
+use Crud\Event\Subject;
 
 /**
  * Base Crud class
