@@ -149,7 +149,7 @@ class CrudComponent extends Component {
 			}
 
 			list(, $name) = pluginSplit($objectName);
-			$name = strtolower($name);
+			$name = Inflector::variable($name);
 			$normal[$name] = ['className' => $objectName, 'config' => $config];
 		}
 
