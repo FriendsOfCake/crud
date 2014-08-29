@@ -105,7 +105,7 @@ class RelatedModelListenerTest extends TestCase {
 		$listener
 			->expects($this->once())
 			->method('getAssociatedByType')
-			->with(['oneToOne', 'belongsToMany']);
+			->with(['oneToOne', 'belongsToMany', 'manyToOne']);
 
 		$result = $listener->models();
 	}
