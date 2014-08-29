@@ -25,7 +25,7 @@ process and render ``json`` and ``xml`` URL extension
   // config/routes.php
   Router::parseExtensions(['json', 'xml']);
 
-Ensure this statement it used before connecting any routes.
+Ensure this statement is used before connecting any routes.
 
 Controller
 ----------
