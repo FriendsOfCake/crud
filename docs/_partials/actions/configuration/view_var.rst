@@ -5,7 +5,7 @@ viewVar
 
 	This maps directly to the ``$key`` argument in ``Controller::set($key, $value)``
 
-Change the name of the variable the contain the result of a ``index`` or ``view`` action query result.
+Change the name of the variable which contains the result of a ``index`` or ``view`` action query result.
 
 To get the current configured ``viewVar`` call the ``viewViar`` method without any arguments.
 
