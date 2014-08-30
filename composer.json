@@ -60,7 +60,7 @@
 	"support":{
 		"source":"https://github.com/FriendsOfCake/crud",
 		"issues":"https://github.com/FriendsOfCake/crud/issues",
-		"wiki":"http://cakephp.nu/cakephp-crud/",
+		"wiki":"http://crud.readthedocs.org/en/latest/",
 		"irc":"irc://irc.freenode.org/friendsofcake"
 	}
 }
