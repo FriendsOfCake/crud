@@ -49,7 +49,11 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Crud\\": "src",
+			"Crud\\": "src"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
 			"Crud\\Test\\": "tests"
 		}
 	},
