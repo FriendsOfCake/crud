@@ -40,16 +40,12 @@
 		}
 	],
 	"require":{
-		"composer/installers":"*"
+		"cakephp/plugin-installer": "dev-master"
 	},
 	"require-dev": {
 		"cakephp/cakephp": "3.0.*-dev",
 		"phpunit/phpunit": "3.7.33",
-
 		"friendsofcake/cakephp-test-utilities": "dev-master"
-	},
-	"suggest":{
-
 	},
 	"autoload": {
 		"psr-4": {
@@ -62,8 +58,5 @@
 		"issues":"https://github.com/FriendsOfCake/crud/issues",
 		"wiki":"http://cakephp.nu/cakephp-crud/",
 		"irc":"irc://irc.freenode.org/friendsofcake"
-	},
-	"extra": {
-		"installer-name": "Crud"
 	}
 }
