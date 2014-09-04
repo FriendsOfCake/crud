@@ -315,7 +315,7 @@ class AddActionTest extends ControllerTestCase {
 		$controller = $this->generate($this->controllerClass);
 		$controller->Crud->addListener('api', 'Crud.Api');
 		$this->setExpectedException(
-			'Cake\Error\BadRequestException',
+			'Cake\Network\Exception\BadRequestException',
 			'Wrong request method'
 		);
 		Router::parseExtensions(['json']);

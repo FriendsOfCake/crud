@@ -1,8 +1,8 @@
 <?php
 namespace Crud\Action;
 
-use Cake\Error\NotImplementedException;
 use Cake\Event\Event;
+use Cake\Network\Exception\NotImplementedException;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Cake\Utility\String;
@@ -35,7 +35,7 @@ abstract class BaseAction extends Object {
  *
  * @param array $args Arguments
  * @return mixed
- * @throws \Cake\Error\NotImplementedException if the action can't handle the request
+ * @throws \Cake\Network\Exception\NotImplementedException if the action can't handle the request
  */
 	public function handle($args = []) {
 		if (!$this->enabled()) {

@@ -1,7 +1,7 @@
 <?php
 namespace Crud\Error\Exception;
 
-use Cake\Error\Exception;
+use Cake\Core\Exception\Exception;
 use Cake\ORM\Entity;
 use Cake\Utility\Hash;
 

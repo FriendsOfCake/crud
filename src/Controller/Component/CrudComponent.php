@@ -101,17 +101,17 @@ class CrudComponent extends Component {
 			'domain' => 'crud',
 			'invalidId' => [
 				'code' => 400,
-				'class' => 'Cake\Error\BadRequestException',
+				'class' => 'Cake\Network\Exception\BadRequestException',
 				'text' => 'Invalid id'
 			],
 			'recordNotFound' => [
 				'code' => 404,
-				'class' => 'Cake\Error\NotFoundException',
+				'class' => 'Cake\Network\Exception\NotFoundException',
 				'text' => 'Not found'
 			],
 			'badRequestMethod' => [
 				'code' => 405,
-				'class' => 'Cake\Error\MethodNotAllowedException',
+				'class' => 'Cake\Network\Exception\MethodNotAllowedException',
 				'text' => 'Method not allowed. This action permits only {methods}'
 			]
 		],

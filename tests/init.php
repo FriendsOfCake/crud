@@ -37,7 +37,7 @@ require ROOT . '/vendor/autoload.php';
 Cake\Core\Configure::write('App', ['namespace' => 'Crud\Test\App']);
 Cake\Core\Configure::write('debug', true);
 
-$TMP = new \Cake\Utility\Folder(TMP);
+$TMP = new \Cake\Filesystem\Folder(TMP);
 $TMP->create(TMP . 'cache/models', 0777);
 $TMP->create(TMP . 'cache/persistent', 0777);
 $TMP->create(TMP . 'cache/views', 0777);

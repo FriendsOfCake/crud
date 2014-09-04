@@ -2,8 +2,8 @@
 namespace Crud\Listener;
 
 use Cake\Core\Configure;
-use Cake\Error\BadRequestException;
 use Cake\Event\Event;
+use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Request;
 use Cake\ORM\Entity;
 use Cake\Utility\Hash;
@@ -37,7 +37,7 @@ class ApiListener extends BaseListener {
 		],
 		'exception' => [
 			'type' => 'default',
-			'class' => 'Cake\Error\BadRequestException',
+			'class' => 'Cake\Network\Exception\BadRequestException',
 			'message' => 'Unknown error',
 			'code' => 0
 		]
@@ -117,7 +117,7 @@ class ApiListener extends BaseListener {
 /**
  * Check for allowed HTTP request types
  *
- * @throws \Cake\Error\BadRequestException
+ * @throws \Cake\Network\Exception\BadRequestException
  * @return boolean
  */
 	protected function _checkRequestMethods() {

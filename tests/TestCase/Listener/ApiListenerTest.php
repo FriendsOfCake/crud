@@ -214,7 +214,7 @@ class ApiListenerTest extends TestCase {
 			->setMethods(null)
 			->getMock();
 
-		$expected =  [
+		$expected = [
 			'viewClasses' => [
 				'json' => 'Json',
 				'xml' => 'Xml'
@@ -225,7 +225,7 @@ class ApiListenerTest extends TestCase {
 			],
 			'exception' => [
 				'type' => 'default',
-				'class' => 'Cake\Error\BadRequestException',
+				'class' => 'Cake\Network\Exception\BadRequestException',
 				'message' => 'Unknown error',
 				'code' => 0
 			]
@@ -243,28 +243,28 @@ class ApiListenerTest extends TestCase {
 		return array(
 			'default configuration' => array(
 				array(),
-				'\Cake\Error\BadRequestException',
+				'\Cake\Network\Exception\BadRequestException',
 				'Unknown error',
 				0
 			),
 
 			'change exception class' => array(
-				array('class' => '\Cake\Error\Exception'),
-				'\Cake\Error\Exception',
+				array('class' => '\Cake\Core\Exception\Exception'),
+				'\Cake\Core\Exception\Exception',
 				'Unknown error',
 				0
 			),
 
 			'change exception code' => array(
 				array('code' => 10),
-				'\Cake\Error\BadRequestException',
+				'\Cake\Network\Exception\BadRequestException',
 				'Unknown error',
 				10
 			),
 
 			'change exception message' => array(
 				array('message' => 'epic message'),
-				'\Cake\Error\BadRequestException',
+				'\Cake\Network\Exception\BadRequestException',
 				'epic message',
 				0
 			),
@@ -808,7 +808,7 @@ class ApiListenerTest extends TestCase {
 
 		$subject = new \Crud\Event\Subject(array('request' => $Request));
 
-		$apiListener = 		$listener = $this
+		$apiListener = $listener = $this
 			->getMockBuilder('\Crud\Listener\ApiListener')
 			->setMethods(null)
 			->disableOriginalConstructor()
@@ -999,7 +999,6 @@ class ApiListenerTest extends TestCase {
 		$this->assertEquals($expected, $result);
 	}
 
-
 /**
  * testRegisterExceptionHandler without Api request
  *
@@ -1037,7 +1036,7 @@ class ApiListenerTest extends TestCase {
 			),
 			'invalid post' => array(
 				array('methods' => array('post')),
-				'Cake\Error\BadRequestException',
+				'Cake\Network\Exception\BadRequestException',
 				array('post' => false)
 			),
 			'valid put' => array(

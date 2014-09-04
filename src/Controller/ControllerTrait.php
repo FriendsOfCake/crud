@@ -2,6 +2,8 @@
 
 namespace Crud\Controller;
 
+use Cake\Controller\Exception\MissingActionException;
+
 /**
  * Enable Crud to catch MissingActionException and attempt to generate response
  * using Crud.
@@ -25,15 +27,15 @@ trait ControllerTrait {
  * If CakePHP raises MissingActionException we attempt to execute Crud
  *
  * @return mixed The resulting response.
- * @throws \Cake\Error\Exception When request is not set.
- * @throws \Cake\Error\PrivateActionException When actions are not public or prefixed by _
- * @throws \Cake\Error\MissingActionException When actions are not defined and scaffolding
+ * @throws \Cake\Core\Exception\Exception When request is not set.
+ * @throws \Cake\Exception\PrivateActionException When actions are not public or prefixed by _
+ * @throws \Cake\Exception\MissingActionException When actions are not defined and scaffolding
  * and CRUD is not enabled.
  */
 	public function invokeAction() {
 		try {
 			return parent::invokeAction();
-		} catch (\Cake\Controller\Error\MissingActionException $e) {
+		} catch (MissingActionException $e) {
 			if (!empty($this->dispatchComponents)) {
 				foreach ($this->dispatchComponents as $component => $enabled) {
 					if (empty($enabled)) {

@@ -10,7 +10,7 @@ use Cake\Event\Event;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class ExceptionRenderer extends \Cake\Error\ExceptionRenderer {
+class ExceptionRenderer extends \Cake\Core\Exception\ExceptionRenderer {
 
 /**
  * Renders validation errors and sends a 412 error code
