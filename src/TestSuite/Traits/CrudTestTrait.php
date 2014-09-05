@@ -71,6 +71,7 @@ trait CrudTestTrait {
  * @param  string $expected
  * @param  mixed  $actual
  * @return void
+ * @throws \Exception
  */
 	public function assertRedirect($expected, $actual = null) {
 		if ($actual === null) {
@@ -101,6 +102,7 @@ trait CrudTestTrait {
  * @param  array $expected An array of CRUD events we expected to be fired
  * @param  array $actual   Can be an Event class, Crud subject or array with event names
  * @return void
+ * @throws \Exception
  */
 	public function assertEvents(array $expected, array $actual = null) {
 		if ($actual === null) {
