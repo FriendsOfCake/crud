@@ -40,10 +40,10 @@
 		}
 	],
 	"require":{
+		"cakephp/cakephp": "3.0.*-dev",
 		"cakephp/plugin-installer": "dev-master"
 	},
 	"require-dev": {
-		"cakephp/cakephp": "3.0.*-dev",
 		"phpunit/phpunit": "3.7.33",
 		"friendsofcake/cakephp-test-utilities": "dev-master"
 	},
