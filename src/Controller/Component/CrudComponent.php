@@ -93,7 +93,7 @@ class CrudComponent extends Component {
  *
  * @var array
  */
-	public $settings = [
+	protected $_defaultConfig = [
 		'actions' => [],
 		'eventPrefix' => 'Crud',
 		'listeners' => [],
@@ -122,19 +122,18 @@ class CrudComponent extends Component {
  * Constructor
  *
  * @param ComponentCollection $collection A ComponentCollection this component can use to lazy load its components.
- * @param array $settings Array of configuration settings.
+ * @param array $config Array of configuration settings.
  * @return void
  */
-	public function __construct(ComponentRegistry $collection, $settings = []) {
-		$settings = array_merge(['actions' => [], 'listeners' => []], $settings);
-
-		$settings['actions'] = $this->normalizeArray($settings['actions']);
-		$settings['listeners'] = $this->normalizeArray($settings['listeners']);
+	public function __construct(ComponentRegistry $collection, $config = []) {
+		$config += ['actions' => [], 'listeners' => []];
+		$config['actions'] = $this->normalizeArray($config['actions']);
+		$config['listeners'] = $this->normalizeArray($config['listeners']);
 
 		$this->_controller = $collection->getController();
 		$this->_eventManager = $this->_controller->eventManager();
 
-		parent::__construct($collection, $settings);
+		parent::__construct($collection, $config);
 	}
 
 	public function normalizeArray($objects) {
@@ -166,7 +165,10 @@ class CrudComponent extends Component {
  * @return void
  */
 	public function initialize(Event $event) {
-		$this->_controller->methods = array_keys(array_flip($this->_controller->methods) + array_flip(array_keys($this->settings['actions'])));
+		$this->_controller->methods = array_keys(
+			array_flip($this->_controller->methods) +
+			array_flip(array_keys($this->_config['actions']))
+		);
 		$this->_action = $this->_controller->request->action;
 		$this->_request = $this->_controller->request;
 
@@ -344,8 +346,8 @@ class CrudComponent extends Component {
  * @param boolean $enable Should the mapping be enabled right away?
  * @return void
  */
-	public function mapAction($action, $settings, $enable = true) {
-		$this->config('actions.' . $action, $settings);
+	public function mapAction($action, $config, $enable = true) {
+		$this->config('actions.' . $action, $config);
 
 		if ($enable) {
 			$this->enable($action);
@@ -382,7 +384,7 @@ class CrudComponent extends Component {
 	public function on($events, $callback, $options = array()) {
 		foreach ((array)$events as $event) {
 			if (!strpos($event, '.')) {
-				$event = $this->settings['eventPrefix'] . '.' . $event;
+				$event = $this->_config['eventPrefix'] . '.' . $event;
 			}
 
 			$this->_eventManager->attach($callback, $event, $options);
@@ -444,7 +446,7 @@ class CrudComponent extends Component {
 		}
 
 		unset($listeners[$name]);
-		$this->settings['listeners'] = $listeners;
+		$this->_config['listeners'] = $listeners;
 	}
 
 /**
@@ -462,12 +464,12 @@ class CrudComponent extends Component {
  * @return \Cake\Event\Event
  */
 	public function trigger($eventName, $data = []) {
-		$eventName = $this->settings['eventPrefix'] . '.' . $eventName;
+		$eventName = $this->_config['eventPrefix'] . '.' . $eventName;
 
 		$Subject = $data instanceof \Crud\Event\Subject ? $data : $this->getSubject($data);
 		$Subject->addEvent($eventName);
 
-		if (!empty($this->settings['eventLogging'])) {
+		if (!empty($this->_config['eventLogging'])) {
 			$this->logEvent($eventName, $data);
 		}
 
