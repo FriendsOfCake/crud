@@ -37,7 +37,7 @@ class LookupAction extends BaseAction {
 	protected function _handle() {
 		$subject = $this->_subject(['success' => true]);
 
-		$this->_trigger('afterLookup', $subject);
+		$this->_trigger('beforeLookup', $subject);
 		$query = $this->_table()->find($this->config('findMethod'), $this->_getFindConfig());
 		$subject->set(['entities' => $this->_controller()->paginate($query)]);
 		$this->_trigger('afterLookup', $subject);
