@@ -3,7 +3,7 @@
 	processIsolation="false"
 	stopOnFailure="false"
 	syntaxCheck="false"
-	bootstrap="./tests/init.php">
+	bootstrap="./tests/bootstrap.php">
 
 	<testsuites>
 		<testsuite name="Crud">
