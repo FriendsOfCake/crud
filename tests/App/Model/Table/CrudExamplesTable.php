@@ -20,7 +20,7 @@ class CrudExamplesTable extends \Cake\ORM\Table {
 		'firstUnpublished' => true,
 	);
 
-	public function initialize() {
+	public function initialize(array $config) {
 		$this->table('posts');
 	}
 
