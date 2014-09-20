@@ -436,10 +436,6 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testViewWithArrayNewAction() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
 		$this->request
 			->expects($this->once())
 			->method('method')
@@ -458,7 +454,7 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->Crud->mapAction('show_all', ['className' => 'Crud.index', 'config' => []]);
 		$this->Crud->view(array('show_all' => 'index', 'index' => 'overview'));
 
-		$this->Crud->execute('show_all');
+		$this->Crud->execute('showAll');
 	}
 
 /**
@@ -467,10 +463,6 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testViewWithArrayIndexAction() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
 		$this->request
 			->expects($this->once())
 			->method('method')
@@ -481,7 +473,7 @@ class CrudComponentTest extends ControllerTestCase {
 			->method('render')
 			->with('overview');
 
-		$this->Crud->mapAction('show_all', 'index');
+		$this->Crud->mapAction('show_all', ['className' => 'Crud.index', 'config' => []]);
 		$this->Crud->view(array('show_all' => 'index', 'index' => 'overview'));
 
 		$this->Crud->execute('index');
