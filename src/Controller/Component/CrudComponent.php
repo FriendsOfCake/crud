@@ -347,6 +347,7 @@ class CrudComponent extends Component {
  * @return void
  */
 	public function mapAction($action, $config, $enable = true) {
+		$action = Inflector::variable($action);
 		$this->config('actions.' . $action, $config);
 
 		if ($enable) {
@@ -365,6 +366,7 @@ class CrudComponent extends Component {
 			$action = $this->_action;
 		}
 
+		$action = Inflector::variable($action);
 		$test = $this->config('actions.' . $action);
 		if (empty($test)) {
 			return false;
