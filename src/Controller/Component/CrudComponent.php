@@ -619,7 +619,7 @@ class CrudComponent extends Component {
  * Load a CrudAction instance.
  *
  * @throws \Crud\Error\Exception\ActionNotConfiguredException
- * @throws \Crud\Error\Exception\MissingListenerException
+ * @throws \Crud\Error\Exception\MissingActionException
  * @param string $name The controller action name.
  * @return CrudAction
  */
@@ -633,7 +633,7 @@ class CrudComponent extends Component {
 
 			$config['className'] = \Cake\Core\App::classname($config['className'], 'Action', 'Action');
 			if (empty($config['className'])) {
-				throw new \Crud\Error\Exception\MissingListenerException('Could not find action class: ' . $config['className']);
+				throw new \Crud\Error\Exception\MissingActionException('Could not find action class: ' . $config['className']);
 			}
 
 			$this->_actionInstances[$name] = new $config['className']($this->_controller);
