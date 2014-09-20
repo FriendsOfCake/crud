@@ -318,7 +318,7 @@ class AddActionTest extends ControllerTestCase {
 			'Cake\Network\Exception\BadRequestException',
 			'Wrong request method'
 		);
-		Router::parseExtensions(['json']);
+		Router::extensions(['json']);
 		Router::scope('/', function($routes) {
 			$routes->extensions(['json']);
 			$routes->fallbacks();
@@ -351,7 +351,7 @@ class AddActionTest extends ControllerTestCase {
 			['components' => ['Flash' => ['set']]
 		]);
 
-		Router::parseExtensions('json');
+		Router::extensions('json');
 		$controller->Crud->addListener('api', 'Crud.Api');
 		$this->_subscribeToEvents();
 
@@ -396,7 +396,7 @@ class AddActionTest extends ControllerTestCase {
 					'message' => 'Name need to be at least 10 characters long',
 				]
 			]);
-		Router::parseExtensions('json');
+		Router::extensions('json');
 		$controller->Crud->addListener('api', 'Crud.Api');
 		$this->_subscribeToEvents();
 
@@ -440,7 +440,7 @@ class AddActionTest extends ControllerTestCase {
 					'message' => 'Name need to be at least 10 characters long',
 				]
 			]);
-		Router::parseExtensions('json');
+		Router::extensions('json');
 		$controller->Crud->addListener('api', 'Crud.Api');
 		$this->_subscribeToEvents();
 
