@@ -231,8 +231,8 @@ class CrudComponentTest extends ControllerTestCase {
 		$config = array(
 			'actions' => array(
 				'Crud.Index',
-				'Crud.Add' => [],
-				'Crud.View' => array('viewVar' => 'beers'),
+				'add' => 'Crud.Add',
+				'view' => ['className' => 'Crud.View', 'viewVar' => 'beers'],
 			),
 			'listeners' => array(
 				'Crud.Related'
@@ -252,14 +252,14 @@ class CrudComponentTest extends ControllerTestCase {
 		$Crud->initialize(new Event('Controller.initialize'));
 
 		$expected = array(
-			'index' => array('className' => 'Crud.Index', 'config' => []),
-			'add' => array('className' => 'Crud.Add', 'config' => []),
-			'view' => array('className' => 'Crud.View', 'config' => ['viewVar' => 'beers']),
+			'index' => array('className' => 'Crud.Index'),
+			'add' => array('className' => 'Crud.Add'),
+			'view' => array('className' => 'Crud.View', 'viewVar' => 'beers'),
 		);
 		$this->assertEquals($expected, $Crud->config('actions'));
 
 		$expected = array(
-			'related' => array('className' => 'Crud.Related', 'config' => []),
+			'related' => array('className' => 'Crud.Related'),
 		);
 		$this->assertEquals($expected, $Crud->config('listeners'));
 	}
@@ -289,7 +289,7 @@ class CrudComponentTest extends ControllerTestCase {
  *
  */
 	public function testEnable() {
-		$this->Crud->mapAction('puppies', ['className' => 'Crud.View', 'config' => []], false);
+		$this->Crud->mapAction('puppies', 'Crud.View', false);
 		$this->Crud->enable('puppies');
 
 		$result = $this->Crud->isActionMapped('puppies');
@@ -312,14 +312,14 @@ class CrudComponentTest extends ControllerTestCase {
  *
  */
 	public function testMapAction() {
-		$this->Crud->mapAction('puppies', ['className' => 'Crud.View', 'config' => []]);
+		$this->Crud->mapAction('puppies', 'Crud.View');
 
 		$result = $this->Crud->isActionMapped('puppies');
 		$this->assertTrue($result);
 
 		$this->Crud->mapAction('kittens', array(
 			'className' => 'Crud.Index',
-			'config' => ['relatedModels' => false]
+			'relatedModels' => false
 		));
 
 		$result = $this->Crud->isActionMapped('kittens');
@@ -327,7 +327,7 @@ class CrudComponentTest extends ControllerTestCase {
 
 		$expected = array(
 			'className' => 'Crud.Index',
-			'config' => ['relatedModels' => false]
+			'relatedModels' => false
 		);
 		$this->assertEquals($expected, $this->Crud->config('actions.kittens'));
 	}
@@ -451,7 +451,7 @@ class CrudComponentTest extends ControllerTestCase {
 			->method('render')
 			->with('index');
 
-		$this->Crud->mapAction('show_all', ['className' => 'Crud.index', 'config' => []]);
+		$this->Crud->mapAction('show_all', ['className' => 'Crud.index']);
 		$this->Crud->view(array('show_all' => 'index', 'index' => 'overview'));
 
 		$this->Crud->execute('showAll');
@@ -473,7 +473,7 @@ class CrudComponentTest extends ControllerTestCase {
 			->method('render')
 			->with('overview');
 
-		$this->Crud->mapAction('show_all', ['className' => 'Crud.index', 'config' => []]);
+		$this->Crud->mapAction('show_all', ['className' => 'Crud.index']);
 		$this->Crud->view(array('show_all' => 'index', 'index' => 'overview'));
 
 		$this->Crud->execute('index');

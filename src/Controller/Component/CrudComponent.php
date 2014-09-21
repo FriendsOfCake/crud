@@ -139,23 +139,23 @@ class CrudComponent extends Component {
 /**
  * Normalize config array
  *
- * @param array $objects Array to normalize
+ * @param array $array List to normalize
  * @return array
  */
-	public function normalizeArray(array $objects) {
+	public function normalizeArray(array $array) {
 		$normal = [];
 
-		foreach ($objects as $i => $objectName) {
-			$config = [];
-
-			if (!is_int($i)) {
-				$config = (array)$objectName;
-				$objectName = $i;
+		foreach ($array as $action => $config) {
+			if (is_string($config)) {
+				$config = ['className' => $config];
 			}
 
-			list(, $name) = pluginSplit($objectName);
-			$name = Inflector::variable($name);
-			$normal[$name] = ['className' => $objectName, 'config' => $config];
+			if (is_int($action)) {
+				list(, $action) = pluginSplit($config['className']);
+			}
+
+			$action = Inflector::variable($action);
+			$normal[$action] = $config;
 		}
 
 		return $normal;
@@ -349,11 +349,14 @@ class CrudComponent extends Component {
  * Map action to an internal request type.
  *
  * @param string $action The Controller action to provide an implementation for.
- * @param string|array $config Config array or one of the CRUD events (index, add, edit, delete, view).
+ * @param string|array $config Config array or class name like Crud.Index.
  * @param bool $enable Should the mapping be enabled right away?
  * @return void
  */
-	public function mapAction($action, $config, $enable = true) {
+	public function mapAction($action, $config = [], $enable = true) {
+		if (is_string($config)) {
+			$config = ['className' => $config];
+		}
 		$action = Inflector::variable($action);
 		$this->config('actions.' . $action, $config);
 
@@ -428,11 +431,11 @@ class CrudComponent extends Component {
 	public function addListener($name, $className = null, $config = []) {
 		if (strpos($name, '.') !== false) {
 			list($plugin, $name) = pluginSplit($name);
-			$name = strtolower($name);
-			$className = $plugin . '.' . ucfirst($name);
+			$className = $plugin . '.' . Inflector::camelize($name);
 		}
 
-		$this->config(sprintf('listeners.%s', $name), compact('className', 'config'));
+		$name = Inflector::variable($name);
+		$this->config(sprintf('listeners.%s', $name), compact('className') + $config);
 	}
 
 /**
@@ -626,7 +629,8 @@ class CrudComponent extends Component {
 			}
 
 			$this->_listenerInstances[$name] = new $className($this->_controller);
-			$this->_listenerInstances[$name]->config($config['config']);
+			unset($config['className']);
+			$this->_listenerInstances[$name]->config($config);
 
 			$this->_eventManager->attach($this->_listenerInstances[$name]);
 
@@ -660,7 +664,8 @@ class CrudComponent extends Component {
 			}
 
 			$this->_actionInstances[$name] = new $config['className']($this->_controller);
-			$this->_actionInstances[$name]->config($config['config']);
+			unset($config['className']);
+			$this->_actionInstances[$name]->config($config);
 		}
 
 		return $this->_actionInstances[$name];
