@@ -1,6 +1,7 @@
 <?php
-namespace Crud\TestCase\Controller\Crud;
+namespace Crud\TestCase\Action;
 
+use Crud\Event\Subject;
 use Crud\TestSuite\TestCase;
 
 /**
@@ -11,20 +12,21 @@ use Crud\TestSuite\TestCase;
 class CrudActionTest extends TestCase {
 
 	public function setUp() {
-		$this->skipIf(true);
-
 		parent::setUp();
 
-		$this->Request = $this->getMock('CakeRequest');
-		$this->Collection = $this->getMock('ComponentCollection', null);
-		$this->Controller = $this->getMock('Controller');
-		$this->Controller->Components = $this->Collection;
-		$this->Crud = $this->getMock('CrudComponent', null, array($this->Collection));
-		$this->Model = $this->getMock('Model');
+		$this->Request = $this->getMock('Cake\Network\Request');
+		$this->Controller = $this->getMock(
+			'Cake\Controller\Controller',
+			null,
+			array($this->Request, new \Cake\Network\Response, 'CrudExamples', \Cake\Event\EventManager::instance())
+		);
+		$this->Registry = $this->Controller->components();
+		$this->Crud = $this->getMock('Crud\Controller\Component\CrudComponent', null, array($this->Registry));
+		$this->Model = $this->getMock('Cake\ORM\Table');
 		$this->Model->name = '';
 		$this->action = 'add';
 
-		$this->Subject = new CrudSubject(array(
+		$this->Subject = new Subject(array(
 			'request' => $this->Request,
 			'crud' => $this->Crud,
 			'controller' => $this->Controller,
@@ -34,8 +36,8 @@ class CrudActionTest extends TestCase {
 			'args' => array()
 		));
 
-		$this->actionClassName = $this->getMockClass('CrudAction', array('_handle'));
-		$this->ActionClass = new $this->actionClassName($this->Subject);
+		$this->actionClassName = $this->getMockClass('Crud\Action\BaseAction', array('_handle'));
+		$this->ActionClass = new $this->actionClassName($this->Controller);
 		$this->_configureAction($this->ActionClass);
 	}
 
@@ -44,7 +46,7 @@ class CrudActionTest extends TestCase {
 		unset(
 			$this->Crud,
 			$this->Request,
-			$this->Collection,
+			$this->Registry,
 			$this->Controller,
 			$this->action,
 			$this->Subject,
@@ -94,7 +96,7 @@ class CrudActionTest extends TestCase {
 			'action' => 'add'
 		);
 
-		$ActionClass = new $this->actionClassName($this->Subject, $expected);
+		$ActionClass = new $this->actionClassName($this->Controller, $expected);
 		// This is injected by the CrudAction, not technically a setting
 		$expected['action'] = 'add';
 		$actual = $ActionClass->config();
@@ -107,7 +109,7 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testImplementedEvents() {
-		$expected = array();
+		$expected = ['Crud.beforeRender' => [['callable' => [$this->ActionClass, 'publishSuccess']]]];
 		$actual = $this->ActionClass->implementedEvents();
 		$this->assertEquals($expected, $actual, 'The CrudAction implements events');
 	}
@@ -118,18 +120,18 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testEnabledActionWorks() {
-		$Request = $this->getMock('CakeRequest', array('method'));
+		$Request = $this->getMock('Cake\Network\Request', array('method'));
 		$Request->action = 'add';
 		$Request
 			->expects($this->once())
 			->method('method')
 			->will($this->returnValue('GET'));
 
-		$Action = $this
-			->getMockBuilder('CrudAction')
-			->disableOriginalConstructor()
-			->setMethods(array('_request', '_get'))
-			->getMock();
+		$Action = $this->getMock(
+			'Crud\Action\BaseAction',
+			['_request', '_get'],
+			[$this->Controller]
+		);
 		$Action
 			->expects($this->any())
 			->method('_request')
@@ -148,7 +150,7 @@ class CrudActionTest extends TestCase {
 		$this->assertSame($expected, $actual, 'The action is not enabled by default');
 
 		$expected = true;
-		$actual = $Action->handle($this->Subject);
+		$actual = $Action->handle();
 		$this->assertSame($expected, $actual, 'Calling handle on a disabled action did not return null');
 	}
 
@@ -170,11 +172,11 @@ class CrudActionTest extends TestCase {
 
 		$i = 0;
 
-		$Action = $this
-			->getMockBuilder('CrudAction')
-			->setMethods(array('config', '_controller', '_handle'))
-			->disableOriginalConstructor()
-			->getMock();
+		$Action = $this->getMock(
+			'Crud\Action\BaseAction',
+			['_controller', '_handle', 'config'],
+			[$this->Controller]
+		);
 		$Action
 			->expects($this->at($i++))
 			->method('config', 'enabled was not changed to false by config()')
@@ -205,19 +207,13 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testEnable() {
-		$Controller = $this
-			->getMockBuilder('Controller')
-			->setMethods(array('foo'))
-			->disableOriginalConstructor()
-			->getMock();
-
 		$i = 0;
 
-		$Action = $this
-			->getMockBuilder('CrudAction')
-			->setMethods(array('config', '_controller', '_handle'))
-			->disableOriginalConstructor()
-			->getMock();
+		$Action = $this->getMock(
+			'Crud\Action\BaseAction',
+			['_controller', '_handle', 'config'],
+			[$this->Controller]
+		);
 		$Action
 			->expects($this->at($i++))
 			->method('config', 'enabled was not changed to false by config()')
@@ -226,7 +222,7 @@ class CrudActionTest extends TestCase {
 			->expects($this->at($i++))
 			->method('_controller')
 			->with()
-			->will($this->returnValue($Controller));
+			->will($this->returnValue($this->Controller));
 		$Action
 			->expects($this->at($i++))
 			->method('config')
@@ -235,7 +231,7 @@ class CrudActionTest extends TestCase {
 
 		$Action->enable();
 
-		$actual = array_search('add', $Controller->methods);
+		$actual = array_search('add', $this->Controller->methods);
 		$this->assertTrue($actual !== false, '"add" was not added to the controller::$methods array');
 	}
 
@@ -245,11 +241,13 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testFindMethodGet() {
-		$Action = $this
-			->getMockBuilder('CrudAction')
-			->setMethods(array('config', '_handle'))
-			->setConstructorArgs(array($this->Subject))
-			->getMock();
+		$this->markTestSkipped('BaseAction::findMethod() is removed');
+
+		$Action = $this->getMock(
+			'Crud\Action\BaseAction',
+			['_handle', 'config'],
+			[$this->Controller]
+		);
 		$Action
 			->expects($this->once())
 			->method('config')
@@ -264,11 +262,13 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testFindMethodSet() {
-		$Action = $this
-			->getMockBuilder('CrudAction')
-			->setMethods(array('config', '_handle'))
-			->setConstructorArgs(array($this->Subject))
-			->getMock();
+		$this->markTestSkipped('BaseAction::findMethod() doesn\'t exist');
+
+		$Action = $this->getMock(
+			'Crud\Action\BaseAction',
+			['_handle', 'config'],
+			[$this->Controller]
+		);
 		$Action
 			->expects($this->once())
 			->method('config')
@@ -283,11 +283,13 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testSaveMethodGet() {
-		$Action = $this
-			->getMockBuilder('CrudAction')
-			->setMethods(array('config', '_handle'))
-			->setConstructorArgs(array($this->Subject))
-			->getMock();
+		$this->markTestSkipped('BaseAction::saveMethod() doesn\'t exist');
+
+		$Action = $this->getMock(
+			'Crud\Action\BaseAction',
+			['_handle', 'config'],
+			[$this->Controller]
+		);
 		$Action
 			->expects($this->once())
 			->method('config')
@@ -302,11 +304,13 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testSaveMethodSet() {
-		$Action = $this
-			->getMockBuilder('CrudAction')
-			->setMethods(array('config', '_handle'))
-			->setConstructorArgs(array($this->Subject))
-			->getMock();
+		$this->markTestSkipped('BaseAction::saveMethod() doesn\'t exist');
+
+		$Action = $this->getMock(
+			'Crud\Action\BaseAction',
+			['_handle', 'config'],
+			[$this->Controller]
+		);
 		$Action
 			->expects($this->once())
 			->method('config')
@@ -321,7 +325,13 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testSaveOptionsGet() {
-		$this->ActionClass = $this->getMock('CrudAction', array('config', '_handle'), array($this->Subject));
+		$this->markTestSkipped('BaseAction::saveOptions() doesn\'t exist');
+
+		$Action = $this->getMock(
+			'Crud\Action\BaseAction',
+			['_handle', 'config'],
+			[$this->Controller]
+		);
 		$this->ActionClass
 			->expects($this->once())
 			->method('config')
@@ -336,7 +346,13 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testSaveOptionsSet() {
-		$this->ActionClass = $this->getMock('CrudAction', array('config', '_handle'), array($this->Subject));
+		$this->markTestSkipped('BaseAction::saveOptions() doesn\'t exist');
+
+		$Action = $this->getMock(
+			'Crud\Action\BaseAction',
+			['_handle', 'config'],
+			[$this->Controller]
+		);
 		$this->ActionClass
 			->expects($this->once())
 			->method('config')
@@ -354,8 +370,15 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testViewGetWithoutConfiguredView() {
+		$this->markTestSkipped('BaseAction::view() doesn\'t exist');
+
 		$this->Request->action = 'add';
-		$this->ActionClass = $this->getMock('CrudAction', array('config', '_handle'), array($this->Subject));
+
+		$Action = $this->getMock(
+			'Crud\Action\BaseAction',
+			['_handle', 'config'],
+			[$this->Controller]
+		);
 		$this->ActionClass
 			->expects($this->at(0))
 			->method('config')
@@ -375,7 +398,13 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testViewGetWithConfiguredView() {
-		$this->ActionClass = $this->getMock('CrudAction', array('config', '_handle'), array($this->Subject));
+		$this->markTestSkipped('BaseAction::view() doesn\'t exist');
+
+		$Action = $this->getMock(
+			'Crud\Action\BaseAction',
+			['_handle', 'config'],
+			[$this->Controller]
+		);
 		$this->ActionClass
 			->expects($this->once())
 			->method('config')
@@ -393,7 +422,13 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testViewSet() {
-		$this->ActionClass = $this->getMock('CrudAction', array('config', '_handle'), array($this->Subject));
+		$this->markTestSkipped('BaseAction::view() doesn\'t exist');
+
+		$Action = $this->getMock(
+			'Crud\Action\BaseAction',
+			['_handle', 'config'],
+			[$this->Controller]
+		);
 		$this->ActionClass
 			->expects($this->once())
 			->method('config')
@@ -408,6 +443,8 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testSetFlash() {
+		$this->markTestSkipped('Still have to fix test for setFlash()');
+
 		$data = array(
 			'element' => 'default',
 			'params' => array(
@@ -421,14 +458,14 @@ class CrudActionTest extends TestCase {
 		);
 		$object = (object)$data;
 
-		$this->Subject->crud = $this->getMock('CrudComponent', array('trigger'), array($this->Collection));
+		$this->Subject->crud = $this->getMock('CrudComponent', array('trigger'), array($this->Registry));
 		$this->Subject->crud
 			->expects($this->once())
 			->method('trigger')
 			->with('setFlash', $data)
 			->will($this->returnValue($object));
 
-		$this->Subject->crud->Session = $this->getMock('SessionComponent', array('setFlash'), array($this->Collection));
+		$this->Subject->crud->Session = $this->getMock('SessionComponent', array('setFlash'), array($this->Registry));
 		$this->Subject->crud->Session
 			->expects($this->once())
 			->method('setFlash')
@@ -447,6 +484,8 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testDetectPrimaryKeyFieldType() {
+		$this->markTestSkipped('BaseAction::detectPrimaryKeyFieldType() doesn\'t exist');
+
 		$Model = $this->getMock('Model', array('schema'));
 		$Model
 			->expects($this->at(0))
@@ -484,6 +523,8 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testGetSaveAllOptionsDefaults() {
+		$this->markTestSkipped();
+
 		$CrudAction = $this->ActionClass;
 
 		$expected = array(
@@ -520,6 +561,8 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testGetSaveAllOptionsCustomAction() {
+		$this->markTestSkipped();
+
 		$expected = array('validate' => 'first', 'atomic' => true);
 		$actual = $this->ActionClass->saveOptions();
 		$this->assertEquals($expected, $actual);
@@ -533,7 +576,7 @@ class CrudActionTest extends TestCase {
 /**
  * testEmptyMessage
  *
- * @expectedException CakeException
+ * @expectedException Exception
  * @expectedExceptionMessage Missing message type
  */
 	public function testEmptyMessage() {
@@ -543,20 +586,24 @@ class CrudActionTest extends TestCase {
 /**
  * testUndefinedMessage
  *
- * @expectedException CakeException
+ * @expectedException Exception
  * @expectedExceptionMessage Invalid message type "not defined"
  */
 	public function testUndefinedMessage() {
+		$this->markTestSkipped();
+
 		$this->ActionClass->message('not defined');
 	}
 
 /**
  * testBadMessageConfig
  *
- * @expectedException CakeException
+ * @expectedException Exception
  * @expectedExceptionMessage Invalid message config for "badConfig" no text key found
  */
 	public function testBadMessageConfig() {
+		$this->markTestSkipped();
+
 		$this->Crud->config('messages.badConfig', array('foo' => 'bar'));
 		$this->ActionClass->message('badConfig');
 	}
@@ -567,6 +614,8 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testInheritedSimpleMessage() {
+		$this->markTestSkipped();
+
 		$this->Crud->config('messages.simple', 'Simple message');
 
 		$expected = array(
@@ -590,6 +639,8 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testOverridenSimpleMessage() {
+		$this->markTestSkipped();
+
 		$this->Crud->config('messages.simple', 'Simple message');
 		$this->ActionClass->config('messages.simple', 'Overridden message');
 
@@ -614,6 +665,8 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testSimpleMessage() {
+		$this->markTestSkipped();
+
 		$this->ActionClass->config('messages.simple', 'Simple message');
 
 		$expected = array(
@@ -637,6 +690,8 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testSimpleMessageWithPlaceholders() {
+		$this->markTestSkipped();
+
 		$this->Crud->config('messages.simple', 'Simple message with id "{id}"');
 
 		$expected = array(
@@ -660,6 +715,8 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testInvalidIdMessage() {
+		$this->markTestSkipped();
+
 		$expected = array(
 			'code' => 400,
 			'class' => 'BadRequestException',
@@ -683,6 +740,8 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testRecordNotFoundMessage() {
+		$this->markTestSkipped();
+
 		$expected = array(
 			'code' => 404,
 			'class' => 'NotFoundException',
@@ -706,6 +765,8 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testBadRequestMethodMessage() {
+		$this->markTestSkipped();
+
 		$expected = array(
 			'code' => 405,
 			'class' => 'MethodNotAllowedException',
@@ -732,6 +793,8 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testHandle() {
+		$this->markTestSkipped();
+
 		$Action = $this
 			->getMockBuilder('CrudAction')
 			->disableOriginalConstructor()
@@ -758,7 +821,7 @@ class CrudActionTest extends TestCase {
 			->expects($this->at($i++))
 			->method('_get');
 
-		$Action->handle(new CrudSubject(array('args' => array())));
+		$Action->handle(new Subject(array('args' => array())));
 	}
 
 /**
@@ -770,6 +833,8 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testHandleDisabled() {
+		$this->markTestSkipped();
+
 		$Action = $this
 			->getMockBuilder('CrudAction')
 			->disableOriginalConstructor()
@@ -786,7 +851,7 @@ class CrudActionTest extends TestCase {
 			->expects($this->never())
 			->method('_handle');
 
-		$Action->handle(new CrudSubject(array('args' => array())));
+		$Action->handle(new Subject(array('args' => array())));
 	}
 
 /**
@@ -798,6 +863,8 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testGenericHandle() {
+		$this->markTestSkipped();
+
 		$Action = $this
 			->getMockBuilder('CrudAction')
 			->disableOriginalConstructor()
@@ -824,7 +891,7 @@ class CrudActionTest extends TestCase {
 			->expects($this->once())
 			->method('_handle');
 
-		$Action->handle(new CrudSubject(array('args' => array())));
+		$Action->handle(new Subject(array('args' => array())));
 	}
 
 /**
@@ -833,10 +900,12 @@ class CrudActionTest extends TestCase {
  * Test that calling handle will not invoke _handle
  * when the action is disabled
  *
- * @expectedException NotImplementedException
+ * @expectedException Cake\Network\Exception\NotImplementedException
  * @return void
  */
 	public function testHandleException() {
+		$this->markTestSkipped();
+
 		$Action = $this
 			->getMockBuilder('CrudAction')
 			->disableOriginalConstructor()
@@ -860,7 +929,7 @@ class CrudActionTest extends TestCase {
 			->method('_request')
 			->will($this->returnValue($Request));
 
-		$Action->handle(new CrudSubject(array('args' => array())));
+		$Action->handle(new Subject(array('args' => array())));
 	}
 
 /**
@@ -871,6 +940,8 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testValidateIdFalse() {
+		$this->markTestSkipped();
+
 		$Action = $this
 			->getMockBuilder('CrudAction')
 			->disableOriginalConstructor()
@@ -898,6 +969,8 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testRelatedModelsGet() {
+		$this->markTestSkipped();
+
 		$Action = $this
 			->getMockBuilder('CrudAction')
 			->setMethods(array('config'))
@@ -917,6 +990,8 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testRelatedModelsSet() {
+		$this->markTestSkipped();
+
 		$Action = $this
 			->getMockBuilder('CrudAction')
 			->setMethods(array('config'))
