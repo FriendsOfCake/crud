@@ -1,6 +1,7 @@
 <?php
-namespace Crud\TestCase\Controller\Crud;
+namespace Crud\TestCase\Event;
 
+use Crud\Event\Subject;
 use Crud\TestSuite\TestCase;
 
 /**
@@ -8,14 +9,12 @@ use Crud\TestSuite\TestCase;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class CrudSubjectTest extends TestCase {
+class SubjectTest extends TestCase {
 
 	public function setup() {
 		parent::setup();
 
-		$this->skipIf(true);
-
-		$this->Subject = new CrudSubject(array('action' => 'index'));
+		$this->Subject = new Subject(array('action' => 'index'));
 	}
 
 	public function teardown() {
@@ -70,7 +69,7 @@ class CrudSubjectTest extends TestCase {
 /**
  * testInvalidMode
  *
- * @expectedException CakeException
+ * @expectedException \Exception
  * @expectedExceptionMessage Invalid mode
  * @return void
  */
