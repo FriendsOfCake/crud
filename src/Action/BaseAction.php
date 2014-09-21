@@ -60,7 +60,11 @@ abstract class BaseAction extends Object {
 			return call_user_func_array([$this, '_handle'], $args);
 		}
 
-		throw new NotImplementedException(sprintf('Action %s does not implement a handler for HTTP verb %s', get_class($this), $requestMethod));
+		throw new NotImplementedException(sprintf(
+			'Action %s does not implement a handler for HTTP verb %s',
+			get_class($this),
+			$method
+		));
 	}
 
 /**

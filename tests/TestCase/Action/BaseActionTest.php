@@ -1,6 +1,7 @@
 <?php
 namespace Crud\TestCase\Action;
 
+use Cake\ORM\TableRegistry;
 use Crud\Event\Subject;
 use Crud\TestSuite\TestCase;
 
@@ -22,19 +23,10 @@ class CrudActionTest extends TestCase {
 		);
 		$this->Registry = $this->Controller->components();
 		$this->Crud = $this->getMock('Crud\Controller\Component\CrudComponent', null, array($this->Registry));
-		$this->Model = $this->getMock('Cake\ORM\Table');
-		$this->Model->name = '';
-		$this->action = 'add';
-
-		$this->Subject = new Subject(array(
-			'request' => $this->Request,
-			'crud' => $this->Crud,
-			'controller' => $this->Controller,
-			'action' => $this->action,
-			'model' => $this->Model,
-			'modelClass' => '',
-			'args' => array()
-		));
+		$this->Controller->Crud = $this->Crud;
+		$this->Controller->modelClass = 'CrudExamples';
+		$this->Controller->CrudExamples = \Cake\ORM\TableRegistry::get('Crud.CrudExamples');
+		$this->Controller->CrudExamples->alias('MyModel');
 
 		$this->actionClassName = $this->getMockClass('Crud\Action\BaseAction', array('_handle'));
 		$this->ActionClass = new $this->actionClassName($this->Controller);
@@ -43,19 +35,19 @@ class CrudActionTest extends TestCase {
 
 	public function tearDown() {
 		parent::tearDown();
+		TableRegistry::clear();
 		unset(
 			$this->Crud,
 			$this->Request,
 			$this->Registry,
 			$this->Controller,
-			$this->action,
-			$this->Subject,
 			$this->ActionClass
 		);
 	}
 
 	protected function _configureAction($action) {
 		$action->config(array(
+			'action' => 'add',
 			'enabled' => true,
 			'findMethod' => 'first',
 			'view' => null,
@@ -241,38 +233,53 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testSetFlash() {
-		$this->markTestSkipped('Still have to fix test for setFlash()');
-
 		$data = array(
 			'element' => 'default',
 			'params' => array(
 				'class' => 'message success',
-				'original' => 'Hello'
+				'original' => 'Ahoy'
 			),
-			'key' => 'flash',
+			'key' => 'custom',
 			'type' => 'add.success',
 			'name' => 'test',
-			'text' => 'Hello',
+			'text' => 'Ahoy',
 		);
-		$object = (object)$data;
 
-		$this->Subject->crud = $this->getMock('CrudComponent', array('trigger'), array($this->Registry));
-		$this->Subject->crud
+		$Subject = new Subject();
+
+		$this->Controller->Crud = $this->getMock(
+			'Crud\Controller\Component\CrudComponent',
+			array('trigger'),
+			array($this->Registry)
+		);
+		$this->Controller->Crud
 			->expects($this->once())
 			->method('trigger')
-			->with('setFlash', $data)
-			->will($this->returnValue($object));
+			->with('setFlash', $Subject)
+			->will($this->returnValue(new \Cake\Event\Event('Crud.setFlash')));
 
-		$this->Subject->crud->Session = $this->getMock('SessionComponent', array('setFlash'), array($this->Registry));
-		$this->Subject->crud->Session
+		$this->Controller->Flash = $this->getMock(
+			'Cake\Controller\Component\FlashComponent',
+			array('set'),
+			array($this->Registry)
+		);
+		$this->Controller->Flash
 			->expects($this->once())
-			->method('setFlash')
-			->with($object->text, $object->element, $object->params, $object->key);
+			->method('set')
+			->with(
+				$data['text'],
+				[
+					'element' => $data['element'],
+					'params' => $data['params'],
+					'key' => $data['key'],
+				]
+			);
 
-		$this->ActionClass = new $this->actionClassName($this->Subject);
 		$this->ActionClass->config('name', 'test');
-		$this->ActionClass->config('messages', array('success' => array('text' => 'hello')));
-		$this->ActionClass->setFlash('success');
+		$this->ActionClass->config('messages', [
+			'success' => ['text' => 'Ahoy', 'key' => 'custom']
+		]);
+		$this->ActionClass->setFlash('success', $Subject);
 	}
 
 /**
@@ -281,8 +288,6 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testGetSaveAllOptionsDefaults() {
-		$this->markTestSkipped();
-
 		$CrudAction = $this->ActionClass;
 
 		$expected = array(
@@ -339,8 +344,6 @@ class CrudActionTest extends TestCase {
  * @expectedExceptionMessage Invalid message config for "badConfig" no text key found
  */
 	public function testBadMessageConfig() {
-		$this->markTestSkipped();
-
 		$this->Crud->config('messages.badConfig', array('foo' => 'bar'));
 		$this->ActionClass->message('badConfig');
 	}
@@ -351,8 +354,6 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testInheritedSimpleMessage() {
-		$this->markTestSkipped();
-
 		$this->Crud->config('messages.simple', 'Simple message');
 
 		$expected = array(
@@ -363,7 +364,7 @@ class CrudActionTest extends TestCase {
 			),
 			'key' => 'flash',
 			'type' => 'add.simple',
-			'name' => '',
+			'name' => 'my model',
 			'text' => 'Simple message'
 		);
 		$actual = $this->ActionClass->message('simple');
@@ -376,8 +377,6 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testOverridenSimpleMessage() {
-		$this->markTestSkipped();
-
 		$this->Crud->config('messages.simple', 'Simple message');
 		$this->ActionClass->config('messages.simple', 'Overridden message');
 
@@ -389,7 +388,7 @@ class CrudActionTest extends TestCase {
 			),
 			'key' => 'flash',
 			'type' => 'add.simple',
-			'name' => '',
+			'name' => 'my model',
 			'text' => 'Overridden message'
 		);
 		$actual = $this->ActionClass->message('simple');
@@ -402,8 +401,6 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testSimpleMessage() {
-		$this->markTestSkipped();
-
 		$this->ActionClass->config('messages.simple', 'Simple message');
 
 		$expected = array(
@@ -414,7 +411,7 @@ class CrudActionTest extends TestCase {
 			),
 			'key' => 'flash',
 			'type' => 'add.simple',
-			'name' => '',
+			'name' => 'my model',
 			'text' => 'Simple message'
 		);
 		$actual = $this->ActionClass->message('simple');
@@ -427,8 +424,6 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testSimpleMessageWithPlaceholders() {
-		$this->markTestSkipped();
-
 		$this->Crud->config('messages.simple', 'Simple message with id "{id}"');
 
 		$expected = array(
@@ -439,7 +434,7 @@ class CrudActionTest extends TestCase {
 			),
 			'key' => 'flash',
 			'type' => 'add.simple',
-			'name' => '',
+			'name' => 'my model',
 			'text' => 'Simple message with id "123"'
 		);
 		$actual = $this->ActionClass->message('simple', array('id' => 123));
@@ -452,11 +447,9 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testInvalidIdMessage() {
-		$this->markTestSkipped();
-
 		$expected = array(
 			'code' => 400,
-			'class' => 'BadRequestException',
+			'class' => 'Cake\Network\Exception\BadRequestException',
 			'element' => 'default',
 			'params' => array(
 				'class' => 'message invalidId',
@@ -464,7 +457,7 @@ class CrudActionTest extends TestCase {
 			),
 			'key' => 'flash',
 			'type' => 'add.invalidId',
-			'name' => '',
+			'name' => 'my model',
 			'text' => 'Invalid id'
 		);
 		$actual = $this->ActionClass->message('invalidId');
@@ -477,11 +470,9 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testRecordNotFoundMessage() {
-		$this->markTestSkipped();
-
 		$expected = array(
 			'code' => 404,
-			'class' => 'NotFoundException',
+			'class' => 'Cake\Network\Exception\NotFoundException',
 			'element' => 'default',
 			'params' => array(
 				'class' => 'message recordNotFound',
@@ -489,7 +480,7 @@ class CrudActionTest extends TestCase {
 			),
 			'key' => 'flash',
 			'type' => 'add.recordNotFound',
-			'name' => '',
+			'name' => 'my model',
 			'text' => 'Not found'
 		);
 		$actual = $this->ActionClass->message('recordNotFound');
@@ -502,11 +493,9 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testBadRequestMethodMessage() {
-		$this->markTestSkipped();
-
 		$expected = array(
 			'code' => 405,
-			'class' => 'MethodNotAllowedException',
+			'class' => 'Cake\Network\Exception\MethodNotAllowedException',
 			'element' => 'default',
 			'params' => array(
 				'class' => 'message badRequestMethod',
@@ -514,7 +503,7 @@ class CrudActionTest extends TestCase {
 			),
 			'key' => 'flash',
 			'type' => 'add.badRequestMethod',
-			'name' => '',
+			'name' => 'my model',
 			'text' => 'Method not allowed. This action permits only THESE ONES'
 		);
 		$actual = $this->ActionClass->message('badRequestMethod', array('methods' => 'THESE ONES'));
@@ -530,15 +519,13 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testHandle() {
-		$this->markTestSkipped();
+		$Action = $this->getMock(
+			'Crud\Action\BaseAction',
+			['_get', '_request', 'config'],
+			[$this->Controller]
+		);
 
-		$Action = $this
-			->getMockBuilder('CrudAction')
-			->disableOriginalConstructor()
-			->setMethods(array('config', '_get', '_request'))
-			->getMock();
-
-		$Request = $this->getMock('CakeRequest', array('method'));
+		$Request = $this->getMock('Cake\Network\Request', array('method'));
 		$Request
 			->expects($this->once())
 			->method('method')
@@ -558,7 +545,7 @@ class CrudActionTest extends TestCase {
 			->expects($this->at($i++))
 			->method('_get');
 
-		$Action->handle(new Subject(array('args' => array())));
+		$Action->handle();
 	}
 
 /**
@@ -570,13 +557,11 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testHandleDisabled() {
-		$this->markTestSkipped();
-
-		$Action = $this
-			->getMockBuilder('CrudAction')
-			->disableOriginalConstructor()
-			->setMethods(array('config', '_handle'))
-			->getMock();
+		$Action = $this->getMock(
+			'Crud\Action\BaseAction',
+			['_get', 'config'],
+			[$this->Controller]
+		);
 
 		$i = 0;
 		$Action
@@ -588,7 +573,7 @@ class CrudActionTest extends TestCase {
 			->expects($this->never())
 			->method('_handle');
 
-		$Action->handle(new Subject(array('args' => array())));
+		$Action->handle();
 	}
 
 /**
@@ -600,13 +585,11 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testGenericHandle() {
-		$this->markTestSkipped();
-
-		$Action = $this
-			->getMockBuilder('CrudAction')
-			->disableOriginalConstructor()
-			->setMethods(array('config', '_handle', '_request'))
-			->getMock();
+		$Action = $this->getMock(
+			'Crud\Action\BaseAction',
+			['_handle', '_request', 'config'],
+			[$this->Controller]
+		);
 
 		$Request = $this->getMock('CakeRequest', array('method'));
 		$Request
@@ -628,7 +611,7 @@ class CrudActionTest extends TestCase {
 			->expects($this->once())
 			->method('_handle');
 
-		$Action->handle(new Subject(array('args' => array())));
+		$Action->handle();
 	}
 
 /**
@@ -641,15 +624,13 @@ class CrudActionTest extends TestCase {
  * @return void
  */
 	public function testHandleException() {
-		$this->markTestSkipped();
+		$Action = $this->getMock(
+			'Crud\Action\BaseAction',
+			['_request', 'config'],
+			[$this->Controller]
+		);
 
-		$Action = $this
-			->getMockBuilder('CrudAction')
-			->disableOriginalConstructor()
-			->setMethods(array('config', '_request'))
-			->getMock();
-
-		$Request = $this->getMock('CakeRequest', array('method'));
+		$Request = $this->getMock('Cake\Network\Request', array('method'));
 		$Request
 			->expects($this->once())
 			->method('method')
@@ -666,80 +647,7 @@ class CrudActionTest extends TestCase {
 			->method('_request')
 			->will($this->returnValue($Request));
 
-		$Action->handle(new Subject(array('args' => array())));
-	}
-
-/**
- * testValidateIdFalse
- *
- * If validateId is false - don't do squat
- *
- * @return void
- */
-	public function testValidateIdFalse() {
-		$this->markTestSkipped();
-
-		$Action = $this
-			->getMockBuilder('CrudAction')
-			->disableOriginalConstructor()
-			->setMethods(array('config', 'detectPrimaryKeyFieldType'))
-			->getMock();
-
-		$Action
-			->expects($this->once())
-			->method('config')
-			->with('validateId')
-			->will($this->returnValue(false));
-		$Action
-			->expects($this->never())
-			->method('detectPrimaryKeyFieldType');
-
-		$this->setReflectionClassInstance($Action);
-		$return = $this->callProtectedMethod('_validateId', array('some id'), $Action);
-
-		$this->assertTrue($return, 'If validateId is false the check should be skipped');
-	}
-
-/**
- * Test that getting the saveMethod will execute config()
- *
- * @return void
- */
-	public function testRelatedModelsGet() {
-		$this->markTestSkipped();
-
-		$Action = $this
-			->getMockBuilder('CrudAction')
-			->setMethods(array('config'))
-			->setConstructorArgs(array($this->Subject))
-			->getMock();
-		$Action
-			->expects($this->once())
-			->method('config')
-			->with('relatedModels');
-
-		$Action->relatedModels();
-	}
-
-/**
- * Test that setting the saveMethod will execute config()
- *
- * @return void
- */
-	public function testRelatedModelsSet() {
-		$this->markTestSkipped();
-
-		$Action = $this
-			->getMockBuilder('CrudAction')
-			->setMethods(array('config'))
-			->setConstructorArgs(array($this->Subject))
-			->getMock();
-		$Action
-			->expects($this->once())
-			->method('config')
-			->with('relatedModels', 'Tag', false);
-
-		$Action->relatedModels('Tag');
+		$Action->handle();
 	}
 
 }
