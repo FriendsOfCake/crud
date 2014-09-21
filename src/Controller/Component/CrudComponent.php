@@ -658,12 +658,12 @@ class CrudComponent extends Component {
 				throw new \Crud\Error\Exception\ActionNotConfiguredException(sprintf('Action "%s" has not been mapped', $name));
 			}
 
-			$config['className'] = \Cake\Core\App::classname($config['className'], 'Action', 'Action');
-			if (empty($config['className'])) {
+			$className = \Cake\Core\App::classname($config['className'], 'Action', 'Action');
+			if (empty($className)) {
 				throw new \Crud\Error\Exception\MissingActionException('Could not find action class: ' . $config['className']);
 			}
 
-			$this->_actionInstances[$name] = new $config['className']($this->_controller);
+			$this->_actionInstances[$name] = new $className($this->_controller);
 			unset($config['className']);
 			$this->_actionInstances[$name]->config($config);
 		}
