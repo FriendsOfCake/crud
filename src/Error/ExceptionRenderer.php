@@ -2,7 +2,10 @@
 namespace Crud\Error;
 
 use Cake\Core\Configure;
+use Cake\Core\Exception\MissingPluginException;
 use Cake\Event\Event;
+use Cake\View\Exception\MissingViewException;
+use Exception;
 
 /**
  * Exception renderer for ApiListener
@@ -50,7 +53,7 @@ class ExceptionRenderer extends \Cake\Core\Exception\ExceptionRenderer {
  * a MissingView exception
  *
  * @param string $template The template to render.
- * @return void
+ * @return \Cake\Network\Response
  */
 	protected function _outputMessage($template) {
 		try {
@@ -60,16 +63,26 @@ class ExceptionRenderer extends \Cake\Core\Exception\ExceptionRenderer {
 			$this->controller->render($template);
 			$event = new Event('Controller.shutdown', $this->controller);
 			$this->controller->afterFilter($event);
-			$this->controller->response->send();
+			return $this->controller->response;
 		} catch (MissingViewException $e) {
-			$this->_outputMessageSafe('error500');
-		} catch (Exception $e) {
+			$attributes = $e->getAttributes();
+			if (isset($attributes['file']) && strpos($attributes['file'], 'error500') !== false) {
+				return $this->_outputMessageSafe('error500');
+			}
+			return $this->_outputMessage('error500');
+		} catch (MissingPluginException $e) {
+			$attributes = $e->getAttributes();
+			if (isset($attributes['plugin']) && $attributes['plugin'] === $this->controller->plugin) {
+				$this->controller->plugin = null;
+			}
+			return $this->_outputMessageSafe('error500');
+		} catch (\Exception $e) {
 			$this->controller->set(array(
 				'error' => $e,
 				'name' => $e->getMessage(),
 				'code' => $e->getCode()
 			));
-			$this->_outputMessageSafe('error500');
+			return $this->_outputMessageSafe('error500');
 		}
 	}
 
@@ -78,7 +91,7 @@ class ExceptionRenderer extends \Cake\Core\Exception\ExceptionRenderer {
  * and doesn't call component methods.
  *
  * @param string $template The template to render
- * @return void
+ * @return \Cake\Network\Response
  */
 	protected function _outputMessageSafe($template) {
 		$this->controller->layoutPath = '';
@@ -88,7 +101,7 @@ class ExceptionRenderer extends \Cake\Core\Exception\ExceptionRenderer {
 		$this->controller->helpers = array('Form', 'Html', 'Session');
 
 		$this->controller->render($template);
-		$this->controller->response->send();
+		return $this->controller->response;
 	}
 
 /**
