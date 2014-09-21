@@ -54,7 +54,8 @@
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"Crud\\Test\\": "tests"
+			"Crud\\Test\\": "tests",
+			"Cake\\Test\\Fixture\\": "./vendor/cakephp/cakephp/tests/Fixture"
 		}
 	},
 	"support":{

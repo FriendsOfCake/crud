@@ -136,20 +136,26 @@ class CrudComponent extends Component {
 		parent::__construct($collection, $config);
 	}
 
-	public function normalizeArray($objects) {
+/**
+ * Normalize config array
+ *
+ * @param array $array List to normalize
+ * @return array
+ */
+	public function normalizeArray(array $array) {
 		$normal = [];
 
-		foreach ($objects as $i => $objectName) {
-			$config = [];
-
-			if (!is_int($i)) {
-				$config = (array)$objectName;
-				$objectName = $i;
+		foreach ($array as $action => $config) {
+			if (is_string($config)) {
+				$config = ['className' => $config];
 			}
 
-			list(, $name) = pluginSplit($objectName);
-			$name = Inflector::variable($name);
-			$normal[$name] = ['className' => $objectName, 'config' => $config];
+			if (is_int($action)) {
+				list(, $action) = pluginSplit($config['className']);
+			}
+
+			$action = Inflector::variable($action);
+			$normal[$action] = $config;
 		}
 
 		return $normal;
@@ -161,7 +167,7 @@ class CrudComponent extends Component {
  * The reason for this is that if we don't, the Auth component won't execute any callbacks on the controller
  * like isAuthorized.
  *
- * @param \Cake\Event\Event $event
+ * @param \Cake\Event\Event $event Event instance
  * @return void
  */
 	public function initialize(Event $event) {
@@ -185,7 +191,7 @@ class CrudComponent extends Component {
 /**
  * Called after the Controller::beforeFilter() and before the controller action.
  *
- * @param Cake\Event\Event $event
+ * @param Cake\Event\Event $event Event instance
  * @return void
  */
 	public function startup(Event $event) {
@@ -197,7 +203,7 @@ class CrudComponent extends Component {
  * Execute a Crud action
  *
  * @param string $controllerAction Override the controller action to execute as.
- * @param array $arguments List of arguments to pass to the CRUD action (Usually an ID to edit / delete).
+ * @param array $args List of arguments to pass to the CRUD action (Usually an ID to edit / delete).
  * @return CakeResponse
  * @throws CakeException If an action is not mapped.
  */
@@ -248,6 +254,7 @@ class CrudComponent extends Component {
 			$name = $this->_action;
 		}
 
+		$name = Inflector::variable($name);
 		return $this->_loadAction($name);
 	}
 
@@ -280,8 +287,8 @@ class CrudComponent extends Component {
  *
  * To map multiple action views in one go pass an array as first argument and no second argument.
  *
- * @param string|array $action
- * @param string $view
+ * @param string|array $action Action or array of actions
+ * @param string $view View name
  * @return void
  */
 	public function view($action, $view = null) {
@@ -301,8 +308,8 @@ class CrudComponent extends Component {
  *
  * To map multiple action viewVars in one go pass an array as first argument and no second argument.
  *
- * @param string|array $action
- * @param string $viewVar
+ * @param string|array $action Action or array of actions.
+ * @param string $viewVar View var name.
  * @return void
  */
 	public function viewVar($action, $viewVar = null) {
@@ -322,8 +329,8 @@ class CrudComponent extends Component {
  *
  * To map multiple findMethods in one go pass an array as first argument and no second argument.
  *
- * @param string|array $action
- * @param string $method
+ * @param string|array $action Action or array of actions.
+ * @param string $method Find method name
  * @return void
  */
 	public function findMethod($action, $method = null) {
@@ -342,11 +349,14 @@ class CrudComponent extends Component {
  * Map action to an internal request type.
  *
  * @param string $action The Controller action to provide an implementation for.
- * @param string|array $setting Settings array or one of the CRUD events (index, add, edit, delete, view).
- * @param boolean $enable Should the mapping be enabled right away?
+ * @param string|array $config Config array or class name like Crud.Index.
+ * @param bool $enable Should the mapping be enabled right away?
  * @return void
  */
-	public function mapAction($action, $config, $enable = true) {
+	public function mapAction($action, $config = [], $enable = true) {
+		if (is_string($config)) {
+			$config = ['className' => $config];
+		}
 		$action = Inflector::variable($action);
 		$this->config('actions.' . $action, $config);
 
@@ -359,7 +369,7 @@ class CrudComponent extends Component {
  * Check if a CRUD action has been mapped (whether it will be handled by CRUD component)
  *
  * @param string $action If null, use the current action.
- * @return boolean
+ * @return bool
  */
 	public function isActionMapped($action = null) {
 		if (empty($action)) {
@@ -396,7 +406,7 @@ class CrudComponent extends Component {
 /**
  * Get a single event class.
  *
- * @param string $name
+ * @param string $name Listener
  * @return CrudBaseEvent
  */
 	public function listener($name) {
@@ -413,19 +423,19 @@ class CrudComponent extends Component {
  *
  * CakePHP Plugin.ClassName format for `$name` and `$class` is supported.
  *
- * @param string $name
- * @param string $class Normal CakePHP plugin-dot annotation supported.
+ * @param string $name Name
+ * @param string $className Normal CakePHP plugin-dot annotation supported.
  * @param array $config Any default settings for a listener.
  * @return void
  */
 	public function addListener($name, $className = null, $config = []) {
 		if (strpos($name, '.') !== false) {
 			list($plugin, $name) = pluginSplit($name);
-			$name = strtolower($name);
-			$className = $plugin . '.' . ucfirst($name);
+			$className = $plugin . '.' . Inflector::camelize($name);
 		}
 
-		$this->config(sprintf('listeners.%s', $name), compact('className', 'config'));
+		$name = Inflector::variable($name);
+		$this->config(sprintf('listeners.%s', $name), compact('className') + $config);
 	}
 
 /**
@@ -433,8 +443,8 @@ class CrudComponent extends Component {
  *
  * This will also detach it from the EventManager if it's attached.
  *
- * @param string $name
- * @return boolean
+ * @param string $name Name
+ * @return bool
  */
 	public function removeListener($name) {
 		$listeners = $this->config('listeners');
@@ -460,9 +470,9 @@ class CrudComponent extends Component {
  * exception and fill a 'response' property on it with a reference to the response
  * object.
  *
- * @param string $eventName
- * @param array $data
- * @throws Exception if any event listener return a CakeResponse object.
+ * @param string $eventName Event name
+ * @param array $data Event data
+ * @throws \Exception if any event listener return a CakeResponse object.
  * @return \Cake\Event\Event
  */
 	public function trigger($eventName, $data = []) {
@@ -490,8 +500,8 @@ class CrudComponent extends Component {
 /**
  * Add a log entry for the event.
  *
- * @param string $eventName
- * @param array $data
+ * @param string $eventName Event name
+ * @param array $data Event data
  * @return void
  */
 	public function logEvent($eventName, $data = []) {
@@ -545,14 +555,30 @@ class CrudComponent extends Component {
 		$this->_modelName = $this->_model->name;
 	}
 
+/**
+ * Returns controller's table instance.
+ *
+ * @return \Cake\ORM\Table
+ */
 	public function table() {
 		return $this->_controller->{$this->_modelName};
 	}
 
+/**
+ * Returns new entity
+ *
+ * @param array $data Data
+ * @return \Cake\ORM\Entity
+ */
 	public function entity(array $data = []) {
 		return $this->table()->newEntity($data);
 	}
 
+/**
+ * Returns controller instance
+ *
+ * @return \Cake\Controller\Controller
+ */
 	public function controller() {
 		return $this->_controller;
 	}
@@ -584,10 +610,10 @@ class CrudComponent extends Component {
 /**
  * Load a single event class attached to Crud.
  *
+ * @param string $name Name
+ * @return \Crud\Listener\BaseListener
  * @throws \Crud\Error\Exception\ListenerNotConfiguredException
  * @throws \Crud\Error\Exception\MissingListenerException
- * @param string $name
- * @return CrudListener
  */
 	protected function _loadListener($name) {
 		if (!isset($this->_listenerInstances[$name])) {
@@ -603,7 +629,8 @@ class CrudComponent extends Component {
 			}
 
 			$this->_listenerInstances[$name] = new $className($this->_controller);
-			$this->_listenerInstances[$name]->config($config['config']);
+			unset($config['className']);
+			$this->_listenerInstances[$name]->config($config);
 
 			$this->_eventManager->attach($this->_listenerInstances[$name]);
 
@@ -618,10 +645,10 @@ class CrudComponent extends Component {
 /**
  * Load a CrudAction instance.
  *
+ * @param string $name The controller action name.
+ * @return \Crud\Action\BaseAction
  * @throws \Crud\Error\Exception\ActionNotConfiguredException
  * @throws \Crud\Error\Exception\MissingActionException
- * @param string $name The controller action name.
- * @return CrudAction
  */
 	protected function _loadAction($name) {
 		if (!isset($this->_actionInstances[$name])) {
@@ -631,13 +658,14 @@ class CrudComponent extends Component {
 				throw new \Crud\Error\Exception\ActionNotConfiguredException(sprintf('Action "%s" has not been mapped', $name));
 			}
 
-			$config['className'] = \Cake\Core\App::classname($config['className'], 'Action', 'Action');
-			if (empty($config['className'])) {
+			$className = \Cake\Core\App::classname($config['className'], 'Action', 'Action');
+			if (empty($className)) {
 				throw new \Crud\Error\Exception\MissingActionException('Could not find action class: ' . $config['className']);
 			}
 
-			$this->_actionInstances[$name] = new $config['className']($this->_controller);
-			$this->_actionInstances[$name]->config($config['config']);
+			$this->_actionInstances[$name] = new $className($this->_controller);
+			unset($config['className']);
+			$this->_actionInstances[$name]->config($config);
 		}
 
 		return $this->_actionInstances[$name];
