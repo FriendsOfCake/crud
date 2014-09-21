@@ -194,9 +194,7 @@ class CrudComponentTest extends ControllerTestCase {
 		);
 		$this->controller->methods = array();
 
-		$this->Registry = new ComponentRegistry($this->controller);
-		//$this->Registry->init($this->controller);
-		$this->controller->Components = $this->Registry;
+		$this->Registry = $this->controller->components();
 
 		$config = array(
 			'actions' => array(
