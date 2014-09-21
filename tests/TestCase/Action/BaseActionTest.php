@@ -329,8 +329,6 @@ class CrudActionTest extends TestCase {
  * @expectedExceptionMessage Invalid message type "not defined"
  */
 	public function testUndefinedMessage() {
-		$this->markTestSkipped();
-
 		$this->ActionClass->message('not defined');
 	}
 
