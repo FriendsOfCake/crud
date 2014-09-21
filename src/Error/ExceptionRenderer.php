@@ -13,7 +13,7 @@ use Exception;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class ExceptionRenderer extends \Cake\Core\Exception\ExceptionRenderer {
+class ExceptionRenderer extends \Cake\Error\ExceptionRenderer {
 
 /**
  * Renders validation errors and sends a 412 error code
@@ -79,7 +79,7 @@ class ExceptionRenderer extends \Cake\Core\Exception\ExceptionRenderer {
 		} catch (\Exception $e) {
 			$this->controller->set(array(
 				'error' => $e,
-				'name' => $e->getMessage(),
+				'message' => $e->getMessage(),
 				'code' => $e->getCode()
 			));
 			return $this->_outputMessageSafe('error500');
