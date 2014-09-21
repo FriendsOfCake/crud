@@ -1,9 +1,13 @@
 <?php
 namespace Crud\TestCase\Controller\Crud;
 
+use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
 use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Cake\Network\Request;
+use Cake\Network\Response;
+use Cake\ORM\TableRegistry;
 use Crud\Controller\Component\CrudComponent;
 use Crud\TestSuite\ControllerTestCase;
 
@@ -175,22 +179,22 @@ class CrudComponentTest extends ControllerTestCase {
 	public function setUp() {
 		parent::setUp();
 
-		\Cake\Event\EventManager::instance(new TestCrudEventManager());
+		EventManager::instance(new TestCrudEventManager());
 
-		$this->model = \Cake\ORM\TableRegistry::get('CrudExamples');
+		$this->model = TableRegistry::get('CrudExamples');
 
 		$this->request = $this->getMock('Cake\Network\Request', array('is', 'method'));
 		$this->request->expects($this->any())->method('is')->will($this->returnValue(true));
 
-		$response = new \Cake\Network\Response();
+		$response = new Response();
 		$this->controller = $this->getMock(
 			'Crud\TestCase\Controller\Crud\CrudExamplesController',
 			array('header', 'redirect', 'render', '_stop'),
-			array($this->request, $response, 'CrudExamples', \Cake\Event\EventManager::instance())
+			array($this->request, $response, 'CrudExamples', EventManager::instance())
 		);
 		$this->controller->methods = array();
 
-		$this->Registry = new \Cake\Controller\ComponentRegistry($this->controller);
+		$this->Registry = new ComponentRegistry($this->controller);
 		//$this->Registry->init($this->controller);
 		$this->controller->Components = $this->Registry;
 
@@ -205,7 +209,7 @@ class CrudComponentTest extends ControllerTestCase {
 		);
 
 		$this->Crud = new TestCrudComponent($this->Registry, $config);
-		$this->Crud->initialize(new \Cake\Event\Event('Controller.initialize'));
+		$this->Crud->initialize(new Event('Controller.initialize'));
 		$this->controller->Crud = $this->Crud;
 	}
 
