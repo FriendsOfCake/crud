@@ -1,7 +1,9 @@
 <?php
 namespace Crud\TestCase\Controller\Crud;
 
+use Cake\Controller\Controller;
 use Cake\Event\Event;
+use Cake\Network\Request;
 use Crud\Controller\Component\CrudComponent;
 use Crud\TestSuite\ControllerTestCase;
 
@@ -559,39 +561,17 @@ class CrudComponentTest extends ControllerTestCase {
 	}
 
 /**
- * Test that the build in action names can't be used
- * within other plugins
- *
- * @expectedException \Exception
- * @expectedExceptionMessage The build-in CrudActions (Index, View, Add, Edit and Delete) must be loaded from the Crud plugin
- * @return void
- */
-	public function testBuildInCrudActionsCantBeUsedInOtherPluginsDelete() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
-		$this->Crud->mapAction('test', 'Sample.Delete');
-	}
-
-/**
  * Test that Providing a CrudAction name that isn't in the
  * list of build-in once, will allow you to use it inside
  * another plugin.
  *
- * It's expected that the plugin CrudSample doesn't exist,
- * the App::uses() where the warning is raised is *after*
- * the check for the above build-in class names
+ * It's expected that the plugin CrudSample doesn't exist.
  *
  * @expectedException \Exception
- * @expectedExceptionMessage Plugin CrudSample could not be found.
+ * @expectedExceptionMessage Could not find action class: CrudSample.MyDelete
  * @return void
  */
 	public function testCustomCrudActionsCanBeUsedInPlugins() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
 		$this->Crud->mapAction('test', 'CrudSample.MyDelete');
 	}
 
@@ -603,10 +583,6 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testViewCanBeChangedInControllerAction() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
 		$this->request
 			->expects($this->once())
 			->method('method')
@@ -628,34 +604,28 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testDefaultConfig() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
 		$Crud = new CrudComponent($this->Registry);
 
 		$result = $Crud->config();
 		$expected = array(
 			'actions' => array(),
 			'eventPrefix' => 'Crud',
-			'listeners' => array(
-				'RelatedModels' => 'Crud.RelatedModels'
-			),
+			'listeners' => array(),
 			'messages' => array(
 				'domain' => 'crud',
 				'invalidId' => array(
 					'code' => 400,
-					'class' => 'BadRequestException',
+					'class' => 'Cake\Network\Exception\BadRequestException',
 					'text' => 'Invalid id'
 				),
 				'recordNotFound' => array(
 					'code' => 404,
-					'class' => 'NotFoundException',
+					'class' => 'Cake\Network\Exception\NotFoundException',
 					'text' => 'Not found'
 				),
 				'badRequestMethod' => array(
 					'code' => 405,
-					'class' => 'MethodNotAllowedException',
+					'class' => 'Cake\Network\Exception\MethodNotAllowedException',
 					'text' => 'Method not allowed. This action permits only {methods}'
 				)
 			),
@@ -672,13 +642,9 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testConstructMerging() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
 		$config = array(
 			'listeners' => array(
-				'Api' => 'Crud.Api'
+				'api' => 'Crud.Api'
 			)
 		);
 
@@ -688,24 +654,23 @@ class CrudComponentTest extends ControllerTestCase {
 			'actions' => array(),
 			'eventPrefix' => 'Crud',
 			'listeners' => array(
-				'RelatedModels' => 'Crud.RelatedModels',
-				'Api' => 'Crud.Api'
+				'api' => array('className' => 'Crud.Api')
 			),
 			'messages' => array(
 				'domain' => 'crud',
 				'invalidId' => array(
 					'code' => 400,
-					'class' => 'BadRequestException',
+					'class' => 'Cake\Network\Exception\BadRequestException',
 					'text' => 'Invalid id'
 				),
 				'recordNotFound' => array(
 					'code' => 404,
-					'class' => 'NotFoundException',
+					'class' => 'Cake\Network\Exception\NotFoundException',
 					'text' => 'Not found'
 				),
 				'badRequestMethod' => array(
 					'code' => 405,
-					'class' => 'MethodNotAllowedException',
+					'class' => 'Cake\Network\Exception\MethodNotAllowedException',
 					'text' => 'Method not allowed. This action permits only {methods}'
 				)
 			),
@@ -722,10 +687,6 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testConstructMerging2() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
 		$config = array(
 			'listeners' => array(
 			)
@@ -736,24 +697,22 @@ class CrudComponentTest extends ControllerTestCase {
 		$expected = array(
 			'actions' => array(),
 			'eventPrefix' => 'Crud',
-			'listeners' => array(
-				'RelatedModels' => 'Crud.RelatedModels'
-			),
+			'listeners' => array(),
 			'messages' => array(
 				'domain' => 'crud',
 				'invalidId' => array(
 					'code' => 400,
-					'class' => 'BadRequestException',
+					'class' => 'Cake\Network\Exception\BadRequestException',
 					'text' => 'Invalid id'
 				),
 				'recordNotFound' => array(
 					'code' => 404,
-					'class' => 'NotFoundException',
+					'class' => 'Cake\Network\Exception\NotFoundException',
 					'text' => 'Not found'
 				),
 				'badRequestMethod' => array(
 					'code' => 405,
-					'class' => 'MethodNotAllowedException',
+					'class' => 'Cake\Network\Exception\MethodNotAllowedException',
 					'text' => 'Method not allowed. This action permits only {methods}'
 				)
 			),
@@ -769,27 +728,23 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testAddListenerWithoutDefaults() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
 		$listeners = $this->Crud->config('listeners');
-		$expected = array(
-			'RelatedModels' => array('className' => 'Crud.RelatedModels')
-		);
+		$expected = array();
 
 		$this->assertEquals($expected, $listeners);
 
-		$this->Crud->addListener('Api', 'Crud.Api');
+		$this->Crud->addListener('api', 'Crud.Api');
 
 		$listeners = $this->Crud->config('listeners');
 		$expected = array(
-			'RelatedModels' => array('className' => 'Crud.RelatedModels'),
-			'Api' => array('className' => 'Crud.Api')
+			'api' => array('className' => 'Crud.Api')
 		);
 		$this->assertEquals($expected, $listeners);
 
-		$this->assertEquals(array('className' => 'Crud.Api'), $this->Crud->defaults('listeners', 'Api'));
+		$this->assertEquals(
+			array('className' => 'Crud.Api'),
+			$this->Crud->defaults('listeners', 'api')
+		);
 	}
 
 /**
@@ -799,29 +754,17 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testAddListenerWithDefaults() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
+		$this->Crud->addListener('api', 'Crud.Api', array('test' => 1));
 
 		$listeners = $this->Crud->config('listeners');
 		$expected = array(
-			'RelatedModels' => array('className' => 'Crud.RelatedModels')
-		);
-
-		$this->assertEquals($expected, $listeners);
-
-		$this->Crud->addListener('Api', 'Crud.Api', array('test' => 1));
-
-		$listeners = $this->Crud->config('listeners');
-		$expected = array(
-			'RelatedModels' => array('className' => 'Crud.RelatedModels'),
-			'Api' => array('className' => 'Crud.Api', 'test' => 1)
+			'api' => array('className' => 'Crud.Api', 'test' => 1)
 		);
 		$this->assertEquals($expected, $listeners);
 
 		$this->assertEquals(
 			array('className' => 'Crud.Api', 'test' => 1),
-			$this->Crud->defaults('listeners', 'Api')
+			$this->Crud->defaults('listeners', 'api')
 		);
 	}
 
@@ -831,26 +774,20 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testRemoveListener() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
+		$this->Crud->addListener('api', 'Crud.Api');
 		$listeners = $this->Crud->config('listeners');
 		$expected = array(
-			'RelatedModels' => array('className' => 'Crud.RelatedModels')
+			'api' => array('className' => 'Crud.Api')
 		);
-
 		$this->assertEquals($expected, $listeners);
 
-		$this->Crud->removeListener('RelatedModels');
-
+		$this->Crud->removeListener('api');
 		$listeners = $this->Crud->config('listeners');
-		$expected = array();
-		$this->assertEquals($expected, $listeners);
+		$this->assertEquals(array(), $listeners);
 
 		// Should now throw an exception
-		$this->setExpectedException('CakeException', 'Listener "relatedModels" is not configured');
-		$this->Crud->listener('relatedModels');
+		$this->setExpectedException('Exception', 'Listener "api" is not configured');
+		$this->Crud->listener('api');
 	}
 
 /**
@@ -860,46 +797,7 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testRemoveListenerNoExist() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
-		$expected = false;
-		$result = $this->Crud->removeListener('invalid_name');
-		$this->assertEquals($expected, $result);
-	}
-
-/**
- * Test that removeLister works
- *
- * Also ensure that the listener is detached from EventManager
- *
- * @return void
- */
-	public function testRemoveListenerAttached() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
-		$listeners = $this->Crud->config('listeners');
-		$expected = array(
-			'RelatedModels' => array('className' => 'Crud.RelatedModels')
-		);
-		$this->assertEquals($expected, $listeners);
-
-		// Make sure the listener is attached
-		$this->Crud->listener('RelatedModels');
-
-		// Remove it (including detach)
-		$this->Crud->removeListener('RelatedModels');
-
-		$listeners = $this->Crud->config('listeners');
-		$expected = array();
-		$this->assertEquals($expected, $listeners);
-
-		// Should now throw an exception
-		$this->setExpectedException('CakeException', 'Listener "RelatedModels" is not configured');
-		$this->Crud->listener('RelatedModels');
+		$this->assertFalse($this->Crud->removeListener('invalid_name'));
 	}
 
 /**
@@ -908,10 +806,6 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testViewVarSingleAction() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
 		$this->Crud->viewVar('index', 'my_var');
 
 		$expected = 'my_var';
@@ -925,10 +819,6 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testViewVarMultipleActions() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
 		$this->Crud->viewVar(array('index' => 'my_var', 'view' => 'view_var'));
 
 		$expected = 'my_var';
@@ -967,10 +857,6 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testDefaultsOnAction() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
 		$this->Crud->defaults('actions', 'index', array('unit_test' => true));
 		$config = $this->Crud->defaults('actions', 'index');
 
@@ -983,10 +869,6 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testDefaultsMultipleActions() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
 		$this->Crud->defaults('actions', array('index', 'view'), array('unit_test' => true));
 
 		$config = $this->Crud->defaults('actions', 'index');
@@ -1002,10 +884,6 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testDefaultsOneListener() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
 		$this->Crud->defaults('listeners', 'translations', array('unit_test' => true));
 		$config = $this->Crud->defaults('listeners', 'translations');
 
@@ -1018,11 +896,11 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testDefaultsMultipleListeners() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
+		$this->Crud->defaults(
+			'listeners',
+			array('translations', 'relatedModels'),
+			array('unit_test' => true)
 		);
-
-		$this->Crud->defaults('listeners', array('translations', 'relatedModels'), array('unit_test' => true));
 
 		$config = $this->Crud->defaults('listeners', 'translations');
 		$this->assertTrue($config['unit_test']);
@@ -1039,82 +917,31 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testDefaultsListenerNotAlreadyLoaded() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
 		$this->Crud->defaults('listeners', 'api', array('unit_test' => true));
 		$config = $this->Crud->defaults('listeners', 'api');
 		$this->assertTrue($config['unit_test']);
 	}
 
 /**
- * Test adding a listener only by a name and no class works
- *
- * By only providing a name, it should default to Crud plugin
+ * Test adding a listener only by class name
  *
  * @return void
  */
-	public function testAddListenerOnlyNameNoClassName() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
-		$this->Crud->addListener('api');
+	public function testAddListenerOnlyClassName() {
+		$this->Crud->addListener('Crud.api');
 		$config = $this->Crud->config('listeners');
 		$this->assertEquals(array('className' => 'Crud.Api'), $config['api']);
 	}
 
 /**
- * Test adding a listener only by a name and a class works
- *
- * By providing a class, it should not default to Crud plugin
- * even though it doesn't contain any plugin.
- *
- * This allow developers to put listeners in app/Controller/Crud
+ * Test adding a listener by name and class name
  *
  * @return void
  */
-	public function testAddListenerOnlyNameClassName() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
-		$this->Crud->addListener('api', 'Api');
+	public function testAddListenerByNameAndClassName() {
+		$this->Crud->addListener('foo', 'Crud.Api');
 		$config = $this->Crud->config('listeners');
-		$this->assertEquals(array('className' => 'Api'), $config['api']);
-	}
-
-/**
- * Test adding a listener only by its name, with plugin dot syntax
- * works
- *
- * @return void
- */
-	public function testAddListenerOnlyNameWithPlugin() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
-		$this->Crud->addListener('MyPlugin.Api');
-		$config = $this->Crud->config('listeners');
-		$this->assertEquals(array('className' => 'MyPlugin.Api'), $config['api']);
-	}
-
-/**
- * Test adding a listener only by its name, with plugin dot syntax
- * works
- *
- * @return void
- */
-	public function testAddListenerOnlyNameWithPluginLowercase() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
-		$this->Crud->addListener('MyPlugin.api');
-		$config = $this->Crud->config('listeners');
-		$this->assertEquals(array('className' => 'MyPlugin.Api'), $config['api']);
+		$this->assertEquals(array('className' => 'Crud.Api'), $config['foo']);
 	}
 
 /**
@@ -1124,14 +951,11 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testControllerWithEmptyUses() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
-		$controller = new Controller(new CakeRequest());
+		$controller = new Controller(new Request());
 		$this->Crud = new CrudComponent($this->Registry, array('actions' => array('index')));
-		$this->Crud->initialize($controller);
+		$this->Crud->initialize(new Event('Controller.initialize'));
 		$this->controller->Crud = $this->Crud;
+		$this->Crud->config('actions.index', ['className' => 'Crud.Index']);
 		$this->Crud->action('index');
 		$subject = $this->Crud->trigger('sample');
 
@@ -1147,15 +971,11 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testConfigMergeWorks() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
 		$this->Crud->config(array('messages' => array('invalidId' => array('code' => 500))));
 
 		$expected = array(
 			'code' => 500,
-			'class' => 'BadRequestException',
+			'class' => 'Cake\Network\Exception\BadRequestException',
 			'text' => 'Invalid id'
 		);
 		$result = $this->Crud->config('messages.invalidId');
@@ -1168,11 +988,7 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testConfigOverwrite() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
-		$this->Crud->config('messages', array('invalidId' => array('code' => 500)), null, false);
+		$this->Crud->config('messages.invalidId', array('code' => 500), false);
 
 		$expected = array(
 			'domain' => 'crud',
@@ -1181,45 +997,12 @@ class CrudComponentTest extends ControllerTestCase {
 			),
 			'recordNotFound' => array(
 				'code' => 404,
-				'class' => 'NotFoundException',
+				'class' => 'Cake\Network\Exception\NotFoundException',
 				'text' => 'Not found'
 			),
 			'badRequestMethod' => array(
 				'code' => 405,
-				'class' => 'MethodNotAllowedException',
-				'text' => 'Method not allowed. This action permits only {methods}'
-			)
-		);
-		$result = $this->Crud->config('messages');
-		$this->assertEquals($expected, $result);
-	}
-/**
- * Passing an array, and specifying no merge should overwrite the value keys
- *
- * @return void
- */
-	public function testConfigOverwriteArray() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
-		$this->Crud->config(array('messages' => array('invalidId' => array('code' => 500))), null, false);
-
-		$expected = array(
-			'domain' => 'crud',
-			'invalidId' => array(
-				'code' => 500,
-				'class' => 'BadRequestException',
-				'text' => 'Invalid id'
-			),
-			'recordNotFound' => array(
-				'code' => 404,
-				'class' => 'NotFoundException',
-				'text' => 'Not found'
-			),
-			'badRequestMethod' => array(
-				'code' => 405,
-				'class' => 'MethodNotAllowedException',
+				'class' => 'Cake\Network\Exception\MethodNotAllowedException',
 				'text' => 'Method not allowed. This action permits only {methods}'
 			)
 		);
@@ -1237,9 +1020,9 @@ class CrudComponentTest extends ControllerTestCase {
 			'Tests still not updated.'
 		);
 
-		$controller = new Controller(new CakeRequest());
+		$controller = new Controller(new Request());
 		$this->Crud = new CrudComponent($this->Registry, array('actions' => array('index')));
-		$this->Crud->initialize($controller);
+		$this->Crud->initialize(new Event('Controller.initialize'));
 		$this->controller->Crud = $this->Crud;
 		$class = $this->getMockClass('Model');
 		$this->Crud->useModel($class);
@@ -1268,4 +1051,5 @@ class CrudComponentTest extends ControllerTestCase {
 		$listener = $this->callProtectedMethod('_loadListener', array('HasSetup'), $this->Crud);
 		$this->assertSame(1, $listener->callCount, 'Setup should be called');
 	}
+
 }
