@@ -34,11 +34,6 @@ define('CAKE', CORE_PATH . 'src' . DS);
 require ROOT . '/vendor/cakephp/cakephp/src/basics.php';
 require ROOT . '/vendor/autoload.php';
 
-require CAKE . 'Core/ClassLoader.php';
-$loader = new Cake\Core\ClassLoader;
-$loader->register();
-$loader->addNamespace('Cake\Test\Fixture', ROOT . '/vendor/cakephp/cakephp/tests/Fixture');
-
 Cake\Core\Configure::write('App', ['namespace' => 'Crud\Test\App']);
 Cake\Core\Configure::write('debug', true);
 
