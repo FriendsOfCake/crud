@@ -12,7 +12,7 @@ use Cake\View\Exception\MissingViewException;
 use Crud\Error\ExceptionRenderer;
 use Crud\Error\Exception\ValidationException;
 
-class CrudExceptionRendererTest extends TestCase {
+class ExceptionRendererTest extends TestCase {
 
 	public function setUp() {
 		parent::setUp();
