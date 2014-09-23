@@ -3,6 +3,7 @@ namespace Crud\Error;
 
 use Cake\Core\Configure;
 use Cake\Core\Exception\MissingPluginException;
+use Cake\Datasource\ConnectionManager;
 use Cake\Event\Event;
 use Cake\View\Exception\MissingViewException;
 use Exception;
@@ -129,17 +130,17 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer {
 
 		if (Configure::read('debug')) {
 			$data['exception']['trace'] = preg_split('@\n@', $viewVars['error']->getTraceAsString());
-		}
 
-		if (class_exists('ConnectionManager') && Configure::read('debug') > 1) {
-			$sources = ConnectionManager::sourceList();
-			$data['queryLog'] = array();
+			$queryLog = [];
+			$sources = ConnectionManager::configured();
 			foreach ($sources as $source) {
-				$db = ConnectionManager::getDataSource($source);
-				if (!method_exists($db, 'getLog')) {
-					continue;
+				$logger = ConnectionManager::get($source)->logger();
+				if (method_exists($logger, 'getLogs')) {
+					$queryLog[$source] = $logger->getLogs();
 				}
-				$data['queryLog'][$source] = $db->getLog(false, false);
+			}
+			if ($queryLog) {
+				$data['queryLog'] = $queryLog;
 			}
 		}
 

@@ -25,7 +25,6 @@ class BlogsController extends Controller {
 			],
 			'listeners' => [
 				'Crud.Api',
-				'Crud.ApiQueryLog',
 				'Crud.RelatedModels'
 			]
 		]

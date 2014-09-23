@@ -4,6 +4,7 @@ namespace Crud\Test\TestCase\Error;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Core\Exception\Exception;
+use Cake\Datasource\ConnectionManager;
 use Cake\Network\Request;
 use Cake\Network\Response;
 use Cake\TestSuite\TestCase;
@@ -11,7 +12,7 @@ use Cake\View\Exception\MissingViewException;
 use Crud\Error\ExceptionRenderer;
 use Crud\Error\Exception\ValidationException;
 
-class CrudExceptionRendererTest extends TestCase {
+class ExceptionRendererTest extends TestCase {
 
 	public function setUp() {
 		parent::setUp();
@@ -76,20 +77,33 @@ class CrudExceptionRendererTest extends TestCase {
 	}
 
 	public function testNormalExceptionRenderingQueryLog() {
-		$this->markTestSkipped('Code to get query logs from datasources is not updated yet.');
-
-		Configure::write('debug', 2);
 		$Exception = new Exception('Hello World');
+
+		$QueryLogger = $this->getMock('Crud\Log\QueryLogger', ['getLogs']);
+		$currentLogger = ConnectionManager::get('test')->logger();
+		ConnectionManager::get('test')->logger($QueryLogger);
+
+		$QueryLogger
+			->expects($this->once())
+			->method('getLogs')
+			->with()
+			->will($this->returnValue(['query']));
 
 		$Controller = $this->getMock('Cake\Controller\Controller', array('render'));
 		$Controller->request = new Request();
 		$Controller->response = new Response();
 
-		$Renderer = $this->getMock('Crud\Error\ExceptionRenderer', array('_getController'), array(), '', false);
+		$Renderer = $this->getMock(
+			'Crud\Error\ExceptionRenderer',
+			array('_getController'),
+			array(),
+			'',
+			false
+		);
 		$Renderer
 			->expects($this->once())
 			->method('_getController')
-			->with($Exception)
+			->with()
 			->will($this->returnValue($Controller));
 
 		$Renderer->__construct($Exception);
@@ -106,7 +120,7 @@ class CrudExceptionRendererTest extends TestCase {
 		$expected = array(
 			'code' => 500,
 			'url' => $Controller->request->here(),
-			'name' => 'Hello World',
+			'message' => 'Hello World',
 			'exception' => array(
 				'class' => 'Cake\Core\Exception\Exception',
 				'code' => 500,
@@ -123,9 +137,7 @@ class CrudExceptionRendererTest extends TestCase {
 
 		$this->assertTrue(!empty($queryLog));
 		$this->assertTrue(isset($queryLog['test']));
-		$this->assertTrue(isset($queryLog['test']['log']));
-		$this->assertTrue(isset($queryLog['test']['count']));
-		$this->assertTrue(isset($queryLog['test']['time']));
+		$this->assertEquals('query', $queryLog['test'][0]);
 
 		$this->assertTrue(isset($viewVars['success']));
 		$this->assertFalse($viewVars['success']);
@@ -136,11 +148,13 @@ class CrudExceptionRendererTest extends TestCase {
 		$this->assertTrue(isset($viewVars['url']));
 		$this->assertSame($Controller->request->here(), $viewVars['url']);
 
-		$this->assertTrue(isset($viewVars['name']));
-		$this->assertSame('Hello World', $viewVars['name']);
+		$this->assertTrue(isset($viewVars['message']));
+		$this->assertSame('Hello World', $viewVars['message']);
 
 		$this->assertTrue(isset($viewVars['error']));
 		$this->assertSame($Exception, $viewVars['error']);
+
+		ConnectionManager::get('test')->logger($currentLogger);
 	}
 
 	public function testNormalNestedExceptionRendering() {
