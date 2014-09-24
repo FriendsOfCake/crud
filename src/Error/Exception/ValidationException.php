@@ -1,7 +1,7 @@
 <?php
 namespace Crud\Error\Exception;
 
-use Cake\Core\Exception\Exception;
+use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Entity;
 use Cake\Utility\Hash;
 
@@ -10,7 +10,7 @@ use Cake\Utility\Hash;
  * responses where you need an error code in response
  *
  */
-class ValidationException extends Exception {
+class ValidationException extends BadRequestException {
 
 /**
  * List of validation errors that occurred in the model
@@ -38,7 +38,13 @@ class ValidationException extends Exception {
 		$flat = Hash::flatten($this->_validationErrors);
 
 		$errorCount = $this->_validationErrorCount = count($flat);
-		$this->message = __dn('crud', 'A validation error occurred', '{0} validation errors occurred', $errorCount, [$errorCount]);
+		$this->message = __dn(
+			'crud',
+			'A validation error occurred',
+			'{0} validation errors occurred',
+			$errorCount,
+			[$errorCount]
+		);
 
 		parent::__construct($this->message, $code);
 	}
