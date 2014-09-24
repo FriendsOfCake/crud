@@ -493,82 +493,14 @@ class CrudComponentTest extends ControllerTestCase {
 	}
 
 /**
- * Test that the build in action names can't be used
- * within other plugins
+ * testMappingNonExistentAction
  *
  * @expectedException \Exception
- * @expectedExceptionMessage The build-in CrudActions (Index, View, Add, Edit and Delete) must be loaded from the Crud plugin
+ * @expectedExceptionMessage Could not find action class: Sample.Index
  * @return void
  */
-	public function testBuildInCrudActionsCantBeUsedInOtherPluginsIndex() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
+	public function testMappingNonExistentAction() {
 		$this->Crud->mapAction('test', 'Sample.Index');
-	}
-
-/**
- * Test that the build in action names can't be used
- * within other plugins
- *
- * @expectedException \Exception
- * @expectedExceptionMessage The build-in CrudActions (Index, View, Add, Edit and Delete) must be loaded from the Crud plugin
- * @return void
- */
-	public function testBuildInCrudActionsCantBeUsedInOtherPluginsView() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
-		$this->Crud->mapAction('test', 'Sample.View');
-	}
-
-/**
- * Test that the build in action names can't be used
- * within other plugins
- *
- * @expectedException \Exception
- * @expectedExceptionMessage The build-in CrudActions (Index, View, Add, Edit and Delete) must be loaded from the Crud plugin
- * @return void
- */
-	public function testBuildInCrudActionsCantBeUsedInOtherPluginsAdd() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
-		$this->Crud->mapAction('test', 'Sample.Add');
-	}
-
-/**
- * Test that the build in action names can't be used
- * within other plugins
- *
- * @expectedException \Exception
- * @expectedExceptionMessage The build-in CrudActions (Index, View, Add, Edit and Delete) must be loaded from the Crud plugin
- * @return void
- */
-	public function testBuildInCrudActionsCantBeUsedInOtherPluginsEdit() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
-		$this->Crud->mapAction('test', 'Sample.Edit');
-	}
-
-/**
- * Test that Providing a CrudAction name that isn't in the
- * list of build-in once, will allow you to use it inside
- * another plugin.
- *
- * It's expected that the plugin CrudSample doesn't exist.
- *
- * @expectedException \Exception
- * @expectedExceptionMessage Could not find action class: CrudSample.MyDelete
- * @return void
- */
-	public function testCustomCrudActionsCanBeUsedInPlugins() {
-		$this->Crud->mapAction('test', 'CrudSample.MyDelete');
 	}
 
 /**
@@ -1035,12 +967,8 @@ class CrudComponentTest extends ControllerTestCase {
  * @return void
  */
 	public function testLoadListener() {
-		$this->markTestSkipped(
-			'Tests still not updated.'
-		);
-
 		$this->Crud->config('listeners.HasSetup', array(
-			'className' => 'Test'
+			'className' => 'Crud\TestCase\Controller\Crud\TestListener'
 		));
 
 		$this->setReflectionClassInstance($this->Crud);
