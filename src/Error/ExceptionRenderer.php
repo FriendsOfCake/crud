@@ -22,7 +22,7 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer {
  * @param \Exception $error Exception instance
  * @return void
  */
-	public function crudValidation($error) {
+	public function validation($error) {
 		$url = $this->controller->request->here();
 		$status = $code = $error->getCode();
 		try {
@@ -35,11 +35,11 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer {
 		$sets = array(
 			'code' => $code,
 			'url' => h($url),
-			'name' => $error->getMessage(),
+			'message' => $error->getMessage(),
 			'error' => $error,
 			'errorCount' => $error->getValidationErrorCount(),
 			'errors' => $error->getValidationErrors(),
-			'_serialize' => array('code', 'url', 'name', 'errorCount', 'errors')
+			'_serialize' => array('code', 'url', 'message', 'errorCount', 'errors')
 		);
 		$this->controller->set($sets);
 		$this->_outputMessage('error400');

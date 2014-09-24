@@ -7,6 +7,7 @@ use Cake\Core\Exception\Exception;
 use Cake\Datasource\ConnectionManager;
 use Cake\Network\Request;
 use Cake\Network\Response;
+use Cake\ORM\Entity;
 use Cake\TestSuite\TestCase;
 use Cake\View\Exception\MissingViewException;
 use Crud\Error\ExceptionRenderer;
@@ -277,7 +278,13 @@ class ExceptionRendererTest extends TestCase {
 		$Controller->request = new Request();
 		$Controller->response = $this->getMock('Cake\Network\Response');
 
-		$Renderer = $this->getMock('Crud\Error\ExceptionRenderer', array('_getController'), array(), '', false);
+		$Renderer = $this->getMock(
+			'Crud\Error\ExceptionRenderer',
+			array('_getController'),
+			array(),
+			'',
+			false
+		);
 		$Renderer
 			->expects($this->once())
 			->method('_getController')
@@ -326,32 +333,22 @@ class ExceptionRendererTest extends TestCase {
 	}
 
 	public function testValidationErrorSingleKnownError() {
-		$this->markTestSkipped();
+		$entity = new Entity();
+		$entity->errors('title', ['error message']);
 
-		$Model = ClassRegistry::init(array('class' => 'Model', 'alias' => 'Alias', 'table' => false));
-		$Model->validate = array(
-			'field' => array(
-				array(
-					'rule' => 'custom',
-					'message' => 'boom'
-				)
-			)
-		);
-		$Model->invalidate('field', 'boom');
-
-		$Exception = new ValidationException(array(
-			'Alias' => array(
-				'field' => array(
-					'boom'
-				)
-			)
-		));
+		$Exception = new ValidationException($entity);
 
 		$Controller = $this->getMock('Cake\Controller\Controller', array('render'));
 		$Controller->request = new Request();
 		$Controller->response = new Response();
 
-		$Renderer = $this->getMock('Crud\Error\ExceptionRenderer', array('_getController'), array(), '', false);
+		$Renderer = $this->getMock(
+			'Crud\Error\ExceptionRenderer',
+			array('_getController'),
+			array(),
+			'',
+			false
+		);
 		$Renderer
 			->expects($this->once())
 			->method('_getController')
@@ -359,110 +356,49 @@ class ExceptionRendererTest extends TestCase {
 			->will($this->returnValue($Controller));
 
 		$Renderer->__construct($Exception);
-		Configure::write('debug', false);
 		$Renderer->render();
-		Configure::write('debug', true);
 
 		$expected = array(
 			'code' => 412,
 			'url' => $Controller->request->here(),
-			'name' => 'Alias.field : boom',
 			'errorCount' => 1,
 			'errors' => array(
-				'Alias' => array(
-					'field' => array(
-						'boom'
-					)
+				'title' => array(
+					'error message'
 				)
 			),
 			'exception' => array(
-				'class' => 'ValidationException',
+				'class' => 'Crud\Error\Exception\ValidationException',
 				'code' => 412,
-				'message' => 'Alias.field : boom'
-			)
-		);
-		$this->assertEquals($expected, $Controller->viewVars['data']);
-	}
-
-	public function testValidationErrorSingleKnownErrorWithCode() {
-		$this->markTestSkipped();
-
-		$Model = ClassRegistry::init(array('class' => 'Model', 'alias' => 'Alias', 'table' => false));
-		$Model->validate = array(
-			'field' => array(
-				array(
-					'rule' => 'custom',
-					'message' => 'boom',
-					'code' => 1000
-				)
-			)
-		);
-		$Model->invalidate('field', 'boom');
-
-		$Exception = new ValidationException(array(
-			'Alias' => array(
-				'field' => array(
-					'boom'
-				)
-			)
-		));
-
-		$Controller = $this->getMock('Cake\Controller\Controller', array('render'));
-		$Controller->request = new Request();
-		$Controller->response = new Response();
-
-		$Renderer = $this->getMock('Crud\Error\ExceptionRenderer', array('_getController'), array(), '', false);
-		$Renderer
-			->expects($this->once())
-			->method('_getController')
-			->with()
-			->will($this->returnValue($Controller));
-
-		$Renderer->__construct($Exception);
-		Configure::write('debug', false);
-		$Renderer->render();
-		Configure::write('debug', true);
-
-		$expected = array(
-			'code' => 1000,
-			'url' => $Controller->request->here(),
-			'name' => 'Alias.field : boom',
-			'errorCount' => 1,
-			'errors' => array(
-				'Alias' => array(
-					'field' => array(
-						'boom'
-					)
-				)
+				'message' => 'A validation error occurred'
 			),
-			'exception' => array(
-				'class' => 'ValidationException',
-				'code' => 1000,
-				'message' => 'Alias.field : boom'
-			)
+			'message' => 'A validation error occurred'
 		);
-		$this->assertEquals($expected, $Controller->viewVars['data']);
+		$data = $Controller->viewVars['data'];
+		unset($data['exception']['trace']);
+		$this->assertEquals($expected, $data);
 	}
 
 	public function testValidationErrorMultipleMessages() {
-		$this->markTestSkipped();
+		$entity = new Entity();
+		$entity->errors([
+			'title' => ['error message'],
+			'body' => ['another field message']
+		]);
 
-		$Exception = new ValidationException(array(
-			'Alias' => array(
-				'field' => array(
-					'something wrong with this field'
-				),
-				'another_field' => array(
-					'something wrong with this field'
-				)
-			)
-		));
+		$Exception = new ValidationException($entity);
 
 		$Controller = $this->getMock('Cake\Controller\Controller', array('render'));
 		$Controller->request = new Request();
 		$Controller->response = new Response();
 
-		$Renderer = $this->getMock('Crud\Error\ExceptionRenderer', array('_getController'), array(), '', false);
+		$Renderer = $this->getMock(
+			'Crud\Error\ExceptionRenderer',
+			array('_getController'),
+			array(),
+			'',
+			false
+		);
 		$Renderer
 			->expects($this->once())
 			->method('_getController')
@@ -470,79 +406,30 @@ class ExceptionRendererTest extends TestCase {
 			->will($this->returnValue($Controller));
 
 		$Renderer->__construct($Exception);
-		Configure::write('debug', false);
 		$Renderer->render();
-		Configure::write('debug', true);
 
 		$expected = array(
 			'code' => 412,
 			'url' => $Controller->request->here(),
-			'name' => '2 validation errors occurred',
+			'message' => '2 validation errors occurred',
 			'errorCount' => 2,
 			'errors' => array(
-				'Alias' => array(
-					'field' => array(
-						'something wrong with this field'
-					),
-					'another_field' => array(
-						'something wrong with this field'
-					)
+				'title' => array(
+					'error message'
+				),
+				'body' => array(
+					'another field message'
 				)
 			),
 			'exception' => array(
-				'class' => 'ValidationException',
+				'class' => 'Crud\Error\Exception\ValidationException',
 				'code' => 412,
 				'message' => '2 validation errors occurred',
 			)
 		);
-		$this->assertEquals($expected, $Controller->viewVars['data']);
+		$data = $Controller->viewVars['data'];
+		unset($data['exception']['trace']);
+		$this->assertEquals($expected, $data);
 	}
 
-	public function testValidationErrorUnknownModel() {
-		$this->markTestSkipped();
-
-		$Exception = new ValidationException(array(
-			'Alias' => array(
-				'field' => array(
-					'something wrong with this field'
-				)
-			)
-		));
-
-		$Controller = $this->getMock('Cake\Controller\Controller', array('render'));
-		$Controller->request = new Request();
-		$Controller->response = new Response();
-
-		$Renderer = $this->getMock('Crud\Error\ExceptionRenderer', array('_getController'), array(), '', false);
-		$Renderer
-			->expects($this->once())
-			->method('_getController')
-			->with()
-			->will($this->returnValue($Controller));
-
-		$Renderer->__construct($Exception);
-		Configure::write('debug', false);
-		$Renderer->render();
-		Configure::write('debug', true);
-
-		$expected = array(
-			'code' => 412,
-			'url' => $Controller->request->here(),
-			'name' => 'A validation error occurred',
-			'errorCount' => 1,
-			'errors' => array(
-				'Alias' => array(
-					'field' => array(
-						'something wrong with this field'
-					)
-				)
-			),
-			'exception' => array(
-				'class' => 'ValidationException',
-				'code' => 412,
-				'message' => 'A validation error occurred',
-			)
-		);
-		$this->assertEquals($expected, $Controller->viewVars['data']);
-	}
 }
