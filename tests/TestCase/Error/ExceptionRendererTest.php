@@ -333,6 +333,8 @@ class ExceptionRendererTest extends TestCase {
 	}
 
 	public function testValidationErrorSingleKnownError() {
+		Configure::write('debug', false);
+
 		$entity = new Entity();
 		$entity->errors('title', ['error message']);
 
@@ -374,9 +376,7 @@ class ExceptionRendererTest extends TestCase {
 			),
 			'message' => 'A validation error occurred'
 		);
-		$data = $Controller->viewVars['data'];
-		unset($data['exception']['trace']);
-		$this->assertEquals($expected, $data);
+		$this->assertEquals($expected, $Controller->viewVars['data']);
 	}
 
 	public function testValidationErrorMultipleMessages() {
