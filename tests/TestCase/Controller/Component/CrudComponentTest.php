@@ -156,19 +156,13 @@ class TestListener extends \Crud\Listener\BaseListener {
 class CrudComponentTest extends ControllerTestCase {
 
 /**
- * fixtures
+ * Fixtures
  *
  * Use the core posts fixture to have something to work on.
  * What fixture is used is almost irrelevant, was chosen as it is simple
  */
 	public $fixtures = array(
-		'core.post',
-		// 'core.author',
-		// 'core.tag',
-		// 'core.comment',
-		// 'core.flag_tree',
-		// 'core.cake_session',
-		// 'plugin.Crud.posts_tag'
+		'core.posts'
 	);
 
 /**

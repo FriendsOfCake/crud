@@ -3,12 +3,12 @@ namespace Crud\Test\Fixture;
 
 use Cake\TestSuite\Fixture\TestFixture;
 
-class BlogFixture extends TestFixture {
+class BlogsFixture extends TestFixture {
 
 	public $fields = [
 		'id' => ['type' => 'integer'],
 		'is_active' => ['type' => 'boolean', 'default' => true, 'null' => false],
-		'name' => ['type' => 'string', 'length' => 255,  'null' => false],
+		'name' => ['type' => 'string', 'length' => 255, 'null' => false],
 		'body' => ['type' => 'text', 'null' => false],
 		'_constraints' => ['primary' => ['type' => 'primary', 'columns' => ['id']]]
 	];

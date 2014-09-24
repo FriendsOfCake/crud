@@ -17,7 +17,7 @@ class EditActionTest extends ControllerTestCase {
  *
  * @var array
  */
-	public $fixtures = ['plugin.crud.blog'];
+	public $fixtures = ['plugin.crud.blogs'];
 
 /**
  * Controller class to mock on

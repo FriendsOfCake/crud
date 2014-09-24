@@ -18,7 +18,7 @@ class IndexActionTest extends ControllerTestCase {
  *
  * @var array
  */
-	public $fixtures = ['plugin.crud.blog'];
+	public $fixtures = ['plugin.crud.blogs'];
 
 /**
  * Controller class to mock on
@@ -61,7 +61,7 @@ class IndexActionTest extends ControllerTestCase {
 		$result = $this->_testAction('/blogs', compact('method'));
 		$this->assertContains('Page 1 of 2, showing 3 records out of 5 total', $result);
 		$this->assertEvents(['beforePaginate', 'afterPaginate',	'beforeRender']);
-		$this->assertEquals(['viewVar', 'blogs','success'], array_keys($this->vars));
+		$this->assertEquals(['viewVar', 'blogs', 'success'], array_keys($this->vars));
 	}
 
 /**
@@ -77,7 +77,7 @@ class IndexActionTest extends ControllerTestCase {
 		$result = $this->_testAction('/blogs', compact('method'));
 		$this->assertContains('Page 1 of 2, showing 3 records out of 5 total', $result);
 		$this->assertEvents(['beforePaginate', 'afterPaginate',	'beforeRender']);
-		$this->assertEquals(['viewVar', 'items','success'], array_keys($this->vars));
+		$this->assertEquals(['viewVar', 'items', 'success'], array_keys($this->vars));
 	}
 
 }
