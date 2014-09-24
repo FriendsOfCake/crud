@@ -42,7 +42,8 @@ class RelatedModelsListener extends BaseListener {
 		foreach ($models as $name => $association) {
 			$associatedModel = $association->target();
 
-			$viewVar = Inflector::variable(Inflector::pluralize($association->name()));
+			list(, $associationName) = pluginSplit($association->name());
+			$viewVar = Inflector::variable(Inflector::pluralize($associationName));
 			if (array_key_exists($viewVar, $controller->viewVars)) {
 				continue;
 			}
