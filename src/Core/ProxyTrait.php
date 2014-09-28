@@ -103,7 +103,8 @@ trait ProxyTrait {
  */
 	protected function _table() {
 		$controller = $this->_controller();
-		return $controller->{$controller->modelClass};
+		list(, $modelClass) = pluginSplit($controller->modelClass);
+		return $controller->{$modelClass};
 	}
 
 /**
