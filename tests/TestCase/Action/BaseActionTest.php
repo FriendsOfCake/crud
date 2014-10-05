@@ -222,9 +222,6 @@ class CrudActionTest extends TestCase {
 			->will($this->returnValue('add'));
 
 		$Action->enable();
-
-		$actual = array_search('add', $this->Controller->methods);
-		$this->assertTrue($actual !== false, '"add" was not added to the controller::$methods array');
 	}
 
 /**
