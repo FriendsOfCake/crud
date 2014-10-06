@@ -86,10 +86,6 @@ abstract class BaseAction extends Object {
 
 		$controller = $this->_controller();
 		$actionName = $this->config('action');
-
-		if (!in_array($actionName, $controller->methods)) {
-			$controller->methods[] = $actionName;
-		}
 	}
 
 /**

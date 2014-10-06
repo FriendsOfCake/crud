@@ -162,19 +162,12 @@ class CrudComponent extends Component {
 	}
 
 /**
- * Make sure to update the list of known controller methods before startup is called.
- *
- * The reason for this is that if we don't, the Auth component won't execute any callbacks on the controller
- * like isAuthorized.
+ * Add self to list of components capable of dispatching an action.
  *
  * @param \Cake\Event\Event $event Event instance
  * @return void
  */
 	public function initialize(Event $event) {
-		$this->_controller->methods = array_keys(
-			array_flip($this->_controller->methods) +
-			array_flip(array_keys($this->_config['actions']))
-		);
 		$this->_action = $this->_controller->request->action;
 		$this->_request = $this->_controller->request;
 

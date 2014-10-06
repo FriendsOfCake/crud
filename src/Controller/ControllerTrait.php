@@ -1,5 +1,4 @@
 <?php
-
 namespace Crud\Controller;
 
 use Cake\Controller\Exception\MissingActionException;
@@ -27,44 +26,96 @@ trait ControllerTrait {
  * If CakePHP raises MissingActionException we attempt to execute Crud
  *
  * @return mixed The resulting response.
- * @throws \Cake\Core\Exception\Exception When request is not set.
- * @throws \Cake\Exception\PrivateActionException When actions are not public or prefixed by _
- * @throws \Cake\Exception\MissingActionException When actions are not defined and scaffolding
- * and CRUD is not enabled.
+ * @throws \LogicException When request is not set.
+ * @throws \Cake\Exception\MissingActionException When actions are not defined
+ *   and CRUD is not enabled.
  */
 	public function invokeAction() {
-		try {
-			return parent::invokeAction();
-		} catch (MissingActionException $e) {
-			if (!empty($this->dispatchComponents)) {
-				foreach ($this->dispatchComponents as $component => $enabled) {
-					if (empty($enabled)) {
-						continue;
-					}
-
-					// Skip if isActionMapped isn't defined in the Component
-					if (!method_exists($this->{$component}, 'isActionMapped')) {
-						continue;
-					}
-
-					// Skip if the action isn't mapped
-					if (!$this->{$component}->isActionMapped()) {
-						continue;
-					}
-
-					// Skip if execute isn't defined in the Component
-					if (!method_exists($this->{$component}, 'execute')) {
-						continue;
-					}
-
-					// Execute the callback, should return CakeResponse object
-					return $this->{$component}->execute();
-				}
-			}
-
-			// No additional callbacks, re-throw the normal CakePHP exception
-			throw $e;
+		$request = $this->request;
+		if (!isset($request)) {
+			throw new LogicException('No Request object configured. Cannot invoke action');
 		}
+		if (!$this->isAction($request->params['action'])) {
+			throw new MissingActionException(array(
+				'controller' => $this->name . 'Controller',
+				'action' => $request->params['action'],
+				'prefix' => isset($request->params['prefix']) ? $request->params['prefix'] : '',
+				'plugin' => $request->params['plugin'],
+			));
+		}
+
+		$callable = [$this, $request->params['action']];
+		if (is_callable($callable)) {
+			return call_user_func_array($callable, $request->params['pass']);
+		}
+
+		$component = $this->_isActionMapped();
+		if ($component) {
+			return $component->execute();
+		}
+
+		throw new MissingActionException(array(
+			'controller' => $this->name . 'Controller',
+			'action' => $request->params['action'],
+			'prefix' => isset($request->params['prefix']) ? $request->params['prefix'] : '',
+			'plugin' => $request->params['plugin'],
+		));
+	}
+
+/**
+ * Return true for a mapped action so that AuthComponent doesn't skip
+ * authentication / authorization for that action.
+ *
+ * @param string $action Action name
+ * @return bool True is action is mapped and enabled.
+ */
+	public function isAction($action) {
+		$isAction = parent::isAction($action);
+		if ($isAction) {
+			return true;
+		}
+
+		if ($this->_isActionMapped()) {
+			return true;
+		}
+
+		return false;
+	}
+
+/**
+ * Check if an action can be dispatched using CRUD.
+ *
+ * @return bool|\Cake\Controller\Component The component instance if action is
+ *  mapped else `false`.
+ */
+	protected function _isActionMapped() {
+		if (!empty($this->dispatchComponents)) {
+			foreach ($this->dispatchComponents as $component => $enabled) {
+				if (empty($enabled)) {
+					continue;
+				}
+
+				// Skip if isActionMapped isn't defined in the Component
+				if (!method_exists($this->{$component}, 'isActionMapped')) {
+					continue;
+				}
+
+				// Skip if the action isn't mapped
+				if (!$this->{$component}->isActionMapped()) {
+					continue;
+				}
+
+				// Skip if execute isn't defined in the Component
+				if (!method_exists($this->{$component}, 'execute')) {
+					continue;
+				}
+
+				// Return the component instance.
+				return $this->{$component};
+			}
+		}
+
+		return false;
 	}
 
 }
