@@ -121,7 +121,7 @@ class CrudComponent extends Component {
 /**
  * Constructor
  *
- * @param ComponentRegistry $collection A ComponentCollection this component can use to lazy load its components.
+ * @param Cake\Controller\ComponentRegistry $collection A ComponentCollection this component can use to lazy load its components.
  * @param array $config Array of configuration settings.
  * @return void
  */
