@@ -42,7 +42,7 @@ class ApiQueryLogListenerTest extends TestCase {
 
 		$result = $Instance->implementedEvents();
 		$expected = [
-			'Crud.initialize' => ['callable' => [$Instance, 'setupLogging'], 'priority' => 1],
+			'Crud.beforeFilter' => ['callable' => [$Instance, 'setupLogging'], 'priority' => 1],
 			'Crud.beforeRender' => ['callable' => [$Instance, 'beforeRender'], 'priority' => 75]
 		];
 

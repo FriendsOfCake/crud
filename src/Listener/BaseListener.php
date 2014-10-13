@@ -30,7 +30,7 @@ abstract class BaseListener extends Object {
  */
 	public function implementedEvents() {
 		$eventMap = [
-			'Crud.initialize' => 'initialize',
+			'Crud.beforeFilter' => 'initialize',
 			'Crud.startup' => 'startup',
 
 			'Crud.beforeHandle' => 'beforeHandle',
