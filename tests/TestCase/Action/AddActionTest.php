@@ -358,6 +358,7 @@ class AddActionTest extends ControllerTestCase {
 		$this->controller->Flash
 			->expects($this->never())
 			->method('set');
+		$this->controller->RequestHandler->ext = 'json';
 
 		$data = [
 			'name' => '6th blog post',

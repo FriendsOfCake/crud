@@ -201,7 +201,7 @@ class CrudComponentTest extends ControllerTestCase {
 		);
 
 		$this->Crud = new TestCrudComponent($this->Registry, $config);
-		$this->Crud->initialize(new Event('Controller.initialize'));
+		$this->Crud->beforeFilter(new Event('Controller.beforeFilter'));
 		$this->controller->Crud = $this->Crud;
 	}
 
@@ -247,7 +247,7 @@ class CrudComponentTest extends ControllerTestCase {
 		$Crud
 			->expects($this->once())
 			->method('trigger');
-		$Crud->initialize(new Event('Controller.initialize'));
+		$Crud->beforeFilter(new Event('Controller.beforeFilter'));
 
 		$expected = array(
 			'index' => array('className' => 'Crud.Index'),
@@ -357,7 +357,7 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->assertTrue($result);
 
 		$this->controller->request->action = 'edit';
-		$this->Crud->initialize(new Event('Controller.initialize'));
+		$this->Crud->beforeFilter(new Event('Controller.beforeFilter'));
 		$result = $this->Crud->isActionMapped();
 		$this->assertTrue($result);
 	}
@@ -371,7 +371,7 @@ class CrudComponentTest extends ControllerTestCase {
 		$this->assertFalse($result);
 
 		$this->controller->action = 'rainbows';
-		$this->Crud->initialize(new Event('Controller.initialize'));
+		$this->Crud->beforeFilter(new Event('Controller.beforeFilter'));
 		$result = $this->Crud->isActionMapped();
 		$this->assertFalse($result);
 	}
@@ -881,7 +881,7 @@ class CrudComponentTest extends ControllerTestCase {
 	public function testControllerWithEmptyUses() {
 		$controller = new Controller(new Request());
 		$this->Crud = new CrudComponent($this->Registry, array('actions' => array('index')));
-		$this->Crud->initialize(new Event('Controller.initialize'));
+		$this->Crud->beforeFilter(new Event('Controller.beforeFilter'));
 		$this->controller->Crud = $this->Crud;
 		$this->Crud->config('actions.index', ['className' => 'Crud.Index']);
 		$this->Crud->action('index');
@@ -950,7 +950,7 @@ class CrudComponentTest extends ControllerTestCase {
 
 		$controller = new Controller(new Request());
 		$this->Crud = new CrudComponent($this->Registry, array('actions' => array('index')));
-		$this->Crud->initialize(new Event('Controller.initialize'));
+		$this->Crud->beforeFilter(new Event('Controller.beforeFilter'));
 		$this->controller->Crud = $this->Crud;
 		$class = $this->getMockClass('Model');
 		$this->Crud->useModel($class);

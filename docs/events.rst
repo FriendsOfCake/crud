@@ -99,7 +99,7 @@ This is a full list of all events emitted from CRUD.
 Each individual :doc:`CRUD action <actions>` contains the same documentation, but only the events
 relevant for that action.
 
-.. include:: /_partials/events/initialize.rst
+.. include:: /_partials/events/before_filter.rst
 .. include:: /_partials/events/startup.rst
 
 .. include:: /_partials/events/before_delete.rst

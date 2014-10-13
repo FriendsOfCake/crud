@@ -23,7 +23,7 @@ Please see the :doc:`events documentation</events>` for a full list of generic p
 how to use the event system correctly.
 
 .. include:: /_partials/events/startup.rst
-.. include:: /_partials/events/initialize.rst
+.. include:: /_partials/events/before_filter.rst
 .. include:: /_partials/events/before_save.rst
 .. include:: /_partials/events/after_save.rst
 .. include:: /_partials/events/set_flash.rst

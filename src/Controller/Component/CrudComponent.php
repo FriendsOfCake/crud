@@ -121,7 +121,7 @@ class CrudComponent extends Component {
 /**
  * Constructor
  *
- * @param ComponentCollection $collection A ComponentCollection this component can use to lazy load its components.
+ * @param Cake\Controller\ComponentRegistry $collection A ComponentCollection this component can use to lazy load its components.
  * @param array $config Array of configuration settings.
  * @return void
  */
@@ -167,7 +167,7 @@ class CrudComponent extends Component {
  * @param \Cake\Event\Event $event Event instance
  * @return void
  */
-	public function initialize(Event $event) {
+	public function beforeFilter(Event $event) {
 		$this->_action = $this->_controller->request->action;
 		$this->_request = $this->_controller->request;
 
@@ -178,7 +178,7 @@ class CrudComponent extends Component {
 		$this->_controller->dispatchComponents['Crud'] = true;
 
 		$this->_loadListeners();
-		$this->trigger('initialize');
+		$this->trigger('beforeFilter');
 	}
 
 /**
