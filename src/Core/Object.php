@@ -4,7 +4,7 @@ namespace Crud\Core;
 use Cake\Controller\Controller;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Event\Event;
-use Cake\Event\EventListener;
+use Cake\Event\EventListenerInterface;
 use Crud\Event\Subject;
 
 /**
@@ -15,7 +15,7 @@ use Crud\Event\Subject;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-abstract class Object implements EventListener {
+abstract class Object implements EventListenerInterface {
 
 	use InstanceConfigTrait;
 	use ProxyTrait;
