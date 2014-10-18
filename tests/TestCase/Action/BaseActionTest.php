@@ -10,7 +10,7 @@ use Crud\TestSuite\TestCase;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class CrudActionTest extends TestCase {
+class BaseActionTest extends TestCase {
 
 	public function setUp() {
 		parent::setUp();
