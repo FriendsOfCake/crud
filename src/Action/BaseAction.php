@@ -83,9 +83,6 @@ abstract class BaseAction extends Object {
  */
 	public function enable() {
 		$this->config('enabled', true);
-
-		$controller = $this->_controller();
-		$actionName = $this->config('action');
 	}
 
 /**
@@ -104,14 +101,6 @@ abstract class BaseAction extends Object {
  */
 	public function disable() {
 		$this->config('enabled', false);
-
-		$controller = $this->_controller();
-		$actionName = $this->config('action');
-
-		$pos = array_search($actionName, $controller->methods);
-		if ($pos !== false) {
-			unset($controller->methods[$pos]);
-		}
 	}
 
 /**
