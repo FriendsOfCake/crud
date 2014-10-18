@@ -8,8 +8,6 @@ class BlogsController extends Controller {
 
 	use ControllerTrait;
 
-	public $uses = ['Blog'];
-
 	public $paginate = ['limit' => 3];
 
 	public $components = [
