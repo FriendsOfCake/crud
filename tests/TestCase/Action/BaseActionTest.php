@@ -150,44 +150,24 @@ class BaseActionTest extends TestCase {
  * testDisable
  *
  * Test that calling disable() on the action object
- * disables the action and makes the handle method return false
+ * disables the action
  *
  * @return void
  */
 	public function testDisable() {
-		$Controller = $this
-			->getMockBuilder('Controller')
-			->setMethods(array('foo'))
-			->disableOriginalConstructor()
-			->getMock();
-		$Controller->methods = array('add', 'index', 'delete');
-
 		$i = 0;
 
 		$Action = $this->getMock(
 			'Crud\Action\BaseAction',
-			['_controller', '_handle', 'config'],
+			['config'],
 			[$this->Controller]
 		);
 		$Action
 			->expects($this->at($i++))
 			->method('config', 'enabled was not changed to false by config()')
 			->with('enabled', false);
-		$Action
-			->expects($this->at($i++))
-			->method('_controller')
-			->with()
-			->will($this->returnValue($Controller));
-		$Action
-			->expects($this->at($i++))
-			->method('config')
-			->with('action')
-			->will($this->returnValue('add'));
 
 		$Action->disable();
-
-		$actual = array_search('add', $Controller->methods);
-		$this->assertFalse($actual, '"add" was not removed from the controller::$methods array');
 	}
 
 /**
@@ -203,23 +183,13 @@ class BaseActionTest extends TestCase {
 
 		$Action = $this->getMock(
 			'Crud\Action\BaseAction',
-			['_controller', '_handle', 'config'],
+			['config'],
 			[$this->Controller]
 		);
 		$Action
 			->expects($this->at($i++))
 			->method('config', 'enabled was not changed to false by config()')
 			->with('enabled', true);
-		$Action
-			->expects($this->at($i++))
-			->method('_controller')
-			->with()
-			->will($this->returnValue($this->Controller));
-		$Action
-			->expects($this->at($i++))
-			->method('config')
-			->with('action')
-			->will($this->returnValue('add'));
 
 		$Action->enable();
 	}
