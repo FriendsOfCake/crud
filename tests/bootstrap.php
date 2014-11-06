@@ -73,17 +73,11 @@ Cake\Routing\DispatcherFactory::add('Routing');
 Cake\Routing\DispatcherFactory::add('ControllerFactory');
 
 // Ensure default test connection is defined
-if (!getenv('db_class')) {
-	putenv('db_class=Cake\Database\Driver\Sqlite');
-	putenv('db_dsn=sqlite::memory:');
+if (!getenv('db_dsn')) {
+	putenv('db_dsn=sqlite:///:memory:');
 }
 
 Cake\Datasource\ConnectionManager::config('test', [
-	'className' => 'Cake\Database\Connection',
-	'driver' => getenv('db_class'),
-	'dsn' => getenv('db_dsn'),
-	'database' => getenv('db_database'),
-	'login' => getenv('db_login'),
-	'password' => getenv('db_password'),
+	'url' => getenv('db_dsn'),
 	'timezone' => 'UTC'
 ]);
