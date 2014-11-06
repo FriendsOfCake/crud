@@ -954,10 +954,12 @@ class ApiListenerTest extends TestCase {
 		// Test with "ext"
 		foreach ($detectors as $name => $configuration) {
 			$request->params['_ext'] = $configuration['ext'];
+			$request->clearDetectorCache();
 			$this->assertTrue($request->is($name));
 		}
 
 		$request->params['_ext'] = null;
+		$request->clearDetectorCache();
 
 		// Test with "accepts"
 		$r = 0;
@@ -970,14 +972,27 @@ class ApiListenerTest extends TestCase {
 		}
 
 		foreach ($detectors as $name => $config) {
+			$request->clearDetectorCache();
 			$this->assertTrue($request->is($name));
 		}
 
 		$request->params['_ext'] = 'xml';
-		$this->assertTrue($request->is('api'));
+		$request->clearDetectorCache();
+
+		$this->assertTrue(
+			$request->is('api'),
+			"A request with xml extensions should be considered an api request"
+		);
 
 		$request->params['_ext'] = null;
-		$this->assertFalse($request->is('api'));
+		$request->clearDetectorCache();
+
+		$this->assertFalse(
+			$request->is('api'),
+			"A request with no extensions should not be considered an api request"
+		);
+
+
 	}
 
 /**
