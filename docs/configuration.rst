@@ -105,7 +105,7 @@ An example of on the fly enabling an Crud action with configuration
 
   class AppController extends \Cake\Controller\Controller {
 
-    public function beforeFilter() {
+    public function beforeFilter(\Cake\Event\Event $event) {
       $this->Crud->mapAction('index', [
         'className' => 'Crud.Index',
         'view' => 'my_index'
