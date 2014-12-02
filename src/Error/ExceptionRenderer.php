@@ -20,7 +20,7 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer {
  * Renders validation errors and sends a 412 error code
  *
  * @param \Exception $error Exception instance
- * @return void
+ * @return \Cake\Network\Response
  */
 	public function validation($error) {
 		$url = $this->controller->request->here();
@@ -43,6 +43,7 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer {
 		);
 		$this->controller->set($sets);
 		$this->_outputMessage('error400');
+		return $this->controller->response;
 	}
 
 /**
