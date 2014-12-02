@@ -388,17 +388,7 @@ class ApiListener extends BaseListener {
 		$request = $this->_request();
 		$detectors = $this->config('detectors');
 
-		foreach ($detectors as $name => $config) {
-			$request->addDetector($name, ['callback' => function(Request $request) use ($config) {
-				if (isset($request->params['_ext']) && $request->params['_ext'] === $config['ext']) {
-					return true;
-				}
-
-				return $request->accepts($config['accepts']);
-			}]);
-		}
-
-		$request->addDetector('api', ['callback' => function(Request $request) use ($detectors) {
+		$request->addDetector('api', function(Request $request) use ($detectors) {
 			foreach ($detectors as $name => $config) {
 				if ($request->is($name)) {
 					return true;
@@ -406,7 +396,7 @@ class ApiListener extends BaseListener {
 			}
 
 			return false;
-		}]);
+		});
 	}
 
 }
