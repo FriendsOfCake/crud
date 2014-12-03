@@ -12,7 +12,7 @@ use FriendsOfCake\TestUtilities\CounterHelperTrait;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-abstract class ControllerTestCase extends \Cake\TestSuite\ControllerTestCase {
+abstract class IntegrationTestCase extends \Cake\TestSuite\IntegrationTestCase {
 
 	use AccessibilityHelperTrait;
 	use CounterHelperTrait;
