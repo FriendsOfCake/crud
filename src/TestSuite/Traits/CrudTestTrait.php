@@ -64,36 +64,6 @@ trait CrudTestTrait {
 	}
 
 /**
- * Assert a redirect happened
- *
- * `$actual` can be a string, Controller or Response instance
- *
- * @param  string $expected
- * @param  mixed  $actual
- * @return void
- * @throws \Exception
- */
-	public function assertRedirect($expected, $actual = null) {
-		if ($actual === null) {
-			$actual = $this->controller;
-		}
-
-		if ($actual instanceof Controller) {
-			$actual = $actual->response->location();
-		}
-
-		if ($actual instanceof Response) {
-			$actual = $actual->location();
-		}
-
-		if (empty($actual)) {
-			throw new \Exception('assertRedirect: Expected "actual" to be a non-empty string');
-		}
-
-		$this->assertEquals($expected, $actual,	'Was not redirected to ' . $expected);
-	}
-
-/**
  * Assert these CRUD events was emitted during the life cycle
  *
  * The `$expected` list do not need to prefix events with `Crud.` - this is done
