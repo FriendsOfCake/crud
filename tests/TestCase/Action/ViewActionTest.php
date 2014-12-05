@@ -3,15 +3,14 @@ namespace Crud\Test\TestCase\Action;
 
 use Cake\Routing\DispatcherFactory;
 use Cake\Routing\Router;
-use Crud\TestSuite\ControllerTestCase;
-use Crud\Test\App\Controller\BlogsController;
+use Crud\TestSuite\IntegrationTestCase;
 
 /**
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class ViewActionTest extends ControllerTestCase {
+class ViewActionTest extends IntegrationTestCase {
 
 /**
  * fixtures property
@@ -19,20 +18,6 @@ class ViewActionTest extends ControllerTestCase {
  * @var array
  */
 	public $fixtures = ['plugin.crud.blogs'];
-
-/**
- * Controller class to mock on
- *
- * @var string
- */
-	public $controllerClass = '\Crud\Test\App\Controller\BlogsController';
-
-/**
- * Table class to mock on
- *
- * @var string
- */
-	public $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
 
 /**
  * Data provider with all HTTP verbs
@@ -55,13 +40,20 @@ class ViewActionTest extends ControllerTestCase {
  * @return void
  */
 	public function testGet($method) {
-		$controller = $this->generate($this->controllerClass);
-		$this->_subscribeToEvents();
+		$this->_eventManager->attach(
+			function ($event) {
+				$this->_subscribeToEvents($this->_controller);
+			},
+			'Dispatcher.beforeDispatch',
+			['priority' => 1000]
+		);
 
-		$result = $this->_testAction('/blogs/view/1', compact('method'));
+		$this->{$method}('/blogs/view/1');
 
 		$this->assertEvents(['beforeFind', 'afterFind',	'beforeRender']);
-		$this->assertEquals(['viewVar', 'blog', 'success'], array_keys($this->vars));
+		$this->assertNotNull($this->viewVariable('viewVar'));
+		$this->assertNotNull($this->viewVariable('blog'));
+		$this->assertNotNull($this->viewVariable('success'));
 	}
 
 /**
@@ -70,13 +62,21 @@ class ViewActionTest extends ControllerTestCase {
  * @return void
  */
 	public function testGetWithViewVar() {
-		$controller = $this->generate($this->controllerClass);
-		$controller->Crud->action('view')->viewVar('item');
-		$this->_subscribeToEvents();
+		$this->_eventManager->attach(
+			function ($event) {
+				$this->_controller->Crud->action('view')->viewVar('item');
+				$this->_subscribeToEvents($this->_controller);
+			},
+			'Dispatcher.beforeDispatch',
+			['priority' => 1000]
+		);
 
-		$result = $this->_testAction('/blogs/view/1', compact('method'));
+		$this->get('/blogs/view/1');
+
 		$this->assertEvents(['beforeFind', 'afterFind',	'beforeRender']);
-		$this->assertEquals(['viewVar', 'item', 'success'], array_keys($this->vars));
+		$this->assertNotNull($this->viewVariable('viewVar'));
+		$this->assertNotNull($this->viewVariable('item'));
+		$this->assertNotNull($this->viewVariable('success'));
 	}
 
 }
