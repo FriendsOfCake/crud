@@ -4,7 +4,6 @@ namespace Crud\Test\TestCase\Action;
 use Cake\Routing\DispatcherFactory;
 use Cake\Routing\Router;
 use Crud\TestSuite\IntegrationTestCase;
-use Crud\Test\App\Controller\BlogsController;
 
 /**
  * Licensed under The MIT License
@@ -18,13 +17,6 @@ class AddActionTest extends IntegrationTestCase {
  * @var array
  */
 	public $fixtures = ['plugin.crud.blogs'];
-
-/**
- * Controller class to mock on
- *
- * @var string
- */
-	public $controllerClass = '\Crud\Test\App\Controller\BlogsController';
 
 /**
  * Table class to mock on
