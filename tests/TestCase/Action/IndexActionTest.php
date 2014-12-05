@@ -3,15 +3,14 @@ namespace Crud\Test\TestCase\Action;
 
 use Cake\Routing\DispatcherFactory;
 use Cake\Routing\Router;
-use Crud\TestSuite\ControllerTestCase;
-use Crud\Test\App\Controller\BlogsController;
+use Crud\TestSuite\IntegrationTestCase;
 
 /**
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class IndexActionTest extends ControllerTestCase {
+class IndexActionTest extends IntegrationTestCase {
 
 /**
  * fixtures property
@@ -19,20 +18,6 @@ class IndexActionTest extends ControllerTestCase {
  * @var array
  */
 	public $fixtures = ['plugin.crud.blogs'];
-
-/**
- * Controller class to mock on
- *
- * @var string
- */
-	public $controllerClass = '\Crud\Test\App\Controller\BlogsController';
-
-/**
- * Table class to mock on
- *
- * @var string
- */
-	public $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
 
 /**
  * Data provider with all HTTP verbs
@@ -55,13 +40,20 @@ class IndexActionTest extends ControllerTestCase {
  * @return void
  */
 	public function testGet($method) {
-		$controller = $this->generate($this->controllerClass);
-		$this->_subscribeToEvents();
+		$this->_eventManager->attach(
+			function ($event) {
+				$this->_subscribeToEvents($this->_controller);
+			},
+			'Dispatcher.beforeDispatch',
+			['priority' => 1000]
+		);
 
-		$result = $this->_testAction('/blogs', compact('method'));
-		$this->assertContains('Page 1 of 2, showing 3 records out of 5 total', $result);
+		$this->{$method}('/blogs');
+		$this->assertContains('Page 1 of 2, showing 3 records out of 5 total', $this->_response->body());
 		$this->assertEvents(['beforePaginate', 'afterPaginate',	'beforeRender']);
-		$this->assertEquals(['viewVar', 'blogs', 'success'], array_keys($this->vars));
+		$this->assertNotNull($this->viewVariable('viewVar'));
+		$this->assertNotNull($this->viewVariable('blogs'));
+		$this->assertNotNull($this->viewVariable('success'));
 	}
 
 /**
@@ -70,14 +62,22 @@ class IndexActionTest extends ControllerTestCase {
  * @return void
  */
 	public function testGetWithViewVar() {
-		$controller = $this->generate($this->controllerClass);
-		$controller->Crud->action('index')->viewVar('items');
-		$this->_subscribeToEvents();
+		$this->_eventManager->attach(
+			function ($event) {
+				$this->_controller->Crud->action('index')->viewVar('items');
+				$this->_subscribeToEvents($this->_controller);
+			},
+			'Dispatcher.beforeDispatch',
+			['priority' => 1000]
+		);
 
-		$result = $this->_testAction('/blogs', compact('method'));
-		$this->assertContains('Page 1 of 2, showing 3 records out of 5 total', $result);
+		$this->get('/blogs');
+
+		$this->assertContains('Page 1 of 2, showing 3 records out of 5 total', $this->_response->body());
 		$this->assertEvents(['beforePaginate', 'afterPaginate',	'beforeRender']);
-		$this->assertEquals(['viewVar', 'items', 'success'], array_keys($this->vars));
+		$this->assertNotNull($this->viewVariable('viewVar'));
+		$this->assertNotNull($this->viewVariable('items'));
+		$this->assertNotNull($this->viewVariable('success'));
 	}
 
 }
