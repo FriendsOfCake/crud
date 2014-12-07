@@ -160,13 +160,13 @@ class ApiListener extends BaseListener {
 
 		$class = $exceptionConfig['class'];
 
-		// @codingStandardsIgnoreStart
 		if ($exceptionConfig['type'] === 'validate') {
-			throw new $class($Event->subject->entity);
+			$exception = new $class($Event->subject->entity);
+			throw $exception;
 		}
 
-		throw new $class($exceptionConfig['message'], $exceptionConfig['code']);
-		// @codingStandardsIgnoreEnd
+		$exception = new $class($exceptionConfig['message'], $exceptionConfig['code']);
+		throw $exception;
 	}
 
 /**
