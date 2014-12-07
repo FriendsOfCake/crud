@@ -1,8 +1,8 @@
 <?php
 namespace Crud\Test\TestCase\Listener;
 
-use Crud\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Crud\TestSuite\TestCase;
 
 /**
  * Licensed under The MIT License
@@ -118,8 +118,7 @@ class RedirectListenerTest extends TestCase {
 
 		$listener->setup();
 
-		$closure = function() {
-
+		$closure = function () {
 		};
 
 		$actual = $listener->reader('my.reader', $closure);
@@ -384,7 +383,12 @@ class RedirectListenerTest extends TestCase {
 		$this->assertSame(array('action' => 'index'), $subject->url);
 	}
 
-	public function dataProvider_getUrl() {
+/**
+ * [dataProviderGetUrl description]
+ *
+ * @return array
+ */
+	public function dataProviderGetUrl() {
 		$Request = new \Cake\Network\Request;
 		$Request->params['action'] = 'index';
 		$Request->query['parent_id'] = 10;
@@ -432,10 +436,10 @@ class RedirectListenerTest extends TestCase {
 /**
  * Test _getUrl
  *
- * @dataProvider dataProvider_getUrl
+ * @dataProvider dataProviderGetUrl
  * @return void
  */
-	public function test_getUrl(\Crud\Event\Subject $subject, $url, $expected) {
+	public function testGetUrl(\Crud\Event\Subject $subject, $url, $expected) {
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\RedirectListener')
 			->setMethods(['_request'])

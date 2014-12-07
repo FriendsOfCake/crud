@@ -235,11 +235,11 @@ class ApiListenerTest extends TestCase {
 	}
 
 /**
- * Data provider for test_exceptionResponse
+ * Data provider for testExceptionResponse
  *
  * @return array
  */
-	public function data_exceptionResponse() {
+	public function dataExceptionResponse() {
 		return array(
 			'default configuration' => array(
 				array(),
@@ -297,15 +297,15 @@ class ApiListenerTest extends TestCase {
 /**
  * Test _exceptionResponse
  *
- * @dataProvider data_exceptionResponse
+ * @dataProvider dataExceptionResponse
  * @param array $apiConfig
  * @param string $exceptionClass
  * @param string $exceptionMessage
- * @param integer $exceptionCode
+ * @param int $exceptionCode
  * @param array $validationErrors
  * @return void
  */
-	public function test_exceptionResponse($apiConfig, $exceptionClass, $exceptionMessage, $exceptionCode, $validationErrors = []) {
+	public function testExceptionResponse($apiConfig, $exceptionClass, $exceptionMessage, $exceptionCode, $validationErrors = []) {
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\ApiListener')
 			->disableOriginalConstructor()
@@ -336,11 +336,11 @@ class ApiListenerTest extends TestCase {
 	}
 
 /**
- * test_ensureSerializeWithViewVar
+ * testEnsureSerializeWithViewVar
  *
  * @return void
  */
-	public function test_ensureSerializeWithViewVar() {
+	public function testEnsureSerializeWithViewVar() {
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\ApiListener')
 			->setMethods(array('_action', '_controller'))
@@ -382,11 +382,11 @@ class ApiListenerTest extends TestCase {
 	}
 
 /**
- * test_ensureSerializeAlreadySet
+ * testEnsureSerializeAlreadySet
  *
  * @return void
  */
-	public function test_ensureSerializeAlreadySet() {
+	public function testEnsureSerializeAlreadySet() {
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\ApiListener')
 			->setMethods(array('_action', '_controller'))
@@ -427,11 +427,11 @@ class ApiListenerTest extends TestCase {
 	}
 
 /**
- * test_ensureSerializeWithViewVarChanged
+ * testEnsureSerializeWithViewVarChanged
  *
  * @return void
  */
-	public function test_ensureSerializeWithViewVarChanged() {
+	public function testEnsureSerializeWithViewVarChanged() {
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\ApiListener')
 			->setMethods(array('_action', '_controller'))
@@ -473,11 +473,11 @@ class ApiListenerTest extends TestCase {
 	}
 
 /**
- * test_ensureSerializeWithoutViewVar
+ * testEnsureSerializeWithoutViewVar
  *
  * @return void
  */
-	public function test_ensureSerializeWithoutViewVar() {
+	public function testEnsureSerializeWithoutViewVar() {
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\ApiListener')
 			->setMethods(array('_action', '_controller'))
@@ -515,11 +515,11 @@ class ApiListenerTest extends TestCase {
 	}
 
 /**
- * test_ensureSuccess
+ * testEnsureSuccess
  *
  * @return void
  */
-	public function test_ensureSuccess() {
+	public function testEnsureSuccess() {
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\ApiListener')
 			->setMethods(array('_controller'))
@@ -549,11 +549,11 @@ class ApiListenerTest extends TestCase {
 	}
 
 /**
- * test_ensureData
+ * testEnsureData
  *
  * @return void
  */
-	public function test_ensureData() {
+	public function testEnsureData() {
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\ApiListener')
 			->setMethods(array('_controller', '_action'))
@@ -600,11 +600,11 @@ class ApiListenerTest extends TestCase {
 	}
 
 /**
- * test_ensureDataSubject
+ * testEnsureDataSubject
  *
  * @return void
  */
-	public function test_ensureDataSubject() {
+	public function testEnsureDataSubject() {
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\ApiListener')
 			->setMethods(array('_controller', '_action'))
@@ -656,11 +656,11 @@ class ApiListenerTest extends TestCase {
 	}
 
 /**
- * test_ensureDataRaw
+ * testEnsureDataRaw
  *
  * @return void
  */
-	public function test_ensureDataRaw() {
+	public function testEnsureDataRaw() {
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\ApiListener')
 			->setMethods(array('_controller', '_action'))
@@ -707,11 +707,11 @@ class ApiListenerTest extends TestCase {
 	}
 
 /**
- * test_ensureDataError
+ * testEnsureDataError
  *
  * @return void
  */
-	public function test_ensureDataError() {
+	public function testEnsureDataError() {
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\ApiListener')
 			->setMethods(array('_controller', '_action'))
@@ -758,11 +758,11 @@ class ApiListenerTest extends TestCase {
 	}
 
 /**
- * test_ensureSuccessAlreadySet
+ * testEnsureSuccessAlreadySet
  *
  * @return void
  */
-	public function test_ensureSuccessAlreadySet() {
+	public function testEnsureSuccessAlreadySet() {
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\ApiListener')
 			->setMethods(array('_controller'))
@@ -802,7 +802,7 @@ class ApiListenerTest extends TestCase {
  */
 	public function testFlashMessageSupressed() {
 		$Request = new \Cake\Network\Request();
-		$Request->addDetector('api', ['callback' => function() {
+		$Request->addDetector('api', ['callback' => function () {
 			return true;
 		}]);
 
@@ -822,11 +822,11 @@ class ApiListenerTest extends TestCase {
 	}
 
 /**
- * Data provider for test_expandPath
+ * Data provider for testExpandPath
  *
  * @return array
  */
-	public function data_expandPath() {
+	public function dataExpandPath() {
 		return [
 			'simple string' => [
 				new \Crud\Event\Subject(['modelClass' => 'MyModel']),
@@ -849,12 +849,12 @@ class ApiListenerTest extends TestCase {
 	}
 
 /**
- * test_expandPath
+ * testExpandPath
  *
- * @dataProvider data_expandPath
+ * @dataProvider dataExpandPath
  * @return void
  */
-	public function test_expandPath($subject, $path, $expected) {
+	public function testExpandPath($subject, $path, $expected) {
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\ApiListener')
 			->disableOriginalConstructor()
@@ -991,8 +991,6 @@ class ApiListenerTest extends TestCase {
 			$request->is('api'),
 			"A request with no extensions should not be considered an api request"
 		);
-
-
 	}
 
 /**
@@ -1033,11 +1031,11 @@ class ApiListenerTest extends TestCase {
 		$this->assertEquals($expected, $result);
 	}
 /**
- * data provider for test_checkRequestMethods
+ * data provider for testCheckRequestMethods
  *
  * @return array
  */
-	public function data_checkRequestMethods() {
+	public function dataCheckRequestMethods() {
 		return array(
 			'defaults' => array(
 				array(),
@@ -1063,12 +1061,12 @@ class ApiListenerTest extends TestCase {
 	}
 
 /**
- * test_checkRequestMethods
+ * testCheckRequestMethods
  *
- * @dataProvider data_checkRequestMethods
+ * @dataProvider dataCheckRequestMethods
  * @return void
  */
-	public function test_checkRequestMethods($apiConfig, $exception, $requestMethods) {
+	public function testCheckRequestMethods($apiConfig, $exception, $requestMethods) {
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\ApiListener')
 			->setMethods(['_action', '_request'])

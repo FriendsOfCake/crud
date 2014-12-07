@@ -74,8 +74,8 @@ trait RedirectTrait {
  *
  * @param \Crud\Event\Subject $subject Event subject
  * @param string|array $url URL
- * @param integer $status Status code
- * @param boolean $exit Whether to exit script or not
+ * @param int $status Status code
+ * @param bool $exit Whether to exit script or not
  * @return void
  */
 	protected function _redirect(Subject $subject, $url = null, $status = null, $exit = true) {

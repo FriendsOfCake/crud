@@ -82,7 +82,7 @@ class Subject {
  *
  * @param string $mode Mode
  * @param mixed $actions Actions list
- * @return boolean
+ * @return bool
  * @throws \Exception In case of invalid mode
  */
 	public function shouldProcess($mode, $actions = []) {

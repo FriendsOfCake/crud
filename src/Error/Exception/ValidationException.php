@@ -22,7 +22,7 @@ class ValidationException extends BadRequestException {
 /**
  * How many validation errors are there?
  *
- * @var integer
+ * @var int
  */
 	protected $_validationErrorCount = 0;
 
@@ -30,7 +30,7 @@ class ValidationException extends BadRequestException {
  * Constructor
  *
  * @param \Cake\ORM\Entity $entity Entity
- * @param integer $code code to report to client
+ * @param int $code code to report to client
  * @return void
  */
 	public function __construct(Entity $entity, $code = 412) {
@@ -61,7 +61,7 @@ class ValidationException extends BadRequestException {
 /**
  * How many validation errors are there?
  *
- * @return integer
+ * @return int
  */
 	public function getValidationErrorCount() {
 		return $this->_validationErrorCount;

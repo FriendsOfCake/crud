@@ -33,7 +33,7 @@ class ApiPaginationListener extends BaseListener {
 /**
  * Appends the pagination information to the JSON or XML output
  *
- * @param CakeEvent $event
+ * @param \Cake\Event\Event $event Event
  * @return void
  */
 	public function beforeRender(Event $event) {

@@ -44,7 +44,7 @@ class RedirectListener extends BaseListener {
  * @return void
  */
 	public function setup() {
-		$this->reader('request.key', function(\Crud\Event\Subject $subject, $key = null) {
+		$this->reader('request.key', function (\Crud\Event\Subject $subject, $key = null) {
 			$request = $this->_request();
 
 			if (!isset($request->{$key})) {
@@ -54,21 +54,21 @@ class RedirectListener extends BaseListener {
 			return $request->{$key};
 		});
 
-		$this->reader('request.data', function(\Crud\Event\Subject $subject, $key = null) {
+		$this->reader('request.data', function (\Crud\Event\Subject $subject, $key = null) {
 			$request = $this->_request();
 			return $request->data($key);
 		});
 
-		$this->reader('request.query', function(\Crud\Event\Subject $subject, $key = null) {
+		$this->reader('request.query', function (\Crud\Event\Subject $subject, $key = null) {
 			$request = $this->_request();
 			return $request->query($key);
 		});
 
-		$this->reader('entity.field', function(\Crud\Event\Subject $subject, $key = null) {
+		$this->reader('entity.field', function (\Crud\Event\Subject $subject, $key = null) {
 			return $subject->entity->get($key);
 		});
 
-		$this->reader('subject.key', function(\Crud\Event\Subject $subject, $key = null) {
+		$this->reader('subject.key', function (\Crud\Event\Subject $subject, $key = null) {
 			if (!isset($subject->{$key})) {
 				return null;
 			}
@@ -80,8 +80,8 @@ class RedirectListener extends BaseListener {
 /**
  * Add or replace a reader
  *
- * @param string $key
- * @param mixed $reader
+ * @param string $key Key
+ * @param mixed $reader Reader
  * @return mixed
  */
 	public function reader($key, $reader = null) {
@@ -98,7 +98,7 @@ class RedirectListener extends BaseListener {
  * If a special redirect key is provided, change the
  * redirection URL target
  *
- * @param \Cake\Event\Event $event
+ * @param \Cake\Event\Event $event Event
  * @return void
  */
 	public function beforeRedirect(\Cake\Event\Event $event) {
@@ -125,8 +125,8 @@ class RedirectListener extends BaseListener {
  * Expand configurations where possible and replace the
  * placeholder with the actual value
  *
- * @param \Crud\Event\Subject $subject
- * @param array $config
+ * @param \Crud\Event\Subject $subject Subject
+ * @param array $url URL
  * @return array
  */
 	protected function _getUrl(\Crud\Event\Subject $subject, array $url) {
@@ -149,11 +149,11 @@ class RedirectListener extends BaseListener {
 /**
  * Return the value of `$type` with `$key`
  *
- * @throws Exception if the reader is invalid
- * @param \Crud\Event\Subject $subject
- * @param string $reader
- * @param string $key
+ * @param \Crud\Event\Subject $subject Subject
+ * @param string $reader Reader
+ * @param string $key Key
  * @return mixed
+ * @throws \Exception if the reader is invalid
  */
 	protected function _getKey(\Crud\Event\Subject $subject, $reader, $key) {
 		$callable = $this->reader($reader);

@@ -19,6 +19,11 @@ abstract class IntegrationTestCase extends \Cake\TestSuite\IntegrationTestCase {
 	use CounterHelperTrait;
 	use CrudTestTrait;
 
+/**
+ * [setUp description]
+ *
+ * @return void
+ */
 	public function setUp() {
 		parent::setUp();
 		$this->resetReflectionCache();

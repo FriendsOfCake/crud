@@ -38,8 +38,8 @@ abstract class Object implements EventListenerInterface {
 /**
  * Constructor
  *
- * @param \Crud\Event\Subject $subject
- * @param array $defaults Default settings
+ * @param \Cake\Controller\Controller $Controller Controller instance
+ * @param array $config Default settings
  * @return void
  */
 	public function __construct(Controller $Controller, $config = []) {
@@ -59,8 +59,8 @@ abstract class Object implements EventListenerInterface {
 /**
  * Convenient method for Request::is
  *
- * @param  string|array $method
- * @return boolean
+ * @param string|array $method Method(s) to check for
+ * @return bool
  */
 	protected function _checkRequestType($method) {
 		return $this->_request()->is($method);

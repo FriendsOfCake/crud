@@ -28,7 +28,7 @@ trait CrudTestTrait {
  *
  * It's stored in the `$this->_subject` property
  *
- * @param  \Cake\Controller\Controller $controller
+ * @param \Cake\Controller\Controller $controller Controller
  * @return void
  */
 	public function _subscribeToEvents(Controller $controller = null) {
@@ -36,11 +36,11 @@ trait CrudTestTrait {
 			$controller = $this->controller;
 		}
 
-		$controller->Crud->on('beforeRender', function($event) {
+		$controller->Crud->on('beforeRender', function ($event) {
 			$this->_subject = $event->subject;
 		});
 
-		$controller->Crud->on('beforeRedirect', function($event) {
+		$controller->Crud->on('beforeRedirect', function ($event) {
 			$this->_subject = $event->subject;
 		});
 	}
@@ -48,10 +48,10 @@ trait CrudTestTrait {
 /**
  * Get a "model" (Table) instance
  *
- * @param  string $class   Full table class name
- * @param  mixed  $methods Methods to mock
- * @param  string $alias   Table alias / name
- * @param  string $table   Table name in the database
+ * @param string $class Full table class name
+ * @param mixed $methods Methods to mock
+ * @param string $alias Table alias / name
+ * @param string $table Table name in the database
  * @return \Cake\ORM\Table
  */
 	public function getModel($class, $methods, $alias, $table) {
@@ -69,8 +69,8 @@ trait CrudTestTrait {
  * The `$expected` list do not need to prefix events with `Crud.` - this is done
  * automatically before comparison
  *
- * @param  array $expected An array of CRUD events we expected to be fired
- * @param  array $actual   Can be an Event class, Crud subject or array with event names
+ * @param array $expected An array of CRUD events we expected to be fired
+ * @param array $actual Can be an Event class, Crud subject or array with event names
  * @return void
  * @throws \Exception
  */

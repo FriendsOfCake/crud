@@ -20,7 +20,7 @@ abstract class BaseAction extends Object {
 /**
  * Check if the current action is responding to a request or not
  *
- * @var boolean
+ * @var bool
  */
 	protected $_responding = false;
 
@@ -70,7 +70,7 @@ abstract class BaseAction extends Object {
 /**
  * Getter for $_responding
  *
- * @return boolean
+ * @return bool
  */
 	public function responding() {
 		return (bool)$this->_responding;
@@ -88,7 +88,7 @@ abstract class BaseAction extends Object {
 /**
  * Test if a Crud action is enabled or not
  *
- * @return boolean
+ * @return bool
  */
 	public function enabled() {
 		return $this->config('enabled');

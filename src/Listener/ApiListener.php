@@ -87,7 +87,7 @@ class ApiListener extends BaseListener {
  *
  * Called before the crud action is executed
  *
- * @param \Cake\Event\Event $event
+ * @param \Cake\Event\Event $event Event
  * @return void
  */
 	public function beforeHandle(Event $event) {
@@ -97,8 +97,8 @@ class ApiListener extends BaseListener {
 /**
  * Handle response
  *
- * @param \Cake\Event\Event $event
- * @return CakeResponse
+ * @param \Cake\Event\Event $event Event
+ * @return \Cake\Network\Response
  */
 	public function respond(Event $event) {
 		$key = $event->subject->success ? 'success' : 'error';
@@ -118,7 +118,7 @@ class ApiListener extends BaseListener {
  * Check for allowed HTTP request types
  *
  * @throws \Cake\Network\Exception\BadRequestException
- * @return boolean
+ * @return bool
  */
 	protected function _checkRequestMethods() {
 		$action = $this->_action();
@@ -150,27 +150,29 @@ class ApiListener extends BaseListener {
 /**
  * Throw an exception based on API configuration
  *
- * @throws
- * @param  \Cake\Event\Event $Event
- * @param  array             $exceptionConfig
+ * @param \Cake\Event\Event $Event Event
+ * @param array $exceptionConfig Exception config
  * @return void
+ * @throws \Exception
  */
 	protected function _exceptionResponse(Event $Event, $exceptionConfig) {
 		$exceptionConfig = array_merge($this->config('exception'), $exceptionConfig);
 
 		$class = $exceptionConfig['class'];
 
+		// @codingStandardsIgnoreStart
 		if ($exceptionConfig['type'] === 'validate') {
 			throw new $class($Event->subject->entity);
 		}
 
 		throw new $class($exceptionConfig['message'], $exceptionConfig['code']);
+		// @codingStandardsIgnoreEnd
 	}
 
 /**
  * Selects an specific Crud view class to render the output
  *
- * @param \Crud\Event\Subject $subject
+ * @param \Crud\Event\Subject $subject Subject
  * @return \Cake\Network\Response
  */
 	public function render(Subject $subject) {
@@ -217,7 +219,7 @@ class ApiListener extends BaseListener {
 /**
  * Ensure success key is present in Controller::$viewVars
  *
- * @param \Crud\Event\Subject $subject
+ * @param \Crud\Event\Subject $subject Subject
  * @return void
  */
 	protected function _ensureSuccess(Subject $subject) {
@@ -233,7 +235,7 @@ class ApiListener extends BaseListener {
 /**
  * Ensure data key is present in Controller:$viewVars
  *
- * @param \Crud\Event\Subject $subject
+ * @param \Crud\Event\Subject $subject Subject
  * @return void
  */
 	protected function _ensureData(Subject $subject) {
@@ -309,8 +311,8 @@ class ApiListener extends BaseListener {
  * and use them for a String::insert() interpolation
  * of a path
  *
- * @param  \Crud\Event\Subject $subject
- * @param  string              $path
+ * @param \Crud\Event\Subject $subject Subject
+ * @param string $path Path
  * @return string
  */
 	protected function _expandPath(\Crud\Event\Subject $subject, $path) {
@@ -350,8 +352,8 @@ class ApiListener extends BaseListener {
  * 		the response format for the `$type`. Normal
  * 		CakePHP plugin "dot" notation is supported
  *
- * @param string $type
- * @param string $class
+ * @param string $type Type
+ * @param string $class Class name
  * @return mixed
  */
 	public function viewClass($type, $class = null) {
@@ -367,7 +369,8 @@ class ApiListener extends BaseListener {
  *
  * An API request doesn't need flash messages - so stop them being processed
  *
- * @param CakeEvent $event
+ * @param \Cake\Event\Event $event Event
+ * @return void
  */
 	public function setFlash(Event $event) {
 		$event->stopPropagation();
