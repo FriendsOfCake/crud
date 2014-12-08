@@ -1,8 +1,8 @@
 <?php
 namespace Crud\Test\TestCase\Listener;
 
-use Crud\TestSuite\TestCase;
 use Cake\Core\Configure;
+use Crud\TestSuite\TestCase;
 
 /**
  *

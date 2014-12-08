@@ -17,9 +17,6 @@ env:
 
 matrix:
   allow_failures:
-    - php: 5.4
-      env: PHPCS=1 DEFAULT=0
-
     - php: hhvm
 
     - php: hhvm-nightly

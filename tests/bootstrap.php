@@ -1,5 +1,5 @@
 <?php
-function find_root() {
+$findRoot = function () {
 	$root = dirname(__DIR__);
 	if (is_dir($root . '/vendor/cakephp/cakephp')) {
 		return $root;
@@ -14,10 +14,10 @@ function find_root() {
 	if (is_dir($root . '/vendor/cakephp/cakephp')) {
 		return $root;
 	}
-}
+};
 
 define('DS', DIRECTORY_SEPARATOR);
-define('ROOT', find_root());
+define('ROOT', $findRoot());
 define('APP_DIR', 'App');
 define('WEBROOT_DIR', 'webroot');
 define('APP', ROOT . '/tests/App/');

@@ -3,14 +3,13 @@ namespace Crud\Test\TestCase\Action;
 
 use Cake\Routing\DispatcherFactory;
 use Cake\Routing\Router;
-use Crud\TestSuite\ControllerTestCase;
-use Crud\Test\App\Controller\BlogsController;
+use Crud\TestSuite\IntegrationTestCase;
 
 /**
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class DeleteActionTest extends ControllerTestCase {
+class DeleteActionTest extends IntegrationTestCase {
 
 /**
  * fixtures property
@@ -18,13 +17,6 @@ class DeleteActionTest extends ControllerTestCase {
  * @var array
  */
 	public $fixtures = ['plugin.crud.blogs'];
-
-/**
- * Controller class to mock on
- *
- * @var string
- */
-	public $controllerClass = '\Crud\Test\App\Controller\BlogsController';
 
 /**
  * Table class to mock on
@@ -54,30 +46,43 @@ class DeleteActionTest extends ControllerTestCase {
  * @return void
  */
 	public function testAllRequestMethods($method) {
-		$this->generate($this->controllerClass, [
-			'components' => ['Flash' => ['set']]
-		]);
-		$this->_subscribeToEvents();
+		$this->_eventManager->attach(
+			function ($event) {
+				$this->_controller->Flash = $this->getMock(
+					'Cake\Controller\Component\Flash',
+					['set']
+				);
 
-		$this->controller->Flash
-			->expects($this->once())
-			->method('set')
-			->with(
-				'Successfully deleted blog',
-				[
-					'element' => 'default',
-					'params' => ['class' => 'message success', 'original' => 'Successfully deleted blog'],
-					'key' => 'flash'
-				]
-			);
+				$this->_controller->Flash
+					->expects($this->once())
+					->method('set')
+					->with(
+						'Successfully deleted blog',
+						[
+							'element' => 'default',
+							'params' => ['class' => 'message success', 'original' => 'Successfully deleted blog'],
+							'key' => 'flash'
+						]
+					);
 
-		$this->controller->Blogs = $this->getModel($this->tableClass, ['delete'], 'Blogs', 'blogs');
-		$this->controller->Blogs
-			->expects($this->once())
-			->method('delete')
-			->will($this->returnValue(true));
+				$this->_subscribeToEvents($this->_controller);
 
-		$result = $this->_testAction('/blogs/delete/1', ['method' => $method]);
+				$this->_controller->Blogs = $this->getMockForModel(
+					$this->tableClass,
+					['delete'],
+					['alias' => 'Blogs', 'table' => 'blogs']
+				);
+
+				$this->_controller->Blogs
+					->expects($this->once())
+					->method('delete')
+					->will($this->returnValue(true));
+			},
+			'Dispatcher.beforeDispatch',
+			['priority' => 1000]
+		);
+
+		$this->{$method}('/blogs/delete/1');
 
 		$this->assertEvents(['beforeFind', 'afterFind',	'beforeDelete', 'afterDelete', 'setFlash', 'beforeRedirect']);
 		$this->assertTrue($this->_subject->success);
@@ -90,33 +95,46 @@ class DeleteActionTest extends ControllerTestCase {
  * @return void
  */
 	public function testStopDelete() {
-		$this->generate($this->controllerClass, [
-			'components' => ['Flash' => ['set']]
-		]);
-		$this->_subscribeToEvents();
+		$this->_eventManager->attach(
+			function ($event) {
+				$this->_controller->Flash = $this->getMock(
+					'Cake\Controller\Component\Flash',
+					['set']
+				);
 
-		$this->controller->Crud->on('beforeDelete', function($event) {
-			$event->stopPropagation();
-		});
+				$this->_controller->Flash
+					->expects($this->once())
+					->method('set')
+					->with(
+						'Could not delete blog',
+						[
+							'element' => 'default',
+							'params' => ['class' => 'message error', 'original' => 'Could not delete blog'],
+							'key' => 'flash'
+						]
+					);
 
-		$this->controller->Blogs = $this->getModel($this->tableClass, ['delete'], 'Blogs', 'blogs');
-		$this->controller->Blogs
-			->expects($this->never())
-			->method('delete');
+				$this->_subscribeToEvents($this->_controller);
 
-		$this->controller->Flash
-			->expects($this->once())
-			->method('set')
-			->with(
-				'Could not delete blog',
-				[
-					'element' => 'default',
-					'params' => ['class' => 'message error', 'original' => 'Could not delete blog'],
-					'key' => 'flash'
-				]
-			);
+				$this->_controller->Crud->on('beforeDelete', function ($event) {
+					$event->stopPropagation();
+				});
 
-		$result = $this->_testAction('/blogs/delete/1');
+				$this->_controller->Blogs = $this->getMockForModel(
+					$this->tableClass,
+					['delete'],
+					['alias' => 'Blogs', 'table' => 'blogs']
+				);
+
+				$this->_controller->Blogs
+					->expects($this->never())
+					->method('delete');
+			},
+			'Dispatcher.beforeDispatch',
+			['priority' => 1000]
+		);
+
+		$this->get('/blogs/delete/1');
 
 		$this->assertEvents(['beforeFind', 'afterFind',	'beforeDelete', 'setFlash', 'beforeRedirect']);
 		$this->assertFalse($this->_subject->success);

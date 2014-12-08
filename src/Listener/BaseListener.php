@@ -71,6 +71,7 @@ abstract class BaseListener extends Object {
  * By default it uses Inflector::humanize, but can be changed
  * using the "name" configuration property
  *
+ * @param string $value Value
  * @return string
  */
 	public function resourceName($value = null) {

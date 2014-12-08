@@ -3,14 +3,13 @@ namespace Crud\Test\TestCase\Action;
 
 use Cake\Routing\DispatcherFactory;
 use Cake\Routing\Router;
-use Crud\TestSuite\ControllerTestCase;
-use Crud\Test\App\Controller\BlogsController;
+use Crud\TestSuite\IntegrationTestCase;
 
 /**
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class EditActionTest extends ControllerTestCase {
+class EditActionTest extends IntegrationTestCase {
 
 /**
  * fixtures property
@@ -18,13 +17,6 @@ class EditActionTest extends ControllerTestCase {
  * @var array
  */
 	public $fixtures = ['plugin.crud.blogs'];
-
-/**
- * Controller class to mock on
- *
- * @var string
- */
-	public $controllerClass = '\Crud\Test\App\Controller\BlogsController';
 
 /**
  * Table class to mock on
@@ -39,8 +31,8 @@ class EditActionTest extends ControllerTestCase {
  * @return void
  */
 	public function testActionGet() {
-		$controller = $this->generate($this->controllerClass);
-		$result = $this->_testAction('/blogs/edit/1');
+		$this->get('/blogs/edit/1');
+		$result = $this->_response->body();
 
 		$expected = ['tag' => 'legend', 'content' => 'Edit Blog'];
 		$this->assertTag($expected, $result, 'legend do not match the expected value');
@@ -63,8 +55,8 @@ class EditActionTest extends ControllerTestCase {
  * @return void
  */
 	public function testActionGetWithQueryArgs() {
-		$controller = $this->generate($this->controllerClass);
-		$result = $this->_testAction('/blogs/edit/1?name=test');
+		$this->get('/blogs/edit/1?name=test');
+		$result = $this->_response->body();
 
 		$expected = ['tag' => 'legend', 'content' => 'Edit Blog'];
 		$this->assertTag($expected, $result, 'legend do not match the expected value');
@@ -85,27 +77,34 @@ class EditActionTest extends ControllerTestCase {
  * @return void
  */
 	public function testActionPost() {
-		$this->controller = $this->generate($this->controllerClass, [
-			'components' => ['Flash' => ['set']]
-		]);
+		$this->_eventManager->attach(
+			function ($event) {
+				$this->_controller->Flash = $this->getMock(
+					'Cake\Controller\Component\Flash',
+					['set']
+				);
 
-		$this->_subscribeToEvents();
+				$this->_controller->Flash
+					->expects($this->once())
+					->method('set')
+					->with(
+						'Successfully updated blog',
+						[
+							'element' => 'default',
+							'params' => ['class' => 'message success', 'original' => 'Successfully updated blog'],
+							'key' => 'flash'
+						]
+					);
 
-		$this->controller->Flash
-			->expects($this->once())
-			->method('set')
-			->with(
-				'Successfully updated blog',
-				[
-					'element' => 'default',
-					'params' => ['class' => 'message success', 'original' => 'Successfully updated blog'],
-					'key' => 'flash'
-				]
-			);
+				$this->_subscribeToEvents($this->_controller);
+			},
+			'Dispatcher.beforeDispatch',
+			['priority' => 1000]
+		);
 
-		$result = $this->_testAction('/blogs/edit/1', [
-			'method' => 'POST',
-			'data' => ['name' => 'Hello World', 'body' => 'Pretty hot body']
+		$this->post('/blogs/edit/1', [
+			'name' => 'Hello World',
+			'body' => 'Pretty hot body'
 		]);
 
 		$this->assertEvents(['beforeFind', 'afterFind',	'beforeSave', 'afterSave', 'setFlash', 'beforeRedirect']);
@@ -120,34 +119,45 @@ class EditActionTest extends ControllerTestCase {
  * @return void
  */
 	public function testActionPostErrorSave() {
-		$this->generate($this->controllerClass, [
-			'components' => ['Flash' => ['set']]
-		]);
+		$this->_eventManager->attach(
+			function ($event) {
+				$this->_controller->Flash = $this->getMock(
+					'Cake\Controller\Component\Flash',
+					['set']
+				);
 
-		$this->_subscribeToEvents();
+				$this->_controller->Flash
+					->expects($this->once())
+					->method('set')
+					->with(
+						'Could not update blog',
+						[
+							'element' => 'default',
+							'params' => ['class' => 'message error', 'original' => 'Could not update blog'],
+							'key' => 'flash'
+						]
+					);
 
-		$this->controller->Blogs = $this->getModel($this->tableClass, ['save'], 'Blogs', 'blogs');
+				$this->_subscribeToEvents($this->_controller);
 
-		$this->controller->Blogs
-			->expects($this->once())
-			->method('save')
-			->will($this->returnValue(false));
+				$this->_controller->Blogs = $this->getMockForModel(
+					$this->tableClass,
+					['save'],
+					['alias' => 'Blogs', 'table' => 'blogs']
+				);
 
-		$this->controller->Flash
-			->expects($this->once())
-			->method('set')
-			->with(
-				'Could not update blog',
-				[
-					'element' => 'default',
-					'params' => ['class' => 'message error', 'original' => 'Could not update blog'],
-					'key' => 'flash'
-				]
-			);
+				$this->_controller->Blogs
+					->expects($this->once())
+					->method('save')
+					->will($this->returnValue(false));
+			},
+			'Dispatcher.beforeDispatch',
+			['priority' => 1000]
+		);
 
-		$result = $this->_testAction('/blogs/edit/1', [
-			'method' => 'POST',
-			'data' => ['name' => 'Hello World', 'body' => 'Pretty hot body']
+		$this->put('/blogs/edit/1', [
+			'name' => 'Hello World',
+			'body' => 'Pretty hot body'
 		]);
 
 		$this->assertEvents(['beforeFind', 'afterFind',	'beforeSave', 'afterSave', 'setFlash', 'beforeRender']);
@@ -161,38 +171,44 @@ class EditActionTest extends ControllerTestCase {
  * @return void
  */
 	public function testActionPostValidationErrors() {
-		$this->generate($this->controllerClass, [
-			'components' => ['Flash' => ['set']]
-		]);
+		$this->_eventManager->attach(
+			function ($event) {
+				$this->_controller->Flash = $this->getMock(
+					'Cake\Controller\Component\Flash',
+					['set']
+				);
 
-		$this->_subscribeToEvents();
+				$this->_controller->Flash
+					->expects($this->once())
+					->method('set')
+					->with(
+						'Could not update blog',
+						[
+							'element' => 'default',
+							'params' => ['class' => 'message error', 'original' => 'Could not update blog'],
+							'key' => 'flash'
+						]
+					);
 
-		$this->controller->Blogs = $this->getModel($this->tableClass, null, 'Blogs', 'blogs');
-		$this->controller->Blogs
-			->validator()
-			->validatePresence('name')
-			->add('name', [
-				'length' => [
-					'rule' => ['minLength', 10],
-					'message' => 'Name need to be at least 10 characters long',
-				]
-			]);
+				$this->_subscribeToEvents($this->_controller);
 
-		$this->controller->Flash
-			->expects($this->once())
-			->method('set')
-			->with(
-				'Could not update blog',
-				[
-					'element' => 'default',
-					'params' => ['class' => 'message error', 'original' => 'Could not update blog'],
-					'key' => 'flash'
-				]
-			);
+				$this->_controller->Blogs
+					->validator()
+					->validatePresence('name')
+					->add('name', [
+						'length' => [
+							'rule' => ['minLength', 10],
+							'message' => 'Name need to be at least 10 characters long',
+						]
+					]);
+			},
+			'Dispatcher.beforeDispatch',
+			['priority' => 1000]
+		);
 
-		$result = $this->_testAction('/blogs/edit/1', [
-			'method' => 'POST',
-			'data' => ['name' => 'Hello', 'body' => 'Pretty hot body']
+		$this->put('/blogs/edit/1', [
+			'name' => 'Hello',
+			'body' => 'Pretty hot body'
 		]);
 
 		$this->assertEvents(['beforeFind', 'afterFind',	'beforeSave', 'afterSave', 'setFlash', 'beforeRender']);
@@ -201,7 +217,7 @@ class EditActionTest extends ControllerTestCase {
 		$this->assertFalse($this->_subject->created);
 
 		$expected = ['class' => 'error-message', 'content' => 'Name need to be at least 10 characters long'];
-		$this->assertTag($expected, $result, 'Could not find validation error in HTML');
+		$this->assertTag($expected, $this->_response->body(), 'Could not find validation error in HTML');
 	}
 
 }

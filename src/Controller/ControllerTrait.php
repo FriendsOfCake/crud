@@ -27,13 +27,13 @@ trait ControllerTrait {
  *
  * @return mixed The resulting response.
  * @throws \LogicException When request is not set.
- * @throws \Cake\Exception\MissingActionException When actions are not defined
+ * @throws \Cake\Controller\Exception\MissingActionException When actions are not defined
  *   and CRUD is not enabled.
  */
 	public function invokeAction() {
 		$request = $this->request;
 		if (!isset($request)) {
-			throw new LogicException('No Request object configured. Cannot invoke action');
+			throw new \LogicException('No Request object configured. Cannot invoke action');
 		}
 		if (!$this->isAction($request->params['action'])) {
 			throw new MissingActionException(array(

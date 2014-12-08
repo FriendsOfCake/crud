@@ -15,9 +15,9 @@ class RelatedModelsListener extends BaseListener {
 /**
  * Fetches related models' list and sets them to a variable for the view
  *
- * @codeCoverageIgnore
- * @param \Cake\Event\Event $event
+ * @param \Cake\Event\Event $event Event
  * @return void
+ * @codeCoverageIgnore
  */
 	public function beforeRender(\Cake\Event\Event $event) {
 		$this->publishRelatedModels();
@@ -99,7 +99,7 @@ class RelatedModelsListener extends BaseListener {
  * Get associated tables based on the current table instance based on their
  * association type
  *
- * @param  array $types
+ * @param array $types Association types
  * @return array
  */
 	public function getAssociatedByType($types = []) {
@@ -122,7 +122,7 @@ class RelatedModelsListener extends BaseListener {
  * Get associated tables based on the current table instance based on their
  * association name
  *
- * @param  array $names
+ * @param array $names Association names
  * @return array
  */
 	public function getAssociatedByName($names) {

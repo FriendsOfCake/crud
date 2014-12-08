@@ -20,15 +20,35 @@ class CrudExamplesTable extends \Cake\ORM\Table {
 		'firstUnpublished' => true,
 	);
 
+/**
+ * [initialize description]
+ *
+ * @param array $config Config
+ * @return void
+ */
 	public function initialize(array $config) {
 		$this->table('posts');
 	}
 
+/**
+ * [_findPublished description]
+ *
+ * @param Query $query Config
+ * @param array $options Options
+ * @return void
+ */
 	protected function _findPublished(Query $query, array $options) {
 		$query->where(['published' => 'Y']);
 		return $query;
 	}
 
+/**
+ * [_findUnpublished description]
+ *
+ * @param Query $query Config
+ * @param array $options Options
+ * @return void
+ */
 	protected function _findUnpublished(Query $query, array $options) {
 		$query->where(['published' => 'N']);
 	}

@@ -9,7 +9,7 @@ use Cake\Network\Request;
 use Cake\Network\Response;
 use Cake\ORM\TableRegistry;
 use Crud\Controller\Component\CrudComponent;
-use Crud\TestSuite\ControllerTestCase;
+use Crud\TestSuite\TestCase;
 
 /**
  * TestCrudEventManager
@@ -57,7 +57,6 @@ class CrudExamplesController extends \Cake\Controller\Controller {
 	public $modelClass = 'CrudExamples';
 
 	public static $componentsArray = array(
-		'Session',
 		'Crud.Crud' => array(
 			'actions' => array(
 				'Crud.Index',
@@ -153,7 +152,7 @@ class TestListener extends \Crud\Listener\BaseListener {
 /**
  * CrudComponentTestCase
  */
-class CrudComponentTest extends ControllerTestCase {
+class CrudComponentTest extends TestCase {
 
 /**
  * Fixtures
@@ -162,7 +161,7 @@ class CrudComponentTest extends ControllerTestCase {
  * What fixture is used is almost irrelevant, was chosen as it is simple
  */
 	public $fixtures = array(
-		'core.posts'
+		'core.Posts'
 	);
 
 /**

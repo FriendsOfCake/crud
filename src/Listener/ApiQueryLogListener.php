@@ -40,7 +40,7 @@ class ApiQueryLogListener extends BaseListener {
 /**
  * Setup logging for all connections
  *
- * @param  Event  $event
+ * @param \Cake\Event\Event $event Event
  * @return void
  */
 	public function setupLogging(Event $event) {
@@ -53,7 +53,7 @@ class ApiQueryLogListener extends BaseListener {
 /**
  * Appends the query log to the JSON or XML output
  *
- * @param CakeEvent $event
+ * @param \Cake\Event\Event $event Event
  * @return void
  */
 	public function beforeRender(Event $event) {
@@ -84,8 +84,8 @@ class ApiQueryLogListener extends BaseListener {
 /**
  * Get a list of sources defined in database.php
  *
- * @codeCoverageIgnore
  * @return array
+ * @codeCoverageIgnore
  */
 	protected function _getSources() {
 		return ConnectionManager::configured();
@@ -94,9 +94,9 @@ class ApiQueryLogListener extends BaseListener {
 /**
  * Get a specific data source
  *
- * @codeCoverageIgnore
  * @param string $source Datasource name
  * @return DataSource
+ * @codeCoverageIgnore
  */
 	protected function _getSource($source) {
 		return ConnectionManager::get($source);

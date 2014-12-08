@@ -28,7 +28,7 @@ trait CrudTestTrait {
  *
  * It's stored in the `$this->_subject` property
  *
- * @param  \Cake\Controller\Controller $controller
+ * @param \Cake\Controller\Controller $controller Controller
  * @return void
  */
 	public function _subscribeToEvents(Controller $controller = null) {
@@ -36,11 +36,11 @@ trait CrudTestTrait {
 			$controller = $this->controller;
 		}
 
-		$controller->Crud->on('beforeRender', function($event) {
+		$controller->Crud->on('beforeRender', function ($event) {
 			$this->_subject = $event->subject;
 		});
 
-		$controller->Crud->on('beforeRedirect', function($event) {
+		$controller->Crud->on('beforeRedirect', function ($event) {
 			$this->_subject = $event->subject;
 		});
 	}
@@ -48,10 +48,10 @@ trait CrudTestTrait {
 /**
  * Get a "model" (Table) instance
  *
- * @param  string $class   Full table class name
- * @param  mixed  $methods Methods to mock
- * @param  string $alias   Table alias / name
- * @param  string $table   Table name in the database
+ * @param string $class Full table class name
+ * @param mixed $methods Methods to mock
+ * @param string $alias Table alias / name
+ * @param string $table Table name in the database
  * @return \Cake\ORM\Table
  */
 	public function getModel($class, $methods, $alias, $table) {
@@ -64,43 +64,13 @@ trait CrudTestTrait {
 	}
 
 /**
- * Assert a redirect happened
- *
- * `$actual` can be a string, Controller or Response instance
- *
- * @param  string $expected
- * @param  mixed  $actual
- * @return void
- * @throws \Exception
- */
-	public function assertRedirect($expected, $actual = null) {
-		if ($actual === null) {
-			$actual = $this->controller;
-		}
-
-		if ($actual instanceof Controller) {
-			$actual = $actual->response->location();
-		}
-
-		if ($actual instanceof Response) {
-			$actual = $actual->location();
-		}
-
-		if (empty($actual)) {
-			throw new \Exception('assertRedirect: Expected "actual" to be a non-empty string');
-		}
-
-		$this->assertEquals($expected, $actual,	'Was not redirected to ' . $expected);
-	}
-
-/**
  * Assert these CRUD events was emitted during the life cycle
  *
  * The `$expected` list do not need to prefix events with `Crud.` - this is done
  * automatically before comparison
  *
- * @param  array $expected An array of CRUD events we expected to be fired
- * @param  array $actual   Can be an Event class, Crud subject or array with event names
+ * @param array $expected An array of CRUD events we expected to be fired
+ * @param array $actual Can be an Event class, Crud subject or array with event names
  * @return void
  * @throws \Exception
  */

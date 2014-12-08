@@ -13,9 +13,9 @@ trait ProxyTrait {
  *
  * Primarily here to ease unit testing
  *
- * @codeCoverageIgnore
- * @param string $name
+ * @param string $name Action name
  * @return \Crud\Action\Base
+ * @codeCoverageIgnore
  */
 	protected function _action($name = null) {
 		return $this->_crud()->action($name);
@@ -26,10 +26,10 @@ trait ProxyTrait {
  *
  * Primarily here to ease unit testing
  *
- * @codeCoverageIgnore
- * @param string $eventName
- * @param array $data
+ * @param string $eventName Event name
+ * @param array $data Data array
  * @return \Cake\Event\Event
+ * @codeCoverageIgnore
  */
 	protected function _trigger($eventName, $data = []) {
 		return $this->_crud()->trigger($eventName, $data);
@@ -40,9 +40,9 @@ trait ProxyTrait {
  *
  * Primarily here to ease unit testing
  *
- * @codeCoverageIgnore
- * @param string $name
+ * @param string $name Listener name
  * @return \Crud\Listener\Base
+ * @codeCoverageIgnore
  */
 	protected function _listener($name) {
 		return $this->_crud()->listener($name);
@@ -53,8 +53,8 @@ trait ProxyTrait {
  *
  * Primarily here to ease unit testing
  *
- * @codeCoverageIgnore
  * @return \Cake\Controller\Component\SessionComponent
+ * @codeCoverageIgnore
  */
 	protected function _session() {
 		return $this->_crud()->Session;
@@ -65,8 +65,8 @@ trait ProxyTrait {
  *
  * Primarily here to ease unit testing
  *
- * @codeCoverageIgnore
  * @return \Cake\Controller\Controller
+ * @codeCoverageIgnore
  */
 	protected function _controller() {
 		return $this->_controller;
@@ -77,8 +77,8 @@ trait ProxyTrait {
  *
  * Primarily here to ease unit testing
  *
- * @codeCoverageIgnore
  * @return \Cake\Network\Request
+ * @codeCoverageIgnore
  */
 	protected function _request() {
 		return $this->_controller()->request;
@@ -89,8 +89,8 @@ trait ProxyTrait {
  *
  * Primarily here to ease unit testing
  *
- * @codeCoverageIgnore
  * @return \Cake\Network\Response
+ * @codeCoverageIgnore
  */
 	protected function _response() {
 		return $this->_controller()->response;
@@ -110,7 +110,7 @@ trait ProxyTrait {
 /**
  * Get a fresh entity instance from the primary Table
  *
- * @param  array $data
+ * @param array $data Data array
  * @return \Cake\ORM\Entity
  */
 	protected function _entity(array $data = []) {
@@ -124,7 +124,7 @@ trait ProxyTrait {
 /**
  * Proxy method for `$this->_crud()->getSubject()`
  *
- * @param array $additional
+ * @param array $additional Array of subject properties to set
  * @return \Crud\Event\Subject
  */
 	protected function _subject($additional = []) {
@@ -136,8 +136,8 @@ trait ProxyTrait {
  *
  * Primarily here to ease unit testing
  *
- * @codeCoverageIgnore
  * @return array
+ * @codeCoverageIgnore
  */
 	protected function _validationErrors() {
 		return $this->_crud()->validationErrors();
