@@ -13,12 +13,12 @@ class CrudExamplesTable extends \Cake\ORM\Table {
 
 	public $alias = 'CrudExamples';
 
-	public $findMethods = array(
+	public $findMethods = [
 		'published' => true,
 		'unpublished' => true,
 		'firstPublished' => true,
 		'firstUnpublished' => true,
-	);
+	];
 
 /**
  * [initialize description]

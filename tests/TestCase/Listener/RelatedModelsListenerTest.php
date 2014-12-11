@@ -54,7 +54,7 @@ class RelatedModelListenerTest extends TestCase {
 			->will($this->returnValue([]));
 
 		$result = $listener->models();
-		$expected = array();
+		$expected = [];
 		$this->assertEquals($expected, $result);
 	}
 

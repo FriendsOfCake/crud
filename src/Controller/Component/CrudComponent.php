@@ -200,7 +200,7 @@ class CrudComponent extends Component {
  * @return CakeResponse
  * @throws CakeException If an action is not mapped.
  */
-	public function execute($controllerAction = null, $args = array()) {
+	public function execute($controllerAction = null, $args = []) {
 		$this->_loadListeners();
 
 		$this->_action = $controllerAction ?: $this->_action;
@@ -386,7 +386,7 @@ class CrudComponent extends Component {
  * @param array $options Used to set the `priority` and `passParams` flags to the listener.
  * @return void
  */
-	public function on($events, $callback, $options = array()) {
+	public function on($events, $callback, $options = []) {
 		foreach ((array)$events as $event) {
 			if (!strpos($event, '.')) {
 				$event = $this->_config['eventPrefix'] . '.' . $event;

@@ -240,58 +240,58 @@ class ApiListenerTest extends TestCase {
  * @return array
  */
 	public function dataExceptionResponse() {
-		return array(
-			'default configuration' => array(
-				array(),
+		return [
+			'default configuration' => [
+				[],
 				'\Cake\Network\Exception\BadRequestException',
 				'Unknown error',
 				0
-			),
+			],
 
-			'change exception class' => array(
-				array('class' => '\Cake\Core\Exception\Exception'),
+			'change exception class' => [
+				['class' => '\Cake\Core\Exception\Exception'],
 				'\Cake\Core\Exception\Exception',
 				'Unknown error',
 				0
-			),
+			],
 
-			'change exception code' => array(
-				array('code' => 10),
+			'change exception code' => [
+				['code' => 10],
 				'\Cake\Network\Exception\BadRequestException',
 				'Unknown error',
 				10
-			),
+			],
 
-			'change exception message' => array(
-				array('message' => 'epic message'),
+			'change exception message' => [
+				['message' => 'epic message'],
 				'\Cake\Network\Exception\BadRequestException',
 				'epic message',
 				0
-			),
+			],
 
-			'Validate case #1 - no validation errors' => array(
-				array('class' => '\Crud\Error\Exception\ValidationException', 'type' => 'validate'),
+			'Validate case #1 - no validation errors' => [
+				['class' => '\Crud\Error\Exception\ValidationException', 'type' => 'validate'],
 				'\Crud\Error\Exception\ValidationException',
 				'0 validation errors occurred',
 				412
-			),
+			],
 
-			'Validate case #2 - one validation error' => array(
-				array('class' => '\Crud\Error\Exception\ValidationException', 'type' => 'validate'),
+			'Validate case #2 - one validation error' => [
+				['class' => '\Crud\Error\Exception\ValidationException', 'type' => 'validate'],
 				'\Crud\Error\Exception\ValidationException',
 				'A validation error occurred',
 				412,
-				array(array('id' => 'hello world'))
-			),
+				[['id' => 'hello world']]
+			],
 
-			'Validate case #3 - two validation errors' => array(
-				array('class' => '\Crud\Error\Exception\ValidationException', 'type' => 'validate'),
+			'Validate case #3 - two validation errors' => [
+				['class' => '\Crud\Error\Exception\ValidationException', 'type' => 'validate'],
 				'\Crud\Error\Exception\ValidationException',
 				'2 validation errors occurred',
 				412,
-				array(array('id' => 'hello world', 'name' => 'fail me'))
-			)
-		);
+				[['id' => 'hello world', 'name' => 'fail me']]
+			]
+		];
 	}
 
 /**
@@ -343,19 +343,19 @@ class ApiListenerTest extends TestCase {
 	public function testEnsureSerializeWithViewVar() {
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\ApiListener')
-			->setMethods(array('_action', '_controller'))
+			->setMethods(['_action', '_controller'])
 			->disableOriginalConstructor()
 			->getMock();
 
 		$controller = $this
 			->getMockBuilder('Controller')
-			->setMethods(array('set'))
+			->setMethods(['set'])
 			->disableOriginalConstructor()
 			->getMock();
 
 		$action = $this
 			->getMockBuilder('\Crud\Action\IndexAction')
-			->setMethods(array('config', 'viewVar'))
+			->setMethods(['config', 'viewVar'])
 			->disableOriginalConstructor()
 			->getMock();
 
@@ -375,10 +375,10 @@ class ApiListenerTest extends TestCase {
 		$controller
 			->expects($this->once())
 			->method('set')
-			->with('_serialize', array('success', 'data' => 'items'));
+			->with('_serialize', ['success', 'data' => 'items']);
 
 		$this->setReflectionClassInstance($listener);
-		$this->callProtectedMethod('_ensureSerialize', array(), $listener);
+		$this->callProtectedMethod('_ensureSerialize', [], $listener);
 	}
 
 /**
@@ -389,13 +389,13 @@ class ApiListenerTest extends TestCase {
 	public function testEnsureSerializeAlreadySet() {
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\ApiListener')
-			->setMethods(array('_action', '_controller'))
+			->setMethods(['_action', '_controller'])
 			->disableOriginalConstructor()
 			->getMock();
 
 		$controller = $this
 			->getMockBuilder('Controller')
-			->setMethods(array('set'))
+			->setMethods(['set'])
 			->disableOriginalConstructor()
 			->getMock();
 
@@ -403,7 +403,7 @@ class ApiListenerTest extends TestCase {
 
 		$action = $this
 			->getMockBuilder('\Crud\Action\IndexAction')
-			->setMethods(array('config', 'viewVar'))
+			->setMethods(['config', 'viewVar'])
 			->disableOriginalConstructor()
 			->getMock();
 
@@ -423,7 +423,7 @@ class ApiListenerTest extends TestCase {
 			->method('set');
 
 		$this->setReflectionClassInstance($listener);
-		$this->callProtectedMethod('_ensureSerialize', array(), $listener);
+		$this->callProtectedMethod('_ensureSerialize', [], $listener);
 	}
 
 /**
@@ -434,19 +434,19 @@ class ApiListenerTest extends TestCase {
 	public function testEnsureSerializeWithViewVarChanged() {
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\ApiListener')
-			->setMethods(array('_action', '_controller'))
+			->setMethods(['_action', '_controller'])
 			->disableOriginalConstructor()
 			->getMock();
 
 		$controller = $this
 			->getMockBuilder('Controller')
-			->setMethods(array('set'))
+			->setMethods(['set'])
 			->disableOriginalConstructor()
 			->getMock();
 
 		$action = $this
 			->getMockBuilder('\Crud\Action\IndexAction')
-			->setMethods(array('config', 'viewVar'))
+			->setMethods(['config', 'viewVar'])
 			->disableOriginalConstructor()
 			->getMock();
 
@@ -466,10 +466,10 @@ class ApiListenerTest extends TestCase {
 		$controller
 			->expects($this->once())
 			->method('set')
-			->with('_serialize', array('success', 'data' => 'helloWorld'));
+			->with('_serialize', ['success', 'data' => 'helloWorld']);
 
 		$this->setReflectionClassInstance($listener);
-		$this->callProtectedMethod('_ensureSerialize', array(), $listener);
+		$this->callProtectedMethod('_ensureSerialize', [], $listener);
 	}
 
 /**
@@ -480,19 +480,19 @@ class ApiListenerTest extends TestCase {
 	public function testEnsureSerializeWithoutViewVar() {
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\ApiListener')
-			->setMethods(array('_action', '_controller'))
+			->setMethods(['_action', '_controller'])
 			->disableOriginalConstructor()
 			->getMock();
 
 		$controller = $this
 			->getMockBuilder('Controller')
-			->setMethods(array('set'))
+			->setMethods(['set'])
 			->disableOriginalConstructor()
 			->getMock();
 
 		$action = $this
 			->getMockBuilder('AddCrudAction')
-			->setMethods(array('config'))
+			->setMethods(['config'])
 			->disableOriginalConstructor()
 			->getMock();
 
@@ -508,10 +508,10 @@ class ApiListenerTest extends TestCase {
 		$controller
 			->expects($this->once())
 			->method('set')
-			->with('_serialize', array('success', 'data'));
+			->with('_serialize', ['success', 'data']);
 
 		$this->setReflectionClassInstance($listener);
-		$this->callProtectedMethod('_ensureSerialize', array(), $listener);
+		$this->callProtectedMethod('_ensureSerialize', [], $listener);
 	}
 
 /**
@@ -522,15 +522,15 @@ class ApiListenerTest extends TestCase {
 	public function testEnsureSuccess() {
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\ApiListener')
-			->setMethods(array('_controller'))
+			->setMethods(['_controller'])
 			->disableOriginalConstructor()
 			->getMock();
 
-		$subject = new \Crud\Event\Subject(array('success' => true));
+		$subject = new \Crud\Event\Subject(['success' => true]);
 
 		$controller = $this
 			->getMockBuilder('Controller')
-			->setMethods(array('set'))
+			->setMethods(['set'])
 			->disableOriginalConstructor()
 			->getMock();
 
@@ -545,7 +545,7 @@ class ApiListenerTest extends TestCase {
 			->with('success', true);
 
 		$this->setReflectionClassInstance($listener);
-		$this->callProtectedMethod('_ensureSuccess', array($subject), $listener);
+		$this->callProtectedMethod('_ensureSuccess', [$subject], $listener);
 	}
 
 /**
@@ -556,25 +556,25 @@ class ApiListenerTest extends TestCase {
 	public function testEnsureData() {
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\ApiListener')
-			->setMethods(array('_controller', '_action'))
+			->setMethods(['_controller', '_action'])
 			->disableOriginalConstructor()
 			->getMock();
 
 		$controller = $this
 			->getMockBuilder('Controller')
-			->setMethods(array('set'))
+			->setMethods(['set'])
 			->disableOriginalConstructor()
 			->getMock();
 
 		$action = $this
 			->getMockBuilder('CrudAction')
-			->setMethods(array('config'))
+			->setMethods(['config'])
 			->disableOriginalConstructor()
 			->getMock();
 
-		$subject = new \Crud\Event\Subject(array('success' => true));
+		$subject = new \Crud\Event\Subject(['success' => true]);
 
-		$config = array();
+		$config = [];
 
 		$i = 0;
 		$listener
@@ -593,10 +593,10 @@ class ApiListenerTest extends TestCase {
 		$controller
 			->expects($this->once())
 			->method('set')
-			->with('data', array());
+			->with('data', []);
 
 		$this->setReflectionClassInstance($listener);
-		$result = $this->callProtectedMethod('_ensureData', array($subject), $listener);
+		$result = $this->callProtectedMethod('_ensureData', [$subject], $listener);
 	}
 
 /**
@@ -607,30 +607,30 @@ class ApiListenerTest extends TestCase {
 	public function testEnsureDataSubject() {
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\ApiListener')
-			->setMethods(array('_controller', '_action'))
+			->setMethods(['_controller', '_action'])
 			->disableOriginalConstructor()
 			->getMock();
 
 		$controller = $this
 			->getMockBuilder('Controller')
-			->setMethods(array('set'))
+			->setMethods(['set'])
 			->disableOriginalConstructor()
 			->getMock();
 
 		$action = $this
 			->getMockBuilder('CrudAction')
-			->setMethods(array('config'))
+			->setMethods(['config'])
 			->disableOriginalConstructor()
 			->getMock();
 
-		$subject = new \Crud\Event\Subject(array('success' => true, 'id' => 1, 'modelClass' => 'MyModel'));
+		$subject = new \Crud\Event\Subject(['success' => true, 'id' => 1, 'modelClass' => 'MyModel']);
 
-		$config = array('data' => array(
-			'subject' => array(
+		$config = ['data' => [
+			'subject' => [
 				'{modelClass}.id' => 'id',
 				'modelClass'
-			)
-		));
+			]
+		]];
 
 		$i = 0;
 		$listener
@@ -649,10 +649,10 @@ class ApiListenerTest extends TestCase {
 		$controller
 			->expects($this->once())
 			->method('set')
-			->with('data', array('modelClass' => 'MyModel', 'MyModel' => array('id' => 1)));
+			->with('data', ['modelClass' => 'MyModel', 'MyModel' => ['id' => 1]]);
 
 		$this->setReflectionClassInstance($listener);
-		$result = $this->callProtectedMethod('_ensureData', array($subject), $listener);
+		$result = $this->callProtectedMethod('_ensureData', [$subject], $listener);
 	}
 
 /**
@@ -663,25 +663,25 @@ class ApiListenerTest extends TestCase {
 	public function testEnsureDataRaw() {
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\ApiListener')
-			->setMethods(array('_controller', '_action'))
+			->setMethods(['_controller', '_action'])
 			->disableOriginalConstructor()
 			->getMock();
 
 		$controller = $this
 			->getMockBuilder('Controller')
-			->setMethods(array('set'))
+			->setMethods(['set'])
 			->disableOriginalConstructor()
 			->getMock();
 
 		$action = $this
 			->getMockBuilder('CrudAction')
-			->setMethods(array('config'))
+			->setMethods(['config'])
 			->disableOriginalConstructor()
 			->getMock();
 
-		$subject = new \Crud\Event\Subject(array('success' => true, 'id' => 1, 'modelClass' => 'MyModel'));
+		$subject = new \Crud\Event\Subject(['success' => true, 'id' => 1, 'modelClass' => 'MyModel']);
 
-		$config = array('data' => array('raw' => array('{modelClass}.id' => 1)));
+		$config = ['data' => ['raw' => ['{modelClass}.id' => 1]]];
 
 		$i = 0;
 		$listener
@@ -700,10 +700,10 @@ class ApiListenerTest extends TestCase {
 		$controller
 			->expects($this->once())
 			->method('set')
-			->with('data', array('MyModel' => array('id' => 1)));
+			->with('data', ['MyModel' => ['id' => 1]]);
 
 		$this->setReflectionClassInstance($listener);
-		$result = $this->callProtectedMethod('_ensureData', array($subject), $listener);
+		$result = $this->callProtectedMethod('_ensureData', [$subject], $listener);
 	}
 
 /**
@@ -714,25 +714,25 @@ class ApiListenerTest extends TestCase {
 	public function testEnsureDataError() {
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\ApiListener')
-			->setMethods(array('_controller', '_action'))
+			->setMethods(['_controller', '_action'])
 			->disableOriginalConstructor()
 			->getMock();
 
 		$controller = $this
 			->getMockBuilder('Controller')
-			->setMethods(array('set'))
+			->setMethods(['set'])
 			->disableOriginalConstructor()
 			->getMock();
 
 		$action = $this
 			->getMockBuilder('CrudAction')
-			->setMethods(array('config'))
+			->setMethods(['config'])
 			->disableOriginalConstructor()
 			->getMock();
 
-		$subject = new \Crud\Event\Subject(array('success' => false));
+		$subject = new \Crud\Event\Subject(['success' => false]);
 
-		$config = array();
+		$config = [];
 
 		$i = 0;
 		$listener
@@ -751,10 +751,10 @@ class ApiListenerTest extends TestCase {
 		$controller
 			->expects($this->once())
 			->method('set')
-			->with('data', array());
+			->with('data', []);
 
 		$this->setReflectionClassInstance($listener);
-		$result = $this->callProtectedMethod('_ensureData', array($subject), $listener);
+		$result = $this->callProtectedMethod('_ensureData', [$subject], $listener);
 	}
 
 /**
@@ -765,15 +765,15 @@ class ApiListenerTest extends TestCase {
 	public function testEnsureSuccessAlreadySet() {
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\ApiListener')
-			->setMethods(array('_controller'))
+			->setMethods(['_controller'])
 			->disableOriginalConstructor()
 			->getMock();
 
-		$subject = new \Crud\Event\Subject(array('success' => true));
+		$subject = new \Crud\Event\Subject(['success' => true]);
 
 		$controller = $this
 			->getMockBuilder('Controller')
-			->setMethods(array('set'))
+			->setMethods(['set'])
 			->disableOriginalConstructor()
 			->getMock();
 
@@ -789,7 +789,7 @@ class ApiListenerTest extends TestCase {
 			->method('set');
 
 		$this->setReflectionClassInstance($listener);
-		$this->callProtectedMethod('_ensureSuccess', array($subject), $listener);
+		$this->callProtectedMethod('_ensureSuccess', [$subject], $listener);
 	}
 
 /**
@@ -806,7 +806,7 @@ class ApiListenerTest extends TestCase {
 			return true;
 		}]);
 
-		$subject = new \Crud\Event\Subject(array('request' => $Request));
+		$subject = new \Crud\Event\Subject(['request' => $Request]);
 
 		$apiListener = $listener = $this
 			->getMockBuilder('\Crud\Listener\ApiListener')
@@ -862,7 +862,7 @@ class ApiListenerTest extends TestCase {
 			->getMock();
 
 		$this->setReflectionClassInstance($listener);
-		$result = $this->callProtectedMethod('_expandPath', array($subject, $path), $listener);
+		$result = $this->callProtectedMethod('_expandPath', [$subject, $path], $listener);
 		$this->assertSame($expected, $result);
 	}
 
@@ -874,17 +874,17 @@ class ApiListenerTest extends TestCase {
 	public function testSetupDetectors() {
 		$this->skipIf(true);
 
-		$detectors = array('xml' => array(), 'json' => array());
+		$detectors = ['xml' => [], 'json' => []];
 
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\ApiListener')
-			->setMethods(array('_request', 'config'))
+			->setMethods(['_request', 'config'])
 			->disableOriginalConstructor()
 			->getMock();
 
 		$request = $this
 			->getMockBuilder('\Cake\Network\Request')
-			->setMethods(array('addDetector'))
+			->setMethods(['addDetector'])
 			->disableOriginalConstructor()
 			->getMock();
 
@@ -1036,28 +1036,28 @@ class ApiListenerTest extends TestCase {
  * @return array
  */
 	public function dataCheckRequestMethods() {
-		return array(
-			'defaults' => array(
-				array(),
+		return [
+			'defaults' => [
+				[],
 				false,
-				array()
-			),
-			'valid get' => array(
-				array('methods' => array('get')),
+				[]
+			],
+			'valid get' => [
+				['methods' => ['get']],
 				true,
-				array('get' => true)
-			),
-			'invalid post' => array(
-				array('methods' => array('post')),
+				['get' => true]
+			],
+			'invalid post' => [
+				['methods' => ['post']],
 				'Cake\Network\Exception\BadRequestException',
-				array('post' => false)
-			),
-			'valid put' => array(
-				array('methods' => array('post', 'get', 'put')),
+				['post' => false]
+			],
+			'valid put' => [
+				['methods' => ['post', 'get', 'put']],
 				true,
-				array('post' => false, 'get' => false, 'put' => true)
-			)
-		);
+				['post' => false, 'get' => false, 'put' => true]
+			]
+		];
 	}
 
 /**
@@ -1120,7 +1120,7 @@ class ApiListenerTest extends TestCase {
 		}
 
 		$this->setReflectionClassInstance($listener);
-		$result = $this->callProtectedMethod('_checkRequestMethods', array(), $listener);
+		$result = $this->callProtectedMethod('_checkRequestMethods', [], $listener);
 
 		if (is_bool($exception)) {
 			$this->assertEquals($exception, $result);

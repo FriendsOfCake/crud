@@ -14,7 +14,7 @@ class SubjectTest extends TestCase {
 	public function setup() {
 		parent::setup();
 
-		$this->Subject = new Subject(array('action' => 'index'));
+		$this->Subject = new Subject(['action' => 'index']);
 	}
 
 	public function teardown() {
@@ -33,11 +33,11 @@ class SubjectTest extends TestCase {
 	public function testShouldProcess() {
 		$this->assertTrue($this->Subject->shouldProcess('only', 'index'));
 		$this->assertFalse($this->Subject->shouldProcess('only', 'view'));
-		$this->assertTrue($this->Subject->shouldProcess('only', array('index')));
-		$this->assertFalse($this->Subject->shouldProcess('only', array('view')));
+		$this->assertTrue($this->Subject->shouldProcess('only', ['index']));
+		$this->assertFalse($this->Subject->shouldProcess('only', ['view']));
 
-		$this->assertFalse($this->Subject->shouldProcess('not', array('index')));
-		$this->assertTrue($this->Subject->shouldProcess('not', array('view')));
+		$this->assertFalse($this->Subject->shouldProcess('not', ['index']));
+		$this->assertTrue($this->Subject->shouldProcess('not', ['view']));
 
 		$this->assertFalse($this->Subject->shouldProcess('not', 'index'));
 		$this->assertTrue($this->Subject->shouldProcess('not', 'view'));
@@ -62,7 +62,7 @@ class SubjectTest extends TestCase {
 		$this->assertTrue($this->Subject->hasEvent('test_three'));
 		$this->assertFalse($this->Subject->hasEvent('invalid'));
 
-		$expected = array('test', 'test_two', 'test_three');
+		$expected = ['test', 'test_two', 'test_three'];
 		$this->assertEquals($expected, $this->Subject->getEvents());
 	}
 

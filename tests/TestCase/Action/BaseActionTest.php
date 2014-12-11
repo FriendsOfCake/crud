@@ -19,16 +19,16 @@ class BaseActionTest extends TestCase {
 		$this->Controller = $this->getMock(
 			'Cake\Controller\Controller',
 			null,
-			array($this->Request, new \Cake\Network\Response, 'CrudExamples', \Cake\Event\EventManager::instance())
+			[$this->Request, new \Cake\Network\Response, 'CrudExamples', \Cake\Event\EventManager::instance()]
 		);
 		$this->Registry = $this->Controller->components();
-		$this->Crud = $this->getMock('Crud\Controller\Component\CrudComponent', null, array($this->Registry));
+		$this->Crud = $this->getMock('Crud\Controller\Component\CrudComponent', null, [$this->Registry]);
 		$this->Controller->Crud = $this->Crud;
 		$this->Controller->modelClass = 'CrudExamples';
 		$this->Controller->CrudExamples = \Cake\ORM\TableRegistry::get('Crud.CrudExamples');
 		$this->Controller->CrudExamples->alias('MyModel');
 
-		$this->actionClassName = $this->getMockClass('Crud\Action\BaseAction', array('_handle'));
+		$this->actionClassName = $this->getMockClass('Crud\Action\BaseAction', ['_handle']);
 		$this->ActionClass = new $this->actionClassName($this->Controller);
 		$this->_configureAction($this->ActionClass);
 	}
@@ -46,22 +46,22 @@ class BaseActionTest extends TestCase {
 	}
 
 	protected function _configureAction($action) {
-		$action->config(array(
+		$action->config([
 			'action' => 'add',
 			'enabled' => true,
 			'findMethod' => 'first',
 			'view' => null,
 			'relatedModels' => true,
 			'validateId' => null,
-			'saveOptions' => array(
+			'saveOptions' => [
 				'validate' => 'first',
 				'atomic' => true
-			),
-			'serialize' => array(
+			],
+			'serialize' => [
 				'success',
 				'data'
-			)
-		));
+			]
+		]);
 	}
 
 /**
@@ -71,22 +71,22 @@ class BaseActionTest extends TestCase {
  * @return void
  */
 	public function testOverrideAllDefaults() {
-		$expected = array(
+		$expected = [
 			'enabled' => false,
 			'findMethod' => 'any',
 			'view' => 'my_view',
-			'relatedModels' => array('Tag'),
+			'relatedModels' => ['Tag'],
 			'validateId' => 'id',
-			'saveOptions' => array(
+			'saveOptions' => [
 				'validate' => 'never',
 				'atomic' => false
-			),
-			'serialize' => array(
+			],
+			'serialize' => [
 				'yay',
 				'ney'
-			),
+			],
 			'action' => 'add'
-		);
+		];
 
 		$ActionClass = new $this->actionClassName($this->Controller, $expected);
 		// This is injected by the CrudAction, not technically a setting
@@ -112,7 +112,7 @@ class BaseActionTest extends TestCase {
  * @return void
  */
 	public function testEnabledActionWorks() {
-		$Request = $this->getMock('Cake\Network\Request', array('method'));
+		$Request = $this->getMock('Cake\Network\Request', ['method']);
 		$Request->action = 'add';
 		$Request
 			->expects($this->once())
@@ -200,24 +200,24 @@ class BaseActionTest extends TestCase {
  * @return void
  */
 	public function testSetFlash() {
-		$data = array(
+		$data = [
 			'element' => 'default',
-			'params' => array(
+			'params' => [
 				'class' => 'message success',
 				'original' => 'Ahoy'
-			),
+			],
 			'key' => 'custom',
 			'type' => 'add.success',
 			'name' => 'test',
 			'text' => 'Ahoy',
-		);
+		];
 
 		$Subject = new Subject();
 
 		$this->Controller->Crud = $this->getMock(
 			'Crud\Controller\Component\CrudComponent',
-			array('trigger'),
-			array($this->Registry)
+			['trigger'],
+			[$this->Registry]
 		);
 		$this->Controller->Crud
 			->expects($this->once())
@@ -227,8 +227,8 @@ class BaseActionTest extends TestCase {
 
 		$this->Controller->Flash = $this->getMock(
 			'Cake\Controller\Component\FlashComponent',
-			array('set'),
-			array($this->Registry)
+			['set'],
+			[$this->Registry]
 		);
 		$this->Controller->Flash
 			->expects($this->once())
@@ -257,29 +257,29 @@ class BaseActionTest extends TestCase {
 	public function testGetSaveAllOptionsDefaults() {
 		$CrudAction = $this->ActionClass;
 
-		$expected = array(
+		$expected = [
 			'validate' => 'first',
 			'atomic' => true
-		);
+		];
 		$actual = $CrudAction->config('saveOptions');
 		$this->assertEquals($expected, $actual);
 
 		$CrudAction->config('saveOptions.atomic', true);
-		$expected = array(
+		$expected = [
 			'validate' => 'first',
 			'atomic' => true
-		);
+		];
 		$actual = $CrudAction->config('saveOptions');
 		$this->assertEquals($expected, $actual);
 
-		$CrudAction->config('saveOptions', array(
-			'fieldList' => array('hello')
-		));
-		$expected = array(
+		$CrudAction->config('saveOptions', [
+			'fieldList' => ['hello']
+		]);
+		$expected = [
 			'validate' => 'first',
 			'atomic' => true,
-			'fieldList' => array('hello')
-		);
+			'fieldList' => ['hello']
+		];
 		$actual = $CrudAction->config('saveOptions');
 		$this->assertEquals($expected, $actual);
 	}
@@ -311,7 +311,7 @@ class BaseActionTest extends TestCase {
  * @expectedExceptionMessage Invalid message config for "badConfig" no text key found
  */
 	public function testBadMessageConfig() {
-		$this->Crud->config('messages.badConfig', array('foo' => 'bar'));
+		$this->Crud->config('messages.badConfig', ['foo' => 'bar']);
 		$this->ActionClass->message('badConfig');
 	}
 
@@ -323,17 +323,17 @@ class BaseActionTest extends TestCase {
 	public function testInheritedSimpleMessage() {
 		$this->Crud->config('messages.simple', 'Simple message');
 
-		$expected = array(
+		$expected = [
 			'element' => 'default',
-			'params' => array(
+			'params' => [
 				'class' => 'message simple',
 				'original' => 'Simple message'
-			),
+			],
 			'key' => 'flash',
 			'type' => 'add.simple',
 			'name' => 'my model',
 			'text' => 'Simple message'
-		);
+		];
 		$actual = $this->ActionClass->message('simple');
 		$this->assertEquals($expected, $actual);
 	}
@@ -347,17 +347,17 @@ class BaseActionTest extends TestCase {
 		$this->Crud->config('messages.simple', 'Simple message');
 		$this->ActionClass->config('messages.simple', 'Overridden message');
 
-		$expected = array(
+		$expected = [
 			'element' => 'default',
-			'params' => array(
+			'params' => [
 				'class' => 'message simple',
 				'original' => 'Overridden message'
-			),
+			],
 			'key' => 'flash',
 			'type' => 'add.simple',
 			'name' => 'my model',
 			'text' => 'Overridden message'
-		);
+		];
 		$actual = $this->ActionClass->message('simple');
 		$this->assertEquals($expected, $actual);
 	}
@@ -370,17 +370,17 @@ class BaseActionTest extends TestCase {
 	public function testSimpleMessage() {
 		$this->ActionClass->config('messages.simple', 'Simple message');
 
-		$expected = array(
+		$expected = [
 			'element' => 'default',
-			'params' => array(
+			'params' => [
 				'class' => 'message simple',
 				'original' => 'Simple message'
-			),
+			],
 			'key' => 'flash',
 			'type' => 'add.simple',
 			'name' => 'my model',
 			'text' => 'Simple message'
-		);
+		];
 		$actual = $this->ActionClass->message('simple');
 		$this->assertEquals($expected, $actual);
 	}
@@ -393,18 +393,18 @@ class BaseActionTest extends TestCase {
 	public function testSimpleMessageWithPlaceholders() {
 		$this->Crud->config('messages.simple', 'Simple message with id "{id}"');
 
-		$expected = array(
+		$expected = [
 			'element' => 'default',
-			'params' => array(
+			'params' => [
 				'class' => 'message simple',
 				'original' => 'Simple message with id "{id}"'
-			),
+			],
 			'key' => 'flash',
 			'type' => 'add.simple',
 			'name' => 'my model',
 			'text' => 'Simple message with id "123"'
-		);
-		$actual = $this->ActionClass->message('simple', array('id' => 123));
+		];
+		$actual = $this->ActionClass->message('simple', ['id' => 123]);
 		$this->assertEquals($expected, $actual);
 	}
 
@@ -414,19 +414,19 @@ class BaseActionTest extends TestCase {
  * @return void
  */
 	public function testInvalidIdMessage() {
-		$expected = array(
+		$expected = [
 			'code' => 400,
 			'class' => 'Cake\Network\Exception\BadRequestException',
 			'element' => 'default',
-			'params' => array(
+			'params' => [
 				'class' => 'message invalidId',
 				'original' => 'Invalid id'
-			),
+			],
 			'key' => 'flash',
 			'type' => 'add.invalidId',
 			'name' => 'my model',
 			'text' => 'Invalid id'
-		);
+		];
 		$actual = $this->ActionClass->message('invalidId');
 		$this->assertEquals($expected, $actual);
 	}
@@ -437,19 +437,19 @@ class BaseActionTest extends TestCase {
  * @return void
  */
 	public function testRecordNotFoundMessage() {
-		$expected = array(
+		$expected = [
 			'code' => 404,
 			'class' => 'Cake\Network\Exception\NotFoundException',
 			'element' => 'default',
-			'params' => array(
+			'params' => [
 				'class' => 'message recordNotFound',
 				'original' => 'Not found'
-			),
+			],
 			'key' => 'flash',
 			'type' => 'add.recordNotFound',
 			'name' => 'my model',
 			'text' => 'Not found'
-		);
+		];
 		$actual = $this->ActionClass->message('recordNotFound');
 		$this->assertEquals($expected, $actual);
 	}
@@ -460,20 +460,20 @@ class BaseActionTest extends TestCase {
  * @return void
  */
 	public function testBadRequestMethodMessage() {
-		$expected = array(
+		$expected = [
 			'code' => 405,
 			'class' => 'Cake\Network\Exception\MethodNotAllowedException',
 			'element' => 'default',
-			'params' => array(
+			'params' => [
 				'class' => 'message badRequestMethod',
 				'original' => 'Method not allowed. This action permits only {methods}'
-			),
+			],
 			'key' => 'flash',
 			'type' => 'add.badRequestMethod',
 			'name' => 'my model',
 			'text' => 'Method not allowed. This action permits only THESE ONES'
-		);
-		$actual = $this->ActionClass->message('badRequestMethod', array('methods' => 'THESE ONES'));
+		];
+		$actual = $this->ActionClass->message('badRequestMethod', ['methods' => 'THESE ONES']);
 		$this->assertEquals($expected, $actual);
 	}
 
@@ -492,7 +492,7 @@ class BaseActionTest extends TestCase {
 			[$this->Controller]
 		);
 
-		$Request = $this->getMock('Cake\Network\Request', array('method'));
+		$Request = $this->getMock('Cake\Network\Request', ['method']);
 		$Request
 			->expects($this->once())
 			->method('method')
@@ -558,7 +558,7 @@ class BaseActionTest extends TestCase {
 			[$this->Controller]
 		);
 
-		$Request = $this->getMock('CakeRequest', array('method'));
+		$Request = $this->getMock('CakeRequest', ['method']);
 		$Request
 			->expects($this->once())
 			->method('method')
@@ -597,7 +597,7 @@ class BaseActionTest extends TestCase {
 			[$this->Controller]
 		);
 
-		$Request = $this->getMock('Cake\Network\Request', array('method'));
+		$Request = $this->getMock('Cake\Network\Request', ['method']);
 		$Request
 			->expects($this->once())
 			->method('method')
