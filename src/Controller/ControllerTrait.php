@@ -36,12 +36,12 @@ trait ControllerTrait {
 			throw new \LogicException('No Request object configured. Cannot invoke action');
 		}
 		if (!$this->isAction($request->params['action'])) {
-			throw new MissingActionException(array(
+			throw new MissingActionException([
 				'controller' => $this->name . 'Controller',
 				'action' => $request->params['action'],
 				'prefix' => isset($request->params['prefix']) ? $request->params['prefix'] : '',
 				'plugin' => $request->params['plugin'],
-			));
+			]);
 		}
 
 		$callable = [$this, $request->params['action']];
@@ -54,12 +54,12 @@ trait ControllerTrait {
 			return $component->execute();
 		}
 
-		throw new MissingActionException(array(
+		throw new MissingActionException([
 			'controller' => $this->name . 'Controller',
 			'action' => $request->params['action'],
 			'prefix' => isset($request->params['prefix']) ? $request->params['prefix'] : '',
 			'plugin' => $request->params['plugin'],
-		));
+		]);
 	}
 
 /**

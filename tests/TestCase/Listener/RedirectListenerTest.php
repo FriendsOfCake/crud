@@ -49,19 +49,19 @@ class RedirectListenerTest extends TestCase {
 		$result['entity'] = array_keys($result['entity']);
 		$result['subject'] = array_keys($result['subject']);
 
-		$expected = array(
-			'request' => array(
+		$expected = [
+			'request' => [
 				'key',
 				'data',
 				'query'
-			),
-			'entity' => array(
+			],
+			'entity' => [
 				'field'
-			),
-			'subject' => array(
+			],
+			'subject' => [
 				'key'
-			)
-		);
+			]
+		];
 		$this->assertEquals($expected, $result);
 	}
 
@@ -172,7 +172,7 @@ class RedirectListenerTest extends TestCase {
 
 		$subject = new \Crud\Event\Subject();
 		$request = new \Cake\Network\Request();
-		$request->data = array('hello' => 'world');
+		$request->data = ['hello' => 'world'];
 
 		$listener->expects($this->any())->method('_request')->will($this->returnValue($request));
 
@@ -200,7 +200,7 @@ class RedirectListenerTest extends TestCase {
 
 		$subject = new \Crud\Event\Subject();
 		$request = new \Cake\Network\Request();
-		$request->query = array('hello' => 'world');
+		$request->query = ['hello' => 'world'];
 
 		$listener->expects($this->any())->method('_request')->will($this->returnValue($request));
 
@@ -229,7 +229,7 @@ class RedirectListenerTest extends TestCase {
 		$subject = new \Crud\Event\Subject();
 		$subject->entity = $this
 			->getMockBuilder('\Cake\ORM\Entity')
-			->setMethods(array('get'))
+			->setMethods(['get'])
 			->disableoriginalConstructor()
 			->getMock();
 		$subject->entity
@@ -283,7 +283,7 @@ class RedirectListenerTest extends TestCase {
 
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\RedirectListener')
-			->setMethods(array('_action', '_getKey'))
+			->setMethods(['_action', '_getKey'])
 			->disableoriginalConstructor()
 			->getMock();
 		$listener
@@ -350,17 +350,17 @@ class RedirectListenerTest extends TestCase {
 			->disableoriginalConstructor()
 			->getMock();
 
-		$action->redirectConfig('add', array(
+		$action->redirectConfig('add', [
 			'reader' => 'request.key',
 			'key' => 'hello',
-			'url' => array('action' => 'index')
-		));
+			'url' => ['action' => 'index']
+		]);
 
 		$subject = new \Crud\Event\Subject();
 
 		$listener = $this
 			->getMockBuilder('\Crud\Listener\RedirectListener')
-			->setMethods(array('_action', '_getKey', '_getUrl'))
+			->setMethods(['_action', '_getKey', '_getUrl'])
 			->disableoriginalConstructor()
 			->getMock();
 		$listener
@@ -375,12 +375,12 @@ class RedirectListenerTest extends TestCase {
 		$listener
 			->expects($this->once())
 			->method('_getUrl')
-			->with($subject, array('action' => 'index'))
-			->will($this->returnValue(array('action' => 'index')));
+			->with($subject, ['action' => 'index'])
+			->will($this->returnValue(['action' => 'index']));
 
 		$listener->beforeRedirect(new \Cake\Event\Event('Crud.beforeRedirect', $subject));
 
-		$this->assertSame(array('action' => 'index'), $subject->url);
+		$this->assertSame(['action' => 'index'], $subject->url);
 	}
 
 /**
@@ -397,40 +397,40 @@ class RedirectListenerTest extends TestCase {
 		$Model = new \Cake\ORM\Entity();
 		$Model->id = 69;
 		$Model->slug = 'jippi-is-awesome';
-		$Model->data = array('name' => 'epic', 'slug' => 'epic');
+		$Model->data = ['name' => 'epic', 'slug' => 'epic'];
 
-		return array(
-			array(
+		return [
+			[
 				new \Crud\Event\Subject(),
-				array('action' => 'index'),
-				array('action' => 'index')
-			),
-			array(
+				['action' => 'index'],
+				['action' => 'index']
+			],
+			[
 				new \Crud\Event\Subject(),
-				array('controller' => 'posts', 'action' => 'index'),
-				array('controller' => 'posts', 'action' => 'index')
-			),
-			array(
-				new \Crud\Event\Subject(array('request' => $Request)),
-				array('action' => array('request.key', 'action')),
-				array('action' => 'index')
-			),
-			array(
-				new \Crud\Event\Subject(array('request' => $Request)),
-				array('action' => array('request.data', 'epic')),
-				array('action' => 'jippi')
-			),
-			array(
-				new \Crud\Event\Subject(array('request' => $Request)),
-				array('action' => array('request.query', 'parent_id')),
-				array('action' => 10)
-			),
-			array(
-				new \Crud\Event\Subject(array('id' => 69)),
-				array('action' => 'edit', array('subject.key', 'id')),
-				array('action' => 'edit', 69)
-			)
-		);
+				['controller' => 'posts', 'action' => 'index'],
+				['controller' => 'posts', 'action' => 'index']
+			],
+			[
+				new \Crud\Event\Subject(['request' => $Request]),
+				['action' => ['request.key', 'action']],
+				['action' => 'index']
+			],
+			[
+				new \Crud\Event\Subject(['request' => $Request]),
+				['action' => ['request.data', 'epic']],
+				['action' => 'jippi']
+			],
+			[
+				new \Crud\Event\Subject(['request' => $Request]),
+				['action' => ['request.query', 'parent_id']],
+				['action' => 10]
+			],
+			[
+				new \Crud\Event\Subject(['id' => 69]),
+				['action' => 'edit', ['subject.key', 'id']],
+				['action' => 'edit', 69]
+			]
+		];
 	}
 
 /**

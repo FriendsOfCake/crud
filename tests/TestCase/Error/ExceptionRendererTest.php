@@ -23,11 +23,11 @@ class ExceptionRendererTest extends TestCase {
 	public function testNormalExceptionRendering() {
 		$Exception = new Exception('Hello World');
 
-		$Controller = $this->getMock('Cake\Controller\Controller', array('render'));
+		$Controller = $this->getMock('Cake\Controller\Controller', ['render']);
 		$Controller->request = new Request();
 		$Controller->response = new Response();
 
-		$Renderer = $this->getMock('Crud\Error\ExceptionRenderer', array('_getController'), array(), '', false);
+		$Renderer = $this->getMock('Crud\Error\ExceptionRenderer', ['_getController'], [], '', false);
 		$Renderer
 			->expects($this->once())
 			->method('_getController')
@@ -41,20 +41,20 @@ class ExceptionRendererTest extends TestCase {
 
 		$this->assertTrue(!empty($viewVars['_serialize']));
 
-		$expected = array('success', 'data');
+		$expected = ['success', 'data'];
 		$actual = $viewVars['_serialize'];
 		$this->assertEquals($expected, $actual);
 
-		$expected = array(
+		$expected = [
 			'code' => 500,
 			'url' => $Controller->request->here(),
 			'message' => 'Hello World',
-			'exception' => array(
+			'exception' => [
 				'class' => 'Cake\Core\Exception\Exception',
 				'code' => 500,
 				'message' => 'Hello World',
-			)
-		);
+			]
+		];
 		$actual = $viewVars['data'];
 		unset($actual['exception']['trace']);
 		$this->assertEquals($expected, $actual);
@@ -90,14 +90,14 @@ class ExceptionRendererTest extends TestCase {
 			->with()
 			->will($this->returnValue(['query']));
 
-		$Controller = $this->getMock('Cake\Controller\Controller', array('render'));
+		$Controller = $this->getMock('Cake\Controller\Controller', ['render']);
 		$Controller->request = new Request();
 		$Controller->response = new Response();
 
 		$Renderer = $this->getMock(
 			'Crud\Error\ExceptionRenderer',
-			array('_getController'),
-			array(),
+			['_getController'],
+			[],
 			'',
 			false
 		);
@@ -114,20 +114,20 @@ class ExceptionRendererTest extends TestCase {
 
 		$this->assertTrue(!empty($viewVars['_serialize']));
 
-		$expected = array('success', 'data');
+		$expected = ['success', 'data'];
 		$actual = $viewVars['_serialize'];
 		$this->assertEquals($expected, $actual);
 
-		$expected = array(
+		$expected = [
 			'code' => 500,
 			'url' => $Controller->request->here(),
 			'message' => 'Hello World',
-			'exception' => array(
+			'exception' => [
 				'class' => 'Cake\Core\Exception\Exception',
 				'code' => 500,
 				'message' => 'Hello World',
-			)
-		);
+			]
+		];
 
 		$actual = $viewVars['data'];
 		$queryLog = $actual['queryLog'];
@@ -161,11 +161,11 @@ class ExceptionRendererTest extends TestCase {
 	public function testNormalNestedExceptionRendering() {
 		$Exception = new Exception('Hello World');
 
-		$Controller = $this->getMock('Cake\Controller\Controller', array('render'));
+		$Controller = $this->getMock('Cake\Controller\Controller', ['render']);
 		$Controller->request = new Request();
 		$Controller->response = new Response();
 
-		$Renderer = $this->getMock('Crud\Error\ExceptionRenderer', array('_getController'), array(), '', false);
+		$Renderer = $this->getMock('Crud\Error\ExceptionRenderer', ['_getController'], [], '', false);
 		$Renderer
 			->expects($this->once())
 			->method('_getController')
@@ -179,20 +179,20 @@ class ExceptionRendererTest extends TestCase {
 
 		$this->assertTrue(!empty($viewVars['_serialize']));
 
-		$expected = array('success', 'data');
+		$expected = ['success', 'data'];
 		$actual = $viewVars['_serialize'];
 		$this->assertEquals($expected, $actual);
 
-		$expected = array(
+		$expected = [
 			'code' => 500,
 			'url' => $Controller->request->here(),
 			'message' => 'Hello World',
-			'exception' => array(
+			'exception' => [
 				'class' => 'Cake\Core\Exception\Exception',
 				'code' => 500,
 				'message' => 'Hello World',
-			)
-		);
+			]
+		];
 		$actual = $viewVars['data'];
 		unset($actual['exception']['trace']);
 		$this->assertEquals($expected, $actual);
@@ -216,11 +216,11 @@ class ExceptionRendererTest extends TestCase {
 	public function testMissingViewExceptionDuringRendering() {
 		$Exception = new Exception('Hello World');
 
-		$Controller = $this->getMock('Cake\Controller\Controller', array('render'));
+		$Controller = $this->getMock('Cake\Controller\Controller', ['render']);
 		$Controller->request = new Request();
-		$Controller->response = $this->getMock('Cake\Network\Response', array('send'));
+		$Controller->response = $this->getMock('Cake\Network\Response', ['send']);
 
-		$Renderer = $this->getMock('Crud\Error\ExceptionRenderer', array('_getController'), array(), '', false);
+		$Renderer = $this->getMock('Crud\Error\ExceptionRenderer', ['_getController'], [], '', false);
 		$Renderer
 			->expects($this->once())
 			->method('_getController')
@@ -234,20 +234,20 @@ class ExceptionRendererTest extends TestCase {
 
 		$this->assertTrue(!empty($viewVars['_serialize']));
 
-		$expected = array('success', 'data');
+		$expected = ['success', 'data'];
 		$actual = $viewVars['_serialize'];
 		$this->assertEquals($expected, $actual);
 
-		$expected = array(
+		$expected = [
 			'code' => 500,
 			'url' => $Controller->request->here(),
 			'message' => 'Hello World',
-			'exception' => array(
+			'exception' => [
 				'class' => 'Cake\Core\Exception\Exception',
 				'code' => 500,
 				'message' => 'Hello World',
-			)
-		);
+			]
+		];
 		$actual = $viewVars['data'];
 		unset($actual['exception']['trace']);
 		$this->assertEquals($expected, $actual);
@@ -274,14 +274,14 @@ class ExceptionRendererTest extends TestCase {
 		$Exception = new Exception('Hello World');
 		$NestedException = new Exception('Generic Exception Description');
 
-		$Controller = $this->getMock('Cake\Controller\Controller', array('render'));
+		$Controller = $this->getMock('Cake\Controller\Controller', ['render']);
 		$Controller->request = new Request();
 		$Controller->response = $this->getMock('Cake\Network\Response');
 
 		$Renderer = $this->getMock(
 			'Crud\Error\ExceptionRenderer',
-			array('_getController'),
-			array(),
+			['_getController'],
+			[],
 			'',
 			false
 		);
@@ -298,20 +298,20 @@ class ExceptionRendererTest extends TestCase {
 
 		$this->assertTrue(!empty($viewVars['_serialize']));
 
-		$expected = array('success', 'data');
+		$expected = ['success', 'data'];
 		$actual = $viewVars['_serialize'];
 		$this->assertEquals($expected, $actual);
 
-		$expected = array(
+		$expected = [
 			'code' => 500,
 			'url' => $Controller->request->here(),
 			'message' => 'Hello World',
-			'exception' => array(
+			'exception' => [
 				'class' => 'Cake\Core\Exception\Exception',
 				'code' => 500,
 				'message' => 'Hello World',
-			)
-		);
+			]
+		];
 		$actual = $viewVars['data'];
 		unset($actual['exception']['trace']);
 		$this->assertEquals($expected, $actual);
@@ -340,14 +340,14 @@ class ExceptionRendererTest extends TestCase {
 
 		$Exception = new ValidationException($entity);
 
-		$Controller = $this->getMock('Cake\Controller\Controller', array('render'));
+		$Controller = $this->getMock('Cake\Controller\Controller', ['render']);
 		$Controller->request = new Request();
 		$Controller->response = new Response();
 
 		$Renderer = $this->getMock(
 			'Crud\Error\ExceptionRenderer',
-			array('_getController'),
-			array(),
+			['_getController'],
+			[],
 			'',
 			false
 		);
@@ -360,22 +360,22 @@ class ExceptionRendererTest extends TestCase {
 		$Renderer->__construct($Exception);
 		$Renderer->render();
 
-		$expected = array(
+		$expected = [
 			'code' => 412,
 			'url' => $Controller->request->here(),
 			'errorCount' => 1,
-			'errors' => array(
-				'title' => array(
+			'errors' => [
+				'title' => [
 					'error message'
-				)
-			),
-			'exception' => array(
+				]
+			],
+			'exception' => [
 				'class' => 'Crud\Error\Exception\ValidationException',
 				'code' => 412,
 				'message' => 'A validation error occurred'
-			),
+			],
 			'message' => 'A validation error occurred'
-		);
+		];
 		$this->assertEquals($expected, $Controller->viewVars['data']);
 	}
 
@@ -388,14 +388,14 @@ class ExceptionRendererTest extends TestCase {
 
 		$Exception = new ValidationException($entity);
 
-		$Controller = $this->getMock('Cake\Controller\Controller', array('render'));
+		$Controller = $this->getMock('Cake\Controller\Controller', ['render']);
 		$Controller->request = new Request();
 		$Controller->response = new Response();
 
 		$Renderer = $this->getMock(
 			'Crud\Error\ExceptionRenderer',
-			array('_getController'),
-			array(),
+			['_getController'],
+			[],
 			'',
 			false
 		);
@@ -408,25 +408,25 @@ class ExceptionRendererTest extends TestCase {
 		$Renderer->__construct($Exception);
 		$Renderer->render();
 
-		$expected = array(
+		$expected = [
 			'code' => 412,
 			'url' => $Controller->request->here(),
 			'message' => '2 validation errors occurred',
 			'errorCount' => 2,
-			'errors' => array(
-				'title' => array(
+			'errors' => [
+				'title' => [
 					'error message'
-				),
-				'body' => array(
+				],
+				'body' => [
 					'another field message'
-				)
-			),
-			'exception' => array(
+				]
+			],
+			'exception' => [
 				'class' => 'Crud\Error\Exception\ValidationException',
 				'code' => 412,
 				'message' => '2 validation errors occurred',
-			)
-		);
+			]
+		];
 		$data = $Controller->viewVars['data'];
 		unset($data['exception']['trace']);
 		$this->assertEquals($expected, $data);

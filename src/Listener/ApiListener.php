@@ -327,7 +327,7 @@ class ApiListener extends BaseListener {
 			$keys[$key] = $subjectArray[$key];
 		}
 
-		return String::insert($path, $keys, array('before' => '{', 'after' => '}'));
+		return String::insert($path, $keys, ['before' => '{', 'after' => '}']);
 	}
 
 /**

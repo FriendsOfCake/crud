@@ -111,7 +111,7 @@ abstract class BaseAction extends Object {
  * @return array
  * @throws \Exception for a missing or undefined message type
  */
-	public function message($type, array $replacements = array()) {
+	public function message($type, array $replacements = []) {
 		if (empty($type)) {
 			throw new \Exception('Missing message type');
 		}

@@ -32,15 +32,15 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer {
 			$this->controller->response->statusCode($status);
 		}
 
-		$sets = array(
+		$sets = [
 			'code' => $code,
 			'url' => h($url),
 			'message' => $error->getMessage(),
 			'error' => $error,
 			'errorCount' => $error->getValidationErrorCount(),
 			'errors' => $error->getValidationErrors(),
-			'_serialize' => array('code', 'url', 'message', 'errorCount', 'errors')
-		);
+			'_serialize' => ['code', 'url', 'message', 'errorCount', 'errors']
+		];
 		$this->controller->set($sets);
 		$this->_outputMessage('error400');
 	}
@@ -60,7 +60,7 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer {
 		try {
 			$this->controller->set('success', false);
 			$this->controller->set('data', $this->_getErrorData());
-			$this->controller->set('_serialize', array('success', 'data'));
+			$this->controller->set('_serialize', ['success', 'data']);
 			$this->controller->render($template);
 			$event = new Event('Controller.shutdown', $this->controller);
 			$this->controller->afterFilter($event);
@@ -78,11 +78,11 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer {
 			}
 			return $this->_outputMessageSafe('error500');
 		} catch (\Exception $e) {
-			$this->controller->set(array(
+			$this->controller->set([
 				'error' => $e,
 				'message' => $e->getMessage(),
 				'code' => $e->getCode()
-			));
+			]);
 			return $this->_outputMessageSafe('error500');
 		}
 	}
@@ -99,7 +99,7 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer {
 		$this->controller->subDir = '';
 		$this->controller->viewPath = 'Errors/';
 		$this->controller->viewClass = 'View';
-		$this->controller->helpers = array('Form', 'Html', 'Session');
+		$this->controller->helpers = ['Form', 'Html', 'Session'];
 
 		$this->controller->render($template);
 		return $this->controller->response;
@@ -111,7 +111,7 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer {
  * @return array debugging data
  */
 	protected function _getErrorData() {
-		$data = array();
+		$data = [];
 
 		$viewVars = $this->controller->viewVars;
 		if (!empty($viewVars['_serialize'])) {
@@ -121,11 +121,11 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer {
 		}
 
 		if (!empty($viewVars['error'])) {
-			$data['exception'] = array(
+			$data['exception'] = [
 				'class' => get_class($viewVars['error']),
 				'code' => $viewVars['error']->getCode(),
 				'message' => $viewVars['error']->getMessage()
-			);
+			];
 		}
 
 		if (Configure::read('debug')) {
