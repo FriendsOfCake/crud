@@ -6,6 +6,10 @@ use Cake\Controller\ComponentRegistry;
 use Cake\Event\Event;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
+use Crud\Error\Exception\ActionNotConfiguredException;
+use Crud\Error\Exception\ListenerNotConfiguredException;
+use Crud\Error\Exception\MissingActionException;
+use Crud\Error\Exception\MissingListenerException;
 use Crud\Event\Subject;
 
 /**
@@ -122,7 +126,8 @@ class CrudComponent extends Component
     /**
      * Constructor
      *
-     * @param Cake\Controller\ComponentRegistry $collection A ComponentCollection this component can use to lazy load its components.
+     * @param Cake\Controller\ComponentRegistry $collection A ComponentCollection this component
+     *   can use to lazy load its components.
      * @param array $config Array of configuration settings.
      * @return void
      */
@@ -641,12 +646,12 @@ class CrudComponent extends Component
             $config = $this->config('listeners.' . $name);
 
             if (empty($config)) {
-                throw new \Crud\Error\Exception\ListenerNotConfiguredException(sprintf('Listener "%s" is not configured', $name));
+                throw new ListenerNotConfiguredException(sprintf('Listener "%s" is not configured', $name));
             }
 
             $className = \Cake\Core\App::classname($config['className'], 'Listener', 'Listener');
             if (empty($className)) {
-                throw new \Crud\Error\Exception\MissingListenerException('Could not find listener class: ' . $config['className']);
+                throw new MissingListenerException('Could not find listener class: ' . $config['className']);
             }
 
             $this->_listenerInstances[$name] = new $className($this->_controller);
@@ -677,12 +682,12 @@ class CrudComponent extends Component
             $config = $this->config('actions.' . $name);
 
             if (empty($config)) {
-                throw new \Crud\Error\Exception\ActionNotConfiguredException(sprintf('Action "%s" has not been mapped', $name));
+                throw new ActionNotConfiguredException(sprintf('Action "%s" has not been mapped', $name));
             }
 
             $className = \Cake\Core\App::classname($config['className'], 'Action', 'Action');
             if (empty($className)) {
-                throw new \Crud\Error\Exception\MissingActionException('Could not find action class: ' . $config['className']);
+                throw new MissingActionException('Could not find action class: ' . $config['className']);
             }
 
             $this->_actionInstances[$name] = new $className($this->_controller);

@@ -314,8 +314,13 @@ class ApiListenerTest extends TestCase
      * @param array $validationErrors
      * @return void
      */
-    public function testExceptionResponse($apiConfig, $exceptionClass, $exceptionMessage, $exceptionCode, $validationErrors = [])
-    {
+    public function testExceptionResponse(
+        $apiConfig,
+        $exceptionClass,
+        $exceptionMessage,
+        $exceptionCode,
+        $validationErrors = []
+    ) {
         $listener = $this
             ->getMockBuilder('\Crud\Listener\ApiListener')
             ->disableOriginalConstructor()

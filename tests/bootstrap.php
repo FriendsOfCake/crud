@@ -1,4 +1,6 @@
 <?php
+// @codingStandardsIgnoreFile
+
 $findRoot = function () {
     $root = dirname(__DIR__);
     if (is_dir($root . '/vendor/cakephp/cakephp')) {

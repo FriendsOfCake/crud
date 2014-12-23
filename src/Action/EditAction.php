@@ -109,7 +109,7 @@ class EditAction extends BaseAction
      * HTTP PUT handler
      *
      * @param mixed $id Record id
-     * @return void
+     * @return void|\Cake\Network\Response
      */
     protected function _put($id = null)
     {
@@ -132,7 +132,7 @@ class EditAction extends BaseAction
      * Thin proxy for _put
      *
      * @param mixed $id Record id
-     * @return void
+     * @return void|\Cake\Network\Response
      */
     protected function _post($id = null)
     {

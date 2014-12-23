@@ -241,7 +241,7 @@ abstract class BaseAction extends Object
      * [publishSuccess description]
      *
      * @param \Crud\EventEvent $event Event
-     * @return void
+     * @return void|bool
      */
     public function publishSuccess(Event $event)
     {
@@ -288,7 +288,9 @@ abstract class BaseAction extends Object
         }
 
         if ($inflectionType === 'singular') {
-            return strtolower(Inflector::humanize(Inflector::singularize(Inflector::underscore($this->_table()->alias()))));
+            return strtolower(Inflector::humanize(
+                Inflector::singularize(Inflector::underscore($this->_table()->alias()))
+            ));
         }
 
         return strtolower(Inflector::humanize(Inflector::underscore($this->_table()->alias())));

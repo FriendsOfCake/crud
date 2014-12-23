@@ -21,9 +21,6 @@ matrix:
 
     - php: hhvm-nightly
 
-    - php: 5.4
-      env: PHPCS=1 DEFAULT=0
-
   fast_finish: true
 
   include:
@@ -66,7 +63,7 @@ script:
   - sh -c "if [ '$COVERALLS' = '1' ]; then phpunit --stderr --coverage-clover build/logs/clover.xml; fi"
   - sh -c "if [ '$COVERALLS' = '1' ]; then php vendor/bin/coveralls -c .coveralls.yml -v; fi"
   - sh -c "if [ '$DEFAULT' = '1' ]; then phpunit --stderr; fi"
-  - sh -c "if [ '$PHPCS' = '1' ]; then vendor/bin/phpcs -p --extensions=php --standard=vendor/cakephp/cakephp-codesniffer/CakePHP --ignore=vendor --ignore=docs . ; fi"
+  - sh -c "if [ '$PHPCS' = '1' ]; then vendor/bin/phpcs -n -p --extensions=php --standard=vendor/cakephp/cakephp-codesniffer/CakePHP --ignore=vendor --ignore=docs . ; fi"
 
 notifications:
   email: false
