@@ -15,55 +15,58 @@ use Crud\Event\Subject;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-abstract class Object implements EventListenerInterface {
+abstract class Object implements EventListenerInterface
+{
 
-	use InstanceConfigTrait;
-	use ProxyTrait;
+    use InstanceConfigTrait;
+    use ProxyTrait;
 
-/**
- * Container with reference to all objects
- * needed within the CrudListener and CrudAction
- *
- * @var \Cake\Controller\Controller
- */
-	protected $_controller;
+    /**
+     * Container with reference to all objects
+     * needed within the CrudListener and CrudAction
+     *
+     * @var \Cake\Controller\Controller
+     */
+    protected $_controller;
 
-/**
- * Default configuration
- *
- * @var array
- */
-	protected $_defaultConfig = [];
+    /**
+     * Default configuration
+     *
+     * @var array
+     */
+    protected $_defaultConfig = [];
 
-/**
- * Constructor
- *
- * @param \Cake\Controller\Controller $Controller Controller instance
- * @param array $config Default settings
- * @return void
- */
-	public function __construct(Controller $Controller, $config = []) {
-		$this->_controller = $Controller;
-		$this->config($config);
-	}
+    /**
+     * Constructor
+     *
+     * @param \Cake\Controller\Controller $Controller Controller instance
+     * @param array $config Default settings
+     * @return void
+     */
+    public function __construct(Controller $Controller, $config = [])
+    {
+        $this->_controller = $Controller;
+        $this->config($config);
+    }
 
-/**
- * List of implemented events
- *
- * @return array
- */
-	public function implementedEvents() {
-		return [];
-	}
+    /**
+     * List of implemented events
+     *
+     * @return array
+     */
+    public function implementedEvents()
+    {
+        return [];
+    }
 
-/**
- * Convenient method for Request::is
- *
- * @param string|array $method Method(s) to check for
- * @return bool
- */
-	protected function _checkRequestType($method) {
-		return $this->_request()->is($method);
-	}
-
+    /**
+     * Convenient method for Request::is
+     *
+     * @param string|array $method Method(s) to check for
+     * @return bool
+     */
+    protected function _checkRequestType($method)
+    {
+        return $this->_request()->is($method);
+    }
 }

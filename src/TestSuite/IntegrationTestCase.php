@@ -13,26 +13,27 @@ use FriendsOfCake\TestUtilities\CounterHelperTrait;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-abstract class IntegrationTestCase extends \Cake\TestSuite\IntegrationTestCase {
+abstract class IntegrationTestCase extends \Cake\TestSuite\IntegrationTestCase
+{
 
-	use AccessibilityHelperTrait;
-	use CounterHelperTrait;
-	use CrudTestTrait;
+    use AccessibilityHelperTrait;
+    use CounterHelperTrait;
+    use CrudTestTrait;
 
-/**
- * [setUp description]
- *
- * @return void
- */
-	public function setUp() {
-		parent::setUp();
-		$this->resetReflectionCache();
+    /**
+     * [setUp description]
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        $this->resetReflectionCache();
 
-		$this->_eventManager = EventManager::instance();
+        $this->_eventManager = EventManager::instance();
 
-		$existing = Configure::read('App.paths.templates');
-		$existing[] = Plugin::path('Crud') . 'tests/App/Template/';
-		Configure::write('App.paths.templates', $existing);
-	}
-
+        $existing = Configure::read('App.paths.templates');
+        $existing[] = Plugin::path('Crud') . 'tests/App/Template/';
+        Configure::write('App.paths.templates', $existing);
+    }
 }

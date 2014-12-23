@@ -16,652 +16,680 @@ use Crud\Event\Subject;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class CrudComponent extends Component {
-
-/**
- * The current controller action.
- *
- * @var string
- */
-	protected $_action;
-
-/**
- * Reference to the current controller.
- *
- * @var Controller
- */
-	protected $_controller;
-
-/**
- * Reference to the current request.
- *
- * @var CakeRequest
- */
-	protected $_request;
-
-/**
- * A flat array of the events triggered.
- *
- * @var array
- */
-	protected $_eventLog = [];
-
-/**
- * Reference to the current event manager.
- *
- * @var CakeEventManager
- */
-	protected $_eventManager;
-
-/**
- * Cached property for Controller::$modelClass. This is
- * the model name of the current model.
- *
- * @var string
- */
-	protected $_modelName;
-
-/**
- * List of listener objects attached to Crud.
- *
- * @var array
- */
-	protected $_listenerInstances = [];
-
-/**
- * List of crud actions.
- *
- * @var array
- */
-	protected $_actionInstances = [];
-
-/**
- * Components settings.
- *
- * `eventPrefix` All emitted events will be prefixed with this property value.
- *
- * `actions` contains an array of controller methods this component should offer implementation for.
- * Each action maps to a CrudAction class. `$controllerAction => $crudActionClass`.
- * Example: `array('admin_index' => 'Crud.Index')`
- * By default no actions are enabled.
- *
- * `listeners` List of internal-name => ${plugin}.${class} listeners
- * that will be bound automatically in Crud. By default the related model event
- * are bound. Events will always assume to be in the Controller/Event folder.
- *
- * `eventLogging` boolean to determine whether the class should log triggered events.
- *
- * @var array
- */
-	protected $_defaultConfig = [
-		'actions' => [],
-		'eventPrefix' => 'Crud',
-		'listeners' => [],
-		'messages' => [
-			'domain' => 'crud',
-			'invalidId' => [
-				'code' => 400,
-				'class' => 'Cake\Network\Exception\BadRequestException',
-				'text' => 'Invalid id'
-			],
-			'recordNotFound' => [
-				'code' => 404,
-				'class' => 'Cake\Network\Exception\NotFoundException',
-				'text' => 'Not found'
-			],
-			'badRequestMethod' => [
-				'code' => 405,
-				'class' => 'Cake\Network\Exception\MethodNotAllowedException',
-				'text' => 'Method not allowed. This action permits only {methods}'
-			]
-		],
-		'eventLogging' => false
-	];
-
-/**
- * Constructor
- *
- * @param Cake\Controller\ComponentRegistry $collection A ComponentCollection this component can use to lazy load its components.
- * @param array $config Array of configuration settings.
- * @return void
- */
-	public function __construct(ComponentRegistry $collection, $config = []) {
-		$config += ['actions' => [], 'listeners' => []];
-		$config['actions'] = $this->normalizeArray($config['actions']);
-		$config['listeners'] = $this->normalizeArray($config['listeners']);
-
-		$this->_controller = $collection->getController();
-		$this->_eventManager = $this->_controller->eventManager();
-
-		parent::__construct($collection, $config);
-	}
-
-/**
- * Normalize config array
- *
- * @param array $array List to normalize
- * @return array
- */
-	public function normalizeArray(array $array) {
-		$normal = [];
-
-		foreach ($array as $action => $config) {
-			if (is_string($config)) {
-				$config = ['className' => $config];
-			}
-
-			if (is_int($action)) {
-				list(, $action) = pluginSplit($config['className']);
-			}
-
-			$action = Inflector::variable($action);
-			$normal[$action] = $config;
-		}
-
-		return $normal;
-	}
-
-/**
- * Add self to list of components capable of dispatching an action.
- *
- * @param \Cake\Event\Event $event Event instance
- * @return void
- */
-	public function beforeFilter(Event $event) {
-		$this->_action = $this->_controller->request->action;
-		$this->_request = $this->_controller->request;
-
-		if (!isset($this->_controller->dispatchComponents)) {
-			$this->_controller->dispatchComponents = [];
-		}
-
-		$this->_controller->dispatchComponents['Crud'] = true;
-
-		$this->_loadListeners();
-		$this->trigger('beforeFilter');
-	}
-
-/**
- * Called after the Controller::beforeFilter() and before the controller action.
- *
- * @param Cake\Event\Event $event Event instance
- * @return void
- */
-	public function startup(Event $event) {
-		$this->_loadListeners();
-		$this->trigger('startup');
-	}
-
-/**
- * Execute a Crud action
- *
- * @param string $controllerAction Override the controller action to execute as.
- * @param array $args List of arguments to pass to the CRUD action (Usually an ID to edit / delete).
- * @return CakeResponse
- * @throws CakeException If an action is not mapped.
- */
-	public function execute($controllerAction = null, $args = []) {
-		$this->_loadListeners();
-
-		$this->_action = $controllerAction ?: $this->_action;
-
-		$action = $this->_action;
-		if (empty($args)) {
-			$args = $this->_request->params['pass'];
-		}
-
-		try {
-			$event = $this->trigger('beforeHandle', compact('args', 'action'));
-
-			$response = $this->action($event->subject->action)->handle($event->subject->args);
-			if ($response instanceof \Cake\Network\Response) {
-				return $response;
-			}
-
-		} catch (\Exception $e) {
-
-			if (isset($e->response)) {
-				return $e->response;
-			}
-
-			throw $e;
-		}
-
-		$view = null;
-		$crudAction = $this->action($action);
-		if (method_exists($crudAction, 'view')) {
-			$view = $crudAction->view();
-		}
-
-		return $this->_controller->response = $this->_controller->render($view);
-	}
-
-/**
- * Get a CrudAction object by action name.
- *
- * @param string $name The controller action name.
- * @return CrudAction
- */
-	public function action($name = null) {
-		if (empty($name)) {
-			$name = $this->_action;
-		}
-
-		$name = Inflector::variable($name);
-		return $this->_loadAction($name);
-	}
-
-/**
- * Enable one or multiple CRUD actions.
- *
- * @param string|array $actions The action to enable.
- * @return void
- */
-	public function enable($actions) {
-		foreach ((array)$actions as $action) {
-			$this->action($action)->enable();
-		}
-	}
-
-/**
- * Disable one or multiple CRUD actions.
- *
- * @param string|array $actions The action to disable.
- * @return void
- */
-	public function disable($actions) {
-		foreach ((array)$actions as $action) {
-			$this->action($action)->disable();
-		}
-	}
-
-/**
- * Map the view file to use for a controller action.
- *
- * To map multiple action views in one go pass an array as first argument and no second argument.
- *
- * @param string|array $action Action or array of actions
- * @param string $view View name
- * @return void
- */
-	public function view($action, $view = null) {
-		if (is_array($action)) {
-			foreach ($action as $realAction => $realView) {
-				$this->action($realAction)->view($realView);
-			}
-
-			return;
-		}
-
-		$this->action($action)->view($view);
-	}
-
-/**
- * Change the viewVar name for one or multiple actions.
- *
- * To map multiple action viewVars in one go pass an array as first argument and no second argument.
- *
- * @param string|array $action Action or array of actions.
- * @param string $viewVar View var name.
- * @return void
- */
-	public function viewVar($action, $viewVar = null) {
-		if (is_array($action)) {
-			foreach ($action as $realAction => $realViewVar) {
-				$this->action($realAction)->viewVar($realViewVar);
-			}
-
-			return;
-		}
-
-		$this->action($action)->viewVar($viewVar);
-	}
-
-/**
- * Map a controller action to a Model::find($method).
- *
- * To map multiple findMethods in one go pass an array as first argument and no second argument.
- *
- * @param string|array $action Action or array of actions.
- * @param string $method Find method name
- * @return void
- */
-	public function findMethod($action, $method = null) {
-		if (is_array($action)) {
-			foreach ($action as $realAction => $realMethod) {
-				$this->action($realAction)->findMethod($realMethod);
-			}
-
-			return;
-		}
-
-		$this->action($action)->findMethod($method);
-	}
-
-/**
- * Map action to an internal request type.
- *
- * @param string $action The Controller action to provide an implementation for.
- * @param string|array $config Config array or class name like Crud.Index.
- * @param bool $enable Should the mapping be enabled right away?
- * @return void
- */
-	public function mapAction($action, $config = [], $enable = true) {
-		if (is_string($config)) {
-			$config = ['className' => $config];
-		}
-		$action = Inflector::variable($action);
-		$this->config('actions.' . $action, $config);
-
-		if ($enable) {
-			$this->enable($action);
-		}
-	}
-
-/**
- * Check if a CRUD action has been mapped (whether it will be handled by CRUD component)
- *
- * @param string $action If null, use the current action.
- * @return bool
- */
-	public function isActionMapped($action = null) {
-		if (empty($action)) {
-			$action = $this->_action;
-		}
-
-		$action = Inflector::variable($action);
-		$test = $this->config('actions.' . $action);
-		if (empty($test)) {
-			return false;
-		}
-
-		return $this->action($action)->config('enabled');
-	}
-
-/**
- * Attaches an event listener function to the controller for Crud Events.
- *
- * @param string|array $events Name of the Crud Event you want to attach to controller.
- * @param callback $callback Callable method or closure to be executed on event.
- * @param array $options Used to set the `priority` and `passParams` flags to the listener.
- * @return void
- */
-	public function on($events, $callback, $options = []) {
-		foreach ((array)$events as $event) {
-			if (!strpos($event, '.')) {
-				$event = $this->_config['eventPrefix'] . '.' . $event;
-			}
-
-			$this->_eventManager->attach($callback, $event, $options);
-		}
-	}
-
-/**
- * Get a single event class.
- *
- * @param string $name Listener
- * @return CrudBaseEvent
- */
-	public function listener($name) {
-		return $this->_loadListener($name);
-	}
-
-/**
- * Add a new listener to Crud
- *
- * This will not load or initialize the listener, only lazy-load it.
- *
- * If `$name` is provided but no `$class` argument, the className will
- * be derived from the `$name`.
- *
- * CakePHP Plugin.ClassName format for `$name` and `$class` is supported.
- *
- * @param string $name Name
- * @param string $className Normal CakePHP plugin-dot annotation supported.
- * @param array $config Any default settings for a listener.
- * @return void
- */
-	public function addListener($name, $className = null, $config = []) {
-		if (strpos($name, '.') !== false) {
-			list($plugin, $name) = pluginSplit($name);
-			$className = $plugin . '.' . Inflector::camelize($name);
-		}
-
-		$name = Inflector::variable($name);
-		$this->config(sprintf('listeners.%s', $name), compact('className') + $config);
-	}
-
-/**
- * Remove a listener from Crud.
- *
- * This will also detach it from the EventManager if it's attached.
- *
- * @param string $name Name
- * @return bool
- */
-	public function removeListener($name) {
-		$listeners = $this->config('listeners');
-		if (!array_key_exists($name, $listeners)) {
-			return false;
-		}
-
-		if (isset($this->_listenerInstances[$name])) {
-			$this->_eventManager->detach($this->_listenerInstances[$name]);
-			unset($this->_listenerInstances[$name]);
-		}
-
-		unset($listeners[$name]);
-		$this->_config['listeners'] = $listeners;
-	}
-
-/**
- * Triggers a Crud event by creating a new subject and filling it with $data
- * if $data is an instance of CrudSubject it will be reused as the subject
- * object for this event.
- *
- * If Event listeners return a CakeResponse object, the this method will throw an
- * exception and fill a 'response' property on it with a reference to the response
- * object.
- *
- * @param string $eventName Event name
- * @param array $data Event data
- * @throws \Exception if any event listener return a CakeResponse object.
- * @return \Cake\Event\Event
- */
-	public function trigger($eventName, $data = []) {
-		$eventName = $this->_config['eventPrefix'] . '.' . $eventName;
-
-		$Subject = $data instanceof \Crud\Event\Subject ? $data : $this->getSubject($data);
-		$Subject->addEvent($eventName);
-
-		if (!empty($this->_config['eventLogging'])) {
-			$this->logEvent($eventName, $data);
-		}
-
-		$Event = new Event($eventName, $Subject);
-		$this->_eventManager->dispatch($Event);
-
-		if ($Event->result instanceof \Cake\Network\Response) {
-			$Exception = new \Exception();
-			$Exception->response = $Event->result;
-			throw $Exception;
-		}
-
-		return $Event;
-	}
-
-/**
- * Add a log entry for the event.
- *
- * @param string $eventName Event name
- * @param array $data Event data
- * @return void
- */
-	public function logEvent($eventName, $data = []) {
-		$this->_eventLog[] = [$eventName, $data];
-	}
-
-/**
- * Set or get defaults for listeners and actions.
- *
- * @param string $type Can be anything, but 'listeners' or 'actions' is currently only used.
- * @param string|array $name The name of the $type - e.g. 'api', 'relatedModels'
- * 	or an array ('api', 'relatedModels'). If $name is an array, the $config will be applied
- * 	to each entry in the $name array.
- * @param mixed $config If NULL, the defaults is returned, else the defaults are changed.
- * @return mixed
- */
-	public function defaults($type, $name, $config = null) {
-		if ($config !== null) {
-			if (!is_array($name)) {
-				$name = [$name];
-			}
-
-			foreach ($name as $realName) {
-				$this->config(sprintf('%s.%s', $type, $realName), $config);
-			}
-
-			return;
-		}
-
-		return $this->config(sprintf('%s.%s', $type, $name));
-	}
-
-/**
- * Returns an array of triggered events.
- *
- * @return array
- */
-	public function eventLog() {
-		return $this->_eventLog;
-	}
-
-/**
- * Sets the model class to be used during the action execution.
- *
- * @param string $modelName The name of the model to load.
- * @return void
- */
-	public function useModel($modelName) {
-		$this->_controller->loadModel($modelName);
-		list(, $modelName) = pluginSplit($modelName);
-		$this->_modelName = $this->_model->name;
-	}
-
-/**
- * Returns controller's table instance.
- *
- * @return \Cake\ORM\Table
- */
-	public function table() {
-		return $this->_controller->{$this->_modelName};
-	}
-
-/**
- * Returns new entity
- *
- * @param array $data Data
- * @return \Cake\ORM\Entity
- */
-	public function entity(array $data = []) {
-		return $this->table()->newEntity($data);
-	}
-
-/**
- * Returns controller instance
- *
- * @return \Cake\Controller\Controller
- */
-	public function controller() {
-		return $this->_controller;
-	}
-
-/**
- * Create a CakeEvent subject with the required properties.
- *
- * @param array $additional Additional properties for the subject.
- * @return \Crud\Event\Subject
- */
-	public function getSubject($additional = []) {
-		$subject = new Subject();
-		$subject->set($additional);
-
-		return $subject;
-	}
-
-/**
- * Load all event classes attached to Crud.
- *
- * @return void
- */
-	protected function _loadListeners() {
-		foreach (array_keys($this->config('listeners')) as $name) {
-			$this->_loadListener($name);
-		}
-	}
-
-/**
- * Load a single event class attached to Crud.
- *
- * @param string $name Name
- * @return \Crud\Listener\BaseListener
- * @throws \Crud\Error\Exception\ListenerNotConfiguredException
- * @throws \Crud\Error\Exception\MissingListenerException
- */
-	protected function _loadListener($name) {
-		if (!isset($this->_listenerInstances[$name])) {
-			$config = $this->config('listeners.' . $name);
-
-			if (empty($config)) {
-				throw new \Crud\Error\Exception\ListenerNotConfiguredException(sprintf('Listener "%s" is not configured', $name));
-			}
-
-			$className = \Cake\Core\App::classname($config['className'], 'Listener', 'Listener');
-			if (empty($className)) {
-				throw new \Crud\Error\Exception\MissingListenerException('Could not find listener class: ' . $config['className']);
-			}
-
-			$this->_listenerInstances[$name] = new $className($this->_controller);
-			unset($config['className']);
-			$this->_listenerInstances[$name]->config($config);
-
-			$this->_eventManager->attach($this->_listenerInstances[$name]);
-
-			if (is_callable([$this->_listenerInstances[$name], 'setup'])) {
-				$this->_listenerInstances[$name]->setup();
-			}
-		}
-
-		return $this->_listenerInstances[$name];
-	}
-
-/**
- * Load a CrudAction instance.
- *
- * @param string $name The controller action name.
- * @return \Crud\Action\BaseAction
- * @throws \Crud\Error\Exception\ActionNotConfiguredException
- * @throws \Crud\Error\Exception\MissingActionException
- */
-	protected function _loadAction($name) {
-		if (!isset($this->_actionInstances[$name])) {
-			$config = $this->config('actions.' . $name);
-
-			if (empty($config)) {
-				throw new \Crud\Error\Exception\ActionNotConfiguredException(sprintf('Action "%s" has not been mapped', $name));
-			}
-
-			$className = \Cake\Core\App::classname($config['className'], 'Action', 'Action');
-			if (empty($className)) {
-				throw new \Crud\Error\Exception\MissingActionException('Could not find action class: ' . $config['className']);
-			}
-
-			$this->_actionInstances[$name] = new $className($this->_controller);
-			unset($config['className']);
-			$this->_actionInstances[$name]->config($config);
-		}
-
-		return $this->_actionInstances[$name];
-	}
-
+class CrudComponent extends Component
+{
+
+    /**
+     * The current controller action.
+     *
+     * @var string
+     */
+    protected $_action;
+
+    /**
+     * Reference to the current controller.
+     *
+     * @var Controller
+     */
+    protected $_controller;
+
+    /**
+     * Reference to the current request.
+     *
+     * @var CakeRequest
+     */
+    protected $_request;
+
+    /**
+     * A flat array of the events triggered.
+     *
+     * @var array
+     */
+    protected $_eventLog = [];
+
+    /**
+     * Reference to the current event manager.
+     *
+     * @var CakeEventManager
+     */
+    protected $_eventManager;
+
+    /**
+     * Cached property for Controller::$modelClass. This is
+     * the model name of the current model.
+     *
+     * @var string
+     */
+    protected $_modelName;
+
+    /**
+     * List of listener objects attached to Crud.
+     *
+     * @var array
+     */
+    protected $_listenerInstances = [];
+
+    /**
+     * List of crud actions.
+     *
+     * @var array
+     */
+    protected $_actionInstances = [];
+
+    /**
+     * Components settings.
+     *
+     * `eventPrefix` All emitted events will be prefixed with this property value.
+     *
+     * `actions` contains an array of controller methods this component should offer implementation for.
+     * Each action maps to a CrudAction class. `$controllerAction => $crudActionClass`.
+     * Example: `array('admin_index' => 'Crud.Index')`
+     * By default no actions are enabled.
+     *
+     * `listeners` List of internal-name => ${plugin}.${class} listeners
+     * that will be bound automatically in Crud. By default the related model event
+     * are bound. Events will always assume to be in the Controller/Event folder.
+     *
+     * `eventLogging` boolean to determine whether the class should log triggered events.
+     *
+     * @var array
+     */
+    protected $_defaultConfig = [
+        'actions' => [],
+        'eventPrefix' => 'Crud',
+        'listeners' => [],
+        'messages' => [
+            'domain' => 'crud',
+            'invalidId' => [
+                'code' => 400,
+                'class' => 'Cake\Network\Exception\BadRequestException',
+                'text' => 'Invalid id'
+            ],
+            'recordNotFound' => [
+                'code' => 404,
+                'class' => 'Cake\Network\Exception\NotFoundException',
+                'text' => 'Not found'
+            ],
+            'badRequestMethod' => [
+                'code' => 405,
+                'class' => 'Cake\Network\Exception\MethodNotAllowedException',
+                'text' => 'Method not allowed. This action permits only {methods}'
+            ]
+        ],
+        'eventLogging' => false
+    ];
+
+    /**
+     * Constructor
+     *
+     * @param Cake\Controller\ComponentRegistry $collection A ComponentCollection this component can use to lazy load its components.
+     * @param array $config Array of configuration settings.
+     * @return void
+     */
+    public function __construct(ComponentRegistry $collection, $config = [])
+    {
+        $config += ['actions' => [], 'listeners' => []];
+        $config['actions'] = $this->normalizeArray($config['actions']);
+        $config['listeners'] = $this->normalizeArray($config['listeners']);
+
+        $this->_controller = $collection->getController();
+        $this->_eventManager = $this->_controller->eventManager();
+
+        parent::__construct($collection, $config);
+    }
+
+    /**
+     * Normalize config array
+     *
+     * @param array $array List to normalize
+     * @return array
+     */
+    public function normalizeArray(array $array)
+    {
+        $normal = [];
+
+        foreach ($array as $action => $config) {
+            if (is_string($config)) {
+                $config = ['className' => $config];
+            }
+
+            if (is_int($action)) {
+                list(, $action) = pluginSplit($config['className']);
+            }
+
+            $action = Inflector::variable($action);
+            $normal[$action] = $config;
+        }
+
+        return $normal;
+    }
+
+    /**
+     * Add self to list of components capable of dispatching an action.
+     *
+     * @param \Cake\Event\Event $event Event instance
+     * @return void
+     */
+    public function beforeFilter(Event $event)
+    {
+        $this->_action = $this->_controller->request->action;
+        $this->_request = $this->_controller->request;
+
+        if (!isset($this->_controller->dispatchComponents)) {
+            $this->_controller->dispatchComponents = [];
+        }
+
+        $this->_controller->dispatchComponents['Crud'] = true;
+
+        $this->_loadListeners();
+        $this->trigger('beforeFilter');
+    }
+
+    /**
+     * Called after the Controller::beforeFilter() and before the controller action.
+     *
+     * @param Cake\Event\Event $event Event instance
+     * @return void
+     */
+    public function startup(Event $event)
+    {
+        $this->_loadListeners();
+        $this->trigger('startup');
+    }
+
+    /**
+     * Execute a Crud action
+     *
+     * @param string $controllerAction Override the controller action to execute as.
+     * @param array $args List of arguments to pass to the CRUD action (Usually an ID to edit / delete).
+     * @return CakeResponse
+     * @throws CakeException If an action is not mapped.
+     */
+    public function execute($controllerAction = null, $args = [])
+    {
+        $this->_loadListeners();
+
+        $this->_action = $controllerAction ?: $this->_action;
+
+        $action = $this->_action;
+        if (empty($args)) {
+            $args = $this->_request->params['pass'];
+        }
+
+        try {
+            $event = $this->trigger('beforeHandle', compact('args', 'action'));
+
+            $response = $this->action($event->subject->action)->handle($event->subject->args);
+            if ($response instanceof \Cake\Network\Response) {
+                return $response;
+            }
+
+        } catch (\Exception $e) {
+            if (isset($e->response)) {
+                return $e->response;
+            }
+
+            throw $e;
+        }
+
+        $view = null;
+        $crudAction = $this->action($action);
+        if (method_exists($crudAction, 'view')) {
+            $view = $crudAction->view();
+        }
+
+        return $this->_controller->response = $this->_controller->render($view);
+    }
+
+    /**
+     * Get a CrudAction object by action name.
+     *
+     * @param string $name The controller action name.
+     * @return CrudAction
+     */
+    public function action($name = null)
+    {
+        if (empty($name)) {
+            $name = $this->_action;
+        }
+
+        $name = Inflector::variable($name);
+        return $this->_loadAction($name);
+    }
+
+    /**
+     * Enable one or multiple CRUD actions.
+     *
+     * @param string|array $actions The action to enable.
+     * @return void
+     */
+    public function enable($actions)
+    {
+        foreach ((array)$actions as $action) {
+            $this->action($action)->enable();
+        }
+    }
+
+    /**
+     * Disable one or multiple CRUD actions.
+     *
+     * @param string|array $actions The action to disable.
+     * @return void
+     */
+    public function disable($actions)
+    {
+        foreach ((array)$actions as $action) {
+            $this->action($action)->disable();
+        }
+    }
+
+    /**
+     * Map the view file to use for a controller action.
+     *
+     * To map multiple action views in one go pass an array as first argument and no second argument.
+     *
+     * @param string|array $action Action or array of actions
+     * @param string $view View name
+     * @return void
+     */
+    public function view($action, $view = null)
+    {
+        if (is_array($action)) {
+            foreach ($action as $realAction => $realView) {
+                $this->action($realAction)->view($realView);
+            }
+
+            return;
+        }
+
+        $this->action($action)->view($view);
+    }
+
+    /**
+     * Change the viewVar name for one or multiple actions.
+     *
+     * To map multiple action viewVars in one go pass an array as first argument and no second argument.
+     *
+     * @param string|array $action Action or array of actions.
+     * @param string $viewVar View var name.
+     * @return void
+     */
+    public function viewVar($action, $viewVar = null)
+    {
+        if (is_array($action)) {
+            foreach ($action as $realAction => $realViewVar) {
+                $this->action($realAction)->viewVar($realViewVar);
+            }
+
+            return;
+        }
+
+        $this->action($action)->viewVar($viewVar);
+    }
+
+    /**
+     * Map a controller action to a Model::find($method).
+     *
+     * To map multiple findMethods in one go pass an array as first argument and no second argument.
+     *
+     * @param string|array $action Action or array of actions.
+     * @param string $method Find method name
+     * @return void
+     */
+    public function findMethod($action, $method = null)
+    {
+        if (is_array($action)) {
+            foreach ($action as $realAction => $realMethod) {
+                $this->action($realAction)->findMethod($realMethod);
+            }
+
+            return;
+        }
+
+        $this->action($action)->findMethod($method);
+    }
+
+    /**
+     * Map action to an internal request type.
+     *
+     * @param string $action The Controller action to provide an implementation for.
+     * @param string|array $config Config array or class name like Crud.Index.
+     * @param bool $enable Should the mapping be enabled right away?
+     * @return void
+     */
+    public function mapAction($action, $config = [], $enable = true)
+    {
+        if (is_string($config)) {
+            $config = ['className' => $config];
+        }
+        $action = Inflector::variable($action);
+        $this->config('actions.' . $action, $config);
+
+        if ($enable) {
+            $this->enable($action);
+        }
+    }
+
+    /**
+     * Check if a CRUD action has been mapped (whether it will be handled by CRUD component)
+     *
+     * @param string $action If null, use the current action.
+     * @return bool
+     */
+    public function isActionMapped($action = null)
+    {
+        if (empty($action)) {
+            $action = $this->_action;
+        }
+
+        $action = Inflector::variable($action);
+        $test = $this->config('actions.' . $action);
+        if (empty($test)) {
+            return false;
+        }
+
+        return $this->action($action)->config('enabled');
+    }
+
+    /**
+     * Attaches an event listener function to the controller for Crud Events.
+     *
+     * @param string|array $events Name of the Crud Event you want to attach to controller.
+     * @param callback $callback Callable method or closure to be executed on event.
+     * @param array $options Used to set the `priority` and `passParams` flags to the listener.
+     * @return void
+     */
+    public function on($events, $callback, $options = [])
+    {
+        foreach ((array)$events as $event) {
+            if (!strpos($event, '.')) {
+                $event = $this->_config['eventPrefix'] . '.' . $event;
+            }
+
+            $this->_eventManager->attach($callback, $event, $options);
+        }
+    }
+
+    /**
+     * Get a single event class.
+     *
+     * @param string $name Listener
+     * @return CrudBaseEvent
+     */
+    public function listener($name)
+    {
+        return $this->_loadListener($name);
+    }
+
+    /**
+     * Add a new listener to Crud
+     *
+     * This will not load or initialize the listener, only lazy-load it.
+     *
+     * If `$name` is provided but no `$class` argument, the className will
+     * be derived from the `$name`.
+     *
+     * CakePHP Plugin.ClassName format for `$name` and `$class` is supported.
+     *
+     * @param string $name Name
+     * @param string $className Normal CakePHP plugin-dot annotation supported.
+     * @param array $config Any default settings for a listener.
+     * @return void
+     */
+    public function addListener($name, $className = null, $config = [])
+    {
+        if (strpos($name, '.') !== false) {
+            list($plugin, $name) = pluginSplit($name);
+            $className = $plugin . '.' . Inflector::camelize($name);
+        }
+
+        $name = Inflector::variable($name);
+        $this->config(sprintf('listeners.%s', $name), compact('className') + $config);
+    }
+
+    /**
+     * Remove a listener from Crud.
+     *
+     * This will also detach it from the EventManager if it's attached.
+     *
+     * @param string $name Name
+     * @return bool
+     */
+    public function removeListener($name)
+    {
+        $listeners = $this->config('listeners');
+        if (!array_key_exists($name, $listeners)) {
+            return false;
+        }
+
+        if (isset($this->_listenerInstances[$name])) {
+            $this->_eventManager->detach($this->_listenerInstances[$name]);
+            unset($this->_listenerInstances[$name]);
+        }
+
+        unset($listeners[$name]);
+        $this->_config['listeners'] = $listeners;
+    }
+
+    /**
+     * Triggers a Crud event by creating a new subject and filling it with $data
+     * if $data is an instance of CrudSubject it will be reused as the subject
+     * object for this event.
+     *
+     * If Event listeners return a CakeResponse object, the this method will throw an
+     * exception and fill a 'response' property on it with a reference to the response
+     * object.
+     *
+     * @param string $eventName Event name
+     * @param array $data Event data
+     * @throws \Exception if any event listener return a CakeResponse object.
+     * @return \Cake\Event\Event
+     */
+    public function trigger($eventName, $data = [])
+    {
+        $eventName = $this->_config['eventPrefix'] . '.' . $eventName;
+
+        $Subject = $data instanceof \Crud\Event\Subject ? $data : $this->getSubject($data);
+        $Subject->addEvent($eventName);
+
+        if (!empty($this->_config['eventLogging'])) {
+            $this->logEvent($eventName, $data);
+        }
+
+        $Event = new Event($eventName, $Subject);
+        $this->_eventManager->dispatch($Event);
+
+        if ($Event->result instanceof \Cake\Network\Response) {
+            $Exception = new \Exception();
+            $Exception->response = $Event->result;
+            throw $Exception;
+        }
+
+        return $Event;
+    }
+
+    /**
+     * Add a log entry for the event.
+     *
+     * @param string $eventName Event name
+     * @param array $data Event data
+     * @return void
+     */
+    public function logEvent($eventName, $data = [])
+    {
+        $this->_eventLog[] = [$eventName, $data];
+    }
+
+    /**
+     * Set or get defaults for listeners and actions.
+     *
+     * @param string $type Can be anything, but 'listeners' or 'actions' is currently only used.
+     * @param string|array $name The name of the $type - e.g. 'api', 'relatedModels'
+     *  or an array ('api', 'relatedModels'). If $name is an array, the $config will be applied
+     *  to each entry in the $name array.
+     * @param mixed $config If NULL, the defaults is returned, else the defaults are changed.
+     * @return mixed
+     */
+    public function defaults($type, $name, $config = null)
+    {
+        if ($config !== null) {
+            if (!is_array($name)) {
+                $name = [$name];
+            }
+
+            foreach ($name as $realName) {
+                $this->config(sprintf('%s.%s', $type, $realName), $config);
+            }
+
+            return;
+        }
+
+        return $this->config(sprintf('%s.%s', $type, $name));
+    }
+
+    /**
+     * Returns an array of triggered events.
+     *
+     * @return array
+     */
+    public function eventLog()
+    {
+        return $this->_eventLog;
+    }
+
+    /**
+     * Sets the model class to be used during the action execution.
+     *
+     * @param string $modelName The name of the model to load.
+     * @return void
+     */
+    public function useModel($modelName)
+    {
+        $this->_controller->loadModel($modelName);
+        list(, $modelName) = pluginSplit($modelName);
+        $this->_modelName = $this->_model->name;
+    }
+
+    /**
+     * Returns controller's table instance.
+     *
+     * @return \Cake\ORM\Table
+     */
+    public function table()
+    {
+        return $this->_controller->{$this->_modelName};
+    }
+
+    /**
+     * Returns new entity
+     *
+     * @param array $data Data
+     * @return \Cake\ORM\Entity
+     */
+    public function entity(array $data = [])
+    {
+        return $this->table()->newEntity($data);
+    }
+
+    /**
+     * Returns controller instance
+     *
+     * @return \Cake\Controller\Controller
+     */
+    public function controller()
+    {
+        return $this->_controller;
+    }
+
+    /**
+     * Create a CakeEvent subject with the required properties.
+     *
+     * @param array $additional Additional properties for the subject.
+     * @return \Crud\Event\Subject
+     */
+    public function getSubject($additional = [])
+    {
+        $subject = new Subject();
+        $subject->set($additional);
+
+        return $subject;
+    }
+
+    /**
+     * Load all event classes attached to Crud.
+     *
+     * @return void
+     */
+    protected function _loadListeners()
+    {
+        foreach (array_keys($this->config('listeners')) as $name) {
+            $this->_loadListener($name);
+        }
+    }
+
+    /**
+     * Load a single event class attached to Crud.
+     *
+     * @param string $name Name
+     * @return \Crud\Listener\BaseListener
+     * @throws \Crud\Error\Exception\ListenerNotConfiguredException
+     * @throws \Crud\Error\Exception\MissingListenerException
+     */
+    protected function _loadListener($name)
+    {
+        if (!isset($this->_listenerInstances[$name])) {
+            $config = $this->config('listeners.' . $name);
+
+            if (empty($config)) {
+                throw new \Crud\Error\Exception\ListenerNotConfiguredException(sprintf('Listener "%s" is not configured', $name));
+            }
+
+            $className = \Cake\Core\App::classname($config['className'], 'Listener', 'Listener');
+            if (empty($className)) {
+                throw new \Crud\Error\Exception\MissingListenerException('Could not find listener class: ' . $config['className']);
+            }
+
+            $this->_listenerInstances[$name] = new $className($this->_controller);
+            unset($config['className']);
+            $this->_listenerInstances[$name]->config($config);
+
+            $this->_eventManager->attach($this->_listenerInstances[$name]);
+
+            if (is_callable([$this->_listenerInstances[$name], 'setup'])) {
+                $this->_listenerInstances[$name]->setup();
+            }
+        }
+
+        return $this->_listenerInstances[$name];
+    }
+
+    /**
+     * Load a CrudAction instance.
+     *
+     * @param string $name The controller action name.
+     * @return \Crud\Action\BaseAction
+     * @throws \Crud\Error\Exception\ActionNotConfiguredException
+     * @throws \Crud\Error\Exception\MissingActionException
+     */
+    protected function _loadAction($name)
+    {
+        if (!isset($this->_actionInstances[$name])) {
+            $config = $this->config('actions.' . $name);
+
+            if (empty($config)) {
+                throw new \Crud\Error\Exception\ActionNotConfiguredException(sprintf('Action "%s" has not been mapped', $name));
+            }
+
+            $className = \Cake\Core\App::classname($config['className'], 'Action', 'Action');
+            if (empty($className)) {
+                throw new \Crud\Error\Exception\MissingActionException('Could not find action class: ' . $config['className']);
+            }
+
+            $this->_actionInstances[$name] = new $className($this->_controller);
+            unset($config['className']);
+            $this->_actionInstances[$name]->config($config);
+        }
+
+        return $this->_actionInstances[$name];
+    }
 }
