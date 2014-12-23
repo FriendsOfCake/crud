@@ -58,9 +58,17 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer {
  */
 	protected function _outputMessage($template) {
 		try {
+			$viewVars = ['success', 'data'];
 			$this->controller->set('success', false);
 			$this->controller->set('data', $this->_getErrorData());
-			$this->controller->set('_serialize', ['success', 'data']);
+			if (Configure::read('debug')) {
+				$queryLog = $this->_getQueryLog();
+				if ($queryLog) {
+					$this->controller->set(compact('queryLog'));
+					$viewVars[] = 'queryLog';
+				}
+			}
+			$this->controller->set('_serialize', $viewVars);
 			$this->controller->render($template);
 			$event = new Event('Controller.shutdown', $this->controller);
 			$this->controller->afterFilter($event);
@@ -130,20 +138,26 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer {
 
 		if (Configure::read('debug')) {
 			$data['exception']['trace'] = preg_split('@\n@', $viewVars['error']->getTraceAsString());
-
-			$queryLog = [];
-			$sources = ConnectionManager::configured();
-			foreach ($sources as $source) {
-				$logger = ConnectionManager::get($source)->logger();
-				if (method_exists($logger, 'getLogs')) {
-					$queryLog[$source] = $logger->getLogs();
-				}
-			}
-			if ($queryLog) {
-				$data['queryLog'] = $queryLog;
-			}
 		}
 
 		return $data;
 	}
+
+/**
+ * Helper method to get query log.
+ *
+ * @return array Query log.
+ */
+	protected function _getQueryLog() {
+		$queryLog = [];
+		$sources = ConnectionManager::configured();
+		foreach ($sources as $source) {
+			$logger = ConnectionManager::get($source)->logger();
+			if (method_exists($logger, 'getLogs')) {
+				$queryLog[$source] = $logger->getLogs();
+			}
+		}
+		return $queryLog;
+	}
+
 }
