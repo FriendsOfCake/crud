@@ -1,6 +1,7 @@
 <?php
 namespace Crud\Error\Exception;
 
-class ActionNotConfiguredException extends CrudException {
+class ActionNotConfiguredException extends CrudException
+{
 
 }

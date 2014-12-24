@@ -1,6 +1,7 @@
 <?php
 namespace Crud\Error\Exception;
 
-class MissingActionException extends CrudException {
+class MissingActionException extends CrudException
+{
 
 }

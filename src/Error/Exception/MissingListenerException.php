@@ -1,6 +1,7 @@
 <?php
 namespace Crud\Error\Exception;
 
-class MissingListenerException extends CrudException {
+class MissingListenerException extends CrudException
+{
 
 }
