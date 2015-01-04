@@ -295,7 +295,7 @@ class AddActionTest extends IntegrationTestCase
 
                 $this->_controller->Blogs
                     ->validator()
-                    ->validatePresence('name')
+                    ->requirePresence('name')
                     ->add('name', [
                         'length' => [
                             'rule' => ['minLength', 10],
@@ -454,7 +454,7 @@ class AddActionTest extends IntegrationTestCase
 
                 $this->_controller->Blogs
                     ->validator()
-                    ->validatePresence('name')
+                    ->requirePresence('name')
                     ->add('name', [
                         'length' => [
                             'rule' => ['minLength', 10],
@@ -506,8 +506,8 @@ class AddActionTest extends IntegrationTestCase
 
                 $this->_controller->Blogs
                     ->validator()
-                    ->validatePresence('name')
-                    ->validatePresence('body')
+                    ->requirePresence('name')
+                    ->requirePresence('body')
                     ->add('name', [
                         'length' => [
                             'rule' => ['minLength', 10],
