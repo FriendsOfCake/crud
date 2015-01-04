@@ -200,7 +200,7 @@ class EditActionTest extends IntegrationTestCase
 
                 $this->_controller->Blogs
                     ->validator()
-                    ->validatePresence('name')
+                    ->requirePresence('name')
                     ->add('name', [
                         'length' => [
                             'rule' => ['minLength', 10],
