@@ -7,7 +7,7 @@ use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Request;
 use Cake\ORM\Entity;
 use Cake\Utility\Hash;
-use Cake\Utility\String;
+use Cake\Utility\Text;
 use Crud\Event\Subject;
 
 /**
@@ -320,7 +320,7 @@ class ApiListener extends BaseListener
 
     /**
      * Expand all scalar values from a CrudSubject
-     * and use them for a String::insert() interpolation
+     * and use them for a Text::insert() interpolation
      * of a path
      *
      * @param \Crud\Event\Subject $subject Subject
@@ -340,7 +340,7 @@ class ApiListener extends BaseListener
             $keys[$key] = $subjectArray[$key];
         }
 
-        return String::insert($path, $keys, ['before' => '{', 'after' => '}']);
+        return Text::insert($path, $keys, ['before' => '{', 'after' => '}']);
     }
 
     /**

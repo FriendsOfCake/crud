@@ -5,7 +5,7 @@ use Cake\Event\Event;
 use Cake\Network\Exception\NotImplementedException;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
-use Cake\Utility\String;
+use Cake\Utility\Text;
 use Crud\Core\Object;
 use Crud\Event\Subject;
 
@@ -158,7 +158,7 @@ abstract class BaseAction extends Object
 
         $config['text'] = __d($domain, $config['params']['original']);
 
-        $config['text'] = String::insert(
+        $config['text'] = Text::insert(
             $config['text'],
             $replacements + ['name' => $config['name']],
             ['before' => '{', 'after' => '}']
