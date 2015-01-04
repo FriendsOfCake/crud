@@ -37,9 +37,8 @@ class EditAction extends BaseAction
      * to be used in select boxes. An array as value means it is enabled and represent the list
      * of model associations to be fetched
      *
-     * `saveOptions` Raw array passed as 2nd argument to saveAll() in `add` and `edit` method
+     * `saveOptions` Raw array passed as 2nd argument to save method in `add` and `edit` method
      * If you configure a key with your action name, it will override the default settings.
-     * This is useful for adding fieldList to enhance security in saveAll.
      *
      * @var array
      */
@@ -50,10 +49,7 @@ class EditAction extends BaseAction
         'saveMethod' => 'save',
         'view' => null,
         'relatedModels' => true,
-        'saveOptions' => [
-            'validate' => true,
-            'atomic' => true
-        ],
+        'saveOptions' => [],
         'messages' => [
             'success' => [
                 'text' => 'Successfully updated {name}'
