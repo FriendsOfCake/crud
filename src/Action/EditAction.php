@@ -37,9 +37,7 @@ class EditAction extends BaseAction
      * to be used in select boxes. An array as value means it is enabled and represent the list
      * of model associations to be fetched
      *
-     * `entityOptions` Options array passed to $options argument of Table::createEntity().
-     *
-     * `saveOptions` Raw array passed as 2nd argument to save method in `add` and `edit` method
+     * `saveOptions` Options array used for $options argument of patchEntity() and save method.
      * If you configure a key with your action name, it will override the default settings.
      *
      * @var array
@@ -51,7 +49,6 @@ class EditAction extends BaseAction
         'saveMethod' => 'save',
         'view' => null,
         'relatedModels' => true,
-        'entityOptions' => [],
         'saveOptions' => [],
         'messages' => [
             'success' => [
@@ -118,7 +115,7 @@ class EditAction extends BaseAction
         $entity = $this->_table()->patchEntity(
             $this->_findRecord($id, $subject),
             $this->_request()->data,
-            $this->entityOptions()
+            $this->saveOptions()
         );
 
         $this->_trigger('beforeSave', $subject);

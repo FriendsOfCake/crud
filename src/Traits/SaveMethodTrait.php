@@ -41,24 +41,4 @@ trait SaveMethodTrait
 
         return $this->config('saveOptions', $config);
     }
-
-    /**
-     * Change the entityOptions configuration
-     *
-     * This is the `$options` argument passed to newEntity()/patchEntity()
-     *
-     * if `$config` is NULL the current config is returned
-     * else the `entityOptions` is changed
-     *
-     * @param mixed $config Configuration array
-     * @return mixed
-     */
-    public function entityOptions($config = null)
-    {
-        if ($config === null) {
-            return $this->config('entityOptions');
-        }
-
-        return $this->config('entityOptions', $config);
-    }
 }

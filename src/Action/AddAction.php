@@ -35,9 +35,7 @@ class AddAction extends BaseAction
      * to be used in select boxes. An array as value means it is enabled and represent the list
      * of model associations to be fetched
      *
-     * `entityOptions` Options array passed to $options argument of Table::createEntity().
-     *
-     * `saveOptions` Raw array passed as 2nd argument to save method in `add` and `edit` method
+     * `saveOptions` Options array used for $options argument of newEntity() and save method.
      * If you configure a key with your action name, it will override the default settings.
      *
      * @var array
@@ -51,7 +49,6 @@ class AddAction extends BaseAction
         'viewVar' => null,
         'relatedModels' => true,
         'entityKey' => 'entity',
-        'entityOptions' => [],
         'saveOptions' => [],
         'api' => [
             'methods' => ['put', 'post'],
@@ -100,7 +97,7 @@ class AddAction extends BaseAction
     {
         $subject = $this->_subject([
             'success' => true,
-            'entity' => $this->_entity($this->_request()->query, $this->entityOptions())
+            'entity' => $this->_entity($this->_request()->query, $this->saveOptions())
         ]);
 
         $this->_trigger('beforeRender', $subject);
@@ -114,7 +111,7 @@ class AddAction extends BaseAction
     protected function _post()
     {
         $subject = $this->_subject([
-            'entity' => $this->_entity($this->_request()->data, $this->entityOptions()),
+            'entity' => $this->_entity($this->_request()->data, $this->saveOptions()),
             'saveMethod' => $this->saveMethod(),
             'saveOptions' => $this->saveOptions()
         ]);
