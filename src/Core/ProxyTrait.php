@@ -123,7 +123,7 @@ trait ProxyTrait
      * @param options $options A list of options for the object hydration.
      * @return \Cake\ORM\Entity
      */
-    protected function _entity(array $data = [], array $options = [])
+    protected function _entity(array $data = null, array $options = [])
     {
         if ($this->_entity && empty($data)) {
             return $this->_entity;
