@@ -40,8 +40,7 @@
         }
     ],
     "require":{
-        "cakephp/cakephp": "3.0.*-dev",
-        "cakephp/plugin-installer": "*"
+        "cakephp/cakephp": "3.0.*-dev"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.33",
