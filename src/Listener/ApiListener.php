@@ -152,8 +152,8 @@ class ApiListener extends BaseListener
      */
     public function registerExceptionHandler()
     {
-        $config = ['exceptionRenderer' => 'Crud\Error\ExceptionRenderer'];
-        (new ErrorHandler($config))->register();
+        $exceptionRenderer = 'Crud\Error\ExceptionRenderer';
+        (new ErrorHandler(compact('exceptionRenderer') + (array)Configure::read('Error')))->register();
     }
 
     /**

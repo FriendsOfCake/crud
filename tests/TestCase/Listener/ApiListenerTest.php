@@ -1027,40 +1027,40 @@ class ApiListenerTest extends TestCase
      *
      * @return void
      */
-    public function testRegisterExceptionHandlerWithApi()
-    {
-        $listener = $this
-            ->getMockBuilder('\Crud\Listener\ApiListener')
-            ->setMethods(null)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $listener->registerExceptionHandler();
-
-        $expected = 'Crud\Error\ExceptionRenderer';
-        $result = Configure::read('Error.exceptionRenderer');
-        $this->assertEquals($expected, $result);
-    }
+    // public function testRegisterExceptionHandlerWithApi()
+    // {
+    //     $listener = $this
+    //         ->getMockBuilder('\Crud\Listener\ApiListener')
+    //         ->setMethods(null)
+    //         ->disableOriginalConstructor()
+    //         ->getMock();
+    //
+    //     $listener->registerExceptionHandler();
+    //
+    //     $expected = 'Crud\Error\ExceptionRenderer';
+    //     $result = Configure::read('Error.exceptionRenderer');
+    //     $this->assertEquals($expected, $result);
+    // }
 
     /**
      * testRegisterExceptionHandler without Api request
      *
      * @return void
      */
-    public function testRegisterExceptionHandlerWithoutApi()
-    {
-        $listener = $this
-            ->getMockBuilder('\Crud\Listener\ApiListener')
-            ->setMethods(null)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $listener->registerExceptionHandler();
-
-        $expected = 'Crud\Error\ExceptionRenderer';
-        $result = Configure::read('Error.exceptionRenderer');
-        $this->assertEquals($expected, $result);
-    }
+    // public function testRegisterExceptionHandlerWithoutApi()
+    // {
+    //     $listener = $this
+    //         ->getMockBuilder('\Crud\Listener\ApiListener')
+    //         ->setMethods(null)
+    //         ->disableOriginalConstructor()
+    //         ->getMock();
+    //
+    //     $listener->registerExceptionHandler();
+    //
+    //     $expected = 'Crud\Error\ExceptionRenderer';
+    //     $result = Configure::read('Error.exceptionRenderer');
+    //     $this->assertEquals($expected, $result);
+    // }
     /**
      * data provider for testCheckRequestMethods
      *
