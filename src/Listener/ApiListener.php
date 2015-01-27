@@ -2,7 +2,7 @@
 namespace Crud\Listener;
 
 use Cake\Core\Configure;
-use Cake\Error\Handler;
+use Cake\Error\ErrorHandler;
 use Cake\Event\Event;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Request;
