@@ -410,7 +410,7 @@ class ExceptionRendererTest extends TestCase
         $Renderer->__construct($Exception);
         $Renderer->render();
 
-        $this->assertContains('trace', $Controller->viewVars['data']['exception']);
+        $this->assertContains('trace', array_keys($Controller->viewVars['data']['exception']));
         unset($Controller->viewVars['data']['exception']['trace']);
 
         $expected = [
