@@ -44,7 +44,7 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer
             '_serialize' => ['code', 'url', 'message', 'errorCount', 'errors']
         ];
         $this->controller->set($sets);
-        $this->_outputMessage('error400');
+        return $this->_outputMessage('error400');
     }
 
     /**

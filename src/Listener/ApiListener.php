@@ -2,6 +2,7 @@
 namespace Crud\Listener;
 
 use Cake\Core\Configure;
+use Cake\Error\Handler;
 use Cake\Event\Event;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Request;
@@ -151,7 +152,8 @@ class ApiListener extends BaseListener
      */
     public function registerExceptionHandler()
     {
-        Configure::write('Error.exceptionRenderer', 'Crud\Error\ExceptionRenderer');
+        $config = ['exceptionRenderer' => 'Crud\Error\ExceptionRenderer'];
+        (new ErrorHandler($config))->register();
     }
 
     /**
