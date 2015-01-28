@@ -376,6 +376,52 @@ class ExceptionRendererTest extends TestCase
                     'error message'
                 ]
             ],
+            'message' => 'A validation error occurred'
+        ];
+        $this->assertEquals($expected, $Controller->viewVars['data']);
+    }
+
+    public function testValidationErrorSingleKnownErrorWithDebug()
+    {
+        Configure::write('debug', true);
+
+        $entity = new Entity();
+        $entity->errors('title', ['error message']);
+
+        $Exception = new ValidationException($entity);
+
+        $Controller = $this->getMock('Cake\Controller\Controller', ['render']);
+        $Controller->request = new Request();
+        $Controller->response = new Response();
+
+        $Renderer = $this->getMock(
+            'Crud\Error\ExceptionRenderer',
+            ['_getController'],
+            [],
+            '',
+            false
+        );
+        $Renderer
+            ->expects($this->once())
+            ->method('_getController')
+            ->with()
+            ->will($this->returnValue($Controller));
+
+        $Renderer->__construct($Exception);
+        $Renderer->render();
+
+        $this->assertContains('trace', array_keys($Controller->viewVars['data']['exception']));
+        unset($Controller->viewVars['data']['exception']['trace']);
+
+        $expected = [
+            'code' => 412,
+            'url' => $Controller->request->here(),
+            'errorCount' => 1,
+            'errors' => [
+                'title' => [
+                    'error message'
+                ]
+            ],
             'exception' => [
                 'class' => 'Crud\Error\Exception\ValidationException',
                 'code' => 412,

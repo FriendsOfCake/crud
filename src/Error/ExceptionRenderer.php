@@ -133,16 +133,13 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer
             }
         }
 
-        if (!empty($viewVars['error'])) {
+        if (!empty($viewVars['error']) && Configure::read('debug')) {
             $data['exception'] = [
                 'class' => get_class($viewVars['error']),
                 'code' => $viewVars['error']->getCode(),
-                'message' => $viewVars['error']->getMessage()
+                'message' => $viewVars['error']->getMessage(),
+                'trace' => preg_split('@\n@', $viewVars['error']->getTraceAsString()),
             ];
-        }
-
-        if (Configure::read('debug')) {
-            $data['exception']['trace'] = preg_split('@\n@', $viewVars['error']->getTraceAsString());
         }
 
         return $data;
