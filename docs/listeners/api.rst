@@ -23,7 +23,7 @@ process and render ``json`` and ``xml`` URL extension
 .. code-block:: phpinline
 
   // config/routes.php
-  Router::parseExtensions(['json', 'xml']);
+  Router::extensions(['json', 'xml']);
 
 Ensure this statement is used before connecting any routes.
 
@@ -50,7 +50,7 @@ attach it to all controllers, application wide
 .. code-block:: php
 
   <?php
-  class SamplesController extends AppController {
+  class AppController extends Controller {
 
     public $components = [
       'RequestHandler',
