@@ -23,7 +23,7 @@ process and render ``json`` and ``xml`` URL extension
 .. code-block:: phpinline
 
   // config/routes.php
-  Router::parseExtensions(['json', 'xml']);
+  Router::extensions(['json', 'xml']);
 
 Ensure this statement is used before connecting any routes.
 
