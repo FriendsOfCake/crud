@@ -50,7 +50,7 @@ attach it to all controllers, application wide
 .. code-block:: php
 
   <?php
-  class SamplesController extends AppController {
+  class AppController extends Controller {
 
     public $components = [
       'RequestHandler',
