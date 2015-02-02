@@ -302,7 +302,11 @@ class ApiTransformationListener extends CrudListener {
 		if (!is_numeric($variable)) {
 			return $variable;
 		}
-		return $variable + 0;
+
+		$hintTyped = $variable + 0;
+
+		// Check if variable is below infinity
+		return ($hintTyped < INF) ? $hintTyped : $variable;
 	}
 
 /**

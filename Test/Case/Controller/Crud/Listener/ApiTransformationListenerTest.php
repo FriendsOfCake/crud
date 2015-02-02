@@ -1470,7 +1470,7 @@ class ApiTransformationListenerTest extends CrudTestCase {
 
 		$expected = array(
 			'CastNumber' => array(
-				'infinity' => INF
+				'infinity' => '0113870020e12235'
 			)
 		);
 
@@ -1478,7 +1478,6 @@ class ApiTransformationListenerTest extends CrudTestCase {
 
 		$this->assertSame($expected, $data);
 
-		$this->assertFalse(json_encode($expected), 'json encoding INF failed');
-		$this->assertSame(JSON_ERROR_INF_OR_NAN, json_last_error(), 'json encoding INF failed');
+		$this->assertSame(json_encode($expected), json_encode($data), 'Infinity values does not break json encode');
 	}
 }
