@@ -1457,7 +1457,7 @@ class ApiTransformationListenerTest extends CrudTestCase {
 			'changeTime' => false,
 			'castNumbers' => true,
 			'keyMethods' => array(),
-			'valueMethods' => array('_castNumbers'),
+			'valueMethods' => array(),
 			'replaceMap' => array()
 		);
 
