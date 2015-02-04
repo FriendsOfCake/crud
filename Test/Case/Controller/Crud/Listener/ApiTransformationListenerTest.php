@@ -1479,5 +1479,6 @@ class ApiTransformationListenerTest extends CrudTestCase {
 		$this->assertSame($expected, $data);
 
 		$this->assertSame(json_encode($expected), json_encode($data), 'Infinity values does not break json encode');
+		$this->assertSame(JSON_ERROR_NONE, json_last_error(), 'No errors');
 	}
 }
