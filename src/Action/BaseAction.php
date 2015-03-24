@@ -125,16 +125,27 @@ abstract class BaseAction extends Object
 
         $crud = $this->_crud();
 
-        $config = $this->config('messages.' . $type);
-        if (empty($config)) {
-            $config = $crud->config('messages.' . $type);
-            if (empty($config)) {
-                throw new \Exception(sprintf('Invalid message type "%s"', $type));
-            }
+        $crudConfig = $crud->config('messages.' . $type);
+        if (is_string($crudConfig)) {
+            $crudConfig = ['text' => $crudConfig];
+        } else {
+            $crudConfig = (array)$crudConfig;
         }
 
+        $config = $this->config('messages.' . $type);
         if (is_string($config)) {
             $config = ['text' => $config];
+        } else {
+            $config = (array)$config;
+        }
+
+        $config = Hash::merge($crudConfig, $config);
+        if (empty($config)) {
+            throw new \Exception(sprintf('Invalid message type "%s"', $type));
+        }
+
+        if (!isset($config['text'])) {
+            throw new \Exception(sprintf('Invalid message config for "%s" no text key found', $type));
         }
 
         $config = Hash::merge([
@@ -144,10 +155,6 @@ abstract class BaseAction extends Object
             'type' => $this->config('action') . '.' . $type,
             'name' => $this->resourceName()
         ], $config);
-
-        if (!isset($config['text'])) {
-            throw new \Exception(sprintf('Invalid message config for "%s" no text key found', $type));
-        }
 
         $config['params']['original'] = ucfirst(str_replace('{name}', $config['name'], $config['text']));
 
