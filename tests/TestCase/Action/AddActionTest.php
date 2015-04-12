@@ -429,8 +429,6 @@ class AddActionTest extends IntegrationTestCase
      */
     public function testApiCreateError($method)
     {
-        $this->markTestSkipped('Custom exception renderer setup for Api listener is currently broken.');
-
         Router::extensions('json');
 
         $this->_eventManager->attach(
@@ -467,7 +465,7 @@ class AddActionTest extends IntegrationTestCase
             'body' => 'Amazing blog post'
         ]);
 
-        $this->assertResponseFailure();
+        $this->assertResponseCode(412);
         $this->assertResponseContains($this->_response->body(), 'A validation error occurred');
     }
 
@@ -481,8 +479,6 @@ class AddActionTest extends IntegrationTestCase
      */
     public function testApiCreateErrors($method)
     {
-        $this->markTestSkipped('Custom exception renderer setup for Api listener is currently broken.');
-
         Router::extensions('json');
 
         $this->_eventManager->attach(
