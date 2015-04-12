@@ -169,7 +169,7 @@ abstract class BaseAction extends Object
     }
 
     /**
-     * Wrapper for Session::setFlash
+     * Wrapper for FlashComponent::render()
      *
      * @param string $type Message type
      * @param \Crud\Event\Subject $subject Event subject
@@ -238,7 +238,7 @@ abstract class BaseAction extends Object
     }
 
     /**
-     * [publishSuccess description]
+     * Set "success" variable for view.
      *
      * @param \Crud\EventEvent $event Event
      * @return void|bool
