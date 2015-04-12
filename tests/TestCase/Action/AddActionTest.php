@@ -126,8 +126,6 @@ class AddActionTest extends IntegrationTestCase
      */
     public function testActionPostWithAddRedirect()
     {
-        $this->markTestSkipped('Not sure if this is meant to pass.');
-
         $this->_eventManager->attach(
             function ($event) {
                 $this->_controller->Flash = $this->getMock(
@@ -173,8 +171,6 @@ class AddActionTest extends IntegrationTestCase
      */
     public function testActionPostWithEditRedirect()
     {
-        $this->markTestSkipped('Not sure if this is meant to pass.');
-
         $this->_eventManager->attach(
             function ($event) {
                 $this->_controller->Flash = $this->getMock(
