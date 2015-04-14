@@ -193,7 +193,7 @@ class CrudComponent extends Component
     /**
      * Called after the Controller::beforeFilter() and before the controller action.
      *
-     * @param Cake\Event\Event $event Event instance
+     * @param \Cake\Event\Event $event Event instance
      * @return void
      */
     public function startup(Event $event)
@@ -207,8 +207,8 @@ class CrudComponent extends Component
      *
      * @param string $controllerAction Override the controller action to execute as.
      * @param array $args List of arguments to pass to the CRUD action (Usually an ID to edit / delete).
-     * @return CakeResponse
-     * @throws CakeException If an action is not mapped.
+     * @return \Cake\Network\Response
+     * @throws \Exception If an action is not mapped.
      */
     public function execute($controllerAction = null, $args = [])
     {
@@ -250,7 +250,7 @@ class CrudComponent extends Component
      * Get a CrudAction object by action name.
      *
      * @param string $name The controller action name.
-     * @return CrudAction
+     * @return \Crud\Action\BaseAction
      */
     public function action($name = null)
     {
