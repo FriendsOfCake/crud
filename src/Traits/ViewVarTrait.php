@@ -68,7 +68,7 @@ trait ViewVarTrait
      * Derive the viewVar value based on the scope of the action
      * as well as the Event being handled
      *
-     * @param Cake\Event\Event $event Event
+     * @param \Cake\Event\Event $event Event
      * @return mixed
      * @throws \Exception
      */
