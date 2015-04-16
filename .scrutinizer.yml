@@ -3,19 +3,19 @@ imports:
 
 filter:
     excluded_paths:
-        - Test/
-        - TestSuite/
+        - docs/
+        - tests/
 tools:
     php_mess_detector: true
     php_cpd:
         excluded_dirs:
-            - Test/
-            - TestSuite/
+            - docs/
+            - tests/
     php_loc:
         excluded_dirs:
-            - Test/
-            - TestSuite/
+            - docs/
+            - tests/
     php_pdepend:
         excluded_dirs:
-            1: Test/
-            2: TestSuite/
+            1: docs/
+            2: tests/
