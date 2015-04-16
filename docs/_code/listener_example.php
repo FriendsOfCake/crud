@@ -18,7 +18,7 @@ class Example extends \Crud\Listener\Base {
 /**
  * Executed when Crud.beforeRender is emitted
  *
- * @param \Cake\Event\Évent $event
+ * @param \Cake\Event\Event $event
  * @return void
  */
   public function beforeRender(Cake\Event\Event $event) {
