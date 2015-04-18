@@ -1,57 +1,66 @@
 {
-  "name":"friendsofcake/crud",
-  "version": "3.0.10",
-  "description":"CakePHP Application development on steroids - rapid prototyping / scaffolding & production ready code - XML / JSON APIs and more",
-  "type":"cakephp-plugin",
-  "keywords":[
-    "cakephp",
-    "crud",
-    "create",
-    "retrieve",
-    "update",
-    "delete",
-    "bake",
-    "cake",
-    "scaffold",
-    "scaffolding"
-  ],
-  "homepage":"https://github.com/FriendsOfCake/crud",
-  "license":"MIT",
-  "authors":[
-    {
-      "name":"Christian Winther",
-      "role":"Author",
-      "homepage":"http://cakephp.nu/"
+    "name":"friendsofcake/crud",
+    "version": "4.0.0",
+    "description":"CakePHP Application development on steroids - rapid prototyping / scaffolding & production ready code - XML / JSON APIs and more",
+    "type":"cakephp-plugin",
+    "keywords":[
+        "cakephp",
+        "crud",
+        "create",
+        "retrieve",
+        "update",
+        "delete",
+        "bake",
+        "cake",
+        "scaffold",
+        "scaffolding"
+    ],
+    "homepage":"https://github.com/FriendsOfCake/crud",
+    "license":"MIT",
+    "authors":[
+        {
+            "name":"Christian Winther",
+            "role":"Author",
+            "homepage":"http://cakephp.nu/"
+        },
+        {
+            "name":"José Lorenzo Rodríguez",
+            "role":"Contributor",
+            "homepage":"https://github.com/lorenzo"
+        },
+        {
+            "name":"Andy Dawson",
+            "role":"Contributor",
+            "homepage":"https://github.com/ad7six"
+        },
+        {
+            "name":"ADmad",
+            "role":"Contributor",
+            "homepage":"https://github.com/admad"
+        }
+    ],
+    "require":{
+        "cakephp/cakephp": "~3.0"
     },
-    {
-      "name":"José Lorenzo Rodríguez",
-      "role":"Contributor",
-      "homepage":"https://github.com/lorenzo"
+    "require-dev": {
+        "phpunit/phpunit": "3.7.33",
+        "friendsofcake/cakephp-test-utilities": "dev-master"
     },
-    {
-      "name":"Andy Dawson",
-      "role":"Contributor",
-      "homepage":"https://github.com/ad7six"
+    "autoload": {
+        "psr-4": {
+            "Crud\\": "src"
+        }
     },
-    {
-      "name":"ADmad",
-      "role":"Contributor",
-      "homepage":"https://github.com/admad"
+    "autoload-dev": {
+        "psr-4": {
+            "Crud\\Test\\": "tests",
+            "Cake\\Test\\Fixture\\": "./vendor/cakephp/cakephp/tests/Fixture"
+        }
+    },
+    "support":{
+        "source":"https://github.com/FriendsOfCake/crud",
+        "issues":"https://github.com/FriendsOfCake/crud/issues",
+        "wiki":"http://crud.readthedocs.org/en/latest/",
+        "irc":"irc://irc.freenode.org/friendsofcake"
     }
-  ],
-  "suggest":{
-    "cakedc/search":"If you want to use the Search Listener"
-  },
-  "support":{
-    "source":"https://github.com/FriendsOfCake/crud",
-    "issues":"https://github.com/FriendsOfCake/crud/issues",
-    "wiki":"http://cakephp.nu/cakephp-crud/",
-    "irc":"irc://irc.freenode.org/friendsofcake"
-  },
-  "require":{
-    "composer/installers":"*"
-  },
-  "extra": {
-    "installer-name": "Crud"
-  }
 }
