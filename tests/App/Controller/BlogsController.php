@@ -24,7 +24,8 @@ class BlogsController extends Controller
             ],
             'listeners' => [
                 'Crud.Api',
-                'Crud.RelatedModels'
+                'Crud.RelatedModels',
+                'Crud.Redirect'
             ]
         ]
     ];

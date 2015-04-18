@@ -126,8 +126,6 @@ class AddActionTest extends IntegrationTestCase
      */
     public function testActionPostWithAddRedirect()
     {
-        $this->markTestSkipped('Not sure if this is meant to pass.');
-
         $this->_eventManager->attach(
             function ($event) {
                 $this->_controller->Flash = $this->getMock(
@@ -173,8 +171,6 @@ class AddActionTest extends IntegrationTestCase
      */
     public function testActionPostWithEditRedirect()
     {
-        $this->markTestSkipped('Not sure if this is meant to pass.');
-
         $this->_eventManager->attach(
             function ($event) {
                 $this->_controller->Flash = $this->getMock(
@@ -433,8 +429,6 @@ class AddActionTest extends IntegrationTestCase
      */
     public function testApiCreateError($method)
     {
-        $this->markTestSkipped('Custom exception renderer setup for Api listener is currently broken.');
-
         Router::extensions('json');
 
         $this->_eventManager->attach(
@@ -471,7 +465,7 @@ class AddActionTest extends IntegrationTestCase
             'body' => 'Amazing blog post'
         ]);
 
-        $this->assertResponseFailure();
+        $this->assertResponseCode(412);
         $this->assertResponseContains($this->_response->body(), 'A validation error occurred');
     }
 
@@ -485,8 +479,6 @@ class AddActionTest extends IntegrationTestCase
      */
     public function testApiCreateErrors($method)
     {
-        $this->markTestSkipped('Custom exception renderer setup for Api listener is currently broken.');
-
         Router::extensions('json');
 
         $this->_eventManager->attach(
