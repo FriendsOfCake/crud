@@ -25,7 +25,7 @@ abstract class BaseListener extends Object
      * - beforePaginate : Called right before any paginate() method
      * - afterPaginate : Called right after any paginate() method
      * - invalidId : Called if the ID format validation failed
-     * - setFlash : Called before any CakeSession::setFlash()
+     * - setFlash : Called before any FlashComponent::set()
      *
      * @return array
      */
