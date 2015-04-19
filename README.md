@@ -3,9 +3,19 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/FriendsOfCake/crud.svg?style=flat-square)](https://packagist.org/packages/FriendsOfCake/crud)
 [![Latest Stable Version](https://img.shields.io/packagist/v/FriendsOfCake/crud.svg?style=flat-square)](https://packagist.org/packages/FriendsOfCake/crud)
 
-# Version notice
+# Installation
 
-This master branch only works for **cake3** - please use the 3.0 or develop branch for cakephp 2.x
+For CakePHP 3.x compatible version:
+
+```
+composer install friendsofcake/crud:~4.0
+```
+
+For CakePHP 2.x compatible version:
+
+```
+composer install friendsofcake/crud:~3.0
+```
 
 # Introduction
 
