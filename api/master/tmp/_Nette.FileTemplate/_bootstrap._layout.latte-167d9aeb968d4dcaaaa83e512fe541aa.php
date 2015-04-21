@@ -1,16 +1,16 @@
-<?php //netteCache[01]000398a:2:{s:4:"time";s:21:"0.40013300 1429585215";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:78:"/var/www/jippignu/data/www/cakephp.dk/apigen/templates/bootstrap/@layout.latte";i:2;i:1377023156;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:28:"$WCREV$ released on $WCDATE$";}}}?><?php
+<?php //netteCache[01]000398a:2:{s:4:"time";s:21:"0.99225400 1429587014";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:78:"/var/www/jippignu/data/www/cakephp.dk/apigen/templates/bootstrap/@layout.latte";i:2;i:1377023156;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:28:"$WCREV$ released on $WCDATE$";}}}?><?php
 
 // source file: /var/www/jippignu/data/www/cakephp.dk/apigen/templates/bootstrap/@layout.latte
 
 ?><?php
 // prolog Nette\Latte\Macros\CoreMacros
-list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, '3dheeei1qm')
+list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, 'xcplf58g9k')
 ;
 // prolog Nette\Latte\Macros\UIMacros
 //
 // block group
 //
-if (!function_exists($_l->blocks['group'][] = '_lb75a4bd25cd_group')) { function _lb75a4bd25cd_group($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['group'][] = '_lb163d0614cd_group')) { function _lb163d0614cd_group($_l, $_args) { extract($_args)
 ?>			<ul>
 <?php $iterations = 0; foreach ($iterator = $_l->its[] = new Nette\Iterators\CachingIterator($groups) as $group): $nextLevel = substr_count($iterator->nextValue, '\\') > substr_count($group, '\\') ?>
 				<li<?php if ($_l->tmp = array_filter(array($actualGroup === $group || 0 === strpos($actualGroup, $group . '\\') ? 'active':null, $config->main && 0 === strpos($group, $config->main) ? 'main':null))) echo ' class="' . htmlSpecialChars(implode(" ", array_unique($_l->tmp))) . '"' ?>
@@ -31,7 +31,7 @@ if (!function_exists($_l->blocks['group'][] = '_lb75a4bd25cd_group')) { function
 //
 // block elements
 //
-if (!function_exists($_l->blocks['elements'][] = '_lb2c41471785_elements')) { function _lb2c41471785_elements($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['elements'][] = '_lb7becb090e2_elements')) { function _lb7becb090e2_elements($_l, $_args) { extract($_args)
 ?>			<ul>
 <?php $iterations = 0; foreach ($elements as $element): ?>				<li<?php if ($_l->tmp = array_filter(array($activeElement === $element ? 'active':null))) echo ' class="' . htmlSpecialChars(implode(" ", array_unique($_l->tmp))) . '"' ?>
 ><a href="<?php echo htmlSpecialChars($template->elementUrl($element)) ?>"<?php if ($_l->tmp = array_filter(array($element->deprecated ? 'deprecated':null, !$element->valid ? 'invalid':null))) echo ' class="' . htmlSpecialChars(implode(" ", array_unique($_l->tmp))) . '"' ?>
