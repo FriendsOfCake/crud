@@ -78,14 +78,14 @@ class ApiQueryLogListenerTest extends TestCase
     }
 
     /**
-     * Test that calling beforeRender with debug 0
+     * Test that calling beforeRender with debug to false
      * will not ask for request type
      *
      * @return void
      */
-    public function testBeforeRenderDebugZero()
+    public function testBeforeRenderDebugFalse()
     {
-        Configure::write('debug', 0);
+        Configure::write('debug', false);
 
         $Instance = $this
             ->getMockBuilder('\Crud\Listener\ApiQueryLogListener')
@@ -100,37 +100,15 @@ class ApiQueryLogListenerTest extends TestCase
     }
 
     /**
-     * Test that calling beforeRender with debug 1
-     * will not ask for request type
-     *
-     * @return void
-     */
-    public function testBeforeRenderDebugOne()
-    {
-        Configure::write('debug', 1);
-
-        $Instance = $this
-            ->getMockBuilder('\Crud\Listener\ApiQueryLogListener')
-            ->disableOriginalConstructor()
-            ->setMethods(['_getQueryLogs'])
-            ->getMock();
-        $Instance
-            ->expects($this->never())
-            ->method('_getQueryLogs');
-
-        $Instance->beforeRender(new \Cake\Event\Event('something'));
-    }
-
-    /**
-     * Test that calling beforeRender with debug 2
+     * Test that calling beforeRender with debug to true
      * will ask for request type but won't ask for serialize configuration
      * since it's not an API request
      *
      * @return void
      */
-    public function testBeforeRenderDebugTwo()
+    public function testBeforeRenderDebugTrue()
     {
-        Configure::write('debug', 2);
+        Configure::write('debug', true);
 
         $Action = $this
             ->getMockBuilder('\Crud\Action\BaseAction')
