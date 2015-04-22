@@ -61,7 +61,7 @@ class ApiQueryLogListener extends BaseListener
      */
     public function beforeRender(Event $event)
     {
-        if (Configure::read('debug') < 2) {
+        if (!Configure::read('debug')) {
             return;
         }
 
