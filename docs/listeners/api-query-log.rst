@@ -7,7 +7,7 @@ API Query Log
 
 This listener appends query log information to the API responses
 
-The listener will only append the ``queryLog`` key if ``debug`` is 2 or greater
+The listener will only append the ``queryLog`` key if ``debug`` is set to true.
 
 Setup
 -----
