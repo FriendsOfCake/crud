@@ -1,10 +1,10 @@
-<?php //netteCache[01]000402a:2:{s:4:"time";s:21:"0.78116200 1429855216";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:82:"/var/www/jippignu/data/www/cakephp.dk/apigen/templates/bootstrap/combined.js.latte";i:2;i:1347136010;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:28:"$WCREV$ released on $WCDATE$";}}}?><?php
+<?php //netteCache[01]000402a:2:{s:4:"time";s:21:"0.55189400 1429857014";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:82:"/var/www/jippignu/data/www/cakephp.dk/apigen/templates/bootstrap/combined.js.latte";i:2;i:1347136010;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:28:"$WCREV$ released on $WCDATE$";}}}?><?php
 
 // source file: /var/www/jippignu/data/www/cakephp.dk/apigen/templates/bootstrap/combined.js.latte
 
 ?><?php
 // prolog Nette\Latte\Macros\CoreMacros
-list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, 'n201snjs0t')
+list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, 'y0ze0jxs2k')
 ;
 // prolog Nette\Latte\Macros\UIMacros
 
