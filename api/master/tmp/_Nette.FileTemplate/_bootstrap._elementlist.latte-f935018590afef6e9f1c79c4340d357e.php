@@ -1,16 +1,16 @@
-<?php //netteCache[01]000403a:2:{s:4:"time";s:21:"0.25902300 1429907416";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:83:"/var/www/jippignu/data/www/cakephp.dk/apigen/templates/bootstrap/@elementlist.latte";i:2;i:1347136010;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:28:"$WCREV$ released on $WCDATE$";}}}?><?php
+<?php //netteCache[01]000403a:2:{s:4:"time";s:21:"0.03235700 1429909218";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:83:"/var/www/jippignu/data/www/cakephp.dk/apigen/templates/bootstrap/@elementlist.latte";i:2;i:1347136010;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:28:"$WCREV$ released on $WCDATE$";}}}?><?php
 
 // source file: /var/www/jippignu/data/www/cakephp.dk/apigen/templates/bootstrap/@elementlist.latte
 
 ?><?php
 // prolog Nette\Latte\Macros\CoreMacros
-list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, 'bcz1t3mma3')
+list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, 'ms39d8dli4')
 ;
 // prolog Nette\Latte\Macros\UIMacros
 //
 // block elements
 //
-if (!function_exists($_l->blocks['elements'][] = '_lb0d1021f44e_elements')) { function _lb0d1021f44e_elements($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['elements'][] = '_lbbe0a99cc2b_elements')) { function _lbbe0a99cc2b_elements($_l, $_args) { extract($_args)
 ;$iterations = 0; foreach ($elements as $element): ?><tr>
 	<td class="name"><a href="<?php echo htmlSpecialChars($template->elementUrl($element)) ?>
 "<?php if ($_l->tmp = array_filter(array($element->deprecated ? 'deprecated':null, !$element->valid ? 'invalid':null))) echo ' class="' . htmlSpecialChars(implode(" ", array_unique($_l->tmp))) . '"' ?>
