@@ -8,13 +8,13 @@
 For CakePHP 3.x compatible version:
 
 ```
-composer install friendsofcake/crud:~4.0
+composer require friendsofcake/crud:~4.0
 ```
 
 For CakePHP 2.x compatible version:
 
 ```
-composer install friendsofcake/crud:~3.0
+composer require friendsofcake/crud:~3.0
 ```
 
 # Introduction
