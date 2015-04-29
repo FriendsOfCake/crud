@@ -68,7 +68,7 @@ abstract class BulkAction extends BaseAction
         }
 
         $config['conditions'] = [
-            "{$alias}.{$primaryKey}" => $subject->ids,
+            "{$alias}.{$primaryKey} IN" => $subject->ids,
         ];
 
         return $config;
