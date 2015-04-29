@@ -33,13 +33,6 @@ abstract class BulkAction extends BaseAction
      */
     protected function _handle()
     {
-        if (!method_exists($this, '_bulk')) {
-            throw new NotImplementedException(sprintf(
-                'Action %s does not implement a _bulk handler',
-                get_class($this)
-            ));
-        }
-
         $ids = $this->_controller()->request->data('id');
         $ids = array_filter($ids);
 
