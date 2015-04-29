@@ -1,7 +1,7 @@
 <?php
 namespace Crud\Action;
 
-class Index extends Base {
+class Index extends BaseAction {
 
 	/**
 	 * Generic handler for all HTTP verbs

@@ -1,7 +1,7 @@
 <?php
 namespace Crud\Listener;
 
-class Example extends \Crud\Listener\Base {
+class Example extends \Crud\Listener\BaseListener {
 
 /**
  * Returns a list of all events that will fire in the lister during the

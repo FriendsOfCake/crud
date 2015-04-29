@@ -15,7 +15,7 @@ If no HTTP verb specific method is found in the class, ``_handle()`` will be exe
 	<?php
 	namespace App\Crud\Action;
 
-	class Index extends \Crud\Action\Base {
+	class Index extends \Crud\Action\BaseAction {
 
 		/**
 		* Generic handler for all HTTP verbs
