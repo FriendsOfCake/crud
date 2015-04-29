@@ -60,16 +60,11 @@ abstract class BulkAction extends BaseAction
             return $config;
         }
 
-        $alias = $this->_table()->alias();
+        $ids = $subject->ids;
         $primaryKey = $this->_table()->primaryKey();
-        if (is_array($primaryKey)) {
-            $name = $this->config('action');
-            throw new ActionNotConfiguredException(sprintf('Action "%s" does not have a proper findConfig', $name));
-        }
-
-        $config['conditions'] = [
-            "{$alias}.{$primaryKey} IN" => $subject->ids,
-        ];
+        $config['conditions'][] = function ($exp) use ($primaryKey, $ids) {
+            return $exp->in($primaryKey, $ids);
+        };
 
         return $config;
     }
