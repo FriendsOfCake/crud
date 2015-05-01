@@ -23,7 +23,6 @@ class Subject
      * Constructor
      *
      * @param array $fields Fields
-     * @return void
      */
     public function __construct($fields = [])
     {

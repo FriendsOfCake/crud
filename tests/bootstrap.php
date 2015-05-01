@@ -18,7 +18,9 @@ $findRoot = function () {
     }
 };
 
-define('DS', DIRECTORY_SEPARATOR);
+if (!defined('DS')) {
+    define('DS', DIRECTORY_SEPARATOR);
+}
 define('ROOT', $findRoot());
 define('APP_DIR', 'App');
 define('WEBROOT_DIR', 'webroot');
