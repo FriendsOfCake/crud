@@ -4,6 +4,7 @@ namespace Crud\Controller\Component;
 use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
 use Cake\Event\Event;
+use Cake\Network\Response;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Crud\Error\Exception\ActionNotConfiguredException;
@@ -126,10 +127,9 @@ class CrudComponent extends Component
     /**
      * Constructor
      *
-     * @param Cake\Controller\ComponentRegistry $collection A ComponentCollection this component
+     * @param \Cake\Controller\ComponentRegistry $collection A ComponentCollection this component
      *   can use to lazy load its components.
      * @param array $config Array of configuration settings.
-     * @return void
      */
     public function __construct(ComponentRegistry $collection, $config = [])
     {
@@ -193,7 +193,7 @@ class CrudComponent extends Component
     /**
      * Called after the Controller::beforeFilter() and before the controller action.
      *
-     * @param Cake\Event\Event $event Event instance
+     * @param \Cake\Event\Event $event Event instance
      * @return void
      */
     public function startup(Event $event)
@@ -207,8 +207,8 @@ class CrudComponent extends Component
      *
      * @param string $controllerAction Override the controller action to execute as.
      * @param array $args List of arguments to pass to the CRUD action (Usually an ID to edit / delete).
-     * @return CakeResponse
-     * @throws CakeException If an action is not mapped.
+     * @return \Cake\Network\Response
+     * @throws \Exception If an action is not mapped.
      */
     public function execute($controllerAction = null, $args = [])
     {
@@ -222,10 +222,10 @@ class CrudComponent extends Component
         }
 
         try {
-            $event = $this->trigger('beforeHandle', compact('args', 'action'));
+            $event = $this->trigger('beforeHandle', $this->getSubject(compact('args', 'action')));
 
             $response = $this->action($event->subject->action)->handle($event->subject->args);
-            if ($response instanceof \Cake\Network\Response) {
+            if ($response instanceof Response) {
                 return $response;
             }
 
@@ -490,11 +490,11 @@ class CrudComponent extends Component
      * @throws \Exception if any event listener return a CakeResponse object.
      * @return \Cake\Event\Event
      */
-    public function trigger($eventName, $data = [])
+    public function trigger($eventName, Subject $data = null)
     {
         $eventName = $this->_config['eventPrefix'] . '.' . $eventName;
 
-        $Subject = $data instanceof \Crud\Event\Subject ? $data : $this->getSubject($data);
+        $Subject = $data ?: $this->getSubject();
         $Subject->addEvent($eventName);
 
         if (!empty($this->_config['eventLogging'])) {
@@ -504,7 +504,7 @@ class CrudComponent extends Component
         $Event = new Event($eventName, $Subject);
         $this->_eventManager->dispatch($Event);
 
-        if ($Event->result instanceof \Cake\Network\Response) {
+        if ($Event->result instanceof Response) {
             $Exception = new \Exception();
             $Exception->response = $Event->result;
             throw $Exception;
@@ -571,7 +571,6 @@ class CrudComponent extends Component
     public function useModel($modelName)
     {
         $this->_controller->loadModel($modelName);
-        list(, $modelName) = pluginSplit($modelName);
         $this->_modelName = $this->_model->name;
     }
 

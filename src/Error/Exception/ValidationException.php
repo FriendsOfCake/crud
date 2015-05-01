@@ -32,7 +32,6 @@ class ValidationException extends BadRequestException
      *
      * @param \Cake\ORM\Entity $entity Entity
      * @param int $code code to report to client
-     * @return void
      */
     public function __construct(Entity $entity, $code = 412)
     {

@@ -1,8 +1,6 @@
 <?php
 namespace Crud\Traits;
 
-use Crud\Event\Subject;
-
 trait SerializeTrait
 {
 

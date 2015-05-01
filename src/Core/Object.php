@@ -5,7 +5,6 @@ use Cake\Controller\Controller;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
-use Crud\Event\Subject;
 
 /**
  * Crud Base Class
@@ -41,7 +40,6 @@ abstract class Object implements EventListenerInterface
      *
      * @param \Cake\Controller\Controller $Controller Controller instance
      * @param array $config Default settings
-     * @return void
      */
     public function __construct(Controller $Controller, $config = [])
     {

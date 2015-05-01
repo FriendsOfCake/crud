@@ -2,6 +2,7 @@
 namespace Crud\Listener;
 
 use Cake\Utility\Hash;
+use Crud\Event\Subject;
 
 /**
  * Redirect Listener
@@ -134,7 +135,7 @@ class RedirectListener extends BaseListener
      * @param array $url URL
      * @return array
      */
-    protected function _getUrl(\Crud\Event\Subject $subject, array $url)
+    protected function _getUrl(Subject $subject, array $url)
     {
         foreach ($url as $key => $value) {
             if (!is_array($value)) {
@@ -161,7 +162,7 @@ class RedirectListener extends BaseListener
      * @return mixed
      * @throws \Exception if the reader is invalid
      */
-    protected function _getKey(\Crud\Event\Subject $subject, $reader, $key)
+    protected function _getKey(Subject $subject, $reader, $key)
     {
         $callable = $this->reader($reader);
 

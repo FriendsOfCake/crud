@@ -120,7 +120,7 @@ trait ProxyTrait
      * Get a fresh entity instance from the primary Table
      *
      * @param array $data Data array
-     * @param options $options A list of options for the object hydration.
+     * @param array $options A list of options for the object hydration.
      * @return \Cake\ORM\Entity
      */
     protected function _entity(array $data = null, array $options = [])

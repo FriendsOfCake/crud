@@ -240,7 +240,7 @@ abstract class BaseAction extends Object
     /**
      * Set "success" variable for view.
      *
-     * @param \Crud\EventEvent $event Event
+     * @param \Cake\Event\Event $event Event
      * @return void|bool
      */
     public function publishSuccess(Event $event)
