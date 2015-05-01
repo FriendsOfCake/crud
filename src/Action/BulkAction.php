@@ -4,6 +4,7 @@ namespace Crud\Action;
 use Cake\Event\Event;
 use Cake\Network\Exception\NotImplementedException;
 use Cake\ORM\Query;
+use Cake\Utility\Hash;
 use Crud\Error\Exception\ActionNotConfiguredException;
 use Crud\Event\Subject;
 
@@ -34,6 +35,9 @@ abstract class BulkAction extends BaseAction
     protected function _handle()
     {
         $ids = $this->_controller()->request->data('id');
+        if (!is_array($data) || !Hash::numeric(array_keys($data))) {
+            throw new BadRequestException('Bad request data');
+        }
         $ids = array_filter($ids);
 
         $subject = $this->_subject();
