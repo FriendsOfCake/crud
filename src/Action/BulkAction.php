@@ -1,11 +1,11 @@
 <?php
 namespace Crud\Action;
 
-use Cake\Network\Exception\NotImplementedException;
 use Cake\Event\Event;
+use Cake\Network\Exception\NotImplementedException;
 use Cake\ORM\Query;
-use Crud\Event\Subject;
 use Crud\Error\Exception\ActionNotConfiguredException;
+use Crud\Event\Subject;
 
 /**
  * Handles 'Bulk' Crud actions
