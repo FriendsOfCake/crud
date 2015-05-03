@@ -26,7 +26,7 @@ abstract class BaseAction extends CrudBaseAction
      */
     protected $_defaultConfig = [
         'enabled' => true,
-        'scope' => 'table',
+        'scope' => 'bulk',
         'findMethod' => 'all',
         'actionName' => 'Bulk',
         'messages' => [
