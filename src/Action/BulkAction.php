@@ -49,7 +49,13 @@ abstract class BulkAction extends BaseAction
 
         $this->_trigger('afterBulkFind', $subject);
 
-        $this->_bulk($query);
+        if ($this->_bulk($query)) {
+            $this->_success($subject);
+        } else {
+            $this->_error($subject);
+        }
+
+        return $this->_redirect($subject, ['action' => 'index']);
     }
 
     /**
