@@ -47,9 +47,23 @@ abstract class BaseAction extends CrudBaseAction
     protected function _handle()
     {
         $ids = $this->_controller()->request->data('id');
+
+        $all = false;
+        if (is_array($ids)) {
+            $all = Hash::get((array)$ids, '_all', false);
+            unset($ids['_all']);
+        }
+
         if (!is_array($ids) || !Hash::numeric(array_keys($ids))) {
             throw new BadRequestException('Bad request data');
         }
+
+        if ($all) {
+            foreach ($ids as $key => $value) {
+                $ids[$key] = 1;
+            }
+        }
+
         $ids = array_filter($ids);
 
         $subject = $this->_subject();
