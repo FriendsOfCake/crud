@@ -24,7 +24,15 @@ abstract class BulkAction extends BaseAction
     protected $_defaultConfig = [
         'enabled' => false,
         'scope' => 'table',
-        'findMethod' => 'all'
+        'findMethod' => 'all',
+        'messages' => [
+            'success' => [
+                'text' => 'Bulk action successfully completed'
+            ],
+            'error' => [
+                'text' => 'Could not complete bulk action'
+            ]
+        ],
     ];
 
     /**
@@ -48,6 +56,11 @@ abstract class BulkAction extends BaseAction
         $subject->set(['query' => $query]);
 
         $this->_trigger('afterBulkFind', $subject);
+
+        $event = $this->_trigger('beforeBulk', $subject);
+        if ($event->isStopped()) {
+            return $this->_stopped($subject);
+        }
 
         if ($this->_bulk($query)) {
             $this->_success($subject);
@@ -77,6 +90,48 @@ abstract class BulkAction extends BaseAction
         };
 
         return $config;
+    }
+
+    /**
+     * Success callback
+     *
+     * @param \Crud\Event\Subject $subject Event subject
+     * @return void
+     */
+    protected function _success(Subject $subject)
+    {
+        $subject->set(['success' => true]);
+        $this->_trigger('afterBulk', $subject);
+
+        $this->setFlash('success', $subject);
+    }
+
+    /**
+     * Error callback
+     *
+     * @param \Crud\Event\Subject $subject Event subject
+     * @return void
+     */
+    protected function _error(Subject $subject)
+    {
+        $subject->set(['success' => false]);
+        $this->_trigger('afterBulk', $subject);
+
+        $this->setFlash('error', $subject);
+    }
+
+    /**
+     * Stopped callback
+     *
+     * @param \Crud\Event\Subject $subject Event subject
+     * @return \Cake\Network\Response
+     */
+    protected function _stopped(Subject $subject)
+    {
+        $subject->set(['success' => false]);
+        $this->setFlash('error', $subject);
+
+        return $this->_redirect($subject, ['action' => 'index']);
     }
 
     /**
