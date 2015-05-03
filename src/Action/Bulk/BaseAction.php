@@ -2,7 +2,7 @@
 namespace Crud\Action\Bulk;
 
 use Cake\Event\Event;
-use Cake\Network\Exception\NotImplementedException;
+use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\Utility\Hash;
 use Crud\Error\Exception\ActionNotConfiguredException;
