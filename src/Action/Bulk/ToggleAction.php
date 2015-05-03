@@ -32,7 +32,7 @@ class ToggleAction extends BaseAction
                 'text' => 'Could not toggle value'
             ]
         ];
-        return parent::__construct($controller, $config);
+        return parent::__construct($Controller, $config);
     }
 
     /**

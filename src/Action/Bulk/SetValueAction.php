@@ -33,7 +33,7 @@ class SetValueAction extends BaseAction
             ]
         ];
         $this->_defaultConfig['value'] = null;
-        return parent::__construct($controller, $config);
+        return parent::__construct($Controller, $config);
     }
 
     /**

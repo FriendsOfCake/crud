@@ -30,7 +30,7 @@ class DeleteAction extends BaseAction
                 'text' => 'Could not complete deletion'
             ]
         ];
-        return parent::__construct($controller, $config);
+        return parent::__construct($Controller, $config);
     }
 
     /**
