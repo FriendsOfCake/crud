@@ -23,7 +23,6 @@ class SetValueAction extends BaseAction
      */
     public function __construct(Controller $Controller, $config = [])
     {
-        $this->_defaultConfig['actionName'] = 'SetValue';
         $this->_defaultConfig['messages'] = [
             'success' => [
                 'text' => 'Set value successfully'

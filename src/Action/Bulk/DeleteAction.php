@@ -21,7 +21,6 @@ class DeleteAction extends BaseAction
      */
     public function __construct(Controller $Controller, $config = [])
     {
-        $this->_defaultConfig['actionName'] = 'Delete';
         $this->_defaultConfig['messages'] = [
             'success' => [
                 'text' => 'Delete completed successfully'

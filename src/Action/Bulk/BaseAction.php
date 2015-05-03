@@ -7,6 +7,7 @@ use Cake\ORM\Query;
 use Cake\Utility\Hash;
 use Crud\Action\BaseAction as CrudBaseAction;
 use Crud\Event\Subject;
+use Crud\Traits\FindMethodTrait;
 use Crud\Traits\RedirectTrait;
 
 /**
@@ -17,6 +18,7 @@ use Crud\Traits\RedirectTrait;
  */
 abstract class BaseAction extends CrudBaseAction
 {
+    use FindMethodTrait;
     use RedirectTrait;
 
     /**
@@ -28,7 +30,7 @@ abstract class BaseAction extends CrudBaseAction
         'enabled' => true,
         'scope' => 'bulk',
         'findMethod' => 'all',
-        'actionName' => 'Bulk',
+        'findConfig' => [],
         'messages' => [
             'success' => [
                 'text' => 'Bulk action successfully completed'
@@ -45,6 +47,30 @@ abstract class BaseAction extends CrudBaseAction
      * @return \Cake\Network\Response
      */
     protected function _handle()
+    {
+        $ids = $this->_processIds();
+        $subject = $this->_findQuery($ids);
+
+        $event = $this->_trigger('beforeBulk', $subject);
+        if ($event->isStopped()) {
+            return $this->_stopped($subject);
+        }
+
+        if ($this->_bulk($subject->query)) {
+            $this->_success($subject);
+        } else {
+            $this->_error($subject);
+        }
+
+        return $this->_redirect($subject, ['action' => 'index']);
+    }
+
+    /**
+     * Retrieves a list of ids to process
+     *
+     * @return array
+     */
+    protected function _processIds()
     {
         $ids = $this->_controller()->request->data('id');
 
@@ -64,46 +90,45 @@ abstract class BaseAction extends CrudBaseAction
             }
         }
 
-        $ids = array_filter($ids);
+        return array_filter($ids);
+    }
+
+    /**
+     * Setup a query object for retrieving entities
+     *
+     * @param array $ids An array of ids to retrieve
+     * @return \Cake\Event\Subject
+     */
+    protected function _findQuery(array $ids)
+    {
+        $repository = $this->_table();
+
+        $query = $repository->find($this->findMethod(), $this->_getFindConfig($ids));
 
         $subject = $this->_subject();
-        $subject->set(['ids' => $ids]);
+        $subject->set([
+            'ids' => $ids,
+            'query' => $query,
+            'repository' => $repository,
+        ]);
 
-        $actionName = $this->config('actionName');
-
-        $this->_trigger(sprintf('before%sFind', $actionName), $subject);
-        $query = $this->_table()->find($this->config('findMethod'), $this->_getFindConfig($subject));
-        $subject->set(['query' => $query]);
-
-        $this->_trigger(sprintf('after%sFind', $actionName), $subject);
-
-        $event = $this->_trigger(sprintf('before%s', $actionName), $subject);
-        if ($event->isStopped()) {
-            return $this->_stopped($subject);
-        }
-
-        if ($this->_bulk($query)) {
-            $this->_success($subject);
-        } else {
-            $this->_error($subject);
-        }
-
-        return $this->_redirect($subject, ['action' => 'index']);
+        return $subject;
     }
 
     /**
      * Get the query configuration
      *
+     * @param array $ids An array of ids to retrieve
      * @return array
      */
-    protected function _getFindConfig(Subject $subject)
+    protected function _getFindConfig(array $ids)
     {
         $config = (array)$this->config('findConfig');
         if (!empty($config)) {
             return $config;
         }
 
-        $ids = $subject->ids;
+        $ids = $ids;
         $primaryKey = $this->_table()->primaryKey();
         $config['conditions'][] = function ($exp) use ($primaryKey, $ids) {
             return $exp->in($primaryKey, $ids);
@@ -120,9 +145,8 @@ abstract class BaseAction extends CrudBaseAction
      */
     protected function _success(Subject $subject)
     {
-        $actionName = $this->config('actionName');
         $subject->set(['success' => true]);
-        $this->_trigger(sprintf('after%s', $actionName), $subject);
+        $this->_trigger('afterBulk', $subject);
 
         $this->setFlash('success', $subject);
     }
@@ -135,9 +159,8 @@ abstract class BaseAction extends CrudBaseAction
      */
     protected function _error(Subject $subject)
     {
-        $actionName = $this->config('actionName');
         $subject->set(['success' => false]);
-        $this->_trigger(sprintf('after%s', $actionName), $subject);
+        $this->_trigger('afterBulk', $subject);
 
         $this->setFlash('error', $subject);
     }

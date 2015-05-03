@@ -23,7 +23,6 @@ class ToggleAction extends BaseAction
      */
     public function __construct(Controller $Controller, $config = [])
     {
-        $this->_defaultConfig['actionName'] = 'Toggle';
         $this->_defaultConfig['messages'] = [
             'success' => [
                 'text' => 'Value toggled successfully'
