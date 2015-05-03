@@ -5,7 +5,6 @@ use Cake\Event\Event;
 use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\Utility\Hash;
-use Crud\Error\Exception\ActionNotConfiguredException;
 use Crud\Event\Subject;
 use Crud\Traits\RedirectTrait;
 

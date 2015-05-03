@@ -3,7 +3,7 @@ namespace Crud\Action\Bulk;
 
 use Cake\Controller\Controller;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Network\Exception\NotImplementedException;
+use Crud\Error\Exception\ActionNotConfiguredException;
 use Cake\ORM\Query;
 
 /**
@@ -45,7 +45,7 @@ class ToggleAction extends BaseAction
     {
         $field = $this->config('field');
         if (empty($field)) {
-            throw new NotImplementedException('No field value specified');
+            throw new ActionNotConfiguredException('No field value specified');
         }
 
         return parent::_handle();
