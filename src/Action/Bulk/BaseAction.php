@@ -46,7 +46,7 @@ abstract class BaseAction extends BaseAction
     protected function _handle()
     {
         $ids = $this->_controller()->request->data('id');
-        if (!is_array($data) || !Hash::numeric(array_keys($data))) {
+        if (!is_array($ids) || !Hash::numeric(array_keys($ids))) {
             throw new BadRequestException('Bad request data');
         }
         $ids = array_filter($ids);
