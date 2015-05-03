@@ -32,7 +32,6 @@ class ToggleAction extends BaseAction
                 'text' => 'Could not toggle value'
             ]
         ];
-        $this->_defaultConfig['value'] = null;
         return parent::__construct($controller, $config);
     }
 
@@ -59,11 +58,8 @@ class ToggleAction extends BaseAction
      */
     protected function _bulk(Query $query = null)
     {
-        $value = $this->config('value');
-        $expression = [$field => $value];
-        if ($value === null) {
-            $expression = [new QueryExpression(sprintf('%s = NOT %s', $field))];
-        }
+        $field = $this->config('field');
+        $expression = [new QueryExpression(sprintf('%s = NOT %s', $field))];
         $query->update()->set($expression);
         $statement = $query->execute();
         $statement->closeCursor();
