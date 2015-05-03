@@ -20,7 +20,7 @@ abstract class BaseAction extends BaseAction
     use RedirectTrait;
 
     /**
-     * Default settings for 'lookup' actions
+     * Default settings for 'base' actions
      *
      * @var array
      */
@@ -42,7 +42,7 @@ abstract class BaseAction extends BaseAction
     /**
      * Handle a bulk event
      *
-     * @return void
+     * @return \Cake\Network\Response
      */
     protected function _handle()
     {
@@ -145,7 +145,8 @@ abstract class BaseAction extends BaseAction
     /**
      * Handle a bulk event
      *
-     * @return void
+     * @param \Cake\ORM\Query $query The query to act upon
+     * @return boolean
      */
     abstract protected function _bulk(Query $query);
 }
