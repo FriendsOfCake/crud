@@ -25,7 +25,7 @@ abstract class BaseAction extends BaseAction
      * @var array
      */
     protected $_defaultConfig = [
-        'enabled' => false,
+        'enabled' => true,
         'scope' => 'table',
         'findMethod' => 'all',
         'actionName' => 'Bulk',
