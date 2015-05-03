@@ -7,6 +7,7 @@ use Cake\ORM\Query;
 use Cake\Utility\Hash;
 use Crud\Error\Exception\ActionNotConfiguredException;
 use Crud\Event\Subject;
+use Crud\Traits\RedirectTrait;
 
 /**
  * Handles 'Bulk' Crud actions
@@ -16,6 +17,8 @@ use Crud\Event\Subject;
  */
 abstract class BaseAction extends BaseAction
 {
+    use RedirectTrait;
+
     /**
      * Default settings for 'lookup' actions
      *
