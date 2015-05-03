@@ -25,6 +25,7 @@ abstract class BulkAction extends BaseAction
         'enabled' => false,
         'scope' => 'table',
         'findMethod' => 'all',
+        'actionName' => 'Bulk',
         'messages' => [
             'success' => [
                 'text' => 'Bulk action successfully completed'
@@ -51,13 +52,15 @@ abstract class BulkAction extends BaseAction
         $subject = $this->_subject();
         $subject->set(['ids' => $ids]);
 
-        $this->_trigger('beforeBulkFind', $subject);
+        $actionName = $this->config('actionName');
+
+        $this->_trigger(sprintf('before%sFind', $actionName), $subject);
         $query = $this->_table()->find($this->config('findMethod'), $this->_getFindConfig($subject));
         $subject->set(['query' => $query]);
 
-        $this->_trigger('afterBulkFind', $subject);
+        $this->_trigger(sprintf('after%sFind', $actionName), $subject);
 
-        $event = $this->_trigger('beforeBulk', $subject);
+        $event = $this->_trigger(sprintf('before%s', $actionName), $subject);
         if ($event->isStopped()) {
             return $this->_stopped($subject);
         }
@@ -100,8 +103,9 @@ abstract class BulkAction extends BaseAction
      */
     protected function _success(Subject $subject)
     {
+        $actionName = $this->config('actionName');
         $subject->set(['success' => true]);
-        $this->_trigger('afterBulk', $subject);
+        $this->_trigger(sprintf('after%s', $actionName), $subject);
 
         $this->setFlash('success', $subject);
     }
@@ -114,8 +118,9 @@ abstract class BulkAction extends BaseAction
      */
     protected function _error(Subject $subject)
     {
+        $actionName = $this->config('actionName');
         $subject->set(['success' => false]);
-        $this->_trigger('afterBulk', $subject);
+        $this->_trigger(sprintf('after%s', $actionName), $subject);
 
         $this->setFlash('error', $subject);
     }
