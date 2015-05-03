@@ -41,7 +41,7 @@ class DeleteAction extends BaseAction
      */
     protected function _bulk(Query $query = null)
     {
-        $query = $this->query()->delete();
+        $query = $query->delete();
         $statement = $query->execute();
         $statement->closeCursor();
         return $statement->rowCount();
