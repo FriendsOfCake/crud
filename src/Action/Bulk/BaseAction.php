@@ -1,5 +1,5 @@
 <?php
-namespace Crud\Action;
+namespace Crud\Action\Bulk;
 
 use Cake\Event\Event;
 use Cake\Network\Exception\NotImplementedException;
@@ -14,7 +14,7 @@ use Crud\Event\Subject;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-abstract class BulkAction extends BaseAction
+abstract class BaseAction extends BaseAction
 {
     /**
      * Default settings for 'lookup' actions
