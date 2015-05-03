@@ -55,7 +55,7 @@ class SetValueAction extends BaseAction
      * Handle a bulk value set
      *
      * @param \Cake\ORM\Query $query The query to act upon
-     * @return boolean
+     * @return bool
      */
     protected function _bulk(Query $query = null)
     {

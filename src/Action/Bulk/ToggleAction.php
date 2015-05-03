@@ -3,8 +3,8 @@ namespace Crud\Action\Bulk;
 
 use Cake\Controller\Controller;
 use Cake\Database\Expression\QueryExpression;
-use Crud\Error\Exception\ActionNotConfiguredException;
 use Cake\ORM\Query;
+use Crud\Error\Exception\ActionNotConfiguredException;
 
 /**
  * Handles Bulk 'Toggle' Crud actions
@@ -54,7 +54,7 @@ class ToggleAction extends BaseAction
      * Handle a bulk toggle
      *
      * @param \Cake\ORM\Query $query The query to act upon
-     * @return boolean
+     * @return bool
      */
     protected function _bulk(Query $query = null)
     {

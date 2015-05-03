@@ -145,7 +145,7 @@ abstract class BaseAction extends BaseAction
      * Handle a bulk event
      *
      * @param \Cake\ORM\Query $query The query to act upon
-     * @return boolean
+     * @return bool
      */
     abstract protected function _bulk(Query $query);
 }
