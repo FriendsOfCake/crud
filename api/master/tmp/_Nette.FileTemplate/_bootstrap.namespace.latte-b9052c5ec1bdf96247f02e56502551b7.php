@@ -1,16 +1,16 @@
-<?php //netteCache[01]000400a:2:{s:4:"time";s:21:"0.25155300 1430654423";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:80:"/var/www/jippignu/data/www/cakephp.dk/apigen/templates/bootstrap/namespace.latte";i:2;i:1347136010;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:28:"$WCREV$ released on $WCDATE$";}}}?><?php
+<?php //netteCache[01]000400a:2:{s:4:"time";s:21:"0.58154400 1430656212";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:80:"/var/www/jippignu/data/www/cakephp.dk/apigen/templates/bootstrap/namespace.latte";i:2;i:1347136010;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:28:"$WCREV$ released on $WCDATE$";}}}?><?php
 
 // source file: /var/www/jippignu/data/www/cakephp.dk/apigen/templates/bootstrap/namespace.latte
 
 ?><?php
 // prolog Nette\Latte\Macros\CoreMacros
-list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, 'fpfri4xh1q')
+list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, '88v1q2g27m')
 ;
 // prolog Nette\Latte\Macros\UIMacros
 //
 // block title
 //
-if (!function_exists($_l->blocks['title'][] = '_lbe17cf2158a_title')) { function _lbe17cf2158a_title($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['title'][] = '_lb01410f0afd_title')) { function _lb01410f0afd_title($_l, $_args) { extract($_args)
 ;if ($namespace != 'None'): ?>Namespace <?php echo Nette\Templating\Helpers::escapeHtml($namespace, ENT_NOQUOTES) ;else: ?>
 No namespace<?php endif ;
 }}
@@ -18,7 +18,7 @@ No namespace<?php endif ;
 //
 // block content
 //
-if (!function_exists($_l->blocks['content'][] = '_lbab86bb178a_content')) { function _lbab86bb178a_content($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['content'][] = '_lb54af2ce37a_content')) { function _lb54af2ce37a_content($_l, $_args) { extract($_args)
 ?><div id="content" class="namespace">
 	<h1><?php if ($namespace != 'None'): ?>Namespace <?php echo $template->namespaceLinks($namespace, false) ;else: ?>
 No namespace<?php endif ?></h1>
@@ -34,7 +34,7 @@ No namespace<?php endif ?></h1>
 	</table>
 <?php endif ?>
 
-<?php Nette\Latte\Macros\CoreMacros::includeTemplate('@elementlist.latte', $template->getParameters(), $_l->templates['fpfri4xh1q'])->render() ?>
+<?php Nette\Latte\Macros\CoreMacros::includeTemplate('@elementlist.latte', $template->getParameters(), $_l->templates['88v1q2g27m'])->render() ?>
 </div>
 <?php
 }}
