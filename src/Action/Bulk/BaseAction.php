@@ -4,8 +4,8 @@ namespace Crud\Action\Bulk;
 use Cake\Event\Event;
 use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Query;
-use Crud\Action\BaseAction as CrudBaseAction;
 use Cake\Utility\Hash;
+use Crud\Action\BaseAction as CrudBaseAction;
 use Crud\Event\Subject;
 use Crud\Traits\RedirectTrait;
 

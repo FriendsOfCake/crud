@@ -3,8 +3,8 @@ namespace Crud\Action\Bulk;
 
 use Cake\Controller\Controller;
 use Cake\Database\Expression\QueryExpression;
-use Crud\Error\Exception\ActionNotConfiguredException;
 use Cake\ORM\Query;
+use Crud\Error\Exception\ActionNotConfiguredException;
 
 /**
  * Handles Bulk 'SetValue' Crud actions
