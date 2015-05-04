@@ -72,7 +72,7 @@ class SetValueActionTest extends IntegrationTestCase
             ['priority' => 1000]
         );
 
-        $this->{$method}('/blogs/activateAll', [
+        $this->{$method}('/blogs/deactivateAll', [
             'id' => [
                 1 => 1,
                 2 => 2,
@@ -120,7 +120,7 @@ class SetValueActionTest extends IntegrationTestCase
             ['priority' => 1000]
         );
 
-        $this->post('/blogs/activateAll', [
+        $this->post('/blogs/deactivateAll', [
             'id' => [
                 1 => 1,
                 2 => 2,

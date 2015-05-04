@@ -28,10 +28,10 @@ class BlogsController extends Controller
                     'className' => 'Crud.Bulk/Toggle',
                     'field' => 'is_active',
                 ],
-                'activateAll' => [
+                'deactivateAll' => [
                     'className' => 'Crud.Bulk/SetValue',
                     'field' => 'is_active',
-                    'value' => 1,
+                    'value' => false,
                 ],
             ],
             'listeners' => [
