@@ -85,11 +85,11 @@ class ToggleActionTest extends IntegrationTestCase
     }
 
     /**
-     * Test the flow when the beforeDelete event is stopped
+     * Test the flow when the beforeToggle event is stopped
      *
      * @return void
      */
-    public function testStopDelete()
+    public function testStopToggle()
     {
         $this->_eventManager->attach(
             function ($event) {
