@@ -20,7 +20,19 @@ class BlogsController extends Controller
                 'Crud.Add',
                 'Crud.Edit',
                 'Crud.View',
-                'Crud.Delete'
+                'Crud.Delete',
+                'deleteAll' => [
+                    'className' => 'Crud.Bulk/Delete',
+                ],
+                'toggleActiveAll' => [
+                    'className' => 'Crud.Bulk/Toggle',
+                    'field' => 'is_active',
+                ],
+                'deactivateAll' => [
+                    'className' => 'Crud.Bulk/SetValue',
+                    'field' => 'is_active',
+                    'value' => false,
+                ],
             ],
             'listeners' => [
                 'Crud.Api',

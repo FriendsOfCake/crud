@@ -142,4 +142,8 @@ More On Actions
 	actions/add
 	actions/edit
 	actions/delete
+	actions/bulk
+	actions/bulk-delete
+	actions/bulk-set-value
+	actions/bulk-toggle
 	actions/custom
