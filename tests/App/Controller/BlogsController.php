@@ -20,7 +20,10 @@ class BlogsController extends Controller
                 'Crud.Add',
                 'Crud.Edit',
                 'Crud.View',
-                'Crud.Delete'
+                'Crud.Delete',
+                'deleteAll' => [
+                    'className' => 'Crud.Bulk/Delete',
+                ],
             ],
             'listeners' => [
                 'Crud.Api',
