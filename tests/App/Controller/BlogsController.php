@@ -31,7 +31,7 @@ class BlogsController extends Controller
                 'activateAll' => [
                     'className' => 'Crud.Bulk/SetValue',
                     'field' => 'is_active',
-                    'value' => true,
+                    'value' => 1,
                 ],
             ],
             'listeners' => [
