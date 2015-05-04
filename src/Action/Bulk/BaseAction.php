@@ -49,7 +49,7 @@ abstract class BaseAction extends CrudBaseAction
     protected function _handle()
     {
         $ids = $this->_processIds();
-        $subject = $this->_findQuery($ids);
+        $subject = $this->_constructSubject($ids);
 
         $event = $this->_trigger('beforeBulk', $subject);
         if ($event->isStopped()) {
@@ -100,7 +100,7 @@ abstract class BaseAction extends CrudBaseAction
      * @param array $ids An array of ids to retrieve
      * @return \Cake\Event\Subject
      */
-    protected function _findQuery(array $ids)
+    protected function _constructSubject(array $ids)
     {
         $repository = $this->_table();
 
