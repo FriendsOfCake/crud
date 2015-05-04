@@ -85,11 +85,11 @@ class SetValueActionTest extends IntegrationTestCase
     }
 
     /**
-     * Test the flow when the beforeDelete event is stopped
+     * Test the flow when the beforeSetValue event is stopped
      *
      * @return void
      */
-    public function testStopDelete()
+    public function testStopSetValue()
     {
         $this->_eventManager->attach(
             function ($event) {
