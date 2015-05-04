@@ -58,7 +58,7 @@ class ToggleAction extends BaseAction
     protected function _bulk(Query $query = null)
     {
         $field = $this->config('field');
-        $expression = [new QueryExpression(sprintf('%s = NOT %s', $field))];
+        $expression = [new QueryExpression(sprintf('%1$s= NOT %1$s', $field))];
         $query->update()->set($expression);
         $statement = $query->execute();
         $statement->closeCursor();
