@@ -1,16 +1,16 @@
-<?php //netteCache[01]000396a:2:{s:4:"time";s:21:"0.55192500 1430947815";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:76:"/var/www/jippignu/data/www/cakephp.dk/apigen/templates/bootstrap/class.latte";i:2;i:1347136010;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:28:"$WCREV$ released on $WCDATE$";}}}?><?php
+<?php //netteCache[01]000396a:2:{s:4:"time";s:21:"0.92002000 1430949616";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:76:"/var/www/jippignu/data/www/cakephp.dk/apigen/templates/bootstrap/class.latte";i:2;i:1347136010;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:28:"$WCREV$ released on $WCDATE$";}}}?><?php
 
 // source file: /var/www/jippignu/data/www/cakephp.dk/apigen/templates/bootstrap/class.latte
 
 ?><?php
 // prolog Nette\Latte\Macros\CoreMacros
-list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, '0j6j891iqj')
+list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, 'vb8wf1dd0z')
 ;
 // prolog Nette\Latte\Macros\UIMacros
 //
 // block title
 //
-if (!function_exists($_l->blocks['title'][] = '_lb006f3390cf_title')) { function _lb006f3390cf_title($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['title'][] = '_lb71107eaed6_title')) { function _lb71107eaed6_title($_l, $_args) { extract($_args)
 ;if ($class->deprecated): ?>Deprecated <?php endif ;if ($class->interface): ?>Interface<?php elseif ($class->trait): ?>
 Trait<?php else: ?>Class<?php endif ?> <?php echo Nette\Templating\Helpers::escapeHtml($class->name, ENT_NOQUOTES) ;
 }}
@@ -18,7 +18,7 @@ Trait<?php else: ?>Class<?php endif ?> <?php echo Nette\Templating\Helpers::esca
 //
 // block content
 //
-if (!function_exists($_l->blocks['content'][] = '_lb80ad8120a1_content')) { function _lb80ad8120a1_content($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['content'][] = '_lbaa4e4f830d_content')) { function _lbaa4e4f830d_content($_l, $_args) { extract($_args)
 ?><div id="content" class="class">
 	<h1<?php if ($_l->tmp = array_filter(array($class->deprecated ? 'deprecated':null))) echo ' class="' . htmlSpecialChars(implode(" ", array_unique($_l->tmp))) . '"' ?>
 ><?php if ($class->interface): ?>Interface<?php elseif ($class->trait): ?>Trait<?php else: ?>
@@ -406,7 +406,7 @@ $<?php echo Nette\Templating\Helpers::escapeHtml($property->name, ENT_NOQUOTES) 
 //
 // block children
 //
-if (!function_exists($_l->blocks['children'][] = '_lb2ddf60ec82_children')) { function _lb2ddf60ec82_children($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['children'][] = '_lb4aa60ddf29_children')) { function _lb4aa60ddf29_children($_l, $_args) { extract($_args)
 ?>		<p class="elementList">
 <?php $iterations = 0; foreach ($iterator = $_l->its[] = new Nette\Iterators\CachingIterator($children) as $child): ?>
 			<code><?php if ($_l->ifs[] = ($child->documented)): ?><a href="<?php echo htmlSpecialChars($template->classUrl($child)) ?>
@@ -422,7 +422,7 @@ if (!function_exists($_l->blocks['children'][] = '_lb2ddf60ec82_children')) { fu
 //
 // block method
 //
-if (!function_exists($_l->blocks['method'][] = '_lb7660c3c103_method')) { function _lb7660c3c103_method($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['method'][] = '_lb0c638702c5_method')) { function _lb0c638702c5_method($_l, $_args) { extract($_args)
 ?>		<tr data-order="<?php echo htmlSpecialChars($method->name) ?>" id="<?php if ($method->magic): ?>
 m<?php endif ?>_<?php echo htmlSpecialChars($method->name) ?>">
 <?php $annotations = $method->annotations ?>
@@ -545,7 +545,7 @@ private<?php else: ?>public<?php endif ?> <?php if ($method->static): ?>static<?
 //
 // block property
 //
-if (!function_exists($_l->blocks['property'][] = '_lb8d011510a7_property')) { function _lb8d011510a7_property($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['property'][] = '_lb88ccfce82c_property')) { function _lb88ccfce82c_property($_l, $_args) { extract($_args)
 ?>		<tr data-order="<?php echo htmlSpecialChars($property->name) ?>" id="<?php if ($property->magic): ?>
 m<?php endif ?>$<?php echo htmlSpecialChars($property->name) ?>">
 			<td class="attributes"><code>
