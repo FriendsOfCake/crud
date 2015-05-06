@@ -486,7 +486,7 @@ class CrudComponent extends Component
      * object.
      *
      * @param string $eventName Event name
-     * @param array $data Event data
+     * @param \Cake\Event\Subject $subject Event data
      * @throws \Exception if any event listener return a CakeResponse object.
      * @return \Cake\Event\Event
      */
