@@ -29,7 +29,7 @@ trait ProxyTrait
      * Primarily here to ease unit testing
      *
      * @param string $eventName Event name
-     * @param \Cake\Event\Subject $data
+     * @param \Cake\Event\Subject $data Event data
      * @return \Cake\Event\Event
      * @codeCoverageIgnore
      */
