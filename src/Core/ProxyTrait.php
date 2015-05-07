@@ -29,11 +29,11 @@ trait ProxyTrait
      * Primarily here to ease unit testing
      *
      * @param string $eventName Event name
-     * @param array $data Data array
+     * @param \Cake\Event\Subject $data Event data
      * @return \Cake\Event\Event
      * @codeCoverageIgnore
      */
-    protected function _trigger($eventName, $data = [])
+    protected function _trigger($eventName, Subject $data = null)
     {
         return $this->_crud()->trigger($eventName, $data);
     }

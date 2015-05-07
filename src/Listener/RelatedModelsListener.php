@@ -50,7 +50,8 @@ class RelatedModelsListener extends BaseListener
             }
 
             $query = $association->target()->find('list');
-            $event = $this->_trigger('relatedModel', compact('name', 'viewVar', 'query', 'association'));
+            $subject = $this->_subject(compact('name', 'viewVar', 'query', 'association'));
+            $event = $this->_trigger('relatedModel', $subject);
 
             $controller->set($event->subject->viewVar, $event->subject->query->toArray());
         }
