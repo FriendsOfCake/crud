@@ -228,7 +228,6 @@ class CrudComponent extends Component
             if ($response instanceof Response) {
                 return $response;
             }
-
         } catch (\Exception $e) {
             if (isset($e->response)) {
                 return $e->response;

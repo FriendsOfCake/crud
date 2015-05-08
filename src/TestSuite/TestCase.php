@@ -1,5 +1,5 @@
 <?php
-namespace Crud\Testsuite;
+namespace Crud\TestSuite;
 
 use Crud\TestSuite\Traits\CrudTestTrait;
 use FriendsOfCake\TestUtilities\AccessibilityHelperTrait;
