@@ -17,17 +17,13 @@ You can get the Crud source code using either composer or git.
 Using composer
 --------------
 
-.. note::
-
-	Make sure to use ``dev-cake3`` and **not** the master or develop branches
-
 The recommended installation method for this plugin is by using composer.
 
 Using the inline require for composer:
 
 .. code-block:: sh
 
-	composer require friendsofcake/crud:dev-cake3
+	composer require friendsofcake/crud:dev-master
 
 Or add this to your composer.json configuration:
 
@@ -35,17 +31,13 @@ Or add this to your composer.json configuration:
 
 	{
 		"require" : {
-			"FriendsOfCake/crud": "dev-cake3"
+			"FriendsOfCake/crud": "dev-master"
 		}
 	}
 
 
 Using git submodule
 -------------------
-
-.. note::
-
-	Make sure to use the ``cake3`` branch and **not** the master or develop branches
 
 Or add it as a git module, this is recommended over ``git clone`` since it's
 easier to keep up to date with development that way:
@@ -54,7 +46,6 @@ easier to keep up to date with development that way:
 
 		git submodule add git://github.com/FriendsOfCake/crud.git Plugin/Crud
 		cd Plugin/Crud
-		git checkout cake3
 
 
 Loading the plugin
