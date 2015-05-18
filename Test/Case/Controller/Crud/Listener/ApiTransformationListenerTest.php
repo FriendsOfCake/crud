@@ -1438,4 +1438,47 @@ class ApiTransformationListenerTest extends CrudTestCase {
 
 		$this->assertSame($expected, $result);
 	}
+
+/**
+ * Testing a huge integer with castNumbers & json_encode()
+ *
+ * @see http://php.net/manual/en/function.json-last-error.php (JSON_ERROR_INF_OR_NAN)
+ * @return void
+ */
+	public function testCastNumbersWithInfinity() {
+		$listener = $this
+			->getMockBuilder('ApiTransformationListener')
+			->disableOriginalConstructor()
+			->getMock();
+
+		$settings = array(
+			'changeNesting' => false,
+			'changeKeys' => false,
+			'changeTime' => false,
+			'castNumbers' => true,
+			'keyMethods' => array(),
+			'valueMethods' => array(),
+			'replaceMap' => array()
+		);
+
+		$this->setReflectionClassInstance($listener);
+		$this->setProtectedProperty('_settings', $settings, $listener);
+
+		$data = array(
+			'CastNumber' => array('infinity' => '0113870020e12235'),
+		);
+
+		$expected = array(
+			'CastNumber' => array(
+				'infinity' => '0113870020e12235'
+			)
+		);
+
+		$this->callProtectedMethod('_recurse', array(&$data), $listener);
+
+		$this->assertSame($expected, $data);
+
+		$this->assertSame(json_encode($expected), json_encode($data), 'Infinity values does not break json encode');
+		$this->assertSame(JSON_ERROR_NONE, json_last_error(), 'No errors');
+	}
 }
