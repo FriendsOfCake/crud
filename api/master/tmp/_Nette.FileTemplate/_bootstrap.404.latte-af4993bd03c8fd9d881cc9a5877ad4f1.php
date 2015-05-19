@@ -1,23 +1,23 @@
-<?php //netteCache[01]000394a:2:{s:4:"time";s:21:"0.14968500 1432004414";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:74:"/var/www/jippignu/data/www/cakephp.dk/apigen/templates/bootstrap/404.latte";i:2;i:1347136010;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:28:"$WCREV$ released on $WCDATE$";}}}?><?php
+<?php //netteCache[01]000394a:2:{s:4:"time";s:21:"0.71716700 1432008013";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:74:"/var/www/jippignu/data/www/cakephp.dk/apigen/templates/bootstrap/404.latte";i:2;i:1347136010;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:28:"$WCREV$ released on $WCDATE$";}}}?><?php
 
 // source file: /var/www/jippignu/data/www/cakephp.dk/apigen/templates/bootstrap/404.latte
 
 ?><?php
 // prolog Nette\Latte\Macros\CoreMacros
-list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, '7et7zq461e')
+list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, '7a8rrhi5po')
 ;
 // prolog Nette\Latte\Macros\UIMacros
 //
 // block title
 //
-if (!function_exists($_l->blocks['title'][] = '_lb09ad07f403_title')) { function _lb09ad07f403_title($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['title'][] = '_lbeca60d5d7f_title')) { function _lbeca60d5d7f_title($_l, $_args) { extract($_args)
 ?>Page not found<?php
 }}
 
 //
 // block content
 //
-if (!function_exists($_l->blocks['content'][] = '_lb4bcec4a40f_content')) { function _lb4bcec4a40f_content($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['content'][] = '_lb4ff8989795_content')) { function _lb4ff8989795_content($_l, $_args) { extract($_args)
 ?><div id="content">
 	<h1><?php call_user_func(reset($_l->blocks['title']), $_l, get_defined_vars()) ?></h1>
 	<p>The requested page could not be found.</p>
