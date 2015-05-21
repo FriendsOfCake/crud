@@ -1,23 +1,23 @@
-<?php //netteCache[01]000395a:2:{s:4:"time";s:21:"0.32347800 1432166416";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:75:"/var/www/jippignu/data/www/cakephp.dk/apigen/templates/bootstrap/tree.latte";i:2;i:1347136010;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:28:"$WCREV$ released on $WCDATE$";}}}?><?php
+<?php //netteCache[01]000395a:2:{s:4:"time";s:21:"0.65794800 1432170014";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:75:"/var/www/jippignu/data/www/cakephp.dk/apigen/templates/bootstrap/tree.latte";i:2;i:1347136010;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:28:"$WCREV$ released on $WCDATE$";}}}?><?php
 
 // source file: /var/www/jippignu/data/www/cakephp.dk/apigen/templates/bootstrap/tree.latte
 
 ?><?php
 // prolog Nette\Latte\Macros\CoreMacros
-list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, 'gngy8njptr')
+list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, 'foe9r1takx')
 ;
 // prolog Nette\Latte\Macros\UIMacros
 //
 // block title
 //
-if (!function_exists($_l->blocks['title'][] = '_lbd4ab3157ff_title')) { function _lbd4ab3157ff_title($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['title'][] = '_lbd97e69df57_title')) { function _lbd97e69df57_title($_l, $_args) { extract($_args)
 ?>Tree<?php
 }}
 
 //
 // block tree
 //
-if (!function_exists($_l->blocks['tree'][] = '_lb4858b9e412_tree')) { function _lb4858b9e412_tree($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['tree'][] = '_lb1cf4a605d7_tree')) { function _lb1cf4a605d7_tree($_l, $_args) { extract($_args)
 ?><div class="tree">
 	<ul>
 <?php $level = -1 ;foreach ($tree as $reflectionName => $reflection): if ($level === $tree->getDepth()): ?>
@@ -73,7 +73,7 @@ if (!function_exists($_l->blocks['tree'][] = '_lb4858b9e412_tree')) { function _
 //
 // block content
 //
-if (!function_exists($_l->blocks['content'][] = '_lbd0b23f5505_content')) { function _lbd0b23f5505_content($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['content'][] = '_lb98ae8270ce_content')) { function _lb98ae8270ce_content($_l, $_args) { extract($_args)
 ?><div id="content">
 	<h1><?php call_user_func(reset($_l->blocks['title']), $_l, get_defined_vars()) ?></h1>
 
