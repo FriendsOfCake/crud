@@ -6,7 +6,7 @@
 
 # Version notice
 
-The master and develop branches only works for CakePHP 2.x - please use the [cake3 branch](https://github.com/FriendsOfCake/crud/tree/cake3) for CakePHP 3.x
+This version is for CakePHP 2.x.
 
 # Introduction
 
