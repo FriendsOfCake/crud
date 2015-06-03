@@ -117,7 +117,7 @@ class RelatedModelsListener extends BaseListener
                 continue;
             }
 
-            $return[$association] = $associationClass;
+            $return[$associationClass->name()] = $associationClass;
         }
 
         return $return;
@@ -137,7 +137,7 @@ class RelatedModelsListener extends BaseListener
         $table = $this->_table();
         foreach ($names as $association) {
             $associationClass = $table->associations()->get($association);
-            $return[$association] = $associationClass;
+            $return[$associationClass->name()] = $associationClass;
         }
 
         return $return;
