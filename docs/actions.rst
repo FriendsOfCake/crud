@@ -24,7 +24,7 @@ The primary difference is that CRUD actions are made to be as generic and secure
 out of the box as possible.
 
 You can consider a CRUD action as a more flexible PHP trait that fits nicely
-within the CakePHP eco system.
+within the CakePHP ecosystem.
 
 The Anatomy Of An Action
 ^^^^^^^^^^^^^^^^^^^^^^^^
