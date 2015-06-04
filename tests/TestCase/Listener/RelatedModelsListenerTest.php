@@ -114,4 +114,123 @@ class RelatedModelListenerTest extends TestCase
 
         $result = $listener->models();
     }
+
+    /**
+     * testGetAssociatedByTypeReturnValue
+     *
+     * Test return value of `getAssociatedByType`
+     *
+     * @return void
+     */
+    public function testGetAssociatedByTypeReturnValue()
+    {
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\RelatedModelsListener')
+            ->disableOriginalConstructor()
+            ->setMethods(['relatedModels', '_table'])
+            ->getMock();
+        $table = $this
+            ->getMockBuilder('\Cake\ORM\Table')
+            ->disableOriginalConstructor()
+            ->setMethods(['associations'])
+            ->getMock();
+        $associationCollection = $this
+            ->getMockBuilder('\Cake\ORM\AssociationCollection')
+            ->disableOriginalConstructor()
+            ->setMethods(['get', 'keys'])
+            ->getMock();
+        $association = $this
+            ->getMockBuilder('\Cake\ORM\Association')
+            ->disableOriginalConstructor()
+            ->setMethods(['type', 'name', 'eagerLoader', 'cascadeDelete', 'isOwningSide', 'saveAssociated'])
+            ->getMock();
+
+        $listener
+            ->expects($this->once())
+            ->method('_table')
+            ->withAnyParameters()
+            ->will($this->returnValue($table));
+        $table
+            ->expects($this->atLeastOnce())
+            ->method('associations')
+            ->will($this->returnValue($associationCollection));
+        $associationCollection
+            ->expects($this->once())
+            ->method('keys')
+            ->will($this->returnValue(['posts']));
+        $associationCollection
+            ->expects($this->once())
+            ->method('get')
+            ->with('posts')
+            ->will($this->returnValue($association));
+        $association
+            ->expects($this->once())
+            ->method('name')
+            ->will($this->returnValue('Posts'));
+        $association
+            ->expects($this->once())
+            ->method('type')
+            ->will($this->returnValue('oneToOne'));
+
+        $expected = ['Posts' => $association];
+        $result = $listener->getAssociatedByType(['oneToOne', 'manyToMany', 'manyToOne']);
+
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * testModelReturnsAssociationsByName
+     *
+     * Test return value of `getAssociatedByName`
+     *
+     * @return void
+     */
+    public function testGetAssociatedByNameReturnValue()
+    {
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\RelatedModelsListener')
+            ->disableOriginalConstructor()
+            ->setMethods(['relatedModels', '_table'])
+            ->getMock();
+        $table = $this
+            ->getMockBuilder('\Cake\ORM\Table')
+            ->disableOriginalConstructor()
+            ->setMethods(['associations'])
+            ->getMock();
+        $associationCollection = $this
+            ->getMockBuilder('\Cake\ORM\AssociationCollection')
+            ->disableOriginalConstructor()
+            ->setMethods(['get'])
+            ->getMock();
+        $association = $this
+            ->getMockBuilder('\Cake\ORM\Association')
+            ->disableOriginalConstructor()
+            ->setMethods(['type', 'name', 'eagerLoader', 'cascadeDelete', 'isOwningSide', 'saveAssociated'])
+            ->getMock();
+
+        $listener
+            ->expects($this->once())
+            ->method('_table')
+            ->withAnyParameters()
+            ->will($this->returnValue($table));
+        $table
+            ->expects($this->once())
+            ->method('associations')
+            ->will($this->returnValue($associationCollection));
+        $associationCollection
+            ->expects($this->once())
+            ->method('get')
+            ->with('posts')
+            ->will($this->returnValue($association));
+        $association
+            ->expects($this->once())
+            ->method('name')
+            ->with(null)
+            ->will($this->returnValue('Posts'));
+
+        $expected = ['Posts' => $association];
+        $result = $listener->getAssociatedByName(['posts']);
+
+        $this->assertEquals($expected, $result);
+    }
 }
