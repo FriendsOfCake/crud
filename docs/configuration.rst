@@ -114,7 +114,7 @@ An example of on the fly enabling an Crud action with configuration
 
   }
 
-Build-in actions
+Built-in actions
 ----------------
 
 Crud provides the default ``CRUD`` actions out of the box.
@@ -126,10 +126,10 @@ Crud provides the default ``CRUD`` actions out of the box.
 * :doc:`Delete Action<actions/delete>`
 
 It's possible to create your own ``Crud Action`` as well, or overwrite the
-build-in ones
+built-in ones.
 
 Simply provide the ``className`` configuration key for an action, and Crud will
-use that one instead
+use that one instead.
 
 Listeners
 ---------
