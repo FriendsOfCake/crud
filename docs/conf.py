@@ -34,7 +34,7 @@ from _config import *
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-	'_config.cakephpbranch',
+#	'_config.cakephpbranch',
 #  'sphinx.ext.todo'
 ]
 
@@ -104,7 +104,7 @@ pygments_style = 'sphinx'
 # If true, keep warnings as "system message" paragraphs in the built documents.
 #keep_warnings = False
 
-highlight_language = 'phpinline'
+#highlight_language = 'phpinline'
 
 # -- Options for HTML output ----------------------------------------------
 
