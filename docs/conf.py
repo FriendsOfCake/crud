@@ -35,7 +35,7 @@ from _config import *
 # ones.
 extensions = [
 	'_config.cakephpbranch',
-  'sphinx.ext.todo'
+#  'sphinx.ext.todo'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
