@@ -34,12 +34,12 @@ from _config import *
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-#	'_config.cakephpbranch',
-#  'sphinx.ext.todo'
+	'_config.cakephpbranch',
+  'sphinx.ext.todo'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
-#templates_path = ['_templates']
+templates_path = ['_templates']
 
 # The suffix of source filenames.
 source_suffix = '.rst'
@@ -110,7 +110,7 @@ highlight_language = 'phpinline'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-#html_theme = 'cakephp'
+html_theme = 'cakephp'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -118,7 +118,7 @@ highlight_language = 'phpinline'
 #html_theme_options = {}
 
 # Add any paths that contain custom themes here, relative to this directory.
-#html_theme_path = ['_themes']
+html_theme_path = ['_themes']
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
