@@ -23,7 +23,7 @@ Using the inline require for composer:
 
 .. code-block:: sh
 
-	composer require friendsofcake/crud:dev-master
+	composer require friendsofcake/crud:~4.0
 
 Or add this to your composer.json configuration:
 
@@ -31,7 +31,7 @@ Or add this to your composer.json configuration:
 
 	{
 		"require" : {
-			"FriendsOfCake/crud": "dev-master"
+			"FriendsOfCake/crud": "~4.0"
 		}
 	}
 
