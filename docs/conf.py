@@ -34,7 +34,7 @@ from _config import *
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-	'_config.cakephpbranch',
+#	'_config.cakephpbranch',
 #  'sphinx.ext.todo'
 ]
 
@@ -118,7 +118,7 @@ highlight_language = 'phpinline'
 #html_theme_options = {}
 
 # Add any paths that contain custom themes here, relative to this directory.
-html_theme_path = ['_themes']
+#html_theme_path = ['_themes']
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -271,9 +271,9 @@ texinfo_documents = [
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
 
-from sphinx.highlighting import lexers
-from pygments.lexers.web import PhpLexer
+#from sphinx.highlighting import lexers
+#from pygments.lexers.web import PhpLexer
 
-lexers['phpinline'] = PhpLexer(startinline=True)
+#lexers['phpinline'] = PhpLexer(startinline=True)
 
 branch = 'master'
