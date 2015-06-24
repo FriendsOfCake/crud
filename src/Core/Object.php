@@ -3,7 +3,6 @@ namespace Crud\Core;
 
 use Cake\Controller\Controller;
 use Cake\Core\InstanceConfigTrait;
-use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 
 /**

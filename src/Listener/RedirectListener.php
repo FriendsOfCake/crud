@@ -1,8 +1,9 @@
 <?php
 namespace Crud\Listener;
 
-use Cake\Utility\Hash;
+use Cake\Event\Event;
 use Crud\Event\Subject;
+use Exception;
 
 /**
  * Redirect Listener
@@ -48,7 +49,7 @@ class RedirectListener extends BaseListener
      */
     public function setup()
     {
-        $this->reader('request.key', function (\Crud\Event\Subject $subject, $key = null) {
+        $this->reader('request.key', function (Subject $subject, $key = null) {
             $request = $this->_request();
 
             if (!isset($request->{$key})) {
@@ -58,21 +59,21 @@ class RedirectListener extends BaseListener
             return $request->{$key};
         });
 
-        $this->reader('request.data', function (\Crud\Event\Subject $subject, $key = null) {
+        $this->reader('request.data', function (Subject $subject, $key = null) {
             $request = $this->_request();
             return $request->data($key);
         });
 
-        $this->reader('request.query', function (\Crud\Event\Subject $subject, $key = null) {
+        $this->reader('request.query', function (Subject $subject, $key = null) {
             $request = $this->_request();
             return $request->query($key);
         });
 
-        $this->reader('entity.field', function (\Crud\Event\Subject $subject, $key = null) {
+        $this->reader('entity.field', function (Subject $subject, $key = null) {
             return $subject->entity->get($key);
         });
 
-        $this->reader('subject.key', function (\Crud\Event\Subject $subject, $key = null) {
+        $this->reader('subject.key', function (Subject $subject, $key = null) {
             if (!isset($subject->{$key})) {
                 return null;
             }
@@ -103,10 +104,10 @@ class RedirectListener extends BaseListener
      * If a special redirect key is provided, change the
      * redirection URL target
      *
-     * @param \Cake\Event\Event $event Event
+     * @param Event $event Event
      * @return void
      */
-    public function beforeRedirect(\Cake\Event\Event $event)
+    public function beforeRedirect(Event $event)
     {
         $subject = $event->subject;
 
@@ -160,14 +161,14 @@ class RedirectListener extends BaseListener
      * @param string $reader Reader
      * @param string $key Key
      * @return mixed
-     * @throws \Exception if the reader is invalid
+     * @throws Exception if the reader is invalid
      */
     protected function _getKey(Subject $subject, $reader, $key)
     {
         $callable = $this->reader($reader);
 
         if ($callable === null || !is_callable($callable)) {
-            throw new \Exception('Invalid reader: ' . $reader);
+            throw new Exception('Invalid reader: ' . $reader);
         }
 
         return $callable($subject, $key);

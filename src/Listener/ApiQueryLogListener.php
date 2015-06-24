@@ -101,7 +101,7 @@ class ApiQueryLogListener extends BaseListener
      * Get a specific data source
      *
      * @param string $source Datasource name
-     * @return DataSource
+     * @return \Cake\Database\Connection
      * @codeCoverageIgnore
      */
     protected function _getSource($source)

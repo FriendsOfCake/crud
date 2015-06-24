@@ -25,7 +25,7 @@ class QueryLogger extends \Cake\Database\Log\QueryLogger
      * Wrapper function for the logger object, useful for unit testing
      * or for overriding in subclasses.
      *
-     * @param LoggedQuery $query to be written in log
+     * @param \Cake\Database\Log\LoggedQuery $query to be written in log
      * @return void
      */
     protected function _log($query)

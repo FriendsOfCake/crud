@@ -90,7 +90,7 @@ class EditAction extends BaseAction
      *
      * @param string $id Record id
      * @return void
-     * @throws NotFoundException If record not found
+     * @throws \Cake\Network\Exception\NotFoundException If record not found
      */
     protected function _get($id = null)
     {

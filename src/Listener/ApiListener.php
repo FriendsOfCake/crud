@@ -6,7 +6,6 @@ use Cake\Error\ErrorHandler;
 use Cake\Event\Event;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Request;
-use Cake\ORM\Entity;
 use Cake\Utility\Hash;
 use Cake\Utility\Text;
 use Crud\Event\Subject;
@@ -329,7 +328,7 @@ class ApiListener extends BaseListener
      * @param string $path Path
      * @return string
      */
-    protected function _expandPath(\Crud\Event\Subject $subject, $path)
+    protected function _expandPath(Subject $subject, $path)
     {
         $keys = [];
         $subjectArray = (array)$subject;

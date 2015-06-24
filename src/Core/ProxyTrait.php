@@ -1,7 +1,6 @@
 <?php
 namespace Crud\Core;
 
-use Cake\Event\Event;
 use Crud\Event\Subject;
 
 trait ProxyTrait
@@ -15,7 +14,7 @@ trait ProxyTrait
      * Primarily here to ease unit testing
      *
      * @param string $name Action name
-     * @return \Crud\Action\Base
+     * @return \Crud\Action\BaseAction
      * @codeCoverageIgnore
      */
     protected function _action($name = null)
@@ -29,7 +28,7 @@ trait ProxyTrait
      * Primarily here to ease unit testing
      *
      * @param string $eventName Event name
-     * @param \Cake\Event\Subject $data Event data
+     * @param \Crud\Event\Subject $data Event data
      * @return \Cake\Event\Event
      * @codeCoverageIgnore
      */
@@ -44,7 +43,7 @@ trait ProxyTrait
      * Primarily here to ease unit testing
      *
      * @param string $name Listener name
-     * @return \Crud\Listener\Base
+     * @return \Crud\Listener\BaseListener
      * @codeCoverageIgnore
      */
     protected function _listener($name)
@@ -57,7 +56,7 @@ trait ProxyTrait
      *
      * Primarily here to ease unit testing
      *
-     * @return \Cake\Controller\Component\SessionComponent
+     * @return \Cake\Network\Session
      * @codeCoverageIgnore
      */
     protected function _session()
@@ -159,7 +158,7 @@ trait ProxyTrait
     /**
      * Proxy method for `$this->_container->_crud`
      *
-     * @return Crud\Controller\Component\CrudComponent
+     * @return \Crud\Controller\Component\CrudComponent
      */
     protected function _crud()
     {

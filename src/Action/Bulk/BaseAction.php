@@ -1,7 +1,6 @@
 <?php
 namespace Crud\Action\Bulk;
 
-use Cake\Event\Event;
 use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\Utility\Hash;
@@ -98,7 +97,7 @@ abstract class BaseAction extends CrudBaseAction
      * Setup a query object for retrieving entities
      *
      * @param array $ids An array of ids to retrieve
-     * @return \Cake\Event\Subject
+     * @return \Crud\Event\Subject
      */
     protected function _constructSubject(array $ids)
     {

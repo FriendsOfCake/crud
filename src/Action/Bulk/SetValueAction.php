@@ -2,7 +2,6 @@
 namespace Crud\Action\Bulk;
 
 use Cake\Controller\Controller;
-use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
 use Crud\Error\Exception\ActionNotConfiguredException;
 
@@ -39,6 +38,7 @@ class SetValueAction extends BaseAction
      * Handle a bulk event
      *
      * @return \Cake\Network\Response
+     * @throws \Crud\Error\Exception\ActionNotConfiguredException
      */
     protected function _handle()
     {
