@@ -5,7 +5,6 @@ use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
 use Cake\Event\Event;
 use Cake\Network\Response;
-use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Crud\Error\Exception\ActionNotConfiguredException;
 use Crud\Error\Exception\ListenerNotConfiguredException;

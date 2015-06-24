@@ -1,7 +1,6 @@
 <?php
 namespace Crud\Listener;
 
-use Cake\Utility\Hash;
 use Crud\Event\Subject;
 
 /**

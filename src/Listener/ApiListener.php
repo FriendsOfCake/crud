@@ -6,7 +6,6 @@ use Cake\Error\ErrorHandler;
 use Cake\Event\Event;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Request;
-use Cake\ORM\Entity;
 use Cake\Utility\Hash;
 use Cake\Utility\Text;
 use Crud\Event\Subject;

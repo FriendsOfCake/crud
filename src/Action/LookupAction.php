@@ -1,7 +1,6 @@
 <?php
 namespace Crud\Action;
 
-use Cake\Event\Event;
 use Crud\Traits\SerializeTrait;
 use Crud\Traits\ViewTrait;
 use Crud\Traits\ViewVarTrait;

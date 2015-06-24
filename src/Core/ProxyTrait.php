@@ -1,7 +1,6 @@
 <?php
 namespace Crud\Core;
 
-use Cake\Event\Event;
 use Crud\Event\Subject;
 
 trait ProxyTrait
