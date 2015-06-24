@@ -1,6 +1,7 @@
 <?php
 namespace Crud\Listener;
 
+use Cake\Event\Event;
 use Cake\Utility\Inflector;
 
 /**
@@ -16,11 +17,11 @@ class RelatedModelsListener extends BaseListener
     /**
      * Fetches related models' list and sets them to a variable for the view
      *
-     * @param \Cake\Event\Event $event Event
+     * @param Event $event Event
      * @return void
      * @codeCoverageIgnore
      */
-    public function beforeRender(\Cake\Event\Event $event)
+    public function beforeRender(Event $event)
     {
         $this->publishRelatedModels();
     }

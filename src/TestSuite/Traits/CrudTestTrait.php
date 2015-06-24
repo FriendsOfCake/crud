@@ -3,7 +3,9 @@ namespace Crud\TestSuite\Traits;
 
 use Cake\Controller\Controller;
 use Cake\Datasource\ConnectionManager;
+use Cake\Event\Event;
 use Crud\Event\Subject;
+use Exception;
 
 /**
  * Utility methods for easier testing with Crud in CakePHP & PHPUnit
@@ -75,7 +77,7 @@ trait CrudTestTrait
      * @param array $expected An array of CRUD events we expected to be fired
      * @param array $actual Can be an Event class, Crud subject or array with event names
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     public function assertEvents(array $expected, array $actual = null)
     {
@@ -92,11 +94,11 @@ trait CrudTestTrait
         }
 
         if (empty($actual)) {
-            throw new \Exception('assertEvents: Expected actual to be not-empty');
+            throw new Exception('assertEvents: Expected actual to be not-empty');
         }
 
         if (!is_array($actual)) {
-            throw new \Exception('assertEvents: Expected actual to be an array');
+            throw new Exception('assertEvents: Expected actual to be an array');
         }
 
         foreach ($expected as &$key) {

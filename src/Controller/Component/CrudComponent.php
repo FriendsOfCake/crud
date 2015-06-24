@@ -3,6 +3,7 @@ namespace Crud\Controller\Component;
 
 use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
+use Cake\Core\App;
 use Cake\Event\Event;
 use Cake\Network\Response;
 use Cake\Utility\Inflector;
@@ -11,6 +12,7 @@ use Crud\Error\Exception\ListenerNotConfiguredException;
 use Crud\Error\Exception\MissingActionException;
 use Crud\Error\Exception\MissingListenerException;
 use Crud\Event\Subject;
+use Exception;
 
 /**
  * Crud component
@@ -33,14 +35,14 @@ class CrudComponent extends Component
     /**
      * Reference to the current controller.
      *
-     * @var Controller
+     * @var \Cake\Controller\Controller
      */
     protected $_controller;
 
     /**
      * Reference to the current request.
      *
-     * @var CakeRequest
+     * @var \Cake\Network\Request
      */
     protected $_request;
 
@@ -54,7 +56,7 @@ class CrudComponent extends Component
     /**
      * Reference to the current event manager.
      *
-     * @var CakeEventManager
+     * @var \Cake\Event\EventManager
      */
     protected $_eventManager;
 
@@ -207,7 +209,7 @@ class CrudComponent extends Component
      * @param string $controllerAction Override the controller action to execute as.
      * @param array $args List of arguments to pass to the CRUD action (Usually an ID to edit / delete).
      * @return \Cake\Network\Response
-     * @throws \Exception If an action is not mapped.
+     * @throws Exception If an action is not mapped.
      */
     public function execute($controllerAction = null, $args = [])
     {
@@ -227,7 +229,7 @@ class CrudComponent extends Component
             if ($response instanceof Response) {
                 return $response;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             if (isset($e->response)) {
                 return $e->response;
             }
@@ -248,7 +250,7 @@ class CrudComponent extends Component
      * Get a CrudAction object by action name.
      *
      * @param string $name The controller action name.
-     * @return CrudAction
+     * @return \Crud\Action\BaseAction
      */
     public function action($name = null)
     {
@@ -417,7 +419,7 @@ class CrudComponent extends Component
      * Get a single event class.
      *
      * @param string $name Listener
-     * @return CrudBaseEvent
+     * @return \Crud\Listener\BaseListener
      */
     public function listener($name)
     {
@@ -484,8 +486,8 @@ class CrudComponent extends Component
      * object.
      *
      * @param string $eventName Event name
-     * @param \Cake\Event\Subject $data Event data
-     * @throws \Exception if any event listener return a CakeResponse object.
+     * @param \Crud\Event\Subject $data Event data
+     * @throws Exception if any event listener return a CakeResponse object.
      * @return \Cake\Event\Event
      */
     public function trigger($eventName, Subject $data = null)
@@ -503,7 +505,7 @@ class CrudComponent extends Component
         $this->_eventManager->dispatch($Event);
 
         if ($Event->result instanceof Response) {
-            $Exception = new \Exception();
+            $Exception = new Exception();
             $Exception->response = $Event->result;
             throw $Exception;
         }
@@ -646,7 +648,7 @@ class CrudComponent extends Component
                 throw new ListenerNotConfiguredException(sprintf('Listener "%s" is not configured', $name));
             }
 
-            $className = \Cake\Core\App::classname($config['className'], 'Listener', 'Listener');
+            $className = App::classname($config['className'], 'Listener', 'Listener');
             if (empty($className)) {
                 throw new MissingListenerException('Could not find listener class: ' . $config['className']);
             }
@@ -682,7 +684,7 @@ class CrudComponent extends Component
                 throw new ActionNotConfiguredException(sprintf('Action "%s" has not been mapped', $name));
             }
 
-            $className = \Cake\Core\App::classname($config['className'], 'Action', 'Action');
+            $className = App::classname($config['className'], 'Action', 'Action');
             if (empty($className)) {
                 throw new MissingActionException('Could not find action class: ' . $config['className']);
             }

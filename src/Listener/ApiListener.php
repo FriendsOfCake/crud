@@ -328,7 +328,7 @@ class ApiListener extends BaseListener
      * @param string $path Path
      * @return string
      */
-    protected function _expandPath(\Crud\Event\Subject $subject, $path)
+    protected function _expandPath(Subject $subject, $path)
     {
         $keys = [];
         $subjectArray = (array)$subject;

@@ -38,6 +38,7 @@ class SetValueAction extends BaseAction
      * Handle a bulk event
      *
      * @return \Cake\Network\Response
+     * @throws \Crud\Error\Exception\ActionNotConfiguredException
      */
     protected function _handle()
     {
