@@ -47,7 +47,9 @@ class ToggleActionTest extends IntegrationTestCase
      */
     public function testAllRequestMethods($method)
     {
-        $this->_eventManager->attach(
+        $this->_eventManager->on(
+            'Dispatcher.beforeDispatch',
+            ['priority' => 1000],
             function ($event) {
                 $this->_controller->Flash = $this->getMock(
                     'Cake\Controller\Component\Flash',
@@ -67,9 +69,7 @@ class ToggleActionTest extends IntegrationTestCase
                     );
 
                 $this->_subscribeToEvents($this->_controller);
-            },
-            'Dispatcher.beforeDispatch',
-            ['priority' => 1000]
+            }
         );
 
         $this->{$method}('/blogs/toggleActiveAll', [
@@ -91,7 +91,9 @@ class ToggleActionTest extends IntegrationTestCase
      */
     public function testStopBeforeBulk()
     {
-        $this->_eventManager->attach(
+        $this->_eventManager->on(
+            'Dispatcher.beforeDispatch',
+            ['priority' => 1000],
             function ($event) {
                 $this->_controller->Flash = $this->getMock(
                     'Cake\Controller\Component\Flash',
@@ -115,9 +117,7 @@ class ToggleActionTest extends IntegrationTestCase
                 $this->_controller->Crud->on('beforeBulk', function ($event) {
                     $event->stopPropagation();
                 });
-            },
-            'Dispatcher.beforeDispatch',
-            ['priority' => 1000]
+            }
         );
 
         $this->post('/blogs/toggleActiveAll', [
