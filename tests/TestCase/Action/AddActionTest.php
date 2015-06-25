@@ -81,7 +81,9 @@ class AddActionTest extends IntegrationTestCase
      */
     public function testActionPost()
     {
-        $this->_eventManager->attach(
+        $this->_eventManager->on(
+            'Dispatcher.beforeDispatch',
+            ['priority' => 1000],
             function ($event) {
                 $this->_controller->Flash = $this->getMock(
                     'Cake\Controller\Component\Flash',
@@ -101,9 +103,7 @@ class AddActionTest extends IntegrationTestCase
                     );
 
                 $this->_subscribeToEvents($this->_controller);
-            },
-            'Dispatcher.beforeDispatch',
-            ['priority' => 1000]
+            }
         );
 
         $this->post('/blogs/add', [
@@ -126,7 +126,9 @@ class AddActionTest extends IntegrationTestCase
      */
     public function testActionPostWithAddRedirect()
     {
-        $this->_eventManager->attach(
+        $this->_eventManager->on(
+            'Dispatcher.beforeDispatch',
+            ['priority' => 1000],
             function ($event) {
                 $this->_controller->Flash = $this->getMock(
                     'Cake\Controller\Component\Flash',
@@ -146,9 +148,7 @@ class AddActionTest extends IntegrationTestCase
                     );
 
                 $this->_subscribeToEvents($this->_controller);
-            },
-            'Dispatcher.beforeDispatch',
-            ['priority' => 1000]
+            }
         );
 
         $this->post('/blogs/add', [
@@ -171,7 +171,9 @@ class AddActionTest extends IntegrationTestCase
      */
     public function testActionPostWithEditRedirect()
     {
-        $this->_eventManager->attach(
+        $this->_eventManager->on(
+            'Dispatcher.beforeDispatch',
+            ['priority' => 1000],
             function ($event) {
                 $this->_controller->Flash = $this->getMock(
                     'Cake\Controller\Component\Flash',
@@ -191,9 +193,7 @@ class AddActionTest extends IntegrationTestCase
                     );
 
                 $this->_subscribeToEvents($this->_controller);
-            },
-            'Dispatcher.beforeDispatch',
-            ['priority' => 1000]
+            }
         );
 
         $this->post('/blogs/add', [
@@ -215,7 +215,9 @@ class AddActionTest extends IntegrationTestCase
      */
     public function testActionPostErrorSave()
     {
-        $this->_eventManager->attach(
+        $this->_eventManager->on(
+            'Dispatcher.beforeDispatch',
+            ['priority' => 1000],
             function ($event) {
                 $this->_controller->Flash = $this->getMock(
                     'Cake\Controller\Component\Flash',
@@ -246,9 +248,7 @@ class AddActionTest extends IntegrationTestCase
                     ->expects($this->once())
                     ->method('save')
                     ->will($this->returnValue(false));
-            },
-            'Dispatcher.beforeDispatch',
-            ['priority' => 1000]
+            }
         );
 
         $this->post('/blogs/add', [
@@ -268,7 +268,9 @@ class AddActionTest extends IntegrationTestCase
      */
     public function testActionPostValidationErrors()
     {
-        $this->_eventManager->attach(
+        $this->_eventManager->on(
+            'Dispatcher.beforeDispatch',
+            ['priority' => 1000],
             function ($event) {
                 $this->_controller->Flash = $this->getMock(
                     'Cake\Controller\Component\Flash',
@@ -298,9 +300,7 @@ class AddActionTest extends IntegrationTestCase
                             'message' => 'Name need to be at least 10 characters long',
                         ]
                     ]);
-            },
-            'Dispatcher.beforeDispatch',
-            ['priority' => 1000]
+            }
         );
 
         $this->post('/blogs/add', [
@@ -342,12 +342,12 @@ class AddActionTest extends IntegrationTestCase
      */
     public function testApiGet($method)
     {
-        $this->_eventManager->attach(
+        $this->_eventManager->on(
+            'Dispatcher.beforeDispatch',
+            ['priority' => 1000],
             function ($event) {
                 $this->_controller->Crud->addListener('api', 'Crud.Api');
-            },
-            'Dispatcher.beforeDispatch',
-            ['priority' => 1000]
+            }
         );
 
         Router::extensions(['json']);
@@ -384,7 +384,9 @@ class AddActionTest extends IntegrationTestCase
      */
     public function testApiCreate($method)
     {
-        $this->_eventManager->attach(
+        $this->_eventManager->on(
+            'Dispatcher.beforeDispatch',
+            ['priority' => 1000],
             function ($event) {
                 $this->_controller->Flash = $this->getMock(
                     'Cake\Controller\Component\Flash',
@@ -399,9 +401,7 @@ class AddActionTest extends IntegrationTestCase
 
                 $this->_controller->Crud->addListener('api', 'Crud.Api');
                 $this->_controller->RequestHandler->ext = 'json';
-            },
-            'Dispatcher.beforeDispatch',
-            ['priority' => 1000]
+            }
         );
 
         Router::extensions('json');
@@ -431,7 +431,9 @@ class AddActionTest extends IntegrationTestCase
     {
         Router::extensions('json');
 
-        $this->_eventManager->attach(
+        $this->_eventManager->on(
+            'Dispatcher.beforeDispatch',
+            ['priority' => 1000],
             function ($event) {
                 $this->_controller->Flash = $this->getMock(
                     'Cake\Controller\Component\Flash',
@@ -455,9 +457,7 @@ class AddActionTest extends IntegrationTestCase
                             'message' => 'Name need to be at least 10 characters long',
                         ]
                     ]);
-            },
-            'Dispatcher.beforeDispatch',
-            ['priority' => 1000]
+            }
         );
 
         $this->{$method}('/blogs/add.json', [
@@ -481,7 +481,9 @@ class AddActionTest extends IntegrationTestCase
     {
         Router::extensions('json');
 
-        $this->_eventManager->attach(
+        $this->_eventManager->on(
+            'Dispatcher.beforeDispatch',
+            ['priority' => 1000],
             function ($event) {
                 $this->_controller->Flash = $this->getMock(
                     'Cake\Controller\Component\Flash',
@@ -506,9 +508,7 @@ class AddActionTest extends IntegrationTestCase
                             'message' => 'Name need to be at least 10 characters long',
                         ]
                     ]);
-            },
-            'Dispatcher.beforeDispatch',
-            ['priority' => 1000]
+            }
         );
 
         $this->{$method}('/blogs/add.json', [

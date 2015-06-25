@@ -411,7 +411,7 @@ class CrudComponent extends Component
                 $event = $this->_config['eventPrefix'] . '.' . $event;
             }
 
-            $this->_eventManager->attach($callback, $event, $options);
+            $this->_eventManager->on($event, $options, $callback);
         }
     }
 
@@ -468,7 +468,7 @@ class CrudComponent extends Component
         }
 
         if (isset($this->_listenerInstances[$name])) {
-            $this->_eventManager->detach($this->_listenerInstances[$name]);
+            $this->_eventManager->off($this->_listenerInstances[$name]);
             unset($this->_listenerInstances[$name]);
         }
 
@@ -657,7 +657,7 @@ class CrudComponent extends Component
             unset($config['className']);
             $this->_listenerInstances[$name]->config($config);
 
-            $this->_eventManager->attach($this->_listenerInstances[$name]);
+            $this->_eventManager->on($this->_listenerInstances[$name]);
 
             if (is_callable([$this->_listenerInstances[$name], 'setup'])) {
                 $this->_listenerInstances[$name]->setup();

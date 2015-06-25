@@ -49,7 +49,9 @@ class DeleteActionTest extends IntegrationTestCase
      */
     public function testAllRequestMethods($method)
     {
-        $this->_eventManager->attach(
+        $this->_eventManager->on(
+            'Dispatcher.beforeDispatch',
+            ['priority' => 1000],
             function ($event) {
                 $this->_controller->Flash = $this->getMock(
                     'Cake\Controller\Component\Flash',
@@ -80,9 +82,7 @@ class DeleteActionTest extends IntegrationTestCase
                     ->expects($this->once())
                     ->method('delete')
                     ->will($this->returnValue(true));
-            },
-            'Dispatcher.beforeDispatch',
-            ['priority' => 1000]
+            }
         );
 
         $this->{$method}('/blogs/delete/1');
@@ -99,7 +99,9 @@ class DeleteActionTest extends IntegrationTestCase
      */
     public function testStopDelete()
     {
-        $this->_eventManager->attach(
+        $this->_eventManager->on(
+            'Dispatcher.beforeDispatch',
+            ['priority' => 1000],
             function ($event) {
                 $this->_controller->Flash = $this->getMock(
                     'Cake\Controller\Component\Flash',
@@ -133,9 +135,7 @@ class DeleteActionTest extends IntegrationTestCase
                 $this->_controller->Blogs
                     ->expects($this->never())
                     ->method('delete');
-            },
-            'Dispatcher.beforeDispatch',
-            ['priority' => 1000]
+            }
         );
 
         $this->get('/blogs/delete/1');

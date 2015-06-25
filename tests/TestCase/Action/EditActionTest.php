@@ -81,7 +81,9 @@ class EditActionTest extends IntegrationTestCase
      */
     public function testActionPost()
     {
-        $this->_eventManager->attach(
+        $this->_eventManager->on(
+            'Dispatcher.beforeDispatch',
+            ['priority' => 1000],
             function ($event) {
                 $this->_controller->Flash = $this->getMock(
                     'Cake\Controller\Component\Flash',
@@ -101,9 +103,7 @@ class EditActionTest extends IntegrationTestCase
                     );
 
                 $this->_subscribeToEvents($this->_controller);
-            },
-            'Dispatcher.beforeDispatch',
-            ['priority' => 1000]
+            }
         );
 
         $this->post('/blogs/edit/1', [
@@ -124,7 +124,9 @@ class EditActionTest extends IntegrationTestCase
      */
     public function testActionPostErrorSave()
     {
-        $this->_eventManager->attach(
+        $this->_eventManager->on(
+            'Dispatcher.beforeDispatch',
+            ['priority' => 1000],
             function ($event) {
                 $this->_controller->Flash = $this->getMock(
                     'Cake\Controller\Component\Flash',
@@ -155,9 +157,7 @@ class EditActionTest extends IntegrationTestCase
                     ->expects($this->once())
                     ->method('save')
                     ->will($this->returnValue(false));
-            },
-            'Dispatcher.beforeDispatch',
-            ['priority' => 1000]
+            }
         );
 
         $this->put('/blogs/edit/1', [
@@ -177,7 +177,9 @@ class EditActionTest extends IntegrationTestCase
      */
     public function testActionPostValidationErrors()
     {
-        $this->_eventManager->attach(
+        $this->_eventManager->on(
+            'Dispatcher.beforeDispatch',
+            ['priority' => 1000],
             function ($event) {
                 $this->_controller->Flash = $this->getMock(
                     'Cake\Controller\Component\Flash',
@@ -207,9 +209,7 @@ class EditActionTest extends IntegrationTestCase
                             'message' => 'Name need to be at least 10 characters long',
                         ]
                     ]);
-            },
-            'Dispatcher.beforeDispatch',
-            ['priority' => 1000]
+            }
         );
 
         $this->put('/blogs/edit/1', [

@@ -43,12 +43,12 @@ class IndexActionTest extends IntegrationTestCase
      */
     public function testGet($method)
     {
-        $this->_eventManager->attach(
+        $this->_eventManager->on(
+            'Dispatcher.beforeDispatch',
+            ['priority' => 1000],
             function ($event) {
                 $this->_subscribeToEvents($this->_controller);
-            },
-            'Dispatcher.beforeDispatch',
-            ['priority' => 1000]
+            }
         );
 
         $this->{$method}('/blogs');
@@ -66,13 +66,13 @@ class IndexActionTest extends IntegrationTestCase
      */
     public function testGetWithViewVar()
     {
-        $this->_eventManager->attach(
+        $this->_eventManager->on(
+            'Dispatcher.beforeDispatch',
+            ['priority' => 1000],
             function ($event) {
                 $this->_controller->Crud->action('index')->viewVar('items');
                 $this->_subscribeToEvents($this->_controller);
-            },
-            'Dispatcher.beforeDispatch',
-            ['priority' => 1000]
+            }
         );
 
         $this->get('/blogs');

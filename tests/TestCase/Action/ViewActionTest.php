@@ -43,12 +43,12 @@ class ViewActionTest extends IntegrationTestCase
      */
     public function testGet($method)
     {
-        $this->_eventManager->attach(
+        $this->_eventManager->on(
+            'Dispatcher.beforeDispatch',
+            ['priority' => 1000],
             function ($event) {
                 $this->_subscribeToEvents($this->_controller);
-            },
-            'Dispatcher.beforeDispatch',
-            ['priority' => 1000]
+            }
         );
 
         $this->{$method}('/blogs/view/1');
@@ -66,13 +66,13 @@ class ViewActionTest extends IntegrationTestCase
      */
     public function testGetWithViewVar()
     {
-        $this->_eventManager->attach(
+        $this->_eventManager->on(
+            'Dispatcher.beforeDispatch',
+            ['priority' => 1000],
             function ($event) {
                 $this->_controller->Crud->action('view')->viewVar('item');
                 $this->_subscribeToEvents($this->_controller);
-            },
-            'Dispatcher.beforeDispatch',
-            ['priority' => 1000]
+            }
         );
 
         $this->get('/blogs/view/1');
