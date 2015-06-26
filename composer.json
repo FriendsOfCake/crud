@@ -1,6 +1,5 @@
 {
     "name":"friendsofcake/crud",
-    "version": "4.0.0",
     "description":"CakePHP Application development on steroids - rapid prototyping / scaffolding & production ready code - XML / JSON APIs and more",
     "type":"cakephp-plugin",
     "keywords":[
