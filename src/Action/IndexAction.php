@@ -46,10 +46,10 @@ class IndexAction extends BaseAction
      */
     protected function _handle()
     {
-        $subject = $this->_subject(['success' => true, 'query' => null]);
+        $subject = $this->_subject(['success' => true, 'object' => null]);
 
         $this->_trigger('beforePaginate', $subject);
-        $items = $this->_controller()->paginate($subject->query);
+        $items = $this->_controller()->paginate($subject->object);
         $subject->set(['entities' => $items]);
 
         $this->_trigger('afterPaginate', $subject);
