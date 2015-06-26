@@ -83,4 +83,25 @@ class IndexActionTest extends IntegrationTestCase
         $this->assertNotNull($this->viewVariable('items'));
         $this->assertNotNull($this->viewVariable('success'));
     }
+
+    /**
+     * Tests that it is posisble to modify the pagination query in beforePaginate
+     *
+     * @return void
+     */
+    public function testModifyQueryInEvent()
+    {
+        $this->_eventManager->on(
+            'Dispatcher.beforeDispatch',
+            ['priority' => 1000],
+            function () {
+                $this->_controller->Crud->on('beforePaginate', function ($event) {
+                    $event->subject->query->where(['id <' => 2]);
+                });
+            }
+        );
+
+        $this->get('/blogs');
+        $this->assertContains('Page 1 of 1, showing 1 records out of 1 total', $this->_response->body());
+    }
 }
