@@ -169,7 +169,7 @@ abstract class BaseAction extends Object
     }
 
     /**
-     * Wrapper for FlashComponent::render()
+     * Wrapper for FlashComponent::set()
      *
      * @param string $type Message type
      * @param \Crud\Event\Subject $subject Event subject
