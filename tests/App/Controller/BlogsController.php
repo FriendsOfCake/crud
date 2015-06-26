@@ -21,6 +21,7 @@ class BlogsController extends Controller
                 'Crud.Edit',
                 'Crud.View',
                 'Crud.Delete',
+                'Crud.Lookup',
                 'deleteAll' => [
                     'className' => 'Crud.Bulk/Delete',
                 ],

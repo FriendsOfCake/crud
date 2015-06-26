@@ -36,11 +36,11 @@ class LookupAction extends BaseAction
      */
     protected function _handle()
     {
-        $subject = $this->_subject(['success' => true]);
+        $query = $this->_table()->find($this->config('findMethod'), $this->_getFindConfig());
+        $subject = $this->_subject(['success' => true, 'query' => $query]);
 
         $this->_trigger('beforeLookup', $subject);
-        $query = $this->_table()->find($this->config('findMethod'), $this->_getFindConfig());
-        $subject->set(['entities' => $this->_controller()->paginate($query)]);
+        $subject->set(['entities' => $this->_controller()->paginate($subject->query)]);
         $this->_trigger('afterLookup', $subject);
 
         $this->_trigger('beforeRender', $subject);
@@ -57,7 +57,7 @@ class LookupAction extends BaseAction
 
         $config = (array)$this->config('findConfig');
         if ($idField = $request->query('id')) {
-            $config['idField'] = $idField;
+            $config['keyField'] = $idField;
         }
 
         if ($valueField = $request->query('value')) {
