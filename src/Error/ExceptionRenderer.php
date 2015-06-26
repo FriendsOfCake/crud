@@ -99,25 +99,6 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer
     }
 
     /**
-     * A safer way to render error messages, replaces all helpers, with basics
-     * and doesn't call component methods.
-     *
-     * @param string $template The template to render
-     * @return \Cake\Network\Response
-     */
-    protected function _outputMessageSafe($template)
-    {
-        $this->controller->layoutPath = '';
-        $this->controller->subDir = '';
-        $this->controller->viewPath = 'Errors/';
-        $this->controller->viewClass = 'View';
-        $this->controller->helpers = ['Form', 'Html', 'Session'];
-
-        $this->controller->render($template);
-        return $this->controller->response;
-    }
-
-    /**
      * Helper method used to generate extra debugging data into the error template
      *
      * @return array debugging data
