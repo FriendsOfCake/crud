@@ -8,7 +8,7 @@
 For CakePHP 3.x compatible version:
 
 ```
-composer require friendsofcake/crud:~4.0
+composer require friendsofcake/crud:~4.1
 ```
 
 For CakePHP 2.x compatible version:
