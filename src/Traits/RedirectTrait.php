@@ -79,20 +79,17 @@ trait RedirectTrait
      * @param \Crud\Event\Subject $subject Event subject
      * @param string|array $url URL
      * @param int $status Status code
-     * @param bool $exit Whether to exit script or not
-     * @return void
+     * @return \Cake\Network\Response
      */
-    protected function _redirect(Subject $subject, $url = null, $status = null, $exit = true)
+    protected function _redirect(Subject $subject, $url = null, $status = null)
     {
         $url = $this->_redirectUrl($url);
 
         $subject->url = $url;
         $subject->status = $status;
-        $subject->exit = $exit;
         $this->_trigger('beforeRedirect', $subject);
 
         $controller = $this->_controller();
-        $controller->redirect($subject->url, $subject->status, $subject->exit);
-        return $controller->response;
+        return $controller->redirect($subject->url, $subject->status);
     }
 }
