@@ -54,23 +54,29 @@ trait RedirectTrait
     }
 
     /**
-     * Returns the redirect_url for this request.
+     * Returns the _redirect_url for this request.
      *
-     * @param string $default Default URL to use redirect_url is not found in request or data
+     * @param string $default Default URL to use if _redirect_url if not found in request or data.
      * @return mixed
      */
     protected function _redirectUrl($default = null)
     {
-        $url = $default;
         $request = $this->_request();
 
+        if (!empty($request->data['_redirect_url'])) {
+            return $request->data['_redirect_url'];
+        }
+        if (!empty($request->query['_redirect_url'])) {
+            return $request->query['_redirect_url'];
+        }
         if (!empty($request->data['redirect_url'])) {
-            $url = $request->data['redirect_url'];
-        } elseif (!empty($request->query['redirect_url'])) {
-            $url = $request->query['redirect_url'];
+            return $request->data['redirect_url'];
+        }
+        if (!empty($request->query['redirect_url'])) {
+            return $request->query['redirect_url'];
         }
 
-        return $url;
+        return $default;
     }
 
     /**
@@ -79,20 +85,17 @@ trait RedirectTrait
      * @param \Crud\Event\Subject $subject Event subject
      * @param string|array $url URL
      * @param int $status Status code
-     * @param bool $exit Whether to exit script or not
-     * @return void
+     * @return \Cake\Network\Response
      */
-    protected function _redirect(Subject $subject, $url = null, $status = null, $exit = true)
+    protected function _redirect(Subject $subject, $url = null, $status = null)
     {
         $url = $this->_redirectUrl($url);
 
         $subject->url = $url;
         $subject->status = $status;
-        $subject->exit = $exit;
         $this->_trigger('beforeRedirect', $subject);
 
         $controller = $this->_controller();
-        $controller->redirect($subject->url, $subject->status, $subject->exit);
-        return $controller->response;
+        return $controller->redirect($subject->url, $subject->status);
     }
 }
