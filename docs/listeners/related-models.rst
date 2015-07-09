@@ -102,7 +102,7 @@ Example
 			parent::beforeFilter();
 
 			$this->Crud->on('relatedModel', function(\Cake\Event\Event $event) {
-				if ($event->subject->name === 'Authors') {
+				if ($event->subject->association->name() === 'Authors') {
 					$event->subject->query->limit(3);
 					$event->subject->query->where(['is_active' => true]);
 				}
