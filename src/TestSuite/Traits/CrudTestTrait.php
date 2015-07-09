@@ -79,7 +79,7 @@ trait CrudTestTrait
      * @return void
      * @throws Exception
      */
-    public function assertEvents(array $expected, array $actual = null)
+    public function assertEvents(array $expected, $actual = null)
     {
         if ($actual === null) {
             $actual = $this->_subject;
