@@ -56,6 +56,9 @@
             "Cake\\Test\\Fixture\\": "./vendor/cakephp/cakephp/tests/Fixture"
         }
     },
+    "suggest": {
+        "friendsofcake/crud-view": "Automated admin backend based on your Crud configuration."  
+    },
     "support":{
         "source":"https://github.com/FriendsOfCake/crud",
         "issues":"https://github.com/FriendsOfCake/crud/issues",
