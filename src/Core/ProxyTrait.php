@@ -110,9 +110,8 @@ trait ProxyTrait
      */
     protected function _table()
     {
-        $controller = $this->_controller();
-        list(, $modelClass) = pluginSplit($controller->modelClass);
-        return $controller->{$modelClass};
+        return $this->_controller()
+            ->loadModel(null, $this->config('modelFactory') ?: 'Table');
     }
 
     /**

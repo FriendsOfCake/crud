@@ -26,6 +26,13 @@ abstract class BaseAction extends Object
     protected $_responding = false;
 
     /**
+     * Default configuration
+     *
+     * @var array
+     */
+    protected $_defaultConfig = [];
+
+    /**
      * Handle callback
      *
      * Based on the requested controller action,
