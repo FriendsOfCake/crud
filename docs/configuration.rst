@@ -120,7 +120,7 @@ If you've loaded an action in eg. your ``AppController`` - but don't want it inc
 
 Example of disable a loaded action:
 
-..code-block:: phpinline
+.. code-block:: phpinline
 
   class AppController extends \Cake\Controller\Controller {
 
@@ -132,7 +132,7 @@ Example of disable a loaded action:
 
   }
 
-..code-block:: phpinline
+.. code-block:: phpinline
 
   class PostsController extends AppController {
 
