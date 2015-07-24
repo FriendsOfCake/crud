@@ -114,6 +114,32 @@ An example of on the fly enabling an Crud action with configuration
 
   }
 
+Disabling loaded actions
+----------------
+If you've loaded an action in eg. your ``AppController`` - but don't want it included in a specific controller, it can be disabled with the ``$this->Crud->disable(['action_name'])``.
+
+Example of disable a loaded action:
+
+..code-block:: phpinline
+  class AppController extends \Cake\Controller\Controller {
+
+    public $components = [
+      'Crud.Crud' => [
+        'actions' => ['Crud.Index', 'Crud.View', 'Crud.Delete', 'Crud.Edit']
+      ]
+    ];
+
+  }
+
+..code-block:: phpinline
+  class AppController extends \Cake\Controller\Controller {
+
+    public function beforeFilter(\Cake\Event\Event $event) {
+      $this->Crud->disable(['Edit', 'Delete']);
+    }
+
+  }
+
 Built-in actions
 ----------------
 
