@@ -132,9 +132,11 @@ Example of disable a loaded action:
   }
 
 ..code-block:: phpinline
-  class AppController extends \Cake\Controller\Controller {
+  class PostsController extends AppController {
 
     public function beforeFilter(\Cake\Event\Event $event) {
+      parent::beforeFilter($event);
+
       $this->Crud->disable(['Edit', 'Delete']);
     }
 
