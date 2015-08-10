@@ -3,6 +3,7 @@ namespace Crud\Listener;
 
 use Cake\Event\Event;
 use Cake\Utility\Inflector;
+use RuntimeException;
 
 /**
  * Implements beforeRender event listener to set related models' lists to
@@ -130,6 +131,7 @@ class RelatedModelsListener extends BaseListener
      *
      * @param array $names Association names
      * @return array
+     * @throws \RuntimeException when association not found.
      */
     public function getAssociatedByName($names)
     {
@@ -138,6 +140,13 @@ class RelatedModelsListener extends BaseListener
         $table = $this->_table();
         foreach ($names as $association) {
             $associationClass = $table->associations()->get($association);
+            if (!$associationClass) {
+                throw new RuntimeException(sprintf(
+                    'Table "%s" is not associated with "%s"',
+                    get_class($table),
+                    $association
+                ));
+            }
             $return[$associationClass->name()] = $associationClass;
         }
 
