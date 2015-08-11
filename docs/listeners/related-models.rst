@@ -25,6 +25,21 @@ configure statically or use dynamic methods.
 Configuring
 -----------
 
+Before you're able to configure your ``relatedModels`` you need to load the listener.
+
+.. code-block:: php
+
+  <?php
+  class AppController extends Controller {
+
+    public function initialize()
+    {
+      parent::initialize();
+      $this->Crud->addListener('relatedModels', 'Crud.RelatedModels');
+    }
+
+.. code-block:: php
+
 You can enable and disable which model relations you want to have automatically
 fetched very easily, as shown below.
 
