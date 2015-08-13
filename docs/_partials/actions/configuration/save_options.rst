@@ -32,3 +32,8 @@ To change the saveOptions value pass an `array` argument to the method
 
 	$this->Crud->action()->saveOptions(['atomic' => false]);
 
+Sometimes you need to change the accessible fields before you update your entity.
+
+.. code-block:: phpinline
+
+	$this->Crud->action()->saveOptions(['accessibleFields' => ['role_id' => true]]);
