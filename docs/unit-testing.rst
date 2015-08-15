@@ -7,7 +7,7 @@ to use the proxy methods found in [CrudBaseObject]({{site.url}}/api/develop/clas
 These methods are much easier to mock than the full `CrudComponent` object.
 
 They also allow you to just mock the methods you need for your specific test, rather than the big dependency nightmare the
-CrudComponent can be in some cases.<br />
+CrudComponent can be in some cases.
 
 Proxy methods
 ^^^^^^^^^^^^^^

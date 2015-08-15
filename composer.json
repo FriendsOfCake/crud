@@ -57,7 +57,8 @@
         }
     },
     "suggest": {
-        "friendsofcake/crud-view": "Automated admin backend based on your Crud configuration."  
+        "friendsofcake/search": "Searchable Crud.Index or whenever you use beforePaginate.",
+        "friendsofcake/crud-view": "Automated admin backend based on your Crud configuration."
     },
     "support":{
         "source":"https://github.com/FriendsOfCake/crud",
