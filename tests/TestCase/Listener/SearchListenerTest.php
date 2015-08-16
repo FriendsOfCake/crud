@@ -57,12 +57,29 @@ class SearchListenerTest extends TestCase
      */
     public function testInjectSearch()
     {
-        \Cake\Core\Plugin::load('Search', ['path' => ROOT . DS]);
+       \Cake\Core\Plugin::load('Search', ['path' => ROOT . DS]);
 
-        $listener = $this
-            ->getMockBuilder('\Crud\Listener\SearchListener')
-            ->setMethods(null)
+        $subject = new \Crud\Event\Subject();
+
+        $behavior = $this
+            ->getMockBuilder('\Search\Model\Behavior\SearchBehavior')
+            ->setMethods(['filterParams'])
             ->disableoriginalConstructor()
             ->getMock();
+
+        $behavior
+            ->expects($this->once())
+            ->method('filterParams')
+            ->will($this->returnValue([
+                'search' => [
+                    'name' => '1st post'
+                ]
+            ]));
+
+        $blogs = \Cake\ORM\TableRegistry::get('Blogs');
+        $subject->query = $blogs->find();
+
+        
+
     }
 }
