@@ -43,7 +43,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.33",
-        "friendsofcake/cakephp-test-utilities": "dev-master"
+        "friendsofcake/cakephp-test-utilities": "dev-master",
+        "friendsofcake/search": "dev-master"
     },
     "autoload": {
         "psr-4": {
@@ -57,7 +58,7 @@
         }
     },
     "suggest": {
-        "friendsofcake/search": "Searchable Crud.Index or whenever you use beforePaginate.",
+        "friendsofcake/search": "Provides search capabilities for the Crud plugin.",
         "friendsofcake/crud-view": "Automated admin backend based on your Crud configuration."
     },
     "support":{

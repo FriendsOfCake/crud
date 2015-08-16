@@ -38,7 +38,7 @@ you want to attach it only to specific controllers and actions
   <?php
   class SamplesController extends AppController {
 
-    public function beforeFilter() {
+    public function beforeFilter(\Cake\Event\Event $event) {
       parent::beforeFilter();
       $this->Crud->addListener('Crud.Api');
     }

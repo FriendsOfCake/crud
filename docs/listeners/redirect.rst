@@ -13,10 +13,10 @@ you want to attach it only to specific controllers and actions:
 
   <?php
   class SamplesController extends AppController {
-  
-    public function beforeFilter() {
+
+    public function beforeFilter(\Cake\Event\Event $event) {
       $this->Crud->addListener('Crud.Redirect');
-  
+
       parent::beforeFilter();
     }
   }
@@ -30,13 +30,13 @@ attach it to all controllers, application wide:
 
   <?php
   class SamplesController extends AppController {
-  
+
     public $components = [
       'Crud.Crud' => [
         'actions' => ['index', 'view'],
         'listeners' => ['Crud.Redirect']
       ];
-  
+
   }
   ?>
 
@@ -83,16 +83,16 @@ The closure takes two arguments:
 
   <?php
   class SamplesController extends AppController {
-  
+
     public function beforeFilter() {
       $listener = $this->Crud->listener('Redirect');
       $listener->reader($name, Closure $closure);
-  
+
       // Example on a reader using Configure
       $listener->reader('configure.key', function(CrudSubject $subject, $key)) {
         return Configure::read($key);
       });
-  
+
       parent::beforeFilter();
     }
   }
@@ -138,14 +138,14 @@ It's very simple to modify existing or add your own redirect rules:
 
   <?php
   class SamplesController extends AppController {
-  
+
     public function beforeFilter() {
       // Get all the redirect rules
       $rules = $this->Crud->action()->redirectConfig();
-  
+
       // Get one named rule only
       $rule = $this->Crud->action()->redirectConfig('add');
-  
+
       // Configure a redirect rule:
       //
       // if $_POST['_view'] is set then redirect to
@@ -160,7 +160,7 @@ It's very simple to modify existing or add your own redirect rules:
           ]
         ]
       );
-  
+
       parent::beforeFilter();
     }
   }

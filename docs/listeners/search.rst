@@ -1,7 +1,7 @@
 Search listener
 =================
 
-Searchable Crud.Index or whenever you use ``beforePaginate``.
+Provides search capabilities for the Crud plugin.
 
 Setup
 -----
@@ -16,7 +16,7 @@ you want to attach it only to specific controllers and actions:
   <?php
   class SamplesController extends AppController {
 
-    public function beforeFilter() {
+    public function beforeFilter(\Cake\Event\Event $event) {
       $this->Crud->addListener('Crud.Search');
 
       parent::beforeFilter();

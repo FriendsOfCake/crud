@@ -25,18 +25,44 @@ class SearchListenerTest extends TestCase
 
         $result = $listener->implementedEvents();
         $expected = [
-            'Crud.beforePaginate' => ['callable' => 'beforePaginate']
+            'Crud.beforeLookup' => ['callable' => 'injectSearch'],
+            'Crud.beforePaginate' => ['callable' => 'injectSearch']
         ];
         $this->assertEquals($expected, $result);
     }
 
     /**
-     * Test beforePaginate
+     * Test inject search exception
+     *
+     * @expectedException RuntimeException
+     * @return void
+     */
+    public function testInjectSearchException()
+    {
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\SearchListener')
+            ->setMethods(null)
+            ->disableoriginalConstructor()
+            ->getMock();
+
+        $subject = new \Crud\Event\Subject();
+
+        $listener->injectSearch(new \Cake\Event\Event('Crud.beforePaginate', $subject));
+    }
+
+    /**
+     * Test inject search
      *
      * @return void
      */
-    public function testBeforePaginate()
+    public function testInjectSearch()
     {
+        \Cake\Core\Plugin::load('Search', ['path' => ROOT . DS]);
 
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\SearchListener')
+            ->setMethods(null)
+            ->disableoriginalConstructor()
+            ->getMock();
     }
 }
