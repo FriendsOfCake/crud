@@ -3,6 +3,7 @@
 App::uses('CrudBaseObject', 'Crud.Controller/Crud');
 App::uses('Hash', 'Utility');
 App::uses('Validation', 'Utility');
+App::uses('String', 'Utility');
 
 /**
  * Base Crud class
