@@ -6,7 +6,7 @@ After the query has been executed, and a record has been found this event is emi
 The :ref:`Crud Subject <crud-subject>` contains two keys:
 
 - ``id`` The ID that was originally passed to the action and is usually the primary key of your model.
-- ``item`` The record that was found in the database.
+- ``entity`` The record that was found in the database.
 
 .. note::
 
@@ -19,7 +19,7 @@ Logging the Found Item
 
   public function delete($id) {
     $this->Crud->on('afterFind', function(\Cake\Event\Event $event) {
-      $this->log("Found item: $event->subject->item->id in the database");
+      $this->log("Found item: $event->subject->entity->id in the database");
     });
 
     return $this->Crud->execute();
