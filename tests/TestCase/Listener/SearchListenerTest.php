@@ -76,7 +76,7 @@ class SearchListenerTest extends TestCase
             ->getMock();
         $tableMock->expects($this->once())
             ->method('filterParams')
-            ->will($this->returnCallback(function() use($params) {
+            ->will($this->returnCallback(function () use ($params) {
                 return $params;
             }));
 
