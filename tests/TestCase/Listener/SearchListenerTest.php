@@ -57,7 +57,7 @@ class SearchListenerTest extends TestCase
      */
     public function testInjectSearch()
     {
-       \Cake\Core\Plugin::load('Search', ['path' => ROOT . DS]);
+        \Cake\Core\Plugin::load('Search', ['path' => ROOT . DS]);
 
         $params = [
             'search' => [
