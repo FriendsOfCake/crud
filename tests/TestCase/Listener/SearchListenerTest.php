@@ -59,27 +59,47 @@ class SearchListenerTest extends TestCase
     {
        \Cake\Core\Plugin::load('Search', ['path' => ROOT . DS]);
 
-        $subject = new \Crud\Event\Subject();
+        $params = [
+            'search' => [
+                'name' => '1st post',
+            ],
+        ];
 
-        $behavior = $this
-            ->getMockBuilder('\Search\Model\Behavior\SearchBehavior')
+        $request = new \Cake\Network\Request();
+        $response = new \Cake\Network\Response();
+        $eventManager = new \Cake\Event\EventManager();
+        $controller = new \Cake\Controller\Controller($request, $response, 'Search', $eventManager);
+
+        $tableMock = $this->getMockBuilder('\Cake\ORM\Table')
+            ->setMockClassName('SearchTables')
             ->setMethods(['filterParams'])
-            ->disableoriginalConstructor()
             ->getMock();
-
-        $behavior
-            ->expects($this->once())
+        $tableMock->expects($this->once())
             ->method('filterParams')
-            ->will($this->returnValue([
-                'search' => [
-                    'name' => '1st post'
-                ]
-            ]));
+            ->will($this->returnCallback(function() use($params) {
+                return $params;
+            }));
 
-        $blogs = \Cake\ORM\TableRegistry::get('Blogs');
-        $subject->query = $blogs->find();
+        \Cake\ORM\TableRegistry::set('Search', $tableMock);
 
-        
+        $queryMock = $this->getMockBuilder('\Cake\ORM\Query')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $queryMock->expects($this->once())
+            ->method('find')
+            ->with('search', $params)
+            ->will($this->returnValue($queryMock));
 
+        $subject = new \Crud\Event\Subject();
+        $subject->query = $queryMock;
+
+        $event = new \Cake\Event\Event('Crud.beforeLookup', $subject);
+
+        $listener = new \Crud\Listener\SearchListener($controller, [
+            'enabled' => [
+                'Crud.beforeLookup'
+            ]
+        ]);
+        $listener->injectSearch($event);
     }
 }
