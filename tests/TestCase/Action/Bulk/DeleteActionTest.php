@@ -142,8 +142,6 @@ class DeleteActionTest extends IntegrationTestCase
      */
     public function testUuidRequestData()
     {
-        $this->tableClass = 'Crud\Test\App\Model\Table\UsersTable';
-
         $this->_eventManager->on(
             'Dispatcher.beforeDispatch',
             ['priority' => 1000],
