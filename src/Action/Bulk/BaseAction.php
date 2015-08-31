@@ -79,7 +79,7 @@ abstract class BaseAction extends CrudBaseAction
             unset($ids['_all']);
         }
 
-        if (!is_array($ids) || !Hash::numeric(array_keys($ids))) {
+        if (!is_array($ids)) {
             throw new BadRequestException('Bad request data');
         }
 
