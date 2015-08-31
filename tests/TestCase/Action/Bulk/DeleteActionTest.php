@@ -136,11 +136,11 @@ class DeleteActionTest extends IntegrationTestCase
     }
 
     /**
-     * Test with an UUID based database.
+     * Test with UUID request data.
      *
      * @return void
      */
-    public function testDeleteUuid()
+    public function testUuidRequestData()
     {
         $this->tableClass = 'Crud\Test\App\Model\Table\UsersTable';
 
