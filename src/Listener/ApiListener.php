@@ -32,6 +32,7 @@ class ApiListener extends BaseListener
             'json' => 'Json',
             'xml' => 'Xml'
         ],
+        'setFlash' => false,
         'detectors' => [
             'json' => ['ext' => 'json', 'accepts' => 'application/json'],
             'xml' => ['ext' => 'xml', 'accepts' => 'text/xml']
@@ -390,7 +391,9 @@ class ApiListener extends BaseListener
      */
     public function setFlash(Event $event)
     {
-        $event->stopPropagation();
+        if (!$this->config('setFlash')) {
+            $event->stopPropagation();
+        }
     }
 
     /**
