@@ -236,7 +236,8 @@ class ApiListenerTest extends TestCase
                 'class' => 'Cake\Network\Exception\BadRequestException',
                 'message' => 'Unknown error',
                 'code' => 0
-            ]
+            ],
+            'setFlash' => false
         ];
         $result = $listener->config();
         $this->assertEquals($expected, $result);
@@ -844,6 +845,37 @@ class ApiListenerTest extends TestCase
 
         $stopped = $event->isStopped();
         $this->assertTrue($stopped, 'Set flash event is expected to be stopped');
+    }
+
+    /**
+     * testFlashMessageEnabled
+     *
+     * There are use cases where you want to
+     * enable flash messages.
+     *
+     * @return void
+     */
+    public function testFlashMessageEnabled()
+    {
+        $Request = new \Cake\Network\Request();
+        $Request->addDetector('api', ['callback' => function () {
+            return true;
+        }]);
+
+        $subject = new \Crud\Event\Subject(['request' => $Request]);
+
+        $apiListener = $listener = $this
+            ->getMockBuilder('\Crud\Listener\ApiListener')
+            ->setMethods(null)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $event = new \Cake\Event\Event('Crud.setFlash', $subject);
+        $apiListener->config(['setFlash' => true]);
+        $apiListener->setFlash($event);
+
+        $stopped = $event->isStopped();
+        $this->assertFalse($stopped);
     }
 
     /**

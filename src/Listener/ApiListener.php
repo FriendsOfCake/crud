@@ -32,7 +32,6 @@ class ApiListener extends BaseListener
             'json' => 'Json',
             'xml' => 'Xml'
         ],
-        'setFlash' => false,
         'detectors' => [
             'json' => ['ext' => 'json', 'accepts' => 'application/json'],
             'xml' => ['ext' => 'xml', 'accepts' => 'text/xml']
@@ -42,7 +41,8 @@ class ApiListener extends BaseListener
             'class' => 'Cake\Network\Exception\BadRequestException',
             'message' => 'Unknown error',
             'code' => 0
-        ]
+        ],
+        'setFlash' => false
     ];
 
     /**
