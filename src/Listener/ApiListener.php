@@ -354,7 +354,7 @@ class ApiListener extends BaseListener
     {
         $controller = $this->_controller();
         foreach ($this->config('viewClasses') as $type => $class) {
-            $controller->RequestHandler->viewClassMap($type, $class);
+            $controller->RequestHandler->config('viewClassMap', [$type => $class]);
         }
     }
 
