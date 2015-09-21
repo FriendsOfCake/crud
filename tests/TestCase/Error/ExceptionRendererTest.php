@@ -59,7 +59,7 @@ class ExceptionRendererTest extends TestCase
             ]
         ];
         $actual = $viewVars['data'];
-        unset($actual['exception']['trace']);
+        unset($actual['trace']);
         $this->assertEquals($expected, $actual);
 
         $this->assertTrue(!isset($actual['queryLog']));
@@ -136,7 +136,7 @@ class ExceptionRendererTest extends TestCase
         $actual = $viewVars['data'];
         $queryLog = $viewVars['queryLog'];
 
-        unset($actual['exception']['trace']);
+        unset($actual['trace']);
         $this->assertEquals($expected, $actual);
 
         $this->assertTrue(!empty($queryLog));
@@ -198,7 +198,7 @@ class ExceptionRendererTest extends TestCase
             ]
         ];
         $actual = $viewVars['data'];
-        unset($actual['exception']['trace']);
+        unset($actual['trace']);
         $this->assertEquals($expected, $actual);
 
         $this->assertTrue(isset($viewVars['success']));
@@ -254,7 +254,7 @@ class ExceptionRendererTest extends TestCase
             ]
         ];
         $actual = $viewVars['data'];
-        unset($actual['exception']['trace']);
+        unset($actual['trace']);
         $this->assertEquals($expected, $actual);
 
         $this->assertTrue(isset($viewVars['success']));
@@ -319,7 +319,7 @@ class ExceptionRendererTest extends TestCase
             ]
         ];
         $actual = $viewVars['data'];
-        unset($actual['exception']['trace']);
+        unset($actual['trace']);
         $this->assertEquals($expected, $actual);
 
         $this->assertTrue(isset($viewVars['success']));
@@ -410,8 +410,8 @@ class ExceptionRendererTest extends TestCase
         $Renderer->__construct($Exception);
         $Renderer->render();
 
-        $this->assertContains('trace', array_keys($Controller->viewVars['data']['exception']));
-        unset($Controller->viewVars['data']['exception']['trace']);
+        $this->assertContains('trace', array_keys($Controller->viewVars['data']));
+        unset($Controller->viewVars['data']['trace']);
 
         $expected = [
             'code' => 412,
@@ -482,7 +482,7 @@ class ExceptionRendererTest extends TestCase
             ]
         ];
         $data = $Controller->viewVars['data'];
-        unset($data['exception']['trace']);
+        unset($data['trace']);
         $this->assertEquals($expected, $data);
     }
 }

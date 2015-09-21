@@ -4,6 +4,7 @@ namespace Crud\Error;
 use Cake\Core\Configure;
 use Cake\Core\Exception\MissingPluginException;
 use Cake\Datasource\ConnectionManager;
+use Cake\Error\Debugger;
 use Cake\Event\Event;
 use Cake\View\Exception\MissingViewException;
 use Exception;
@@ -60,42 +61,19 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer
      */
     protected function _outputMessage($template)
     {
-        try {
-            $viewVars = ['success', 'data'];
-            $this->controller->set('success', false);
-            $this->controller->set('data', $this->_getErrorData());
-            if (Configure::read('debug')) {
-                $queryLog = $this->_getQueryLog();
-                if ($queryLog) {
-                    $this->controller->set(compact('queryLog'));
-                    $viewVars[] = 'queryLog';
-                }
+        $viewVars = ['success', 'data'];
+        $this->controller->set('success', false);
+        $this->controller->set('data', $this->_getErrorData());
+        if (Configure::read('debug')) {
+            $queryLog = $this->_getQueryLog();
+            if ($queryLog) {
+                $this->controller->set(compact('queryLog'));
+                $viewVars[] = 'queryLog';
             }
-            $this->controller->set('_serialize', $viewVars);
-            $this->controller->render($template);
-            $event = new Event('Controller.shutdown', $this->controller);
-            $this->controller->afterFilter($event);
-            return $this->controller->response;
-        } catch (MissingViewException $e) {
-            $attributes = $e->getAttributes();
-            if (isset($attributes['file']) && strpos($attributes['file'], 'error500') !== false) {
-                return $this->_outputMessageSafe('error500');
-            }
-            return $this->_outputMessage('error500');
-        } catch (MissingPluginException $e) {
-            $attributes = $e->getAttributes();
-            if (isset($attributes['plugin']) && $attributes['plugin'] === $this->controller->plugin) {
-                $this->controller->plugin = null;
-            }
-            return $this->_outputMessageSafe('error500');
-        } catch (\Exception $e) {
-            $this->controller->set([
-                'error' => $e,
-                'message' => $e->getMessage(),
-                'code' => $e->getCode()
-            ]);
-            return $this->_outputMessageSafe('error500');
         }
+        $this->controller->set('_serialize', $viewVars);
+
+        return parent::_outputMessage($template);
     }
 
     /**
@@ -119,8 +97,14 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer
                 'class' => get_class($viewVars['error']),
                 'code' => $viewVars['error']->getCode(),
                 'message' => $viewVars['error']->getMessage(),
-                'trace' => preg_split('@\n@', $viewVars['error']->getTraceAsString()),
             ];
+
+            if (!isset($data['trace'])) {
+                $data['trace'] = Debugger::formatTrace($viewVars['error']->getTrace(), [
+                    'format' => 'array',
+                    'args' => false
+                ]);
+            }
         }
 
         return $data;
