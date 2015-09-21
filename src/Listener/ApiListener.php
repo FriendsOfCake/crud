@@ -41,7 +41,8 @@ class ApiListener extends BaseListener
             'class' => 'Cake\Network\Exception\BadRequestException',
             'message' => 'Unknown error',
             'code' => 0
-        ]
+        ],
+        'setFlash' => false
     ];
 
     /**
@@ -390,7 +391,9 @@ class ApiListener extends BaseListener
      */
     public function setFlash(Event $event)
     {
-        $event->stopPropagation();
+        if (!$this->config('setFlash')) {
+            $event->stopPropagation();
+        }
     }
 
     /**
