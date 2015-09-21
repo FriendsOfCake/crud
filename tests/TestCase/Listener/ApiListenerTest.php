@@ -1211,15 +1211,15 @@ class ApiListenerTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $controller->RequestHandler = $this->getMock('RequestHandler', ['viewClassMap']);
+        $controller->RequestHandler = $this->getMock('RequestHandler', ['config']);
         $controller->RequestHandler
             ->expects($this->at(0))
-            ->method('viewClassMap')
-            ->with('json', 'Json');
+            ->method('config')
+            ->with('viewClassMap', ['json' => 'Json']);
         $controller->RequestHandler
             ->expects($this->at(1))
-            ->method('viewClassMap')
-            ->with('xml', 'Xml');
+            ->method('config')
+            ->with('viewClassMap', ['xml' => 'Xml']);
 
         $apiListener = $this->getMockBuilder('\Crud\Listener\ApiListener')
             ->disableOriginalConstructor()
