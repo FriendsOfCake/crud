@@ -1,6 +1,7 @@
 <?php
 namespace Crud\Test\TestCase\Listener;
 
+use Cake\ORM\TableRegistry;
 use Crud\TestSuite\TestCase;
 
 /**
@@ -10,6 +11,8 @@ use Crud\TestSuite\TestCase;
  */
 class RelatedModelListenerTest extends TestCase
 {
+
+    public $fixtures = ['core.NumberTrees'];
 
     /**
      * testModels
@@ -232,5 +235,36 @@ class RelatedModelListenerTest extends TestCase
         $result = $listener->getAssociatedByName(['posts']);
 
         $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Test that "treeList" is used if association target has TreeBehavior loaded
+     *
+     * @return void
+     */
+    public function testListFinder()
+    {
+        $model = TableRegistry::get('NumberTrees');
+        $model->addBehavior('Tree');
+
+        $association = $this
+            ->getMockBuilder('\Cake\ORM\Association\BelongsTo')
+            ->disableOriginalConstructor()
+            ->setMethods(['target'])
+            ->getMock();
+
+        $association
+            ->expects($this->any())
+            ->method('target')
+            ->will($this->returnValue($model));
+
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\RelatedModelsListener')
+            ->disableOriginalConstructor()
+            ->setMethods(['publishRelatedModels'])
+            ->getMock();
+
+        $result = $listener->finder($association);
+        $this->assertEquals('treeList', $result);
     }
 }
