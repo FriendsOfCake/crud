@@ -36,17 +36,17 @@ class AddActionTest extends IntegrationTestCase
         $this->get('/blogs/add');
         $result = $this->_response->body();
 
-        $expected = ['tag' => 'legend', 'content' => 'New Blog'];
-        $this->assertTag($expected, $result, 'legend do not match the expected value');
+        $expected = '<legend>New Blog</legend>';
+        $this->assertContains($expected, $result, 'legend do not match the expected value');
 
-        $expected = ['id' => 'id', 'attributes' => ['value' => '']];
-        $this->assertTag($expected, $result, '"id" do not match the expected value');
+        $expected = '<input type="hidden" name="id" id="id"/>';
+        $this->assertContains($expected, $result, '"id" do not match the expected value');
 
-        $expected = ['id' => 'name', 'attributes' => ['value' => '']];
-        $this->assertTag($expected, $result, '"name" do not match the expected value');
+        $expected = '<input type="text" name="name" maxlength="255" id="name"/>';
+        $this->assertContains($expected, $result, '"name" do not match the expected value');
 
-        $expected = ['id' => 'body', 'attributes' => ['value' => '']];
-        $this->assertTag($expected, $result, '"body" do not match the expected value');
+        $expected = '<textarea name="body" id="body" rows="5"></textarea>';
+        $this->assertContains($expected, $result, '"body" do not match the expected value');
     }
 
     /**
@@ -61,17 +61,17 @@ class AddActionTest extends IntegrationTestCase
         $this->get('/blogs/add?name=test');
         $result = $this->_response->body();
 
-        $expected = ['tag' => 'legend', 'content' => 'New Blog'];
-        $this->assertTag($expected, $result, 'legend do not match the expected value');
+        $expected = '<legend>New Blog</legend>';
+        $this->assertContains($expected, $result, 'legend do not match the expected value');
 
-        $expected = ['id' => 'id', 'attributes' => ['value' => '']];
-        $this->assertTag($expected, $result, '"id" do not match the expected value');
+        $expected = '<input type="hidden" name="id" id="id"/>';
+        $this->assertContains($expected, $result, '"id" do not match the expected value');
 
-        $expected = ['id' => 'name', 'attributes' => ['value' => 'test']];
-        $this->assertTag($expected, $result, '"name" do not match the expected value');
+        $expected = '<input type="text" name="name" maxlength="255" id="name" value="test"/>';
+        $this->assertContains($expected, $result, '"name" do not match the expected value');
 
-        $expected = ['id' => 'body', 'attributes' => ['value' => '']];
-        $this->assertTag($expected, $result, '"body" do not match the expected value');
+        $expected = '<textarea name="body" id="body" rows="5"></textarea>';
+        $this->assertContains($expected, $result, '"body" do not match the expected value');
     }
 
     /**
@@ -313,11 +313,8 @@ class AddActionTest extends IntegrationTestCase
         $this->assertFalse($this->_subject->success);
         $this->assertFalse($this->_subject->created);
 
-        $expected = [
-            'class' => 'error-message',
-            'content' => 'Name need to be at least 10 characters long'
-        ];
-        $this->assertTag($expected, $this->_response->body(), 'Could not find validation error in HTML');
+        $expected = '<div class="error-message">Name need to be at least 10 characters long</div>';
+        $this->assertContains($expected, $this->_response->body(), 'Could not find validation error in HTML');
     }
 
     /**
