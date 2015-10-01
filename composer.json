@@ -42,7 +42,6 @@
         "cakephp/cakephp": "~3.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "3.7.33",
         "friendsofcake/cakephp-test-utilities": "dev-master",
         "friendsofcake/search": "dev-master"
     },
