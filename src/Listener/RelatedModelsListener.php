@@ -2,6 +2,7 @@
 namespace Crud\Listener;
 
 use Cake\Event\Event;
+use Cake\ORM\Association;
 use Cake\Utility\Inflector;
 use RuntimeException;
 
@@ -51,12 +52,28 @@ class RelatedModelsListener extends BaseListener
                 continue;
             }
 
-            $query = $association->find()->find('list');
+            $finder = $this->_finder($association);
+            $query = $association->find()->find($finder);
             $subject = $this->_subject(compact('name', 'viewVar', 'query', 'association'));
             $event = $this->_trigger('relatedModel', $subject);
 
             $controller->set($event->subject->viewVar, $event->subject->query->toArray());
         }
+    }
+
+    /**
+     * Get finder to use for provided association.
+     *
+     * @param \Cake\ORM\Association $association Association instance
+     * @return string
+     */
+    public function finder(Association $association)
+    {
+        if ($association->target()->behaviors()->has('Tree')) {
+            return 'treeList';
+        }
+
+        return 'list';
     }
 
     /**
