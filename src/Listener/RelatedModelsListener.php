@@ -52,7 +52,7 @@ class RelatedModelsListener extends BaseListener
                 continue;
             }
 
-            $finder = $this->_finder($association);
+            $finder = $this->finder($association);
             $query = $association->find()->find($finder);
             $subject = $this->_subject(compact('name', 'viewVar', 'query', 'association'));
             $event = $this->_trigger('relatedModel', $subject);
