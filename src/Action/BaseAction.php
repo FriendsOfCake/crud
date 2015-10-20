@@ -153,7 +153,7 @@ abstract class BaseAction extends Object
 
         if (!isset($config['params']['class']) || $config['params']['class'] !== false) {
             if (empty($config['params']['class'])) {
-                $config['params']['class'] = 'messsage';
+                $config['params']['class'] = 'message';
             }
 
             if (is_array($config['params']['class'])) {
