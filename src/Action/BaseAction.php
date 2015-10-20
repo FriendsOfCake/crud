@@ -151,6 +151,20 @@ abstract class BaseAction extends Object
             'name' => $this->resourceName()
         ], $config);
 
+        if (!isset($config['params']['class']) || $config['params']['class'] !== false) {
+            if (empty($config['params']['class'])) {
+                $config['params']['class'] = 'messsage';
+            }
+
+            if (is_array($config['params']['class'])) {
+                $config['params']['class'][] = $type;
+            } else {
+                $config['params']['class'] .= ' ' . $type;
+            }
+        } else {
+            unset($config['params']['class']);
+        }
+
         if (!isset($config['text'])) {
             throw new \Exception(sprintf('Invalid message config for "%s" no text key found', $type));
         }
@@ -169,7 +183,7 @@ abstract class BaseAction extends Object
             $replacements + ['name' => $config['name']],
             ['before' => '{', 'after' => '}']
         );
-        
+
         return $config;
     }
 
