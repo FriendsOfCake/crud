@@ -146,7 +146,6 @@ abstract class BaseAction extends Object
 
         $config = Hash::merge([
             'element' => 'default',
-            'params' => ['class' => 'message'],
             'key' => 'flash',
             'type' => $this->config('action') . '.' . $type,
             'name' => $this->resourceName()
@@ -170,8 +169,7 @@ abstract class BaseAction extends Object
             $replacements + ['name' => $config['name']],
             ['before' => '{', 'after' => '}']
         );
-
-        $config['params']['class'] .= ' ' . $type;
+        
         return $config;
     }
 
