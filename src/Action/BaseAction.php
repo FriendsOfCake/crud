@@ -146,11 +146,24 @@ abstract class BaseAction extends Object
 
         $config = Hash::merge([
             'element' => 'default',
-            'params' => ['class' => 'message'],
             'key' => 'flash',
             'type' => $this->config('action') . '.' . $type,
             'name' => $this->resourceName()
         ], $config);
+
+        if (!isset($config['params']['class']) || $config['params']['class'] !== false) {
+            if (empty($config['params']['class'])) {
+                $config['params']['class'] = 'message';
+            }
+
+            if (is_array($config['params']['class'])) {
+                $config['params']['class'][] = $type;
+            } else {
+                $config['params']['class'] .= ' ' . $type;
+            }
+        } else {
+            unset($config['params']['class']);
+        }
 
         if (!isset($config['text'])) {
             throw new \Exception(sprintf('Invalid message config for "%s" no text key found', $type));
@@ -171,7 +184,6 @@ abstract class BaseAction extends Object
             ['before' => '{', 'after' => '}']
         );
 
-        $config['params']['class'] .= ' ' . $type;
         return $config;
     }
 
