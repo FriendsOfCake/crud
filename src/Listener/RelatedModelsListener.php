@@ -17,6 +17,40 @@ class RelatedModelsListener extends BaseListener
 {
 
     /**
+     * Returns a list of events this listener is interested in.
+     *
+     * @return array
+     */
+    public function implementedEvents()
+    {
+        return [
+            'Crud.beforePaginate' => 'beforePaginate',
+            'Crud.beforeRender' => 'beforeRender',
+        ];
+    }
+
+    /**
+     * Automatically parse and contain related table classes
+     *
+     * @param \Cake\Event\Event $event Before paginate event
+     * @return void
+     */
+    public function beforePaginate(Event $event)
+    {
+        $contained = $event->subject()->query->contain();
+        if (!empty($contained)) {
+            return;
+        }
+
+        $models = $this->models();
+        if (empty($models)) {
+            return;
+        }
+
+        $event->subject()->query->contain(array_keys($models));
+    }
+
+    /**
      * Fetches related models' list and sets them to a variable for the view
      *
      * @param Event $event Event

@@ -1,7 +1,10 @@
 <?php
 namespace Crud\Test\TestCase\Listener;
 
+use Cake\Event\Event;
+use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
+use Crud\Event\Subject;
 use Crud\TestSuite\TestCase;
 
 /**
@@ -266,5 +269,43 @@ class RelatedModelListenerTest extends TestCase
 
         $result = $listener->finder($association);
         $this->assertEquals('treeList', $result);
+    }
+
+    /**
+     * testbeforePaginate
+     *
+     * @return void
+     */
+    public function testbeforePaginate()
+    {
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\RelatedModelsListener')
+            ->disableOriginalConstructor()
+            ->setMethods(['models'])
+            ->getMock();
+        $table = $this
+            ->getMockBuilder('\Cake\ORM\Table')
+            ->disableOriginalConstructor()
+            ->setMethods(['associations', 'association'])
+            ->getMock();
+
+        $listener
+            ->expects($this->once())
+            ->method('models')
+            ->will($this->returnValue(['Users' => 'manyToOne']));
+
+        $db = $this->getMockBuilder('\Cake\Database\Connection')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $query = new Query($db, null);
+        $query->repository($table);
+        $subject = new Subject(['query' => $query]);
+        $event = new Event('beforePaginate', $subject);
+
+        $listener->beforePaginate($event);
+        $result = $event->subject()->query->contain();
+
+        $this->assertEquals(['Users' => []], $result);
     }
 }
