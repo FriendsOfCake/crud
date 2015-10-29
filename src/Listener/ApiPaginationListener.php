@@ -47,7 +47,7 @@ class ApiPaginationListener extends BaseListener
         }
 
         $controller = $this->_controller();
-        $modelClass = $controller->modelClass;
+        list(, $modelClass) = pluginSplit($controller->modelClass);
 
         if (!array_key_exists($modelClass, $request->paging)) {
             return;

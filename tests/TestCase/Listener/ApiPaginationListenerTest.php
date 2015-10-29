@@ -178,4 +178,78 @@ class ApiPaginationListenerTest extends TestCase
 
         $Instance->beforeRender(new \Cake\Event\Event('something'));
     }
+
+    /**
+     * Test with pagination data for plugin model
+     *
+     * @return void
+     */
+    public function testBeforeRenderWithPaginationDataForPluginModel()
+    {
+        $Request = $this
+            ->getMockBuilder('\Cake\Network\Request')
+            ->setMethods(null)
+            ->getMock();
+        $Request->paging = [
+            'MyModel' => [
+                'pageCount' => 10,
+                'page' => 2,
+                'nextPage' => true,
+                'prevPage' => true,
+                'count' => 100,
+                'limit' => 10
+            ]
+        ];
+
+        $expected = [
+            'page_count' => 10,
+            'current_page' => 2,
+            'has_next_page' => true,
+            'has_prev_page' => true,
+            'count' => 100,
+            'limit' => 10
+        ];
+
+        $Controller = $this
+            ->getMockBuilder('\Cake\Controller\Controller')
+            ->disableOriginalConstructor()
+            ->setMethods(['set'])
+            ->getMock();
+        $Controller
+            ->expects($this->once())
+            ->method('set')
+            ->with('pagination', $expected);
+
+        $Action = $this
+            ->getMockBuilder('\Crud\Action\BaseAction')
+            ->disableOriginalConstructor()
+            ->setMethods(['config'])
+            ->getMock();
+        $Action
+            ->expects($this->once())
+            ->method('config')
+            ->with('serialize.pagination', 'pagination');
+
+        $Instance = $this
+            ->getMockBuilder('\Crud\Listener\ApiPaginationListener')
+            ->disableOriginalConstructor()
+            ->setMethods(['_request', '_controller', '_action'])
+            ->getMock();
+        $Instance
+            ->expects($this->once())
+            ->method('_request')
+            ->will($this->returnValue($Request));
+        $Instance
+            ->expects($this->once())
+            ->method('_controller')
+            ->will($this->returnValue($Controller));
+        $Instance
+            ->expects($this->once())
+            ->method('_action')
+            ->will($this->returnValue($Action));
+
+        $Controller->modelClass = 'MyPlugin.MyModel';
+
+        $Instance->beforeRender(new \Cake\Event\Event('something'));
+    }
 }
