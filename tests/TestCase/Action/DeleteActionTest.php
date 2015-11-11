@@ -27,22 +27,20 @@ class DeleteActionTest extends IntegrationTestCase
     public $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
 
     /**
-     * Data provider with all HTTP verbs
+     * Data provider with HTTP verbs
      *
      * @return array
      */
     public function allHttpMethodProvider()
     {
         return [
-            ['get'],
             ['post'],
-            ['put'],
             ['delete']
         ];
     }
 
     /**
-     * Test the normal HTTP flow for all HTTP verbs
+     * Test the normal HTTP flow for HTTP verbs
      *
      * @dataProvider allHttpMethodProvider
      * @return void
@@ -138,7 +136,7 @@ class DeleteActionTest extends IntegrationTestCase
             }
         );
 
-        $this->get('/blogs/delete/1');
+        $this->post('/blogs/delete/1');
 
         $this->assertEvents(['beforeFind', 'afterFind', 'beforeDelete', 'setFlash', 'beforeRedirect']);
         $this->assertFalse($this->_subject->success);
