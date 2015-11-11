@@ -80,7 +80,10 @@ class ApiQueryLogListener extends BaseListener
 
         $queryLog = [];
         foreach ($sources as $source) {
-            $queryLog[$source] = $this->_getSource($source)->logger()->getLogs();
+            $logger = $this->_getSource($source)->logger();
+            if (method_exists($logger, 'getLogs')) {
+                $queryLog[$source] = $logger->getLogs();
+            }
         }
 
         return $queryLog;
