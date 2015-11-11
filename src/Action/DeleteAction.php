@@ -49,12 +49,12 @@ class DeleteAction extends BaseAction
     ];
 
     /**
-     * HTTP POST handler
+     * HTTP DELETE handler
      *
      * @param string $id Record id
      * @return void
      */
-    protected function _post($id = null)
+    protected function _handle($id = null)
     {
         $subject = $this->_subject();
         $subject->set(['id' => $id]);
@@ -73,17 +73,6 @@ class DeleteAction extends BaseAction
         }
 
         return $this->_redirect($subject, ['action' => 'index']);
-    }
-
-    /**
-     * HTTP DELETE handler
-     *
-     * @param string $id Record id
-     * @return void
-     */
-    protected function _delete($id = null)
-    {
-        $this->_post($id);
     }
 
     /**
