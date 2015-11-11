@@ -109,6 +109,10 @@ class ApiQueryLogListener extends BaseListener
      */
     protected function _getSource($source)
     {
-        return ConnectionManager::get($source);
+        try {
+            return ConnectionManager::get($source);
+        } catch (\Cake\Datasource\Exception\MissingDatasourceConfigException $e) {
+            //Safe to ignore this
+        }
     }
 }
