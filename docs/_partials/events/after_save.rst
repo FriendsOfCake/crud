@@ -12,7 +12,7 @@ The :ref:`Crud Subject <crud-subject>` contains the following keys:
 - **id** The newly inserted ID. It's only available if the call to ``Table::save()`` was successful.
 - **success** indicates whether or not the ``Table::save()`` call succeed or not.
 - **created** ``true`` if the record was ``created`` and ``false`` if the record was ``updated``.
-- **item** An ``entity`` object marshaled with the ``HTTP POST`` data from the request and the ``save()`` logic.
+- **entity** An ``entity`` object marshaled with the ``HTTP POST`` data from the request and the ``save()`` logic.
 
 Check Created Status
 """"""""""""""""""""
