@@ -83,7 +83,7 @@ class DeleteAction extends BaseAction
      */
     protected function _delete($id = null)
     {
-        $this->_post($id);
+        return $this->_post($id);
     }
 
     /**
