@@ -198,30 +198,42 @@ XML
   </response>
 
 
-HTTP POST / PUT (add / edit)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+HTTP POST (add)
+^^^^^^^^^^^^^^^
 
-``success`` is based on the ``event->subject->success`` parameter from ``Add``
-or ``Edit`` action.
+``success`` is based on the ``event->subject->success`` parameter from the
+``Add`` action.
 
-If ``success`` is ``false`` a HTTP response code of ``400`` will be returned,
-and the ``data`` property will be the list of validation errors from the model.
+If ``success`` is ``false`` a HTTP response code of ``412`` will be returned,
+along with a list of validation errors from the model in the ``data`` property
+of the response body.
 
-If ``success`` is ``true`` a HTTP response code of ``201`` will be returned
-if the model item was **created** else a ``301`` response code will be used.
+If ``success`` is ``true`` a HTTP response code of ``201`` will be returned,
+along with the id of the created record in the ``data`` property of the
+response body.
 
-A success will always include a HTTP ``Location`` header to the ``view``
-action with the existing or newly created id of the record
+HTTP PUT (edit)
+^^^^^^^^^^^^^^^
+
+``success`` is based on the ``event->subject->success`` parameter from the
+``Edit`` action.
+
+If ``success`` is ``false`` a HTTP response code of ``412`` will be returned,
+along with a list of validation errors from the model in the ``data`` property
+of the response body.
+
+If ``success`` is ``true`` a HTTP response code of ``200`` will be returned
+(even when the resource has not been updated).
 
 HTTP DELETE (delete)
 ^^^^^^^^^^^^^^^^^^^^
 
 ``success`` is based on the ``event->subject->success`` parameter from
-the ``delete`` action.
+the ``Delete`` action.
 
 ``data`` will always be ``null``.
 
-No special HTTP codes is sent.
+No special HTTP code is sent.
 
 Not Found (view / edit / delete)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
