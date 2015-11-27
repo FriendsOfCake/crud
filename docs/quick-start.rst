@@ -63,7 +63,7 @@ But... since CRUD doesn't provide any views (yet), you will have to bake the vie
 
 .. code-block:: text
 
-  Console/cake bake view posts
+  Console/cake bake template posts
 
 Let's check out our new application, go to ``/posts`` and behold, a nice paginated ``ìndex()`` template, all without any code
 in your controller.
