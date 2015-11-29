@@ -231,9 +231,10 @@ HTTP DELETE (delete)
 ``success`` is based on the ``event->subject->success`` parameter from
 the ``Delete`` action.
 
-``data`` will always be ``null``.
+If ``success`` is ``false`` a HTTP response code of ``400`` will be returned.
 
-No special HTTP code is sent.
+If ``success`` is ``true`` a HTTP response code of ``200`` will be returned,
+along with empty ``data`` property in the response body.
 
 Not Found (view / edit / delete)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
