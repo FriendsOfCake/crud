@@ -9,7 +9,7 @@ Called right before calling ``Table::save()``.
 
 The :ref:`Crud Subject <crud-subject>` contains the following keys:
 
-- **item** An ``entity`` object marshaled with the ``HTTP POST`` data from the request.
+- **entity** An ``entity`` object marshaled with the ``HTTP POST`` data from the request.
 - **saveMethod** A ``string`` with the ``saveMethod``.
 - **saveOptions** An ``array`` with the ``saveOptions``.
 
