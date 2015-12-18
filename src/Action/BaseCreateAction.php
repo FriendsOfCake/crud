@@ -116,7 +116,7 @@ abstract class BaseCreateAction extends BaseAction
      *
      * @param \Crud\Event\Subject $subject Event subject
      * @param mixed $id Record id
-     * @return void
+     * @return \Crud\Event\Subject
      */
     abstract protected function _getSubject(Subject $subject, $id = null);
 
@@ -125,7 +125,7 @@ abstract class BaseCreateAction extends BaseAction
      *
      * @param \Crud\Event\Subject $subject Event subject
      * @param mixed $id Record id
-     * @return void
+     * @return \Cake\ORM\Entity
      */
     abstract protected function _postEntity(Subject $subject, $id = null);
 }
