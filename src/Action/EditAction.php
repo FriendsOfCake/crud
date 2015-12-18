@@ -2,11 +2,6 @@
 namespace Crud\Action;
 
 use Crud\Event\Subject;
-use Crud\Traits\FindMethodTrait;
-use Crud\Traits\RedirectTrait;
-use Crud\Traits\SaveMethodTrait;
-use Crud\Traits\ViewTrait;
-use Crud\Traits\ViewVarTrait;
 
 /**
  * Handles 'Edit' Crud actions
@@ -14,14 +9,8 @@ use Crud\Traits\ViewVarTrait;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class EditAction extends BaseAction
+class EditAction extends BaseCreateAction
 {
-
-    use FindMethodTrait;
-    use RedirectTrait;
-    use SaveMethodTrait;
-    use ViewTrait;
-    use ViewVarTrait;
 
     /**
      * Default settings for 'edit' actions
@@ -50,6 +39,7 @@ class EditAction extends BaseAction
         'view' => null,
         'relatedModels' => true,
         'saveOptions' => [],
+        'entityCreated' => false,
         'messages' => [
             'success' => [
                 'text' => 'Successfully updated {name}'
@@ -86,88 +76,32 @@ class EditAction extends BaseAction
     ];
 
     /**
-     * HTTP GET handler
+     * Returns the subject for GET requests
      *
-     * @param string $id Record id
+     * @param \Crud\Event\Subject $subject Event subject
+     * @param mixed $id Record id
      * @return void
-     * @throws \Cake\Network\Exception\NotFoundException If record not found
      */
-    protected function _get($id = null)
+    protected function _getSubject(Subject $subject, $id = null)
     {
-        $subject = $this->_subject();
         $subject->set(['id' => $id]);
         $subject->set(['entity' => $this->_findRecord($id, $subject)]);
-
-        $this->_trigger('beforeRender', $subject);
+        return $subject;
     }
 
     /**
-     * HTTP PUT handler
+     * Returns the entity for POST/PUT requests
      *
+     * @param \Crud\Event\Subject $subject Event subject
      * @param mixed $id Record id
-     * @return void|\Cake\Network\Response
+     * @return void
      */
-    protected function _put($id = null)
+    protected function _postEntity(Subject $subject, $id = null)
     {
-        $subject = $this->_subject();
-        $subject->set(['id' => $id]);
-
-        $entity = $this->_table()->patchEntity(
+        return $this->_table()->patchEntity(
             $this->_findRecord($id, $subject),
             $this->_request()->data,
             $this->saveOptions()
         );
-
-        $this->_trigger('beforeSave', $subject);
-        if (call_user_func([$this->_table(), $this->saveMethod()], $entity, $this->saveOptions())) {
-            return $this->_success($subject);
-        }
-
-        return $this->_error($subject);
-    }
-
-    /**
-     * HTTP POST handler
-     *
-     * Thin proxy for _put
-     *
-     * @param mixed $id Record id
-     * @return void|\Cake\Network\Response
-     */
-    protected function _post($id = null)
-    {
-        return $this->_put($id);
-    }
-
-    /**
-     * Success callback
-     *
-     * @param \Crud\Event\Subject $subject Event subject
-     * @return \Cake\Network\Response
-     */
-    protected function _success(Subject $subject)
-    {
-        $subject->set(['success' => true, 'created' => false]);
-        $this->_trigger('afterSave', $subject);
-
-        $this->setFlash('success', $subject);
-
-        return $this->_redirect($subject, ['action' => 'index']);
-    }
-
-    /**
-     * Error callback
-     *
-     * @param \Crud\Event\Subject $subject Event subject
-     * @return void
-     */
-    protected function _error(Subject $subject)
-    {
-        $subject->set(['success' => false, 'created' => false]);
-        $this->_trigger('afterSave', $subject);
-
-        $this->setFlash('error', $subject);
-
-        $this->_trigger('beforeRender', $subject);
     }
 }

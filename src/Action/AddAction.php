@@ -2,11 +2,6 @@
 namespace Crud\Action;
 
 use Crud\Event\Subject;
-use Crud\Traits\RedirectTrait;
-use Crud\Traits\SaveMethodTrait;
-use Crud\Traits\SerializeTrait;
-use Crud\Traits\ViewTrait;
-use Crud\Traits\ViewVarTrait;
 
 /**
  * Handles 'Add' Crud actions
@@ -14,14 +9,8 @@ use Crud\Traits\ViewVarTrait;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class AddAction extends BaseAction
+class AddAction extends BaseCreateAction
 {
-
-    use RedirectTrait;
-    use SaveMethodTrait;
-    use SerializeTrait;
-    use ViewTrait;
-    use ViewVarTrait;
 
     /**
      * Default settings for 'add' actions
@@ -50,6 +39,7 @@ class AddAction extends BaseAction
         'relatedModels' => true,
         'entityKey' => 'entity',
         'saveOptions' => [],
+        'entityCreated' => true,
         'api' => [
             'methods' => ['put', 'post'],
             'success' => [
@@ -65,6 +55,14 @@ class AddAction extends BaseAction
                 ]
             ]
         ],
+        'messages' => [
+            'success' => [
+                'text' => 'Successfully created {name}'
+            ],
+            'error' => [
+                'text' => 'Could not create {name}'
+            ]
+        ],
         'redirect' => [
             'post_add' => [
                 'reader' => 'request.data',
@@ -77,93 +75,34 @@ class AddAction extends BaseAction
                 'url' => ['action' => 'edit', ['entity.field', 'id']]
             ]
         ],
-        'messages' => [
-            'success' => [
-                'text' => 'Successfully created {name}'
-            ],
-            'error' => [
-                'text' => 'Could not create {name}'
-            ]
-        ],
         'serialize' => []
     ];
 
     /**
-     * HTTP GET handler
-     *
-     * @return void
-     */
-    protected function _get()
-    {
-        $subject = $this->_subject([
-            'success' => true,
-            'entity' => $this->_entity($this->_request()->query ?: null, ['validate' => false] + $this->saveOptions())
-        ]);
-
-        $this->_trigger('beforeRender', $subject);
-    }
-
-    /**
-     * HTTP POST handler
-     *
-     * @return void|\Cake\Network\Response
-     */
-    protected function _post()
-    {
-        $subject = $this->_subject([
-            'entity' => $this->_entity($this->_request()->data, $this->saveOptions()),
-            'saveMethod' => $this->saveMethod(),
-            'saveOptions' => $this->saveOptions()
-        ]);
-
-        $this->_trigger('beforeSave', $subject);
-
-        $saveCallback = [$this->_table(), $subject->saveMethod];
-        if (call_user_func($saveCallback, $subject->entity, $subject->saveOptions)) {
-            return $this->_success($subject);
-        }
-
-        return $this->_error($subject);
-    }
-
-    /**
-     * HTTP PUT handler
-     *
-     * @return void|\Cake\Network\Response
-     */
-    protected function _put()
-    {
-        return $this->_post();
-    }
-
-    /**
-     * Post success callback
+     * Returns the subject for GET requests
      *
      * @param \Crud\Event\Subject $subject Event subject
-     * @return \Cake\Network\Response
+     * @param mixed $id Record id
+     * @return void
      */
-    protected function _success(Subject $subject)
+    protected function _getSubject(Subject $subject, $id = null)
     {
-        $subject->set(['success' => true, 'created' => true]);
-
-        $this->_trigger('afterSave', $subject);
-        $this->setFlash('success', $subject);
-
-        return $this->_redirect($subject, ['action' => 'index']);
+        $data = $this->_request()->query ?: null;
+        $entity = $this->_entity($data, ['validate' => false] + $this->saveOptions());
+        $subject->set(['success' => true]);
+        $subject->set(['entity' => $entity]);
+        return $subject;
     }
 
     /**
-     * Post error callback
+     * Returns the entity for POST/PUT requests
      *
      * @param \Crud\Event\Subject $subject Event subject
+     * @param mixed $id Record id
      * @return void
      */
-    protected function _error(Subject $subject)
+    protected function _postEntity(Subject $subject, $id = null)
     {
-        $subject->set(['success' => false, 'created' => false]);
-
-        $this->_trigger('afterSave', $subject);
-        $this->setFlash('error', $subject);
-        $this->_trigger('beforeRender', $subject);
+        return $this->_entity($this->_request()->data, $this->saveOptions());
     }
 }
