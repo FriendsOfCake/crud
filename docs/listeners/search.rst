@@ -1,12 +1,25 @@
-Search listener
-=================
+Search 
+=======
 
-Provides search capabilities for the Crud plugin.
+This listener provides search capabilities for the Crud plugin.
+
+Introduction
+^^^^^^^^^^^^
+The ``Search listener`` depends on the ``FriendsOfCake`` repo ``search``.
+
+[Please also see the repo]
+(https://github.com/FriendsOfCake/search)
 
 Setup
------
+^^^^^
+
+Installation
+-------------
 
 You need to install `FriendsOfCake/Search <https://github.com/FriendsOfCake/search>`_ first.
+
+Controller
+----------
 
 Attach it on the fly in your controller beforeFilter, this is recommended if
 you want to attach it only to specific controllers and actions:

@@ -96,4 +96,6 @@ More on listeners
 	listeners/api-query-log
 	listeners/redirect
 	listeners/related-models
+	listeners/search
 	listeners/custom
+	
