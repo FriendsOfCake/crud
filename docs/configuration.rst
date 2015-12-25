@@ -154,6 +154,10 @@ Crud provides the default ``CRUD`` actions out of the box.
 * :doc:`Add Action<actions/add>`
 * :doc:`Edit Action<actions/edit>`
 * :doc:`Delete Action<actions/delete>`
+* :doc:`Lookup Action<actions/lookup>`
+* :doc:`Bulk Delete Action<actions/bulk-delete>`
+* :doc:`Bulk Set Value Action<actions/bulk-set-value>`
+* :doc:`Bulk Field Toggle Action<actions/bulk-toggle>`
 
 It's possible to create your own ``Crud Action`` as well, or overwrite the
 built-in ones.
