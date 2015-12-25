@@ -142,6 +142,7 @@ More On Actions
 	actions/add
 	actions/edit
 	actions/delete
+	actions/lookup
 	actions/bulk
 	actions/bulk-delete
 	actions/bulk-set-value
