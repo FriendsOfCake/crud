@@ -70,15 +70,24 @@ class SearchListenerTest extends TestCase
         $eventManager = new \Cake\Event\EventManager();
         $controller = new \Cake\Controller\Controller($request, $response, 'Search', $eventManager);
 
+        $behaviorRegistryMock = $this->getMockBuilder('\Cake\ORM\BehaviorRegistry')
+            ->setMockClassName('BehaviorRegistry')
+            ->setMethods(['hasMethod'])
+            ->getMock();
+        $behaviorRegistryMock->expects($this->once())
+            ->method('hasMethod')
+            ->will($this->returnValue(true));
+
         $tableMock = $this->getMockBuilder('\Cake\ORM\Table')
             ->setMockClassName('SearchTables')
-            ->setMethods(['filterParams'])
+            ->setMethods(['filterParams', 'behaviors'])
             ->getMock();
         $tableMock->expects($this->once())
             ->method('filterParams')
-            ->will($this->returnCallback(function () use ($params) {
-                return $params;
-            }));
+            ->will($this->returnValue($params));
+        $tableMock->expects($this->once())
+            ->method('behaviors')
+            ->will($this->returnValue($behaviorRegistryMock));
 
         \Cake\ORM\TableRegistry::set('Search', $tableMock);
 
