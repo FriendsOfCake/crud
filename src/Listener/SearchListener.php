@@ -52,7 +52,15 @@ class SearchListener extends BaseListener
             return;
         }
 
-        $filterParams = $this->_table()->filterParams($this->_request()->query);
+        $table = $this->_table();
+        if (!method_exists($table, 'filterParams')) {
+            throw new RuntimeException(sprintf(
+                'Missing Search.Search behavior on %s',
+                get_class($table)
+            ));
+        }
+
+        $filterParams = $table->filterParams($this->_request()->query);
         $event->subject->query->find('search', $filterParams);
     }
 }
