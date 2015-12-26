@@ -76,9 +76,7 @@ class SearchListenerTest extends TestCase
             ->getMock();
         $behaviorRegistryMock->expects($this->once())
             ->method('hasMethod')
-            ->will($this->returnCallback(function () {
-                return true;
-            }));
+            ->will($this->returnValue(true));
 
         $tableMock = $this->getMockBuilder('\Cake\ORM\Table')
             ->setMockClassName('SearchTables')
@@ -86,14 +84,10 @@ class SearchListenerTest extends TestCase
             ->getMock();
         $tableMock->expects($this->once())
             ->method('filterParams')
-            ->will($this->returnCallback(function () use ($params) {
-                return $params;
-            }));
+            ->will($this->returnValue($params));
         $tableMock->expects($this->once())
             ->method('behaviors')
-            ->will($this->returnCallback(function () use ($behaviorRegistryMock) {
-                return $behaviorRegistryMock;
-            }));
+            ->will($this->returnValue($behaviorRegistryMock));
 
         \Cake\ORM\TableRegistry::set('Search', $tableMock);
 
