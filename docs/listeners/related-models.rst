@@ -74,7 +74,7 @@ It’s possible to dynamically reconfigure the relatedModels listener
 
 	<?php
 	// This can be changed in beforeFilter and the controller action
-	public function beforeFilter() {
+	public function beforeFilter(\Cake\Event\Event $event) {
 		// Automatically executes find('list') on the User ($users) and Tag ($tags) tables
 		$this->Crud->listener('relatedModels')->relatedModels(['User', 'Tag'], 'your_action');
 
@@ -113,7 +113,7 @@ Example
 	<?php
 	class DemoController extends AppController {
 
-		public function beforeFilter() {
+		public function beforeFilter(\Cake\Event\Event $event) {
 			parent::beforeFilter();
 
 			$this->Crud->on('relatedModel', function(\Cake\Event\Event $event) {

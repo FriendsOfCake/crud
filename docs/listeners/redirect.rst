@@ -84,7 +84,7 @@ The closure takes two arguments:
   <?php
   class SamplesController extends AppController {
 
-    public function beforeFilter() {
+    public function beforeFilter(\Cake\Event\Event $event) {
       $listener = $this->Crud->listener('Redirect');
       $listener->reader($name, Closure $closure);
 
@@ -139,7 +139,7 @@ It's very simple to modify existing or add your own redirect rules:
   <?php
   class SamplesController extends AppController {
 
-    public function beforeFilter() {
+    public function beforeFilter(\Cake\Event\Event $event) {
       // Get all the redirect rules
       $rules = $this->Crud->action()->redirectConfig();
 
