@@ -10,9 +10,28 @@ pagination information.
 
 Setup
 -----
+Attach this listener to your AppController components array if you want to make
+it available for all your controllers, application wide.
 
-Attach it on the fly in your controller beforeFilter, this is recommended if
-you want to attach it only to specific controllers and actions
+.. code-block:: php
+
+	<?php
+	class AppController extends \Cake\Controller\Controller {
+
+		public $components = [
+			'RequestHandler',
+			'Crud.Crud' => [
+				'listeners' => [
+					'Crud.Api', // Required
+					'Crud.ApiPagination'
+				]
+			];
+
+	}
+
+
+Attach it on the fly in your controller beforeFilter if you want to limit
+availability of the listener to specific controllers and actions.
 
 .. code-block:: php
 
@@ -26,29 +45,11 @@ you want to attach it only to specific controllers and actions
 
 	}
 
-Attach it using components array, this is recommended if you want to
-attach it to all controllers, application wide
-
-.. code-block:: php
-
-	<?php
-	class SamplesController extends AppController {
-
-		public $components = [
-			'RequestHandler',
-			'Crud.Crud' => [
-				'listeners' => [
-					'Crud.Api', // Required
-					'Crud.ApiPagination'
-				]
-			];
-
-	}
-
 Output
 ------
 
-Paginated results will include a
+Paginated results will include a new `pagination` element similar to the one
+below:
 
 .. code-block:: json
 
@@ -64,4 +65,26 @@ Paginated results will include a
 			"has_prev_page": false,
 			"has_next_page": true
 		}
+	}
+
+Configuration
+-------------
+
+Configure this listener by setting the
+[CakePHP Pagination](http://book.cakephp.org/3.0/en/controllers/components/pagination.html)
+options directly to the query object.
+
+.. code-block:: php
+
+	public function index()
+	{
+		$event->subject()->query->contain([
+			'Comments' => function ($q) {
+				return $q
+					->select(['id', 'name', 'description'])
+					->where([
+						'Comments.approved' => true
+					]);
+			}
+		]);
 	}
