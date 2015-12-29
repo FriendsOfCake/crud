@@ -924,7 +924,6 @@ class CrudComponentTest extends TestCase
      */
     public function testControllerWithEmptyUses()
     {
-        $controller = new Controller(new Request());
         $this->Crud = new CrudComponent($this->Registry, ['actions' => ['index']]);
         $this->Crud->beforeFilter(new Event('Controller.beforeFilter'));
         $this->controller->Crud = $this->Crud;
@@ -996,7 +995,6 @@ class CrudComponentTest extends TestCase
             'Tests still not updated.'
         );
 
-        $controller = new Controller(new Request());
         $this->Crud = new CrudComponent($this->Registry, ['actions' => ['index']]);
         $this->Crud->beforeFilter(new Event('Controller.beforeFilter'));
         $this->controller->Crud = $this->Crud;
