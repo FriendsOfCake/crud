@@ -9,7 +9,7 @@ To get the current configured ``findMethod`` keys call the ``findMethod`` method
 
 	$this->Crud->action()->findMethod();
 
-To change the findMethod value pass an `string` argument to the method
+To change the findMethod value pass a `string` argument to the method
 
 .. code-block:: phpinline
 
