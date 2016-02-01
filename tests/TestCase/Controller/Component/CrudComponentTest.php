@@ -66,7 +66,8 @@ class CrudExamplesController extends \Cake\Controller\Controller
                 'Crud.Add',
                 'Crud.Edit',
                 'Crud.Delete',
-                'Crud.View'
+                'Crud.View',
+                'Crud.List'
             ]
         ]
     ];
@@ -119,6 +120,16 @@ class CrudExamplesController extends \Cake\Controller\Controller
     public function index()
     {
         return $this->Crud->execute('index');
+    }
+
+    /**
+     * Test it should render 'list'
+     *
+     * @return void
+     */
+    public function listing()
+    {
+        return $this->Crud->execute('list');
     }
 }
 
@@ -206,7 +217,8 @@ class CrudComponentTest extends TestCase
                 'Crud.Add',
                 'Crud.Edit',
                 'Crud.View',
-                'Crud.Delete'
+                'Crud.Delete',
+                'Crud.List'
             ]
         ];
 
