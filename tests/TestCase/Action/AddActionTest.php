@@ -454,7 +454,7 @@ class AddActionTest extends IntegrationTestCase
             'body' => 'Amazing blog post'
         ]);
 
-        $this->assertResponseCode(412);
+        $this->assertResponseCode(422);
         $this->assertResponseContains('A validation error occurred');
     }
 
