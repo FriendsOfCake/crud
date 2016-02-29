@@ -52,7 +52,7 @@ class DeleteAction extends BaseAction
      * HTTP POST handler
      *
      * @param string $id Record id
-     * @return void
+     * @return \Cake\Network\Response
      */
     protected function _post($id = null)
     {
@@ -79,7 +79,7 @@ class DeleteAction extends BaseAction
      * HTTP DELETE handler
      *
      * @param string $id Record id
-     * @return void
+     * @return \Cake\Network\Response
      */
     protected function _delete($id = null)
     {

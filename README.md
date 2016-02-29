@@ -1,5 +1,5 @@
 [![Build Status](https://img.shields.io/travis/FriendsOfCake/crud/master.svg?style=flat-square)](https://travis-ci.org/FriendsOfCake/crud)
-[![Coverage Status](https://img.shields.io/coveralls/FriendsOfCake/crud/master.svg?style=flat-square)](https://coveralls.io/r/FriendsOfCake/crud?branch=master)
+[![Coverage Status](https://img.shields.io/codecov/c/github/FriendsOfCake/crud.svg?style=flat-square)](https://codecov.io/github/FriendsOfCake/crud)
 [![Total Downloads](https://img.shields.io/packagist/dt/FriendsOfCake/crud.svg?style=flat-square)](https://packagist.org/packages/FriendsOfCake/crud)
 [![Latest Stable Version](https://img.shields.io/packagist/v/FriendsOfCake/crud.svg?style=flat-square)](https://packagist.org/packages/FriendsOfCake/crud)
 
