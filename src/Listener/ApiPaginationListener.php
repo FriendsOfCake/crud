@@ -19,7 +19,7 @@ class ApiPaginationListener extends BaseListener
      *
      * We attach at priority 10 so normal bound events can run before us
      *
-     * @return array
+     * @return array|void
      */
     public function implementedEvents()
     {
