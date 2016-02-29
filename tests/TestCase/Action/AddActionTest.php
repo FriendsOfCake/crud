@@ -339,24 +339,16 @@ class AddActionTest extends IntegrationTestCase
      */
     public function testApiGet($method)
     {
-        $this->_eventManager->on(
-            'Dispatcher.beforeDispatch',
-            ['priority' => 1000],
-            function ($event) {
-                $this->_controller->Crud->addListener('api', 'Crud.Api');
-            }
-        );
-
         Router::extensions(['json']);
         Router::scope('/', function ($routes) {
             $routes->extensions(['json']);
             $routes->fallbacks();
         });
 
-        $this->{$method}('/blogs/add.json');
+        $this->{$method}('/Blogs/add.json');
 
         $this->assertResponseError();
-        $this->assertResponseContains($this->_response->body(), 'Wrong request method');
+        $this->assertResponseContains('Wrong request method');
     }
 
     /**
@@ -463,7 +455,7 @@ class AddActionTest extends IntegrationTestCase
         ]);
 
         $this->assertResponseCode(412);
-        $this->assertResponseContains($this->_response->body(), 'A validation error occurred');
+        $this->assertResponseContains('A validation error occurred');
     }
 
     /**
