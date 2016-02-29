@@ -283,14 +283,14 @@ class ApiListenerTest extends TestCase
                 ['class' => '\Crud\Error\Exception\ValidationException', 'type' => 'validate'],
                 '\Crud\Error\Exception\ValidationException',
                 '0 validation errors occurred',
-                412
+                422
             ],
 
             'Validate case #2 - one validation error' => [
                 ['class' => '\Crud\Error\Exception\ValidationException', 'type' => 'validate'],
                 '\Crud\Error\Exception\ValidationException',
                 'A validation error occurred',
-                412,
+                422,
                 [['id' => 'hello world']]
             ],
 
@@ -298,7 +298,7 @@ class ApiListenerTest extends TestCase
                 ['class' => '\Crud\Error\Exception\ValidationException', 'type' => 'validate'],
                 '\Crud\Error\Exception\ValidationException',
                 '2 validation errors occurred',
-                412,
+                422,
                 [['id' => 'hello world', 'name' => 'fail me']]
             ]
         ];

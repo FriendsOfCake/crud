@@ -33,7 +33,7 @@ class ValidationException extends BadRequestException
      * @param \Cake\ORM\Entity $entity Entity
      * @param int $code code to report to client
      */
-    public function __construct(Entity $entity, $code = 412)
+    public function __construct(Entity $entity, $code = 422)
     {
         $this->_validationErrors = array_filter((array)$entity->errors());
         $flat = Hash::flatten($this->_validationErrors);

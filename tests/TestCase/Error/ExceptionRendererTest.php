@@ -368,7 +368,7 @@ class ExceptionRendererTest extends TestCase
         $Renderer->render();
 
         $expected = [
-            'code' => 412,
+            'code' => 422,
             'url' => $Controller->request->here(),
             'errorCount' => 1,
             'errors' => [
@@ -414,7 +414,7 @@ class ExceptionRendererTest extends TestCase
         unset($Controller->viewVars['data']['trace']);
 
         $expected = [
-            'code' => 412,
+            'code' => 422,
             'url' => $Controller->request->here(),
             'errorCount' => 1,
             'errors' => [
@@ -424,7 +424,7 @@ class ExceptionRendererTest extends TestCase
             ],
             'exception' => [
                 'class' => 'Crud\Error\Exception\ValidationException',
-                'code' => 412,
+                'code' => 422,
                 'message' => 'A validation error occurred'
             ],
             'message' => 'A validation error occurred'
@@ -463,7 +463,7 @@ class ExceptionRendererTest extends TestCase
         $Renderer->render();
 
         $expected = [
-            'code' => 412,
+            'code' => 422,
             'url' => $Controller->request->here(),
             'message' => '2 validation errors occurred',
             'errorCount' => 2,
@@ -477,7 +477,7 @@ class ExceptionRendererTest extends TestCase
             ],
             'exception' => [
                 'class' => 'Crud\Error\Exception\ValidationException',
-                'code' => 412,
+                'code' => 422,
                 'message' => '2 validation errors occurred',
             ]
         ];
