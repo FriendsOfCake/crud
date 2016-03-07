@@ -56,7 +56,8 @@ class LookupAction extends BaseAction
         $request = $this->_request();
 
         $config = (array)$this->config('findConfig');
-        if ($idField = $request->query('id')) {
+
+        if (($idField = $request->query('id')) && in_array($idField, $this->_table()->schema()->columns())) {
             $config['keyField'] = $idField;
         }
 
