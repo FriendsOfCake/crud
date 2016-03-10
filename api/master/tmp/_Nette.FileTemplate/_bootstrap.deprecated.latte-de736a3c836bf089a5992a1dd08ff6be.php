@@ -1,23 +1,23 @@
-<?php //netteCache[01]000401a:2:{s:4:"time";s:21:"0.63266200 1457521234";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:81:"/var/www/jippignu/data/www/cakephp.dk/apigen/templates/bootstrap/deprecated.latte";i:2;i:1347136010;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:28:"$WCREV$ released on $WCDATE$";}}}?><?php
+<?php //netteCache[01]000401a:2:{s:4:"time";s:21:"0.10313500 1457607623";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:81:"/var/www/jippignu/data/www/cakephp.dk/apigen/templates/bootstrap/deprecated.latte";i:2;i:1347136010;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:28:"$WCREV$ released on $WCDATE$";}}}?><?php
 
 // source file: /var/www/jippignu/data/www/cakephp.dk/apigen/templates/bootstrap/deprecated.latte
 
 ?><?php
 // prolog Nette\Latte\Macros\CoreMacros
-list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, '5cbv17sl9j')
+list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, 'yz5ia5thsj')
 ;
 // prolog Nette\Latte\Macros\UIMacros
 //
 // block title
 //
-if (!function_exists($_l->blocks['title'][] = '_lb1b414d2714_title')) { function _lb1b414d2714_title($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['title'][] = '_lb00903b65b9_title')) { function _lb00903b65b9_title($_l, $_args) { extract($_args)
 ?>Deprecated<?php
 }}
 
 //
 // block content
 //
-if (!function_exists($_l->blocks['content'][] = '_lbf2926f59dd_content')) { function _lbf2926f59dd_content($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['content'][] = '_lb04062d8242_content')) { function _lb04062d8242_content($_l, $_args) { extract($_args)
 ?><div id="content">
 	<h1><?php call_user_func(reset($_l->blocks['title']), $_l, get_defined_vars()) ?></h1>
 
@@ -143,7 +143,7 @@ if (!function_exists($_l->blocks['content'][] = '_lbf2926f59dd_content')) { func
 //
 // block classes
 //
-if (!function_exists($_l->blocks['classes'][] = '_lb9997a60ac0_classes')) { function _lb9997a60ac0_classes($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['classes'][] = '_lb0565e94007_classes')) { function _lb0565e94007_classes($_l, $_args) { extract($_args)
 ;$iterations = 0; foreach ($items as $class): ?>	<tr>
 		<td class="name"><a href="<?php echo htmlSpecialChars($template->classUrl($class)) ?>
 "><?php echo Nette\Templating\Helpers::escapeHtml($class->name, ENT_NOQUOTES) ?></a></td>
