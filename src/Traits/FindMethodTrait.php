@@ -44,7 +44,7 @@ trait FindMethodTrait
         ]);
 
         $this->_trigger('beforeFind', $subject);
-        $entity = $query->first();
+        $entity = $subject->query->first();
 
         if (!$entity) {
             return $this->_notFound($id, $subject);
