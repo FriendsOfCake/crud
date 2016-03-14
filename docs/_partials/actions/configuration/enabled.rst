@@ -6,6 +6,11 @@ Test or modify if the Crud Action is enabled or not.
 When a CrudAction is disabled, Crud will not handle any requests to the action, and CakePHP will raise the normal
 ``\Cake\Error\MissingActionException`` exception if you haven't implemented the action in your controller.
 
+.. warning::
+
+    If you have enabled Crud and you are still receiving a ``MissingActionException``, ensure the action is enabled and
+    that the controller has the ``\Crud\Controller\ControllerTrait`` implemented.
+
 To test if an action is enabled, call the ``enabled`` method on the action.
 
 .. code-block:: phpinline

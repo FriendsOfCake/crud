@@ -4,22 +4,22 @@ Bulk Set Value
 You can use the ``Bulk\SetValueAction`` class to specify the value of a
 given field for a group of database records.
 
-.. code:: php
+.. code-block:: phpinline
 
   <?php
   namespace App\Controller;
 
   class PostsController extends AppController
   {
-    public function initialize()
-    {
-      parent::initialize();
-      $this->Crud->mapAction('publishAll', [
-        'className' => 'Crud.Bulk/SetValue',
-        'field' => 'status',
-        'value' => 'publish',
-      ]);
-    }
+      public function initialize()
+      {
+          parent::initialize();
+          $this->Crud->mapAction('publishAll', [
+              'className' => 'Crud.Bulk/SetValue',
+              'field' => 'status',
+              'value' => 'publish'
+          ]);
+      }
   }
 
 Configuration

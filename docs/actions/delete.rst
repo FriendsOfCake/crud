@@ -9,7 +9,6 @@ Configuration
 .. include:: /_partials/actions/configuration_intro.rst
 .. include:: /_partials/actions/configuration/enabled.rst
 .. include:: /_partials/actions/configuration/find_method.rst
-.. include:: /_partials/actions/configuration/secure_delete.rst
 .. include:: /_partials/actions/configuration/serialize.rst
 
 Events
@@ -24,7 +23,7 @@ properties and how to use the event system correctly.
 .. include:: /_partials/events/before_filter.rst
 .. include:: /_partials/events/before_find.rst
 .. include:: /_partials/events/after_find.rst
-.. include:: /_partials/events/not_found.rst
+.. include:: /_partials/events/record_not_found.rst
 .. include:: /_partials/events/before_delete.rst
 .. include:: /_partials/events/after_delete.rst
 .. include:: /_partials/events/before_redirect.rst

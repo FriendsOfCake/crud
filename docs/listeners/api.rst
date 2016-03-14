@@ -4,18 +4,18 @@ API
 This listener allows you to easily create a JSON or XML Api built on top of Crud.
 
 Introduction
-^^^^^^^^^^^^
+------------
+.. note::
 
-The ``API listener`` depends on the ``RequestHandler`` to be loaded **before** ``Crud``
+  The ``API listener`` depends on the ``RequestHandler`` to be loaded **before** ``Crud``
 
-[Please also see the CakePHP documentation on JSON and XML views]
-(http://book.cakephp.org/2.0/en/views/json-and-xml-views.html#enabling-data-views-in-your-application)
+`Please also see the CakePHP documentation on JSON and XML views <http://book.cakephp.org/3.0/en/views/json-and-xml-views.html>`_
 
 Setup
-^^^^^
+-----
 
 Routing
--------
+^^^^^^^
 
 You need to tell the ``Router`` to parse extensions else it won't be able to
 process and render ``json`` and ``xml`` URL extension
@@ -25,12 +25,12 @@ process and render ``json`` and ``xml`` URL extension
   // config/routes.php
   Router::extensions(['json', 'xml']);
 
-Ensure this statement is used before connecting any routes.
+Ensure this statement is used before connecting any routes, and is in the routing global scope.
 
 Controller
-----------
+^^^^^^^^^^
 
-Attach it on the fly in your controller beforeFilter, this is recommended if
+Attach it on the fly in your controllers ``beforeFilter``, this is recommended if
 you want to attach it only to specific controllers and actions
 
 .. code-block:: php
@@ -52,40 +52,42 @@ attach it to all controllers, application wide
   <?php
   class AppController extends Controller {
 
-    public $components = [
-      'RequestHandler',
-      'Crud.Crud' => [
-        'actions' => ['Crud.Index', 'Crud.View'],
-        'listeners' => ['Crud.Api']
-      ]
-    ];
-
+    public function initialize()
+    {
+        $this->loadComponent('RequestHandler');
+        $this->loadComponent('Crud.Crud', [
+          'actions' => [
+            'Crud.Index',
+            'Crud.View'
+          ],
+          'listeners' => ['Crud.Api']
+        ]);
   }
 
-New CakeRequest detectors
-^^^^^^^^^^^^^^^^^^^^^^^^^
+CakeRequest detectors
+---------------------
 
 The Api Listener creates 3 new detectors in your ``CakeRequest`` object.
 
 is('json')
-----------
+^^^^^^^^^^
 
 Checks if the extension of the request is ``.json`` or if the requester accepts
 json as part of the ``HTTP accepts`` header
 
 is('xml')
----------
+^^^^^^^^^
 
 Checks if the extension of the request is ``.xml`` or if the requester accepts
 XML as part of the ``HTTP accepts`` header
 
 is('api')
----------
+^^^^^^^^^
 
 Checking if the request is either ``is('json')`` or ``is('xml')``
 
 Default behavior
-^^^^^^^^^^^^^^^^
+----------------
 
 If the current request doesn't evaluate ``is('api')`` to true, the listener
 won't do anything at all.
@@ -93,14 +95,14 @@ won't do anything at all.
 All it's callbacks will simply return ``NULL`` and don't get in your way.
 
 Exception handler
-^^^^^^^^^^^^^^^^^
+-----------------
 
 The Api listener overrides the ``Exception.renderer`` for ``api`` requests,
 so in case of an error, a standardized error will be returned, in either
 ``json`` or ``xml`` - according to the API request type.
 
 Request type enforcing
-^^^^^^^^^^^^^^^^^^^^^^
+----------------------
 
 The API listener will try to enforce some best practices on how an API
 should behave.
@@ -117,16 +119,16 @@ else an ``MethodNotAllowed`` exception will be raised.
 For a request to ``delete`` the HTTP request type **must** be ``HTTP DELETE`` -
 else an ``MethodNotAllowed`` exception will be raised.
 
+You can `find out more about RESTful on Wikipedia <https://en.wikipedia.org/wiki/Representational_state_transfer#Applied_to_web_services>`_.
+
 Response format
-^^^^^^^^^^^^^^^
+---------------
 
-The default response format for both XML and JSON is two root keys,
-``success`` and ``data``.
+The default response format for both XML and JSON has two root keys, ``success`` and ``data``. It's possible to add
+your own root keys simply by using ``_serialize`` on the view var.
 
-It's possible to add your own root keys simply by ``_serialize`` view var.
-
-JSON
-----
+JSON response
+^^^^^^^^^^^^^
 
 .. code-block:: json
 
@@ -138,8 +140,8 @@ JSON
   }
 
 
-XML
----
+XML response
+^^^^^^^^^^^^
 
 .. code-block:: xml
 
@@ -150,12 +152,12 @@ XML
 
 
 Exception response format
-^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------
 
 The ``data.exception`` key is only returned if ``debug`` is > 0
 
-JSON
-----
+JSON exception
+^^^^^^^^^^^^^^
 
 .. code-block:: json
 
@@ -175,8 +177,8 @@ JSON
   }
 
 
-XML
----
+XML exception
+^^^^^^^^^^^^^
 
 .. code-block:: xml
 
@@ -199,7 +201,7 @@ XML
 
 
 HTTP POST (add)
-^^^^^^^^^^^^^^^
+---------------
 
 ``success`` is based on the ``event->subject->success`` parameter from the
 ``Add`` action.
@@ -213,7 +215,7 @@ along with the id of the created record in the ``data`` property of the
 response body.
 
 HTTP PUT (edit)
-^^^^^^^^^^^^^^^
+---------------
 
 ``success`` is based on the ``event->subject->success`` parameter from the
 ``Edit`` action.
@@ -226,7 +228,7 @@ If ``success`` is ``true`` a HTTP response code of ``200`` will be returned
 (even when the resource has not been updated).
 
 HTTP DELETE (delete)
-^^^^^^^^^^^^^^^^^^^^
+--------------------
 
 ``success`` is based on the ``event->subject->success`` parameter from
 the ``Delete`` action.
@@ -237,13 +239,13 @@ If ``success`` is ``true`` a HTTP response code of ``200`` will be returned,
 along with empty ``data`` property in the response body.
 
 Not Found (view / edit / delete)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------
 
 In case an ``id`` is provided to a crud action and the id does not exist in
 the database, a ``404`` NotFoundException` will be thrown.
 
 Invalid id (view / edit / delete)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---------------------------------
 
 In case a ``ìd`` is provided to a crud action and the id is not valid
 according to the database type a ``500 BadRequestException`` will be thrown

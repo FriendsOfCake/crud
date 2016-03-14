@@ -3,18 +3,18 @@ Bulk Delete
 
 You can use the ``Bulk\DeleteAction`` class to delete a group of database records.
 
-.. code:: php
+.. code-block:: phpinline
 
   <?php
   namespace App\Controller;
 
   class PostsController extends AppController
   {
-    public function initialize()
-    {
-      parent::initialize();
-      $this->Crud->mapAction('deleteAll', 'Crud.Bulk/Delete');
-    }
+      public function initialize()
+      {
+          parent::initialize();
+          $this->Crud->mapAction('deleteAll', 'Crud.Bulk/Delete');
+      }
   }
 
 Configuration

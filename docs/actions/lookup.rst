@@ -1,7 +1,7 @@
 Lookup
-====
+======
 
-The ``Lookup Crud Action`` will display a record from a data source for auto-complete purposes. Used mostly for crud-view.
+The ``Lookup Crud Action`` will display a record from a data source for auto-complete purposes. Used mostly for `Crud-View <https://github.com/friendsofcake/crud-view>`_.
 
 Configuration
 -------------

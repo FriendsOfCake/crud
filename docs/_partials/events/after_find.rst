@@ -18,9 +18,9 @@ Logging the Found Item
 .. code-block:: phpinline
 
   public function delete($id) {
-    $this->Crud->on('afterFind', function(\Cake\Event\Event $event) {
-      $this->log("Found item: $event->subject->entity->id in the database");
-    });
+      $this->Crud->on('afterFind', function(\Cake\Event\Event $event) {
+          $this->log("Found item: " . $event->subject()->entity->id . " in the database");
+      });
 
-    return $this->Crud->execute();
+      return $this->Crud->execute();
   }

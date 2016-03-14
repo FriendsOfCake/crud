@@ -1,5 +1,5 @@
 Crud.beforeBulk
-^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^
 
 This event is emitted before ``_bulk()`` is called on a Bulk Crud action.
 
@@ -18,12 +18,12 @@ Stop Bulk Action
 .. code-block:: phpinline
 
   public function bulk($id) {
-    $this->Crud->on('beforeBulk', function(\Cake\Event\Event $event) {
-      // Stop the bulk event, the action will not continue
-      if ($event->subject->item->author !== 'admin') {
-        $event->stopPropagation();
-      }
-    });
+      $this->Crud->on('beforeBulk', function(\Cake\Event\Event $event) {
+          // Stop the bulk event, the action will not continue
+          if ($event->subject()->item->author !== 'admin') {
+              $event->stopPropagation();
+          }
+      });
 
-    return $this->Crud->execute();
+      return $this->Crud->execute();
   }

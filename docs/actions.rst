@@ -1,5 +1,6 @@
+*******
 Actions
-=======
+*******
 
 .. note::
 
@@ -7,34 +8,26 @@ Actions
 	``Delete`` actions,	so you do not need to implement these on your own.
 	You can find the documentation for these actions in the menu to the left.
 
-Actions are the backbone of CRUD - this is where most of the logic happens.
-
-A ``Crud Action`` contains more or less the exact same code as a normal
-controller action.
-
-The main difference between your normal Controller actions and a CRUD Action
-is that the CRUD Action is highly generic and flexible.
+Crud Actions are the backbone of the plugin, this is where most of the logic happens.
 
 What Is An Action?
-^^^^^^^^^^^^^^^^^^
+==================
 
-A CRUD action roughly translates to a normal Controller action.
+A Crud action roughly translates to a normal Controller action. The primary difference is that CRUD actions are made to
+be as generic and secure out of the box as possible.
 
-The primary difference is that CRUD actions are made to be as generic and secure
-out of the box as possible.
+You can consider a CRUD action as a more flexible PHP trait that fits nicely within the CakePHP ecosystem.
 
-You can consider a CRUD action as a more flexible PHP trait that fits nicely
-within the CakePHP ecosystem.
+A nice added bonus is that if all your controllers share a generic controller action, you only have to unit test once,
+to test every controller in your application.
 
 The Anatomy Of An Action
-^^^^^^^^^^^^^^^^^^^^^^^^
+========================
 
 Below is the code for the :doc:`Index Crud Action<actions/index>`
 
 In the next few sections we will walk through the code and explain how it works,
-and what every single line of code does.
-
-For each section, the relevant lines of code will be highlighted.
+and what every single line of code does. For each section, the relevant lines of code will be highlighted.
 
 .. literalinclude:: _code/action_index.php
 	 :language: php
@@ -50,6 +43,9 @@ All actions in Crud, even your own, should inherit from the
 ``Crud\Action\Base`` class.
 This class is ``abstract`` and provides numerous auxiliary methods which can be
 useful for you both as a developer as an action creator.
+
+Where you choose to put your custom Crud actions is up to you, but using ``src/Crud`` is a good place. Remember to
+namespace your action class accordingly.
 
 .. literalinclude:: _code/action_index.php
 	 :language: php
@@ -86,20 +82,18 @@ and saving the entity back to the database.
 Events & Subject
 ----------------
 
-All Crud actions emit a range of events, and all of these events always contain a
-:ref:`Crud Subject`<crud-subject>`. The :ref:`Crud Subject`<crud-subject>`
-can change its state between emitted events. This object is a simple ``StdClass``
-which contains the current state of the Crud request.
+All Crud actions emit a range of events, and all of these events always contain a Crud Subject. The Crud Subject can
+change its state between emitted events. This object is a simple ``StdClass`` which contains the current state of the Crud request.
 
 The real beauty of Crud is the events and the flexibility they provide.
 
-All calls to ``_trigger()`` emit an event, that you as a developer can listen to
-and inject your own application logic. These events are in no way magical, they
-are simply normal CakePHP events, dispatched like all other events in CakePHP.
+All calls to ``_trigger()`` emit an event, that you as a developer can listen to and inject your own application logic.
+These events are in no way magical, they are simply normal
+`CakePHP events <http://book.cakephp.org/3.0/en/core-libraries/events.html>`_, dispatched like all
+other `events in CakePHP <http://book.cakephp.org/3.0/en/core-libraries/events.html>`_.
 
-You can for example listen for the ``beforePaginate`` event and add conditions
-to your pagination query, just with a few lines of code. Those few lines
-of code is what makes your application unique. The rest of the code you would
+You can for example listen for the ``beforePaginate`` event and add conditions to your pagination query, just with a
+few lines of code. Those few lines of code is what makes your application unique. The rest of the code you would
 normally have is simply repeated boiler plate code.
 
 .. literalinclude:: _code/action_index.php
@@ -112,30 +106,30 @@ Boilerplate
 
 Only the code that you would normally have in your controller is left now.
 
-While these 3 lines seem simple, and the whole Crud implementation a bit overkill
-at first, the true power of this setup will be clear when your application
-grows and the requirements increase.
+While these 3 lines seem simple, and the whole Crud implementation a bit overkill at first, the true power of this setup
+will be clear when your application grows and the requirements increase.
 
 .. literalinclude:: _code/action_index.php
 	 :language: php
 	 :linenos:
 	 :emphasize-lines: 17,18,23
 
-For example adding an API layer to your application later in time will be
-non-trivial and time consuming if you do not use crud - especially if you have
-many controllers.
+For example :doc:`adding an API layer<api>` to your application later in time will be easy because you don't need to edit
+all your applications many controllers.
 
-Using Crud, it would be as simple as loading the :doc:`API listener<listeners/api>`
-and everything would be taken care of. All validation, exceptions, success
-and error responses would work immediately, and with just a few lines of code.
+Using Crud, it would be as simple as loading the :doc:`API listener<listeners/api>` and everything would be taken care
+of. All validation, exceptions, success and error responses would work immediately, and with just a few lines of code.
 
-This is because the powerful event system can hook into the request and hijack
-the rendering easily and effortlessly -- something baked controllers do not offer.
+This is because the powerful event system can hook into the request and hijack the rendering easily and effortlessly;
+something baked controllers do not offer.
 
-More On Actions
-^^^^^^^^^^^^^^^
+Crud's default actions
+======================
+
+Crud has many actions built-in which come with the plugin.
 
 .. toctree::
+	:maxdepth: 1
 
 	actions/index
 	actions/view
@@ -147,4 +141,4 @@ More On Actions
 	actions/bulk-delete
 	actions/bulk-set-value
 	actions/bulk-toggle
-	actions/custom
+	Custom <actions/custom>

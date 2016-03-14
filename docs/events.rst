@@ -1,21 +1,22 @@
+******
 Events
-======
+******
 
-Events are the backbone of CRUD, and your primary gateway into customization of
-CRUD and fitting it to your applications.
+Events are the backbone of Crud, and your primary gateway into customization of
+Crud and fitting it to your applications.
 
 You can subscribe to events from almost everywhere, and in multiple ways.
 
 Controller
-----------
+==========
 
 implementedEvents
-"""""""""""""""""
+-----------------
 
 We override the ``implementedEvents()`` method in the controller, and bind
 the ``Crud.beforeFind`` event to the ``_beforeFind()`` method in the controller.
 
-When using this technique, you need to prefix all the event names with ``Crud.``.
+When using this technique, you need to prefix all the event names with ``Crud.``
 
 Most of the other ways to listen for events do not need this, as it's done
 automatically.
@@ -27,13 +28,13 @@ automatically.
 
   class BlogsController extends AppController {
 
-    public function implementedEvents() {
-      return parent::implementedEvents() + ['Crud.beforeFind' => '_beforeFind'];
-    }
+      public function implementedEvents() {
+          return parent::implementedEvents() + ['Crud.beforeFind' => '_beforeFind'];
+      }
 
-    public function _beforeFind(\Cake\Event\Event $event) {
+      public function _beforeFind(\Cake\Event\Event $event) {
 
-    }
+      }
 
   }
 
@@ -46,19 +47,17 @@ automatically.
   action.
 
 Action
-""""""
+------
 
-You can bind events directly in your controller actions, simply call the ``on()``
-method in CRUD and provide a callback.
-
-The example below uses a ``closure`` for the callback, but everything that is
-valid for ``call_user_func()`` can be used
+You can bind events directly in your controller actions, simply call the ``on()`` method in Crud and provide a
+callback. The example below uses a ``closure`` for the callback, but everything that is valid for ``call_user_func()``
+can be used
 
 .. code-block:: phpinline
 
   public function view($id) {
     $this->Crud->on('beforeFind', function(\Cake\Event\Event $event) {
-      // Will only execute for the view() action
+        // Will only execute for the view() action
     });
 
     return $this->Crud->execute();
@@ -67,37 +66,39 @@ valid for ``call_user_func()`` can be used
 .. note::
 
   When implementing events in your controller actions, it's important to
-  include ``return $this->Crud->execute();`` - else CRUD will not process the
-  action.
+  include ``return $this->Crud->execute();`` otherwise Crud will not process the action.
 
-This is functionality wise more or less the same as using an controller method instead.
-
-The benefit of the controller method is that you can easily share it between two
-actions, like showcased below
+The benefit of the controller method is that you can easily share it between two actions, like below.
 
 .. code-block:: phpinline
 
   public function view($id) {
-    $this->Crud->on('beforeFind', [$this, '_beforeFind']);
-    return $this->Crud->execute();
+      $this->Crud->on('beforeFind', [$this, '_beforeFind']);
+      return $this->Crud->execute();
   }
 
   public function admin_view($id) {
-    $this->Crud->on('beforeFind', [$this, '_beforeFind']);
-    return $this->Crud->execute();
+      $this->Crud->on('beforeFind', [$this, '_beforeFind']);
+      return $this->Crud->execute();
   }
 
   public function _beforeFind(\Cake\Event\Event $event) {
-    // Will execute for both view() and admin_view()
+      // Will execute for both view() and admin_view()
   }
 
-All CRUD Events
----------------
+.. _core-crud-events:
 
-This is a full list of all events emitted from CRUD.
+Core Crud Events
+================
 
-Each individual :doc:`CRUD action <actions>` contains the same documentation, but only the events
-relevant for that action.
+Different :doc:`Crud actions <actions>` will emit a different combination of events during their execution, with different
+:doc:`Subject <crud-subject>` data. If you are looking for events specific to an action, check the specific
+:doc:`Crud action <actions>` documentation page.
+
+Included actions
+----------------
+
+This is a full list of all events emitted from Crud.
 
 .. include:: /_partials/events/before_filter.rst
 .. include:: /_partials/events/startup.rst
@@ -118,6 +119,5 @@ relevant for that action.
 
 .. include:: /_partials/events/before_render.rst
 
-.. include:: /_partials/events/not_found.rst
 .. include:: /_partials/events/record_not_found.rst
 .. include:: /_partials/events/set_flash.rst

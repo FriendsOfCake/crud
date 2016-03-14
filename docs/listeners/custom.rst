@@ -1,29 +1,59 @@
 Custom
 ======
 
-Any class can be used as a CRUD Listener, even the controller.
+Any class can be used as a Crud Listener, even the controller.
 
-Example Controller
-------------------
+Using a controller as a listener
+--------------------------------
 
 We override the ``implementedEvents()`` method in the controller, and bind
 the ``Crud.beforeFind`` event to the ``_beforeFind()`` method in the controller.
 
-.. code-block:: php
+.. code-block:: phpinline
 
   <?php
-  namespace app\Controller;
+  namespace App\Controller;
 
   class BlogsController extends AppController {
 
-    public function implementedEvents() {
-      return parent::implementedEvents() + [
-        'Crud.beforeFind' => '_beforeFind'
-      ];
+    public function implementedEvents()
+    {
+        return parent::implementedEvents() + [
+            'Crud.beforeFind' => '_beforeFind'
+        ];
     }
 
-    public function _beforeFind(\Cake\Event\Event $event) {
+    public function _beforeFind(\Cake\Event\Event $event, \Cake\ORM\Query $query)
+    {
 
     }
 
+  }
+
+Creating a listener class
+-------------------------
+
+Creating your own listener class is very similar to enabling the controller to be a listener.
+
+.. code-block:: phpinline
+
+  <?php
+  namespace App\Lib\Listeners;
+
+  use Cake\Event\EventListenerInterface;
+  use Cake\Event\Event;
+
+  class MyListener implements EventListenerInterface
+  {
+      public function implementedEvents()
+      {
+          return [
+              'Crud.beforeFind' => '_beforeFind'
+          ];
+      }
+
+      public function _beforeFind(Event $event)
+      {
+          Log::debug('Inside the listener!');
+      }
   }

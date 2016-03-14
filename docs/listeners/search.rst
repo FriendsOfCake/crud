@@ -1,28 +1,28 @@
-Search 
-=======
+Search
+======
 
 This listener provides search capabilities for the Crud plugin.
 
 Introduction
-^^^^^^^^^^^^
-The ``Search listener`` depends on the ``FriendsOfCake`` repo ``search``.
+------------
 
-[Please also see the repo]
-(https://github.com/FriendsOfCake/search)
+The Search listener depends on the `friendsofcake/search <https://packagist.org/packages/friendsofcake/search>`_ package.
 
 Setup
-^^^^^
+-----
 
 Installation
--------------
+^^^^^^^^^^^^
 
-You need to install `FriendsOfCake/Search <https://github.com/FriendsOfCake/search>`_ first.
+.. code-block:: sh
+
+  composer require friendsofcake/search
 
 Controller
-----------
+^^^^^^^^^^
 
-Attach it on the fly in your controller beforeFilter, this is recommended if
-you want to attach it only to specific controllers and actions:
+Attach it on the fly in your controllers beforeFilter, this is recommended if
+you want to attach it only to specific controllers and actions.
 
 .. code-block:: php
 
@@ -30,27 +30,29 @@ you want to attach it only to specific controllers and actions:
   class SamplesController extends AppController {
 
     public function beforeFilter(\Cake\Event\Event $event) {
-      $this->Crud->addListener('Crud.Search');
+        $this->Crud->addListener('Crud.Search');
 
-      parent::beforeFilter();
+        parent::beforeFilter();
     }
   }
-  ?>
-
 
 Attach it using components array, this is recommended if you want to
-attach it to all controllers, application wide:
+attach it to all controllers, application wide.
 
 .. code-block:: php
 
   <?php
-  class SamplesController extends AppController {
+  class DemoController extends AppController {
 
-    public $components = [
-      'Crud.Crud' => [
-        'actions' => ['index', 'view'],
-        'listeners' => ['Crud.Search']
-      ];
-
+      public function initialize()
+      {
+          $this->loadComponent('Crud.Crud', [
+              'actions' => [
+                  'index'
+              ],
+              'listeners' => [
+                  'Crud.Search'
+              ]
+          ]);
+      }
   }
-  ?>
