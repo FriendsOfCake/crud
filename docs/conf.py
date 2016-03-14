@@ -36,6 +36,7 @@ from _config import *
 extensions = [
 #	'_config.cakephpbranch',
 #  'sphinx.ext.todo'
+    'sphinxcontrib.phpdomain'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -52,7 +53,7 @@ master_doc = 'contents'
 
 # General information about the project.
 project = u'crud'
-copyright = u'2014, Christian Winther'
+copyright = u'2016, Christian Winther'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -77,7 +78,8 @@ release = '4.0'
 # directories to ignore when looking for source files.
 exclude_patterns = [
 	'_build',
-	'_themes'
+	'_themes',
+	'_partials'
 ]
 
 # The reST default role (used for this markup: `text`) to use for all
@@ -255,7 +257,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'crud', u'crud Documentation',
-   u'Christian Winther', 'crud', 'One line description of project.',
+   u'Christian Winther', 'crud', 'CakePHP scaffolding on steroids!',
    'Miscellaneous'),
 ]
 
@@ -277,3 +279,11 @@ texinfo_documents = [
 #lexers['phpinline'] = PhpLexer(startinline=True)
 
 branch = 'master'
+
+# -- Import Pygment lexers for PHP -----------------------
+from sphinx.highlighting import lexers
+from pygments.lexers.web import PhpLexer
+lexers['php'] = PhpLexer(startinline=True)
+lexers['phpinline'] = PhpLexer(startinline=True)
+lexers['php-annotations'] = PhpLexer(startinline=True)
+primary_domain = "php"
