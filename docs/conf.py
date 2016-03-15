@@ -53,7 +53,7 @@ master_doc = 'contents'
 
 # General information about the project.
 project = u'crud'
-copyright = u'2016, Christian Winther'
+copyright = u'2016, Friends of Cake'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -213,7 +213,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
   ('index', 'crud.tex', u'crud',
-   u'Christian Winther', 'manual'),
+   u'Friends of Cake', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -243,7 +243,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'crud', u'crud Documentation',
-     [u'Christian Winther'], 1)
+     [u'Friends of Cake'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -257,7 +257,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'crud', u'crud Documentation',
-   u'Christian Winther', 'crud', 'CakePHP scaffolding on steroids!',
+   u'Friends of Cake', 'crud', 'CakePHP scaffolding on steroids!',
    'Miscellaneous'),
 ]
 
