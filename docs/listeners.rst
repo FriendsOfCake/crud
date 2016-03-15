@@ -79,9 +79,8 @@ the value ``CRUD 4.0``.
 Included listeners
 ==================
 
-Crud comes with a selection of listeners included which cover some of the most common use-cases. These allow you to tap
-into the events within the plugin and change behavior to suit your application, or to provide extra functionality, such
-as an API.
+Crud comes with a selection of listeners covering the most common use-cases. These allow you to tap into the events
+within the plugin and change behavior to suit your application, or to provide extra functionality, such as an API.
 
 .. toctree::
 	:maxdepth: 1

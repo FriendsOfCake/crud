@@ -2,8 +2,6 @@
 Installation
 ************
 
-Installing via composer is quick and simple, and the plugin is `available on Packagist <https://packagist.org/packages/friendsofcake/crud>`_.
-
 Requirements
 ============
 
@@ -18,6 +16,8 @@ The recommended installation method for this plugin is by using composer.
 .. code-block:: sh
 
 	composer require friendsofcake/crud:^4.3
+
+You can also check `Packagist <https://packagist.org/packages/friendsofcake/crud>`_.
 
 Loading the plugin
 ==================

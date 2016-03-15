@@ -5,8 +5,7 @@ class Example extends \Crud\Listener\BaseListener
 {
 
     /**
-     * Returns a list of all events that will fire in the lister during the
-     * CRUD life-cycle.
+     * Returns a list of all events that will fire in the lister during the Crud life-cycle.
      *
      * @return array
      */
@@ -18,9 +17,9 @@ class Example extends \Crud\Listener\BaseListener
     }
 
     /**
-     * Executed when Crud.beforeRender is emitted
+     * Executed when Crud.beforeRender is emitted.
      *
-     * @param \Cake\Event\Event $event
+     * @param \Cake\Event\Event $event Event instance
      *
      * @return void
      */

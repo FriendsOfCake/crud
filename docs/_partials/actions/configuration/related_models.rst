@@ -3,7 +3,7 @@ relatedModels
 
 .. note::
 
-    If you have the :doc:`RelatedModels listener </listeners/related-models>` configured, you can have Crud automatically load related data
+    If you have the :doc:`RelatedModels listener </listeners/related-models>` configured, you can have Crud automatically load related data.
 
 .. code-block:: phpinline
 

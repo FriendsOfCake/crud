@@ -7,7 +7,7 @@ Introduction
 ------------
 .. note::
 
-  The ``API listener`` depends on the ``RequestHandler`` to be loaded **before** ``Crud``
+  The ``API listener`` depends on the ``RequestHandler`` to be loaded **before** ``Crud``.
 
 `Please also see the CakePHP documentation on JSON and XML views <http://book.cakephp.org/3.0/en/views/json-and-xml-views.html>`_
 
@@ -17,8 +17,8 @@ Setup
 Routing
 ^^^^^^^
 
-You need to tell the ``Router`` to parse extensions else it won't be able to
-process and render ``json`` and ``xml`` URL extension
+You need to tell the ``Router`` to parse extensions else it won't be able toprocess and render ``json`` and ``xml``
+URL extension.
 
 .. code-block:: phpinline
 
@@ -30,8 +30,8 @@ Ensure this statement is used before connecting any routes, and is in the routin
 Controller
 ^^^^^^^^^^
 
-Attach it on the fly in your controllers ``beforeFilter``, this is recommended if
-you want to attach it only to specific controllers and actions
+Attach it on the fly in your controllers ``beforeFilter``, this is recommended if you want to attach it only to
+specific controllers and actions.
 
 .. code-block:: php
 
@@ -44,8 +44,7 @@ you want to attach it only to specific controllers and actions
     }
   }
 
-Attach it using components array, this is recommended if you want to
-attach it to all controllers, application wide
+Attach it using components array, this is recommended if you want to attach it to all controllers, application wide.
 
 .. code-block:: php
 
@@ -72,19 +71,19 @@ The Api Listener creates 3 new detectors in your ``CakeRequest`` object.
 is('json')
 ^^^^^^^^^^
 
-Checks if the extension of the request is ``.json`` or if the requester accepts
-json as part of the ``HTTP accepts`` header
+Checks if the extension of the request is ``.json`` or if the requester accepts json as part of the
+``HTTP accepts`` header.
 
 is('xml')
 ^^^^^^^^^
 
-Checks if the extension of the request is ``.xml`` or if the requester accepts
-XML as part of the ``HTTP accepts`` header
+Checks if the extension of the request is ``.xml`` or if the requester accepts XML as part of the ``HTTP accepts``
+header.
 
 is('api')
 ^^^^^^^^^
 
-Checking if the request is either ``is('json')`` or ``is('xml')``
+Checking if the request is either ``is('json')`` or ``is('xml')``.
 
 Default behavior
 ----------------

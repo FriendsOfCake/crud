@@ -8,8 +8,12 @@ Introduction
 ------------
 
 Crud can be configured to return the list of records for all related models or just those you want to on a per-action
-basis. By default all related model lists for the main Crud table instance will be fetched, but only for add, edit and
-corresponding admin actions.
+basis. By default all related model lists for the main Crud table instance will be fetched, but only for ``add``,
+``edit`` and corresponding admin actions.
+
+.. note::
+
+  Please note that the RelatedModels listener does not work on ``index`` actions.
 
 For instance if your ``Posts`` table is associated with ``Tags`` and ``Authors``, then for those actions
 you will have in your view the ``$authors`` and ``$tags`` variables containing the result of calling ``find(‘list’)`` on

@@ -1,7 +1,7 @@
 Custom Action Classes
 =====================
 
-If you need to customise an action for any reason, you can create your own custom Crud action class.
+If you need to customize an action for any reason, you can create your own custom Crud action class.
 
 A Crud Action can respond to any ``HTTP`` verb (``GET``, ``POST``, ``PUT``, ``DELETE``).
 Each HTTP verb can be implemented as method, e.g. ``_get()`` for HTTP ``GET``,
@@ -9,7 +9,7 @@ Each HTTP verb can be implemented as method, e.g. ``_get()`` for HTTP ``GET``,
 
 If no HTTP verb specific method is found in the class, ``_handle()`` will be executed.
 
-A default custom index action might be as simple as the following.
+A default custom index action might be as simple as the following:
 
 .. code-block:: phpinline
 
@@ -40,7 +40,7 @@ Why
 ---
 
 The most common use-cases for a custom action class is when you need to have specific code run on all your controllers
-for a certain action. That might be reading from the session or adjusting the query to add dynamic complex conditions.
+for a certain action. For example reading from the session or adjusting the query to add dynamic complex conditions.
 
 Remember that in the :doc:`/configuration` you can configure your action classes on a per-action basis, so you might just
 want a custom action for a single action across your controllers.

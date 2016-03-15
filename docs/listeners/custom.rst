@@ -33,7 +33,7 @@ the ``Crud.beforeFind`` event to the ``_beforeFind()`` method in the controller.
 Creating a listener class
 -------------------------
 
-Creating your own listener class is very similar to enabling the controller to be a listener.
+Creating your own listener class is very similar to using a controller as a listener.
 
 .. code-block:: phpinline
 
