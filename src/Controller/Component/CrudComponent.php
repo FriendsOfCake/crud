@@ -571,7 +571,7 @@ class CrudComponent extends Component
     public function useModel($modelName)
     {
         $this->_controller->loadModel($modelName);
-        $this->_modelName = $this->_model->name;
+        list(, $this->_modelName) = pluginSplit($modelName);
     }
 
     /**

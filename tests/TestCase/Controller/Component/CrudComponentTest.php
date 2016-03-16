@@ -991,20 +991,13 @@ class CrudComponentTest extends TestCase
      */
     public function testUseModel()
     {
-        $this->markTestSkipped(
-            'Tests still not updated.'
-        );
-
-        $this->Crud = new CrudComponent($this->Registry, ['actions' => ['index']]);
+        $this->Crud = new CrudComponent($this->Registry, ['actions' => ['Crud.Index']]);
         $this->Crud->beforeFilter(new Event('Controller.beforeFilter'));
         $this->controller->Crud = $this->Crud;
         $class = $this->getMockClass('Model');
         $this->Crud->useModel($class);
-        $this->Crud->action('index');
-        $subject = $this->Crud->trigger('sample');
 
-        $this->assertInstanceOf($class, $subject->model);
-        $this->assertEquals($class, $subject->modelClass);
+        $this->assertEquals($class, $this->Crud->table()->alias());
     }
 
     /**
