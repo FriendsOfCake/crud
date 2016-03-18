@@ -4,21 +4,21 @@ Bulk Toggle
 You can use the ``Bulk\ToggleAction`` class to toggle the value of a
 boolean field for a group of database records.
 
-.. code:: php
+.. code-block:: phpinline
 
   <?php
   namespace App\Controller;
 
   class PostsController extends AppController
   {
-    public function initialize()
-    {
-      parent::initialize();
-      $this->Crud->mapAction('toggleActive', [
-        'className' => 'Crud.Bulk/Toggle',
-        'field' => 'toggle',
-      ]);
-    }
+      public function initialize()
+      {
+          parent::initialize();
+          $this->Crud->mapAction('toggleActive', [
+              'className' => 'Crud.Bulk/Toggle',
+              'field' => 'toggle',
+          ]);
+      }
   }
 
 Configuration

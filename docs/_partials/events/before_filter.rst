@@ -1,5 +1,5 @@
 Crud.beforeFilter
-^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^
 
 Triggered when a ``CrudAction`` is going to handle a CakePHP request.
 

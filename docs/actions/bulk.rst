@@ -13,7 +13,7 @@ Three BulkAction classes exist in the core:
 To create your own BulkAction, simply create a new action class with a ``_bulk``
 method. This method takes a CakePHP ``Query`` object as it's first argument
 
-.. code:: php
+.. code-block:: phpinline
 
   <?php
   namespace App\Crud\Action;

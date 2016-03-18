@@ -1,5 +1,5 @@
 Crud.afterBulk
-^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^
 
 This event is emitted after calling ``_bulk()`` on a Bulk Crud action.
 
@@ -16,11 +16,11 @@ Check Success
 .. code-block:: phpinline
 
   public function bulk($id) {
-    $this->Crud->on('afterBulk', function(\Cake\Event\Event $event) {
-      if (!$event->subject->success) {
-        $this->log("Bulk action failed");
-      }
-    });
+      $this->Crud->on('afterBulk', function(\Cake\Event\Event $event) {
+          if (!$event->subject()->success) {
+            $this->log("Bulk action failed");
+          }
+      });
 
-    return $this->Crud->execute();
+      return $this->Crud->execute();
   }

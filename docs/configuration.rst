@@ -1,49 +1,51 @@
+*************
 Configuration
-=============
+*************
 
-Configuration of Crud is done through the Crud ``component`` - either on the fly
+Configuration of Crud is done through the Crud component - either on the fly
 anywhere in you application, or by providing the configuration in the
-``Controller::$components`` property.
+``Controller::loadComponent()`` method.
 
 Assuming you have followed the :doc:`installation guide<installation>` we will
 now begin the actual configuration of Crud.
 
-Crud is loaded like any other ``Component`` in CakePHP - simply by adding it to
-the ``$components`` variable in the controller
-
 .. code-block:: phpinline
 
   class AppController extends \Cake\Controller\Controller {
 
-    public $components = ['Crud.Crud'];
+    public function initialize()
+    {
+        parent::initialize();
+
+        $this->loadComponent('Crud.Crud');
 
   }
 
-At this time, the Crud Component is loaded and ready for usage.
-
-However, Crud has not been configured to handle any controller actions yet.
+At this time, the Crud Component is loaded, but we need to tell Crud which actions we want it to handle for us.
 
 Actions
--------
+=======
 
-Configuring Crud to handle actions is simple.
+The list of actions is provided either as Component configuration, or on the fly.
 
-The list of actions is provided either as ``Component`` configuration, or on the
-fly.
-
-An example of ``Component`` configuration:
+An example configuration for handling index actions looks like this.
 
 .. code-block:: phpinline
 
-  class AppController extends \Cake\Controller\Controller {
+  class AppController extends \Cake\Controller\Controller
+  {
 
-    public $components = [
-      'Crud.Crud' => [
-        'actions' => ['Crud.Index']
-      ]
-    ];
+    use \Crud\Controller\ControllerTrait;
 
-  }
+    public function initialize()
+    {
+        parent::initialize();
+
+        $this->loadComponent('Crud.Crud', [
+            'actions' => [
+                'Crud.Index'
+            ]
+        ]);
 
 An example of on the fly enabling an Crud action:
 
@@ -63,43 +65,41 @@ The examples above are functionally identical, and instructs Crud to handle the
 .. note::
 
   If you do not wish for Crud to be enabled across all controllers, or even use
-  all ``actions`` provided by Crud
-  you can pick and chose which to use. Crud will not force take-over any
-  application logic, and you can enable/disable
+  all ``actions`` provided by Crud you can pick and chose which to use.
+  Crud will not force take-over any application logic, and you can enable/disable
   them as you see fit.
 
 Action configuration
---------------------
+====================
 
 .. note::
 
-  Each :doc:`Crud Action<actions>` have a different set of configuration
-  settings, please see their individual documentation page for more information.
+  Each :doc:`Crud Action<actions>` can have a different set of configuration
+  settings, please see their individual documentation pages for more information.
 
-Passing in configuration for an action is simple.
-
-.. note::
-
-  In the examples below, we reconfigure the `Index Action` to render
-  ``my_index.ctp`` instead of ``index.ctp``
-
-An example of ``Component`` configuration
+A more verbose example now, where we'll change the view template that Crud will use for index actions to be ``my_index.ctp``
 
 .. code-block:: phpinline
 
-  class AppController extends \Cake\Controller\Controller {
+  class AppController extends \Cake\Controller\Controller
+  {
 
-    public $components = [
-      'Crud.Crud' => [
-        'actions' => [
-          'index' => ['className' => 'Crud.Index', 'view' => 'my_index']
-        ]
-      ]
-    ];
+    use \Crud\Controller\ControllerTrait;
 
-  }
+    public function initialize()
+    {
+        parent::initialize();
 
-An example of on the fly enabling an Crud action with configuration
+        $this->loadComponent('Crud.Crud', [
+            'actions' => [
+                'index' => [
+                  'className' => 'Crud.Index',
+                  'view' => 'my_index'
+                ]
+            ]
+        ]);
+
+An example of on the fly enabling a Crud action with configuration
 
 .. code-block:: phpinline
 
@@ -115,22 +115,33 @@ An example of on the fly enabling an Crud action with configuration
   }
 
 Disabling loaded actions
-------------------------
-If you've loaded an action in eg. your ``AppController`` - but don't want it included in a specific controller, it can be disabled with the ``$this->Crud->disable(['action_name'])``.
+========================
 
-Example of disable a loaded action:
+If you've loaded an action in eg. your ``AppController`` - but don't want it included in a specific controller, it can
+be disabled with the ``$this->Crud->disable(['action_name'])``.
+
+Example of disabling a loaded action, first we show all actions being configured to be handled by Crud, then disabling a
+specific action in our ``PostsController``.
 
 .. code-block:: phpinline
 
-  class AppController extends \Cake\Controller\Controller {
+  class AppController extends \Cake\Controller\Controller
+  {
 
-    public $components = [
-      'Crud.Crud' => [
-        'actions' => ['Crud.Index', 'Crud.View', 'Crud.Delete', 'Crud.Edit']
-      ]
-    ];
+    use \Crud\Controller\ControllerTrait;
 
-  }
+    public function initialize()
+    {
+        parent::initialize();
+
+        $this->loadComponent('Crud.Crud', [
+            'actions' => [
+                'Crud.Index',
+                'Crud.View',
+                'Crud.Delete',
+                'Crud.Edit'
+            ]
+        ]);
 
 .. code-block:: phpinline
 
@@ -145,9 +156,9 @@ Example of disable a loaded action:
   }
 
 Built-in actions
-----------------
+================
 
-Crud provides the default ``CRUD`` actions out of the box.
+Crud provides the default create, read, update and delete actions out of the box.
 
 * :doc:`Index Action<actions/index>`
 * :doc:`View Action<actions/view>`
@@ -159,17 +170,41 @@ Crud provides the default ``CRUD`` actions out of the box.
 * :doc:`Bulk Set Value Action<actions/bulk-set-value>`
 * :doc:`Bulk Field Toggle Action<actions/bulk-toggle>`
 
-It's possible to create your own ``Crud Action`` as well, or overwrite the
-built-in ones.
+Custom action classes
+=====================
 
-Simply provide the ``className`` configuration key for an action, and Crud will
-use that one instead.
+It's possible to create your own custom action classes as well, or overwrite the built-in ones. Simply provide
+the ``className`` configuration key for an action, and Crud will use that one instead.
 
-Listeners
----------
+.. code-block:: phpinline
+
+  class AppController extends \Cake\Controller\Controller
+  {
+
+    use \Crud\Controller\ControllerTrait;
+
+    public function initialize()
+    {
+        parent::initialize();
+
+        $this->loadComponent('Crud.Crud', [
+            'actions' => [
+                'index' => ['className' => '\App\Crud\Action\MyIndexAction'],
+                'view' => ['className' => '\App\Crud\Action\MyViewAction']
+            ]
+        ]);
 
 .. note::
 
-  Each :doc:`Crud Listener<listeners>` have a different set of configuration
-  settings, please see their individual documentation page for more information.
+  Ensure that you escape your namespace when loading your own action classes.
+
+:doc:`Learn more about custom action classes </actions/custom>`.
+
+Listeners
+=========
+
+The other way to customise the behavior of the Crud plugin is through it's many listeners. These provide lots of
+additional functionality to your scaffolding, such as dealing with api's and loading related data.
+
+Check the :doc:`listeners` documentation for more on Crud's included listeners, and how to create your own.
 

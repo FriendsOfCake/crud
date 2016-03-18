@@ -1,57 +1,28 @@
+************
 Installation
-============
-
-Installing composer is quick and simple.
+************
 
 Requirements
-------------
+============
 
-* CakePHP 3.x
-* PHP 5.4
-
-Getting the source code
------------------------
-
-You can get the Crud source code using either composer or git.
+* CakePHP 3.2+
+* PHP 5.5.9+
 
 Using composer
---------------
+==============
 
 The recommended installation method for this plugin is by using composer.
 
-Using the inline require for composer:
-
 .. code-block:: sh
 
-	composer require friendsofcake/crud:~4.2
+	composer require friendsofcake/crud:^4.3
 
-Or add this to your composer.json configuration:
-
-.. code-block:: javascript
-
-	{
-		"require" : {
-			"FriendsOfCake/crud": "~4.2"
-		}
-	}
-
-
-Using git submodule
--------------------
-
-Or add it as a git module, this is recommended over ``git clone`` since it's
-easier to keep up to date with development that way:
-
-.. code-block:: sh
-
-		git submodule add git://github.com/FriendsOfCake/crud.git Plugin/Crud
-		cd Plugin/Crud
-
+You can also check `Packagist <https://packagist.org/packages/friendsofcake/crud>`_.
 
 Loading the plugin
-------------------
+==================
 
-Add the following to your /App/Config/bootstrap.php
+Add the following to your ``/config/bootstrap.php``
 
 .. code-block:: phpinline
 
@@ -59,28 +30,54 @@ Add the following to your /App/Config/bootstrap.php
 
 
 Configuring the controller
---------------------------
+==========================
 
-In your AppController add the following code:
+The Crud plugin provides a trait which will catch a MissingActionException and then step in to provide scaffold actions
+to the controllers.
+
+To enable Crud across your whole application add the trait to your ``src/Controller/AppController.php``
 
 .. code-block:: php
 
-	<?php
-	namespace App\Controller;
+    <?php
+    namespace App\Controller;
 
-	class AppController extends \Cake\Controller\Controller {
+    class AppController extends \Cake\Controller\Controller {
 
-		use \Crud\Controller\ControllerTrait;
+        use \Crud\Controller\ControllerTrait;
 
-	}
+    }
 
 .. note::
 
-	It's not required to add the ``ControllerTrait`` to ``AppController`` - you can add it to any specific controller
-	as well if you don't want Crud installed application wide
+    To have Crud just scaffold a single controller you can just add the ``ControllerTrait`` to that specific controller.
 
 Adding the ``ControllerTrait`` itself do not enable anything CRUD, but simply installs the code to handle
 the ``\Cake\Error\MissingActionException`` exception so you don't have to implement an action in your controller
-for Crud to work. This will make a lot of sense later.
+for Crud to work.
 
-The :doc:`Configuration page</configuration>` explains how to setup and configure the Crud component.
+The next step is to load the Crud component in your controller. A basic example is as follows, and will enable the Crud
+plugin to scaffold all your controllers index actions.
+
+.. code-block:: phpinline
+
+  class AppController extends \Cake\Controller\Controller
+  {
+
+    use \Crud\Controller\ControllerTrait;
+
+    public function initialize()
+    {
+        parent::initialize();
+
+        $this->loadComponent('Crud.Crud', [
+            'actions' => [
+                'Crud.Index'
+            ]
+        ]);
+
+        // Other application wide controller setup
+
+  }
+
+Further configuration options are detailed on the :doc:`configuration page</configuration>`.

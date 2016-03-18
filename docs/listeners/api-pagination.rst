@@ -1,7 +1,7 @@
 API Pagination
 ==============
 
-.. note::
+.. warning::
 
 	This feature requires the :doc:`API listener<api>` to work.
 
@@ -15,19 +15,20 @@ it available for all your controllers, application wide.
 
 .. code-block:: php
 
-	<?php
-	class AppController extends \Cake\Controller\Controller {
+    <?php
+    class AppController extends \Cake\Controller\Controller {
 
-		public $components = [
-			'RequestHandler',
-			'Crud.Crud' => [
-				'listeners' => [
-					'Crud.Api', // Required
-					'Crud.ApiPagination'
-				]
-			];
-
-	}
+        public function initialize()
+        {
+            $this->loadComponent('RequestHandler');
+            $this->loadComponent('Crud.Crud', [
+                'listeners' => [
+                    'Crud.Api', // Required
+                    'Crud.ApiPagination'
+                ]
+            ]);
+        }
+    }
 
 
 Attach it on the fly in your controller beforeFilter if you want to limit
@@ -35,15 +36,16 @@ availability of the listener to specific controllers and actions.
 
 .. code-block:: php
 
-	<?php
-	class SamplesController extends AppController {
+    <?php
+    class SamplesController extends AppController {
 
-		public function beforeFilter(\Cake\Event\Event $event) {
-			$this->Crud->addListener('Crud.Api'); // Required
-			$this->Crud->addListener('Crud.ApiPagination');
-		}
+        public function beforeFilter(\Cake\Event\Event $event)
+        {
+            $this->Crud->addListener('Crud.Api'); // Required
+            $this->Crud->addListener('Crud.ApiPagination');
+        }
 
-	}
+    }
 
 Output
 ------
@@ -71,20 +73,20 @@ Configuration
 -------------
 
 Configure this listener by setting the
-[CakePHP Pagination](http://book.cakephp.org/3.0/en/controllers/components/pagination.html)
-options directly to the query object.
+`CakePHP Pagination <http://book.cakephp.org/3.0/en/controllers/components/pagination.html>`_ options directly to the
+query object.
 
 .. code-block:: php
 
-	public function index()
-	{
-		$event->subject()->query->contain([
-			'Comments' => function ($q) {
-				return $q
-					->select(['id', 'name', 'description'])
-					->where([
-						'Comments.approved' => true
-					]);
-			}
-		]);
-	}
+    public function index()
+    {
+        $event->subject()->query->contain([
+            'Comments' => function ($q) {
+                return $q
+                    ->select(['id', 'name', 'description'])
+                    ->where([
+                        'Comments.approved' => true
+                    ]);
+            }
+        ]);
+    }
