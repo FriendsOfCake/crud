@@ -189,8 +189,8 @@ the ``className`` configuration key for an action, and Crud will use that one in
 
         $this->loadComponent('Crud.Crud', [
             'actions' => [
-                'index' => ['className' => '\\App\\Crud\\MyIndexAction'],
-                'view' => ['className' => '\\App\\Crud\\MyViewAction']
+                'index' => ['className' => '\App\Crud\Action\MyIndexAction'],
+                'view' => ['className' => '\App\Crud\Action\MyViewAction']
             ]
         ]);
 

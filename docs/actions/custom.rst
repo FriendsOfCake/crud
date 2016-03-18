@@ -64,7 +64,7 @@ Crud component configuration.
 
           $this->loadComponent('Crud.Crud', [
               'actions' => [
-                  'index' => ['className' => '\\App\\Crud\\MyIndexAction']
+                  'index' => ['className' => '\App\Crud\Action\MyIndexAction']
               ]
           ]);
       }
