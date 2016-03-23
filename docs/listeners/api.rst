@@ -91,7 +91,7 @@ Default behavior
 If the current request doesn't evaluate ``is('api')`` to true, the listener
 won't do anything at all.
 
-All it's callbacks will simply return ``NULL`` and don't get in your way.
+All its callbacks will simply return ``NULL`` and don't get in your way.
 
 Exception handler
 -----------------
