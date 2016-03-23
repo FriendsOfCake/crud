@@ -106,6 +106,7 @@ This is a full list of all events emitted from Crud.
 .. include:: /_partials/events/before_delete.rst
 .. include:: /_partials/events/after_delete.rst
 
+.. _crud-beforefind:
 .. include:: /_partials/events/before_find.rst
 .. include:: /_partials/events/after_find.rst
 
