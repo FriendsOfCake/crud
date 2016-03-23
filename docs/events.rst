@@ -23,19 +23,20 @@ automatically.
 
 .. code-block:: php
 
-  <?php
   namespace app\Controller;
 
-  class BlogsController extends AppController {
+  class BlogsController extends AppController
+  {
 
-      public function implementedEvents() {
+      public function implementedEvents()
+      {
           return parent::implementedEvents() + ['Crud.beforeFind' => '_beforeFind'];
       }
 
-      public function _beforeFind(\Cake\Event\Event $event) {
+      public function _beforeFind(\Cake\Event\Event $event)
+      {
 
       }
-
   }
 
 .. note::
@@ -55,7 +56,8 @@ can be used
 
 .. code-block:: phpinline
 
-  public function view($id) {
+  public function view($id)
+  {
     $this->Crud->on('beforeFind', function(\Cake\Event\Event $event) {
         // Will only execute for the view() action
     });
@@ -72,17 +74,20 @@ The benefit of the controller method is that you can easily share it between two
 
 .. code-block:: phpinline
 
-  public function view($id) {
+  public function view($id)
+  {
       $this->Crud->on('beforeFind', [$this, '_beforeFind']);
       return $this->Crud->execute();
   }
 
-  public function admin_view($id) {
+  public function admin_view($id)
+  {
       $this->Crud->on('beforeFind', [$this, '_beforeFind']);
       return $this->Crud->execute();
   }
 
-  public function _beforeFind(\Cake\Event\Event $event) {
+  public function _beforeFind(\Cake\Event\Event $event)
+  {
       // Will execute for both view() and admin_view()
   }
 

@@ -11,14 +11,15 @@ now begin the actual configuration of Crud.
 
 .. code-block:: phpinline
 
-  class AppController extends \Cake\Controller\Controller {
+  class AppController extends \Cake\Controller\Controller
+  {
 
     public function initialize()
     {
         parent::initialize();
 
         $this->loadComponent('Crud.Crud');
-
+    }
   }
 
 At this time, the Crud Component is loaded, but we need to tell Crud which actions we want it to handle for us.
@@ -46,17 +47,20 @@ An example configuration for handling index actions looks like this.
                 'Crud.Index'
             ]
         ]);
+    }
+  }
 
 An example of on the fly enabling an Crud action:
 
 .. code-block:: phpinline
 
-  class AppController extends \Cake\Controller\Controller {
+  class AppController extends \Cake\Controller\Controller
+  {
 
-    public function beforeFilter(\Cake\Event\Event $event) {
-      $this->Crud->mapAction('index', 'Crud.Index');
+    public function beforeFilter(\Cake\Event\Event $event)
+    {
+        $this->Crud->mapAction('index', 'Crud.Index');
     }
-
   }
 
 The examples above are functionally identical, and instructs Crud to handle the
@@ -98,20 +102,23 @@ A more verbose example now, where we'll change the view template that Crud will 
                 ]
             ]
         ]);
+    }
+  }
 
 An example of on the fly enabling a Crud action with configuration
 
 .. code-block:: phpinline
 
-  class AppController extends \Cake\Controller\Controller {
+  class AppController extends \Cake\Controller\Controller
+  {
 
-    public function beforeFilter(\Cake\Event\Event $event) {
-      $this->Crud->mapAction('index', [
-        'className' => 'Crud.Index',
-        'view' => 'my_index'
-      ]);
+    public function beforeFilter(\Cake\Event\Event $event)
+    {
+        $this->Crud->mapAction('index', [
+          'className' => 'Crud.Index',
+          'view' => 'my_index'
+        ]);
     }
-
   }
 
 Disabling loaded actions
@@ -142,17 +149,20 @@ specific action in our ``PostsController``.
                 'Crud.Edit'
             ]
         ]);
+    }
+  }
 
 .. code-block:: phpinline
 
-  class PostsController extends AppController {
+  class PostsController extends AppController
+  {
 
-    public function beforeFilter(\Cake\Event\Event $event) {
-      parent::beforeFilter($event);
+      public function beforeFilter(\Cake\Event\Event $event)
+      {
+          parent::beforeFilter($event);
 
-      $this->Crud->disable(['Edit', 'Delete']);
-    }
-
+          $this->Crud->disable(['Edit', 'Delete']);
+      }
   }
 
 Built-in actions
@@ -180,7 +190,6 @@ the ``className`` configuration key for an action, and Crud will use that one in
 
   class AppController extends \Cake\Controller\Controller
   {
-
       use \Crud\Controller\ControllerTrait;
 
       public function initialize()
@@ -193,6 +202,8 @@ the ``className`` configuration key for an action, and Crud will use that one in
                   'view' => ['className' => '\App\Crud\Action\MyViewAction']
               ]
           ]);
+      }
+  }
 
 .. note::
 

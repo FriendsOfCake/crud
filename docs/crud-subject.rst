@@ -28,5 +28,6 @@ This is an example of the data passed in a ``beforeFind`` event subject.
             $primaryKey = $event->subject()->id;
             $table = $event->subject()->repository;
         });
+    }
 
 Find more examples in the :ref:`Core Crud Events <core-crud-events>` documentation, for the event you need.
