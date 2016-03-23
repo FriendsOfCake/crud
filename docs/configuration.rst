@@ -181,18 +181,18 @@ the ``className`` configuration key for an action, and Crud will use that one in
   class AppController extends \Cake\Controller\Controller
   {
 
-    use \Crud\Controller\ControllerTrait;
+      use \Crud\Controller\ControllerTrait;
 
-    public function initialize()
-    {
-        parent::initialize();
+      public function initialize()
+      {
+          parent::initialize();
 
-        $this->loadComponent('Crud.Crud', [
-            'actions' => [
-                'index' => ['className' => '\App\Crud\Action\MyIndexAction'],
-                'view' => ['className' => '\App\Crud\Action\MyViewAction']
-            ]
-        ]);
+          $this->loadComponent('Crud.Crud', [
+              'actions' => [
+                  'index' => ['className' => '\App\Crud\Action\MyIndexAction'],
+                  'view' => ['className' => '\App\Crud\Action\MyViewAction']
+              ]
+          ]);
 
 .. note::
 
@@ -207,4 +207,49 @@ The other way to customise the behavior of the Crud plugin is through it's many 
 additional functionality to your scaffolding, such as dealing with api's and loading related data.
 
 Check the :doc:`listeners` documentation for more on Crud's included listeners, and how to create your own.
+
+Prefix routing
+==============
+
+You might have a scenario where you'd like to use Crud, but only within a certain prefix, such as running your admin
+area on Crud under the ``admin`` prefix.
+
+The easiest way to achieve this is to create an ``AppController`` for the prefix, and have your other prefixed controllers
+extend from that one. Then you can configure Crud in your prefixes ``AppController``.
+
+Let's look at an example, using an ``api`` prefix. For this example, we'll assume your
+`prefix routing <http://book.cakephp.org/3.0/en/development/routing.html#prefix-routing>`_ is already configured.
+
+First step is to create your new ``ApiAppController`` which should be in ``src/Controller/Api/``.
+
+.. code-block:: phpinline
+
+  namespace App\Controller\Api;
+
+  class ApiAppController extends Controller
+  {
+      public function initialize()
+      {
+          $this->loadComponent('Crud.Crud', [
+              'actions' => [
+                  'Crud.Index',
+                  'Crud.View'
+              ]
+          ]);
+
+          $this->Crud->addListener('Crud.Api');
+          $this->Crud->addListener('Crud.ApiPagination');
+      }
+  }
+
+So now that we've created our new ``ApiAppController`` we can extend the other prefix controllers from this one, so that
+they inherit the Crud configuration without impacting other areas of our application.
+
+.. code-block:: phpinline
+
+  namespace App\Controller\Api;
+
+  class ProductsController extends ApiAppController
+  {
+  }
 
