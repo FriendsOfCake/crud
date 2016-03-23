@@ -2,24 +2,22 @@ Related Models
 ==============
 
 If you are used to bake or CakePHP scaffolding you might want to have some control over the data it sends to the view
-for filling select boxes for associated models.
+for filling select boxes for associated models, as well as populating related data in index views.
 
 Introduction
 ------------
 
-Crud can be configured to return the list of records for all related models or just those you want to on a per-action
+Crud can be configured to return a list of records for all related models or just those you want to on a per-action
 basis. By default all related model lists for the main Crud table instance will be fetched, but only for ``add``,
 ``edit`` and corresponding admin actions.
-
-.. note::
-
-  Please note that the RelatedModels listener does not work on ``index`` actions.
 
 For instance if your ``Posts`` table is associated with ``Tags`` and ``Authors``, then for those actions
 you will have in your view the ``$authors`` and ``$tags`` variables containing the result of calling ``find(‘list’)`` on
 each table.
 
 Should you need more fine grain control over the lists fetched, you can configure it statically or use dynamic methods.
+
+For ``index`` methods, you can specify the related models which should be contained during the pagination query.
 
 Configuring
 -----------
@@ -52,12 +50,33 @@ You can enable and disable which model relations you want to have automatically 
         {
             $this->loadComponent('Crud.Crud', [
                 'actions' => [
-                    'add' => ['relatedModels' => ['Authors']],
-                    'edit' => ['relatedModels' => ['Tags', 'Cms.Pages']]
+                    'index' => [
+                        'className' => 'Crud.Index',
+                        'relatedModels' => true
+                    ],
+                    'add' => [
+                        'className' => 'Crud.Add',
+                        'relatedModels' => ['Authors']
+                    ],
+                    'edit' => [
+                        'className' => 'Crud.Edit',
+                        'relatedModels' => ['Tags', 'Cms.Pages']
+                    ]
                 ]
             ]);
         }
     }
+
+The above example will add a contain to your query for all related models in your ``index`` method, and will perform a
+``find('list')`` for related data for your ``add`` and ``edit`` actions.
+
+.. note::
+
+  The Related Models listener performs differently for the ``index`` method, than it does for ``add``
+  and ``edit``.
+
+If you need to contain extra data in your ``add`` and ``edit`` methods, then you can hook the ``beforeFind`` event and
+adjust the queries contain as you need. You can find out how in the :ref:`crud-beforefind`.
 
 It’s possible to dynamically reconfigure the relatedModels listener
 
@@ -87,7 +106,7 @@ It’s possible to dynamically reconfigure the relatedModels listener
 Events
 ------
 
-If for any reason you need to alter the query or final results generated
+If for any reason you need to alter the ``find('list')`` query or final results generated
 by fetching related models lists, you can use the ``Crud.relatedModel`` event
 to inject your own logic.
 

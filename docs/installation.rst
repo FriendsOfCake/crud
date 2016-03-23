@@ -52,7 +52,7 @@ To enable Crud across your whole application add the trait to your ``src/Control
 
     To have Crud just scaffold a single controller you can just add the ``ControllerTrait`` to that specific controller.
 
-Adding the ``ControllerTrait`` itself do not enable anything CRUD, but simply installs the code to handle
+Adding the ``ControllerTrait`` itself do not enable anything Crud, but simply installs the code to handle
 the ``\Cake\Error\MissingActionException`` exception so you don't have to implement an action in your controller
 for Crud to work.
 
