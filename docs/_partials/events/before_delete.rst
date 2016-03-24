@@ -16,7 +16,8 @@ Stop Delete
 
 .. code-block:: phpinline
 
-  public function delete($id) {
+  public function delete($id)
+  {
       $this->Crud->on('beforeDelete', function(\Cake\Event\Event $event) {
           // Stop the delete event, the entity will not be deleted
           if ($event->subject()->item->author !== 'admin') {

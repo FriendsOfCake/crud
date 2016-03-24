@@ -17,7 +17,8 @@ Stop Bulk Action
 
 .. code-block:: phpinline
 
-  public function bulk($id) {
+  public function bulk($id)
+  {
       $this->Crud->on('beforeBulk', function(\Cake\Event\Event $event) {
           // Stop the bulk event, the action will not continue
           if ($event->subject()->item->author !== 'admin') {

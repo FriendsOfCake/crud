@@ -15,10 +15,11 @@ Check Success
 
 .. code-block:: phpinline
 
-  public function bulk($id) {
+  public function bulk($id)
+  {
       $this->Crud->on('afterBulk', function(\Cake\Event\Event $event) {
           if (!$event->subject()->success) {
-            $this->log("Bulk action failed");
+              $this->log("Bulk action failed");
           }
       });
 
