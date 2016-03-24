@@ -19,12 +19,11 @@ we do this by enabling Crud in the ``AppController`` with the ``actions`` option
 
 .. code-block:: php
 
-    <?php
     namespace App\Controller;
 
-    class AppController extends \Cake\Controller\Controller {
-
-      use \Crud\Controller\ControllerTrait;
+    class AppController extends \Cake\Controller\Controller
+    {
+        use \Crud\Controller\ControllerTrait;
 
         public function initialize()
         {
@@ -51,12 +50,10 @@ So, our new Blog needs a Posts controller to allow us to create, read, update an
 
 .. code-block:: php
 
-  <?php
-
   namespace App\Controller;
 
-  class PostsController extends AppController {
-
+  class PostsController extends AppController
+  {
   }
 
 This is all the code we need in the ``PostsController`` as Crud will scaffold the controller actions for us.

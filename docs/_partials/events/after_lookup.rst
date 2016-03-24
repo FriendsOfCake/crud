@@ -10,10 +10,11 @@ Modify the Result
 
 .. code-block:: phpinline
 
-  public function lookup() {
+  public function lookup()
+  {
       $this->Crud->on('afterLookup', function(\Cake\Event\Event $event) {
           foreach ($event->subject()->entities as $entity) {
-            // $entity is an entity
+              // $entity is an entity
           }
       });
 
