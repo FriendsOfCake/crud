@@ -339,7 +339,6 @@ class ApiListenerTest extends TestCase
                 ->expects($this->any())
                 ->method('errors')
                 ->will($this->returnValue($validationErrors));
-
         } else {
             $listener->expects($this->never())->method('_validationErrors');
         }
