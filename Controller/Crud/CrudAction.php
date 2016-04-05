@@ -237,7 +237,7 @@ abstract class CrudAction extends CrudBaseObject {
 
 		$config['text'] = __d($domain, $config['params']['original']);
 
-		$config['text'] = String::insert(
+		$config['text'] = CakeText::insert(
 			$config['text'],
 			$replacements + array('name' => $config['name']),
 			array('before' => '{', 'after' => '}')
