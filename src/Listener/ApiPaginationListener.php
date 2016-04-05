@@ -58,13 +58,18 @@ class ApiPaginationListener extends BaseListener
             return;
         }
 
+        $paginationLimit = $pagination['limit'];
+        if ($pagination['limit'] == null) {
+            $paginationLimit = $controller->paginate['limit'];
+        }
+
         $paginationResponse = [
             'page_count' => $pagination['pageCount'],
             'current_page' => $pagination['page'],
             'has_next_page' => $pagination['nextPage'],
             'has_prev_page' => $pagination['prevPage'],
             'count' => $pagination['count'],
-            'limit' => $pagination['limit']
+            'limit' => $paginationLimit
         ];
 
         $controller->set('pagination', $paginationResponse);
