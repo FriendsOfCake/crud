@@ -290,7 +290,7 @@ class ApiListener extends CrudListener {
 
 /**
  * Expand all scalar values from a CrudSubject
- * and use them for a String::insert() interpolation
+ * and use them for a CakeText::insert() interpolation
  * of a path
  *
  * @param CrudSubject $subject
@@ -309,7 +309,7 @@ class ApiListener extends CrudListener {
 			$keys[$key] = $subjectArray[$key];
 		}
 
-		return String::insert($path, $keys, array('before' => '{', 'after' => '}'));
+		return CakeText::insert($path, $keys, array('before' => '{', 'after' => '}'));
 	}
 
 /**
