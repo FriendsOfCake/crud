@@ -70,10 +70,7 @@ class ApiPaginationListener extends BaseListener
             'has_prev_page' => $pagination['prevPage'],
             'count' => $pagination['count'],
             'limit' => $paginationLimit,
-            'per_page' => $pagination['perPage'],
-            'sort' => $pagination['sort'],
-            'sort_default' => $pagination['sortDefault'],
-            'direction_default' => $pagination['directionDefault'],
+            'per_page' => $pagination['perPage']
         ];
 
         $controller->set('pagination', $paginationResponse);
