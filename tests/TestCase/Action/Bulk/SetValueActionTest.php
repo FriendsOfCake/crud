@@ -77,8 +77,8 @@ class SetValueActionTest extends IntegrationTestCase
 
         $this->{$method}('/blogs/deactivateAll', [
             'id' => [
-                1 => 1,
-                2 => 2,
+                1,
+                2,
             ],
         ]);
 
@@ -125,8 +125,8 @@ class SetValueActionTest extends IntegrationTestCase
 
         $this->post('/blogs/deactivateAll', [
             'id' => [
-                1 => 1,
-                2 => 2,
+                1,
+                2,
             ],
         ]);
 
@@ -169,8 +169,8 @@ class SetValueActionTest extends IntegrationTestCase
 
         $this->post('/users/deactivateAll', [
             'id' => [
-                '0acad6f2-b47e-4fc1-9086-cbc906dc45fd' => '0acad6f2-b47e-4fc1-9086-cbc906dc45fd',
-                '968ad2b3-f41d-4de3-909a-74a3ce85e826' => '968ad2b3-f41d-4de3-909a-74a3ce85e826',
+                '0acad6f2-b47e-4fc1-9086-cbc906dc45fd',
+                '968ad2b3-f41d-4de3-909a-74a3ce85e826',
             ],
         ]);
 
