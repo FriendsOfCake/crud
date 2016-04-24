@@ -18,7 +18,28 @@ A default custom index action might be as simple as the following:
 
     class MyIndex extends \Crud\Action\BaseAction
     {
-
+        /**
+         * Default settings
+         *
+         * @var array
+         */
+        protected $_defaultConfig = [
+            'enabled' => true,
+            'scope' => 'table',
+            'findMethod' => 'all',
+            'view' => null,
+            'viewVar' => null,
+            'serialize' => [],
+            'api' => [
+                'success' => [
+                    'code' => 200
+                ],
+                'error' => [
+                    'code' => 400
+                ]
+            ]
+        ];
+    
         /**
         * Generic handler for all HTTP verbs
         *
