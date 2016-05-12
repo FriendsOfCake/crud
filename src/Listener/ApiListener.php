@@ -42,6 +42,7 @@ class ApiListener extends BaseListener
             'message' => 'Unknown error',
             'code' => 0
         ],
+        'exceptionRenderer' => 'Crud\Error\ExceptionRenderer',
         'setFlash' => false
     ];
 
@@ -152,7 +153,7 @@ class ApiListener extends BaseListener
      */
     public function registerExceptionHandler()
     {
-        $exceptionRenderer = 'Crud\Error\ExceptionRenderer';
+        $exceptionRenderer = $this->config('exceptionRenderer');
         (new ErrorHandler(compact('exceptionRenderer') + (array)Configure::read('Error')))->register();
     }
 
