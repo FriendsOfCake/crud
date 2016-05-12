@@ -99,6 +99,21 @@ The Api listener overrides the ``Exception.renderer`` for ``api`` requests,
 so in case of an error, a standardized error will be returned, in either
 ``json`` or ``xml`` - according to the API request type.
 
+Create a custom exception renderer by extending the Crud ExceptionRenderer
+class and enabling it with the `exceptionRenderer` configuration option.
+
+.. code-block:: php
+
+  <?php
+  class AppController extends Controller {
+
+    public function initialize()
+    {
+      parent::initialize();
+      $this->Crud->config(['listeners.api.exceptionRenderer' => 'App\Error\ExceptionRenderer']);
+    }
+  }
+
 Request type enforcing
 ^^^^^^^^^^^^^^^^^^^^^^
 
