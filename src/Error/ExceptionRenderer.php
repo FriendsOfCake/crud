@@ -19,7 +19,7 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer
 {
 
     /**
-     * Renders validation errors and sends a 412 error code
+     * Renders validation errors and sends a 422 error code
      *
      * @param \Exception $error Exception instance
      * @return \Cake\Network\Response
@@ -31,7 +31,7 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer
         try {
             $this->controller->response->statusCode($status);
         } catch (Exception $e) {
-            $status = 412;
+            $status = 422;
             $this->controller->response->statusCode($status);
         }
 

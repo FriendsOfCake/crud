@@ -220,7 +220,7 @@ HTTP POST (add)
 ``success`` is based on the ``event->subject->success`` parameter from the
 ``Add`` action.
 
-If ``success`` is ``false`` a HTTP response code of ``412`` will be returned,
+If ``success`` is ``false`` a HTTP response code of ``422`` will be returned,
 along with a list of validation errors from the model in the ``data`` property
 of the response body.
 
@@ -234,7 +234,7 @@ HTTP PUT (edit)
 ``success`` is based on the ``event->subject->success`` parameter from the
 ``Edit`` action.
 
-If ``success`` is ``false`` a HTTP response code of ``412`` will be returned,
+If ``success`` is ``false`` a HTTP response code of ``422`` will be returned,
 along with a list of validation errors from the model in the ``data`` property
 of the response body.
 
