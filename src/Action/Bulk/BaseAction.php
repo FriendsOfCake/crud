@@ -87,6 +87,7 @@ abstract class BaseAction extends CrudBaseAction
             foreach ($ids as $key => $value) {
                 $ids[$key] = 1;
             }
+            $ids = array_keys($ids);
         }
 
         $ids = array_filter($ids);
