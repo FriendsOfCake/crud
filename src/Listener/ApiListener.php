@@ -193,13 +193,7 @@ class ApiListener extends BaseListener
         $this->_ensureData($subject);
         $this->_ensureSerialize();
 
-        $controller = $this->_controller();
-
-        if (!empty($controller->RequestHandler->ext)) {
-            $controller->RequestHandler->renderAs($controller, $controller->RequestHandler->ext);
-        }
-
-        return $controller->render();
+        return $this->_controller()->render();
     }
 
     /**
