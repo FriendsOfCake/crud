@@ -3,6 +3,7 @@ namespace Crud\Listener;
 
 use Cake\Core\Plugin;
 use Cake\Event\Event;
+use Cake\Utility\Hash;
 use RuntimeException;
 
 class SearchListener extends BaseListener
@@ -60,7 +61,7 @@ class SearchListener extends BaseListener
             ));
         }
 
-        $filterParams = $table->filterParams($this->_request()->query);
+        $filterParams = $table->filterParams(Hash::flatten($this->_request()->query));
         $event->subject->query->find('search', $filterParams);
     }
 }
