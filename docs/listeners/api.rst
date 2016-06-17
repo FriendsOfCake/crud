@@ -228,6 +228,17 @@ If ``success`` is ``true`` a HTTP response code of ``201`` will be returned,
 along with the id of the created record in the ``data`` property of the
 response body.
 
+The ``success`` return data can be customized by setting the ``api.success.data.entity`` config for the action.
+
+.. code-block:: phpinline
+
+  //In your Controller/Action
+  $this->Crud->action()->config('api.success.data.entity', [
+      'id', //Extract the `id` value from the entity and place it into the `id` key in the return data.
+      'status' => 'status_value' //Extract the `status_value` value from the entity and place it into the `status` key in the return data.
+  ]);
+
+
 HTTP PUT (edit)
 ---------------
 
