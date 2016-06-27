@@ -75,6 +75,11 @@ The above example will add a contain to your query for all related models in you
   The Related Models listener performs differently for the ``index`` method, than it does for ``add``
   and ``edit``.
 
+.. note::
+
+  The Related Models listener are aware of custom binding keys for your relations, and will use them
+  over the primary key (which is CakePHP default behavior)
+
 If you need to contain extra data in your ``add`` and ``edit`` methods, then you can hook the ``beforeFind`` event and
 adjust the queries contain as you need. You can find out how in the :ref:`crud-beforefind`.
 
