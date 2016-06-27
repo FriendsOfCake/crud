@@ -117,6 +117,7 @@ subject, which can be altered on the fly before any result is fetched
 * ``viewVar`` The name of the variable when set to the view
 * ``query`` The ``\Cake\ORM\Query`` object used for the ``find('list')``
 * ``association`` The ``\Cake\ORM\Association`` object
+* ``entity`` The ``Cake\ORM\Entity`` you are finding relations for
 
 Example
 
