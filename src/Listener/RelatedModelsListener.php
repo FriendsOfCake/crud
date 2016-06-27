@@ -106,7 +106,7 @@ class RelatedModelsListener extends BaseListener
      * This is useful for cases where the relation has a different binding key
      * than the primary key in the associated table (e.g. NOT 'id')
      *
-     * @param  Association $association
+     * @param Association $association The association that we process
      * @return array
      */
     protected function _findOptions(Association $association)
