@@ -59,7 +59,11 @@ class RelatedModelsListener extends BaseListener
      */
     public function beforeRender(Event $event)
     {
-        $this->publishRelatedModels(null, $event->subject->entity);
+        $entity = null;
+        if (isset($event->subject->entity)) {
+            $entity = $event->subject->entity;
+        }
+        $this->publishRelatedModels(null, $entity);
     }
 
     /**
@@ -88,12 +92,28 @@ class RelatedModelsListener extends BaseListener
             }
 
             $finder = $this->finder($association);
-            $query = $association->find()->find($finder);
+            $query = $association->find()->find($finder, $this->_findOptions($association));
             $subject = $this->_subject(compact('name', 'viewVar', 'query', 'association', 'entity'));
             $event = $this->_trigger('relatedModel', $subject);
 
-            $controller->set($event->subject->viewVar, $event->subject->query->toArray());
+            $controller->set($event->subject->viewVar, $event->subject->query);
         }
+    }
+
+    /**
+     * Find keyField and valueField for find('list')
+     *
+     * This is useful for cases where the relation has a different binding key
+     * than the primary key in the associated table (e.g. NOT 'id')
+     *
+     * @param  Association $association
+     * @return array
+     */
+    protected function _findOptions(Association $association)
+    {
+        return [
+            'keyField' => $association->bindingKey()
+        ];
     }
 
     /**
