@@ -218,9 +218,7 @@ class CrudComponent extends Component
         $this->_action = $controllerAction ?: $this->_action;
 
         $action = $this->_action;
-        if (empty($args)) {
-            $args = $this->_request->params['pass'];
-        }
+        $args = (!empty($args)) ? [$args] : $this->_request->params['pass'];
 
         try {
             $event = $this->trigger('beforeHandle', $this->getSubject(compact('args', 'action')));
