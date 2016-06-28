@@ -1,8 +1,8 @@
 <?php
 namespace Crud\Traits;
 
-use Crud\Event\Subject;
 use Cake\Datasource\Exception\InvalidPrimaryKeyException;
+use Crud\Event\Subject;
 
 trait FindMethodTrait
 {
