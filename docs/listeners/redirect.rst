@@ -17,7 +17,7 @@ you want to attach it only to specific controllers and actions:
       public function beforeFilter(\Cake\Event\Event $event) {
           $this->Crud->addListener('Crud.Redirect');
 
-          parent::beforeFilter();
+          parent::beforeFilter($event);
       }
   }
 
@@ -93,7 +93,7 @@ The closure takes two arguments:
       $listener->reader($name, Closure $closure);
 
       // Example on a reader using Configure
-      $listener->reader('configure.key', function(CrudSubject $subject, $key)) {
+      $listener->reader('configure.key', function(CrudSubject $subject, $key) {
         return Configure::read($key);
       });
 
@@ -167,6 +167,6 @@ It's very simple to modify existing or add your own redirect rules:
           ]
       );
 
-      parent::beforeFilter();
+      parent::beforeFilter($event);
     }
   }
