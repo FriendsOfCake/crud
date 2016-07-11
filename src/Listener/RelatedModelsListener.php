@@ -96,7 +96,7 @@ class RelatedModelsListener extends BaseListener
             $subject = $this->_subject(compact('name', 'viewVar', 'query', 'association', 'entity'));
             $event = $this->_trigger('relatedModel', $subject);
 
-            $controller->set($event->subject->viewVar, $event->subject->query);
+            $controller->set($event->subject->viewVar, $event->subject->query->toArray());
         }
     }
 
