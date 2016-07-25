@@ -80,13 +80,15 @@ query object.
 
     public function index()
     {
-        $event->subject()->query->contain([
-            'Comments' => function ($q) {
-                return $q
-                    ->select(['id', 'name', 'description'])
-                    ->where([
-                        'Comments.approved' => true
-                    ]);
-            }
-        ]);
+        $this->Crud->on('beforePaginate', function (\Cake\Event\Event $event) {
+            $event->subject()->query->contain([
+                'Comments' => function ($q) {
+                    return $q
+                        ->select(['id', 'name', 'description'])
+                        ->where([
+                            'Comments.approved' => true
+                        ]);
+                }
+            ]);
+        });
     }
