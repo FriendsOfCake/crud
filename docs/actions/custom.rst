@@ -16,7 +16,7 @@ A default custom index action might be as simple as the following:
     <?php
     namespace App\Crud\Action;
 
-    class MyIndex extends \Crud\Action\BaseAction
+    class MyIndexAction extends \Crud\Action\BaseAction
     {
         /**
          * Default settings
