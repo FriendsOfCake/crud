@@ -32,7 +32,7 @@ you want to attach it only to specific controllers and actions.
     public function beforeFilter(\Cake\Event\Event $event) {
         $this->Crud->addListener('Crud.Search');
 
-        parent::beforeFilter();
+        parent::beforeFilter($event);
     }
   }
 
