@@ -31,6 +31,7 @@ class ToggleAction extends BaseAction
                 'text' => 'Could not toggle value'
             ]
         ];
+
         return parent::__construct($Controller, $config);
     }
 
@@ -63,6 +64,7 @@ class ToggleAction extends BaseAction
         $query->update()->set($expression);
         $statement = $query->execute();
         $statement->closeCursor();
+
         return $statement->rowCount();
     }
 }

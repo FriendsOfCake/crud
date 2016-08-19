@@ -42,6 +42,7 @@ class CrudExamplesTable extends \Cake\ORM\Table
     protected function _findPublished(Query $query, array $options)
     {
         $query->where(['published' => 'Y']);
+
         return $query;
     }
 
@@ -55,6 +56,7 @@ class CrudExamplesTable extends \Cake\ORM\Table
     protected function _findUnpublished(Query $query, array $options)
     {
         $query->where(['published' => 'N']);
+
         return $query;
     }
 }

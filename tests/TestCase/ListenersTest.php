@@ -18,6 +18,7 @@ class ListenersTest extends \PHPUnit_Framework_TestSuite
         }
 
         $suite->addTestDirectoryRecursive($testPath . DS . 'Listener');
+
         return $suite;
     }
 }

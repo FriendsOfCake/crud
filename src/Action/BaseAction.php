@@ -60,12 +60,14 @@ abstract class BaseAction extends Object
         if (method_exists($this, $method)) {
             $this->_responding = true;
             $this->_controller()->eventManager()->on($this);
+
             return call_user_func_array([$this, $method], $args);
         }
 
         if (method_exists($this, '_handle')) {
             $this->_responding = true;
             $this->_controller()->eventManager()->on($this);
+
             return call_user_func_array([$this, '_handle'], $args);
         }
 
@@ -172,6 +174,7 @@ abstract class BaseAction extends Object
         );
 
         $config['params']['class'] .= ' ' . $type;
+
         return $config;
     }
 

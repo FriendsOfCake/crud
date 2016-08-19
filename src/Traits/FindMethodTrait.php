@@ -52,6 +52,7 @@ trait FindMethodTrait
 
         $subject->set(['entity' => $entity, 'success' => true]);
         $this->_trigger('afterFind', $subject);
+
         return $entity;
     }
 

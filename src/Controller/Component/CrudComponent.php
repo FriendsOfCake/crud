@@ -259,6 +259,7 @@ class CrudComponent extends Component
         }
 
         $name = Inflector::variable($name);
+
         return $this->_loadAction($name);
     }
 

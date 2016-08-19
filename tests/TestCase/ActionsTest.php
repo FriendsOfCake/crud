@@ -18,6 +18,7 @@ class ActionsTest extends \PHPUnit_Framework_TestSuite
         }
 
         $suite->addTestDirectoryRecursive($testPath . '/Action');
+
         return $suite;
     }
 }

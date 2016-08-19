@@ -77,6 +77,7 @@ trait ViewVarTrait
     protected function _deriveViewValue(Event $event)
     {
         $key = $this->_action()->subjectEntityKey();
+
         return $event->subject->{$key};
     }
 }

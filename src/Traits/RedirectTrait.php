@@ -50,6 +50,7 @@ trait RedirectTrait
     protected function _refererRedirectUrl($default = null)
     {
         $controller = $this->_controller();
+
         return $this->_redirectUrl($controller->referer($default, true));
     }
 
@@ -96,6 +97,7 @@ trait RedirectTrait
         $this->_trigger('beforeRedirect', $subject);
 
         $controller = $this->_controller();
+
         return $controller->redirect($subject->url, $subject->status);
     }
 }

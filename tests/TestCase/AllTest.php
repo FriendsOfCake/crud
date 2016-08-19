@@ -18,6 +18,7 @@ class AllTest extends \PHPUnit_Framework_TestSuite
         }
 
         $suite->addTestDirectoryRecursive($testPath);
+
         return $suite;
     }
 }

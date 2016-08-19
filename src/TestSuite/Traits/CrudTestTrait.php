@@ -65,6 +65,7 @@ trait CrudTestTrait
             ->setConstructorArgs([['alias' => $alias, 'table' => $table]])
             ->getMock();
         $mock->connection(ConnectionManager::get('test'));
+
         return $mock;
     }
 

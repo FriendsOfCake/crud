@@ -29,6 +29,7 @@ class DeleteAction extends BaseAction
                 'text' => 'Could not complete deletion'
             ]
         ];
+
         return parent::__construct($Controller, $config);
     }
 
@@ -43,6 +44,7 @@ class DeleteAction extends BaseAction
         $query = $query->delete();
         $statement = $query->execute();
         $statement->closeCursor();
+
         return $statement->rowCount();
     }
 }
