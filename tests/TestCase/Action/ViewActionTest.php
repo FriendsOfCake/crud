@@ -44,7 +44,7 @@ class ViewActionTest extends IntegrationTestCase
     public function testGet($method)
     {
         $this->_eventManager->on(
-            'Dispatcher.beforeDispatch',
+            'Dispatcher.invokeController',
             ['priority' => 1000],
             function ($event) {
                 $this->_subscribeToEvents($this->_controller);
@@ -67,7 +67,7 @@ class ViewActionTest extends IntegrationTestCase
     public function testGetWithViewVar()
     {
         $this->_eventManager->on(
-            'Dispatcher.beforeDispatch',
+            'Dispatcher.invokeController',
             ['priority' => 1000],
             function ($event) {
                 $this->_controller->Crud->action('view')->viewVar('item');

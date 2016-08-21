@@ -4,6 +4,7 @@ namespace Crud\TestSuite;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Event\EventManager;
+use Cake\Routing\Router;
 use Crud\TestSuite\Traits\CrudTestTrait;
 use FriendsOfCake\TestUtilities\AccessibilityHelperTrait;
 use FriendsOfCake\TestUtilities\CounterHelperTrait;
@@ -35,5 +36,14 @@ abstract class IntegrationTestCase extends \Cake\TestSuite\IntegrationTestCase
         $existing = Configure::read('App.paths.templates');
         $existing[] = Plugin::path('Crud') . 'tests/App/Template/';
         Configure::write('App.paths.templates', $existing);
+
+
+        Configure::write('App.namespace', 'Crud\Test\App');
+
+        Router::extensions('json');
+
+        Router::connect('/:controller', ['action' => 'index'], ['routeClass' => 'DashedRoute']);
+        Router::connect('/:controller/:action/*', [], ['routeClass' => 'DashedRoute']);
+        $this->useHttpServer(false);
     }
 }

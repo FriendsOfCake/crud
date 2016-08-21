@@ -187,15 +187,17 @@ class CrudComponentTest extends TestCase
 
         $this->model = TableRegistry::get('CrudExamples');
 
-        $this->request = $this->getMock('Cake\Network\Request', ['is', 'method']);
+        $this->request = $this->getMockBuilder('Cake\Network\Request')
+            ->setMethods(['is', 'method'])
+            ->getMock();
+
         $this->request->expects($this->any())->method('is')->will($this->returnValue(true));
 
         $response = new Response();
-        $this->controller = $this->getMock(
-            'Crud\TestCase\Controller\Crud\CrudExamplesController',
-            ['header', 'redirect', 'render', '_stop'],
-            [$this->request, $response, 'CrudExamples', EventManager::instance()]
-        );
+        $this->controller = $this->getMockBuilder('Crud\TestCase\Controller\Crud\CrudExamplesController')
+            ->setMethods(['header', 'redirect', 'render', '_stop'])
+            ->setConstructorArgs([$this->request, $response, 'CrudExamples', EventManager::instance()])
+            ->getMock();
         $this->controller->methods = [];
 
         $this->Registry = $this->controller->components();
@@ -248,11 +250,10 @@ class CrudComponentTest extends TestCase
                 'Crud.Related'
             ]
         ];
-        $Crud = $this->getMock(
-            'Crud\Controller\Component\CrudComponent',
-            ['_loadListeners', 'trigger'],
-            [$this->Registry, $config]
-        );
+        $Crud = $this->getMockBuilder('Crud\Controller\Component\CrudComponent')
+            ->setMethods(['_loadListeners', 'trigger'])
+            ->setConstructorArgs([$this->Registry, $config])
+            ->getMock();
         $Crud
             ->expects($this->once())
             ->method('_loadListeners');
@@ -282,11 +283,10 @@ class CrudComponentTest extends TestCase
     {
         $config = ['actions' => ['Crud.Index']];
 
-        $Crud = $this->getMock(
-            'Crud\Controller\Component\CrudComponent',
-            ['execute'],
-            [$this->Registry, $config]
-        );
+        $Crud = $this->getMockBuilder('Crud\Controller\Component\CrudComponent')
+            ->setMethods(['execute'])
+            ->setConstructorArgs([$this->Registry, $config])
+            ->getMock();
         $Crud
             ->expects($this->once())
             ->method('execute')

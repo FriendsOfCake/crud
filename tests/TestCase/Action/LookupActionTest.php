@@ -28,7 +28,7 @@ class LookupActionTest extends IntegrationTestCase
     public function testGet()
     {
         $this->_eventManager->on(
-            'Dispatcher.beforeDispatch',
+            'Dispatcher.invokeController',
             ['priority' => 1000],
             function () {
                 $this->_subscribeToEvents($this->_controller);
@@ -57,7 +57,7 @@ class LookupActionTest extends IntegrationTestCase
     public function testGetWithCustomParams()
     {
         $this->_eventManager->on(
-            'Dispatcher.beforeDispatch',
+            'Dispatcher.invokeController',
             ['priority' => 1000],
             function () {
                 $this->_subscribeToEvents($this->_controller);
@@ -87,7 +87,7 @@ class LookupActionTest extends IntegrationTestCase
     public function testGetWithQueryModification()
     {
         $this->_eventManager->on(
-            'Dispatcher.beforeDispatch',
+            'Dispatcher.invokeController',
             ['priority' => 1000],
             function () {
                 $this->_controller->Crud->on('beforeLookup', function ($event) {
