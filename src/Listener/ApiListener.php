@@ -84,7 +84,13 @@ class ApiListener extends BaseListener
             return;
         }
 
-        $this->registerExceptionHandler();
+        $appClass = Configure::read('App.namespace') . '\Application';
+
+        // If `App\Application` class exists it means Cake 3.3's PSR7 middleware
+        // implementation is used and it's too late to register new error handler.
+        if (!class_exists($appClass, false)) {
+            $this->registerExceptionHandler();
+        }
     }
 
     /**

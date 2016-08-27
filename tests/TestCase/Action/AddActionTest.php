@@ -82,13 +82,13 @@ class AddActionTest extends IntegrationTestCase
     public function testActionPost()
     {
         $this->_eventManager->on(
-            'Dispatcher.beforeDispatch',
+            'Dispatcher.invokeController',
             ['priority' => 1000],
             function ($event) {
-                $this->_controller->Flash = $this->getMock(
-                    'Cake\Controller\Component\Flash',
-                    ['set']
-                );
+                $this->_controller->Flash = $this->getMockBuilder('Cake\Controller\Component\FlashComponent')
+                    ->setMethods(['set'])
+                    ->disableOriginalConstructor()
+                    ->getMock();
 
                 $this->_controller->Flash
                     ->expects($this->once())
@@ -127,13 +127,13 @@ class AddActionTest extends IntegrationTestCase
     public function testActionPostWithAddRedirect()
     {
         $this->_eventManager->on(
-            'Dispatcher.beforeDispatch',
+            'Dispatcher.invokeController',
             ['priority' => 1000],
             function ($event) {
-                $this->_controller->Flash = $this->getMock(
-                    'Cake\Controller\Component\Flash',
-                    ['set']
-                );
+                $this->_controller->Flash = $this->getMockBuilder('Cake\Controller\Component\FlashComponent')
+                    ->setMethods(['set'])
+                    ->disableOriginalConstructor()
+                    ->getMock();
 
                 $this->_controller->Flash
                     ->expects($this->once())
@@ -172,13 +172,13 @@ class AddActionTest extends IntegrationTestCase
     public function testActionPostWithEditRedirect()
     {
         $this->_eventManager->on(
-            'Dispatcher.beforeDispatch',
+            'Dispatcher.invokeController',
             ['priority' => 1000],
             function ($event) {
-                $this->_controller->Flash = $this->getMock(
-                    'Cake\Controller\Component\Flash',
-                    ['set']
-                );
+                $this->_controller->Flash = $this->getMockBuilder('Cake\Controller\Component\FlashComponent')
+                    ->setMethods(['set'])
+                    ->disableOriginalConstructor()
+                    ->getMock();
 
                 $this->_controller->Flash
                     ->expects($this->once())
@@ -216,13 +216,13 @@ class AddActionTest extends IntegrationTestCase
     public function testActionPostErrorSave()
     {
         $this->_eventManager->on(
-            'Dispatcher.beforeDispatch',
+            'Dispatcher.invokeController',
             ['priority' => 1000],
             function ($event) {
-                $this->_controller->Flash = $this->getMock(
-                    'Cake\Controller\Component\Flash',
-                    ['set']
-                );
+                $this->_controller->Flash = $this->getMockBuilder('Cake\Controller\Component\FlashComponent')
+                    ->setMethods(['set'])
+                    ->disableOriginalConstructor()
+                    ->getMock();
 
                 $this->_controller->Flash
                     ->expects($this->once())
@@ -269,13 +269,13 @@ class AddActionTest extends IntegrationTestCase
     public function testActionPostValidationErrors()
     {
         $this->_eventManager->on(
-            'Dispatcher.beforeDispatch',
+            'Dispatcher.invokeController',
             ['priority' => 1000],
             function ($event) {
-                $this->_controller->Flash = $this->getMock(
-                    'Cake\Controller\Component\Flash',
-                    ['set']
-                );
+                $this->_controller->Flash = $this->getMockBuilder('Cake\Controller\Component\FlashComponent')
+                    ->setMethods(['set'])
+                    ->disableOriginalConstructor()
+                    ->getMock();
 
                 $this->_controller->Flash
                     ->expects($this->once())
@@ -339,7 +339,6 @@ class AddActionTest extends IntegrationTestCase
      */
     public function testApiGet($method)
     {
-        Router::extensions(['json']);
         Router::scope('/', function ($routes) {
             $routes->extensions(['json']);
             $routes->fallbacks();
@@ -374,13 +373,13 @@ class AddActionTest extends IntegrationTestCase
     public function testApiCreate($method)
     {
         $this->_eventManager->on(
-            'Dispatcher.beforeDispatch',
+            'Dispatcher.invokeController',
             ['priority' => 1000],
             function ($event) {
-                $this->_controller->Flash = $this->getMock(
-                    'Cake\Controller\Component\Flash',
-                    ['set']
-                );
+                $this->_controller->Flash = $this->getMockBuilder('Cake\Controller\Component\FlashComponent')
+                    ->setMethods(['set'])
+                    ->disableOriginalConstructor()
+                    ->getMock();
 
                 $this->_controller->Flash
                     ->expects($this->never())
@@ -392,8 +391,6 @@ class AddActionTest extends IntegrationTestCase
                 $this->_controller->RequestHandler->ext = 'json';
             }
         );
-
-        Router::extensions('json');
 
         $this->{$method}('/blogs/add.json', [
             'name' => '6th blog post',
@@ -418,16 +415,14 @@ class AddActionTest extends IntegrationTestCase
      */
     public function testApiCreateError($method)
     {
-        Router::extensions('json');
-
         $this->_eventManager->on(
-            'Dispatcher.beforeDispatch',
+            'Dispatcher.invokeController',
             ['priority' => 1000],
             function ($event) {
-                $this->_controller->Flash = $this->getMock(
-                    'Cake\Controller\Component\Flash',
-                    ['set']
-                );
+                $this->_controller->Flash = $this->getMockBuilder('Cake\Controller\Component\FlashComponent')
+                    ->setMethods(['set'])
+                    ->disableOriginalConstructor()
+                    ->getMock();
 
                 $this->_controller->Flash
                     ->expects($this->never())
@@ -468,16 +463,14 @@ class AddActionTest extends IntegrationTestCase
      */
     public function testApiCreateErrors($method)
     {
-        Router::extensions('json');
-
         $this->_eventManager->on(
-            'Dispatcher.beforeDispatch',
+            'Dispatcher.invokeController',
             ['priority' => 1000],
             function ($event) {
-                $this->_controller->Flash = $this->getMock(
-                    'Cake\Controller\Component\Flash',
-                    ['set']
-                );
+                $this->_controller->Flash = $this->getMockBuilder('Cake\Controller\Component\FlashComponent')
+                    ->setMethods(['set'])
+                    ->disableOriginalConstructor()
+                    ->getMock();
 
                 $this->_controller->Flash
                     ->expects($this->never())

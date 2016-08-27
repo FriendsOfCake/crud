@@ -130,7 +130,9 @@ class ApiListenerTest extends TestCase
             ->setMethods(['statusCode'])
             ->getMock();
 
-        $subject = $this->getMock('\Crud\Event\Subject');
+        $subject = $this
+            ->getMockBuilder('\Crud\Event\Subject')
+            ->getMock();
         $subject->success = true;
 
         $event = new \Cake\Event\Event('Crud.afterSave', $subject);
@@ -176,7 +178,8 @@ class ApiListenerTest extends TestCase
             ->setMethods(['config'])
             ->getMock();
 
-        $subject = $this->getMock('\Crud\Event\Subject');
+        $subject = $this->getMockBuilder('\Crud\Event\Subject')
+            ->getMock();
         $subject->success = true;
 
         $event = new \Cake\Event\Event('Crud.afterSave', $subject);
@@ -333,15 +336,15 @@ class ApiListenerTest extends TestCase
 
         if (isset($apiConfig['type']) && $apiConfig['type'] === 'validate') {
             $event->subject->set([
-                'entity' => $this->getMock('\Cake\ORM\Entity', ['errors'])
+                'entity' => $this->getMockBuilder('\Cake\ORM\Entity')
+                    ->setMethods(['errors'])
+                    ->getMock()
             ]);
 
             $event->subject->entity
                 ->expects($this->any())
                 ->method('errors')
                 ->will($this->returnValue($validationErrors));
-        } else {
-            $listener->expects($this->never())->method('_validationErrors');
         }
 
         $this->setExpectedException($exceptionClass, $exceptionMessage, $exceptionCode);
@@ -364,7 +367,7 @@ class ApiListenerTest extends TestCase
             ->getMock();
 
         $controller = $this
-            ->getMockBuilder('Controller')
+            ->getMockBuilder('\Cake\Controller\Controller')
             ->setMethods(['set'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -411,7 +414,7 @@ class ApiListenerTest extends TestCase
             ->getMock();
 
         $controller = $this
-            ->getMockBuilder('Controller')
+            ->getMockBuilder('\Cake\Controller\Controller')
             ->setMethods(['set'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -457,7 +460,7 @@ class ApiListenerTest extends TestCase
             ->getMock();
 
         $controller = $this
-            ->getMockBuilder('Controller')
+            ->getMockBuilder('\Cake\Controller\Controller')
             ->setMethods(['set'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -504,13 +507,13 @@ class ApiListenerTest extends TestCase
             ->getMock();
 
         $controller = $this
-            ->getMockBuilder('Controller')
+            ->getMockBuilder('\Cake\Controller\Controller')
             ->setMethods(['set'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $action = $this
-            ->getMockBuilder('AddCrudAction')
+            ->getMockBuilder('\Crud\Action\AddAction')
             ->setMethods(['config'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -549,7 +552,7 @@ class ApiListenerTest extends TestCase
         $subject = new \Crud\Event\Subject(['success' => true]);
 
         $controller = $this
-            ->getMockBuilder('Controller')
+            ->getMockBuilder('\Cake\Controller\Controller')
             ->setMethods(['set'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -582,13 +585,13 @@ class ApiListenerTest extends TestCase
             ->getMock();
 
         $controller = $this
-            ->getMockBuilder('Controller')
+            ->getMockBuilder('\Cake\Controller\Controller')
             ->setMethods(['set'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $action = $this
-            ->getMockBuilder('CrudAction')
+            ->getMockBuilder('Crud\Action\BaseAction')
             ->setMethods(['config'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -634,13 +637,13 @@ class ApiListenerTest extends TestCase
             ->getMock();
 
         $controller = $this
-            ->getMockBuilder('Controller')
+            ->getMockBuilder('\Cake\Controller\Controller')
             ->setMethods(['set'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $action = $this
-            ->getMockBuilder('CrudAction')
+            ->getMockBuilder('Crud\Action\BaseAction')
             ->setMethods(['config'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -691,13 +694,13 @@ class ApiListenerTest extends TestCase
             ->getMock();
 
         $controller = $this
-            ->getMockBuilder('Controller')
+            ->getMockBuilder('\Cake\Controller\Controller')
             ->setMethods(['set'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $action = $this
-            ->getMockBuilder('CrudAction')
+            ->getMockBuilder('\Crud\Action\BaseAction')
             ->setMethods(['config'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -743,13 +746,13 @@ class ApiListenerTest extends TestCase
             ->getMock();
 
         $controller = $this
-            ->getMockBuilder('Controller')
+            ->getMockBuilder('\Cake\Controller\Controller')
             ->setMethods(['set'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $action = $this
-            ->getMockBuilder('CrudAction')
+            ->getMockBuilder('\Crud\Action\BaseAction')
             ->setMethods(['config'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -797,7 +800,7 @@ class ApiListenerTest extends TestCase
         $subject = new \Crud\Event\Subject(['success' => true]);
 
         $controller = $this
-            ->getMockBuilder('Controller')
+            ->getMockBuilder('\Cake\Controller\Controller')
             ->setMethods(['set'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -1100,7 +1103,7 @@ class ApiListenerTest extends TestCase
             ->getMock();
 
         $action = $this
-            ->getMockBuilder('CrudAction')
+            ->getMockBuilder('\Crud\Action\IndexAction')
             ->setMethods(['config'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -1206,12 +1209,15 @@ class ApiListenerTest extends TestCase
     public function testInjectViewClasses()
     {
         $controller = $this
-            ->getMockBuilder('Controller')
-            ->setMethods(['foo'])
+            ->getMockBuilder('\Cake\Controller\Controller')
+            ->setMethods(['foobar'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        $controller->RequestHandler = $this->getMock('RequestHandler', ['config']);
+        $controller->RequestHandler = $this->getMockBuilder('\Cake\Controller\Component\RequestHandlerComponent')
+            ->setMethods(['config'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $controller->RequestHandler
             ->expects($this->at(0))
             ->method('config')

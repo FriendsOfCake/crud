@@ -115,6 +115,10 @@ class and enabling it with the `exceptionRenderer` configuration option.
     }
   }
 
+However if you are using CakePHP 3.3's PSR7 middleware feature the ``exceptionRenderer``
+config won't be used and instead you will have to set the ``Error.exceptionRenderer``
+config in ``config/app.php`` to ``'Crud\Error\ExceptionRenderer'``.
+
 Request type enforcing
 ----------------------
 
