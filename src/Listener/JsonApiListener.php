@@ -1,0 +1,281 @@
+<?php
+namespace Crud\Listener;
+
+use Cake\Core\Configure;
+use Cake\Datasource\ConnectionManager;
+use Cake\Event\Event;
+use Cake\Network\Exception\BadRequestException;
+use Cake\Utility\Inflector;
+use Crud\Error\Exception\CrudException;
+use Crud\Event\Subject;
+
+/**
+ * Extends Crud ApiListener to respond in JSON API format.
+ *
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ */
+class JsonApiListener extends ApiListener
+{
+
+    /**
+     * Default configuration
+     *
+     * @var array
+     */
+    protected $_defaultConfig = [
+        'detectors' => [
+            'jsonapi' => ['ext' => 'json', 'accepts' => 'application/vnd.api+json'],
+        ],
+        'exception' => [
+            'type' => 'default',
+            'class' => 'Cake\Network\Exception\BadRequestException',
+            'message' => 'Unknown error',
+            'code' => 0,
+        ],
+        'exceptionRenderer' => 'Crud\Error\JsonApiExceptionRenderer',
+        'setFlash' => false,
+        'urlPrefix' => null, // string holding URL to prefix links in jsonapi response with
+        'withJsonApiVersion' => false, // true or array/hash with additional meta information (will add top-level node `jsonapi` to the response)
+        'meta' => false, // array or hash with meta information (will add top-level node `meta` to the response)
+        'include' => [],
+        'fieldSets' => [], // hash to limit fields shown (applicable to both `data` and `included` nodes)
+    ];
+
+    /**
+     * Returns a list of all events that will fire in the controller during its lifecycle.
+     * You can override this function to add you own listener callbacks
+     *
+     * We attach at priority 10 so normal bound events can run before us
+     *
+     * @return array
+     */
+    public function implementedEvents()
+    {
+        $this->setupDetectors();
+
+        // Accept body data posted with Content-Type `application/vnd.api+json`
+        $this->_controller()->RequestHandler->config([
+            'inputTypeMap' => [
+                'jsonapi' => ['json_decode', true]
+            ]
+        ]);
+
+        return [
+            'Crud.beforeHandle' => ['callable' => [$this, 'beforeHandle'], 'priority' => 10],
+            'Crud.setFlash' => ['callable' => [$this, 'setFlash'], 'priority' => 5],
+            'Crud.beforeRender' => ['callable' => [$this, 'respond'], 'priority' => 100],
+            'Crud.beforeRedirect' => ['callable' => [$this, 'respond'], 'priority' => 100]
+        ];
+    }
+
+    /**
+     * beforeHandle
+     *
+     * Called before the crud action is executed.
+     *
+     * @param \Cake\Event\Event $event Event
+     * @return void
+     */
+    public function beforeHandle(Event $event)
+    {
+        $this->_checkRequestMethods();
+        $this->_decodeIncomingJsonApiData();
+    }
+
+    /**
+     * Selects an specific Crud view class to render the output
+     *
+     * @param \Crud\Event\Subject $subject Subject
+     * @return \Cake\Network\Response
+     */
+    public function render(Subject $subject)
+    {
+        $controller = $this->_controller();
+        $controller->viewBuilder()->className('Crud.JsonApi');
+
+        // Validate configuration before creating corresponding viewVars
+        if ($this->config('urlPrefix') !== null && !is_string($this->config('urlPrefix'))) {
+            throw new CrudException('JsonApiListener configuration option `urlPrefix` only accepts a string');
+        }
+        $controller->set([
+            '_urlPrefix' => $this->config('urlPrefix')
+        ]);
+
+        if ($this->config('withJsonApiVersion')) {
+            $controller->set([
+                '_withJsonApiVersion' => $this->config('withJsonApiVersion')
+            ]);
+        }
+
+        if ($this->config('meta')) {
+            if (!is_array($this->config('meta'))) {
+                throw new CrudException('JsonApiListener configuration option `meta` only accepts an array');
+            }
+            $controller->set([
+                '_meta' => $this->config('meta')
+            ]);
+        }
+
+        if (!is_array($this->config('include'))) {
+            throw new CrudException('JsonApiListener configuration option `include` only accepts an array');
+        }
+        $controller->set([
+            '_include' => $this->config('include')
+        ]);
+
+        if (!is_array($this->config('fieldSets'))) {
+            throw new CrudException('JsonApiListener configuration option `fieldSets` only accepts an array');
+        }
+        $controller->set([
+            '_fieldSets' => $this->config('fieldSets')
+        ]);
+
+        // Set required viewVar with ORM AssociationCollection for the current
+        // model so it can be used to generate the `relationships` nodes in the
+        // response.
+        //
+        // Please note that we are removing associated models not found in
+        // the find() result to prevent `null` relationships appearing in
+        // the response.
+        $controllerName = $controller->name; // e.g. Countries
+        $entityName = Inflector::singularize($controllerName); // e.g. Country
+        $table = $controller->$controllerName; // table object
+
+        if ($controller->request->action === 'index') {
+            $findResult = $subject->entities;
+            $firstEntity = $subject->entities->first();
+        } else {
+            $findResult = $subject->entity;
+            $firstEntity = $subject->entity;
+        }
+
+        $associations = $table->associations();
+
+        foreach ($associations as $association) {
+            $associationKey = strtolower($association->name());
+            $entityKey = $association->table();
+
+            if (get_class($association) === 'Cake\ORM\Association\BelongsTo') {
+                $entityKey = Inflector::singularize($entityKey);
+            }
+
+            if (empty($firstEntity->$entityKey)) {
+                $associations->remove($associationKey);
+            }
+        }
+
+        $controller->set(['_associations' => $associations]);
+
+        // Set required viewVar with array holding entity names of current
+        // entity and all related/contained models. Used to generate/read
+        // NeoMerx schemas inside the view.
+        $entities = [$entityName];
+
+        foreach ($associations as $association) {
+            $entities[] = Inflector::singularize($association->name());
+        }
+
+        $controller->set(['_entities' => $entities]);
+
+        // In debug mode set queryLog viewVar
+        if (Configure::read('debug')) {
+            $controller->set([
+                '_queryLog' => $this->_getQueryLog()
+            ]);
+        }
+
+        // Set data before rendering the view
+        $controller->set([
+            Inflector::tableize($controller->name) => $findResult,
+            '_serialize' => true,
+        ]);
+
+        return $controller->render();
+    }
+
+    /**
+     * Helper method to get query log.
+     *
+     * @return array Query log.
+     */
+    protected function _getQueryLog()
+    {
+        $queryLog = [];
+        $sources = ConnectionManager::configured();
+        foreach ($sources as $source) {
+            $logger = ConnectionManager::get($source)->logger();
+            if (method_exists($logger, 'getLogs')) {
+                $queryLog[$source] = $logger->getLogs();
+            }
+        }
+
+        return $queryLog;
+    }
+
+    /**
+     * Override ApiListener method to require JSON API Accept Type and
+     * Content-Type request headers.
+     *
+     * @throws \Cake\Network\Exception\BadRequestException
+     * @return bool
+     */
+    protected function _checkRequestMethods()
+    {
+        $jsonApiMimeType = $this->_response()->getMimeType('jsonapi');
+
+        if (!$this->_checkRequestType('jsonapi')) {
+            throw new BadRequestException("Requests require the $jsonApiMimeType Accept header");
+        }
+
+        if (!$this->_request()->contentType()) {
+            return true;
+        }
+
+        if ($this->_request()->contentType() !== $jsonApiMimeType) {
+            throw new BadRequestException("Posting data requires the $jsonApiMimeType Content-Type header");
+        }
+
+        return true;
+    }
+
+    /**
+     * Transforms incoming request data in JSON API format to CakePHP format.
+     *
+     * @return bool
+     */
+    protected function _decodeIncomingJsonApiData()
+    {
+        $data = $this->_controller()->request->data();
+
+        if (empty($data)) {
+            return false;
+        }
+
+        $result = $data['data']['attributes'];
+
+        // record without foreign keys
+        if (!isset($data['data']['relationships'])) {
+            $this->_controller()->request->data = $result;
+
+            return true;
+        }
+
+        // record wih foreign keys
+        foreach ($data['data']['relationships'] as $key => $details) {
+            if (!isset($details['data'][0])) {
+                $foreignKey = Inflector::singularize($details['data']['type']) . '_id';
+                $foreignId = $details['data']['id'];
+            } else {
+                $foreignKey = Inflector::singularize($details['data'][0]['type']) . '_id';
+                $foreignId = $details['data'][0]['id'];
+            }
+
+            $result[$foreignKey] = $foreignId;
+        }
+
+        $this->_controller()->request->data = $result;
+
+        return true;
+    }
+}

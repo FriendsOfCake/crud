@@ -649,7 +649,13 @@ class CrudComponent extends Component
                 throw new ListenerNotConfiguredException(sprintf('Listener "%s" is not configured', $name));
             }
 
+            // @todo: temporary hack to prevent `undefined index: className` error because `api` is in listeners list even though not enabled.
+            if (!isset($config['className'])) {
+                return;
+            }
+
             $className = App::classname($config['className'], 'Listener', 'Listener');
+
             if (empty($className)) {
                 throw new MissingListenerException('Could not find listener class: ' . $config['className']);
             }

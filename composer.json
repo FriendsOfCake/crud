@@ -59,7 +59,8 @@
     },
     "suggest": {
         "friendsofcake/search": "Provides search capabilities for the Crud plugin.",
-        "friendsofcake/crud-view": "Automated admin backend based on your Crud configuration."
+        "friendsofcake/crud-view": "Automated admin backend based on your Crud configuration.",
+        "neomerx/json-api": "Framework agnostic JSON API (jsonapi.org) implementation"
     },
     "support":{
         "source":"https://github.com/FriendsOfCake/crud",
