@@ -25,6 +25,7 @@ class RelatedModelsListener extends BaseListener
     {
         return [
             'Crud.beforePaginate' => 'beforePaginate',
+            'Crud.beforeFind' => 'beforeFind',
             'Crud.beforeRender' => 'beforeRender',
         ];
     }
@@ -36,6 +37,27 @@ class RelatedModelsListener extends BaseListener
      * @return void
      */
     public function beforePaginate(Event $event)
+    {
+        $contained = $event->subject()->query->contain();
+        if (!empty($contained)) {
+            return;
+        }
+
+        $models = $this->models();
+        if (empty($models)) {
+            return;
+        }
+
+        $event->subject()->query->contain(array_keys($models));
+    }
+
+    /**
+     * Automatically parse and contain related table classes
+     *
+     * @param \Cake\Event\Event $event Before find event
+     * @return void
+     */
+    public function beforeFind(Event $event)
     {
         $contained = $event->subject()->query->contain();
         if (!empty($contained)) {
