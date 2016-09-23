@@ -31,33 +31,32 @@ class RelatedModelsListener extends BaseListener
     }
 
     /**
-     * Automatically parse and contain related table classes
+     * Handle beforePaginate
      *
-     * @param \Cake\Event\Event $event Before paginate event
-     * @return void
+     * @param Event $event Before paginate event
      */
     public function beforePaginate(Event $event)
     {
-        $contained = $event->subject()->query->contain();
-        if (!empty($contained)) {
-            return;
-        }
+        $this->_eventHandler($event);
+    }
 
-        $models = $this->models();
-        if (empty($models)) {
-            return;
-        }
-
-        $event->subject()->query->contain(array_keys($models));
+    /**
+     * Handle beforeFind
+     *
+     * @param Event $event Before find event
+     */
+    public function beforeFind(Event $event)
+    {
+        $this->_eventHandler($event);
     }
 
     /**
      * Automatically parse and contain related table classes
      *
-     * @param \Cake\Event\Event $event Before find event
+     * @param \Cake\Event\Event $event Before paginate or Before find event
      * @return void
      */
-    public function beforeFind(Event $event)
+    protected function _eventHandler(Event $event)
     {
         $contained = $event->subject()->query->contain();
         if (!empty($contained)) {
