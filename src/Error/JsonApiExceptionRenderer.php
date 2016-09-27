@@ -16,6 +16,8 @@ use Neomerx\JsonApi\Exceptions\ErrorCollection;
  */
 class JsonApiExceptionRenderer extends \Cake\Error\ExceptionRenderer
 {
+    use \Crud\Traits\QueryLogTrait;
+
     /**
      * Render JSON API error responses for all non-validation errors and send
      * corresponding error code.
@@ -151,17 +153,8 @@ class JsonApiExceptionRenderer extends \Cake\Error\ExceptionRenderer
      */
     protected function _addQueryNode($json)
     {
-        $queryLog = [];
-        $sources = ConnectionManager::configured();
-        foreach ($sources as $source) {
-            $logger = ConnectionManager::get($source)->logger();
-            if (method_exists($logger, 'getLogs')) {
-                $queryLog[$source] = $logger->getLogs();
-            }
-        }
-
         $result = json_decode($json, true);
-        $result['query'] = $queryLog;
+        $result['query'] = $this->_getQueryLog();
 
         return json_encode($result);
     }

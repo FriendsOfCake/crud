@@ -2,7 +2,6 @@
 namespace Crud\Listener;
 
 use Cake\Core\Configure;
-use Cake\Datasource\ConnectionManager;
 use Cake\Event\Event;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Utility\Inflector;
@@ -17,6 +16,7 @@ use Crud\Event\Subject;
  */
 class JsonApiListener extends ApiListener
 {
+    use \Crud\Traits\QueryLogTrait;
 
     /**
      * Default configuration
@@ -165,7 +165,7 @@ class JsonApiListener extends ApiListener
      * Make sure all configuration options are valid.
      *
      * @throws \Crud\Error\Exception\CrudException
-     * @return bool True if all options are valid.
+     * @return void
      */
     protected function _validateConfigOptions()
     {
@@ -192,27 +192,6 @@ class JsonApiListener extends ApiListener
         if (!is_array($this->config('fieldSets'))) {
             throw new CrudException('JsonApiListener configuration option `fieldSets` only accepts an array');
         }
-
-        return true;
-    }
-
-    /**
-     * Helper method to get query log.
-     *
-     * @return array Query log.
-     */
-    protected function _getQueryLog()
-    {
-        $queryLog = [];
-        $sources = ConnectionManager::configured();
-        foreach ($sources as $source) {
-            $logger = ConnectionManager::get($source)->logger();
-            if (method_exists($logger, 'getLogs')) {
-                $queryLog[$source] = $logger->getLogs();
-            }
-        }
-
-        return $queryLog;
     }
 
     /**
