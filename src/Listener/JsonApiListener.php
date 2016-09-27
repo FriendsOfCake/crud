@@ -80,6 +80,7 @@ class JsonApiListener extends ApiListener
     public function beforeHandle(Event $event)
     {
         $this->_checkRequestMethods();
+        $this->_validateConfigOptions();
         $this->_decodeIncomingJsonApiData();
     }
 
@@ -94,43 +95,6 @@ class JsonApiListener extends ApiListener
         $controller = $this->_controller();
         $controller->viewBuilder()->className('Crud.JsonApi');
 
-        // Validate configuration before creating corresponding viewVars
-        if ($this->config('urlPrefix') !== null && !is_string($this->config('urlPrefix'))) {
-            throw new CrudException('JsonApiListener configuration option `urlPrefix` only accepts a string');
-        }
-        $controller->set([
-            '_urlPrefix' => $this->config('urlPrefix')
-        ]);
-
-        if ($this->config('withJsonApiVersion')) {
-            $controller->set([
-                '_withJsonApiVersion' => $this->config('withJsonApiVersion')
-            ]);
-        }
-
-        if ($this->config('meta')) {
-            if (!is_array($this->config('meta'))) {
-                throw new CrudException('JsonApiListener configuration option `meta` only accepts an array');
-            }
-            $controller->set([
-                '_meta' => $this->config('meta')
-            ]);
-        }
-
-        if (!is_array($this->config('include'))) {
-            throw new CrudException('JsonApiListener configuration option `include` only accepts an array');
-        }
-        $controller->set([
-            '_include' => $this->config('include')
-        ]);
-
-        if (!is_array($this->config('fieldSets'))) {
-            throw new CrudException('JsonApiListener configuration option `fieldSets` only accepts an array');
-        }
-        $controller->set([
-            '_fieldSets' => $this->config('fieldSets')
-        ]);
-
         // Set required viewVar with ORM AssociationCollection for the current
         // model so it can be used to generate the `relationships` nodes in the
         // response.
@@ -138,9 +102,9 @@ class JsonApiListener extends ApiListener
         // Please note that we are removing associated models not found in
         // the find() result to prevent `null` relationships appearing in
         // the response.
-        $controllerName = $controller->name; // e.g. Countries
-        $entityName = Inflector::singularize($controllerName); // e.g. Country
-        $table = $controller->$controllerName; // table object
+        $tableName = $controller->name; // e.g. Countries
+        $entityName = Inflector::singularize($tableName); // e.g. Country
+        $table = $controller->$tableName; // table object
 
         if ($controller->request->action === 'index') {
             $findResult = $subject->entities;
@@ -165,8 +129,6 @@ class JsonApiListener extends ApiListener
             }
         }
 
-        $controller->set(['_associations' => $associations]);
-
         // Set required viewVar with array holding entity names of current
         // entity and all related/contained models. Used to generate/read
         // NeoMerx schemas inside the view.
@@ -176,9 +138,7 @@ class JsonApiListener extends ApiListener
             $entities[] = Inflector::singularize($association->name());
         }
 
-        $controller->set(['_entities' => $entities]);
-
-        // In debug mode set queryLog viewVar
+        // Only include queryLog viewVar in debug mode
         if (Configure::read('debug')) {
             $controller->set([
                 '_queryLog' => $this->_getQueryLog()
@@ -188,10 +148,52 @@ class JsonApiListener extends ApiListener
         // Set data before rendering the view
         $controller->set([
             Inflector::tableize($controller->name) => $findResult,
+            '_urlPrefix' => $this->config('urlPrefix'),
+            '_withJsonApiVersion' => $this->config('withJsonApiVersion'),
+            '_meta' => $this->config('meta'),
+            '_entities' => $entities,
+            '_associations' => $associations,
+            '_include' => $this->config('include'),
+            '_fieldSets' => $this->config('fieldSets'),
             '_serialize' => true,
         ]);
 
         return $controller->render();
+    }
+
+    /**
+     * Make sure all configuration options are valid.
+     *
+     * @throws \Crud\Error\Exception\CrudException
+     * @return bool True if all options are valid.
+     */
+    protected function _validateConfigOptions()
+    {
+        if ($this->config('urlPrefix') !== null && !is_string($this->config('urlPrefix'))) {
+            throw new CrudException('JsonApiListener configuration option `urlPrefix` only accepts a string');
+        }
+
+        if ($this->config('withJsonApiVersion')) {
+            if (!is_bool($this->config('withJsonApiVersion')) && !is_array($this->config('withJsonApiVersion'))) {
+                throw new CrudException('JsonApiListener configuration option `withJsonApiVersion` only accepts a boolean or an array');
+            }
+        }
+
+        if ($this->config('meta')) {
+            if (!is_array($this->config('meta'))) {
+                throw new CrudException('JsonApiListener configuration option `meta` only accepts an array');
+            }
+        }
+
+        if (!is_array($this->config('include'))) {
+            throw new CrudException('JsonApiListener configuration option `include` only accepts an array');
+        }
+
+        if (!is_array($this->config('fieldSets'))) {
+            throw new CrudException('JsonApiListener configuration option `fieldSets` only accepts an array');
+        }
+
+        return true;
     }
 
     /**

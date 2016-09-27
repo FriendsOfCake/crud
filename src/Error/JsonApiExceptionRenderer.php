@@ -4,10 +4,9 @@ namespace Crud\Error;
 use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
 use Cake\Error\Debugger;
-use \Neomerx\JsonApi\Document\Error;
-use \Neomerx\JsonApi\Document\Link;
-use \Neomerx\JsonApi\Encoder\Encoder;
-use \Neomerx\JsonApi\Exceptions\ErrorCollection;
+use Neomerx\JsonApi\Document\Error;
+use Neomerx\JsonApi\Encoder\Encoder;
+use Neomerx\JsonApi\Exceptions\ErrorCollection;
 
 /**
  * Exception renderer for JsonApiListener

@@ -26,7 +26,7 @@ class JsonApiView extends View
         '_withJsonApiVersion',
         '_entities',
         '_include',
-        '_fieldsets',
+        '_fieldSets',
         '_links',
         '_meta',
         '_serialize',
