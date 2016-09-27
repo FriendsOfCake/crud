@@ -2,8 +2,8 @@
 namespace Crud\Error;
 
 use Cake\Core\Configure;
-use Cake\Datasource\ConnectionManager;
 use Cake\Error\Debugger;
+use Crud\Traits\QueryLogTrait;
 use Neomerx\JsonApi\Document\Error;
 use Neomerx\JsonApi\Encoder\Encoder;
 use Neomerx\JsonApi\Exceptions\ErrorCollection;
@@ -16,7 +16,7 @@ use Neomerx\JsonApi\Exceptions\ErrorCollection;
  */
 class JsonApiExceptionRenderer extends \Cake\Error\ExceptionRenderer
 {
-    use \Crud\Traits\QueryLogTrait;
+    use QueryLogTrait;
 
     /**
      * Render JSON API error responses for all non-validation errors and send
