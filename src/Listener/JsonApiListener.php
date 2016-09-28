@@ -7,6 +7,7 @@ use Cake\Network\Exception\BadRequestException;
 use Cake\Utility\Inflector;
 use Crud\Error\Exception\CrudException;
 use Crud\Event\Subject;
+use Crud\Traits\QueryLogTrait;
 
 /**
  * Extends Crud ApiListener to respond in JSON API format.
@@ -16,7 +17,7 @@ use Crud\Event\Subject;
  */
 class JsonApiListener extends ApiListener
 {
-    use \Crud\Traits\QueryLogTrait;
+    use QueryLogTrait;
 
     /**
      * Default configuration
@@ -62,6 +63,7 @@ class JsonApiListener extends ApiListener
         ]);
 
         return [
+            'Crud.beforeFilter' => ['callable' => [$this, 'setupLogging'], 'priority' => 1],
             'Crud.beforeHandle' => ['callable' => [$this, 'beforeHandle'], 'priority' => 10],
             'Crud.setFlash' => ['callable' => [$this, 'setFlash'], 'priority' => 5],
             'Crud.beforeRender' => ['callable' => [$this, 'respond'], 'priority' => 100],
@@ -141,7 +143,7 @@ class JsonApiListener extends ApiListener
         // Only include queryLog viewVar in debug mode
         if (Configure::read('debug')) {
             $controller->set([
-                '_queryLog' => $this->_getQueryLog()
+                '_queryLog' => $this->_getQueryLogs()
             ]);
         }
 
@@ -206,7 +208,7 @@ class JsonApiListener extends ApiListener
         $jsonApiMimeType = $this->_response()->getMimeType('jsonapi');
 
         if (!$this->_checkRequestType('jsonapi')) {
-            throw new BadRequestException("Requests require the $jsonApiMimeType Accept header");
+            throw new BadRequestException("JsonApiListener requests require the $jsonApiMimeType Accept header");
         }
 
         if (!$this->_request()->contentType()) {
@@ -214,7 +216,7 @@ class JsonApiListener extends ApiListener
         }
 
         if ($this->_request()->contentType() !== $jsonApiMimeType) {
-            throw new BadRequestException("Posting data requires the $jsonApiMimeType Content-Type header");
+            throw new BadRequestException("Posting data to JsonApiListener requires the $jsonApiMimeType Content-Type header");
         }
 
         return true;

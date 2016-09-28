@@ -154,7 +154,7 @@ class JsonApiExceptionRenderer extends \Cake\Error\ExceptionRenderer
     protected function _addQueryNode($json)
     {
         $result = json_decode($json, true);
-        $result['query'] = $this->_getQueryLog();
+        $result['query'] = $this->_getQueryLogs();
 
         return json_encode($result);
     }
