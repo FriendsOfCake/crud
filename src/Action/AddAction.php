@@ -118,8 +118,7 @@ class AddAction extends BaseAction
 
         $this->_trigger('beforeSave', $subject);
 
-        $saveCallback = [$this->_table(), $subject->saveMethod];
-        if (call_user_func($saveCallback, $subject->entity, $subject->saveOptions)) {
+        if ($this->_table()->{$subject->saveMethod}($subject->entity, $subject->saveOptions)) {
             return $this->_success($subject);
         }
 

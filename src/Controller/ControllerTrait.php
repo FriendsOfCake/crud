@@ -48,7 +48,7 @@ trait ControllerTrait
 
         $callable = [$this, $request->params['action']];
         if (is_callable($callable)) {
-            return call_user_func_array($callable, $request->params['pass']);
+            return $callable(...$request->params['pass']);
         }
 
         $component = $this->_isActionMapped();

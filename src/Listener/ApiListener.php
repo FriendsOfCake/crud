@@ -298,7 +298,7 @@ class ApiListener extends BaseListener
                 }
 
                 if (method_exists($subject->entity, $valuePath)) {
-                    $data = Hash::insert($data, $keyPath, call_user_func([$subject->entity, $valuePath]));
+                    $data = Hash::insert($data, $keyPath, $subject->entity->{$valuePath});
                 } elseif (isset($subject->entity->{$valuePath})) {
                     $data = Hash::insert($data, $keyPath, $subject->entity->{$valuePath});
                 }
