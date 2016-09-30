@@ -2,6 +2,7 @@
 namespace Crud\Traits;
 
 use Cake\Datasource\ConnectionManager;
+use Cake\Event\Event;
 
 trait QueryLogTrait
 {
