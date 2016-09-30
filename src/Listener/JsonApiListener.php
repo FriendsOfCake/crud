@@ -20,6 +20,13 @@ class JsonApiListener extends ApiListener
     use QueryLogTrait;
 
     /**
+     * Required composer package with Crud supported version
+     *
+     * @var string
+     */
+    protected $neomerxPackage = 'neomerx/json-api:^0.8.10';
+
+    /**
      * Default configuration
      *
      * @var array
@@ -81,6 +88,7 @@ class JsonApiListener extends ApiListener
      */
     public function beforeHandle(Event $event)
     {
+        $this->_checkPackageDependencies();
         $this->_checkRequestMethods();
         $this->_validateConfigOptions();
         $this->_decodeIncomingJsonApiData();
@@ -193,6 +201,19 @@ class JsonApiListener extends ApiListener
 
         if (!is_array($this->config('fieldSets'))) {
             throw new CrudException('JsonApiListener configuration option `fieldSets` only accepts an array');
+        }
+    }
+
+    /**
+     * Make sure the neomerx/json-api composer package is installed
+     *
+     * @throws \Crud\Error\Exception\CrudException
+     * @return void
+     */
+    protected function _checkPackageDependencies()
+    {
+        if (!class_exists('\Neomerx\JsonApi\Encoder\Encoder')) {
+            throw new CrudException('JsonApiListener requires composer installing ' . $this->neomerxPackage);
         }
     }
 
