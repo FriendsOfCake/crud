@@ -105,48 +105,13 @@ class JsonApiListener extends ApiListener
         $controller = $this->_controller();
         $controller->viewBuilder()->className('Crud.JsonApi');
 
-        // Set required viewVar with ORM AssociationCollection for the current
-        // model so it can be used to generate the `relationships` nodes in the
-        // response.
-        //
-        // Please note that we are removing associated models not found in
-        // the find() result to prevent `null` relationships appearing in
-        // the response.
         $tableName = $controller->name; // e.g. Countries
         $entityName = Inflector::singularize($tableName); // e.g. Country
         $table = $controller->$tableName; // table object
 
-        if ($controller->request->action === 'index') {
-            $findResult = $subject->entities;
-            $firstEntity = $subject->entities->first();
-        } else {
-            $findResult = $subject->entity;
-            $firstEntity = $subject->entity;
-        }
-
-        $associations = $table->associations();
-
-        foreach ($associations as $association) {
-            $associationKey = strtolower($association->name());
-            $entityKey = $association->table();
-
-            if (get_class($association) === 'Cake\ORM\Association\BelongsTo') {
-                $entityKey = Inflector::singularize($entityKey);
-            }
-
-            if (empty($firstEntity->$entityKey)) {
-                $associations->remove($associationKey);
-            }
-        }
-
-        // Set required viewVar with array holding entity names of current
-        // entity and all related/contained models. Used to generate/read
-        // NeoMerx schemas inside the view.
-        $entities = [$entityName];
-
-        foreach ($associations as $association) {
-            $entities[] = Inflector::singularize($association->name());
-        }
+        // Remove associations not found in the `find()` result
+        $entity = $this->_getSingleEntity($subject);
+        $associations = $this->_stripAssociations($table, $entity);
 
         // Only include queryLog viewVar in debug mode
         if (Configure::read('debug')) {
@@ -157,11 +122,11 @@ class JsonApiListener extends ApiListener
 
         // Set data before rendering the view
         $controller->set([
-            Inflector::tableize($controller->name) => $findResult,
+            Inflector::tableize($controller->name) => $this->_getFindResult($subject),
             '_urlPrefix' => $this->config('urlPrefix'),
             '_withJsonApiVersion' => $this->config('withJsonApiVersion'),
             '_meta' => $this->config('meta'),
-            '_entities' => $entities,
+            '_entities' => $this->_getEntityList($entityName, $associations),
             '_associations' => $associations,
             '_include' => $this->config('include'),
             '_fieldSets' => $this->config('fieldSets'),
@@ -169,6 +134,19 @@ class JsonApiListener extends ApiListener
         ]);
 
         return $controller->render();
+    }
+
+    /**
+     * Make sure the neomerx/json-api composer package is installed
+     *
+     * @throws \Crud\Error\Exception\CrudException
+     * @return void
+     */
+    protected function _checkPackageDependencies()
+    {
+        if (!class_exists('\Neomerx\JsonApi\Encoder\Encoder')) {
+            throw new CrudException('JsonApiListener requires composer installing ' . $this->neomerxPackage);
+        }
     }
 
     /**
@@ -205,19 +183,6 @@ class JsonApiListener extends ApiListener
     }
 
     /**
-     * Make sure the neomerx/json-api composer package is installed
-     *
-     * @throws \Crud\Error\Exception\CrudException
-     * @return void
-     */
-    protected function _checkPackageDependencies()
-    {
-        if (!class_exists('\Neomerx\JsonApi\Encoder\Encoder')) {
-            throw new CrudException('JsonApiListener requires composer installing ' . $this->neomerxPackage);
-        }
-    }
-
-    /**
      * Override ApiListener method to require JSON API Accept Type and
      * Content-Type request headers.
      *
@@ -241,6 +206,87 @@ class JsonApiListener extends ApiListener
         }
 
         return true;
+    }
+
+    /**
+     * Helper function to easily retrieve `find()` result from Crud subject
+     * regardless of current action.
+     *
+     * @param \Crud\Event\Subject $subject Subject
+     * @return mixed Single Entity or ORM\ResultSet
+     */
+    protected function _getFindResult($subject)
+    {
+        if ($this->_controller()->request->action === 'index') {
+            return $subject->entities;
+        }
+
+        return $subject->entity;
+    }
+
+    /**
+     * Helper function to easily retrieve a single entity from Crud subject
+     * find result regardless of current action.
+     *
+     * @param \Crud\Event\Subject $subject Subject
+     * @return \Cake\ORM\Entity
+     */
+    protected function _getSingleEntity($subject)
+    {
+        if ($this->_controller()->request->action === 'index') {
+            return $subject->entities->first();
+        }
+
+        return $subject->entity;
+    }
+
+    /**
+     * Removes associated models not found in the find() result from the
+     * entity's AssociationCollection. Used to prevent `null` entries appearing
+     * in in the json api response `relationships` node.
+     *
+     * @param \Cake\ORM\Table $table Table
+     * @param \Cake\ORM\Entity $entity Entity
+     * @return \Cake\ORM\AssociationCollection
+     */
+    protected function _stripAssociations($table, $entity)
+    {
+        $associations = $table->associations();
+
+        foreach ($associations as $association) {
+            $associationKey = strtolower($association->name());
+            $entityKey = $association->table();
+
+            if (get_class($association) === 'Cake\ORM\Association\BelongsTo') {
+                $entityKey = Inflector::singularize($entityKey);
+            }
+
+            if (empty($entity->$entityKey)) {
+                $associations->remove($associationKey);
+            }
+        }
+
+        return $associations;
+    }
+
+    /**
+     * Returns a list with entity names of both passed entity name (as string)
+     * and all related/associated models. Used to read or generate NeoMerx
+     * schemas inside the view.
+     *
+     * @param string $entityName Name of the current entity
+     * @param \Cake\ORM\AssociationCollection $associations AssciationCollection
+     * @return array
+     */
+    protected function _getEntityList($entityName, $associations)
+    {
+        $entities = [$entityName];
+
+        foreach ($associations as $association) {
+            $entities[] = Inflector::singularize($association->name());
+        }
+
+        return $entities;
     }
 
     /**
