@@ -514,7 +514,7 @@ class ApiListenerTest extends TestCase
 
         $action = $this
             ->getMockBuilder('\Crud\Action\AddAction')
-            ->setMethods(['config'])
+            ->setMethods(['config', 'scope', '_controller'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -530,7 +530,13 @@ class ApiListenerTest extends TestCase
         $controller
             ->expects($this->once())
             ->method('set')
-            ->with('_serialize', ['success', 'data']);
+            ->with('_serialize', ['success', 'data' => '']);
+        $action->expects($this->any())
+            ->method('scope')
+            ->will($this->returnValue('table'));
+        $action->expects($this->any())
+            ->method('_controller')
+            ->will($this->returnValue($controller));
 
         $this->setReflectionClassInstance($listener);
         $this->callProtectedMethod('_ensureSerialize', [], $listener);
