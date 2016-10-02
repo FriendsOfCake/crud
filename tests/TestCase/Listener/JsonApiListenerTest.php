@@ -2,6 +2,8 @@
 namespace Crud\Test\TestCase\Listener;
 
 use Cake\Controller\Controller;
+use Cake\Core\Plugin;
+use Cake\Filesystem\File;
 use Cake\Network\Request;
 use Cake\Network\Response;
 use Cake\ORM\TableRegistry;
@@ -95,6 +97,51 @@ class JsonApiListenerTest extends TestCase
         ];
 
         $this->assertSame($expected, $result);
+    }
+
+    /**
+     * testBeforeHandle
+     *
+     * @return void
+     */
+    public function testBeforeHandle()
+    {
+        $controller = $this
+            ->getMockBuilder('\Cake\Controller\Controller')
+            ->setMethods(['_request'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $controller->request = $this
+            ->getMockBuilder('\Cake\Network\Request')
+            ->setMethods(null)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $controller->request->data = ['dummy' => 'array'];
+
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\JsonApiListener')
+            ->setMethods(['_controller', '_checkRequestMethods', '_convertJsonApiDataArray'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $listener
+            ->expects($this->any())
+            ->method('_controller')
+            ->will($this->returnValue($controller));
+
+        $listener
+            ->expects($this->any())
+            ->method('_convertJsonApiDataArray')
+            ->will($this->returnValue(true));
+
+        $listener
+            ->expects($this->any())
+            ->method('_checkRequestMethods');
+
+
+        $listener->beforeHandle(new \Cake\Event\Event('Crud.beforeHandle'));
     }
 
     /**
@@ -409,6 +456,56 @@ class JsonApiListenerTest extends TestCase
     }
 
     /**
+     * Make sure single/first entity is returned from subject based on action
+     */
+    public function testGetSingleEntity()
+    {
+        $controller = $this
+            ->getMockBuilder('\Cake\Controller\Controller')
+            ->setMethods(null)
+            ->enableOriginalConstructor()
+            ->getMock();
+
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\JsonApiListener')
+            ->disableOriginalConstructor()
+            ->setMethods(['_controller', '_event'])
+            ->getMock();
+
+        $listener
+            ->expects($this->any())
+            ->method('_controller')
+            ->will($this->returnValue($controller));
+
+        $subject = $this
+            ->getMockBuilder('\Crud\Event\Subject')
+            ->getMock();
+
+        $subject->entities = $this
+            ->getMockBuilder('stdClass')
+            ->disableOriginalConstructor()
+            ->setMethods(['first'])
+            ->getMock();
+
+        $subject->entities
+            ->expects($this->any())
+            ->method('first')
+            ->will($this->returnValue('index-should-return-first-entity-in-collection'));
+
+        $subject->entity = 'all-other-actions-should-return-entity-property';
+
+        $controller->request->action = 'index';
+        $this->setReflectionClassInstance($listener);
+        $result = $this->callProtectedMethod('_getSingleEntity', [$subject], $listener);
+        $this->assertSame('index-should-return-first-entity-in-collection', $result);
+
+        $controller->request->action = 'any-other-action-name';
+        $this->setReflectionClassInstance($listener);
+        $result = $this->callProtectedMethod('_getSingleEntity', [$subject], $listener);
+        $this->assertSame($subject->entity, $result);
+    }
+
+    /**
      * Make sure associations not present in the find result are stripped
      * from the AssociationCollection. In this test we remove associated
      * model `Comments`.
@@ -465,6 +562,44 @@ class JsonApiListenerTest extends TestCase
             'Article',
             'Author',
             'Comment'
+        ];
+
+        $this->assertSame($expected, $result);
+    }
+
+    /**
+     * Make sure arrays holding json_decoded JSON API data are properly
+     * converted to CakePHP format.
+     *
+     * Make sure incoming JSON API data is transformed to CakePHP format.
+     * Please note that data is already json_decoded by Crud here.
+     */
+    public function testConvertJsonApiDataArray()
+    {
+        $listener = new JsonApiListener(new Controller());
+        $this->setReflectionClassInstance($listener);
+
+        // test creating a single entity without relationships
+        $jsonApiFixture = new File(Plugin::path('Crud') . 'tests' . DS . 'Fixture' . DS . 'JsonApi' . DS . 'country_add_single_no_relationships.json');
+        $jsonApiArray = json_decode($jsonApiFixture->read(), true);
+        $result = $this->callProtectedMethod('_convertJsonApiDataArray', [$jsonApiArray], $listener);
+
+        $expected = [
+            'code' => 'NL',
+            'name' => 'The Netherlands'
+        ];
+        $this->assertSame($expected, $result);
+
+        // test creating a single entity with relationship
+        $jsonApiFixture = new File(Plugin::path('Crud') . 'tests' . DS . 'Fixture' . DS . 'JsonApi' . DS . 'country_add_single_with_relationships.json');
+        $jsonApiArray = json_decode($jsonApiFixture->read(), true);
+        $result = $this->callProtectedMethod('_convertJsonApiDataArray', [$jsonApiArray], $listener);
+
+        $expected = [
+            'code' => 'NL',
+            'name' => 'The Netherlands',
+            'culture_id' => 2,
+            'currency_id' => 3
         ];
 
         $this->assertSame($expected, $result);

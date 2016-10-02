@@ -95,7 +95,7 @@ class JsonApiView extends View
         }
 
         // Add top-level node `meta` to the response if configured.
-        if (isset($this->viewVars['_meta'])) {
+        if ($this->viewVars['_meta']) {
             if (empty($serialize)) {
                 return $encoder->encodeMeta($this->viewVars['_meta']);
             } else {

@@ -91,7 +91,7 @@ class JsonApiListener extends ApiListener
         $this->_checkPackageDependencies();
         $this->_checkRequestMethods();
         $this->_validateConfigOptions();
-        $this->_decodeIncomingJsonApiData();
+        $this->_checkRequestData();
     }
 
     /**
@@ -290,25 +290,31 @@ class JsonApiListener extends ApiListener
     }
 
     /**
-     * Transforms incoming request data in JSON API format to CakePHP format.
+     * Replace posted request JSON API data with array in CakePHP format
      *
+     * @return void
+     */
+    protected function _checkRequestData()
+    {
+        if ($this->_controller()->request->data()) {
+            $this->_controller()->request->data = $this->_convertJsonApiDataArray($this->_controller()->request->data());
+        }
+    }
+
+    /**
+     * Converts request data holding (already json_decoded) JSON API array to
+     * CakePHP format.
+     *
+     * @param array $data Array with result of json_decoding JSON API
      * @return bool
      */
-    protected function _decodeIncomingJsonApiData()
+    protected function _convertJsonApiDataArray($data)
     {
-        $data = $this->_controller()->request->data();
-
-        if (empty($data)) {
-            return false;
-        }
-
         $result = $data['data']['attributes'];
 
         // record without foreign keys
         if (!isset($data['data']['relationships'])) {
-            $this->_controller()->request->data = $result;
-
-            return true;
+            return $result;
         }
 
         // record wih foreign keys
@@ -324,8 +330,6 @@ class JsonApiListener extends ApiListener
             $result[$foreignKey] = $foreignId;
         }
 
-        $this->_controller()->request->data = $result;
-
-        return true;
+        return $result;
     }
 }
