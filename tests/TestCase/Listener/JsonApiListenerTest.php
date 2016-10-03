@@ -9,6 +9,7 @@ use Cake\Network\Response;
 use Cake\ORM\TableRegistry;
 use Crud\Listener\JsonApiListener;
 use Crud\TestSuite\TestCase;
+use Crud\Test\App\Model\Entity\Blog;
 
 /**
  * Licensed under The MIT License
@@ -100,7 +101,7 @@ class JsonApiListenerTest extends TestCase
     }
 
     /**
-     * testBeforeHandle
+     * Test beforeHandle() method
      *
      * @return void
      */
@@ -145,6 +146,40 @@ class JsonApiListenerTest extends TestCase
     }
 
     /**
+     * Test render() method
+     *
+     * @return void
+     */
+    public function testRender()
+    {
+        $controller = $this
+            ->getMockBuilder('\Cake\Controller\Controller')
+            ->setMethods(null)
+            ->enableOriginalConstructor()
+            ->getMock();
+        $controller->name = 'Blogs';
+        $controller->Blogs = TableRegistry::get('blogs');
+
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\JsonApiListener')
+            ->disableOriginalConstructor()
+            ->setMethods(['_controller', '_action'])
+            ->getMock();
+
+        $listener
+            ->expects($this->any())
+            ->method('_controller')
+            ->will($this->returnValue($controller));
+
+        $subject = $this
+            ->getMockBuilder('\Crud\Event\Subject')
+            ->getMock();
+        $subject->entity = new Blog();
+
+        $listener->render($subject);
+    }
+
+    /**
      * Make sure listener continues if neomerx package is installed
      *
      * @return void
@@ -156,6 +191,8 @@ class JsonApiListenerTest extends TestCase
             ->disableOriginalConstructor()
             ->setMethods(null)
             ->getMock();
+
+        $this->assertTrue(class_exists('\Neomerx\JsonApi\Encoder\Encoder'));
 
         $this->setReflectionClassInstance($listener);
         $this->callProtectedMethod('_checkPackageDependencies', [], $listener);
