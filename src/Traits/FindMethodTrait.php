@@ -47,7 +47,7 @@ trait FindMethodTrait
         $entity = $subject->query->first();
 
         if (!$entity) {
-            return $this->_notFound($id, $subject);
+            $this->_notFound($id, $subject);
         }
 
         $subject->set(['entity' => $entity, 'success' => true]);
