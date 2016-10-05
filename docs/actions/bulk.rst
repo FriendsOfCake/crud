@@ -30,7 +30,7 @@ method. This method takes a CakePHP ``Query`` object as it's first argument
      * @param \Cake\ORM\Query $query The query to act upon
      * @return boolean
      */
-    protected function _handle(Query $query)
+    protected function _bulk(Query $query)
     {
       $query->update()->set(['approved' => true]);
       $statement = $query->execute();
