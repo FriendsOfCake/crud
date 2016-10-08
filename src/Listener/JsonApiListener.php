@@ -8,6 +8,7 @@ use Cake\Utility\Inflector;
 use Crud\Error\Exception\CrudException;
 use Crud\Event\Subject;
 use Crud\Traits\QueryLogTrait;
+use Neomerx\JsonApi\Schema\Link;
 
 /**
  * Extends Crud ApiListener to respond in JSON API format.
@@ -43,9 +44,12 @@ class JsonApiListener extends ApiListener
         ],
         'exceptionRenderer' => 'Crud\Error\JsonApiExceptionRenderer',
         'setFlash' => false,
-        'urlPrefix' => null, // string holding URL to prefix links in jsonapi response with
         'withJsonApiVersion' => false, // true or array/hash with additional meta information (will add top-level node `jsonapi` to the response)
         'meta' => false, // array or hash with meta information (will add top-level node `meta` to the response)
+        'urlPrefix' => null, // string holding URL to prefix links in jsonapi response with
+        'jsonOptions' => [], // array with predefined JSON constants as described at http://php.net/manual/en/json.constants.php
+        'debugPrettyPrint' => true, // true to use JSON_PRETTY_PRINT for generated debug-mode response
+        'debugQueryLog' => true, // true to add top-level `query` node holding SQL log to the debug-mode response
         'include' => [],
         'fieldSets' => [], // hash to limit fields shown (applicable to both `data` and `included` nodes)
     ];
@@ -116,20 +120,23 @@ class JsonApiListener extends ApiListener
         // Only include queryLog viewVar in debug mode
         if (Configure::read('debug')) {
             $controller->set([
-                '_queryLog' => $this->_getQueryLogs()
+                '_queryLogs' => $this->_getQueryLogs()
             ]);
         }
 
         // Set data before rendering the view
         $controller->set([
-            Inflector::tableize($controller->name) => $this->_getFindResult($subject),
-            '_urlPrefix' => $this->config('urlPrefix'),
             '_withJsonApiVersion' => $this->config('withJsonApiVersion'),
             '_meta' => $this->config('meta'),
+            '_urlPrefix' => $this->config('urlPrefix'),
+            '_jsonOptions' => $this->config('jsonOptions'),
+            '_debugPrettyPrint' => $this->config('debugPrettyPrint'),
+            '_debugQueryLog' => $this->config('debugQueryLog'),
             '_entities' => $this->_getEntityList($entityName, $associations),
-            '_associations' => $associations,
             '_include' => $this->config('include'),
             '_fieldSets' => $this->config('fieldSets'),
+            Inflector::tableize($controller->name) => $this->_getFindResult($subject),
+            '_associations' => $associations,
             '_serialize' => true,
         ]);
 
@@ -180,6 +187,18 @@ class JsonApiListener extends ApiListener
         if (!is_array($this->config('fieldSets'))) {
             throw new CrudException('JsonApiListener configuration option `fieldSets` only accepts an array');
         }
+
+        if (!is_array($this->config('jsonOptions'))) {
+            throw new CrudException('JsonApiListener configuration option `jsonOptions` only accepts an array');
+        }
+
+        if (!is_bool($this->config('debugPrettyPrint'))) {
+            throw new CrudException('JsonApiListener configuration option `debugPrettyPrint` only accepts a boolean');
+        }
+
+        if (!is_bool($this->config('debugQueryLog'))) {
+            throw new CrudException('JsonApiListener configuration option `debugQueryLog` only accepts a boolean');
+        }
     }
 
     /**
@@ -217,7 +236,7 @@ class JsonApiListener extends ApiListener
      */
     protected function _getFindResult($subject)
     {
-        if ($this->_controller()->request->action === 'index') {
+        if (!empty($subject->entities)) {
             return $subject->entities;
         }
 
@@ -233,7 +252,7 @@ class JsonApiListener extends ApiListener
      */
     protected function _getSingleEntity($subject)
     {
-        if ($this->_controller()->request->action === 'index') {
+        if (!empty($subject->entities)) {
             return $subject->entities->first();
         }
 

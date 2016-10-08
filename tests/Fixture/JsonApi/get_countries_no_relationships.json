@@ -1,0 +1,28 @@
+{
+    "data": [
+        {
+            "type": "countries",
+            "id": "1",
+            "attributes": {
+                "code": "NL",
+                "name": "The Netherlands",
+                "currency_id": 1
+            },
+            "links": {
+                "self": "\/countries\/1"
+            }
+        },
+        {
+            "type": "countries",
+            "id": "2",
+            "attributes": {
+                "code": "BE",
+                "name": "Belgium",
+                "currency_id": 1
+            },
+            "links": {
+                "self": "\/countries\/2"
+            }
+        }
+    ]
+}

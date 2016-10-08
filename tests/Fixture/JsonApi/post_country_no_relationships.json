@@ -1,0 +1,9 @@
+{
+    "data": {
+        "type": "countries",
+        "attributes": {
+            "code": "NL",
+            "name": "The Netherlands"
+        }
+    }
+}

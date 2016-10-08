@@ -7,9 +7,10 @@ use Cake\Filesystem\File;
 use Cake\Network\Request;
 use Cake\Network\Response;
 use Cake\ORM\TableRegistry;
+use Crud\Event\Subject;
 use Crud\Listener\JsonApiListener;
 use Crud\TestSuite\TestCase;
-use Crud\Test\App\Model\Entity\Blog;
+use Crud\Test\App\Model\Entity\Country;
 
 /**
  * Licensed under The MIT License
@@ -24,9 +25,9 @@ class JsonApiListenerTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'core.articles',
-        'core.authors',
-        'core.comments'
+        'plugin.crud.countries',
+        'plugin.crud.cultures',
+        'plugin.crud.currencies',
     ];
 
     /**
@@ -48,9 +49,12 @@ class JsonApiListenerTest extends TestCase
             ],
             'exceptionRenderer' => 'Crud\Error\JsonApiExceptionRenderer',
             'setFlash' => false,
-            'urlPrefix' => null,
             'withJsonApiVersion' => false,
             'meta' => false,
+            'urlPrefix' => null,
+            'jsonOptions' => [],
+            'debugPrettyPrint' => true,
+            'debugQueryLog' => true,
             'include' => [],
             'fieldSets' => [],
         ];
@@ -157,8 +161,8 @@ class JsonApiListenerTest extends TestCase
             ->setMethods(null)
             ->enableOriginalConstructor()
             ->getMock();
-        $controller->name = 'Blogs';
-        $controller->Blogs = TableRegistry::get('blogs');
+        $controller->name = 'Countries';
+        $controller->Countries = TableRegistry::get('countries');
 
         $listener = $this
             ->getMockBuilder('\Crud\Listener\JsonApiListener')
@@ -174,7 +178,7 @@ class JsonApiListenerTest extends TestCase
         $subject = $this
             ->getMockBuilder('\Crud\Event\Subject')
             ->getMock();
-        $subject->entity = new Blog();
+        $subject->entity = new Country();
 
         $listener->render($subject);
     }
@@ -207,7 +211,7 @@ class JsonApiListenerTest extends TestCase
     public function testCheckPackageDependenciesFail()
     {
         $this->markTestIncomplete(
-            'Might be impossible to test due to inability to unload loaded classes)'
+            'Might be impossible to test due to inability to unload loaded classes'
         );
     }
 
@@ -386,6 +390,72 @@ class JsonApiListenerTest extends TestCase
     }
 
     /**
+     * Make sure config option `jsonOptions` does not accept a string
+     *
+     * @expectedException \Crud\Error\Exception\CrudException
+     * @expectedExceptionMessage JsonApiListener configuration option `jsonOptions` only accepts an array
+     */
+    public function testValidateConfigOptionJsonOptionsFailWithString()
+    {
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\JsonApiListener')
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $listener->config([
+            'jsonOptions' => 'string-not-accepted'
+        ]);
+
+        $this->setReflectionClassInstance($listener);
+        $this->callProtectedMethod('_validateConfigOptions', [], $listener);
+    }
+
+    /**
+     * Make sure config option `debugPrettyPrint` does not accept a string
+     *
+     * @expectedException \Crud\Error\Exception\CrudException
+     * @expectedExceptionMessage JsonApiListener configuration option `debugPrettyPrint` only accepts a boolean
+     */
+    public function testValidateConfigOptionDebugPrettyPrintFailWithString()
+    {
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\JsonApiListener')
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $listener->config([
+            'debugPrettyPrint' => 'string-not-accepted'
+        ]);
+
+        $this->setReflectionClassInstance($listener);
+        $this->callProtectedMethod('_validateConfigOptions', [], $listener);
+    }
+
+    /**
+     * Make sure config option `debugQueryLog` does not accept a string
+     *
+     * @expectedException \Crud\Error\Exception\CrudException
+     * @expectedExceptionMessage JsonApiListener configuration option `debugQueryLog` only accepts a boolean
+     */
+    public function testValidateConfigOptionDebugQueryLogFailWithString()
+    {
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\JsonApiListener')
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $listener->config([
+            'debugQueryLog' => 'string-not-accepted'
+        ]);
+
+        $this->setReflectionClassInstance($listener);
+        $this->callProtectedMethod('_validateConfigOptions', [], $listener);
+    }
+
+    /**
      * Make sure the listener accepts the correct request headers
 
      */
@@ -456,40 +526,26 @@ class JsonApiListenerTest extends TestCase
      * Make sure correct find data is returned from subject based on action
      *
      */
-    public function testGetFindResultForIndex()
+    public function testGetFindResult()
     {
-        $controller = $this
-            ->getMockBuilder('\Cake\Controller\Controller')
-            ->setMethods(null)
-            ->enableOriginalConstructor()
-            ->getMock();
-
         $listener = $this
             ->getMockBuilder('\Crud\Listener\JsonApiListener')
             ->disableOriginalConstructor()
             ->setMethods(['_controller'])
             ->getMock();
 
-        $listener
-            ->expects($this->any())
-            ->method('_controller')
-            ->will($this->returnValue($controller));
-
-        $subject = $this
-            ->getMockBuilder('\Crud\Event\Subject')
-            ->getMock();
-        $subject->entities = 'index-should-return-entities-property';
-        $subject->entity = 'all-other-actions-should-return-entity-property';
-
-        $controller->request->action = 'index';
         $this->setReflectionClassInstance($listener);
-        $result = $this->callProtectedMethod('_getFindResult', [$subject], $listener);
-        $this->assertSame($subject->entities, $result);
 
-        $controller->request->action = 'any-other-action-name';
-        $this->setReflectionClassInstance($listener);
+        $subject = new Subject();
+        $subject->entities = 'return-entities-property-from-subject-if-set';
         $result = $this->callProtectedMethod('_getFindResult', [$subject], $listener);
-        $this->assertSame($subject->entity, $result);
+        $this->assertSame('return-entities-property-from-subject-if-set', $result);
+
+        unset($subject->entities);
+
+        $subject->entities = 'return-entity-property-from-subject-if-set';
+        $result = $this->callProtectedMethod('_getFindResult', [$subject], $listener);
+        $this->assertSame('return-entity-property-from-subject-if-set', $result);
     }
 
     /**
@@ -527,16 +583,15 @@ class JsonApiListenerTest extends TestCase
         $subject->entities
             ->expects($this->any())
             ->method('first')
-            ->will($this->returnValue('index-should-return-first-entity-in-collection'));
+            ->will($this->returnValue('return-first-entity-if-entities-property-is-set'));
 
-        $subject->entity = 'all-other-actions-should-return-entity-property';
-
-        $controller->request->action = 'index';
         $this->setReflectionClassInstance($listener);
         $result = $this->callProtectedMethod('_getSingleEntity', [$subject], $listener);
-        $this->assertSame('index-should-return-first-entity-in-collection', $result);
+        $this->assertSame('return-first-entity-if-entities-property-is-set', $result);
 
-        $controller->request->action = 'any-other-action-name';
+        unset($subject->entities);
+
+        $subject->entity = 'return-entity-property-from-subject-if-set';
         $this->setReflectionClassInstance($listener);
         $result = $this->callProtectedMethod('_getSingleEntity', [$subject], $listener);
         $this->assertSame($subject->entity, $result);
@@ -544,36 +599,36 @@ class JsonApiListenerTest extends TestCase
 
     /**
      * Make sure associations not present in the find result are stripped
-     * from the AssociationCollection. In this test we remove associated
-     * model `Comments`.
+     * from the AssociationCollection. In this test we will remove associated
+     * model `Cultures`.
      */
     public function testStripAssociations()
     {
-        $table = TableRegistry::get('Articles');
-        $table->belongsTo('Authors');
-        $table->hasMany('Comments');
+        $table = TableRegistry::get('Countries');
+        $table->belongsTo('Currencies');
+        $table->hasMany('Cultures');
 
         // make sure expected associations are there
         $associationsBefore = $table->associations();
-        $this->assertNotEmpty($associationsBefore->get('authors'));
-        $this->assertNotEmpty($associationsBefore->get('comments'));
+        $this->assertNotEmpty($associationsBefore->get('currencies'));
+        $this->assertNotEmpty($associationsBefore->get('cultures'));
 
-        // make sure comments are not present in the find result
+        // make sure cultures are not present in the find result
         $query = $table->find()->contain([
-            'Authors'
+            'Currencies'
         ]);
         $entity = $query->first();
 
-        $this->assertNotEmpty($entity->author);
-        $this->assertNull($entity->comments);
+        $this->assertNotEmpty($entity->currency);
+        $this->assertNull($entity->cultures);
 
-        // make sure comments are removed from AssociationCollection
+        // make sure cultures are removed from AssociationCollection
         $listener = new JsonApiListener(new Controller());
         $this->setReflectionClassInstance($listener);
         $associationsAfter = $this->callProtectedMethod('_stripAssociations', [$table, $entity], $listener);
 
-        $this->assertNotEmpty($associationsAfter->get('authors'));
-        $this->assertNull($associationsAfter->get('comments'));
+        $this->assertNotEmpty($associationsAfter->get('currencies'));
+        $this->assertNull($associationsAfter->get('cultures'));
     }
 
     /**
@@ -582,23 +637,23 @@ class JsonApiListenerTest extends TestCase
      */
     public function testGetEntityList()
     {
-        $table = TableRegistry::get('Articles');
-        $table->belongsTo('Authors');
-        $table->hasMany('Comments');
+        $table = TableRegistry::get('Countries');
+        $table->belongsTo('Currencies');
+        $table->hasMany('Cultures');
 
         $associations = $table->associations();
 
-        $this->assertNotEmpty($associations->get('authors'));
-        $this->assertNotEmpty($associations->get('comments'));
+        $this->assertNotEmpty($associations->get('currencies'));
+        $this->assertNotEmpty($associations->get('cultures'));
 
         $listener = new JsonApiListener(new Controller());
         $this->setReflectionClassInstance($listener);
-        $result = $this->callProtectedMethod('_getEntityList', ['Article', $associations], $listener);
+        $result = $this->callProtectedMethod('_getEntityList', ['Country', $associations], $listener);
 
         $expected = [
-            'Article',
-            'Author',
-            'Comment'
+            'Country',
+            'Currency',
+            'Culture'
         ];
 
         $this->assertSame($expected, $result);
@@ -617,7 +672,7 @@ class JsonApiListenerTest extends TestCase
         $this->setReflectionClassInstance($listener);
 
         // test creating a single entity without relationships
-        $jsonApiFixture = new File(Plugin::path('Crud') . 'tests' . DS . 'Fixture' . DS . 'JsonApi' . DS . 'country_add_single_no_relationships.json');
+        $jsonApiFixture = new File(Plugin::path('Crud') . 'tests' . DS . 'Fixture' . DS . 'JsonApi' . DS . 'post_country_no_relationships.json');
         $jsonApiArray = json_decode($jsonApiFixture->read(), true);
         $result = $this->callProtectedMethod('_convertJsonApiDataArray', [$jsonApiArray], $listener);
 
@@ -628,7 +683,7 @@ class JsonApiListenerTest extends TestCase
         $this->assertSame($expected, $result);
 
         // test creating a single entity with relationship
-        $jsonApiFixture = new File(Plugin::path('Crud') . 'tests' . DS . 'Fixture' . DS . 'JsonApi' . DS . 'country_add_single_with_relationships.json');
+        $jsonApiFixture = new File(Plugin::path('Crud') . 'tests' . DS . 'Fixture' . DS . 'JsonApi' . DS . 'post_country_multiple_relationships.json');
         $jsonApiArray = json_decode($jsonApiFixture->read(), true);
         $result = $this->callProtectedMethod('_convertJsonApiDataArray', [$jsonApiArray], $listener);
 
