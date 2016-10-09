@@ -99,7 +99,7 @@ class JsonApiListener extends ApiListener
     }
 
     /**
-     * Selects an specific Crud view class to render the output
+     * Set required viewVars before rendering the JsonApiView.
      *
      * @param \Crud\Event\Subject $subject Subject
      * @return \Cake\Network\Response
@@ -109,23 +109,59 @@ class JsonApiListener extends ApiListener
         $controller = $this->_controller();
         $controller->viewBuilder()->className('Crud.JsonApi');
 
-        $tableName = $controller->name; // e.g. Countries
-        $entityName = Inflector::singularize($tableName); // e.g. Country
-        $table = $controller->$tableName; // table object
-
-        // Remove associations not found in the `find()` result
-        $entity = $this->_getSingleEntity($subject);
-        $associations = $this->_stripAssociations($table, $entity);
-
-        // Only include queryLog viewVar in debug mode
+        // Only enable query logging in debug mode
         if (Configure::read('debug')) {
             $controller->set([
                 '_queryLogs' => $this->_getQueryLogs()
             ]);
         }
 
+        // render a JSON API response with resource(s) if data is found
+        if (isset($subject->entity) || isset($subject->entities)) {
+            return $this->_renderWithResources($subject);
+        }
+
+        return $this->_renderWithoutResources();
+    }
+
+    /**
+     * Renders a resource-less JSON API response.
+     *
+     * @return \Cake\Network\Response
+     */
+    protected function _renderWithoutResources()
+    {
+        $this->_controller()->set([
+            '_withJsonApiVersion' => $this->config('withJsonApiVersion'),
+            '_meta' => $this->config('meta'),
+            '_urlPrefix' => $this->config('urlPrefix'),
+            '_jsonOptions' => $this->config('jsonOptions'),
+            '_debugPrettyPrint' => $this->config('debugPrettyPrint'),
+            '_debugQueryLog' => $this->config('debugQueryLog'),
+            '_serialize' => true,
+        ]);
+
+        return $this->_controller()->render();
+    }
+
+    /**
+     * Renders a JSON API response with top-level data node holding resource(s).
+     *
+     * @param \Crud\Event\Subject $subject Subject
+     * @return \Cake\Network\Response
+     */
+    protected function _renderWithResources($subject)
+    {
+        $tableName = $this->_controller()->name; // e.g. Countries
+        $entityName = Inflector::singularize($tableName); // e.g. Country
+        $table = $this->_controller()->$tableName; // table object
+
+        // Remove associations not found in the `find()` result
+        $entity = $this->_getSingleEntity($subject);
+        $associations = $this->_stripAssociations($table, $entity);
+
         // Set data before rendering the view
-        $controller->set([
+        $this->_controller()->set([
             '_withJsonApiVersion' => $this->config('withJsonApiVersion'),
             '_meta' => $this->config('meta'),
             '_urlPrefix' => $this->config('urlPrefix'),
@@ -135,12 +171,12 @@ class JsonApiListener extends ApiListener
             '_entities' => $this->_getEntityList($entityName, $associations),
             '_include' => $this->config('include'),
             '_fieldSets' => $this->config('fieldSets'),
-            Inflector::tableize($controller->name) => $this->_getFindResult($subject),
+            Inflector::tableize($tableName) => $this->_getFindResult($subject),
             '_associations' => $associations,
             '_serialize' => true,
         ]);
 
-        return $controller->render();
+        return $this->_controller()->render();
     }
 
     /**
@@ -309,20 +345,57 @@ class JsonApiListener extends ApiListener
     }
 
     /**
-     * Replace posted request JSON API data with array in CakePHP format
+     * Checks if data was posted to the Listener. If so then checks if the
+     * array (already converted from json) matches the expected JSON API
+     * structure for resources and if so, converts that array to CakePHP
+     * compatible format so it can be processed as usual from there.
      *
      * @return void
      */
     protected function _checkRequestData()
     {
-        if ($this->_controller()->request->data()) {
-            $this->_controller()->request->data = $this->_convertJsonApiDataArray($this->_controller()->request->data());
+        if (empty($this->_controller()->request->data())) {
+            return;
+        }
+
+        $data = $this->_controller()->request->data();
+
+        if ($this->_validateRequestData($data)) {
+            throw new CrudException('Posted request data structure does not match expected JSON API format');
+        }
+
+        $this->_controller()->request->data = $this->_convertJsonApiDataArray($data);
+    }
+
+    /**
+     * Make sure request data uses expected JSON API array structure
+     *
+     * @param array $data Request data
+     * @throws \Cake\Network\Exception\BadRequestException
+     * @return void
+     */
+    protected function _validateRequestData($data)
+    {
+        if (!array_key_exists('data', $data)) {
+            throw new BadRequestException('Request data is missing top-level "data" node');
+        }
+
+        if (!array_key_exists('type', $data['data'])) {
+            throw new BadRequestException('Request data is missing "type" node');
+        }
+
+        if (empty($data['data']['type'])) {
+            throw new BadRequestException('Request data "type" node cannot be empty');
+        }
+
+        if (!array_key_exists('attributes', $data['data'])) {
+            throw new BadRequestException('Request data is missing "attributes" node');
         }
     }
 
     /**
-     * Converts request data holding (already json_decoded) JSON API array to
-     * CakePHP format.
+     * Converts request data holding (already json_decoded) JSON API entity
+     * array to CakePHP format.
      *
      * @param array $data Array with result of json_decoding JSON API
      * @return bool

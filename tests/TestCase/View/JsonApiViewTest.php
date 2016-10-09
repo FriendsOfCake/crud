@@ -101,7 +101,7 @@ class JsonApiViewTest extends TestCase
     /**
      * Helper function to easily create specific view for each test.
      *
-     * @param string $tableName
+     * @param string|bool $tableName False to get view for resource-less response
      * @param array $viewVars
      * @return string NeoMerx jsonapi encoded array
      */
@@ -119,6 +119,17 @@ class JsonApiViewTest extends TestCase
         $response = new Response();
         $controller = new Controller($request, $response);
 
+        $builder = $controller->viewBuilder();
+        $builder->className('\Crud\View\JsonApiView');
+
+        // create view with viewVars for resource-less response
+        if (!$tableName) {
+            $controller->set($viewVars);
+
+            return $controller->createView();
+        }
+
+        // still here, create view with viewVars for response with resource(s)
         $controller->name = $tableName; // e.g. Countries
         $table = TableRegistry::get($tableName); // table object
         $entityName = Inflector::singularize($tableName); // e.g. Country
@@ -150,22 +161,8 @@ class JsonApiViewTest extends TestCase
 
         // set viewVars before creating the view
         $controller->set($viewVars);
-        $builder = $controller->viewBuilder();
-        $builder->className('\Crud\View\JsonApiView');
 
         return $controller->createView();
-    }
-
-    /**
-     * Make sure an exception is thrown when required viewVar is missing
-     *
-     * @expectedException \Crud\Error\Exception\CrudException
-     * @expectedExceptionMessage JsonApiListener required viewVar '_entities' is not set
-     */
-    public function testEntitiesToNeoMerxSchemaMissingEntitiesException()
-    {
-        $view = new JsonApiView();
-        $view->render();
     }
 
     /**
@@ -185,7 +182,8 @@ class JsonApiViewTest extends TestCase
     }
 
     /**
-     * Make sure Crud's DynamicEntitySchema produces expected json.
+     * Make sure expected JSON API strings are generated as expected when
+     * using Crud's DynamicEntitySchema.
      *
      * Please note that we are deliberately using assertSame() instead of
      * assertJsonFileEqualsJsonFile() for all tests because the latter will
@@ -193,7 +191,7 @@ class JsonApiViewTest extends TestCase
      *
      * @return void
      */
-    public function testDynamicEntitySchema()
+    public function testEncodeWithDynamicSchemas()
     {
         // test collection of entities without relationships
         $countries = TableRegistry::get('Countries')->find()->all();
@@ -214,6 +212,32 @@ class JsonApiViewTest extends TestCase
 
         $this->assertSame(
             (new File($this->_JsonDir . 'get_country_no_relationships.json'))->read(),
+            $view->render()
+        );
+    }
+
+    /**
+     * Make sure resource-less JSON API strings are generated as expected.
+     *
+     * @return void
+     */
+    public function testEncodeWithoutSchemas()
+    {
+        // make sure empty body is rendered
+        $view = $this->_getView(false, [
+            '_meta' => false
+        ]);
+        $this->assertNull($view->render());
+
+        // make sure body with only/just `meta` node is rendered
+        $view = $this->_getView(false, [
+            '_meta' => [
+                'author' => 'bravo-kernel'
+            ]
+        ]);
+
+        $this->assertSame(
+            (new File($this->_JsonDir . 'response_without_resources_meta.json'))->read(),
             $view->render()
         );
     }
@@ -298,8 +322,9 @@ class JsonApiViewTest extends TestCase
         ]);
         $this->assertArrayNotHasKey('meta', json_decode($view->render(), true));
 
-        // make sure we can also generate a response with just/only a meta
-        // node (as supported by the jsonapi spec)
+        // make sure a response with just/only a meta node is generated if
+        // no corresponding entity data was retrieved from the viewVars
+        // (as supported by the jsonapi spec)
         $view = $this->_getView('Countries', [
             'countries' => null,
             '_meta' => [

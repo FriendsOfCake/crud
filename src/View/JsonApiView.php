@@ -19,8 +19,8 @@ class JsonApiView extends View
      * List of special view vars. See Crud JsonApiListener's default config
      * for a full list with explanations.
      *
-     * Please note that ALL viewVars found in the view MINUS the ones defined
-     * here will be passed to NeoMerx as $data.
+     * Please note that only viewVars NOT defined in this list will be
+     * available as possible NeoMerx $data candidates.
      *
      * @var array
      */
@@ -61,31 +61,66 @@ class JsonApiView extends View
     }
 
     /**
-     * Serialize view vars.
+     * Renders one of the three supported JSON API responses.
+     *
+     * - with body containing an entity based resource (data)
+     * - with empty body
+     * - with body containing only the meta node
      *
      * @param string|null $view Name of view file to use
      * @param string|null $layout Layout to use.
-     * @throws \Crud\Error\Exception\CrudException
-     * @return string NeoMerx generated JSON API
+     * @return string
      */
     public function render($view = null, $layout = null)
     {
-        if (empty($this->viewVars['_entities'])) {
-            throw new CrudException('JsonApiListener required viewVar \'_entities\' is not set');
+        if (isset($this->viewVars['_entities'])) {
+            $json = $this->_encodeWithSchemas();
+        } else {
+            $json = $this->_encodeWithoutSchemas();
         }
 
+        // Only add top-level `query` node to the response if user configured
+        // the setting AND we are in debug mode
+        if (Configure::read('debug') && $this->viewVars['_debugQueryLog'] === true) {
+            $json = json_decode($json, true);
+            $json['query'] = $this->viewVars['_queryLogs'];
+            $json = json_encode($json, $this->_jsonOptions());
+        }
+
+        return $json;
+    }
+
+    /**
+     * Generates a JSON API string without resource(s).
+     *
+     * @return void|string
+     */
+    protected function _encodeWithoutSchemas()
+    {
+        if ($this->viewVars['_meta'] === false) {
+            return;
+        }
+
+        $encoder = Encoder::instance(
+            [],
+            new EncoderOptions(
+                $this->_jsonOptions(),
+                $this->viewVars['_urlPrefix']
+            )
+        );
+
+        return $encoder->encodeMeta($this->viewVars['_meta']);
+    }
+
+    /**
+     * Generates a JSON API string with resource(s).
+     *
+     * @return string
+     */
+    protected function _encodeWithSchemas()
+    {
         $schemas = $this->_entitiesToNeoMerxSchema($this->viewVars['_entities']);
 
-         $serialize = null;
-        if (isset($this->viewVars['_serialize'])) {
-            $serialize = $this->viewVars['_serialize'];
-        }
-
-        if (isset($this->viewVars['_serialize']) && $this->viewVars['_serialize'] !== false) {
-            $serialize = $this->_getDataToSerializeFromViewVars($this->viewVars['_serialize']);
-        }
-
-        // Create the NeoMerx Encoder used to generate the JSON API string.
         // Please note that a third NeoMerx EncoderOptions argument `depth`
         // exists but has not been implemented in this plugin.
         $encoder = Encoder::instance(
@@ -94,6 +129,29 @@ class JsonApiView extends View
                 $this->_jsonOptions(),
                 $this->viewVars['_urlPrefix']
             )
+        );
+
+        $serialize = null;
+        if (isset($this->viewVars['_serialize'])) {
+            $serialize = $this->viewVars['_serialize'];
+        }
+
+        if (isset($this->viewVars['_serialize']) && $this->viewVars['_serialize'] !== false) {
+            $serialize = $this->_getDataToSerializeFromViewVars($this->viewVars['_serialize']);
+        }
+
+        // Resources defined in `include` will appear in the included section,
+        // resources defined in `fieldSets` are used to limit the fields shown
+        // in the result.
+        //
+        // Please note that a configured `include` var will take precedence
+        // over the `getIncludePaths()` method that MIGHT exist in a schema.
+        $include = $this->viewVars['_include'];
+        $fieldSets = $this->viewVars['_fieldSets'];
+
+        $parameters = new EncodingParameters(
+            $include,
+            $fieldSets
         );
 
         // Add optional top-level `version` node to the response
@@ -114,33 +172,7 @@ class JsonApiView extends View
             }
         }
 
-        // Resources defined in `include` will appear in the included section,
-        // resources defined in `fieldSets` are used to limit the fields shown
-        // in the result.
-        //
-        // Please note that a configured `include` var will take precedence
-        // over the `getIncludePaths()` method that MIGHT exist in a schema.
-        $include = $this->viewVars['_include'];
-        $fieldSets = $this->viewVars['_fieldSets'];
-
-        $parameters = new EncodingParameters(
-            $include,
-            $fieldSets
-        );
-
-        // Let NeoMerx Encoder render the correct json string
-        $json = $encoder->encodeData($serialize, $parameters);
-
-        // Add top-level `query` node to the response only if user enabled the
-        // setting AND we are in debug mode
-        if (Configure::read('debug') && $this->viewVars['_debugQueryLog'] === true) {
-            $json = json_decode($json, true);
-            $json['query'] = $this->viewVars['_queryLogs'];
-            $json = json_encode($json, $this->_jsonOptions());
-        }
-
-        // return JSON API json string
-        return $json;
+        return $encoder->encodeData($serialize, $parameters);
     }
 
     /**
@@ -208,7 +240,6 @@ class JsonApiView extends View
 
             return current($data);
         }
-
 
         if (is_array($serialize)) {
             $serialize = current($serialize);

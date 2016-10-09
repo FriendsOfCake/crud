@@ -123,7 +123,12 @@ class JsonApiListenerTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $controller->request->data = ['dummy' => 'array'];
+        $controller->request->data = [
+            'data' => [
+                'type' => 'dummy',
+                'attributes' => [],
+            ]
+        ];
 
         $listener = $this
             ->getMockBuilder('\Crud\Listener\JsonApiListener')
@@ -150,11 +155,11 @@ class JsonApiListenerTest extends TestCase
     }
 
     /**
-     * Test render() method
+     * Make sure render() works with find data
      *
      * @return void
      */
-    public function testRender()
+    public function testRenderWithResources()
     {
         $controller = $this
             ->getMockBuilder('\Cake\Controller\Controller')
@@ -179,6 +184,37 @@ class JsonApiListenerTest extends TestCase
             ->getMockBuilder('\Crud\Event\Subject')
             ->getMock();
         $subject->entity = new Country();
+
+        $listener->render($subject);
+    }
+
+    /**
+     * Make sure render() works without find data
+     *
+     * @return void
+     */
+    public function testRenderWithoutResources()
+    {
+        $controller = $this
+            ->getMockBuilder('\Cake\Controller\Controller')
+            ->setMethods(null)
+            ->enableOriginalConstructor()
+            ->getMock();
+
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\JsonApiListener')
+            ->disableOriginalConstructor()
+            ->setMethods(['_controller', '_action'])
+            ->getMock();
+
+        $listener
+            ->expects($this->any())
+            ->method('_controller')
+            ->will($this->returnValue($controller));
+
+        $subject = $this
+            ->getMockBuilder('\Crud\Event\Subject')
+            ->getMock();
 
         $listener->render($subject);
     }

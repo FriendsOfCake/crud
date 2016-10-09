@@ -19,8 +19,8 @@ class JsonApiExceptionRenderer extends \Cake\Error\ExceptionRenderer
     use QueryLogTrait;
 
     /**
-     * Render JSON API error responses for all non-validation errors and send
-     * corresponding error code.
+     * Method used for all non-validation errors.  Uses NeoMerx to render
+     * a JSON API error response with corresponding error code.
      *
      * @param string $template Name of template to use (ignored for jsonapi)
      * @return \Cake\Network\Response
@@ -67,7 +67,8 @@ class JsonApiExceptionRenderer extends \Cake\Error\ExceptionRenderer
     }
 
     /**
-     * Render JSON API error responses for validation errors with 422 error code.
+     * Method used for validation errors. Uses NeoMerx to render a JSON API
+     * error response with a list of all validation errors and 422 error code.
      *
      * @param \Crud\Error\Exception\ValidationException $exception Exception instance
      * @return \Cake\Network\Response
@@ -142,7 +143,7 @@ class JsonApiExceptionRenderer extends \Cake\Error\ExceptionRenderer
         $result = json_decode($json, true);
         $result['debug'] = $debug;
 
-        return json_encode($result);
+        return json_encode($result, JSON_PRETTY_PRINT);
     }
 
     /**
@@ -156,7 +157,7 @@ class JsonApiExceptionRenderer extends \Cake\Error\ExceptionRenderer
         $result = json_decode($json, true);
         $result['query'] = $this->_getQueryLogs();
 
-        return json_encode($result);
+        return json_encode($result, JSON_PRETTY_PRINT);
     }
 
     /**
