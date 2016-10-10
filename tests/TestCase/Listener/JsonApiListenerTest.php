@@ -523,7 +523,7 @@ class JsonApiListenerTest extends TestCase
      * Make sure the listener fails on non JSON API request Accept Type header
      *
      * @expectedException \Cake\Network\Exception\BadRequestException
-     * @expectedExceptionMessage JsonApiListener requests require the application/vnd.api+json Accept header
+     * @expectedExceptionMessage JSON API requests require the "application/vnd.api+json" Accept header
      */
     public function testCheckRequestMethodsFailAcceptHeader()
     {
@@ -542,13 +542,34 @@ class JsonApiListenerTest extends TestCase
      * Make sure the listener fails on non JSON API request Content-Type header
      *
      * @expectedException \Cake\Network\Exception\BadRequestException
-     * @expectedExceptionMessage Posting data to JsonApiListener requires the application/vnd.api+json Content-Type header
+     * @expectedExceptionMessage JSON API requests with data require the "application/vnd.api+json" Content-Type header
      */
     public function testCheckRequestMethodsFailContentHeader()
     {
         $request = new Request();
         $request->env('HTTP_ACCEPT', 'application/vnd.api+json');
         $request->env('CONTENT_TYPE', 'application/json');
+        $response = new Response();
+        $controller = new Controller($request, $response);
+        $listener = new JsonApiListener($controller);
+        $listener->setupDetectors();
+
+        $this->setReflectionClassInstance($listener);
+        $this->callProtectedMethod('_checkRequestMethods', [], $listener);
+    }
+
+    /**
+     * Make sure the listener does not accept the PUT method (since the JSON
+     * API spec only supports PATCH)
+     *
+     * @expectedException \Cake\Network\Exception\BadRequestException
+     * @expectedExceptionMessage JSON API does not support the PUT method, use PATCH instead
+     */
+    public function testCheckRequestMethodsFailOnPutMethod()
+    {
+        $request = new Request();
+        $request->env('HTTP_ACCEPT', 'application/vnd.api+json');
+        $request->env('REQUEST_METHOD', 'PUT');
         $response = new Response();
         $controller = new Controller($request, $response);
         $listener = new JsonApiListener($controller);

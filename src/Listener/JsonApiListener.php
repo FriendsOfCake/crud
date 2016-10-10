@@ -249,7 +249,11 @@ class JsonApiListener extends ApiListener
         $jsonApiMimeType = $this->_response()->getMimeType('jsonapi');
 
         if (!$this->_checkRequestType('jsonapi')) {
-            throw new BadRequestException("JsonApiListener requests require the $jsonApiMimeType Accept header");
+            throw new BadRequestException("JSON API requests require the \"$jsonApiMimeType\" Accept header");
+        }
+
+        if ($this->_request()->is('put')) {
+            throw new BadRequestException('JSON API does not support the PUT method, use PATCH instead');
         }
 
         if (!$this->_request()->contentType()) {
@@ -257,7 +261,7 @@ class JsonApiListener extends ApiListener
         }
 
         if ($this->_request()->contentType() !== $jsonApiMimeType) {
-            throw new BadRequestException("Posting data to JsonApiListener requires the $jsonApiMimeType Content-Type header");
+            throw new BadRequestException("JSON API requests with data require the \"$jsonApiMimeType\" Content-Type header");
         }
 
         return true;
