@@ -1,5 +1,6 @@
 <?php
 
+App::uses('CakeText', 'Utility');
 App::uses('CrudListener', 'Crud.Controller/Crud');
 App::uses('CrudValidationException', 'Crud.Error/Exception');
 
