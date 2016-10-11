@@ -2,6 +2,7 @@
 
 App::uses('CakeEventListener', 'Event');
 App::uses('Hash', 'Utility');
+App::uses('Object', 'Core');
 
 /**
  * Crud Base Class
