@@ -9,7 +9,7 @@ use Neomerx\JsonApi\Encoder\Encoder;
 use Neomerx\JsonApi\Exceptions\ErrorCollection;
 
 /**
- * Exception renderer for JsonApiListener
+ * Exception renderer for the JsonApiListener
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
@@ -19,8 +19,7 @@ class JsonApiExceptionRenderer extends \Cake\Error\ExceptionRenderer
     use QueryLogTrait;
 
     /**
-     * Method used for all non-validation errors.  Uses NeoMerx to render
-     * a JSON API error response with corresponding error code.
+     * Method used for all non-validation errors.
      *
      * @param string $template Name of template to use (ignored for jsonapi)
      * @return \Cake\Network\Response
@@ -41,14 +40,14 @@ class JsonApiExceptionRenderer extends \Cake\Error\ExceptionRenderer
 
         $errorCollection = new ErrorCollection();
         $errorCollection->add(new Error(
-            null, // idx
-            null, // LinkInterface
-            null, // status
+            $idx = null,
+            $aboutLink = null,
+            $status = null,
             $code,
             $title,
             $detail,
-            null, // source (array)
-            null // meta (array)
+            $source = null,
+            $meta = null
         ));
 
         $encoder = Encoder::instance();
@@ -67,10 +66,10 @@ class JsonApiExceptionRenderer extends \Cake\Error\ExceptionRenderer
     }
 
     /**
-     * Method used for validation errors. Uses NeoMerx to render a JSON API
-     * error response with a list of all validation errors and 422 error code.
+     * Method used for rendering 422 validation used for both CakePHP entity
+     * validation errors and JSON API (request data) documents.
      *
-     * @param \Crud\Error\Exception\ValidationException $exception Exception instance
+     * @param \Crud\Error\Exception\ValidationException $exception Exception
      * @return \Cake\Network\Response
      */
     public function validation($exception)
@@ -84,22 +83,7 @@ class JsonApiExceptionRenderer extends \Cake\Error\ExceptionRenderer
             $this->controller->response->statusCode($status);
         }
 
-        $errorCollection = new ErrorCollection();
-
-        $validationErrors = $this->_standardizeValidationErrors($exception->getValidationErrors());
-
-        foreach ($validationErrors as $validationError) {
-            $errorCollection->addDataAttributeError(
-                $validationError['fields'][0], // name of invalidated field
-                $validationError['name'], // title, validation rule
-                $validationError['message'], // $detail, validation message
-                null, // status
-                null, // idx
-                null, // LinkInterface $aboutLink
-                null, // code
-                null // meta
-            );
-        }
+        $errorCollection = $this->_getNeoMerxErrorCollection($exception->getValidationErrors());
 
         $encoder = Encoder::instance();
         $json = $encoder->encodeErrors($errorCollection);
@@ -114,6 +98,44 @@ class JsonApiExceptionRenderer extends \Cake\Error\ExceptionRenderer
         $this->controller->response->body($json);
 
         return $this->controller->response;
+    }
+
+    /**
+     * Returns a NeoMerx ErrorCollection with validation errors by either:
+     *
+     * - returning cloacked collection as passed down from the Listener
+     * - creating a new collection from CakePHP validation errors
+     *
+     * @param array $validationErrors CakePHP validation errors
+     * @return \Neomerx\JsonApi\Exceptions\ErrorCollection
+     */
+    protected function _getNeoMerxErrorCollection($validationErrors)
+    {
+        if (isset($validationErrors['CrudJsonApiListener']['NeoMerxErrorCollection'])) {
+            if (is_a($validationErrors['CrudJsonApiListener']['NeoMerxErrorCollection'], '\Neomerx\JsonApi\Exceptions\ErrorCollection')) {
+                return $validationErrors['CrudJsonApiListener']['NeoMerxErrorCollection'];
+            }
+        }
+
+        // Create new NeoMerx ErrorCollection from CakePHP validation errors
+        $errorCollection = new ErrorCollection();
+
+        $validationErrors = $this->_standardizeValidationErrors($validationErrors);
+
+        foreach ($validationErrors as $validationError) {
+            $errorCollection->addDataAttributeError(
+                $name = $validationError['fields'][0],
+                $title = $validationError['name'],
+                $detail = $validationError['message'],
+                $status = null,
+                $idx = null,
+                $aboutLink = null,
+                $code = null,
+                $meta = null
+            );
+        }
+
+        return $errorCollection;
     }
 
     /**
@@ -162,13 +184,13 @@ class JsonApiExceptionRenderer extends \Cake\Error\ExceptionRenderer
 
     /**
      * Creates a uniform array with all information required to generate
-     * NeoMerx AttributeErrors by parsing (differently structured) built-in
-     * and user-defined failing rules feedback.
+     * NeoMerx DataAttributeErrors by parsing (differently structured) built-in
+     * and user-defined CakePHP rules feedback.
      *
      * Note: we need this function because Cake's built-in rules don't pass
      * through `_processRules()` function in the Validator.
      *
-     * @param array $errors Array validation errors
+     * @param array $errors CakePHP validation errors
      * @return array Standardized array
      */
     protected function _standardizeValidationErrors($errors = [])

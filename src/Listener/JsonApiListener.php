@@ -7,8 +7,8 @@ use Cake\Network\Exception\BadRequestException;
 use Cake\Utility\Inflector;
 use Crud\Error\Exception\CrudException;
 use Crud\Event\Subject;
+use Crud\Listener\JsonApi\DocumentValidator;
 use Crud\Traits\QueryLogTrait;
-use Neomerx\JsonApi\Schema\Link;
 
 /**
  * Extends Crud ApiListener to respond in JSON API format.
@@ -44,14 +44,15 @@ class JsonApiListener extends ApiListener
         ],
         'exceptionRenderer' => 'Crud\Error\JsonApiExceptionRenderer',
         'setFlash' => false,
-        'withJsonApiVersion' => false, // true or array/hash with additional meta information (will add top-level node `jsonapi` to the response)
+        'withJsonApiVersion' => false, // true or array/hash with additional meta information (will add top-level member `jsonapi` to the response)
         'meta' => false, // array or hash with meta information (will add top-level node `meta` to the response)
         'urlPrefix' => null, // string holding URL to prefix links in jsonapi response with
         'jsonOptions' => [], // array with predefined JSON constants as described at http://php.net/manual/en/json.constants.php
         'debugPrettyPrint' => true, // true to use JSON_PRETTY_PRINT for generated debug-mode response
-        'debugQueryLog' => true, // true to add top-level `query` node holding SQL log to the debug-mode response
+        'debugQueryLog' => true, // adds top-level member `query` holding SQL logs in debug-mode
         'include' => [],
-        'fieldSets' => [], // hash to limit fields shown (applicable to both `data` and `included` nodes)
+        'fieldSets' => [], // hash to limit fields shown (can be used for both `data` and `included` members)
+        'docValidatorAboutLinks' => false, // true to show links to JSON API specification clarifying the document validation error
     ];
 
     /**
@@ -109,7 +110,7 @@ class JsonApiListener extends ApiListener
         $controller = $this->_controller();
         $controller->viewBuilder()->className('Crud.JsonApi');
 
-        // Only enable query logging in debug mode
+        // Only set viewVar with data for the `query` node in debug mode
         if (Configure::read('debug')) {
             $controller->set([
                 '_queryLogs' => $this->_getQueryLogs()
@@ -363,55 +364,42 @@ class JsonApiListener extends ApiListener
         }
 
         $data = $this->_controller()->request->data();
-
-        if ($this->_validateRequestData($data)) {
-            throw new CrudException('Posted request data structure does not match expected JSON API format');
-        }
+        $validator = new DocumentValidator($data, $this->config());
+        $validator->validateCreateDocument();
 
         $this->_controller()->request->data = $this->_convertJsonApiDataArray($data);
     }
 
     /**
-     * Make sure request data uses expected JSON API array structure
+     * Converts (already json_decoded) request data array in JSON API format
+     * to CakePHP format so it be processed as usual. Should only be used with
+     * already validated data/document or things will break.
      *
-     * @param array $data Request data
-     * @throws \Cake\Network\Exception\BadRequestException
-     * @return void
-     */
-    protected function _validateRequestData($data)
-    {
-        if (!array_key_exists('data', $data)) {
-            throw new BadRequestException('Request data is missing top-level "data" node');
-        }
-
-        if (!array_key_exists('type', $data['data'])) {
-            throw new BadRequestException('Request data is missing "type" node');
-        }
-
-        if (empty($data['data']['type'])) {
-            throw new BadRequestException('Request data "type" node cannot be empty');
-        }
-
-        if (!array_key_exists('attributes', $data['data'])) {
-            throw new BadRequestException('Request data is missing "attributes" node');
-        }
-    }
-
-    /**
-     * Converts request data holding (already json_decoded) JSON API entity
-     * array to CakePHP format.
-     *
-     * @param array $data Array with result of json_decoding JSON API
+     * @param array $data Request data array
      * @return bool
      */
     protected function _convertJsonApiDataArray($data)
     {
-        $result = $data['data']['attributes'];
+        $result = [];
 
-        // record without foreign keys
-        if (!isset($data['data']['relationships'])) {
+        // convert primary resource
+        if (array_key_exists('id', $data['data'])) {
+            $result['id'] = $data['data']['id'];
+        };
+
+        if (array_key_exists('attributes', $data['data'])) {
+            $result = array_merge_recursive($result, $data['data']['attributes']);
+        };
+
+        if (!array_key_exists('relationships', $data['data'])) {
             return $result;
         }
+
+        // convert relationships (needs proper document validation and decoding)
+        $attributes = array_key_exists('attributes', $data['data']);
+        $relationships = array_key_exists('relationships', $data['data']);
+
+        $result = $data['data']['attributes'];
 
         // record wih foreign keys
         foreach ($data['data']['relationships'] as $key => $details) {

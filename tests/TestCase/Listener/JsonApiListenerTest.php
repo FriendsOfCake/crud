@@ -57,6 +57,7 @@ class JsonApiListenerTest extends TestCase
             'debugQueryLog' => true,
             'include' => [],
             'fieldSets' => [],
+            'docValidatorAboutLinks' => false,
         ];
 
         $this->assertSame($expected, $listener->config());
@@ -493,7 +494,8 @@ class JsonApiListenerTest extends TestCase
 
     /**
      * Make sure the listener accepts the correct request headers
-
+     *
+     * @return void
      */
     public function testCheckRequestMethodsSuccess()
     {
@@ -582,6 +584,7 @@ class JsonApiListenerTest extends TestCase
     /**
      * Make sure correct find data is returned from subject based on action
      *
+     * @return void
      */
     public function testGetFindResult()
     {
@@ -607,6 +610,8 @@ class JsonApiListenerTest extends TestCase
 
     /**
      * Make sure single/first entity is returned from subject based on action
+     *
+     * @return void
      */
     public function testGetSingleEntity()
     {
@@ -658,6 +663,8 @@ class JsonApiListenerTest extends TestCase
      * Make sure associations not present in the find result are stripped
      * from the AssociationCollection. In this test we will remove associated
      * model `Cultures`.
+     *
+     * @return void
      */
     public function testStripAssociations()
     {
@@ -691,6 +698,8 @@ class JsonApiListenerTest extends TestCase
     /**
      * Make sure we get a list of entity names for the current entity (name
      * passed as string) and all associated models.
+     *
+     * @return void
      */
     public function testGetEntityList()
     {
@@ -717,11 +726,27 @@ class JsonApiListenerTest extends TestCase
     }
 
     /**
+     * Test _checkRequestData()
+     *
+     * @return void
+     */
+    public function testCheckRequestData()
+    {
+        $requestData = null;
+
+        $listener = new JsonApiListener(new Controller());
+        $this->setReflectionClassInstance($listener);
+        $this->assertNull($this->callProtectedMethod('_checkRequestData', [$requestData], $listener));
+    }
+
+    /**
      * Make sure arrays holding json_decoded JSON API data are properly
      * converted to CakePHP format.
      *
      * Make sure incoming JSON API data is transformed to CakePHP format.
      * Please note that data is already json_decoded by Crud here.
+     *
+     * @return void
      */
     public function testConvertJsonApiDataArray()
     {
