@@ -3,23 +3,21 @@
         "type": "countries",
         "attributes": {
             "code": "NL",
-            "name": "The Netherlands",
-            "culture_id": 2,
-            "currency_id": 3
+            "name": "The Netherlands"
         },
         "relationships": {
             "cultures": {
                 "data": [
                     {
                         "type": "cultures",
-                        "id": 2
+                        "id": "2"
                     }
                 ]
             },
             "currency": {
                 "data": {
                     "type": "currencies",
-                    "id": 3
+                    "id": "3"
                 }
             }
         }

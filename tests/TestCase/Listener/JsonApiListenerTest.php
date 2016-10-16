@@ -772,8 +772,8 @@ class JsonApiListenerTest extends TestCase
         $expected = [
             'code' => 'NL',
             'name' => 'The Netherlands',
-            'culture_id' => 2,
-            'currency_id' => 3
+            'culture_id' => '2',
+            'currency_id' => '3'
         ];
 
         $this->assertSame($expected, $result);
