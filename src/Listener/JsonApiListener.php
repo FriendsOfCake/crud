@@ -4,6 +4,7 @@ namespace Crud\Listener;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Network\Exception\BadRequestException;
+use Cake\Routing\Router;
 use Cake\Utility\Inflector;
 use Crud\Error\Exception\CrudException;
 use Crud\Event\Subject;
@@ -78,6 +79,7 @@ class JsonApiListener extends ApiListener
             'Crud.beforeFilter' => ['callable' => [$this, 'setupLogging'], 'priority' => 1],
             'Crud.beforeHandle' => ['callable' => [$this, 'beforeHandle'], 'priority' => 10],
             'Crud.setFlash' => ['callable' => [$this, 'setFlash'], 'priority' => 5],
+            'Crud.afterSave' => ['callable' => [$this, 'setLocationHeader'], 'priority' => 90],
             'Crud.beforeRender' => ['callable' => [$this, 'respond'], 'priority' => 100],
             'Crud.beforeRedirect' => ['callable' => [$this, 'respond'], 'priority' => 100]
         ];
@@ -97,6 +99,55 @@ class JsonApiListener extends ApiListener
         $this->_checkRequestMethods();
         $this->_validateConfigOptions();
         $this->_checkRequestData();
+    }
+
+    /**
+     * afterSave() event used to respond with `Location` header pointing to
+     * the newly created resources. Only applied to `add` actions as described
+     * at http://jsonapi.org/format/#crud-creating-responses-201.
+     *
+     * @param \Cake\Event\Event $event Event
+     * @return bool
+     */
+    public function setLocationHeader($event)
+    {
+        if (!$event->subject()->success) {
+            return false;
+        }
+
+        if (!$event->subject()->created) {
+            return false;
+        }
+
+        $this->_response()->header([
+            'Location' => $this->_getNewResourceUrl(
+                $this->_controller()->name,
+                $event->subject()->entity->id
+            )
+        ]);
+
+        return true;
+    }
+
+    /**
+     * Creates a RESTful resource route URL rom a Router-generated URL by
+     * removing last occurrence of `/view/`.
+     *
+     * @param string $controller Controller name
+     * @param mixed $id Entity id
+     * @return mixed|string
+     */
+    protected function _getNewResourceUrl($controller, $id)
+    {
+        $url = Router::url([
+            'controller' => $controller,
+            'action' => 'view',
+            $id,
+        ], true);
+
+        $url = preg_replace('/(\/view\/(?!.*\/view\/))/', '/', $url);
+
+        return $url;
     }
 
     /**
@@ -367,42 +418,42 @@ class JsonApiListener extends ApiListener
         $validator = new DocumentValidator($data, $this->config());
         $validator->validateCreateDocument();
 
-        $this->_controller()->request->data = $this->_convertJsonApiDataArray($data);
+        $this->_controller()->request->data = $this->_convertJsonApiDocumentArray($data);
     }
 
     /**
-     * Converts (already json_decoded) request data array in JSON API format
-     * to CakePHP format so it be processed as usual. Should only be used with
-     * already validated data/document or things will break.
+     * Converts (already json_decoded) request data array in JSON API document
+     * format to CakePHP format so it be processed as usual. Should only be
+     * used with already validated data/document or things will break.
      *
-     * @param array $data Request data array
+     * @param array $document Request data document array
      * @return bool
      */
-    protected function _convertJsonApiDataArray($data)
+    protected function _convertJsonApiDocumentArray($document)
     {
         $result = [];
 
         // convert primary resource
-        if (array_key_exists('id', $data['data'])) {
-            $result['id'] = $data['data']['id'];
+        if (array_key_exists('id', $document['data'])) {
+            $result['id'] = $document['data']['id'];
         };
 
-        if (array_key_exists('attributes', $data['data'])) {
-            $result = array_merge_recursive($result, $data['data']['attributes']);
+        if (array_key_exists('attributes', $document['data'])) {
+            $result = array_merge_recursive($result, $document['data']['attributes']);
         };
 
-        if (!array_key_exists('relationships', $data['data'])) {
+        if (!array_key_exists('relationships', $document['data'])) {
             return $result;
         }
 
         // convert relationships (needs proper document validation and decoding)
-        $attributes = array_key_exists('attributes', $data['data']);
-        $relationships = array_key_exists('relationships', $data['data']);
+        $attributes = array_key_exists('attributes', $document['data']);
+        $relationships = array_key_exists('relationships', $document['data']);
 
-        $result = $data['data']['attributes'];
+        $result = $document['data']['attributes'];
 
         // record wih foreign keys
-        foreach ($data['data']['relationships'] as $key => $details) {
+        foreach ($document['data']['relationships'] as $key => $details) {
             if (!isset($details['data'][0])) {
                 $foreignKey = Inflector::singularize($details['data']['type']) . '_id';
                 $foreignId = $details['data']['id'];

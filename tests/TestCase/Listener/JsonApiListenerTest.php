@@ -7,6 +7,7 @@ use Cake\Filesystem\File;
 use Cake\Network\Request;
 use Cake\Network\Response;
 use Cake\ORM\TableRegistry;
+use Cake\Routing\Router;
 use Crud\Event\Subject;
 use Crud\Listener\JsonApiListener;
 use Crud\TestSuite\TestCase;
@@ -98,6 +99,7 @@ class JsonApiListenerTest extends TestCase
             'Crud.beforeFilter' => ['callable' => [$listener, 'setupLogging'], 'priority' => 1],
             'Crud.beforeHandle' => ['callable' => [$listener, 'beforeHandle'], 'priority' => 10],
             'Crud.setFlash' => ['callable' => [$listener, 'setFlash'], 'priority' => 5],
+            'Crud.afterSave' => ['callable' => [$listener, 'setLocationHeader'], 'priority' => 90],
             'Crud.beforeRender' => ['callable' => [$listener, 'respond'], 'priority' => 100],
             'Crud.beforeRedirect' => ['callable' => [$listener, 'respond'], 'priority' => 100]
         ];
@@ -153,6 +155,123 @@ class JsonApiListenerTest extends TestCase
 
 
         $listener->beforeHandle(new \Cake\Event\Event('Crud.beforeHandle'));
+    }
+
+
+    /**
+     * Test afterSave event method setLocationHeader()
+     */
+    public function testSetLocationHeader()
+    {
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\JsonApiListener')
+            ->disableOriginalConstructor()
+            ->setMethods(['_controller', '_response'])
+            ->getMock();
+
+        $controller = $this
+            ->getMockBuilder('\Cake\Controller\Controller')
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $response = $this
+            ->getMockBuilder('\Cake\Network\Response')
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $listener
+            ->expects($this->any())
+            ->method('_response')
+            ->will($this->returnValue($response));
+
+        $listener
+            ->expects($this->any())
+            ->method('_controller')
+            ->will($this->returnValue($controller));
+
+        $event = $this
+            ->getMockBuilder('\Cake\Event\Event')
+            ->disableOriginalConstructor()
+            ->setMethods(['subject'])
+            ->getMock();
+
+        $subject = $this
+            ->getMockBuilder('\Crud\Event\Subject')
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $event
+            ->expects($this->any())
+            ->method('subject')
+            ->will($this->returnValue($subject));
+
+        $this->setReflectionClassInstance($listener);
+
+        // assert success
+        $event->subject->success = 1;
+        $event->subject->created = 1;
+        $event->subject->entity = new \stdClass();
+        $event->subject->entity->id = 123;
+        $this->assertTrue($this->callProtectedMethod('setLocationHeader', [$event], $listener));
+
+        // assert fails
+        $event->subject->success = false;
+        $event->subject->created = 1;
+        $this->assertFalse($this->callProtectedMethod('setLocationHeader', [$event], $listener));
+
+        $event->subject->success = 1;
+        $event->subject->created = false;
+        $this->assertFalse($this->callProtectedMethod('setLocationHeader', [$event], $listener));
+    }
+
+    /**
+     * _getNewResourceUrl()
+     *
+     * @return void
+     */
+    public function testGetNewResourceUrl()
+    {
+        $controller = $this
+            ->getMockBuilder('\Cake\Controller\Controller')
+            ->setMethods(null)
+            ->enableOriginalConstructor()
+            ->getMock();
+        $controller->name = 'Countries';
+
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\JsonApiListener')
+            ->disableOriginalConstructor()
+            ->setMethods(['_controller', '_action'])
+            ->getMock();
+
+        $listener
+            ->expects($this->any())
+            ->method('_controller')
+            ->will($this->returnValue($controller));
+
+        $listener
+            ->expects($this->any())
+            ->method('_action')
+            ->will($this->returnValue('add'));
+
+        $this->setReflectionClassInstance($listener);
+
+        $routerParameters = [
+            'controller' => 'monkeys',
+            'action' => 'view',
+            123
+        ];
+
+        // assert Router defaults (to test against)
+        $result = Router::url($routerParameters, true);
+        $this->assertEquals('/monkeys/view/123', $result);
+
+        // assert success
+        $result = $this->callProtectedMethod('_getNewResourceUrl', ['monkeys', 123], $listener);
+        $this->assertEquals('/monkeys/123', $result);
     }
 
     /**
@@ -753,28 +872,27 @@ class JsonApiListenerTest extends TestCase
         $listener = new JsonApiListener(new Controller());
         $this->setReflectionClassInstance($listener);
 
-        // test creating a single entity without relationships
+        // assert success (single entity, no relationships)
         $jsonApiFixture = new File(Plugin::path('Crud') . 'tests' . DS . 'Fixture' . DS . 'JsonApi' . DS . 'post_country_no_relationships.json');
         $jsonApiArray = json_decode($jsonApiFixture->read(), true);
-        $result = $this->callProtectedMethod('_convertJsonApiDataArray', [$jsonApiArray], $listener);
-
         $expected = [
             'code' => 'NL',
             'name' => 'The Netherlands'
         ];
+        $result = $this->callProtectedMethod('_convertJsonApiDocumentArray', [$jsonApiArray], $listener);
+
         $this->assertSame($expected, $result);
 
-        // test creating a single entity with relationship
+        // assert success (single entity, multiple relationships)
         $jsonApiFixture = new File(Plugin::path('Crud') . 'tests' . DS . 'Fixture' . DS . 'JsonApi' . DS . 'post_country_multiple_relationships.json');
         $jsonApiArray = json_decode($jsonApiFixture->read(), true);
-        $result = $this->callProtectedMethod('_convertJsonApiDataArray', [$jsonApiArray], $listener);
-
         $expected = [
             'code' => 'NL',
             'name' => 'The Netherlands',
             'culture_id' => '2',
             'currency_id' => '3'
         ];
+        $result = $this->callProtectedMethod('_convertJsonApiDocumentArray', [$jsonApiArray], $listener);
 
         $this->assertSame($expected, $result);
     }
