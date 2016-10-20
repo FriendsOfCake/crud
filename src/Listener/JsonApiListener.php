@@ -4,6 +4,7 @@ namespace Crud\Listener;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Network\Exception\BadRequestException;
+use Cake\Orm\TableRegistry;
 use Cake\Routing\Router;
 use Cake\Utility\Inflector;
 use Crud\Error\Exception\CrudException;
@@ -79,7 +80,7 @@ class JsonApiListener extends ApiListener
             'Crud.beforeFilter' => ['callable' => [$this, 'setupLogging'], 'priority' => 1],
             'Crud.beforeHandle' => ['callable' => [$this, 'beforeHandle'], 'priority' => 10],
             'Crud.setFlash' => ['callable' => [$this, 'setFlash'], 'priority' => 5],
-            'Crud.afterSave' => ['callable' => [$this, 'setLocationHeader'], 'priority' => 90],
+            'Crud.afterSave' => ['callable' => [$this, 'afterSave'], 'priority' => 90],
             'Crud.beforeRender' => ['callable' => [$this, 'respond'], 'priority' => 100],
             'Crud.beforeRedirect' => ['callable' => [$this, 'respond'], 'priority' => 100]
         ];
@@ -109,7 +110,7 @@ class JsonApiListener extends ApiListener
      * @param \Cake\Event\Event $event Event
      * @return bool
      */
-    public function setLocationHeader($event)
+    public function afterSave($event)
     {
         if (!$event->subject()->success) {
             return false;
@@ -119,6 +120,8 @@ class JsonApiListener extends ApiListener
             return false;
         }
 
+        $this->_addBelongsTo($event);
+
         $this->_response()->header([
             'Location' => $this->_getNewResourceUrl(
                 $this->_controller()->name,
@@ -127,6 +130,43 @@ class JsonApiListener extends ApiListener
         ]);
 
         return true;
+    }
+
+    /**
+     * Adds belongsTo data to the find() result so the 201 success response
+     * is able to render the jsonapi `relationships` member.
+     *
+     * Please note that we are deliberately NOT creating a new find query as
+     * this would not respect non-accessible fields.
+     *
+     * @param \Cake\Event\Event $event Event
+     * @return void
+     */
+    protected function _addBelongsTo($event)
+    {
+        $entity = $event->subject()->entity;
+        $table = TableRegistry::get($this->_controller()->name);
+        $associations = $table->associations();
+
+        foreach ($associations as $association) {
+            if (is_a($association, '\Cake\ORM\Association\BelongsTo')) {
+                $associationTable = TableRegistry::get($association->name());
+                $foreignKey = $association->foreignKey();
+
+                $result = $associationTable
+                    ->find()
+                    ->select(['id'])
+                    ->where([$association->name() . '.id' => $entity->$foreignKey])
+                    ->first();
+
+                $key = Inflector::tableize($association->name());
+                $key = Inflector::singularize($key);
+
+                $entity->$key = $result;
+            }
+        }
+
+        $event->subject()->entity = $entity;
     }
 
     /**
@@ -210,7 +250,7 @@ class JsonApiListener extends ApiListener
 
         // Remove associations not found in the `find()` result
         $entity = $this->_getSingleEntity($subject);
-        $associations = $this->_stripAssociations($table, $entity);
+        $associations = $this->_stripNonContainedAssociations($table, $entity);
 
         // Set data before rendering the view
         $this->_controller()->set([
@@ -352,15 +392,15 @@ class JsonApiListener extends ApiListener
     }
 
     /**
-     * Removes associated models not found in the find() result from the
-     * entity's AssociationCollection. Used to prevent `null` entries appearing
-     * in in the json api response `relationships` node.
+     * Removes all associated models not detected (as the result of a contain
+     * query) in the find result from the entity's AssociationCollection to
+     * prevent `null` entries appearing in the json api `relationships` node.
      *
      * @param \Cake\ORM\Table $table Table
      * @param \Cake\ORM\Entity $entity Entity
      * @return \Cake\ORM\AssociationCollection
      */
-    protected function _stripAssociations($table, $entity)
+    protected function _stripNonContainedAssociations($table, $entity)
     {
         $associations = $table->associations();
 
