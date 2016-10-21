@@ -116,7 +116,7 @@ class DocumentValidatorTest extends TestCase
      *
      * @return void
      */
-    public function testPrimaryDataMayHaveId()
+    public function testPrimaryDataMayHaveUuid()
     {
         // assert success
         $document = [
@@ -125,17 +125,17 @@ class DocumentValidatorTest extends TestCase
             ]
         ];
         $this->setProtectedProperty('_document', $document, $this->_validator);
-        $this->assertTrue($this->callProtectedMethod('_primaryDataMayHaveId', [], $this->_validator));
+        $this->assertTrue($this->callProtectedMethod('_primaryDataMayHaveUuid', [], $this->_validator));
 
         // assert false for non-string
         $document['data']['id'] = 123;
         $this->setProtectedProperty('_document', $document, $this->_validator);
-        $this->assertFalse($this->callProtectedMethod('_primaryDataMayHaveId', [], $this->_validator));
+        $this->assertFalse($this->callProtectedMethod('_primaryDataMayHaveUuid', [], $this->_validator));
 
         // assert exception
         $document = [];
         $this->setProtectedProperty('_document', $document, $this->_validator);
-        $this->callProtectedMethod('_primaryDataMayHaveId', [], $this->_validator);
+        $this->callProtectedMethod('_primaryDataMayHaveUuid', [], $this->_validator);
     }
 
     /**

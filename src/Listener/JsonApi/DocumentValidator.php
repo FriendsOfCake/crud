@@ -65,13 +65,34 @@ class DocumentValidator extends Object
     {
         $this->_documentMustHavePrimaryData();
         $this->_primaryDataMustHaveType();
-        $this->_primaryDataMayHaveId();
+        $this->_primaryDataMayHaveUuid();
         $this->_primaryDataMayHaveRelationships();
 
         if ($this->_errorCollection->count() !== 0) {
             $this->_throwValidationException();
         }
     }
+
+    /**
+     * Validates a JSON API request data document used for updating
+     * resources against the specification requirements described
+     * at http://jsonapi.org/format/#crud-updating.
+     *
+     * @throws \Crud\Error\Exception\ValidationException
+     * @return void
+     */
+    public function validateUpdateDocument()
+    {
+        $this->_documentMustHavePrimaryData();
+        $this->_primaryDataMustHaveType();
+        $this->_primaryDataMustHaveId();
+        $this->_primaryDataMayHaveRelationships();
+
+        if ($this->_errorCollection->count() !== 0) {
+            $this->_throwValidationException();
+        }
+    }
+
 
     /**
      * Document MUST have the top-level member `data`. If not, throw the
@@ -141,11 +162,49 @@ class DocumentValidator extends Object
     }
 
     /**
+     * Ensures primary data has member 'id' which MUST be a string.
+     *
+     * @return bool
+     */
+    protected function _primaryDataMustHaveId()
+    {
+        $path = $this->_getPathObject('data.id');
+
+        if (!$this->_hasProperty($path)) {
+            $this->_errorCollection->addDataError(
+                $title = '_required',
+                $detail = "Primary data does not contain member 'id'",
+                $status = null,
+                $idx = null,
+                $aboutLink = $this->_getAboutLink('http://jsonapi.org/format/#crud-updating')
+            );
+
+            return false;
+        }
+
+        $value = $this->_getProperty($path->dotted);
+
+        if (is_string($value)) {
+            return true;
+        }
+
+        $this->_errorCollection->addDataIdError(
+            $title = '_notString',
+            $details = "Primary data member 'id' is not a string",
+            $status = null,
+            $idx = null,
+            $aboutLink = $this->_getAboutLink('http://jsonapi.org/format/#document-resource-object-identification')
+        );
+
+        return false;
+    }
+
+    /**
      * Ensures that primary data 'id' member is valid IF it exists.
      *
      * @return bool
      */
-    protected function _primaryDataMayHaveId()
+    protected function _primaryDataMayHaveUuid()
     {
         $path = $this->_getPathObject('data.id');
 
