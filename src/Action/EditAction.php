@@ -71,7 +71,7 @@ class EditAction extends BaseAction
             ]
         ],
         'api' => [
-            'methods' => ['put', 'post'],
+            'methods' => ['put', 'post', 'patch'],
             'success' => [
                 'code' => 200
             ],
@@ -135,6 +135,19 @@ class EditAction extends BaseAction
      * @return void|\Cake\Network\Response
      */
     protected function _post($id = null)
+    {
+        return $this->_put($id);
+    }
+
+    /**
+     * HTTP PATCH handler
+     *
+     * Thin proxy for _put
+     *
+     * @param mixed $id Record id
+     * @return void|\Cake\Network\Response
+     */
+    protected function _patch($id = null)
     {
         return $this->_put($id);
     }
