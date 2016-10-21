@@ -153,7 +153,7 @@ class JsonApiViewTest extends TestCase
 
         $this->setReflectionClassInstance($listener);
         $entity = $this->callProtectedMethod('_getSingleEntity', [$subject], $listener);
-        $associations = $this->callProtectedMethod('_stripAssociations', [$table, $entity], $listener);
+        $associations = $this->callProtectedMethod('_stripNonContainedAssociations', [$table, $entity], $listener);
         $entities = $this->callProtectedMethod('_getEntityList', [$entityName, $associations], $listener);
 
         $viewVars['_entities'] = $entities;

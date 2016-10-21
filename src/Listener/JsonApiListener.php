@@ -116,11 +116,12 @@ class JsonApiListener extends ApiListener
             return false;
         }
 
-        if (!$event->subject()->created) {
+        // created will be set for `add` actions, id for `edit` actions
+        if (!$event->subject()->created && !$event->subject()->id) {
             return false;
         }
 
-        $this->_addBelongsTo($event);
+        $this->_insertBelongsTo($event);
 
         $this->_response()->header([
             'Location' => $this->_getNewResourceUrl(
@@ -133,6 +134,19 @@ class JsonApiListener extends ApiListener
     }
 
     /**
+     * respond() event used to remove foreign key fields from entity/entities.
+     *
+     * @param \Cake\Event\Event $event Event
+     * @return void
+     */
+    public function respond(\Cake\Event\Event $event)
+    {
+        $this->_removeForeignKeys($event);
+
+        parent::respond($event);
+    }
+
+    /**
      * Adds belongsTo data to the find() result so the 201 success response
      * is able to render the jsonapi `relationships` member.
      *
@@ -142,7 +156,7 @@ class JsonApiListener extends ApiListener
      * @param \Cake\Event\Event $event Event
      * @return void
      */
-    protected function _addBelongsTo($event)
+    protected function _insertBelongsTo($event)
     {
         $entity = $event->subject()->entity;
         $table = TableRegistry::get($this->_controller()->name);
@@ -167,6 +181,44 @@ class JsonApiListener extends ApiListener
         }
 
         $event->subject()->entity = $entity;
+    }
+
+    /**
+     * Removes all belongsTo `_id`  fields from the entity or entities so
+     * they don't show up as jsonapi attributes in the response as described
+     * at http://jsonapi.org/format/#document-resource-object-attributes.
+     *
+     * @param \Cake\Event\Event $event Event
+     * @return void
+     */
+    protected function _removeForeignKeys($event)
+    {
+        $table = TableRegistry::get($this->_controller()->name);
+        $associations = $table->associations();
+
+        $foreignKeys = [];
+        foreach ($associations as $association) {
+            if (is_a($association, '\Cake\ORM\Association\BelongsTo')) {
+                $foreignKeys[] = $association->foreignKey();
+            }
+        }
+
+        // remove from single entity
+        if (isset($event->subject()->entity)) {
+            foreach ($foreignKeys as $foreignKey) {
+                $event->subject()->entity->unsetProperty($foreignKey);
+            }
+
+            return;
+        }
+
+        // remove from collection
+        foreach ($event->subject()->entities as $key => $entity) {
+            foreach ($foreignKeys as $foreignKey) {
+                $event->subject()->entities->current()->unsetProperty($foreignKey);
+
+            }
+        }
     }
 
     /**
@@ -456,7 +508,14 @@ class JsonApiListener extends ApiListener
 
         $data = $this->_controller()->request->data();
         $validator = new DocumentValidator($data, $this->config());
-        $validator->validateCreateDocument();
+
+        if ($this->_controller()->request->method() === 'POST') {
+            $validator->validateCreateDocument();
+        }
+
+        if ($this->_controller()->request->method() === 'PATCH') {
+            $validator->validateUpdateDocument();
+        }
 
         $this->_controller()->request->data = $this->_convertJsonApiDocumentArray($data);
     }
@@ -486,13 +545,7 @@ class JsonApiListener extends ApiListener
             return $result;
         }
 
-        // convert relationships (needs proper document validation and decoding)
-        $attributes = array_key_exists('attributes', $document['data']);
-        $relationships = array_key_exists('relationships', $document['data']);
-
-        $result = $document['data']['attributes'];
-
-        // record wih foreign keys
+        // convert relationships to belongsTo foreign key `_id` fields
         foreach ($document['data']['relationships'] as $key => $details) {
             if (!isset($details['data'][0])) {
                 $foreignKey = Inflector::singularize($details['data']['type']) . '_id';
