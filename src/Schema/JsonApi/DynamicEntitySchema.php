@@ -6,6 +6,10 @@ use Cake\View\View;
 use Neomerx\JsonApi\Contracts\Schema\SchemaFactoryInterface;
 use Neomerx\JsonApi\Schema\SchemaProvider;
 
+/**
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ */
 class DynamicEntitySchema extends SchemaProvider
 {
     /**
@@ -97,6 +101,8 @@ class DynamicEntitySchema extends SchemaProvider
      * NeoMerx override used to pass associated entity names to be used for
      * generating JsonApi `relationships`.
      *
+     * Optional `related` links not implemented yet.
+     *
      * @param \Cake\ORM\Entity $entity Entity object
      * @param bool $isPrimary True to add resource to data section instead of included
      * @param array $includeRelationships Used to fine tune relationships
@@ -116,7 +122,7 @@ class DynamicEntitySchema extends SchemaProvider
             $relations[$associationKey] = [
                     self::DATA => $entity->$associationKey,
                     self::SHOW_SELF => true,
-                    self::SHOW_RELATED => true,
+                    self::SHOW_RELATED => false,
             ];
         }
 
