@@ -188,6 +188,7 @@ class CrudComponent extends Component
         $this->_controller->dispatchComponents['Crud'] = true;
 
         $this->_loadListeners();
+
         $this->trigger('beforeFilter');
     }
 
@@ -636,7 +637,7 @@ class CrudComponent extends Component
      * Load a single event class attached to Crud.
      *
      * @param string $name Name
-     * @return \Crud\Listener\BaseListener
+     * @return mixed void|\Crud\Listener\BaseListener
      * @throws \Crud\Error\Exception\ListenerNotConfiguredException
      * @throws \Crud\Error\Exception\MissingListenerException
      */
@@ -649,7 +650,12 @@ class CrudComponent extends Component
                 throw new ListenerNotConfiguredException(sprintf('Listener "%s" is not configured', $name));
             }
 
+            if (!isset($config['className'])) {
+                return;
+            }
+
             $className = App::classname($config['className'], 'Listener', 'Listener');
+
             if (empty($className)) {
                 throw new MissingListenerException('Could not find listener class: ' . $config['className']);
             }
