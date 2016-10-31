@@ -216,7 +216,6 @@ class JsonApiListener extends ApiListener
         foreach ($event->subject()->entities as $key => $entity) {
             foreach ($foreignKeys as $foreignKey) {
                 $event->subject()->entities->current()->unsetProperty($foreignKey);
-
             }
         }
     }
@@ -503,6 +502,12 @@ class JsonApiListener extends ApiListener
     protected function _checkRequestData()
     {
         if (empty($this->_controller()->request->data())) {
+            return;
+        }
+
+        // prevent false positives caused by query parameters in GET requests
+        // resulting in set request data
+        if (isset($this->_controller()->request->query)) {
             return;
         }
 

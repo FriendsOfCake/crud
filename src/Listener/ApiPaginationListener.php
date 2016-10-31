@@ -2,6 +2,7 @@
 namespace Crud\Listener;
 
 use Cake\Event\Event;
+use Cake\Routing\Router;
 
 /**
  * When loaded Crud API Pagination Listener will include
@@ -23,7 +24,7 @@ class ApiPaginationListener extends BaseListener
      */
     public function implementedEvents()
     {
-        if (!$this->_checkRequestType('api')) {
+        if (!$this->_checkRequestType('api') && !$this->_checkRequestType('jsonapi')) {
             return;
         }
 
@@ -58,6 +59,12 @@ class ApiPaginationListener extends BaseListener
             return;
         }
 
+        if ($this->_checkRequestType('jsonapi')) {
+            $controller->set('_pagination', $this->_getJsonApiPaginationViewVars($pagination));
+
+            return;
+        }
+
         $paginationResponse = [
             'page_count' => $pagination['pageCount'],
             'current_page' => $pagination['page'],
@@ -69,5 +76,67 @@ class ApiPaginationListener extends BaseListener
 
         $controller->set('pagination', $paginationResponse);
         $this->_action()->config('serialize.pagination', 'pagination');
+    }
+
+    /**
+     * Generates pagination viewVars with JSON API compatible hyperlinks.
+     *
+     * @param array $pagination CakePHP pagination information
+     * @return array
+     */
+    protected function _getJsonApiPaginationViewVars(array $pagination)
+    {
+        $self = Router::url([
+            'controller' => $this->_controller()->name,
+            'action' => 'index',
+            'page' => $pagination['page']
+        ], true);
+
+        $first = Router::url([
+            'controller' => $this->_controller()->name,
+            'action' => 'index',
+        ], true);
+
+        if ($pagination['pageCount'] === 1) {
+            return [
+                'self' => $self,
+                'first' => $first,
+                'last' => null,
+                'prev' => null,
+                'next' => null,
+            ];
+        }
+
+        $last = Router::url([
+            'controller' => $this->_controller()->name,
+            'action' => 'index',
+            'page' => $pagination['pageCount']
+        ], true);
+
+        $prev = null;
+        if (!empty($pagination['prevPage'])) {
+            $prev = Router::url([
+                'controller' => $this->_controller()->name,
+                'action' => 'index',
+                'page' => $pagination['prevPage']
+            ], true);
+        }
+
+        $next = null;
+        if (!empty($pagination['nextPage'])) {
+            $next = Router::url([
+                'controller' => $this->_controller()->name,
+                'action' => 'index',
+                'page' => $pagination['nextPage']
+            ], true);
+        }
+
+        return [
+            'self' => $self,
+            'first' => $first,
+            'last' => $last,
+            'prev' => $prev,
+            'next' => $next,
+        ];
     }
 }

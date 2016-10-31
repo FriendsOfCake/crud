@@ -23,7 +23,7 @@ class ApiPaginationListenerTest extends TestCase
             ->setMethods(['_checkRequestType'])
             ->getMock();
         $Instance
-            ->expects($this->once())
+            ->expects($this->any())
             ->method('_checkRequestType')
             ->will($this->returnValue(true));
 
@@ -162,7 +162,7 @@ class ApiPaginationListenerTest extends TestCase
             ->setMethods(['_request', '_controller', '_action'])
             ->getMock();
         $Instance
-            ->expects($this->once())
+            ->expects($this->any())
             ->method('_request')
             ->will($this->returnValue($Request));
         $Instance
@@ -236,7 +236,7 @@ class ApiPaginationListenerTest extends TestCase
             ->setMethods(['_request', '_controller', '_action'])
             ->getMock();
         $Instance
-            ->expects($this->once())
+            ->expects($this->any())
             ->method('_request')
             ->will($this->returnValue($Request));
         $Instance

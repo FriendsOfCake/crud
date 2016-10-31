@@ -9,6 +9,7 @@ use Cake\Network\Response;
 use Cake\Utility\Hash;
 use Cake\View\View;
 use Crud\Error\Exception\CrudException;
+use Neomerx\JsonApi\Document\Link;
 use Neomerx\JsonApi\Encoder\Encoder;
 use Neomerx\JsonApi\Encoder\EncoderOptions;
 use Neomerx\JsonApi\Encoder\Parameters\EncodingParameters;
@@ -37,6 +38,7 @@ class JsonApiView extends View
         '_debugPrettyPrint',
         '_debugQueryLog',
         '_jsonp',
+        '_pagination',
     ];
 
     /**
@@ -163,6 +165,12 @@ class JsonApiView extends View
             }
         }
 
+        // Add top-level `links` node with pagination information (requires
+        // ApiPaginationListener).
+        if (isset($this->viewVars['_pagination'])) {
+            $encoder->withLinks($this->_getPaginationLinks($this->viewVars['_pagination']));
+        }
+
         // Add optional top-level `meta` node to the response
         if ($this->viewVars['_meta']) {
             if (empty($serialize)) {
@@ -213,6 +221,45 @@ class JsonApiView extends View
         }
 
         return $schemas;
+    }
+
+    /**
+     * Returns an array with NeoMerx Link objects to be used for pagination.
+     *
+     * @param array $pagination Pagination information as produced by ApiPaginationListener
+     * @return array
+     */
+    protected function _getPaginationLinks($pagination)
+    {
+        $links = [
+            Link::SELF => null,
+            Link::FIRST => null,
+            Link::LAST => null,
+            Link::PREV => null,
+            Link::NEXT => null,
+        ];
+
+        if (isset($pagination['self'])) {
+            $links[Link::SELF] = new Link($pagination['self'], null, true);
+        }
+
+        if (isset($pagination['first'])) {
+            $links[Link::FIRST] = new Link($pagination['first'], null, true);
+        }
+
+        if (isset($pagination['last'])) {
+            $links[Link::LAST] = new Link($pagination['last'], null, true);
+        }
+
+        if (isset($pagination['prev'])) {
+            $links[Link::PREV] = new Link($pagination['prev'], null, true);
+        }
+
+        if (isset($pagination['next'])) {
+            $links[Link::NEXT] = new Link($pagination['next'], null, true);
+        }
+
+        return $links;
     }
 
     /**
