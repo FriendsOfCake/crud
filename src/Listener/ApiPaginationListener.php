@@ -48,6 +48,7 @@ class ApiPaginationListener extends BaseListener
         }
 
         $controller = $this->_controller();
+
         list(, $modelClass) = pluginSplit($controller->modelClass);
 
         if (!array_key_exists($modelClass, $request->paging)) {
@@ -60,7 +61,7 @@ class ApiPaginationListener extends BaseListener
         }
 
         if ($this->_checkRequestType('jsonapi')) {
-            $controller->set('_pagination', $this->_getJsonApiPaginationViewVars($pagination));
+            $controller->set('_pagination', $this->_getJsonApiPaginationResponse($pagination));
 
             return;
         }
@@ -81,10 +82,10 @@ class ApiPaginationListener extends BaseListener
     /**
      * Generates pagination viewVars with JSON API compatible hyperlinks.
      *
-     * @param array $pagination CakePHP pagination information
+     * @param array $pagination CakePHP pagination result
      * @return array
      */
-    protected function _getJsonApiPaginationViewVars(array $pagination)
+    protected function _getJsonApiPaginationResponse(array $pagination)
     {
         $self = Router::url([
             'controller' => $this->_controller()->name,
@@ -95,17 +96,8 @@ class ApiPaginationListener extends BaseListener
         $first = Router::url([
             'controller' => $this->_controller()->name,
             'action' => 'index',
+            'page' => 1,
         ], true);
-
-        if ($pagination['pageCount'] === 1) {
-            return [
-                'self' => $self,
-                'first' => $first,
-                'last' => null,
-                'prev' => null,
-                'next' => null,
-            ];
-        }
 
         $last = Router::url([
             'controller' => $this->_controller()->name,
@@ -114,7 +106,7 @@ class ApiPaginationListener extends BaseListener
         ], true);
 
         $prev = null;
-        if (!empty($pagination['prevPage'])) {
+        if ($pagination['prevPage']) {
             $prev = Router::url([
                 'controller' => $this->_controller()->name,
                 'action' => 'index',
@@ -123,7 +115,7 @@ class ApiPaginationListener extends BaseListener
         }
 
         $next = null;
-        if (!empty($pagination['nextPage'])) {
+        if ($pagination['nextPage']) {
             $next = Router::url([
                 'controller' => $this->_controller()->name,
                 'action' => 'index',
@@ -137,6 +129,9 @@ class ApiPaginationListener extends BaseListener
             'last' => $last,
             'prev' => $prev,
             'next' => $next,
+            'record_count' => $pagination['count'],
+            'page_count' => $pagination['pageCount'],
+            'page_limit' => $pagination['limit'],
         ];
     }
 }

@@ -168,7 +168,14 @@ class JsonApiView extends View
         // Add top-level `links` node with pagination information (requires
         // ApiPaginationListener).
         if (isset($this->viewVars['_pagination'])) {
-            $encoder->withLinks($this->_getPaginationLinks($this->viewVars['_pagination']));
+            $pagination = $this->viewVars['_pagination'];
+
+            $encoder->withLinks($this->_getPaginationLinks($pagination));
+
+            // Additional pagination information haa to be in top-level node `meta`
+            $this->viewVars['_meta']['record_count'] = $pagination['record_count'];
+            $this->viewVars['_meta']['page_count'] = $pagination['page_count'];
+            $this->viewVars['_meta']['page_limit'] = $pagination['page_limit'];
         }
 
         // Add optional top-level `meta` node to the response
