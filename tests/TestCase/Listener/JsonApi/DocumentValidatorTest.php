@@ -40,7 +40,7 @@ class DocumentValidatorTest extends TestCase
     }
 
     /**
-     * _validateCreateDocument
+     * _validateCreateDocument()
      *
      * @expectedException \Crud\Error\Exception\ValidationException
      * @expectedExceptionMessage A validation error occurred
@@ -61,6 +61,30 @@ class DocumentValidatorTest extends TestCase
         $document['data']['id'] = 'not-a-valid-uuid';
         $this->setProtectedProperty('_document', $document, $this->_validator);
         $this->_validator->validateCreateDocument();
+    }
+
+    /**
+     * _validateUpdateDocument()
+     *
+     * @expectedException \Crud\Error\Exception\ValidationException
+     * @expectedExceptionMessage A validation error occurred
+     */
+    public function testValidateUpdateDocument()
+    {
+        // assert success
+        $document = [
+            'data' => [
+                'type' => 'must-be-string',
+                'id' => 'must-be-string',
+            ]
+        ];
+        $this->setProtectedProperty('_document', $document, $this->_validator);
+        $this->assertNull($this->_validator->validateUpdateDocument());
+
+        // assert exception
+        $document['data']['id'] = null;
+        $this->setProtectedProperty('_document', $document, $this->_validator);
+        $this->_validator->validateUpdateDocument();
     }
 
     /**
@@ -112,7 +136,7 @@ class DocumentValidatorTest extends TestCase
     }
 
     /**
-     * _primaryDataMayHaveId()
+     * _primaryDataMayHaveUiId()
      *
      * @return void
      */
@@ -139,13 +163,41 @@ class DocumentValidatorTest extends TestCase
     }
 
     /**
+     * _primaryDataMustHaveId()
+     *
+     * @return void
+     */
+    public function testPrimaryDataMustHaveId()
+    {
+        // assert success
+        $document = [
+            'data' => [
+                'type' => 'must-be-string',
+                'id' => 'must-be-string',
+            ]
+        ];
+        $this->setProtectedProperty('_document', $document, $this->_validator);
+        $this->assertTrue($this->callProtectedMethod('_primaryDataMustHaveId', [], $this->_validator));
+
+        // assert false for non-string
+        $document['data']['id'] = 123;
+        $this->setProtectedProperty('_document', $document, $this->_validator);
+        $this->assertFalse($this->callProtectedMethod('_primaryDataMustHaveId', [], $this->_validator));
+
+        // assert exception
+        $document = [];
+        $this->setProtectedProperty('_document', $document, $this->_validator);
+        $this->callProtectedMethod('_primaryDataMustHaveId', [], $this->_validator);
+    }
+
+    /**
      * _primaryDataMayHaveRelationShips()
      *
      * @return void
      */
     public function testPrimaryDataMayHaveRelationships()
     {
-        // assert success
+        // assert pass if relationships node with valid members exists
         $document = [
             'data' => [
                 'type' => 'countries',
@@ -168,10 +220,20 @@ class DocumentValidatorTest extends TestCase
         $this->setProtectedProperty('_document', $document, $this->_validator);
         $this->assertTrue($this->callProtectedMethod('_primaryDataMayHaveRelationships', [], $this->_validator));
 
-        // assert false if relationships has no members
+        // assert foreach loop continues if one of the relationships members has no data
+        unset($document['data']['relationships']['currency']['data']);
+        $this->setProtectedProperty('_document', $document, $this->_validator);
+        $this->assertTrue($this->callProtectedMethod('_primaryDataMayHaveRelationships', [], $this->_validator));
+
+        // assert non-pass if relationships node exists but has no members
         $document['data']['relationships'] = [];
         $this->setProtectedProperty('_document', $document, $this->_validator);
         $this->assertFalse($this->callProtectedMethod('_primaryDataMayHaveRelationships', [], $this->_validator));
+
+        // assert pass if the relationships node does not exist at all
+        unset($document['data']['relationships']);
+        $this->setProtectedProperty('_document', $document, $this->_validator);
+        $this->assertTrue($this->callProtectedMethod('_primaryDataMayHaveRelationships', [], $this->_validator));
     }
 
     /**
@@ -467,15 +529,22 @@ class DocumentValidatorTest extends TestCase
     }
 
     /**
-     * _throwValidationException()
+     * Make sure _getErrorCollectionEntity() generates the expected entity
+     * with NeoMerx ErrorCollection.
      *
-     * @expectedException \Crud\Error\Exception\ValidationException
-     * @expectedExceptionMessage A validation error occurred
+     * @return void
      */
-    public function testThrowValidationException()
+    public function testGetErrorCollectionEntity()
     {
         $this->_validator = new DocumentValidator([], []);
         $this->setReflectionClassInstance($this->_validator);
-        $this->callProtectedMethod('_throwValidationException', [], $this->_validator);
+
+        $result = $this->callProtectedMethod('_getErrorCollectionEntity', [], $this->_validator);
+        $this->assertInstanceOf('\Cake\ORM\Entity', $result);
+
+        $errors = $result->errors();
+        $this->assertArrayHasKey('CrudJsonApiListener', $errors);
+        $this->assertArrayHasKey('NeoMerxErrorCollection', $errors['CrudJsonApiListener']);
+        $this->assertInstanceOf('\Neomerx\JsonApi\Exceptions\ErrorCollection', $errors['CrudJsonApiListener']['NeoMerxErrorCollection']);
     }
 }

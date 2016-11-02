@@ -68,9 +68,12 @@ class DocumentValidator extends Object
         $this->_primaryDataMayHaveUuid();
         $this->_primaryDataMayHaveRelationships();
 
-        if ($this->_errorCollection->count() !== 0) {
-            $this->_throwValidationException();
+        if ($this->_errorCollection->count() === 0) {
+            return;
         }
+
+        throw new ValidationException($this->_getErrorCollectionEntity());
+        //$this->_throwValidationException();
     }
 
     /**
@@ -86,13 +89,16 @@ class DocumentValidator extends Object
         $this->_documentMustHavePrimaryData();
         $this->_primaryDataMustHaveType();
         $this->_primaryDataMustHaveId();
+        $this->_primaryDataMustHaveId();
         $this->_primaryDataMayHaveRelationships();
 
-        if ($this->_errorCollection->count() !== 0) {
-            $this->_throwValidationException();
+        if ($this->_errorCollection->count() === 0) {
+            return;
         }
-    }
 
+        throw new ValidationException($this->_getErrorCollectionEntity());
+        //$this->_throwValidationException();
+    }
 
     /**
      * Document MUST have the top-level member `data`. If not, throw the
@@ -100,7 +106,7 @@ class DocumentValidator extends Object
      * http://jsonapi.org/examples/#error-objects-source-usage.
      *
      * @throws \Crud\Error\Exception\ValidationException
-     * @return bool
+     * @return @bool
      */
     protected function _documentMustHavePrimaryData()
     {
@@ -120,7 +126,8 @@ class DocumentValidator extends Object
             ]
         ));
 
-        $this->_throwValidationException();
+        throw new ValidationException($this->_getErrorCollectionEntity());
+        //$this->_throwValidationException();
     }
 
     /**
@@ -534,9 +541,9 @@ class DocumentValidator extends Object
      * default CakePHP validation error.
      *
      * @throws \Crud\Error\Exception\ValidationException
-     * @return void
+     * @return \Cake\ORM\Entity
      */
-    protected function _throwValidationException()
+    protected function _getErrorCollectionEntity()
     {
         $entity = new Entity();
 
@@ -544,6 +551,6 @@ class DocumentValidator extends Object
             'NeoMerxErrorCollection' => $this->_errorCollection
         ]);
 
-        throw new ValidationException($entity);
+        return $entity;
     }
 }
