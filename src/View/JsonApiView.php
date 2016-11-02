@@ -63,7 +63,7 @@ class JsonApiView extends View
     }
 
     /**
-     * Renders one of the three supported JSON API responses.
+     * Renders one of the three supported JSON API responses:
      *
      * - with body containing an entity based resource (data)
      * - with empty body
@@ -81,11 +81,10 @@ class JsonApiView extends View
             $json = $this->_encodeWithoutSchemas();
         }
 
-        // Only add top-level `query` node to the response if user configured
-        // the setting AND we are in debug mode
-        if (Configure::read('debug') && $this->viewVars['_debugQueryLog'] === true) {
+        // Add query logs node if ApiQueryLogListener is loaded
+        if (Configure::read('debug') && isset($this->viewVars['queryLog'])) {
             $json = json_decode($json, true);
-            $json['query'] = $this->viewVars['_queryLogs'];
+            $json['query'] = $this->viewVars['queryLog'];
             $json = json_encode($json, $this->_jsonOptions());
         }
 
@@ -233,7 +232,7 @@ class JsonApiView extends View
     /**
      * Returns an array with NeoMerx Link objects to be used for pagination.
      *
-     * @param array $pagination Pagination information as produced by ApiPaginationListener
+     * @param array $pagination ApiPaginationListener pagination response
      * @return array
      */
     protected function _getPaginationLinks($pagination)

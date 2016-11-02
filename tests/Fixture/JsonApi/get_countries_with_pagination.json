@@ -1,0 +1,25 @@
+{
+  "meta": {
+    "record_count": 28,
+    "page_count": 3,
+    "page_limit": 10
+  },
+  "links": {
+    "self": "/countries?page=2",
+    "first": "/countries?page=1",
+    "last": "/countries?page=3",
+    "prev": "/countries?page=1",
+    "next": "/countries?page=3"
+  },
+  "data": [
+    {
+      "type": "countries",
+      "id": "1",
+      "attributes": {
+        "code": "NL",
+        "name": "The Netherlands",
+        "currency_id": 1
+      }
+    }
+  ]
+}

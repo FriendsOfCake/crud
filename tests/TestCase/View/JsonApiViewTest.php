@@ -65,11 +65,9 @@ class JsonApiViewTest extends TestCase
             '_fieldSets' => $listener->config('fieldSets'),
             '_jsonOptions' => $listener->config('jsonOptions'),
             '_debugPrettyPrint' => $listener->config('debugPrettyPrint'),
-            '_debugQueryLog' => $listener->config('debugQueryLog'),
         ];
 
         // override some defaults to create more DRY tests
-        $this->_defaultViewVars['_debugQueryLog'] = false;
         $this->_defaultViewVars['_jsonOptions'] = [JSON_PRETTY_PRINT];
         $this->_defaultViewVars['_serialize'] = true;
 
@@ -92,7 +90,6 @@ class JsonApiViewTest extends TestCase
                 JSON_PRETTY_PRINT
             ],
             '_debugPrettyPrint' => true,
-            '_debugQueryLog' => false,
             '_serialize' => true
         ];
         $this->assertSame($expected, $this->_defaultViewVars);
@@ -341,36 +338,6 @@ class JsonApiViewTest extends TestCase
     }
 
     /**
-     * Make sure user option `debugQueryLog` produces expected json
-     *
-     * @return void
-     */
-    public function testOptionalDebugQueryLog()
-    {
-        // make sure top-level node is added when true
-        $this->assertTrue(Configure::read('debug'));
-        $countries = TableRegistry::get('Countries')->find()->all();
-        $view = $this->_getView('Countries', [
-            'countries' => $countries,
-            '_debugQueryLog' => true,
-            '_queryLogs' => 'normally-populated-by-QueryLogTrait'
-        ]);
-        $expectedMetaArray = [
-            'query' => 'normally-populated-by-QueryLogTrait'
-        ];
-
-        $this->assertArraySubset($expectedMetaArray, json_decode($view->render(), true));
-
-        // make sure top-level node is not added when false
-        $this->assertTrue(Configure::read('debug'));
-        $view = $this->_getView('Countries', [
-            'countries' => $countries
-        ]);
-
-        $this->assertArrayNotHasKey('query', json_decode($view->render(), true));
-    }
-
-    /**
      * Make sure user option `debugPrettyPrint` behaves produces expected json
      *
      * @return void
@@ -547,5 +514,107 @@ class JsonApiViewTest extends TestCase
             ]
         ];
         $this->assertEquals(10, $this->callProtectedMethod('_jsonOptions', [], $view));
+    }
+
+    /**
+     * Make sure ApiPaginationListener information is added to the
+     * expected `links` and `meta` nodes in the response.
+     *
+     * @return void
+     */
+    public function testApiPaginationListener()
+    {
+        $countries = TableRegistry::get('Countries')->find()->first();
+
+        $view = $this->_getView('Countries', [
+            'countries' => $countries,
+            '_pagination' => [
+                'self' => '/countries?page=2',
+                'first' => '/countries?page=1',
+                'last' => '/countries?page=3',
+                'prev' => '/countries?page=1',
+                'next' => '/countries?page=3',
+                'record_count' => 28,
+                'page_count' => 3,
+                'page_limit' => 10,
+            ]
+        ]);
+
+        $jsonArray = json_decode($view->render(), true);
+
+        // assert `links` node is filled as expected
+        $this->assertArrayHasKey('links', $jsonArray);
+        $links = $jsonArray['links'];
+
+        $this->assertEquals($links['self'], '/countries?page=2');
+        $this->assertEquals($links['first'], '/countries?page=1');
+        $this->assertEquals($links['last'], '/countries?page=3');
+        $this->assertEquals($links['prev'], '/countries?page=1');
+        $this->assertEquals($links['next'], '/countries?page=3');
+
+        // assert `meta` node is filled as expected
+        $this->assertArrayHasKey('meta', $jsonArray);
+        $meta = $jsonArray['meta'];
+
+        $this->assertEquals($meta['record_count'], 28);
+        $this->assertEquals($meta['page_count'], 3);
+        $this->assertEquals($meta['page_limit'], 10);
+    }
+
+    /**
+     * Make sure NeoMerx pagination Links are generated from `_pagination`
+     * viewVar set by ApiPaginationListener.
+     *
+     * @return void
+     */
+    public function testGetPaginationLinks()
+    {
+        $pagination = [
+            'self' => 'http://api.app/v0/countries?page=2',
+            'first' => 'http://api.app/v0/countries?page=1',
+            'last' => 'http://api.app/v0/countries?page=3',
+            'prev' => 'http://api.app/v0/countries?page=1',
+            'next' => 'http://api.app/v0/countries?page=3',
+            'record_count' => 42, // should be skipped
+            'page_count' => 3, // should be skipped
+            'page_limit' => 10 // should be skipped
+        ];
+
+        $view = $this
+            ->getMockBuilder('\Crud\View\JsonApiView')
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $this->setReflectionClassInstance($view);
+        $links = $this->callProtectedMethod('_getPaginationLinks', [$pagination], $view);
+
+        // assert all 5 elements in the array are NeoMerx Link objects
+        $this->assertCount(5, $links);
+
+        foreach ($links as $link) {
+            $this->assertInstanceOf('\Neomerx\JsonApi\Document\Link', $link);
+        }
+    }
+
+    /**
+     * Make sure ApiQueryLogListener information is added to the `query` node.
+     *
+     * @return void
+     */
+    public function testApiQueryLogListener()
+    {
+        $countries = TableRegistry::get('Countries')->find()->first();
+
+        $view = $this->_getView('Countries', [
+            'countries' => $countries,
+            'queryLog' => 'viewVar only set by ApiQueryLogListener'
+        ]);
+
+        $jsonArray = json_decode($view->render(), true);
+
+        // assert `links` node is filled as expected
+        $this->assertArrayHasKey('query', $jsonArray);
+        $this->assertEquals($jsonArray['query'], 'viewVar only set by ApiQueryLogListener');
     }
 }

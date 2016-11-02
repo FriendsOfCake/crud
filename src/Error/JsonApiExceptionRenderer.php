@@ -1,9 +1,10 @@
 <?php
 namespace Crud\Error;
 
+use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Error\Debugger;
-use Crud\Traits\QueryLogTrait;
+use Crud\Listener\ApiQueryLogListener;
 use Neomerx\JsonApi\Document\Error;
 use Neomerx\JsonApi\Encoder\Encoder;
 use Neomerx\JsonApi\Exceptions\ErrorCollection;
@@ -16,7 +17,6 @@ use Neomerx\JsonApi\Exceptions\ErrorCollection;
  */
 class JsonApiExceptionRenderer extends \Cake\Error\ExceptionRenderer
 {
-    use QueryLogTrait;
 
     /**
      * Method used for all non-validation errors.
@@ -55,7 +55,7 @@ class JsonApiExceptionRenderer extends \Cake\Error\ExceptionRenderer
 
         if (Configure::read('debug')) {
             $json = $this->_addDebugNode($json);
-            $json = $this->_addQueryNode($json);
+            $json = $this->_addQueryLogNode($json);
         }
 
         // send response
@@ -169,15 +169,22 @@ class JsonApiExceptionRenderer extends \Cake\Error\ExceptionRenderer
     }
 
     /**
-     * Adds top-level `query` node to a json encoded string
+     * Add top-level `query` node if ApiQueryLogListener is loaded.
      *
      * @param string $json Json encoded string
-     * @return string Json encoded string with added query node
+     * @return string Json encoded string
      */
-    protected function _addQueryNode($json)
+    protected function _addQueryLogNode($json)
     {
+        $listener = new ApiQueryLogListener(new Controller());
+        $logs = $listener->getQueryLogs();
+
+        if (empty($logs)) {
+            return $json;
+        }
+
         $result = json_decode($json, true);
-        $result['query'] = $this->_getQueryLogs();
+        $result['query'] = $logs;
 
         return json_encode($result, JSON_PRETTY_PRINT);
     }

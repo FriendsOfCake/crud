@@ -1,7 +1,6 @@
 <?php
 namespace Crud\Listener;
 
-use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Orm\TableRegistry;
@@ -10,7 +9,6 @@ use Cake\Utility\Inflector;
 use Crud\Error\Exception\CrudException;
 use Crud\Event\Subject;
 use Crud\Listener\JsonApi\DocumentValidator;
-use Crud\Traits\QueryLogTrait;
 
 /**
  * Extends Crud ApiListener to respond in JSON API format.
@@ -20,7 +18,6 @@ use Crud\Traits\QueryLogTrait;
  */
 class JsonApiListener extends ApiListener
 {
-    use QueryLogTrait;
 
     /**
      * Required composer package with Crud supported version
@@ -51,7 +48,6 @@ class JsonApiListener extends ApiListener
         'urlPrefix' => null, // string holding URL to prefix links in jsonapi response with
         'jsonOptions' => [], // array with predefined JSON constants as described at http://php.net/manual/en/json.constants.php
         'debugPrettyPrint' => true, // true to use JSON_PRETTY_PRINT for generated debug-mode response
-        'debugQueryLog' => true, // adds top-level member `query` holding SQL logs in debug-mode
         'include' => [],
         'fieldSets' => [], // hash to limit fields shown (can be used for both `data` and `included` members)
         'docValidatorAboutLinks' => false, // true to show links to JSON API specification clarifying the document validation error
@@ -77,7 +73,6 @@ class JsonApiListener extends ApiListener
         ]);
 
         return [
-            'Crud.beforeFilter' => ['callable' => [$this, 'setupLogging'], 'priority' => 1],
             'Crud.beforeHandle' => ['callable' => [$this, 'beforeHandle'], 'priority' => 10],
             'Crud.setFlash' => ['callable' => [$this, 'setFlash'], 'priority' => 5],
             'Crud.afterSave' => ['callable' => [$this, 'afterSave'], 'priority' => 90],
@@ -252,13 +247,6 @@ class JsonApiListener extends ApiListener
         $controller = $this->_controller();
         $controller->viewBuilder()->className('Crud.JsonApi');
 
-        // Only set viewVar with data for the `query` node in debug mode
-        if (Configure::read('debug')) {
-            $controller->set([
-                '_queryLogs' => $this->_getQueryLogs()
-            ]);
-        }
-
         // render a JSON API response with resource(s) if data is found
         if (isset($subject->entity) || isset($subject->entities)) {
             return $this->_renderWithResources($subject);
@@ -280,7 +268,6 @@ class JsonApiListener extends ApiListener
             '_urlPrefix' => $this->config('urlPrefix'),
             '_jsonOptions' => $this->config('jsonOptions'),
             '_debugPrettyPrint' => $this->config('debugPrettyPrint'),
-            '_debugQueryLog' => $this->config('debugQueryLog'),
             '_serialize' => true,
         ]);
 
@@ -310,7 +297,6 @@ class JsonApiListener extends ApiListener
             '_urlPrefix' => $this->config('urlPrefix'),
             '_jsonOptions' => $this->config('jsonOptions'),
             '_debugPrettyPrint' => $this->config('debugPrettyPrint'),
-            '_debugQueryLog' => $this->config('debugQueryLog'),
             '_entities' => $this->_getEntityList($entityName, $associations),
             '_include' => $this->config('include'),
             '_fieldSets' => $this->config('fieldSets'),
@@ -373,10 +359,6 @@ class JsonApiListener extends ApiListener
 
         if (!is_bool($this->config('debugPrettyPrint'))) {
             throw new CrudException('JsonApiListener configuration option `debugPrettyPrint` only accepts a boolean');
-        }
-
-        if (!is_bool($this->config('debugQueryLog'))) {
-            throw new CrudException('JsonApiListener configuration option `debugQueryLog` only accepts a boolean');
         }
     }
 

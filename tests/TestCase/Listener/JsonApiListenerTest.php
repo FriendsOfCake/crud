@@ -55,7 +55,6 @@ class JsonApiListenerTest extends TestCase
             'urlPrefix' => null,
             'jsonOptions' => [],
             'debugPrettyPrint' => true,
-            'debugQueryLog' => true,
             'include' => [],
             'fieldSets' => [],
             'docValidatorAboutLinks' => false,
@@ -96,7 +95,6 @@ class JsonApiListenerTest extends TestCase
         $result = $listener->implementedEvents();
 
         $expected = [
-            'Crud.beforeFilter' => ['callable' => [$listener, 'setupLogging'], 'priority' => 1],
             'Crud.beforeHandle' => ['callable' => [$listener, 'beforeHandle'], 'priority' => 10],
             'Crud.setFlash' => ['callable' => [$listener, 'setFlash'], 'priority' => 5],
             'Crud.afterSave' => ['callable' => [$listener, 'afterSave'], 'priority' => 90],
@@ -587,28 +585,6 @@ class JsonApiListenerTest extends TestCase
 
         $listener->config([
             'debugPrettyPrint' => 'string-not-accepted'
-        ]);
-
-        $this->setReflectionClassInstance($listener);
-        $this->callProtectedMethod('_validateConfigOptions', [], $listener);
-    }
-
-    /**
-     * Make sure config option `debugQueryLog` does not accept a string
-     *
-     * @expectedException \Crud\Error\Exception\CrudException
-     * @expectedExceptionMessage JsonApiListener configuration option `debugQueryLog` only accepts a boolean
-     */
-    public function testValidateConfigOptionDebugQueryLogFailWithString()
-    {
-        $listener = $this
-            ->getMockBuilder('\Crud\Listener\JsonApiListener')
-            ->disableOriginalConstructor()
-            ->setMethods(null)
-            ->getMock();
-
-        $listener->config([
-            'debugQueryLog' => 'string-not-accepted'
         ]);
 
         $this->setReflectionClassInstance($listener);
