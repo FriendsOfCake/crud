@@ -75,7 +75,7 @@ class EditActionTest extends IntegrationTestCase
     }
 
     /**
-     * Test POST will create a record
+     * Test POST will update an existing record
      *
      * @return void
      */
@@ -224,5 +224,48 @@ class EditActionTest extends IntegrationTestCase
 
         $expected = '<div class="error-message">Name need to be at least 10 characters long</div>';
         $this->assertContains($expected, $this->_response->body(), 'Could not find validation error in HTML');
+    }
+
+    /**
+     * Test PATCH will update an existing record
+     *
+     * @return void
+     */
+    public function testActionPatch()
+    {
+        $this->_eventManager->on(
+            'Dispatcher.invokeController',
+            ['priority' => 1000],
+            function ($event) {
+                $this->_controller->Flash = $this->getMockBuilder('Cake\Controller\Component\FlashComponent')
+                    ->setMethods(['set'])
+                    ->disableOriginalConstructor()
+                    ->getMock();
+
+                $this->_controller->Flash
+                    ->expects($this->once())
+                    ->method('set')
+                    ->with(
+                        'Successfully updated blog',
+                        [
+                            'element' => 'default',
+                            'params' => ['class' => 'message success', 'original' => 'Successfully updated blog'],
+                            'key' => 'flash'
+                        ]
+                    );
+
+                $this->_subscribeToEvents($this->_controller);
+            }
+        );
+
+        $this->patch('/blogs/edit/1', [
+            'name' => 'Hello World',
+            'body' => 'Even hotter body'
+        ]);
+
+        $this->assertEvents(['beforeFind', 'afterFind', 'beforeSave', 'afterSave', 'setFlash', 'beforeRedirect']);
+        $this->assertTrue($this->_subject->success);
+        $this->assertFalse($this->_subject->created);
+        $this->assertRedirect('/blogs');
     }
 }
