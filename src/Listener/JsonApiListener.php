@@ -487,12 +487,6 @@ class JsonApiListener extends ApiListener
             return;
         }
 
-        // prevent false positives caused by query parameters in GET requests
-        // resulting in set request data
-        if (isset($this->_controller()->request->query)) {
-            return;
-        }
-
         $data = $this->_controller()->request->data();
         $validator = new DocumentValidator($data, $this->config());
 

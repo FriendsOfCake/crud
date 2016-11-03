@@ -3,6 +3,7 @@ namespace Crud\Error;
 
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
+use Cake\Core\Exception\Exception;
 use Cake\Error\Debugger;
 use Crud\Listener\ApiQueryLogListener;
 use Neomerx\JsonApi\Document\Error;
@@ -55,7 +56,7 @@ class JsonApiExceptionRenderer extends \Cake\Error\ExceptionRenderer
 
         if (Configure::read('debug')) {
             $json = $this->_addDebugNode($json);
-            $json = $this->_addQueryLogNode($json);
+            $json = $this->_addQueryLogsNode($json);
         }
 
         // send response
@@ -90,7 +91,7 @@ class JsonApiExceptionRenderer extends \Cake\Error\ExceptionRenderer
 
         if (Configure::read('debug')) {
             $json = $this->_addDebugNode($json);
-            $json = $this->_addQueryNode($json);
+            $json = $this->_addQueryLogsNode($json);
         }
 
         // set data and send response
@@ -103,7 +104,7 @@ class JsonApiExceptionRenderer extends \Cake\Error\ExceptionRenderer
     /**
      * Returns a NeoMerx ErrorCollection with validation errors by either:
      *
-     * - returning cloacked collection as passed down from the Listener
+     * - returning cloaked collection as passed down from the Listener
      * - creating a new collection from CakePHP validation errors
      *
      * @param array $validationErrors CakePHP validation errors
@@ -174,9 +175,9 @@ class JsonApiExceptionRenderer extends \Cake\Error\ExceptionRenderer
      * @param string $json Json encoded string
      * @return string Json encoded string
      */
-    protected function _addQueryLogNode($json)
+    protected function _addQueryLogsNode($json)
     {
-        $listener = new ApiQueryLogListener(new Controller());
+        $listener = $this->_getApiQueryLogListenerObject();
         $logs = $listener->getQueryLogs();
 
         if (empty($logs)) {
@@ -187,6 +188,16 @@ class JsonApiExceptionRenderer extends \Cake\Error\ExceptionRenderer
         $result['query'] = $logs;
 
         return json_encode($result, JSON_PRETTY_PRINT);
+    }
+
+    /**
+     * Returns a plain ApiQueryLogListener instance for e.g. unit testing purposes.
+     *
+     * @return \Crud\Listener\ApiQueryLogListener
+     */
+    protected function _getApiQueryLogListenerObject()
+    {
+        return new ApiQueryLogListener(new Controller());
     }
 
     /**
