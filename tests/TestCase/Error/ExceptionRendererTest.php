@@ -1,20 +1,27 @@
 <?php
 namespace Crud\Test\TestCase\Error;
 
-use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Core\Exception\Exception;
 use Cake\Datasource\ConnectionManager;
 use Cake\Network\Request;
 use Cake\Network\Response;
 use Cake\ORM\Entity;
+use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use Cake\View\Exception\MissingViewException;
-use Crud\Error\ExceptionRenderer;
 use Crud\Error\Exception\ValidationException;
 
 class ExceptionRendererTest extends TestCase
 {
+
+    /**
+     * fixtures property
+     *
+     * @var array
+     */
+    public $fixtures = [
+        'plugin.crud.countries',
+    ];
 
     public function setUp()
     {
@@ -499,5 +506,55 @@ class ExceptionRendererTest extends TestCase
         $data = $Controller->viewVars['data'];
         unset($data['trace']);
         $this->assertEquals($expected, $data);
+    }
+
+    /**
+     * Make sure validation status code is set to 422 if fetching status
+     * code from the controller causes an exception.
+     *
+     * @return void
+     */
+    public function testValidationExceptionsFallBackToStatusCode422()
+    {
+        $countries = TableRegistry::get('Countries');
+
+        $invalidCountry = $countries->newEntity([]);
+
+        $exception = new ValidationException($invalidCountry);
+
+        $controller = $this->getMockBuilder('Cake\Controller\Controller')
+            ->setMethods(['render'])
+            ->getMock();
+
+        $controller->request = new Request();
+
+        $response = $this->getMockBuilder('Cake\Network\Response')
+            ->setMethods(['statusCode'])
+            ->getMock();
+        $response
+            ->expects($this->at(0))
+            ->method('statusCode')
+            ->with()
+            ->will($this->throwException(new Exception('woot')));
+        $response
+            ->expects($this->at(1))
+            ->method('statusCode')
+            ->with()
+            ->will($this->returnValue('422'));
+
+        $controller->response = $response;
+
+        $renderer = $this->getMockBuilder('Crud\Error\ExceptionRenderer')
+            ->setMethods(['_getController'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $renderer
+            ->expects($this->once())
+            ->method('_getController')
+            ->with()
+            ->will($this->returnValue($controller));
+
+        $renderer->__construct($exception);
+        $result = $renderer->render();
     }
 }
