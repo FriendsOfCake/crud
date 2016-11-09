@@ -149,12 +149,11 @@ class JsonApiListenerTest extends TestCase
 
         $listener
             ->expects($this->any())
-            ->method('_checkRequestMethods');
-
+            ->method('_checkRequestMethods')
+            ->will($this->returnValue(true));
 
         $listener->beforeHandle(new \Cake\Event\Event('Crud.beforeHandle'));
     }
-
 
     /**
      * Test afterSave event.
@@ -369,7 +368,7 @@ class JsonApiListenerTest extends TestCase
     public function testCheckPackageDependenciesFail()
     {
         $this->markTestIncomplete(
-            'Might be impossible to test due to inability to unload loaded classes'
+            'Implement this test to bump coverage to 100%. Requires mocking system/php functions'
         );
     }
 

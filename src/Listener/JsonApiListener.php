@@ -483,6 +483,12 @@ class JsonApiListener extends ApiListener
      */
     protected function _checkRequestData()
     {
+        // prevent false positives for GET requests using query parameters
+        // as those will also have request data
+        if (!$this->_request()->contentType()) {
+            return;
+        }
+
         if (empty($this->_controller()->request->data())) {
             return;
         }
