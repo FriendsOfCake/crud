@@ -1,23 +1,23 @@
-<?php //netteCache[01]000395a:2:{s:4:"time";s:21:"0.33752600 1478602826";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:75:"/var/www/jippignu/data/www/cakephp.dk/apigen/templates/bootstrap/todo.latte";i:2;i:1347136010;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:28:"$WCREV$ released on $WCDATE$";}}}?><?php
+<?php //netteCache[01]000395a:2:{s:4:"time";s:21:"0.23951700 1478689230";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:75:"/var/www/jippignu/data/www/cakephp.dk/apigen/templates/bootstrap/todo.latte";i:2;i:1347136010;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:28:"$WCREV$ released on $WCDATE$";}}}?><?php
 
 // source file: /var/www/jippignu/data/www/cakephp.dk/apigen/templates/bootstrap/todo.latte
 
 ?><?php
 // prolog Nette\Latte\Macros\CoreMacros
-list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, 'sjef7c64pj')
+list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, '8vsu61zbad')
 ;
 // prolog Nette\Latte\Macros\UIMacros
 //
 // block title
 //
-if (!function_exists($_l->blocks['title'][] = '_lb6f8fa21870_title')) { function _lb6f8fa21870_title($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['title'][] = '_lb0a518f3664_title')) { function _lb0a518f3664_title($_l, $_args) { extract($_args)
 ?>Todo<?php
 }}
 
 //
 // block content
 //
-if (!function_exists($_l->blocks['content'][] = '_lbe1b7ec1172_content')) { function _lbe1b7ec1172_content($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['content'][] = '_lb2dcfcd2126_content')) { function _lb2dcfcd2126_content($_l, $_args) { extract($_args)
 ?><div id="content">
 	<h1><?php call_user_func(reset($_l->blocks['title']), $_l, get_defined_vars()) ?></h1>
 
@@ -149,7 +149,7 @@ if (!function_exists($_l->blocks['content'][] = '_lbe1b7ec1172_content')) { func
 //
 // block classes
 //
-if (!function_exists($_l->blocks['classes'][] = '_lb179dc87cd3_classes')) { function _lb179dc87cd3_classes($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['classes'][] = '_lb87cb89e42c_classes')) { function _lb87cb89e42c_classes($_l, $_args) { extract($_args)
 ;$iterations = 0; foreach ($iterator = $_l->its[] = new Nette\Iterators\CachingIterator($items) as $class): ?>
 	<tr>
 		<td class="name" rowspan="<?php echo htmlSpecialChars(count($class->annotations['todo'])) ?>
