@@ -1,9 +1,12 @@
 <?php
 namespace Crud\Routing\Route;
 
+use Cake\Database\Exception;
 use Cake\ORM\TableRegistry;
+use Cake\Routing\Router;
 use Cake\Routing\Route\Route;
 use Cake\Utility\Inflector;
+use stdClass;
 
 /**
  * Licensed under The MIT License
@@ -11,82 +14,165 @@ use Cake\Utility\Inflector;
  */
 class JsonApiRoute extends Route
 {
+
     /**
      * Parse method.
      *
-     * @param string $url The JSON API URL to attempt to parse
+     * @param string $url The URL to parse
      * @param string $method The HTTP method of the request being parsed
      * @return mixed URL parameter array on success, false otherwise
      */
     public function parse($url, $method = '')
     {
-        $params = $this->_isRelationshipSelfLink($url);
-
-        if ($params === false) {
-            return false;
+        $params = $this->_belongsToRelationshipSelfLink($url);
+        if (is_array($params)) {
+            return $params;
         }
 
-        return $params;
+        return false;
     }
 
     /**
-     * Detects and handles JSON API relationship `self` links.
+     * Detects JSON API relationship `self` links with belongsTo relationship.
      *
-     * Please note that by design JSON API relationship `self` links by do NOT
-     * contain a foreign key/id since they are intended to always point to the
-     * actual related record. This is why we first need to lookup the main
-     * resource record, then extract the actual/current foreign key and finally
-     * return the `$params` array pointing to the related controller.
+     * Please note that by design a JSON API relationship `self` link with a
+     * belongsTo relationship does NOT contain a foreign key/id since they are
+     * intended to always point to the actual related record.
      *
-     * Example URL: http://my.api.local/countries/3/relationships/currency
+     * Valid URLs:
+     * http://my.app/countries/3/relationships/currency
+     * http://my.app/countries/3/relationships/currency?query=parameter
      *
-     * In the above example we would first lookup country with `id` 3, then
-     * extract from that result the foreign key `currency_id` before returning
-     * a params array pointing to CurrenciesController, `view` action and e.g.
-     * `id` 2 (if `currency_id` found in the main record was 2).
+     * In the above example we would first query the database for a country
+     * record with `id` 3 If found, we extract the foreign key field
+     * `currency_id` (e.g. 12) and return a `$params` array pointing to
+     * CurrenciesController with action `view` and `id` 12.
+     *
+     * BTW: query parameters are caught by the regex but not processed (yet).
      *
      * @param string $url URL to parse
-     * @return mixed URL parameter array on success, false otherwise
+     * @return mixed bool|array Params array for matching URLs, false otherwise
      */
-    protected function _isRelationshipSelfLink($url)
+    protected function _belongsToRelationshipSelfLink($url)
     {
-        if (!preg_match('/^\/(\w+)\/(.+)\/relationships\/(\w+)/', $url, $matches)) {
+        $url = $this->_getUrlObject($url);
+        if (!$url) {
+            return false;
+        };
+
+        if ($url->relationship !== 'belongsTo') {
             return false;
         }
 
-        $mainResourceName = $matches[1]; // e.g. countries
-        $mainResourceId = $matches[2]; // e.g. 2 (for country with id 2)
-        $relationshipKey = $matches[3]; // e.g. currency or languages (belongsTo, hasMany)
+        // try fetching parent resource from the database
+        $table = TableRegistry::get($url->parentController);
 
-        // fetch main resource from database
-        $mainResourceTable = TableRegistry::get($mainResourceName);
-        $result = $mainResourceTable
-            ->find()
-            ->where([
-                'id' => $mainResourceId
-            ])
-            ->first();
+        try {
+            $result = $table
+                ->find()
+                ->where([
+                    'id' => $url->parentId
+                ])
+                ->first();
+        } catch (Exception $e) {
+            return false;
+        }
 
+        // no further action if main record or foreign key does not exist
         if (empty($result)) {
             return false;
         }
 
-        // try belongsTo first
-        if ($result[$relationshipKey . '_id']) {
-            $controller = Inflector::classify($relationshipKey);
-            $controller = Inflector::pluralize($controller);
-
-            return [
-                'controller' => $controller,
-                'action' => 'view',
-                'pass' => [
-                    $result[$relationshipKey . '_id']
-                ]
-            ];
+        if (!isset($result[$url->relationshipForeignKeyField])) {
+            return false;
         }
 
-        // no idea on how to handle hasMany redirect yet so returning false
-        // (perhaps do'able with search plugin and query parameter).
-        return false;
+        // all good, return params to redirect user to related record
+        return [
+            'controller' => $url->relationshipController,
+            'action' => 'view',
+            'pass' => [
+                $result[$url->relationshipForeignKeyField]
+            ]
+        ];
+    }
+
+    /**
+     * Returns an object with detailed analysis properties for any given URL
+     * if it matches one of the supported JSON API link formats. Properties:
+     *
+     * [url] => /countries/2/relationships/currency
+     * [scheme] =>
+     * [authority] =>
+     * [path] => /countries/2/relationships/currency
+     * [query] =>
+     * [parentPath] => countries
+     * [parentController] => Countries
+     * [parentId] => 2
+     * [relationship] => belongsTo
+     * [relationshipController] => Currencies
+     * [relationshipForeignKeyField] => currency_id
+     *
+     * @param string $url URL to analyse
+     * @return bool|stdClass False if the regex did not match.
+     */
+    protected function _getUrlObject($url)
+    {
+        $object = new stdClass();
+
+        // Parse URI as described at https://tools.ietf.org/html/rfc3986#appendix-B
+        $regex = '/^(([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/';
+
+        preg_match($regex, $url, $matches);
+
+        $object->url = $url;
+        $object->scheme = $matches[2];
+        $object->authority = $matches[4];
+        $object->path = $matches[5];
+
+        $object->query = null;
+        if (isset($matches[7])) {
+            $object->query = $matches[7];
+        }
+
+        //
+        // Regex if path matches a valid JSON API relationship `self` link:.
+        //
+        // $1 parentPath (e.g. /prefix/controller/action
+        // $2 parentId (e.g. 1)
+        // $4 relationship (either singular or plural)
+        //
+        $regex = '/\/(.+)\/(.+)\/(relationships)\/(\w+)(\?.+)?$/';
+
+        if (!preg_match($regex, $object->path, $matches)) {
+            return false;
+        }
+
+        $object->parentPath = $matches[1];
+        $object->parentController = Router::parse($object->parentPath)['controller'];
+        $object->parentId = $matches[2];
+
+        $relationship = $matches[4];
+
+        // belongsTo relationship
+        if (Inflector::singularize($relationship) === $relationship) {
+            $object->relationship = 'belongsTo';
+
+            $object->relationshipController = Inflector::classify($relationship);
+            $object->relationshipController = Inflector::pluralize($object->relationshipController);
+
+            $object->relationshipForeignKeyField = $relationship . '_id';
+
+            return $object;
+        }
+
+        // hasMany relationship
+        $object->relationship = 'hasMany';
+        $object->relationshipController = Inflector::camelize($relationship);
+
+        $object->relationshipSearchField = Inflector::tableize($object->parentController);
+        $object->relationshipSearchField = Inflector::singularize($object->relationshipSearchField) . '_id';
+
+        return $object;
     }
 }
