@@ -36,7 +36,6 @@ class JsonApiView extends View
         '_serialize',
         '_jsonOptions',
         '_debugPrettyPrint',
-        '_debugQueryLog',
         '_jsonp',
         '_pagination',
     ];
@@ -141,12 +140,17 @@ class JsonApiView extends View
             $serialize = $this->_getDataToSerializeFromViewVars($this->viewVars['_serialize']);
         }
 
-        // Resources defined in `include` will appear in the included section,
-        // resources defined in `fieldSets` are used to limit the fields shown
-        // in the result.
+        // By default the listener will automatically add all associated data
+        // (as produced by containable and thus present in the entity) to the
+        // '_include' viewVar which is used to produce the top-level `included`
+        // node UNLESS user specified an array with associations using the
+        // listener config option `include`.
         //
-        // Please note that a configured `include` var will take precedence
-        // over the `getIncludePaths()` method that MIGHT exist in a schema.
+        // Please be aware that `include` will take precedence over the
+        //`getIncludePaths()` method that MIGHT exist in custom NeoMerx schemas.
+        //
+        // Lastly, listener config option `fieldSets` may be used to limit
+        // the fields shown in the result.
         $include = $this->viewVars['_include'];
         $fieldSets = $this->viewVars['_fieldSets'];
 
@@ -155,7 +159,8 @@ class JsonApiView extends View
             $fieldSets
         );
 
-        // Add optional top-level `version` node to the response
+        // Add optional top-level `version` node to the response if enabled
+        // by user using listener config option.
         if ($this->viewVars['_withJsonApiVersion']) {
             if (is_array($this->viewVars['_withJsonApiVersion'])) {
                 $encoder->withJsonApiVersion($this->viewVars['_withJsonApiVersion']);
@@ -165,7 +170,7 @@ class JsonApiView extends View
         }
 
         // Add top-level `links` node with pagination information (requires
-        // ApiPaginationListener).
+        // ApiPaginationListener which will have set/filled viewVar).
         if (isset($this->viewVars['_pagination'])) {
             $pagination = $this->viewVars['_pagination'];
 
@@ -177,7 +182,8 @@ class JsonApiView extends View
             $this->viewVars['_meta']['page_limit'] = $pagination['page_limit'];
         }
 
-        // Add optional top-level `meta` node to the response
+        // Add optional top-level `meta` node to the response if enabled by
+        // user using listener config option.
         if ($this->viewVars['_meta']) {
             if (empty($serialize)) {
                 return $encoder->encodeMeta($this->viewVars['_meta']);
