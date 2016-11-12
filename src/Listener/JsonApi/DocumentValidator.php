@@ -73,7 +73,6 @@ class DocumentValidator extends Object
         }
 
         throw new ValidationException($this->_getErrorCollectionEntity());
-        //$this->_throwValidationException();
     }
 
     /**
@@ -89,7 +88,6 @@ class DocumentValidator extends Object
         $this->_documentMustHavePrimaryData();
         $this->_primaryDataMustHaveType();
         $this->_primaryDataMustHaveId();
-        $this->_primaryDataMustHaveId();
         $this->_primaryDataMayHaveRelationships();
 
         if ($this->_errorCollection->count() === 0) {
@@ -97,7 +95,6 @@ class DocumentValidator extends Object
         }
 
         throw new ValidationException($this->_getErrorCollectionEntity());
-        //$this->_throwValidationException();
     }
 
     /**
@@ -127,7 +124,6 @@ class DocumentValidator extends Object
         ));
 
         throw new ValidationException($this->_getErrorCollectionEntity());
-        //$this->_throwValidationException();
     }
 
     /**
