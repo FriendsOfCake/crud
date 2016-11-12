@@ -156,14 +156,77 @@ class JsonApiListenerTest extends TestCase
     }
 
     /**
+     * respond()
+     */
+    public function testRespond()
+    {
+        $controller = $this
+            ->getMockBuilder('\Cake\Controller\Controller')
+            ->setMethods(null)
+            ->enableOriginalConstructor()
+            ->getMock();
+
+        $controller->name = 'Countries';
+
+        $action = $this
+            ->getMockBuilder('\Crud\Action\IndexAction')
+            ->disableOriginalConstructor()
+            ->setMethods(['config'])
+            ->getMock();
+        $response = $this
+            ->getMockBuilder('\Cake\Network\Response')
+            ->setMethods(['statusCode'])
+            ->getMock();
+
+        $subject = $this
+            ->getMockBuilder('\Crud\Event\Subject')
+            ->getMock();
+        $subject->success = true;
+
+        $table = TableRegistry::get('Countries');
+        $entity = $table->find()->first();
+        $subject->entity = $entity;
+
+        $event = new \Cake\Event\Event('Crud.afterSave', $subject);
+
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\JsonApiListener')
+            ->disableOriginalConstructor()
+            ->setMethods(['_controller', '_action', 'render'])
+            ->getMock();
+        $listener
+            ->expects($this->next($listener))
+            ->method('_controller')
+            ->with()
+            ->will($this->returnValue($controller));
+        $listener
+            ->expects($this->next($listener))
+            ->method('_action')
+            ->with()
+            ->will($this->returnValue($action));
+        $action
+            ->expects($this->next($action))
+            ->method('config')
+            ->with('api.success')
+            ->will($this->returnValue(['code' => 200]));
+        $listener
+            ->expects($this->next($listener))
+            ->method('render')
+            ->with($subject)
+            ->will($this->returnValue($response));
+        $response
+            ->expects($this->next($response))
+            ->method('statusCode')
+            ->with(200);
+
+        $listener->respond($event);
+    }
+
+    /**
      * Test afterSave event.
      */
     public function testAfterSave()
     {
-        $this->markTestIncomplete(
-            'Re-enable test once afterSave solution is ok (extra find to get belongTo relationships)'
-        );
-
         $listener = $this
             ->getMockBuilder('\Crud\Listener\JsonApiListener')
             ->disableOriginalConstructor()
@@ -211,21 +274,166 @@ class JsonApiListenerTest extends TestCase
 
         $this->setReflectionClassInstance($listener);
 
+        // assert nothing happens if `success` is false
+        $event->subject->success = false;
+        $this->assertFalse($this->callProtectedMethod('afterSave', [$event], $listener));
+
+        // assert nothing happens if `success` is true but both `created` and `id` are false
+        $event->subject->success = true;
+        $event->subject->created = false;
+        $event->subject->id = false;
+        $this->assertFalse($this->callProtectedMethod('afterSave', [$event], $listener));
+
         // assert success
-        $event->subject->success = 1;
-        $event->subject->created = 1;
-        $event->subject->entity = new \stdClass();
-        $event->subject->entity->id = 123;
+        $table = TableRegistry::get('Countries');
+        $entity = $table->find()->first();
+        $subject->entity = $entity;
+
+        $event->subject->success = true;
+        $event->subject->created = true;
+        $event->subject->id = false;
         $this->assertTrue($this->callProtectedMethod('afterSave', [$event], $listener));
 
-        // assert fails
-        $event->subject->success = false;
-        $event->subject->created = 1;
-        $this->assertFalse($this->callProtectedMethod('afterSave', [$event], $listener));
-
-        $event->subject->success = 1;
+        $event->subject->success = true;
         $event->subject->created = false;
-        $this->assertFalse($this->callProtectedMethod('afterSave', [$event], $listener));
+        $event->subject->id = true;
+        $this->assertTrue($this->callProtectedMethod('afterSave', [$event], $listener));
+    }
+
+    /**
+     * _insertBelongsToDataIntoEventFindResult()
+     *
+     * @return void
+     */
+    public function testInsertBelongsToDataIntoEventFindResult()
+    {
+        $controller = $this
+            ->getMockBuilder('\Cake\Controller\Controller')
+            ->setMethods(null)
+            ->enableOriginalConstructor()
+            ->getMock();
+
+        $controller->name = 'Countries';
+
+        $event = $this
+            ->getMockBuilder('\Cake\Event\Event')
+            ->disableOriginalConstructor()
+            ->setMethods(['subject'])
+            ->getMock();
+
+        $subject = $this
+            ->getMockBuilder('\Crud\Event\Subject')
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $event
+            ->expects($this->any())
+            ->method('subject')
+            ->will($this->returnValue($subject));
+
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\JsonApiListener')
+            ->disableOriginalConstructor()
+            ->setMethods(['_controller'])
+            ->getMock();
+
+        $listener
+            ->expects($this->any())
+            ->method('_controller')
+            ->will($this->returnValue($controller));
+
+        $this->setReflectionClassInstance($listener);
+
+        // assert related belongsTo model 'currency' is inserted
+        $table = TableRegistry::get('Countries');
+        $entity = $table->find()->first();
+        $subject->entity = $entity;
+
+        $this->assertArrayHasKey('name', $entity);
+        $this->assertArrayNotHasKey('currency', $entity);
+
+        $this->callProtectedMethod('_insertBelongsToDataIntoEventFindResult', [$event], $listener);
+
+        $this->assertArrayHasKey('name', $subject->entity);
+        $this->assertArrayHasKey('currency', $subject->entity);
+    }
+
+    /**
+     * _removeForeignKeysFromEventData()
+     *
+     * @return void
+     */
+    public function testRemoveForeignKeysFromEventData()
+    {
+        $controller = $this
+            ->getMockBuilder('\Cake\Controller\Controller')
+            ->setMethods(null)
+            ->enableOriginalConstructor()
+            ->getMock();
+
+        $controller->name = 'Countries';
+
+        $event = $this
+            ->getMockBuilder('\Cake\Event\Event')
+            ->disableOriginalConstructor()
+            ->setMethods(['subject'])
+            ->getMock();
+
+        $subject = $this
+            ->getMockBuilder('\Crud\Event\Subject')
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $event
+            ->expects($this->any())
+            ->method('subject')
+            ->will($this->returnValue($subject));
+
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\JsonApiListener')
+            ->disableOriginalConstructor()
+            ->setMethods(['_controller'])
+            ->getMock();
+
+        $listener
+            ->expects($this->any())
+            ->method('_controller')
+            ->will($this->returnValue($controller));
+
+        $this->setReflectionClassInstance($listener);
+
+        // assert foreign keys are removed from single entity
+        $table = TableRegistry::get('Countries');
+        $entity = $table->find()->first();
+        $this->assertArrayHasKey('name', $entity);
+        $this->assertArrayHasKey('currency_id', $entity);
+
+        $subject->entity = $entity;
+
+        $this->callProtectedMethod('_removeBelongsToForeignKeysFromEventData', [$event], $listener);
+
+        $this->assertArrayHasKey('name', $subject->entity);
+        $this->assertArrayNotHasKey('currency_id', $subject->entity);
+
+        unset($subject->entity);
+
+        // assert foreign keys are removed from entity collections
+        $entities = $table->find()->all();
+        foreach ($entities as $entity) {
+            $this->assertArrayHasKey('name', $entity);
+            $this->assertArrayHasKey('currency_id', $entity);
+        }
+
+        $subject->entities = $entities;
+
+        $this->callProtectedMethod('_removeBelongsToForeignKeysFromEventData', [$event], $listener);
+
+        foreach ($subject->entities as $entity) {
+            $this->assertArrayHasKey('name', $entity);
+            $this->assertArrayNotHasKey('currency_id', $entity);
+        }
     }
 
     /**
@@ -824,17 +1032,220 @@ class JsonApiListenerTest extends TestCase
     }
 
     /**
-     * Test _checkRequestData()
+     * _getIncludeList()
      *
      * @return void
      */
-    public function testCheckRequestData()
+    public function testGetIncludeList()
     {
-        $requestData = null;
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\JsonApiListener')
+            ->disableOriginalConstructor()
+            ->setMethods(['_controller', '_event'])
+            ->getMock();
 
-        $listener = new JsonApiListener(new Controller());
         $this->setReflectionClassInstance($listener);
-        $this->assertNull($this->callProtectedMethod('_checkRequestData', [$requestData], $listener));
+
+        // assert the include list is auto-generated for both belongsTo and
+        // hasMany relations (if listener config option `include` is not set)
+        $this->assertEmpty($listener->config('include'));
+
+        $table = TableRegistry::get('Countries');
+        $associations = $table->associations();
+        $this->assertSame(['currencies', 'cultures'], $associations->keys());
+
+        $expected = [
+            'currency',
+            'cultures'
+        ];
+
+        $result = $this->callProtectedMethod('_getIncludeList', [$associations], $listener);
+
+        $this->assertSame($expected, $result);
+
+        // assert the include list is still auto-generated if an association is
+        // removed from the AssociationsCollection
+        $associations->remove('cultures');
+        $this->assertSame(['currencies'], $associations->keys());
+        $result = $this->callProtectedMethod('_getIncludeList', [$associations], $listener);
+
+        $this->assertSame(['currency'], $result);
+
+        // assert user specified listener config option is returned as-is (no magic)
+        $userSpecifiedIncludes = [
+            'user-specified-list',
+            'with',
+            'associations-to-present-in-included-node'
+        ];
+
+        $listener->config('include', $userSpecifiedIncludes);
+        $this->assertNotEmpty($listener->config('include'));
+        $result = $this->callProtectedMethod('_getIncludeList', [$associations], $listener);
+
+        $this->assertSame($userSpecifiedIncludes, $result);
+    }
+
+    /**
+     * Test _checkRequestData() using POST method
+     *
+     * @return void
+     */
+    public function testCheckRequestDataWithPostMethod()
+    {
+        $controller = $this
+            ->getMockBuilder('\Cake\Controller\Controller')
+            ->setMethods(['_request'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $request = $this
+            ->getMockBuilder('\Cake\Network\Request')
+            ->setMethods(['contentType', 'method'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        for ($x = 0; $x <= 0; $x++) {
+            $request
+                ->expects($this->at($x))
+                ->method('contentType')
+                ->will($this->returnValue(false));
+        }
+
+        for ($x = 1; $x <= 4; $x++) {
+            $request
+                ->expects($this->at($x))
+                ->method('contentType')
+                ->will($this->returnValue(true));
+        }
+
+        $request
+            ->expects($this->any())
+            ->method('method')
+            ->will($this->returnValue('POST'));
+
+        $controller->request = $request;
+
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\JsonApiListener')
+            ->setMethods(['_controller', '_checkRequestMethods', '_convertJsonApiDataArray'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $listener
+            ->expects($this->any())
+            ->method('_controller')
+            ->will($this->returnValue($controller));
+
+        $listener
+            ->expects($this->any())
+            ->method('_convertJsonApiDataArray')
+            ->will($this->returnValue(true));
+
+        $listener
+            ->expects($this->any())
+            ->method('_checkRequestMethods')
+            ->will($this->returnValue(true));
+
+        $this->setReflectionClassInstance($listener);
+
+        // assert null if there is no Content-Type
+        $this->assertNull($this->callProtectedMethod('_checkRequestData', [], $listener));
+
+        // assert null if there is no request data
+        $controller->request->data = null;
+        $this->assertNull($this->callProtectedMethod('_checkRequestData', [], $listener));
+
+        // assert POST is processed
+        $controller->request->data = [
+            'data' => [
+                'type' => 'dummy',
+                'attributes' => [],
+            ]
+        ];
+
+        $this->callProtectedMethod('_checkRequestData', [], $listener);
+    }
+
+    /**
+     * Test _checkRequestData() using PATCH method
+     *
+     * @return void
+     */
+    public function testCheckRequestDataWithPatchMethod()
+    {
+        $controller = $this
+            ->getMockBuilder('\Cake\Controller\Controller')
+            ->setMethods(['_request'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $request = $this
+            ->getMockBuilder('\Cake\Network\Request')
+            ->setMethods(['contentType', 'method'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        for ($x = 0; $x <= 0; $x++) {
+            $request
+                ->expects($this->at($x))
+                ->method('contentType')
+                ->will($this->returnValue(false));
+        }
+
+        for ($x = 1; $x <= 4; $x++) {
+            $request
+                ->expects($this->at($x))
+                ->method('contentType')
+                ->will($this->returnValue(true));
+        }
+
+        $request
+            ->expects($this->any())
+            ->method('method')
+            ->will($this->returnValue('PATCH'));
+
+        $controller->request = $request;
+
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\JsonApiListener')
+            ->setMethods(['_controller', '_checkRequestMethods', '_convertJsonApiDataArray'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $listener
+            ->expects($this->any())
+            ->method('_controller')
+            ->will($this->returnValue($controller));
+
+        $listener
+            ->expects($this->any())
+            ->method('_convertJsonApiDataArray')
+            ->will($this->returnValue(true));
+
+        $listener
+            ->expects($this->any())
+            ->method('_checkRequestMethods')
+            ->will($this->returnValue(true));
+
+        $this->setReflectionClassInstance($listener);
+
+        // assert null if there is no Content-Type
+        $this->assertNull($this->callProtectedMethod('_checkRequestData', [], $listener));
+
+        // assert null if there is no request data
+        $controller->request->data = null;
+        $this->assertNull($this->callProtectedMethod('_checkRequestData', [], $listener));
+
+        // assert POST is processed
+        $controller->request->data = [
+            'data' => [
+                'id' => 'f083ea0b-9e48-44a6-af45-a814127a3a70',
+                'type' => 'dummy',
+                'attributes' => [],
+            ]
+        ];
+
+        $this->callProtectedMethod('_checkRequestData', [], $listener);
     }
 
     /**
@@ -850,6 +1261,19 @@ class JsonApiListenerTest extends TestCase
     {
         $listener = new JsonApiListener(new Controller());
         $this->setReflectionClassInstance($listener);
+
+        // assert posted id attribute gets processed as expected
+        $jsonApiArray = [
+            'data' => [
+                'id' => '123'
+            ]
+        ];
+
+        $expected = [
+            'id' => '123'
+        ];
+        $result = $this->callProtectedMethod('_convertJsonApiDocumentArray', [$jsonApiArray], $listener);
+        $this->assertSame($expected, $result);
 
         // assert success (single entity, no relationships)
         $jsonApiFixture = new File(Plugin::path('Crud') . 'tests' . DS . 'Fixture' . DS . 'JsonApi' . DS . 'post_country_no_relationships.json');

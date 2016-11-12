@@ -98,6 +98,19 @@ class JsonApiListener extends ApiListener
     }
 
     /**
+     * respond() event.
+     *
+     * @param \Cake\Event\Event $event Event
+     * @return void
+     */
+    public function respond(\Cake\Event\Event $event)
+    {
+        $this->_removeBelongsToForeignKeysFromEventData($event);
+
+        parent::respond($event);
+    }
+
+    /**
      * afterSave() event used to respond with `Location` header pointing to
      * the newly created resources. Only applied to `add` actions as described
      * at http://jsonapi.org/format/#crud-creating-responses-201.
@@ -116,7 +129,7 @@ class JsonApiListener extends ApiListener
             return false;
         }
 
-        $this->_insertBelongsTo($event);
+        $this->_insertBelongsToDataIntoEventFindResult($event);
 
         $this->_response()->header([
             'Location' => $this->_getNewResourceUrl(
@@ -129,19 +142,6 @@ class JsonApiListener extends ApiListener
     }
 
     /**
-     * respond() event used to remove foreign key fields from entity/entities.
-     *
-     * @param \Cake\Event\Event $event Event
-     * @return void
-     */
-    public function respond(\Cake\Event\Event $event)
-    {
-        $this->_removeForeignKeys($event);
-
-        parent::respond($event);
-    }
-
-    /**
      * Adds belongsTo data to the find() result so the 201 success response
      * is able to render the jsonapi `relationships` member.
      *
@@ -151,7 +151,7 @@ class JsonApiListener extends ApiListener
      * @param \Cake\Event\Event $event Event
      * @return void
      */
-    protected function _insertBelongsTo($event)
+    protected function _insertBelongsToDataIntoEventFindResult($event)
     {
         $entity = $event->subject()->entity;
         $table = TableRegistry::get($this->_controller()->name);
@@ -186,7 +186,7 @@ class JsonApiListener extends ApiListener
      * @param \Cake\Event\Event $event Event
      * @return void
      */
-    protected function _removeForeignKeys($event)
+    protected function _removeBelongsToForeignKeysFromEventData($event)
     {
         $table = TableRegistry::get($this->_controller()->name);
         $associations = $table->associations();
@@ -288,7 +288,7 @@ class JsonApiListener extends ApiListener
 
         // Remove associations not found in the `find()` result
         $entity = $this->_getSingleEntity($subject);
-        $associations = $this->_stripNonContainedAssociations($table, $entity);
+        $strippedAssociations = $this->_stripNonContainedAssociations($table, $entity);
 
         // Set data before rendering the view
         $this->_controller()->set([
@@ -297,11 +297,11 @@ class JsonApiListener extends ApiListener
             '_urlPrefix' => $this->config('urlPrefix'),
             '_jsonOptions' => $this->config('jsonOptions'),
             '_debugPrettyPrint' => $this->config('debugPrettyPrint'),
-            '_entities' => $this->_getEntityList($entityName, $associations),
-            '_include' => $this->config('include'),
+            '_entities' => $this->_getEntityList($entityName, $strippedAssociations),
+            '_include' => $this->_getIncludeList($strippedAssociations),
             '_fieldSets' => $this->config('fieldSets'),
             Inflector::tableize($tableName) => $this->_getFindResult($subject),
-            '_associations' => $associations,
+            '_associations' => $strippedAssociations,
             '_serialize' => true,
         ]);
 
@@ -474,6 +474,38 @@ class JsonApiListener extends ApiListener
     }
 
     /**
+     * Generates a list for with all associated data (as produced by Containable
+     * and thus) present in the entity to be used for filling the top-level
+     * `included` node in the json response UNLESS user has specified listener
+     * config option 'include'.
+     *
+     * @param \Cake\ORM\AssociationCollection $associations AssociationCollection
+     * @return array
+     */
+    protected function _getIncludeList($associations)
+    {
+        if (!empty($this->config('include'))) {
+            return $this->config('include');
+        }
+
+        $result = [];
+        foreach ($associations as $association) {
+            if (is_a($association, '\Cake\ORM\Association\BelongsTo')) {
+                $include = Inflector::tableize($association->name());
+                $include = Inflector::singularize($include);
+
+                $result[] = $include;
+                continue;
+            }
+
+            // hasMany
+            $result[] = Inflector::tableize($association->name());
+        }
+
+        return $result;
+    }
+
+    /**
      * Checks if data was posted to the Listener. If so then checks if the
      * array (already converted from json) matches the expected JSON API
      * structure for resources and if so, converts that array to CakePHP
@@ -483,8 +515,8 @@ class JsonApiListener extends ApiListener
      */
     protected function _checkRequestData()
     {
-        // prevent false positives for GET requests using query parameters
-        // as those will also have request data
+        // prevent false positives for GET requests using (pagination) query
+        // parameters as those will be present in the request data
         if (!$this->_request()->contentType()) {
             return;
         }
