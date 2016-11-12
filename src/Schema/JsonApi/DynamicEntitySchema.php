@@ -3,7 +3,9 @@ namespace Crud\Schema\JsonApi;
 
 use Cake\Utility\Inflector;
 use Cake\View\View;
+use Neomerx\JsonApi\Contracts\Document\LinkInterface;
 use Neomerx\JsonApi\Contracts\Schema\SchemaFactoryInterface;
+use Neomerx\JsonApi\Document\Link;
 use Neomerx\JsonApi\Schema\SchemaProvider;
 
 /**
@@ -13,16 +15,11 @@ use Neomerx\JsonApi\Schema\SchemaProvider;
 class DynamicEntitySchema extends SchemaProvider
 {
     /**
-     * The default field used for an id
+     * NeoMerx required property specifying which field to retrieve id from.
+     *
      * @var string
      */
     public $idField = 'id';
-
-    /**
-     * Holds the instance of Cake\View\View
-     * @var Cake\View\View
-     */
-    protected $_view;
 
     /**
      * Class constructor
@@ -38,7 +35,8 @@ class DynamicEntitySchema extends SchemaProvider
     ) {
         $this->_view = $view;
 
-        if (!$this->resourceType) {
+        // NeoMerx required property holding lowercase singular or plural resource name
+        if (!isset($this->resourceType)) {
             $this->resourceType = strtolower(Inflector::pluralize($entityName));
         }
 
@@ -46,20 +44,9 @@ class DynamicEntitySchema extends SchemaProvider
     }
 
     /**
-     * Magic accessor for helpers.
-     *
-     * @param string $name Name of the attribute to get.
-     * @return mixed
-     */
-    public function __get($name)
-    {
-        return $this->_view->__get($name);
-    }
-
-    /**
      * Get resource id.
      *
-     * @param \Cake\ORM\Entity $entity Entity object
+     * @param \Cake\ORM\Entity $entity Entity
      * @return string
      */
     public function getId($entity)
@@ -71,7 +58,7 @@ class DynamicEntitySchema extends SchemaProvider
      * NeoMerx override used to pass entity root properties to be shown
      * as JsonApi `attributes`.
      *
-     * @param \Cake\ORM\Entity $entity Entity object
+     * @param \Cake\ORM\Entity $entity Entity
      * @return array
      */
     public function getAttributes($entity)
@@ -101,14 +88,14 @@ class DynamicEntitySchema extends SchemaProvider
      * NeoMerx override used to pass associated entity names to be used for
      * generating JsonApi `relationships`.
      *
-     * Optional `related` links not implemented yet.
+     * JSON API optional `related` links not implemented yet.
      *
-     * @param \Cake\ORM\Entity $entity Entity object
+     * @param \Cake\ORM\Entity $resource Entity object
      * @param bool $isPrimary True to add resource to data section instead of included
      * @param array $includeRelationships Used to fine tune relationships
      * @return array
      */
-    public function getRelationships($entity, $isPrimary, array $includeRelationships)
+    public function getRelationships($resource, $isPrimary, array $includeRelationships)
     {
         $relations = [];
 
@@ -119,10 +106,15 @@ class DynamicEntitySchema extends SchemaProvider
                 $associationKey = Inflector::singularize($associationKey);
             }
 
+            $data = $resource->$associationKey;
+            if (!$data) {
+                continue;
+            }
+
             $relations[$associationKey] = [
-                    self::DATA => $entity->$associationKey,
-                    self::SHOW_SELF => true,
-                    self::SHOW_RELATED => false,
+                self::DATA => $data,
+                self::SHOW_SELF => true,
+                self::SHOW_RELATED => false,
             ];
         }
 
@@ -130,12 +122,100 @@ class DynamicEntitySchema extends SchemaProvider
     }
 
     /**
-     * Return the view instance
+     * NeoMerx override to generate Cake belongsTo and hasMany links.
      *
-     * @return Cake\View\View View instance
+     * @param \Cake\ORM\Entity $resource Entity
+     * @param string $name Relationship name in lowercase singular or plural
+     * @param array $meta Optional array with meta information
+     * @param bool $treatAsHref True to NOT prefix url
+     *
+     * @return \Neomerx\JsonApi\Document\Link
      */
-    public function getView()
+    public function getRelationshipSelfLink($resource, $name, $meta = null, $treatAsHref = false)
     {
-        return $this->_view;
+        $entityKey = $this->_getUrlController($resource);// E.g. currencies or cultures
+
+        // belongsTo relationship
+        if ($this->_isSingular($name)) {
+            $url = '/' . $entityKey . '/' . $this->getId($resource) . '/relationships/' . $name;
+
+            return new Link($url, $meta, $treatAsHref);
+        }
+
+        // hasMany relationship
+        $targetController = $name;
+        $searchKey = Inflector::tableize($this->_getClassName($resource));
+        $searchKey = Inflector::singularize($searchKey) . '_id';
+
+        $url = '/' . $targetController . '?' . $searchKey . '=' . $resource->id;
+
+        return new Link($url, $meta, $treatAsHref);
+    }
+
+    /**
+     * NeoMerx override used to generate `self` links inside `included` node.
+     *
+     * @param \Cake\ORM\Entity $resource Entity
+     * @return array
+     */
+    public function getIncludedResourceLinks($resource)
+    {
+        $controller = $this->_getUrlController($resource);
+
+        $links = [
+            LinkInterface::SELF => new Link('/' . $controller . '/' . $resource->id),
+        ];
+
+        return $links;
+    }
+
+    /**
+     * Parses the name of an Entity class to build a lowercase plural
+     * controller name to be used in links.
+     *
+     * @param \Cake\ORM\Entity $entity Entity
+     * @return string Lowercase controller name
+     */
+    protected function _getUrlController($entity)
+    {
+        $controller = $this->_getClassName($entity);
+
+        if ($this->_isSingular($controller)) {
+            $controller = Inflector::pluralize($controller);
+        }
+
+        return Inflector::tableize($controller);
+    }
+
+    /**
+     * Helper function to return the class name of an object without namespace.
+     *
+     * @param mixed $class Any php class object
+     * @return bool|string False if the classname could not be derived
+     */
+    protected function _getClassName($class)
+    {
+        $className = get_class($class);
+
+        if ($pos = strrpos($className, '\\')) {
+            return substr($className, $pos + 1);
+        }
+
+        return false;
+    }
+
+    /**
+     * Helper function to determine if string is singular or plural.
+     *
+     * @param string $string Preferably a CakePHP generated name.
+     * @return bool
+     */
+    protected function _isSingular($string)
+    {
+        if (Inflector::singularize($string) === $string) {
+            return true;
+        }
+
+        return false;
     }
 }
