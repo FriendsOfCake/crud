@@ -30,6 +30,7 @@ class DeleteAction extends BaseAction
         'enabled' => true,
         'scope' => 'entity',
         'findMethod' => 'all',
+        'deleteMethod' => 'delete',
         'messages' => [
             'success' => [
                 'text' => 'Successfully deleted {name}'
@@ -66,7 +67,8 @@ class DeleteAction extends BaseAction
             return $this->_stopped($subject);
         }
 
-        if ($this->_table()->delete($entity)) {
+        $method = $this->config('deleteMethod');
+        if ($this->_table()->$method($entity)) {
             $this->_success($subject);
         } else {
             $this->_error($subject);
