@@ -22,6 +22,12 @@ class DynamicEntitySchema extends SchemaProvider
     public $idField = 'id';
 
     /**
+     * Holds the instance of Cake\View\View
+     * @var \Cake\View\View
+     */
+    protected $_view;
+
+    /**
      * Class constructor
      *
      * @param \Neomerx\JsonApi\Contracts\Schema\ContainerInterface $factory ContainerInterface
@@ -71,7 +77,7 @@ class DynamicEntitySchema extends SchemaProvider
         $attributes = $entity->toArray();
 
         // remove associated data so it won't appear inside jsonapi `attributes`
-        foreach ($this->_view->get('_associations') as $association) {
+        foreach ($this->_view->viewVars['_associations'] as $association) {
             $associationKey = Inflector::tableize($association->table());
 
             if (get_class($association) === 'Cake\ORM\Association\BelongsTo') {
@@ -99,7 +105,7 @@ class DynamicEntitySchema extends SchemaProvider
     {
         $relations = [];
 
-        foreach ($this->_view->get('_associations') as $association) {
+        foreach ($this->_view->viewVars['_associations'] as $association) {
             $associationKey = Inflector::tableize($association->name());
 
             if (get_class($association) === 'Cake\ORM\Association\BelongsTo') {
@@ -133,10 +139,10 @@ class DynamicEntitySchema extends SchemaProvider
      */
     public function getRelationshipSelfLink($resource, $name, $meta = null, $treatAsHref = false)
     {
-        $entityKey = $this->_getUrlController($resource);// E.g. currencies or cultures
+        $entityKey = $this->_getUrlControllerFromClassName($resource);// E.g. currencies or cultures
 
         // belongsTo relationship
-        if ($this->_isSingular($name)) {
+        if ($this->_stringIsSingular($name)) {
             $url = '/' . $entityKey . '/' . $this->getId($resource) . '/relationships/' . $name;
 
             return new Link($url, $meta, $treatAsHref);
@@ -155,15 +161,15 @@ class DynamicEntitySchema extends SchemaProvider
     /**
      * NeoMerx override used to generate `self` links inside `included` node.
      *
-     * @param \Cake\ORM\Entity $resource Entity
+     * @param \Cake\ORM\Entity $entity Entity
      * @return array
      */
-    public function getIncludedResourceLinks($resource)
+    public function getIncludedResourceLinks($entity)
     {
-        $controller = $this->_getUrlController($resource);
+        $controller = $this->_getUrlControllerFromClassName($entity);
 
         $links = [
-            LinkInterface::SELF => new Link('/' . $controller . '/' . $resource->id),
+            LinkInterface::SELF => new Link('/' . $controller . '/' . $entity->id),
         ];
 
         return $links;
@@ -176,15 +182,15 @@ class DynamicEntitySchema extends SchemaProvider
      * @param \Cake\ORM\Entity $entity Entity
      * @return string Lowercase controller name
      */
-    protected function _getUrlController($entity)
+    protected function _getUrlControllerFromClassName($entity)
     {
-        $controller = $this->_getClassName($entity);
+        $className = $this->_getClassName($entity);
 
-        if ($this->_isSingular($controller)) {
-            $controller = Inflector::pluralize($controller);
+        if ($this->_stringIsSingular($className)) {
+            $className = Inflector::pluralize($className);
         }
 
-        return Inflector::tableize($controller);
+        return Inflector::tableize($className);
     }
 
     /**
@@ -195,13 +201,17 @@ class DynamicEntitySchema extends SchemaProvider
      */
     protected function _getClassName($class)
     {
+        if (!is_object($class)) {
+            return false;
+        }
+
         $className = get_class($class);
 
         if ($pos = strrpos($className, '\\')) {
             return substr($className, $pos + 1);
         }
 
-        return false;
+        return $className;
     }
 
     /**
@@ -210,7 +220,7 @@ class DynamicEntitySchema extends SchemaProvider
      * @param string $string Preferably a CakePHP generated name.
      * @return bool
      */
-    protected function _isSingular($string)
+    protected function _stringIsSingular($string)
     {
         if (Inflector::singularize($string) === $string) {
             return true;
