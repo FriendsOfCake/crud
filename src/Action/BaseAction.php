@@ -251,7 +251,7 @@ abstract class BaseAction extends Object
      * Set "success" variable for view.
      *
      * @param \Cake\Event\Event $event Event
-     * @return void|bool
+     * @return bool|null
      */
     public function publishSuccess(Event $event)
     {
