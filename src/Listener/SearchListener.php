@@ -53,7 +53,7 @@ class SearchListener extends BaseListener
         }
 
         $table = $this->_table();
-        if (!$table->behaviors()->loaded('Search')) {
+        if (!$table->behaviors()->has('Search')) {
             return;
         }
 
