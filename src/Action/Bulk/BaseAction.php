@@ -130,7 +130,6 @@ abstract class BaseAction extends CrudBaseAction
             return $config;
         }
 
-        $ids = $ids;
         $primaryKey = $this->_table()->primaryKey();
         $config['conditions'] = [];
         $config['conditions'][] = function ($exp) use ($primaryKey, $ids) {
@@ -185,8 +184,8 @@ abstract class BaseAction extends CrudBaseAction
     /**
      * Handle a bulk event
      *
-     * @param \Cake\ORM\Query $query The query to act upon
+     * @param \Cake\ORM\Query|null $query The query to act upon
      * @return bool
      */
-    abstract protected function _bulk(Query $query);
+    abstract protected function _bulk(Query $query = null);
 }

@@ -30,13 +30,13 @@ class DeleteAction extends BaseAction
             ]
         ];
 
-        return parent::__construct($Controller, $config);
+        parent::__construct($Controller, $config);
     }
 
     /**
      * Handle a bulk delete
      *
-     * @param \Cake\ORM\Query $query The query to act upon
+     * @param \Cake\ORM\Query|null $query The query to act upon
      * @return bool
      */
     protected function _bulk(Query $query = null)

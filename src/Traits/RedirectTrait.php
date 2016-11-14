@@ -44,7 +44,7 @@ trait RedirectTrait
     /**
      * Returns the redirect_url for this request, with a fallback to the referring page
      *
-     * @param string $default Default URL to use redirect_url is not found in request or data
+     * @param string|null $default Default URL to use redirect_url is not found in request or data
      * @return mixed
      */
     protected function _refererRedirectUrl($default = null)
@@ -57,7 +57,7 @@ trait RedirectTrait
     /**
      * Returns the _redirect_url for this request.
      *
-     * @param string $default Default URL to use if _redirect_url if not found in request or data.
+     * @param string|null $default Default URL to use if _redirect_url if not found in request or data.
      * @return mixed
      */
     protected function _redirectUrl($default = null)
@@ -84,8 +84,8 @@ trait RedirectTrait
      * Called for all redirects inside CRUD
      *
      * @param \Crud\Event\Subject $subject Event subject
-     * @param string|array $url URL
-     * @param int $status Status code
+     * @param string|array|null $url URL
+     * @param int|null $status Status code
      * @return \Cake\Network\Response
      */
     protected function _redirect(Subject $subject, $url = null, $status = null)

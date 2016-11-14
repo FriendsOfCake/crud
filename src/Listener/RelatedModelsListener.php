@@ -70,8 +70,8 @@ class RelatedModelsListener extends BaseListener
      * Find and publish all related models to the view
      * for an action
      *
-     * @param NULL|string $action If NULL the current action will be used
-     * @param NULL|Entity $entity The optional entity for which we we trying to find related
+     * @param null|string $action If NULL the current action will be used
+     * @param null|\Cake\ORM\Entity $entity The optional entity for which we we trying to find related
      * @return void
      */
     public function publishRelatedModels($action = null, $entity = null)
@@ -87,7 +87,7 @@ class RelatedModelsListener extends BaseListener
         foreach ($models as $name => $association) {
             list(, $associationName) = pluginSplit($association->name());
             $viewVar = Inflector::variable($associationName);
-            if (array_key_exists($viewVar, $controller->viewVars)) {
+            if (array_key_exists($viewVar, (array)$controller->viewVars)) {
                 continue;
             }
 
@@ -134,7 +134,7 @@ class RelatedModelsListener extends BaseListener
     /**
      * Gets the list of associated model lists to be fetched for an action
      *
-     * @param string $action name of the action
+     * @param string|null $action name of the action
      * @return array
      */
     public function models($action = null)
@@ -161,7 +161,7 @@ class RelatedModelsListener extends BaseListener
      * for the action
      *
      * @param mixed $related Everything but `null` will change the configuration
-     * @param string $action The action to configure
+     * @param string|null $action The action to configure
      * @return mixed
      */
     public function relatedModels($related = null, $action = null)

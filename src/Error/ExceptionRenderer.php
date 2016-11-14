@@ -21,7 +21,7 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer
     /**
      * Renders validation errors and sends a 422 error code
      *
-     * @param \Exception $error Exception instance
+     * @param \Crud\Error\Exception\ValidationException $error Exception instance
      * @return \Cake\Network\Response
      */
     public function validation($error)

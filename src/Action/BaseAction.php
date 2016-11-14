@@ -268,7 +268,7 @@ abstract class BaseAction extends Object
      * By default it uses Inflector::humanize, but can be changed
      * using the "name" configuration property
      *
-     * @param string $value Name to set
+     * @param string|null $value Name to set
      * @return string
      */
     public function resourceName($value = null)

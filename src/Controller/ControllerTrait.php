@@ -17,7 +17,7 @@ trait ControllerTrait
      * List of components that are capable of dispatching an action that is
      * not already implemented
      *
-     * @var string
+     * @var array
      */
     public $dispatchComponents = [];
 
