@@ -13,7 +13,7 @@ trait ProxyTrait
      *
      * Primarily here to ease unit testing
      *
-     * @param string $name Action name
+     * @param string|null $name Action name
      * @return \Crud\Action\BaseAction
      * @codeCoverageIgnore
      */
@@ -28,7 +28,7 @@ trait ProxyTrait
      * Primarily here to ease unit testing
      *
      * @param string $eventName Event name
-     * @param \Crud\Event\Subject $data Event data
+     * @param \Crud\Event\Subject|null $data Event data
      * @return \Cake\Event\Event
      * @codeCoverageIgnore
      */

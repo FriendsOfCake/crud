@@ -12,8 +12,8 @@ trait FindMethodTrait
      * If `$method` is NULL the current value is returned
      * else the `findMethod` is changed
      *
-     * @param mixed $method Method name
-     * @return mixed
+     * @param string|null $method Method name
+     * @return string
      */
     public function findMethod($method = null)
     {

@@ -31,7 +31,7 @@ trait CrudTestTrait
      *
      * It's stored in the `$this->_subject` property
      *
-     * @param \Cake\Controller\Controller $controller Controller
+     * @param \Cake\Controller\Controller|null $controller Controller
      * @return void
      */
     public function _subscribeToEvents(Controller $controller = null)
@@ -76,7 +76,7 @@ trait CrudTestTrait
      * automatically before comparison
      *
      * @param array $expected An array of CRUD events we expected to be fired
-     * @param array $actual Can be an Event class, Crud subject or array with event names
+     * @param array|null $actual Can be an Event class, Crud subject or array with event names
      * @return void
      * @throws Exception
      */

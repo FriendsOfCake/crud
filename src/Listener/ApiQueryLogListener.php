@@ -3,7 +3,9 @@ namespace Crud\Listener;
 
 use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
+use Cake\Datasource\Exception\MissingDatasourceConfigException;
 use Cake\Event\Event;
+use Crud\Log\QueryLogger;
 
 /**
  * When loaded Crud API will include query logs in the response
@@ -50,8 +52,8 @@ class ApiQueryLogListener extends BaseListener
         foreach ($this->_getSources() as $connectionName) {
             try {
                 $this->_getSource($connectionName)->logQueries(true);
-                $this->_getSource($connectionName)->logger(new \Crud\Log\QueryLogger());
-            } catch (\Cake\Datasource\Exception\MissingDatasourceConfigException $e) {
+                $this->_getSource($connectionName)->logger(new QueryLogger());
+            } catch (MissingDatasourceConfigException $e) {
                 //Safe to ignore this :-)
             }
         }
@@ -108,7 +110,7 @@ class ApiQueryLogListener extends BaseListener
      * Get a specific data source
      *
      * @param string $source Datasource name
-     * @return \Cake\Database\Connection
+     * @return \Cake\Datasource\ConnectionInterface
      * @codeCoverageIgnore
      */
     protected function _getSource($source)
