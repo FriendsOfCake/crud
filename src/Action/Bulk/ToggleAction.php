@@ -32,7 +32,7 @@ class ToggleAction extends BaseAction
             ]
         ];
 
-        return parent::__construct($Controller, $config);
+        parent::__construct($Controller, $config);
     }
 
     /**
@@ -54,7 +54,7 @@ class ToggleAction extends BaseAction
     /**
      * Handle a bulk toggle
      *
-     * @param \Cake\ORM\Query $query The query to act upon
+     * @param \Cake\ORM\Query|null $query The query to act upon
      * @return bool
      */
     protected function _bulk(Query $query = null)

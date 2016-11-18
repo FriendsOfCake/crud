@@ -106,7 +106,7 @@ class AddAction extends BaseAction
     /**
      * HTTP POST handler
      *
-     * @return void|\Cake\Network\Response
+     * @return \Cake\Network\Response|null
      */
     protected function _post()
     {
@@ -129,7 +129,7 @@ class AddAction extends BaseAction
     /**
      * HTTP PUT handler
      *
-     * @return void|\Cake\Network\Response
+     * @return \Cake\Network\Response|null
      */
     protected function _put()
     {

@@ -249,7 +249,7 @@ class CrudComponent extends Component
     /**
      * Get a CrudAction object by action name.
      *
-     * @param string $name The controller action name.
+     * @param string|null $name The controller action name.
      * @return \Crud\Action\BaseAction
      */
     public function action($name = null)
@@ -295,7 +295,7 @@ class CrudComponent extends Component
      * To map multiple action views in one go pass an array as first argument and no second argument.
      *
      * @param string|array $action Action or array of actions
-     * @param string $view View name
+     * @param string|null $view View name
      * @return void
      */
     public function view($action, $view = null)
@@ -317,7 +317,7 @@ class CrudComponent extends Component
      * To map multiple action viewVars in one go pass an array as first argument and no second argument.
      *
      * @param string|array $action Action or array of actions.
-     * @param string $viewVar View var name.
+     * @param string|null $viewVar View var name.
      * @return void
      */
     public function viewVar($action, $viewVar = null)
@@ -339,7 +339,7 @@ class CrudComponent extends Component
      * To map multiple findMethods in one go pass an array as first argument and no second argument.
      *
      * @param string|array $action Action or array of actions.
-     * @param string $method Find method name
+     * @param string|null $method Find method name
      * @return void
      */
     public function findMethod($action, $method = null)
@@ -379,7 +379,7 @@ class CrudComponent extends Component
     /**
      * Check if a CRUD action has been mapped (whether it will be handled by CRUD component)
      *
-     * @param string $action If null, use the current action.
+     * @param string|null $action If null, use the current action.
      * @return bool
      */
     public function isActionMapped($action = null)
@@ -487,7 +487,7 @@ class CrudComponent extends Component
      * object.
      *
      * @param string $eventName Event name
-     * @param \Crud\Event\Subject $data Event data
+     * @param \Crud\Event\Subject|null $data Event data
      * @throws Exception if any event listener return a CakeResponse object.
      * @return \Cake\Event\Event
      */
@@ -547,7 +547,7 @@ class CrudComponent extends Component
                 $this->config(sprintf('%s.%s', $type, $realName), $config);
             }
 
-            return;
+            return null;
         }
 
         return $this->config(sprintf('%s.%s', $type, $name));

@@ -88,7 +88,7 @@ class EditAction extends BaseAction
     /**
      * HTTP GET handler
      *
-     * @param string $id Record id
+     * @param string|null $id Record id
      * @return void
      * @throws \Cake\Network\Exception\NotFoundException If record not found
      */
@@ -104,8 +104,8 @@ class EditAction extends BaseAction
     /**
      * HTTP PUT handler
      *
-     * @param mixed $id Record id
-     * @return void|\Cake\Network\Response
+     * @param string|null $id Record id
+     * @return \Cake\Network\Response|null
      */
     protected function _put($id = null)
     {
@@ -131,8 +131,8 @@ class EditAction extends BaseAction
      *
      * Thin proxy for _put
      *
-     * @param mixed $id Record id
-     * @return void|\Cake\Network\Response
+     * @param string|null $id Record id
+     * @return \Cake\Network\Response|null
      */
     protected function _post($id = null)
     {

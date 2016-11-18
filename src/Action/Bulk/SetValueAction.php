@@ -32,7 +32,7 @@ class SetValueAction extends BaseAction
         ];
         $this->_defaultConfig['value'] = null;
 
-        return parent::__construct($Controller, $config);
+        parent::__construct($Controller, $config);
     }
 
     /**
@@ -54,7 +54,7 @@ class SetValueAction extends BaseAction
     /**
      * Handle a bulk value set
      *
-     * @param \Cake\ORM\Query $query The query to act upon
+     * @param \Cake\ORM\Query|null $query The query to act upon
      * @return bool
      */
     protected function _bulk(Query $query = null)

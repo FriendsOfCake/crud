@@ -370,7 +370,7 @@ class ApiListener extends BaseListener
      *      CakePHP plugin "dot" notation is supported
      *
      * @param string $type Type
-     * @param string $class Class name
+     * @param string|null $class Class name
      * @return mixed
      */
     public function viewClass($type, $class = null)
