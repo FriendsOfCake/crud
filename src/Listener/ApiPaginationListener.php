@@ -20,12 +20,12 @@ class ApiPaginationListener extends BaseListener
      *
      * We attach at priority 10 so normal bound events can run before us
      *
-     * @return array|void
+     * @return array|null
      */
     public function implementedEvents()
     {
         if (!$this->_checkRequestType('api') && !$this->_checkRequestType('jsonapi')) {
-            return;
+            return null;
         }
 
         return [
