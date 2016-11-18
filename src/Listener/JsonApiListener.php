@@ -103,7 +103,7 @@ class JsonApiListener extends ApiListener
      * @param \Cake\Event\Event $event Event
      * @return void
      */
-    public function respond(\Cake\Event\Event $event)
+    public function respond(Event $event)
     {
         $this->_removeBelongsToForeignKeysFromEventData($event);
 
