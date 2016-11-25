@@ -515,28 +515,29 @@ class JsonApiListener extends ApiListener
      */
     protected function _checkRequestData()
     {
-        // prevent false positives for GET requests using (pagination) query
-        // parameters as those will be present in the request data
-        if (!$this->_request()->contentType()) {
+        $requestMethod = $this->_controller()->request->method();
+
+        if ($requestMethod !== 'POST' && $requestMethod !== 'PATCH') {
             return;
         }
 
-        if (empty($this->_controller()->request->data())) {
+        $requestData = $this->_controller()->request->data();
+
+        if (empty($requestData)) {
             return;
         }
 
-        $data = $this->_controller()->request->data();
-        $validator = new DocumentValidator($data, $this->config());
+        $validator = new DocumentValidator($requestData, $this->config());
 
-        if ($this->_controller()->request->method() === 'POST') {
+        if ($requestMethod === 'POST') {
             $validator->validateCreateDocument();
         }
 
-        if ($this->_controller()->request->method() === 'PATCH') {
+        if ($requestMethod === 'PATCH') {
             $validator->validateUpdateDocument();
         }
 
-        $this->_controller()->request->data = $this->_convertJsonApiDocumentArray($data);
+        $this->_controller()->request->data = $this->_convertJsonApiDocumentArray($requestData);
     }
 
     /**

@@ -133,7 +133,7 @@ class JsonApiListenerTest extends TestCase
 
         $listener = $this
             ->getMockBuilder('\Crud\Listener\JsonApiListener')
-            ->setMethods(['_controller', '_checkRequestMethods', '_convertJsonApiDataArray'])
+            ->setMethods(['_controller', '_checkRequestMethods', '_convertJsonApiDataArray', '_checkRequestData'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -150,6 +150,11 @@ class JsonApiListenerTest extends TestCase
         $listener
             ->expects($this->any())
             ->method('_checkRequestMethods')
+            ->will($this->returnValue(true));
+
+        $listener
+            ->expects($this->any())
+            ->method('_checkRequestData')
             ->will($this->returnValue(true));
 
         $listener->beforeHandle(new \Cake\Event\Event('Crud.beforeHandle'));
@@ -1086,11 +1091,11 @@ class JsonApiListenerTest extends TestCase
     }
 
     /**
-     * Test _checkRequestData() using POST method
+     * _checkRequestData()
      *
      * @return void
      */
-    public function testCheckRequestDataWithPostMethod()
+    public function testCheckRequestData()
     {
         $controller = $this
             ->getMockBuilder('\Cake\Controller\Controller')
@@ -1104,24 +1109,25 @@ class JsonApiListenerTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        for ($x = 0; $x <= 0; $x++) {
-            $request
-                ->expects($this->at($x))
-                ->method('contentType')
-                ->will($this->returnValue(false));
-        }
-
-        for ($x = 1; $x <= 4; $x++) {
-            $request
-                ->expects($this->at($x))
-                ->method('contentType')
-                ->will($this->returnValue(true));
-        }
+        $request
+            ->expects($this->at(0))
+            ->method('method')
+            ->will($this->returnValue('GET'));
 
         $request
-            ->expects($this->any())
+            ->expects($this->at(1))
             ->method('method')
             ->will($this->returnValue('POST'));
+
+        $request
+            ->expects($this->at(2))
+            ->method('method')
+            ->will($this->returnValue('POST'));
+
+        $request
+            ->expects($this->at(3))
+            ->method('method')
+            ->will($this->returnValue('PATCH'));
 
         $controller->request = $request;
 
@@ -1164,79 +1170,8 @@ class JsonApiListenerTest extends TestCase
         ];
 
         $this->callProtectedMethod('_checkRequestData', [], $listener);
-    }
 
-    /**
-     * Test _checkRequestData() using PATCH method
-     *
-     * @return void
-     */
-    public function testCheckRequestDataWithPatchMethod()
-    {
-        $controller = $this
-            ->getMockBuilder('\Cake\Controller\Controller')
-            ->setMethods(['_request'])
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $request = $this
-            ->getMockBuilder('\Cake\Network\Request')
-            ->setMethods(['contentType', 'method'])
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        for ($x = 0; $x <= 0; $x++) {
-            $request
-                ->expects($this->at($x))
-                ->method('contentType')
-                ->will($this->returnValue(false));
-        }
-
-        for ($x = 1; $x <= 4; $x++) {
-            $request
-                ->expects($this->at($x))
-                ->method('contentType')
-                ->will($this->returnValue(true));
-        }
-
-        $request
-            ->expects($this->any())
-            ->method('method')
-            ->will($this->returnValue('PATCH'));
-
-        $controller->request = $request;
-
-        $listener = $this
-            ->getMockBuilder('\Crud\Listener\JsonApiListener')
-            ->setMethods(['_controller', '_checkRequestMethods', '_convertJsonApiDataArray'])
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $listener
-            ->expects($this->any())
-            ->method('_controller')
-            ->will($this->returnValue($controller));
-
-        $listener
-            ->expects($this->any())
-            ->method('_convertJsonApiDataArray')
-            ->will($this->returnValue(true));
-
-        $listener
-            ->expects($this->any())
-            ->method('_checkRequestMethods')
-            ->will($this->returnValue(true));
-
-        $this->setReflectionClassInstance($listener);
-
-        // assert null if there is no Content-Type
-        $this->assertNull($this->callProtectedMethod('_checkRequestData', [], $listener));
-
-        // assert null if there is no request data
-        $controller->request->data = null;
-        $this->assertNull($this->callProtectedMethod('_checkRequestData', [], $listener));
-
-        // assert POST is processed
+        // assert PATCH is processed
         $controller->request->data = [
             'data' => [
                 'id' => 'f083ea0b-9e48-44a6-af45-a814127a3a70',
