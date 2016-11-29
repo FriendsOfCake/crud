@@ -94,10 +94,12 @@ trait RedirectTrait
 
         $subject->url = $url;
         $subject->status = $status;
-        $this->_trigger('beforeRedirect', $subject);
+        $event = $this->_trigger('beforeRedirect', $subject);
 
-        $controller = $this->_controller();
+        if ($event->isStopped()) {
+            return $this->_controller()->response;
+        }
 
-        return $controller->redirect($subject->url, $subject->status);
+        return $this->_controller()->redirect($subject->url, $subject->status);
     }
 }

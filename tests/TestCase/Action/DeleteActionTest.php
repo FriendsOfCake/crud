@@ -142,4 +142,59 @@ class DeleteActionTest extends IntegrationTestCase
         $this->assertFalse($this->_subject->success);
         $this->assertRedirect('/blogs');
     }
+
+    /**
+     * Test the flow when the beforeRedirect event is stopped (no redirection)
+     *
+     * @dataProvider allHttpMethodProvider
+     * @return void
+     */
+    public function testStopBeforeRedirect()
+    {
+        $this->_eventManager->on(
+            'Dispatcher.invokeController',
+            ['priority' => 1000],
+            function ($event) {
+                $this->_controller->Flash = $this->getMockBuilder('Cake\Controller\Component\FlashComponent')
+                    ->setMethods(['set'])
+                    ->disableOriginalConstructor()
+                    ->getMock();
+
+                $this->_controller->Flash
+                    ->expects($this->once())
+                    ->method('set')
+                    ->with(
+                        'Successfully deleted blog',
+                        [
+                            'element' => 'default',
+                            'params' => ['class' => 'message success', 'original' => 'Successfully deleted blog'],
+                            'key' => 'flash'
+                        ]
+                    );
+
+                $this->_subscribeToEvents($this->_controller);
+
+                $this->_controller->Crud->on('beforeRedirect', function ($event) {
+                    $event->stopPropagation();
+                });
+
+                $this->_controller->Blogs = $this->getMockForModel(
+                    $this->tableClass,
+                    ['delete'],
+                    ['alias' => 'Blogs', 'table' => 'blogs']
+                );
+
+                $this->_controller->Blogs
+                    ->expects($this->once())
+                    ->method('delete')
+                    ->will($this->returnValue(true));
+            }
+        );
+
+        $this->delete('/blogs/delete/2');
+
+        $this->assertEvents(['beforeFind', 'afterFind', 'beforeDelete', 'afterDelete', 'setFlash', 'beforeRedirect']);
+        $this->assertTrue($this->_subject->success);
+        $this->assertNoRedirect();
+    }
 }
