@@ -3,6 +3,7 @@ namespace Crud\Test\TestCase\Listener;
 
 use Cake\Controller\Controller;
 use Cake\Core\Plugin;
+use Cake\Event\Event;
 use Cake\Filesystem\File;
 use Cake\Network\Request;
 use Cake\Network\Response;
@@ -98,8 +99,9 @@ class JsonApiListenerTest extends TestCase
             'Crud.beforeHandle' => ['callable' => [$listener, 'beforeHandle'], 'priority' => 10],
             'Crud.setFlash' => ['callable' => [$listener, 'setFlash'], 'priority' => 5],
             'Crud.afterSave' => ['callable' => [$listener, 'afterSave'], 'priority' => 90],
+            'Crud.afterDelete' => ['callable' => [$listener, 'afterDelete'], 'priority' => 90],
             'Crud.beforeRender' => ['callable' => [$listener, 'respond'], 'priority' => 100],
-            'Crud.beforeRedirect' => ['callable' => [$listener, 'respond'], 'priority' => 100]
+            'Crud.beforeRedirect' => ['callable' => [$listener, 'beforeRedirect'], 'priority' => 100]
         ];
 
         $this->assertSame($expected, $result);
@@ -157,11 +159,13 @@ class JsonApiListenerTest extends TestCase
             ->method('_checkRequestData')
             ->will($this->returnValue(true));
 
-        $listener->beforeHandle(new \Cake\Event\Event('Crud.beforeHandle'));
+        $listener->beforeHandle(new Event('Crud.beforeHandle'));
     }
 
     /**
      * respond()
+     *
+     * @return void
      */
     public function testRespond()
     {
@@ -192,7 +196,7 @@ class JsonApiListenerTest extends TestCase
         $entity = $table->find()->first();
         $subject->entity = $entity;
 
-        $event = new \Cake\Event\Event('Crud.afterSave', $subject);
+        $event = new Event('Crud.afterSave', $subject);
 
         $listener = $this
             ->getMockBuilder('\Crud\Listener\JsonApiListener')
@@ -229,6 +233,8 @@ class JsonApiListenerTest extends TestCase
 
     /**
      * Test afterSave event.
+     *
+     * @return void
      */
     public function testAfterSave()
     {
@@ -303,6 +309,84 @@ class JsonApiListenerTest extends TestCase
         $event->subject->created = false;
         $event->subject->id = true;
         $this->assertTrue($this->callProtectedMethod('afterSave', [$event], $listener));
+    }
+
+    /**
+     * Test afterDelete event.
+     *
+     * @return void
+     */
+    public function testAfterDelete()
+    {
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\JsonApiListener')
+            ->disableOriginalConstructor()
+            ->setMethods(['_controller', '_response'])
+            ->getMock();
+
+        $controller = $this
+            ->getMockBuilder('\Cake\Controller\Controller')
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $response = $this
+            ->getMockBuilder('\Cake\Network\Response')
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $controller->response = $response;
+
+        $listener
+            ->expects($this->any())
+            ->method('_response')
+            ->will($this->returnValue($response));
+
+        $listener
+            ->expects($this->any())
+            ->method('_controller')
+            ->will($this->returnValue($controller));
+
+        $event = $this
+            ->getMockBuilder('\Cake\Event\Event')
+            ->disableOriginalConstructor()
+            ->setMethods(['subject'])
+            ->getMock();
+
+        $subject = $this
+            ->getMockBuilder('\Crud\Event\Subject')
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $event
+            ->expects($this->any())
+            ->method('subject')
+            ->will($this->returnValue($subject));
+
+        $this->setReflectionClassInstance($listener);
+
+        // assert nothing happens if `success` is false
+        $event->subject->success = false;
+        $this->assertFalse($this->callProtectedMethod('afterDelete', [$event], $listener));
+
+        $event->subject->success = true;
+        $this->assertNull($this->callProtectedMethod('afterDelete', [$event], $listener));
+    }
+
+    /**
+     * Test beforeRedirect event.
+     */
+    public function testBeforeRedirect()
+    {
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\JsonApiListener')
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $this->assertNull($listener->beforeRedirect(new Event('dogs')));
     }
 
     /**

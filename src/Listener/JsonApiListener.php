@@ -76,8 +76,9 @@ class JsonApiListener extends ApiListener
             'Crud.beforeHandle' => ['callable' => [$this, 'beforeHandle'], 'priority' => 10],
             'Crud.setFlash' => ['callable' => [$this, 'setFlash'], 'priority' => 5],
             'Crud.afterSave' => ['callable' => [$this, 'afterSave'], 'priority' => 90],
+            'Crud.afterDelete' => ['callable' => [$this, 'afterDelete'], 'priority' => 90],
             'Crud.beforeRender' => ['callable' => [$this, 'respond'], 'priority' => 100],
-            'Crud.beforeRedirect' => ['callable' => [$this, 'respond'], 'priority' => 100]
+            'Crud.beforeRedirect' => ['callable' => [$this, 'beforeRedirect'], 'priority' => 100],
         ];
     }
 
@@ -95,19 +96,6 @@ class JsonApiListener extends ApiListener
         $this->_checkRequestMethods();
         $this->_validateConfigOptions();
         $this->_checkRequestData();
-    }
-
-    /**
-     * respond() event.
-     *
-     * @param \Cake\Event\Event $event Event
-     * @return void
-     */
-    public function respond(Event $event)
-    {
-        $this->_removeBelongsToForeignKeysFromEventData($event);
-
-        parent::respond($event);
     }
 
     /**
@@ -139,6 +127,49 @@ class JsonApiListener extends ApiListener
         ]);
 
         return true;
+    }
+
+    /**
+     * afterDelete() event used to respond with 402 code and empty body.
+     *
+     * Please note that the JSON API spec allows for a 200 response with
+     * only meta node after a successful delete as well but this has not
+     * been implemented here yet. http://jsonapi.org/format/#crud-deleting
+     *
+     * @param \Cake\Event\Event $event Event
+     * @return false|null
+     */
+    public function afterDelete(Event $event)
+    {
+        if (!$event->subject()->success) {
+            return false;
+        }
+
+        $this->_controller()->response->statusCode(204);
+    }
+
+    /**
+     * beforeRedirect() event used to stop the event and thus redirection.
+     *
+     * @param \Cake\Event\Event $event Event
+     * @return void
+     */
+    public function beforeRedirect(Event $event)
+    {
+        $event->stopPropagation();
+    }
+
+    /**
+     * respond() event.
+     *
+     * @param \Cake\Event\Event $event Event
+     * @return void
+     */
+    public function respond(Event $event)
+    {
+        $this->_removeBelongsToForeignKeysFromEventData($event);
+
+        parent::respond($event);
     }
 
     /**
