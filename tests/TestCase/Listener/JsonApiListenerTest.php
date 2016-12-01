@@ -241,7 +241,7 @@ class JsonApiListenerTest extends TestCase
         $listener = $this
             ->getMockBuilder('\Crud\Listener\JsonApiListener')
             ->disableOriginalConstructor()
-            ->setMethods(['_controller', '_response'])
+            ->setMethods(['_controller', '_response', 'render'])
             ->getMock();
 
         $controller = $this
@@ -265,6 +265,11 @@ class JsonApiListenerTest extends TestCase
             ->expects($this->any())
             ->method('_controller')
             ->will($this->returnValue($controller));
+
+        $listener
+            ->expects($this->any())
+            ->method('render')
+            ->will($this->returnValue(null));
 
         $event = $this
             ->getMockBuilder('\Cake\Event\Event')
@@ -303,12 +308,12 @@ class JsonApiListenerTest extends TestCase
         $event->subject->success = true;
         $event->subject->created = true;
         $event->subject->id = false;
-        $this->assertTrue($this->callProtectedMethod('afterSave', [$event], $listener));
+        $this->assertNull($this->callProtectedMethod('afterSave', [$event], $listener));
 
         $event->subject->success = true;
         $event->subject->created = false;
         $event->subject->id = true;
-        $this->assertTrue($this->callProtectedMethod('afterSave', [$event], $listener));
+        $this->assertNull($this->callProtectedMethod('afterSave', [$event], $listener));
     }
 
     /**
@@ -1305,13 +1310,12 @@ class JsonApiListenerTest extends TestCase
 
         $this->assertSame($expected, $result);
 
-        // assert success (single entity, multiple relationships)
+        // assert success (single entity, multiple relationships, hasMany ignored for now)
         $jsonApiFixture = new File(Plugin::path('Crud') . 'tests' . DS . 'Fixture' . DS . 'JsonApi' . DS . 'post_country_multiple_relationships.json');
         $jsonApiArray = json_decode($jsonApiFixture->read(), true);
         $expected = [
             'code' => 'NL',
             'name' => 'The Netherlands',
-            'culture_id' => '2',
             'currency_id' => '3'
         ];
         $result = $this->callProtectedMethod('_convertJsonApiDocumentArray', [$jsonApiArray], $listener);

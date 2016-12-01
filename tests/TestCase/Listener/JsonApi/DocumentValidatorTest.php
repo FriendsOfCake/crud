@@ -204,33 +204,41 @@ class DocumentValidatorTest extends TestCase
                 'relationships' => [
                     'cultures' => [
                         'data' => [
-                            'type' => 'cultures',
-                            'id' => 1
+                            [
+                                'type' => 'cultures',
+                                'id' => '1'
+                            ]
                         ]
                     ],
                     'currency' => [
                         'data' => [
                             'type' => 'currencies',
-                            'id' => 2
+                            'id' => '2'
                         ]
                     ]
                 ]
             ]
         ];
+
         $this->setProtectedProperty('_document', $document, $this->_validator);
         $this->assertTrue($this->callProtectedMethod('_primaryDataMayHaveRelationships', [], $this->_validator));
 
-        // assert foreach loop continues if one of the relationships members has no data
+        // assert foreach loop continues if `relationships` belongsTo-member does not have data node
         unset($document['data']['relationships']['currency']['data']);
         $this->setProtectedProperty('_document', $document, $this->_validator);
         $this->assertTrue($this->callProtectedMethod('_primaryDataMayHaveRelationships', [], $this->_validator));
 
-        // assert non-pass if relationships node exists but has no members
+        // assert foreach loop continues if `relationships` hasMeny-member does not have data node
+        unset($document['data']['relationships']['cultures']['data']);
+        $this->setProtectedProperty('_document', $document, $this->_validator);
+        $this->assertTrue($this->callProtectedMethod('_primaryDataMayHaveRelationships', [], $this->_validator));
+
+        // assert non-pass if `relationships` exists but has no members
         $document['data']['relationships'] = [];
         $this->setProtectedProperty('_document', $document, $this->_validator);
         $this->assertFalse($this->callProtectedMethod('_primaryDataMayHaveRelationships', [], $this->_validator));
 
-        // assert pass if the relationships node does not exist at all
+        // assert pass if `relationships` does not exist at all
         unset($document['data']['relationships']);
         $this->setProtectedProperty('_document', $document, $this->_validator);
         $this->assertTrue($this->callProtectedMethod('_primaryDataMayHaveRelationships', [], $this->_validator));
@@ -243,21 +251,42 @@ class DocumentValidatorTest extends TestCase
      */
     public function testRelationshipMustHaveData()
     {
-        // assert success
         $document = [
             'data' => [
                 'type' => 'countries',
                 'relationships' => [
                     'cultures' => [
-                        'data' => []
+                        'data' => [
+                            [
+                                'type' => 'cultures',
+                                'id' => '1'
+                            ]
+                        ]
+                    ],
+                    'currency' => [
+                        'data' => [
+                            'type' => 'currencies',
+                            'id' => '2'
+                        ]
                     ]
                 ]
             ]
         ];
+
+        // assert success when belongsTo relation has data node
+        $this->setProtectedProperty('_document', $document, $this->_validator);
+        $this->assertTrue($this->callProtectedMethod('_relationshipMustHaveData', ['data.relationships.currency'], $this->_validator));
+
+        // assert fail when belongsTo relation is missing data node
+        unset($document['data']['relationships']['currency']['data']);
+        $this->setProtectedProperty('_document', $document, $this->_validator);
+        $this->assertFalse($this->callProtectedMethod('_relationshipMustHaveData', ['data.relationships.currency'], $this->_validator));
+
+        // assert success when hasMany relation has data node
         $this->setProtectedProperty('_document', $document, $this->_validator);
         $this->assertTrue($this->callProtectedMethod('_relationshipMustHaveData', ['data.relationships.cultures'], $this->_validator));
 
-        // assert false for missing data
+        // assert fail when hasMany relation is missing data node
         unset($document['data']['relationships']['cultures']['data']);
         $this->setProtectedProperty('_document', $document, $this->_validator);
         $this->assertFalse($this->callProtectedMethod('_relationshipMustHaveData', ['data.relationships.cultures'], $this->_validator));
@@ -270,65 +299,113 @@ class DocumentValidatorTest extends TestCase
      */
     public function testRelationshipDataMustHaveType()
     {
-        // assert success
         $document = [
             'data' => [
                 'type' => 'countries',
                 'relationships' => [
                     'cultures' => [
                         'data' => [
-                            'type' => 'must-be-string'
+                            [
+                                'type' => 'cultures',
+                                'id' => '1'
+                            ]
+                        ]
+                    ],
+                    'currency' => [
+                        'data' => [
+                            'type' => 'currencies',
+                            'id' => '2'
                         ]
                     ]
                 ]
             ]
         ];
-        $this->setProtectedProperty('_document', $document, $this->_validator);
-        $this->assertTrue($this->callProtectedMethod('_relationshipDataMustHaveType', ['data.relationships.cultures'], $this->_validator));
 
-        // assert false for non-string
-        $document['data']['relationships']['cultures']['data']['type'] = 123;
+        // assert success when belongsTo relationship data has valid type node
         $this->setProtectedProperty('_document', $document, $this->_validator);
-        $this->assertFalse($this->callProtectedMethod('_relationshipDataMustHaveType', ['data.relationships.cultures'], $this->_validator));
+        $this->assertTrue($this->callProtectedMethod('_relationshipDataMustHaveType', ['currency', 'data.relationships.currency'], $this->_validator));
 
-        // assert false for missing member
-        unset($document['data']['relationships']['cultures']['data']['type']);
+        // assert fail when belongsTo relationship data has type node but it's value is not a string
+        $document['data']['relationships']['currency']['data']['type'] = 123;
         $this->setProtectedProperty('_document', $document, $this->_validator);
-        $this->assertFalse($this->callProtectedMethod('_relationshipDataMustHaveType', ['data.relationships.cultures'], $this->_validator));
+        $this->assertFalse($this->callProtectedMethod('_relationshipDataMustHaveType', ['currency', 'data.relationships.currency'], $this->_validator));
+
+        // assert fail when belongsTo relationship data does not have type node
+        unset($document['data']['relationships']['currency']['data']['type']);
+        $this->setProtectedProperty('_document', $document, $this->_validator);
+        $this->assertFalse($this->callProtectedMethod('_relationshipDataMustHaveType', ['currency', 'data.relationships.currency'], $this->_validator));
+
+        // assert success when all hasMany relationships have data with valid type node
+        $this->setProtectedProperty('_document', $document, $this->_validator);
+        $this->assertTrue($this->callProtectedMethod('_relationshipDataMustHaveType', ['cultures', 'data.relationships.cultures.data.0'], $this->_validator));
+
+        // assert fail when one of the hasMany relationships has data with type node but it's value is not a string
+        $document['data']['relationships']['cultures']['data'][0]['type'] = 123;
+        $this->setProtectedProperty('_document', $document, $this->_validator);
+        $this->assertFalse($this->callProtectedMethod('_relationshipDataMustHaveType', ['cultures', 'data.relationships.cultures.data.0'], $this->_validator));
+
+        // assert fail when one of the hasMany relationships has data without type node
+        unset($document['data']['relationships']['cultures']['data'][0]['type']);
+        $this->setProtectedProperty('_document', $document, $this->_validator);
+        $this->assertFalse($this->callProtectedMethod('_relationshipDataMustHaveType', ['cultures', 'data.relationships.cultures.data.0'], $this->_validator));
     }
 
     /**
-     * _relationshipDataMustHaveType()
+     * _relationshipDataMustHaveId()
      *
      * @return void
      */
     public function testRelationshipDataMustHaveId()
     {
-        // assert success
         $document = [
             'data' => [
                 'type' => 'countries',
                 'relationships' => [
                     'cultures' => [
                         'data' => [
-                            'id' => 'must-be-string'
+                            [
+                                'type' => 'cultures',
+                                'id' => '1'
+                            ]
+                        ]
+                    ],
+                    'currency' => [
+                        'data' => [
+                            'type' => 'currencies',
+                            'id' => '2'
                         ]
                     ]
                 ]
             ]
         ];
-        $this->setProtectedProperty('_document', $document, $this->_validator);
-        $this->assertTrue($this->callProtectedMethod('_relationshipDataMustHaveId', ['data.relationships.cultures'], $this->_validator));
 
-        // assert false for non-string
-        $document['data']['relationships']['cultures']['data']['id'] = 123;
+        // assert success when belongsTo relationship data has valid id node
         $this->setProtectedProperty('_document', $document, $this->_validator);
-        $this->assertFalse($this->callProtectedMethod('_relationshipDataMustHaveId', ['data.relationships.cultures'], $this->_validator));
+        $this->assertTrue($this->callProtectedMethod('_relationshipDataMustHaveId', ['currency', 'data.relationships.currency'], $this->_validator));
 
-        // assert false for missing member
-        unset($document['data']['relationships']['cultures']['data']['id']);
+        // assert fail when belongsTo relationship data has id node but it's value is not a string
+        $document['data']['relationships']['currency']['data']['id'] = 123;
         $this->setProtectedProperty('_document', $document, $this->_validator);
-        $this->assertFalse($this->callProtectedMethod('_relationshipDataMustHaveId', ['data.relationships.cultures'], $this->_validator));
+        $this->assertFalse($this->callProtectedMethod('_relationshipDataMustHaveId', ['currency', 'data.relationships.currency'], $this->_validator));
+
+        // assert fail when belongsTo relationship data does not have id node
+        unset($document['data']['relationships']['currency']['data']['id']);
+        $this->setProtectedProperty('_document', $document, $this->_validator);
+        $this->assertFalse($this->callProtectedMethod('_relationshipDataMustHaveId', ['currency', 'data.relationships.currency'], $this->_validator));
+
+        // assert success when all hasMany relationships have data with valid id node
+        $this->setProtectedProperty('_document', $document, $this->_validator);
+        $this->assertTrue($this->callProtectedMethod('_relationshipDataMustHaveId', ['cultures', 'data.relationships.cultures.data.0'], $this->_validator));
+
+        // assert fail when one of the hasMany relationships has data with id node but it's value is not a string
+        $document['data']['relationships']['cultures']['data'][0]['id'] = 123;
+        $this->setProtectedProperty('_document', $document, $this->_validator);
+        $this->assertFalse($this->callProtectedMethod('_relationshipDataMustHaveId', ['cultures', 'data.relationships.cultures.data.0'], $this->_validator));
+
+        // assert fail when one of the hasMany relationships has data without id node
+        unset($document['data']['relationships']['cultures']['data'][0]['id']);
+        $this->setProtectedProperty('_document', $document, $this->_validator);
+        $this->assertFalse($this->callProtectedMethod('_relationshipDataMustHaveId', ['cultures', 'data.relationships.cultures.data.0'], $this->_validator));
     }
 
     /**
@@ -399,6 +476,14 @@ class DocumentValidatorTest extends TestCase
                     'test-null' => null,
                     'test-true' => true,
                     'test-false' => false
+                ],
+                'sub-array' => [
+                    [
+                        'name' => 'bravo-kernel',
+                        'test-null' => null,
+                        'test-true' => true,
+                        'test-false' => false
+                    ]
                 ]
             ]
         ];
@@ -410,6 +495,12 @@ class DocumentValidatorTest extends TestCase
         $this->assertTrue($this->callProtectedMethod('_hasProperty', ['data.attributes.test-null'], $this->_validator));
         $this->assertTrue($this->callProtectedMethod('_hasProperty', ['data.attributes.test-true'], $this->_validator));
         $this->assertTrue($this->callProtectedMethod('_hasProperty', ['data.attributes.test-false'], $this->_validator));
+
+        $this->assertTrue($this->callProtectedMethod('_hasProperty', ['data.sub-array.0'], $this->_validator));
+        $this->assertTrue($this->callProtectedMethod('_hasProperty', ['data.sub-array.0.name'], $this->_validator));
+        $this->assertTrue($this->callProtectedMethod('_hasProperty', ['data.sub-array.0.test-null'], $this->_validator));
+        $this->assertTrue($this->callProtectedMethod('_hasProperty', ['data.sub-array.0.test-true'], $this->_validator));
+        $this->assertTrue($this->callProtectedMethod('_hasProperty', ['data.sub-array.0.test-false'], $this->_validator));
 
         $this->assertFalse($this->callProtectedMethod('_hasProperty', ['fake-root'], $this->_validator));
         $this->assertFalse($this->callProtectedMethod('_hasProperty', ['data.fake-sub'], $this->_validator));

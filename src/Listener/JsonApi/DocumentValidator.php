@@ -2,6 +2,8 @@
 namespace Crud\Listener\JsonApi;
 
 use Cake\ORM\Entity;
+use Cake\Utility\Hash;
+use Cake\Utility\Inflector;
 use Cake\Validation\Validation;
 use Crud\Core\Object;
 use Crud\Error\Exception\CrudException;
@@ -261,14 +263,32 @@ class DocumentValidator extends Object
         }
 
         foreach ($relationships as $relationship => $data) {
-            $relationshipPath = $this->_getPathObject($path->dotted . '.' . $relationship);
+            $relationshipPathObject = $this->_getPathObject($path->dotted . '.' . $relationship);
 
-            if (!$this->_relationshipMustHaveData($relationshipPath)) {
+            if (!$this->_relationshipMustHaveData($relationshipPathObject)) {
                 continue;
             }
 
-            $this->_relationshipDataMustHaveType($relationshipPath);
-            $this->_relationshipDataMustHaveId($relationshipPath);
+            // single belongsTo relationship
+            if ($this->_stringIsSingular($relationshipPathObject->key)) {
+                $this->_relationshipDataMustHaveType($relationship, $relationshipPathObject);
+                $this->_relationshipDataMustHaveId($relationship, $relationshipPathObject);
+
+                continue;
+            }
+
+            // multiple hasMany relationships
+            $hasManys = $this->_getProperty($relationshipPathObject->dotted . '.data');
+
+            $i = 0;
+            foreach ($hasManys as $hasMany) {
+                $pathObject = $this->_getPathObject($relationshipPathObject->dotted . '.data.' . $i);
+
+                $this->_relationshipDataMustHaveType($relationship, $pathObject);
+                $this->_relationshipDataMustHaveId($relationship, $pathObject);
+
+                $i++;
+            }
         }
 
         return true;
@@ -291,7 +311,7 @@ class DocumentValidator extends Object
         $this->_errorCollection->addRelationshipError(
             $name = $path->key,
             $title = '_required',
-            $detail = "Relationship object does not contain member 'data'",
+            $detail = "Relationships object does not contain member 'data'",
             $status = null,
             $idx = null,
             $aboutLink = $this->_getAboutLink('http://jsonapi.org/format/#crud-creating')
@@ -303,16 +323,30 @@ class DocumentValidator extends Object
     /**
      * Ensures a relationship data has a 'type' member.
      *
+     * @param string $relationship Singular or plural relationship name
      * @param string $path Dot separated path of relationship object
      * @return bool
      */
-    protected function _relationshipDataMustHaveType($path)
+    protected function _relationshipDataMustHaveType($relationship, $path)
     {
         $path = $this->_getPathObject($path);
 
-        if (!$this->_hasProperty($path->dotted . '.data.type')) {
-            $this->_errorCollection->addRelationshipTypeError(
-                $name = $path->key,
+        // generate correct feedback and path for hasMany and belongsTo relationships
+        $array = $this->_getProperty($path);
+        $arrayDepth = Hash::dimensions($array);
+
+        if ($arrayDepth === 1) {
+            $searchPath = $path->dotted . '.type'; // hasMany
+            $pointer = $relationship . '/data/' . $path->key;
+        } else {
+            $searchPath = $path->dotted . '.data.type'; // belongsTo
+            $pointer = $relationship . '/data';
+        }
+
+        // make sure the relationship data has the `type` key
+        if (!$this->_hasProperty($searchPath)) {
+            $this->_errorCollection->addRelationshipError(
+                $name = $pointer,
                 $title = '_required',
                 $detail = "Relationship data does not contain member 'type'",
                 $status = null,
@@ -323,9 +357,12 @@ class DocumentValidator extends Object
             return false;
         }
 
-        if (!$this->_isString($path->dotted . '.data.type')) {
-            $this->_errorCollection->addRelationshipTypeError(
-                $name = $path->key,
+        // key exists so update the pointer before checking if value is a string
+        $pointer = $pointer . '/type';
+
+        if (!$this->_isString($searchPath)) {
+            $this->_errorCollection->addRelationshipError(
+                $name = $pointer,
                 $title = '_required',
                 $detail = "Relationship data member 'type' is not a string",
                 $status = null,
@@ -342,16 +379,30 @@ class DocumentValidator extends Object
     /**
      * Ensures relationship data has an 'id' member.
      *
+     * @param string $relationship Singular or plural relationship name
      * @param string $path Dot separated path of relationship object
      * @return bool
      */
-    protected function _relationshipDataMustHaveId($path)
+    protected function _relationshipDataMustHaveId($relationship, $path)
     {
         $path = $this->_getPathObject($path);
 
-        if (!$this->_hasProperty($path->dotted . '.data.id')) {
-            $this->_errorCollection->addRelationshipTypeError(
-                $name = $path->key,
+        // generate correct feedback and path for hasMany and belongsTo relationships
+        $array = $this->_getProperty($path);
+        $arrayDepth = Hash::dimensions($array);
+
+        if ($arrayDepth === 1) {
+            $searchPath = $path->dotted . '.id'; // hasMany
+            $pointer = $relationship . '/data/' . $path->key;
+        } else {
+            $searchPath = $path->dotted . '.data.id'; // belongsTo
+            $pointer = $relationship . '/data';
+        }
+
+        // make sure the relationship data has the `type` key
+        if (!$this->_hasProperty($searchPath)) {
+            $this->_errorCollection->addRelationshipError(
+                $name = $pointer,
                 $title = '_required',
                 $detail = "Relationship data does not contain member 'id'",
                 $status = null,
@@ -362,11 +413,14 @@ class DocumentValidator extends Object
             return false;
         }
 
-        if (!$this->_isString($path->dotted . '.data.id')) {
-            $this->_errorCollection->addRelationshipTypeError(
-                $name = $path->key,
+        // key exists so update the pointer before checking if value is a string
+        $pointer = $pointer . '/id';
+
+        if (!$this->_isString($searchPath)) {
+            $this->_errorCollection->addRelationshipError(
+                $name = $pointer,
                 $title = '_required',
-                $detail = "Relationship data member 'id' is not a string",
+                $detail = "Relationship data member 'type' is not a string",
                 $status = null,
                 $idx = null,
                 $aboutLink = $this->_getAboutLink('http://jsonapi.org/format/#crud-creating')
@@ -548,5 +602,20 @@ class DocumentValidator extends Object
         ]);
 
         return $entity;
+    }
+
+    /**
+     * Helper function to determine if string is singular or plural.
+     *
+     * @param string $string Preferably a CakePHP generated name.
+     * @return bool
+     */
+    protected function _stringIsSingular($string)
+    {
+        if (Inflector::singularize($string) === $string) {
+            return true;
+        }
+
+        return false;
     }
 }

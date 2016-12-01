@@ -104,7 +104,7 @@ class JsonApiListener extends ApiListener
      * at http://jsonapi.org/format/#crud-creating-responses-201.
      *
      * @param \Cake\Event\Event $event Event
-     * @return bool
+     * @return false|null
      */
     public function afterSave($event)
     {
@@ -112,21 +112,14 @@ class JsonApiListener extends ApiListener
             return false;
         }
 
-        // created will be set for `add` actions, id for `edit` actions
+        // `created` will be set for add actions, `id` for edit actions
         if (!$event->subject()->created && !$event->subject()->id) {
             return false;
         }
 
         $this->_insertBelongsToDataIntoEventFindResult($event);
 
-        $this->_response()->header([
-            'Location' => $this->_getNewResourceUrl(
-                $this->_controller()->name,
-                $event->subject()->entity->id
-            )
-        ]);
-
-        return true;
+        $this->render($event->subject);
     }
 
     /**
@@ -576,6 +569,8 @@ class JsonApiListener extends ApiListener
      * format to CakePHP format so it be processed as usual. Should only be
      * used with already validated data/document or things will break.
      *
+     * Please note that decoding hasMany relationships has not yet been implemented.
+     *
      * @param array $document Request data document array
      * @return bool
      */
@@ -596,16 +591,15 @@ class JsonApiListener extends ApiListener
             return $result;
         }
 
-        // convert relationships to belongsTo foreign key `_id` fields
         foreach ($document['data']['relationships'] as $key => $details) {
-            if (!isset($details['data'][0])) {
-                $foreignKey = Inflector::singularize($details['data']['type']) . '_id';
-                $foreignId = $details['data']['id'];
-            } else {
-                $foreignKey = Inflector::singularize($details['data'][0]['type']) . '_id';
-                $foreignId = $details['data'][0]['id'];
+            // skip hasMany relationships for now
+            if (isset($details['data'][0])) {
+                continue;
             }
 
+            // convert belongsTo to CakePHP `foreign_id` format
+            $foreignKey = Inflector::singularize($details['data']['type']) . '_id';
+            $foreignId = $details['data']['id'];
             $result[$foreignKey] = $foreignId;
         }
 
