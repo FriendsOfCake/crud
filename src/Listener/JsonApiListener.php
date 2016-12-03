@@ -597,6 +597,11 @@ class JsonApiListener extends ApiListener
                 continue;
             }
 
+            // allow empty/null data node as per the JSON API specification
+            if (empty($details['data'])) {
+                continue;
+            }
+
             // convert belongsTo to CakePHP `foreign_id` format
             $foreignKey = Inflector::singularize($details['data']['type']) . '_id';
             $foreignId = $details['data']['id'];

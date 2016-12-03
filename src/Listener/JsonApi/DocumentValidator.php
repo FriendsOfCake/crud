@@ -269,6 +269,10 @@ class DocumentValidator extends Object
                 continue;
             }
 
+            if ($this->_relationshipDataIsNull($relationshipPathObject)) {
+                continue;
+            }
+
             // single belongsTo relationship
             if ($this->_stringIsSingular($relationshipPathObject->key)) {
                 $this->_relationshipDataMustHaveType($relationship, $relationshipPathObject);
@@ -316,6 +320,24 @@ class DocumentValidator extends Object
             $idx = null,
             $aboutLink = $this->_getAboutLink('http://jsonapi.org/format/#crud-creating')
         );
+
+        return false;
+    }
+
+    /**
+     * Checks if relationship object has 'data' member set to null which is
+     * allowed by the JSON API spec.
+     *
+     * @param string $path Dot separated path of relationship object
+     * @return bool
+     */
+    protected function _relationshipDataIsNull($path)
+    {
+        $path = $this->_getPathObject($path);
+
+        if ($this->_getProperty($path->dotted . '.data') === null) {
+            return true;
+        }
 
         return false;
     }

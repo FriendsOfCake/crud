@@ -223,12 +223,22 @@ class DocumentValidatorTest extends TestCase
         $this->setProtectedProperty('_document', $document, $this->_validator);
         $this->assertTrue($this->callProtectedMethod('_primaryDataMayHaveRelationships', [], $this->_validator));
 
-        // assert foreach loop continues if `relationships` belongsTo-member does not have data node
+        // assert foreach loop continues if belongsTo relation has empty/null data node
+        $document['data']['relationships']['currency']['data'] = null;
+        $this->setProtectedProperty('_document', $document, $this->_validator);
+        $this->assertTrue($this->callProtectedMethod('_primaryDataMayHaveRelationships', [], $this->_validator));
+
+        // assert foreach loop continues if belongsTo relation does not have data node
         unset($document['data']['relationships']['currency']['data']);
         $this->setProtectedProperty('_document', $document, $this->_validator);
         $this->assertTrue($this->callProtectedMethod('_primaryDataMayHaveRelationships', [], $this->_validator));
 
-        // assert foreach loop continues if `relationships` hasMeny-member does not have data node
+        // assert foreach loop continues if hasMany relation has empty/null data node
+        $document['data']['relationships']['cultures']['data'] = null;
+        $this->setProtectedProperty('_document', $document, $this->_validator);
+        $this->assertTrue($this->callProtectedMethod('_primaryDataMayHaveRelationships', [], $this->_validator));
+
+        // assert foreach loop continues if hasMany relation does not have data node
         unset($document['data']['relationships']['cultures']['data']);
         $this->setProtectedProperty('_document', $document, $this->_validator);
         $this->assertTrue($this->callProtectedMethod('_primaryDataMayHaveRelationships', [], $this->_validator));

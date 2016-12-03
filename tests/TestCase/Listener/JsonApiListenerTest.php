@@ -1307,7 +1307,6 @@ class JsonApiListenerTest extends TestCase
             'name' => 'The Netherlands'
         ];
         $result = $this->callProtectedMethod('_convertJsonApiDocumentArray', [$jsonApiArray], $listener);
-
         $this->assertSame($expected, $result);
 
         // assert success (single entity, multiple relationships, hasMany ignored for now)
@@ -1319,7 +1318,19 @@ class JsonApiListenerTest extends TestCase
             'currency_id' => '3'
         ];
         $result = $this->callProtectedMethod('_convertJsonApiDocumentArray', [$jsonApiArray], $listener);
+        $this->assertSame($expected, $result);
 
+        // assert success for relationships with null/empty data
+        $jsonApiFixture = new File(Plugin::path('Crud') . 'tests' . DS . 'Fixture' . DS . 'JsonApi' . DS . 'post_country_multiple_relationships.json');
+        $jsonApiArray = json_decode($jsonApiFixture->read(), true);
+        $jsonApiArray['data']['relationships']['cultures']['data'] = null;
+        $jsonApiArray['data']['relationships']['currency']['data'] = null;
+
+        $expected = [
+            'code' => 'NL',
+            'name' => 'The Netherlands'
+        ];
+        $result = $this->callProtectedMethod('_convertJsonApiDocumentArray', [$jsonApiArray], $listener);
         $this->assertSame($expected, $result);
     }
 }
