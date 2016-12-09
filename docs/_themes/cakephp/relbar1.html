@@ -1,0 +1,129 @@
+{# Outer wrapper for pushing the footer to the bottom #}
+<div id="container">
+  {# Red Mega Menu #}
+  <header class="nav-down">
+    <div class="container-fluid hidden-xs hidden-sm">
+      <div class="row">
+        <div class="col-sm-2 col-md-2 col-sm-push-1 col-md-push-1">
+          <a class="logo-cake" href="http://cakephp.org" target="_blank">
+            <img src="{{ pathto('_static/Baked-For-CakePHP.png', 1) }}" alt="CakePHP" />
+          </a>
+        </div>
+
+        <div class="col-sm-9 col-md-9">
+          <nav class="navbar-right">
+            <ul class="menu">
+              <li class="first">
+                <a href="#"><i class="fa fa-menu fa-chevron-down"></i>Documentation</a>
+                <ul class="submenu">
+                  {% include 'menu/documentation.html' %}
+                </ul>
+              </li>
+
+              <li>
+                <a href="#"><i class="fa fa-menu fa-chevron-down"></i>Community</a>
+                <div class="megamenu full">
+                  <div class="row">
+                    <div class="col-6 pl30">
+                      <ul class="megamenu-list">
+                        {% include 'menu/help.html' %}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    {# Mobile responsive header #}
+    <div class="container-fluid hidden-md hidden-lg">
+      <div class="row">
+        <div class="col-sm-6 col-xs-6">
+          <a class="logo-cake" href="http://cakephp.org">
+            <img src="{{ pathto('_static/Baked-For-CakePHP.png', 1) }}" alt="CakePHP" />
+          </a>
+        </div>
+
+        <div class="col-sm-6 col-xs-6">
+          <div class="navbar-right">
+            <button id="btn-menu" class="btn-menu" data-toggle="modal" data-target="#modal">
+              <i class="fa fa-bars toggle-modal"></i>
+            </button>
+          </div>
+          <div id="wrap">
+            <form class="search" action="{{ pathto('search') }}" method="get">
+              <input name="q" type="search" placeholder="What are you looking for?">
+              <input id="search_submit" value="{{ _('Search') }}" type="submit">
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {# Grey site bar #}
+    <section id="nav-cook" class="hidden-xs hidden-sm">
+      <div class="container-fluid ">
+        <div class="row ">
+          <div class="col-md-12 back-book">
+            <div class="col-md-4 col-md-offset-1 text-center t-cook-nav p0 hidden-sm hidden-xs">
+              <h2>
+                <a href="{{ pathto(master_doc) }}">
+                  <span class="glyph_range icon-submenu icon-submenu-cook">B</span>
+                  {{ project_pretty_name }} <strong>Documentation</strong>
+                </a>
+              </h2>
+            </div>
+
+            <div class="col-md-7 hidden-sm">
+              <form class="search" action="{{ pathto('search') }}" method="get">
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+
+                <div class="col-md-10 p0">
+                  <input class="form-control form-cook" autocomplete="off" type="search" name="q" size="18" placeholder='{{ project_pretty_name }} Search' />
+                </div>
+                <div class="col-md-2 p0 search-cook">
+                  <button type="submit">
+                    <span class="glyph_range icon-submenu icon-submenu-cook">A</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </header>
+
+  {# Responsive grey bar navigation. This is outside of header so it scrolls with the page. #}
+  <section class="nav-btn visible-sm visible-xs">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-6 col-xs-6 text-center">
+          <button id="btn-nav" class="btn btn-b btn-nav" data-toggle="modal" data-target="#modal"><strong>Nav</strong></button>
+        </div>
+
+        <div class="col-sm-6 col-xs-6 text-center">
+          <button id="btn-toc" class="btn btn-b btn-nav" data-toggle="modal" data-target="#modal"><strong>Table of Contents</strong></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# modal used in mobile responsive views #}
+  <div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal-header">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title-cookbook" id="modal-header">{# header text injected via js #}</h4>
+        </div>
+        <div class="modal-body">{# body is injected via js #}</div>
+      </div>
+    </div>
+  </div>
