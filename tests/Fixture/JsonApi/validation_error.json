@@ -1,0 +1,15 @@
+{
+  "errors": [{
+    "title": "_required",
+    "detail": "This field is required",
+    "source": {
+      "pointer": "/data/attributes/name"
+    }
+  }, {
+    "title": "UPPERCASE_ONLY",
+    "detail": "Field must be uppercase only",
+    "source": {
+      "pointer": "/data/attributes/code"
+    }
+  }]
+}

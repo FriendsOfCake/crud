@@ -1,0 +1,25 @@
+{
+    "data": {
+        "type": "countries",
+        "attributes": {
+            "code": "NL",
+            "name": "The Netherlands"
+        },
+        "relationships": {
+            "cultures": {
+                "data": [
+                    {
+                        "type": "cultures",
+                        "id": "2"
+                    }
+                ]
+            },
+            "currency": {
+                "data": {
+                    "type": "currencies",
+                    "id": "3"
+                }
+            }
+        }
+    }
+}

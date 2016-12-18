@@ -1,7 +1,10 @@
 <?php
 namespace Crud\Test\TestCase\Listener;
 
+use Cake\Controller\Controller;
 use Cake\Core\Configure;
+use Cake\Event\Event;
+use Crud\Listener\ApiQueryLogListener;
 use Crud\TestSuite\TestCase;
 
 /**
@@ -96,7 +99,7 @@ class ApiQueryLogListenerTest extends TestCase
             ->expects($this->never())
             ->method('_getQueryLogs');
 
-        $Instance->beforeRender(new \Cake\Event\Event('something'));
+        $Instance->beforeRender(new Event('something'));
     }
 
     /**
@@ -148,7 +151,7 @@ class ApiQueryLogListenerTest extends TestCase
             ->method('_getQueryLogs')
             ->will($this->returnValue([]));
 
-        $Instance->beforeRender(new \Cake\Event\Event('something'));
+        $Instance->beforeRender(new Event('something'));
     }
 
     /**
@@ -187,6 +190,41 @@ class ApiQueryLogListenerTest extends TestCase
             ->with('default')
             ->will($this->returnValue($DefaultSource));
 
-        $Instance->setupLogging(new \Cake\Event\Event('something'));
+        $Instance->setupLogging(new Event('something'));
+    }
+
+    /**
+     * Test getting query logs using protected method
+     *
+     * @return void
+     */
+    public function testProtectedGetQueryLogs()
+    {
+        $listener = new ApiQueryLogListener(new Controller());
+        $listener->setupLogging(new Event('something'));
+        $this->setReflectionClassInstance($listener);
+
+        $expected = [
+            'test' => []
+        ];
+
+        $this->assertEquals($expected, $this->callProtectedMethod('_getQueryLogs', [], $listener));
+    }
+
+    /**
+     * Test getting query logs using public getter.
+     *
+     * @return void
+     */
+    public function testPublicGetQueryLogs()
+    {
+        $listener = new ApiQueryLogListener(new Controller());
+        $listener->setupLogging(new Event('something'));
+
+        $expected = [
+            'test' => []
+        ];
+
+        $this->assertEquals($expected, $listener->getQueryLogs());
     }
 }

@@ -12,7 +12,7 @@ use Crud\Log\QueryLogger;
  *
  * Very much like the DebugKit version, the SQL log will only be appended
  * if the following conditions is true:
- *  1) The request must be 'api' (.json/.xml)
+ *  1) The request must be 'api' (.json/.xml) or 'jsonapi'
  *  2) The debug level must be 2 or above
  *
  * Licensed under The MIT License
@@ -93,6 +93,16 @@ class ApiQueryLogListener extends BaseListener
         }
 
         return $queryLog;
+    }
+
+    /**
+     * Public getter to expose logs for use in other (exception) classes.
+     *
+     * @return array
+     */
+    public function getQueryLogs()
+    {
+        return $this->_getQueryLogs();
     }
 
     /**
