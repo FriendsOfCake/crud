@@ -17,30 +17,6 @@ use Neomerx\JsonApi\Encoder\Parameters\EncodingParameters;
 class JsonApiView extends View
 {
     /**
-     * List of special view vars. See Crud JsonApiListener's default config
-     * for a full list with explanations.
-     *
-     * Please note that only viewVars NOT defined in this list will be
-     * available as possible NeoMerx $data candidates.
-     *
-     * @var array
-     */
-    protected $_specialVars = [
-        '_urlPrefix',
-        '_withJsonApiVersion',
-        '_entities',
-        '_include',
-        '_fieldSets',
-        '_links',
-        '_meta',
-        '_serialize',
-        '_jsonOptions',
-        '_debugPrettyPrint',
-        '_jsonp',
-        '_pagination',
-    ];
-
-    /**
      * Constructor
      *
      * @param \Cake\Network\Request $request Request
@@ -59,6 +35,29 @@ class JsonApiView extends View
         if ($response && $response instanceof Response) {
             $response->type('jsonapi');
         }
+    }
+
+    /**
+     * Returns an array of special viewVars (names starting with an underscore).
+     *
+     * We need to dynamically generate this array to prevent special vars
+     * from the app or other plugins being passed to NeoMerx for processing
+     * as data (and thus effectively breaking this view).
+     *
+     * @return array
+     */
+    protected function _getSpecialVars()
+    {
+        $result = [];
+
+        $viewVarKeys = array_keys($this->viewVars);
+        foreach ($viewVarKeys as $viewVarKey) {
+            if ($viewVarKey[0] === '_') {
+                $result[] = $viewVarKey;
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -290,7 +289,7 @@ class JsonApiView extends View
         if ($serialize === true) {
             $data = array_diff_key(
                 $this->viewVars,
-                array_flip($this->_specialVars)
+                array_flip($this->_getSpecialVars())
             );
 
             if (empty($data)) {

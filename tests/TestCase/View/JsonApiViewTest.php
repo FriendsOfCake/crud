@@ -163,6 +163,26 @@ class JsonApiViewTest extends TestCase
     }
 
     /**
+     * Make sure viewVars starting with an underscore are treated as specialVars.
+     *
+     * @return void
+     */
+    public function testGetSpecialVars()
+    {
+        $view = $this->_getView('Countries', [
+            'countries' => 'dummy-value',
+            'non_underscored_should_not_be_in_special_vars' => 'dummy-value',
+            '_underscored_should_be_in_special_vars' => 'dummy-value',
+        ]);
+
+        $this->setReflectionClassInstance($view);
+        $result = $this->callProtectedMethod('_getSpecialVars', [], $view);
+
+        $this->assertNotContains('non_underscored_should_not_be_in_special_vars', $result);
+        $this->assertContains('_underscored_should_be_in_special_vars', $result);
+    }
+
+    /**
      * Make sure an exception is thrown when requesting an unloaded Entity class
      *
      * @expectedException \Crud\Error\Exception\CrudException
