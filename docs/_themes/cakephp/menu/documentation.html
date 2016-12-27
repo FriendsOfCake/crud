@@ -1,4 +1,4 @@
 {# documentation menu fragment used in the header #}
-{% for alias, url in projects.iteritems() %}
+{% for alias, url in projects | dictsort %}
 <li><a href="{{ url }}"><i class="fa fa-menu fa-chevron-right"></i>{{ alias }}</a></li>
 {% endfor %}
