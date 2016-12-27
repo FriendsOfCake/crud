@@ -1,5 +1,4 @@
 {# documentation menu fragment used in the header #}
-<li><a href="https://{{ project }}.readthedocs.io/"><i class="fa fa-menu fa-chevron-right"></i>{{ project_pretty_name }}</a></li>
-{% for alias, url in related_projects.iteritems() %}
+{% for alias, url in projects.iteritems() %}
 <li><a href="{{ url }}"><i class="fa fa-menu fa-chevron-right"></i>{{ alias }}</a></li>
 {% endfor %}

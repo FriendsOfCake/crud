@@ -48,9 +48,14 @@ html_title = 'Crud v4'
 html_context = {
     'maintainer': maintainer,
     'project_pretty_name': project_pretty_name,
-    'related_projects': {
+    'projects': {
+        'Bootstrap UI': 'https://bootstrap-ui.readthedocs.io/',
+        'CakePDF': 'https://cakepdf.readthedocs.io/',
+        'Crud': 'https://crud.readthedocs.io/',
         'Crud Users': 'https://crud-users.readthedocs.io/',
         'Crud View': 'https://crud-view.readthedocs.io/',
+        'CsvView': 'https://csvview.readthedocs.io/',
+        'Search': 'https://friendsofcake-search.readthedocs.io/',
     }
 }
 
