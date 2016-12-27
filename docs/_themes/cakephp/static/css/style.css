@@ -1547,9 +1547,15 @@ blockquote {
 }
 
 .logo-cake img {
-    margin-top: 24px;
-    margin-bottom: 20px;
-    width: 230px;
+    margin-top: 8px;
+    margin-bottom: 0px;
+    height: 60px;
+    width: 88px;
+}
+
+.hidden-md .logo-cake img,
+.hidden-lg .logo-cake img {
+    margin-top: 3px;
 }
 
 #footer input {
@@ -1572,7 +1578,7 @@ blockquote {
 
 
 header {
-    background: #404042;
+    background: #D33C44;
     position: fixed;
     top: 0;
     transition: top 0.2s ease-in-out;
@@ -2001,4 +2007,25 @@ header {
 .roboto-small {
     font-family: 'Roboto Mono', sans-serif;
     font-size: 11px !important;
+}
+
+/* ---------------------- COOK BOOK - Highlight ------------------------- */
+
+
+.highlight {
+    background: none;
+}
+div.related {
+    background-color: #565656;
+}
+div.admonition {
+    border: none;
+    padding: 12px 10px 12px 60px;
+}
+div.note {
+    background: #fcf8e3;
+}
+.note code,
+.warning code {
+    background-color: transparent;
 }

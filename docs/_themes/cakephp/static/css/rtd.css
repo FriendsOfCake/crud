@@ -1,0 +1,299 @@
+/* Left for CSS overrides we need to make in the future */
+
+/* Fix badge on RTD Theme */
+
+/* Please keep RTD badge displayed on your site */
+.rst-versions.rst-badge {
+    display: block;
+}
+
+.rst-other-versions {
+  text-align: left;
+}
+
+.rst-other-versions a {
+  border: 0;
+}
+
+.rst-other-versions dl {
+  margin: 0;
+}
+
+
+/* Fix RTD theme bottom margin */
+.rst-content .line-block {
+  margin-bottom: 24px
+}
+
+/* Fix for nav bottom padding with flyout */
+nav.wy-nav-side {
+    padding-bottom: 3em;
+}
+
+/* bookmark icon */
+.bookmark-added-msg {display: none;}
+.bookmark-active {display: none;}
+.bookmark-inactive {display: none;}
+
+
+/* Read the Docs promotional block, only applicable to RTD.org */
+div.wy-menu.rst-pro {
+    display: block;
+    bottom: 60px;
+    width: 300px;
+    padding: .5em;
+    margin: 1em 0em 1em 0em;
+    text-align: center;
+
+    background: rgba(0, 0, 0, .06);
+}
+
+@media (max-width: 768px) {
+    div.wy-menu.rst-pro {
+        display: none;
+    }
+}
+
+div.wy-menu.rst-pro > span {
+    display: block;
+    color: #838383;
+    font-size: 90%;
+}
+
+div.wy-menu.rst-pro a,
+div.wy-menu.rst-pro a:link,
+div.wy-menu.rst-pro a:visited { color: #b3b3b3; }
+
+div.wy-menu.rst-pro a:hover,
+div.wy-menu.rst-pro a:active { color: #c3c3c3; }
+
+div.wy-menu.rst-pro a.rst-pro-image-wrapper {
+    display: inline-block;
+    padding: 6px;
+    margin: 5px 0px 10px 0px;
+    border: 1px solid #434343;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+}
+
+div.wy-menu.rst-pro img {
+    width: 120px;
+    height: 90px;
+}
+
+div.wy-menu.rst-pro div.rst-pro-about {
+    float: right;
+    text-align: right;
+    color: white;
+    font-size: 90%;
+}
+
+.fa:before {
+    -webkit-font-smoothing: antialiased
+}
+.clearfix {
+    *zoom: 1
+}
+.clearfix:before,
+.clearfix:after {
+    display: table;
+    content: ""
+}
+.clearfix:after {
+    clear: both
+}
+@font-face {
+    font-family: FontAwesome;
+    font-weight: normal;
+    font-style: normal;
+    src: url("../font/fontawesome-webfont.eot");
+    src: url("../font/fontawesome-webfont.eot?#iefix") format("embedded-opentype"), url("../font/fontawesome-webfont.woff") format("woff"), url("../font/fontawesome-webfont.ttf") format("truetype"), url("../font/fontawesome-webfont.svg#FontAwesome") format("svg")
+}
+.fa:before {
+    display: inline-block;
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    text-decoration: inherit
+}
+a .fa {
+    display: inline-block;
+    text-decoration: inherit
+}
+li .fa {
+    display: inline-block
+}
+li .fa-large:before,
+li .fa-large:before {
+    width: 1.875em
+}
+ul.fas {
+    list-style-type: none;
+    margin-left: 2em;
+    text-indent: -0.8em
+}
+ul.fas li .fa {
+    width: 0.8em
+}
+ul.fas li .fa-large:before,
+ul.fas li .fa-large:before {
+    vertical-align: baseline
+}
+.fa-book:before {
+    content: ""
+}
+.icon-book:before {
+    content: ""
+}
+.fa-caret-down:before {
+    content: ""
+}
+.icon-caret-down:before {
+    content: ""
+}
+.fa-caret-up:before {
+    content: ""
+}
+.icon-caret-up:before {
+    content: ""
+}
+.fa-caret-left:before {
+    content: ""
+}
+.icon-caret-left:before {
+    content: ""
+}
+.fa-caret-right:before {
+    content: ""
+}
+.icon-caret-right:before {
+    content: ""
+}
+.rst-versions {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 300px;
+    color: #fcfcfc;
+    background: #1f1d1d;
+    border-top: solid 10px #343131;
+    font-family: "Lato", "proxima-nova", "Helvetica Neue", Arial, sans-serif;
+    z-index: 400;
+    font-size: 13px;
+    font-weight: normal;
+    letter-spacing: normal;
+}
+.rst-versions a {
+    color: #2980B9;
+    text-decoration: none
+}
+.rst-versions dt {
+  font-weight: normal;
+}
+.rst-versions .rst-badge-small {
+    display: none
+}
+.rst-versions .rst-current-version {
+    padding: 12px;
+    background-color: #272525;
+    display: block;
+    text-align: right;
+    font-size: 90%;
+    cursor: pointer;
+    color: #27AE60;
+    *zoom: 1
+}
+.rst-versions .rst-current-version:before,
+.rst-versions .rst-current-version:after {
+    display: table;
+    content: ""
+}
+.rst-versions .rst-current-version:after {
+    clear: both
+}
+.rst-versions .rst-current-version .fa {
+    color: #fcfcfc
+}
+.rst-versions .rst-current-version .fa-book {
+    float: left
+}
+.rst-versions .rst-current-version .icon-book {
+    float: left
+}
+.rst-versions .rst-current-version.rst-out-of-date {
+    background-color: #E74C3C;
+    color: #fff
+}
+.rst-versions .rst-current-version.rst-active-old-version {
+    background-color: #F1C40F;
+    color: #000
+}
+.rst-versions.shift-up .rst-other-versions {
+    display: block
+}
+.rst-versions .rst-other-versions {
+    font-size: 90%;
+    padding: 12px;
+    color: gray;
+    display: none
+}
+.rst-versions .rst-other-versions hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    margin: 20px 0;
+    padding: 0;
+    border-top: solid 1px #413d3d
+}
+.rst-versions .rst-other-versions dd {
+    display: inline-block;
+    margin: 0
+}
+.rst-versions .rst-other-versions dd a {
+    display: inline-block;
+    padding: 6px;
+    color: #fcfcfc
+}
+.rst-versions.rst-badge {
+    width: auto;
+    bottom: 20px;
+    right: 20px;
+    left: auto;
+    border: none;
+    max-width: 300px
+}
+.rst-versions.rst-badge .icon-book {
+    float: none
+}
+.rst-versions.rst-badge .fa-book {
+    float: none
+}
+.rst-versions.rst-badge.shift-up .rst-current-version {
+    text-align: right
+}
+.rst-versions.rst-badge.shift-up .rst-current-version .icon-book {
+    float: left
+}
+.rst-versions.rst-badge .rst-current-version {
+    width: auto;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 6px;
+    display: block;
+    text-align: center
+}
+@media screen and (max-width: 768px) {
+    .rst-versions {
+        width: 85%;
+        display: none
+    }
+    .rst-versions.shift {
+        display: block
+    }
+    img {
+        width: 100%;
+        height: auto
+    }
+}
