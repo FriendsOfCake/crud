@@ -2015,6 +2015,11 @@ header {
 .highlight {
     background: none;
 }
+#search-results em {
+  background: #F1C40F;
+  display: inline-block;
+  font-weight: bold;
+}
 div.related {
     background-color: #565656;
 }

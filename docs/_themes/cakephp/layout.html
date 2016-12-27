@@ -42,6 +42,7 @@
 <link rel="search" type="application/opensearchdescription+xml" title="{{ project }} Search" href="{{ pathto('_static/opensearchdescription-book-2-x.xml', 1) }}">
 <script type="text/javascript">
 window.lang = "{{ language }}";
+
 {% if READTHEDOCS %}
 document.addEventListener('DOMContentLoaded', function (e) {
     var currentVersionEl = document.querySelectorAll('.rst-current-version')[0],
@@ -90,8 +91,6 @@ document.addEventListener('DOMContentLoaded', function (e) {
 {% endif %}
 </script>
 {% endblock %}
-
-{%- set script_files = script_files + ["_static/app.js"] -%}
 
 {# Use the header block to insert the CSF navbar #}
 {%- block header %}

@@ -866,8 +866,8 @@ if (/cakephp\.org/.test(document.domain)) {
 
 App = {};
 App.config = {
-  url: 'http://search.cakephp.org/search',
-  version: '3-0'
+  url: 'https://readthedocs.org/api/v2/docsearch/',
+  version: 'latest'
 };
 
 App.Book = (function() {
@@ -898,7 +898,8 @@ App.InlineSearch = (function () {
 
   // Send the query to search app and get results.
   var doSearch = function (value, syncResults, asyncResults) {
-    var query = {lang: window.lang, q: value, version: App.config.version};
+    lang = window.lang == 'None' ? 'en' : window.lang;
+    var query = {lang: window.lang, project: document.domain.split('.')[0], q: value, version: App.config.version};
     var url = App.config.url + '?' + jQuery.param(query);
 
     lastValue = value;
@@ -1244,7 +1245,9 @@ App.Search = (function () {
   };
 
   function executeSearch(value, page) {
-    var query = {lang: window.lang, q: value, version: App.config.version};
+    lang = window.lang == 'None' ? 'en' : window.lang;
+    var query = {lang: window.lang, project: document.domain.split('.')[0], q: value, version: App.config.version};
+    var url = App.config.url + '?' + jQuery.param(query);
     if (page) {
       query.page = page;
     }
@@ -1256,11 +1259,30 @@ App.Search = (function () {
     });
 
     xhr.done(function (response) {
-      var results;
+      var results = [], total, page;
       searchResults.empty().append('<ul></ul>');
-      results = response.data.slice(0, limit);
+      if (response.hasOwnProperty('results')) {
+        total = response.results.hits.total;
+        page = 1;
+
+        var res = response.results.hits.hits;
+        for (i = 0; i < res.length; i++) {
+          results.push({
+            title: res[i].fields.title[0],
+            url: res[i].fields.link,
+            contents: res[i].highlight.content,
+            html: res[i].highlight.content
+          })
+        }
+      } else {
+        results = response.data;
+        total = response.total;
+        page = response.page;
+      }
+
+      results = results.slice(0, limit)
       createResults(results);
-      createPagination(response.total, response.page);
+      createPagination(total, page);
     });
   }
 
@@ -1285,7 +1307,11 @@ App.Search = (function () {
           link.append('<strong>' + item.title + '</strong><br />');
         }
         var span = $('<span></span>');
-        span.text(item.contents.join("\n"));
+        if (item.hasOwnProperty('html')) {
+          span.html(item.html.join("\n"));
+        } else {
+          span.text(item.contents.join("\n"));
+        }
         link.append(span);
         li.append(link);
         ul.append(li);
