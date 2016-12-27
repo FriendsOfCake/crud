@@ -1,10 +1,10 @@
 # How to contribute
 
-CakePHP-crud loves to welcome your contributions. There are several ways to help out:
+Crud loves to welcome your contributions. There are several ways to help out:
 * Create a ticket in GitHub, if you have found a bug
 * Write testcases for open bug tickets
 * Write patches for open bug/feature tickets, preferably with testcases included
-* Contribute to the [documentation](https://github.com/jippi/cakephp-crud/tree/gh-pages)
+* Contribute to the [documentation](https://github.com/friendsofcake/crud/tree/gh-pages)
 
 There are a few guidelines that we need contributors to follow so that we have a
 chance of keeping on top of things.
@@ -46,24 +46,38 @@ chance of keeping on top of things.
 
 ## Testcases and codesniffer
 
-CakePHP-crud tests requires [PHPUnit](http://www.phpunit.de/manual/current/en/installation.html)
-3.5 or higher. To run the testcases locally use the following command:
+Crud tests requires [PHPUnit](http://www.phpunit.de/manual/current/en/installation.html)
+3.7.33 or higher. To run the testcases locally use the following command:
 
-    ./lib/Cake/Console/cake test Crud AllCrud
+    phpunit
 
 To run the sniffs for CakePHP coding standards
 
-    phpcs -p --extensions=php --standard=CakePHP ./app/Plugin/Crud
+    phpcs -n -p --extensions=php --standard=vendor/cakephp/cakephp-codesniffer/CakePHP --ignore=vendor --ignore=docs src/ tests/
 
 Check the [cakephp-codesniffer](https://github.com/cakephp/cakephp-codesniffer)
 repository to setup the CakePHP standard. The README contains installation info
 for the sniff and phpcs.
 
+## Documentation
+
+You can build the documentation using Docker via the following commands:
+
+    # go to the docs dir
+    cd docs
+
+    # build the docs
+    docker build .
+
+    # make the html
+    docker run -it --rm -v $(pwd)/docs:/data friendsofcake/crud make html
+
+    # open the generated html docs in docs/_build/html
 
 # Additional Resources
 
 * [CakePHP coding standards](http://book.cakephp.org/2.0/en/contributing/cakephp-coding-conventions.html)
-* [Bug tracker](https://github.com/jippi/cakephp-crud/issues)
+* [Bug tracker](https://github.com/friendsofcake/crud/issues)
 * [General GitHub documentation](https://help.github.com/)
 * [GitHub pull request documentation](https://help.github.com/send-pull-requests/)
 * #cakephp IRC channel on freenode.org
