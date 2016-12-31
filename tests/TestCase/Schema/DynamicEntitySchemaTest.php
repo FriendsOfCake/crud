@@ -5,8 +5,6 @@ use Cake\Controller\Controller;
 use Cake\ORM\TableRegistry;
 use Crud\Listener\JsonApiListener;
 use Crud\TestSuite\TestCase;
-use Crud\Test\App\Model\Entity\Country;
-use stdClass;
 
 /**
  * Licensed under The MIT License
@@ -141,6 +139,7 @@ class DynamicEntitySchemaTest extends TestCase
             ->getMock();
 
         $view->set('_associations', $associations);
+        $view->set('_absoluteLinks', false); // test relative links (listener default)
 
         // setup the schema
         $schema = $this
@@ -164,9 +163,16 @@ class DynamicEntitySchemaTest extends TestCase
         $this->assertSame($expectedFirstCultureId, $relationships['cultures']['data'][0]['id']);
         $this->assertSame($expectedSecondCultureId, $relationships['cultures']['data'][1]['id']);
 
-        // assert _ getRelationshipSelfLinks() for singular (belongsTo)
-        $expected = '/countries/2/relationships/currency';
+        // assert generated belongsToLink using listener default (direct link)
+        $view->set('_jsonApiBelongsToLinks', false);
+        $expected = '/currencies/1';
+        $result = $this->callProtectedMethod('getRelationshipSelfLink', [$entity, 'currency', null, true], $schema);
+        $this->setReflectionClassInstance($result);
+        $this->assertSame($expected, $this->getProtectedProperty('subHref', $result));
 
+        // assert generated belongsToLink using JsonApi (indirect link, requires custom JsonApiRoute)
+        $view->set('_jsonApiBelongsToLinks', true);
+        $expected = '/countries/2/relationships/currency';
         $result = $this->callProtectedMethod('getRelationshipSelfLink', [$entity, 'currency', null, true], $schema);
         $this->setReflectionClassInstance($result);
         $this->assertSame($expected, $this->getProtectedProperty('subHref', $result));
@@ -187,6 +193,31 @@ class DynamicEntitySchemaTest extends TestCase
         $this->assertArrayHasKey('cultures', $result);
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * Test NeoMerx override getIncludedResourceLinks() used to generate
      * `self` links inside the optional JSON API `included` node.
@@ -195,6 +226,16 @@ class DynamicEntitySchemaTest extends TestCase
      */
     public function testGetIncludedResourceLinks()
     {
+        // assert relative links (listener default)
+        $view = $this
+            ->getMockBuilder('\Cake\View\View')
+            ->setMethods(['get'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $view->set('_absoluteLinks', false);
+        $view->set('_jsonApiBelongsToLinks', false);
+
         $schema = $this
             ->getMockBuilder('\Crud\Schema\JsonApi\DynamicEntitySchema')
             ->setMethods(null)
@@ -202,90 +243,19 @@ class DynamicEntitySchemaTest extends TestCase
             ->getMock();
 
         $this->setReflectionClassInstance($schema);
+        $this->setProtectedProperty('_view', $view, $schema);
 
+        // get results
         $table = TableRegistry::get('Countries');
         $entity = $table->find()->first();
         $result = $this->callProtectedMethod('getIncludedResourceLinks', [$entity], $schema);
 
+        // assert success
         $this->assertArrayHasKey('self', $result);
         $selfLink = $result['self'];
         $this->assertTrue(is_a($selfLink, '\Neomerx\JsonApi\Document\Link'));
 
         $this->setReflectionClassInstance($selfLink);
         $this->assertSame('/countries/1', $this->getProtectedProperty('subHref', $selfLink));
-    }
-
-    /**
-     * _getUrlController()
-     *
-     * @return void
-     */
-    public function testGetUrlControllerFromEntity()
-    {
-        $schema = $this
-            ->getMockBuilder('\Crud\Schema\JsonApi\DynamicEntitySchema')
-            ->setMethods(null)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->setReflectionClassInstance($schema);
-
-        // assert success for singular class name
-        $entity = new Country();
-        $expected = 'countries';
-        $this->assertSame($expected, $this->callProtectedMethod('_getUrlControllerFromClassName', [$entity], $schema));
-    }
-
-    /**
-     * _getClassName()
-     *
-     * @return void
-     */
-    public function testGetClassName()
-    {
-        $schema = $this
-            ->getMockBuilder('\Crud\Schema\JsonApi\DynamicEntitySchema')
-            ->setMethods(null)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->setReflectionClassInstance($schema);
-
-        // assert false for arguments that are not a class
-        $this->assertFalse($this->callProtectedMethod('_getClassName', ['string'], $schema));
-        $this->assertFalse($this->callProtectedMethod('_getClassName', [123], $schema));
-        $this->assertFalse($this->callProtectedMethod('_getClassName', [true], $schema));
-        $this->assertFalse($this->callProtectedMethod('_getClassName', [['dummy' => 'array']], $schema));
-
-        // assert success
-        $object = new stdClass();
-        $expected = 'stdClass';
-        $this->assertSame($expected, $this->callProtectedMethod('_getClassName', [$object], $schema));
-
-        $object = new Country();
-        $expected = 'Country';
-        $this->assertSame($expected, $this->callProtectedMethod('_getClassName', [$object], $schema));
-    }
-
-    /**
-     * _stringIsSingular()
-     *
-     * @return void
-     */
-    public function testStringIsSingular()
-    {
-        $schema = $this
-            ->getMockBuilder('\Crud\Schema\JsonApi\DynamicEntitySchema')
-            ->setMethods(null)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->setReflectionClassInstance($schema);
-
-        $this->assertFalse($this->callProtectedMethod('_stringIsSingular', ['countries'], $schema));
-        $this->assertFalse($this->callProtectedMethod('_stringIsSingular', ['Countries'], $schema));
-
-        $this->assertTrue($this->callProtectedMethod('_stringIsSingular', ['country'], $schema));
-        $this->assertTrue($this->callProtectedMethod('_stringIsSingular', ['Country'], $schema));
     }
 }

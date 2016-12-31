@@ -103,8 +103,7 @@ class JsonApiView extends View
         $encoder = Encoder::instance(
             [],
             new EncoderOptions(
-                $this->_jsonOptions(),
-                $this->viewVars['_urlPrefix']
+                $this->_jsonOptions()
             )
         );
 
@@ -125,8 +124,7 @@ class JsonApiView extends View
         $encoder = Encoder::instance(
             $schemas,
             new EncoderOptions(
-                $this->_jsonOptions(),
-                $this->viewVars['_urlPrefix']
+                $this->_jsonOptions()
             )
         );
 
