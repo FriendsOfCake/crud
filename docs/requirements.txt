@@ -12,3 +12,4 @@ snowballstemmer==1.2.1
 Sphinx==1.5.1
 sphinx-rtd-theme==0.1.9
 sphinxcontrib-phpdomain==0.2.1
+cakephp-theme
