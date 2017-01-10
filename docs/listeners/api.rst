@@ -63,10 +63,10 @@ Attach it using components array, this is recommended if you want to attach it t
         ]);
   }
 
-CakeRequest detectors
----------------------
+Request detectors
+-----------------
 
-The Api Listener creates 3 new detectors in your ``CakeRequest`` object.
+The Api Listener creates 3 new detectors in your ``Request`` object.
 
 is('json')
 ^^^^^^^^^^
