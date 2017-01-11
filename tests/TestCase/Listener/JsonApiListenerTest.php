@@ -262,7 +262,6 @@ class JsonApiListenerTest extends TestCase
 
         $controller = $this
             ->getMockBuilder('\Cake\Controller\Controller')
-            ->disableOriginalConstructor()
             ->setMethods(null)
             ->getMock();
 
@@ -420,10 +419,9 @@ class JsonApiListenerTest extends TestCase
         $controller = $this
             ->getMockBuilder('\Cake\Controller\Controller')
             ->setMethods(null)
+            ->setConstructorArgs([null, null, 'Countries'])
             ->enableOriginalConstructor()
             ->getMock();
-
-        $controller->name = 'Countries';
 
         $event = $this
             ->getMockBuilder('\Cake\Event\Event')
@@ -479,10 +477,9 @@ class JsonApiListenerTest extends TestCase
         $controller = $this
             ->getMockBuilder('\Cake\Controller\Controller')
             ->setMethods(null)
+            ->setConstructorArgs([null, null, 'Countries'])
             ->enableOriginalConstructor()
             ->getMock();
-
-        $controller->name = 'Countries';
 
         $event = $this
             ->getMockBuilder('\Cake\Event\Event')
@@ -557,9 +554,8 @@ class JsonApiListenerTest extends TestCase
             ->getMockBuilder('\Cake\Controller\Controller')
             ->setMethods(null)
             ->enableOriginalConstructor()
+            ->setConstructorArgs([null, null, 'Countries'])
             ->getMock();
-        $controller->name = 'Countries';
-        $controller->Countries = TableRegistry::get('countries');
 
         $listener = $this
             ->getMockBuilder('\Crud\Listener\JsonApiListener')
