@@ -68,7 +68,13 @@ class JsonApiListener extends ApiListener
     {
         $this->setupDetectors();
 
-        // Accept body data posted with Content-Type `application/vnd.api+json`
+        // make sure the listener does absolutely nothing unless
+        // the application/vnd.api+json Accept header is used.
+        if (!$this->_checkRequestType('jsonapi')) {
+            return null;
+        }
+
+        // accept body data posted with Content-Type `application/vnd.api+json`
         $this->_controller()->RequestHandler->config([
             'inputTypeMap' => [
                 'jsonapi' => ['json_decode', true]
@@ -375,20 +381,13 @@ class JsonApiListener extends ApiListener
     }
 
     /**
-     * Override ApiListener method to require JSON API Accept Type and
-     * Content-Type request headers.
+     * Override ApiListener method to enforce required JSON API request methods.
      *
      * @throws \Cake\Network\Exception\BadRequestException
      * @return bool
      */
     protected function _checkRequestMethods()
     {
-        $jsonApiMimeType = $this->_response()->getMimeType('jsonapi');
-
-        if (!$this->_checkRequestType('jsonapi')) {
-            throw new BadRequestException("JSON API requests require the \"$jsonApiMimeType\" Accept header");
-        }
-
         if ($this->_request()->is('put')) {
             throw new BadRequestException('JSON API does not support the PUT method, use PATCH instead');
         }
@@ -396,6 +395,8 @@ class JsonApiListener extends ApiListener
         if (!$this->_request()->contentType()) {
             return true;
         }
+
+        $jsonApiMimeType = $this->_response()->getMimeType('jsonapi');
 
         if ($this->_request()->contentType() !== $jsonApiMimeType) {
             throw new BadRequestException("JSON API requests with data require the \"$jsonApiMimeType\" Content-Type header");
