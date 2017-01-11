@@ -273,23 +273,40 @@ class ApiPaginationListenerTest extends TestCase
             'page_limit' => 10,
         ];
 
+        $crud = $this
+            ->getMockBuilder('\Crud\Controller\Component\CrudComponent')
+            ->disableOriginalConstructor()
+            ->setMethods(['config'])
+            ->getMock();
+
+        $crud
+            ->expects($this->at(0))
+            ->method('config')
+            ->will($this->returnValue(false)); // assert relative links
+
+        $crud
+            ->expects($this->at(1))
+            ->method('config')
+            ->will($this->returnValue(true)); // assert absolute links
+
         $controller = $this
             ->getMockBuilder('\Cake\Controller\Controller')
             ->disableOriginalConstructor()
             ->setMethods(['set'])
             ->getMock();
 
+        $controller->Crud = $crud;
         $controller->name = 'countries';
 
         $controller
-            ->expects($this->once())
+            ->expects($this->any())
             ->method('set')
             ->with('_pagination', $expected);
 
         $listener = $this
             ->getMockBuilder('\Crud\Listener\ApiPaginationListener')
             ->disableOriginalConstructor()
-            ->setMethods(['_request', '_controller', '_action', '_checkRequestType'])
+            ->setMethods(['_request', '_controller', '_action', '_checkRequestType', 'config'])
             ->getMock();
         $listener
             ->expects($this->any())
@@ -300,13 +317,14 @@ class ApiPaginationListenerTest extends TestCase
             ->method('_controller')
             ->will($this->returnValue($controller));
         $listener
-            ->expects($this->once())
+            ->expects($this->any())
             ->method('_checkRequestType')
             ->will($this->returnValue(true));
 
         $controller->modelClass = 'MyModel';
 
-        $listener->beforeRender(new \Cake\Event\Event('something'));
+        $listener->beforeRender(new \Cake\Event\Event('something')); // assert relative links
+        $listener->beforeRender(new \Cake\Event\Event('something')); // assert absolute links
     }
 
 
@@ -391,12 +409,24 @@ class ApiPaginationListenerTest extends TestCase
      */
     public function testGetJsonApiPaginationViewVars()
     {
+        $crud = $this
+            ->getMockBuilder('\Crud\Controller\Component\CrudComponent')
+            ->disableOriginalConstructor()
+            ->setMethods(['config'])
+            ->getMock();
+
+        $crud
+            ->expects($this->any())
+            ->method('config')
+            ->will($this->returnValue(false));
+
         $controller = $this
             ->getMockBuilder('\Cake\Controller\Controller')
             ->disableOriginalConstructor()
             ->setMethods(['name'])
             ->getMock();
 
+        $controller->Crud = $crud;
         $controller->name = 'countries';
 
         $listener = $this

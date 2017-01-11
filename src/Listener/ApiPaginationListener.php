@@ -87,19 +87,25 @@ class ApiPaginationListener extends BaseListener
      */
     protected function _getJsonApiPaginationResponse(array $pagination)
     {
-        $self = Router::url([
+        $routerMethod = 'normalize'; // produce relative links
+
+        if ($this->_controller()->Crud->config('listeners.jsonApi.absoluteLinks') === true) {
+            $routerMethod = 'url'; // produce absolute links
+        }
+
+        $self = Router::$routerMethod([
             'controller' => $this->_controller()->name,
             'action' => 'index',
             'page' => $pagination['page']
         ], true);
 
-        $first = Router::url([
+        $first = Router::$routerMethod([
             'controller' => $this->_controller()->name,
             'action' => 'index',
             'page' => 1,
         ], true);
 
-        $last = Router::url([
+        $last = Router::$routerMethod([
             'controller' => $this->_controller()->name,
             'action' => 'index',
             'page' => $pagination['pageCount']
@@ -107,7 +113,7 @@ class ApiPaginationListener extends BaseListener
 
         $prev = null;
         if ($pagination['prevPage']) {
-            $prev = Router::url([
+            $prev = Router::$routerMethod([
                 'controller' => $this->_controller()->name,
                 'action' => 'index',
                 'page' => $pagination['prevPage']
@@ -116,7 +122,7 @@ class ApiPaginationListener extends BaseListener
 
         $next = null;
         if ($pagination['nextPage']) {
-            $next = Router::url([
+            $next = Router::$routerMethod([
                 'controller' => $this->_controller()->name,
                 'action' => 'index',
                 'page' => $pagination['nextPage']
