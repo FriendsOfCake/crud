@@ -193,8 +193,10 @@ class JsonApiView extends View
     }
 
     /**
-     * Maps entity names to corresponding schema files if it exists, otherwise
-     * uses the DynamicEntitySchema.
+     * Maps each entity to the first schema match in this order:
+     * 1. custom entity schema
+     * 2. custom dynamic schema
+     * 3. Crud's dynamic schema
      *
      * @param array $entities List holding entity names that need to be mapped to a schema class
      * @throws \Crud\Error\Exception\CrudException
@@ -211,10 +213,15 @@ class JsonApiView extends View
                 throw new CrudException('JsonApiListener cannot not find Entity class ' . $entityName);
             }
 
-            // If user created a schema file for the current Entity... use it
+            // If user created a custom entity schema... use it
             $schemaClass = App::className($entityName, 'Schema\JsonApi', 'Schema');
 
-            // Otherwise use the dynamic schema that comes with Crud
+            // If user created a custom dynamic schema... use it
+            if (!$schemaClass) {
+                $schemaClass = App::className('DynamicEntity', 'Schema\JsonApi', 'Schema');
+            }
+
+            // Otherwise use the dynamic schema provided by Crud
             if (!$schemaClass) {
                 $schemaClass = App::className('Crud.DynamicEntity', 'Schema\JsonApi', 'Schema');
             }
