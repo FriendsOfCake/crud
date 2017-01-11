@@ -84,15 +84,31 @@ class JsonApiListenerTest extends TestCase
 
         $listener = $this
             ->getMockBuilder('\Crud\Listener\JsonApiListener')
-            ->setMethods(['setupDetectors', '_controller'])
+            ->setMethods(['setupDetectors', '_checkRequestType', '_controller'])
             ->disableOriginalConstructor()
             ->getMock();
+
+        $listener
+            ->expects($this->at(1))
+            ->method('_checkRequestType')
+            ->will($this->returnValue(false)); // for asserting missing JSON API Accept header
+
+        $listener
+            ->expects($this->at(3))
+            ->method('_checkRequestType')
+            ->will($this->returnValue(true)); // for asserting valid JSON API Accept header
 
         $listener
             ->expects($this->once())
             ->method('_controller')
             ->will($this->returnValue($controller));
 
+        // assert that listener does nothing if JSON API Accept header is missing
+        $result = $listener->implementedEvents();
+
+        $this->assertNull($result);
+
+        // assert success if a JSON API Accept header is used
         $result = $listener->implementedEvents();
 
         $expected = [
@@ -912,25 +928,6 @@ class JsonApiListenerTest extends TestCase
         $request = new Request();
         $request->env('HTTP_ACCEPT', 'application/vnd.api+json');
         $request->env('CONTENT_TYPE', 'application/vnd.api+json');
-        $response = new Response();
-        $controller = new Controller($request, $response);
-        $listener = new JsonApiListener($controller);
-        $listener->setupDetectors();
-
-        $this->setReflectionClassInstance($listener);
-        $this->callProtectedMethod('_checkRequestMethods', [], $listener);
-    }
-
-    /**
-     * Make sure the listener fails on non JSON API request Accept Type header
-     *
-     * @expectedException \Cake\Network\Exception\BadRequestException
-     * @expectedExceptionMessage JSON API requests require the "application/vnd.api+json" Accept header
-     */
-    public function testCheckRequestMethodsFailAcceptHeader()
-    {
-        $request = new Request();
-        $request->env('HTTP_ACCEPT', 'application/json');
         $response = new Response();
         $controller = new Controller($request, $response);
         $listener = new JsonApiListener($controller);
