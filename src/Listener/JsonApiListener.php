@@ -4,11 +4,11 @@ namespace Crud\Listener;
 use Cake\Event\Event;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Orm\TableRegistry;
-use Cake\Routing\Router;
 use Cake\Utility\Inflector;
 use Crud\Error\Exception\CrudException;
 use Crud\Event\Subject;
 use Crud\Listener\JsonApi\DocumentValidator;
+use Crud\Traits\JsonApiTrait;
 
 /**
  * Extends Crud ApiListener to respond in JSON API format.
@@ -18,6 +18,8 @@ use Crud\Listener\JsonApi\DocumentValidator;
  */
 class JsonApiListener extends ApiListener
 {
+
+    use JsonApiTrait;
 
     /**
      * Required composer package with Crud supported version
@@ -45,7 +47,8 @@ class JsonApiListener extends ApiListener
         'setFlash' => false,
         'withJsonApiVersion' => false, // true or array/hash with additional meta information (will add top-level member `jsonapi` to the response)
         'meta' => false, // array or hash with meta information (will add top-level node `meta` to the response)
-        'urlPrefix' => null, // string holding URL to prefix links in jsonapi response with
+        'absoluteLinks' => false, // false to generate relative links, true will generate fully qualified URL prefixed with http://domain.name
+        'jsonApiBelongsToLinks' => false, // false to generate JSONAPI links (requires custom Route, included)
         'jsonOptions' => [], // array with predefined JSON constants as described at http://php.net/manual/en/json.constants.php
         'debugPrettyPrint' => true, // true to use JSON_PRETTY_PRINT for generated debug-mode response
         'include' => [],
@@ -240,27 +243,6 @@ class JsonApiListener extends ApiListener
     }
 
     /**
-     * Creates a RESTful resource route URL rom a Router-generated URL by
-     * removing last occurrence of `/view/`.
-     *
-     * @param string $controller Controller name
-     * @param mixed $id Entity id
-     * @return mixed|string
-     */
-    protected function _getNewResourceUrl($controller, $id)
-    {
-        $url = Router::url([
-            'controller' => $controller,
-            'action' => 'view',
-            $id,
-        ], true);
-
-        $url = preg_replace('/(\/view\/(?!.*\/view\/))/', '/', $url);
-
-        return $url;
-    }
-
-    /**
      * Set required viewVars before rendering the JsonApiView.
      *
      * @param \Crud\Event\Subject $subject Subject
@@ -289,7 +271,8 @@ class JsonApiListener extends ApiListener
         $this->_controller()->set([
             '_withJsonApiVersion' => $this->config('withJsonApiVersion'),
             '_meta' => $this->config('meta'),
-            '_urlPrefix' => $this->config('urlPrefix'),
+            '_absoluteLinks' => $this->config('absoluteLinks'),
+            '_jsonApiBelongsToLinks' => $this->config('jsonApiBelongsToLinks'),
             '_jsonOptions' => $this->config('jsonOptions'),
             '_debugPrettyPrint' => $this->config('debugPrettyPrint'),
             '_serialize' => true,
@@ -318,7 +301,8 @@ class JsonApiListener extends ApiListener
         $this->_controller()->set([
             '_withJsonApiVersion' => $this->config('withJsonApiVersion'),
             '_meta' => $this->config('meta'),
-            '_urlPrefix' => $this->config('urlPrefix'),
+            '_absoluteLinks' => $this->config('absoluteLinks'),
+            '_jsonApiBelongsToLinks' => $this->config('jsonApiBelongsToLinks'),
             '_jsonOptions' => $this->config('jsonOptions'),
             '_debugPrettyPrint' => $this->config('debugPrettyPrint'),
             '_entities' => $this->_getEntityList($entityName, $strippedAssociations),
@@ -353,10 +337,6 @@ class JsonApiListener extends ApiListener
      */
     protected function _validateConfigOptions()
     {
-        if ($this->config('urlPrefix') !== null && !is_string($this->config('urlPrefix'))) {
-            throw new CrudException('JsonApiListener configuration option `urlPrefix` only accepts a string');
-        }
-
         if ($this->config('withJsonApiVersion')) {
             if (!is_bool($this->config('withJsonApiVersion')) && !is_array($this->config('withJsonApiVersion'))) {
                 throw new CrudException('JsonApiListener configuration option `withJsonApiVersion` only accepts a boolean or an array');
@@ -367,6 +347,14 @@ class JsonApiListener extends ApiListener
             if (!is_array($this->config('meta'))) {
                 throw new CrudException('JsonApiListener configuration option `meta` only accepts an array');
             }
+        }
+
+        if (!is_bool($this->config('absoluteLinks'))) {
+            throw new CrudException('JsonApiListener configuration option `absoluteLinks` only accepts a boolean');
+        }
+
+        if (!is_bool($this->config('jsonApiBelongsToLinks'))) {
+            throw new CrudException('JsonApiListener configuration option `jsonApiBelongsToLinks` only accepts a boolean');
         }
 
         if (!is_array($this->config('include'))) {

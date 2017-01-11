@@ -8,7 +8,6 @@ use Cake\Filesystem\File;
 use Cake\Network\Request;
 use Cake\Network\Response;
 use Cake\ORM\TableRegistry;
-use Cake\Routing\Router;
 use Crud\Event\Subject;
 use Crud\Listener\JsonApiListener;
 use Crud\TestSuite\TestCase;
@@ -53,7 +52,8 @@ class JsonApiListenerTest extends TestCase
             'setFlash' => false,
             'withJsonApiVersion' => false,
             'meta' => false,
-            'urlPrefix' => null,
+            'absoluteLinks' => false,
+            'jsonApiBelongsToLinks' => false,
             'jsonOptions' => [],
             'debugPrettyPrint' => true,
             'include' => [],
@@ -531,53 +531,6 @@ class JsonApiListenerTest extends TestCase
     }
 
     /**
-     * _getNewResourceUrl()
-     *
-     * @return void
-     */
-    public function testGetNewResourceUrl()
-    {
-        $controller = $this
-            ->getMockBuilder('\Cake\Controller\Controller')
-            ->setMethods(null)
-            ->enableOriginalConstructor()
-            ->getMock();
-        $controller->name = 'Countries';
-
-        $listener = $this
-            ->getMockBuilder('\Crud\Listener\JsonApiListener')
-            ->disableOriginalConstructor()
-            ->setMethods(['_controller', '_action'])
-            ->getMock();
-
-        $listener
-            ->expects($this->any())
-            ->method('_controller')
-            ->will($this->returnValue($controller));
-
-        $listener
-            ->expects($this->any())
-            ->method('_action')
-            ->will($this->returnValue('add'));
-
-        $this->setReflectionClassInstance($listener);
-
-        $routerParameters = [
-            'controller' => 'monkeys',
-            'action' => 'view',
-            123
-        ];
-
-        // assert Router defaults (to test against)
-        $result = Router::url($routerParameters, true);
-        $this->assertEquals('/monkeys/view/123', $result);
-
-        // assert success
-        $result = $this->callProtectedMethod('_getNewResourceUrl', ['monkeys', 123], $listener);
-        $this->assertEquals('/monkeys/123', $result);
-    }
-
-    /**
      * Make sure render() works with find data
      *
      * @return void
@@ -672,28 +625,6 @@ class JsonApiListenerTest extends TestCase
         $this->markTestIncomplete(
             'Implement this test to bump coverage to 100%. Requires mocking system/php functions'
         );
-    }
-
-    /**
-     * Make sure config option `urlPrefix` does not accept an array
-     *
-     * @expectedException \Crud\Error\Exception\CrudException
-     * @expectedExceptionMessage JsonApiListener configuration option `urlPrefix` only accepts a string
-     */
-    public function testValidateConfigOptionUrlPrefixFailWithArray()
-    {
-        $listener = $this
-            ->getMockBuilder('\Crud\Listener\JsonApiListener')
-            ->disableOriginalConstructor()
-            ->setMethods(null)
-            ->getMock();
-
-        $listener->config([
-            'urlPrefix' => ['array', 'not-accepted']
-        ]);
-
-        $this->setReflectionClassInstance($listener);
-        $this->callProtectedMethod('_validateConfigOptions', [], $listener);
     }
 
     /**
@@ -803,6 +734,91 @@ class JsonApiListenerTest extends TestCase
         $this->callProtectedMethod('_validateConfigOptions', [], $listener);
     }
 
+    /**
+     * Make sure config option `absoluteLinks` accepts a boolean
+     *
+     * @return void
+     */
+    public function testValidateConfigOptionAbsoluteLinksSuccessWithBoolean()
+    {
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\JsonApiListener')
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $listener->config([
+            'absoluteLinks' => true
+        ]);
+
+        $this->setReflectionClassInstance($listener);
+        $this->callProtectedMethod('_validateConfigOptions', [], $listener);
+    }
+
+    /**
+     * Make sure config option `absoluteLinks` does not accept a string
+     *
+     * @expectedException \Crud\Error\Exception\CrudException
+     * @expectedExceptionMessage JsonApiListener configuration option `absoluteLinks` only accepts a boolean
+     */
+    public function testValidateConfigOptionAbsoluteLinksFailsWithString()
+    {
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\JsonApiListener')
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $listener->config([
+            'absoluteLinks' => 'string-not-accepted'
+        ]);
+
+        $this->setReflectionClassInstance($listener);
+        $this->callProtectedMethod('_validateConfigOptions', [], $listener);
+    }
+
+    /**
+     * Make sure config option `jsonApiBelongsToLinks` accepts a boolean
+     *
+     * @return void
+     */
+    public function testValidateConfigOptionJsonApiBelongsToLinksSuccessWithBoolean()
+    {
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\JsonApiListener')
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $listener->config([
+            'jsonApiBelongsToLinks' => true
+        ]);
+
+        $this->setReflectionClassInstance($listener);
+        $this->callProtectedMethod('_validateConfigOptions', [], $listener);
+    }
+
+    /**
+     * Make sure config option `jsonApiBelongsToLinks` does not accept a string
+     *
+     * @expectedException \Crud\Error\Exception\CrudException
+     * @expectedExceptionMessage JsonApiListener configuration option `jsonApiBelongsToLinks` only accepts a boolean
+     */
+    public function testValidateConfigOptionJsonApiBelongsToLinksFailsWithString()
+    {
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\JsonApiListener')
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $listener->config([
+            'jsonApiBelongsToLinks' => 'string-not-accepted'
+        ]);
+
+        $this->setReflectionClassInstance($listener);
+        $this->callProtectedMethod('_validateConfigOptions', [], $listener);
+    }
 
     /**
      * Make sure config option `include` does not accept a string

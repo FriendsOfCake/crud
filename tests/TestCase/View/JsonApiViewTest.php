@@ -61,6 +61,8 @@ class JsonApiViewTest extends TestCase
             '_urlPrefix' => $listener->config('urlPrefix'),
             '_withJsonApiVersion' => $listener->config('withJsonApiVersion'),
             '_meta' => $listener->config('meta'),
+            '_absoluteLinks' => $listener->config('absoluteLinks'),
+            '_jsonApiBelongsToLinks' => $listener->config('jsonApiBelongsToLinks'),
             '_include' => $listener->config('include'),
             '_fieldSets' => $listener->config('fieldSets'),
             '_jsonOptions' => $listener->config('jsonOptions'),
@@ -84,6 +86,8 @@ class JsonApiViewTest extends TestCase
             '_urlPrefix' => null,
             '_withJsonApiVersion' => false,
             '_meta' => false,
+            '_absoluteLinks' => false,
+            '_jsonApiBelongsToLinks' => false,
             '_include' => [],
             '_fieldSets' => [],
             '_jsonOptions' => [
