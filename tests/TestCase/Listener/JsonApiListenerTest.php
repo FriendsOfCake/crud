@@ -51,7 +51,7 @@ class JsonApiListenerTest extends TestCase
             'exceptionRenderer' => 'Crud\Error\JsonApiExceptionRenderer',
             'setFlash' => false,
             'withJsonApiVersion' => false,
-            'meta' => false,
+            'meta' => [],
             'absoluteLinks' => false,
             'jsonApiBelongsToLinks' => false,
             'jsonOptions' => [],

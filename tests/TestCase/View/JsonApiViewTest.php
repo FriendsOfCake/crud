@@ -85,7 +85,7 @@ class JsonApiViewTest extends TestCase
         $expected = [
             '_urlPrefix' => null,
             '_withJsonApiVersion' => false,
-            '_meta' => false,
+            '_meta' => [],
             '_absoluteLinks' => false,
             '_jsonApiBelongsToLinks' => false,
             '_include' => [],

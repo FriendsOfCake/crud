@@ -96,7 +96,7 @@ class JsonApiView extends View
      */
     protected function _encodeWithoutSchemas()
     {
-        if ($this->viewVars['_meta'] === false) {
+        if (empty($this->viewVars['_meta'])) {
             return;
         }
 
@@ -181,7 +181,7 @@ class JsonApiView extends View
 
         // Add optional top-level `meta` node to the response if enabled by
         // user using listener config option.
-        if ($this->viewVars['_meta']) {
+        if (!empty($this->viewVars['_meta'])) {
             if (empty($serialize)) {
                 return $encoder->encodeMeta($this->viewVars['_meta']);
             } else {
