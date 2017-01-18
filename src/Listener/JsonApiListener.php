@@ -46,7 +46,7 @@ class JsonApiListener extends ApiListener
         'exceptionRenderer' => 'Crud\Error\JsonApiExceptionRenderer',
         'setFlash' => false,
         'withJsonApiVersion' => false, // true or array/hash with additional meta information (will add top-level member `jsonapi` to the response)
-        'meta' => false, // array or hash with meta information (will add top-level node `meta` to the response)
+        'meta' => [], // array or hash with meta information (will add top-level node `meta` to the response)
         'absoluteLinks' => false, // false to generate relative links, true will generate fully qualified URL prefixed with http://domain.name
         'jsonApiBelongsToLinks' => false, // false to generate JSONAPI links (requires custom Route, included)
         'jsonOptions' => [], // array with predefined JSON constants as described at http://php.net/manual/en/json.constants.php
@@ -349,10 +349,8 @@ class JsonApiListener extends ApiListener
             }
         }
 
-        if ($this->config('meta')) {
-            if (!is_array($this->config('meta'))) {
-                throw new CrudException('JsonApiListener configuration option `meta` only accepts an array');
-            }
+        if (!is_array($this->config('meta'))) {
+            throw new CrudException('JsonApiListener configuration option `meta` only accepts an array');
         }
 
         if (!is_bool($this->config('absoluteLinks'))) {

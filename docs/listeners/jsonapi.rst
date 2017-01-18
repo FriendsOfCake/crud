@@ -14,7 +14,7 @@ compatibility with JSON API supporting tools and frameworks like Ember Data.
 Requirements
 ------------
 
-This listener depends on the `neomerx/json-api <https://github.com/neomerx/json-api>`_ 
+This listener depends on the `neomerx/json-api <https://github.com/neomerx/json-api>`_
 composer package which can be installed by running:
 
 .. code-block:: bash
@@ -22,14 +22,13 @@ composer package which can be installed by running:
    composer require neomerx/json-api:^0.8.10
 
 Setup
------   
+-----
 
 Routing
 ^^^^^^^
 
-Only controllers explicitely mapped can be exposed as API resources so make sure 
+Only controllers explicitely mapped can be exposed as API resources so make sure
 to configure your global routing scope in ``config/router.php`` similar to:
-
 
 .. code-block:: phpinline
 
@@ -70,8 +69,7 @@ is loaded **before** ``Crud``.
       ]);
     }
 
-
-Alternatively, attach the listener to your controllers ``beforeFilter`` 
+Alternatively, attach the listener to your controllers ``beforeFilter``
 if you prefer attaching the listener to specific controllers on the fly.
 
 .. code-block:: php
@@ -84,7 +82,6 @@ if you prefer attaching the listener to specific controllers on the fly.
       $this->Crud->addListener('Crud.JsonApi');
     }
   }
-
 
 Request detector
 ----------------
@@ -102,7 +99,7 @@ and can be used like this inside your application:
 
 .. note::
 
-To make sure the listener won't get in your way it will 
+To make sure the listener won't get in your way it will
 return ``NULL`` for all requests unless ``is('jsonapi')`` is true.
 
 Exception handler
@@ -133,10 +130,9 @@ produce error responses in the following JSON API format:
     }
   }
 
-.. note::  
+.. note::
 
 Please note that the ``debug`` node with the stack trace will only be included if ``debug`` is true.
-  
 
 Validation errors
 ^^^^^^^^^^^^^^^^^
@@ -157,13 +153,12 @@ validation error reponses in the following JSON API format.
 	  }
     ]
   }
- 
-.. note::  
+
+.. note::
 
 Please note that the listener also responds with (422) validation errors
 when data is posted in a document structure that does not comply with the
 JSON API specification.
-
 
 Response formats
 ----------------
@@ -179,7 +174,6 @@ Requests to the ``index`` action **must** use:
 A succesful request will respond with HTTP response code ``200``
 and response body similar to this output produced by
 ``http://example.com/countries``:
-
 
 .. code-block:: json
 
@@ -237,8 +231,7 @@ and response body similar to this output produced by
       }
     }
   }
- 
-  
+
 HTTP POST (add)
 ---------------
 
@@ -286,9 +279,9 @@ The response body will look similar to this output produced by
 JSON API document
 ^^^^^^^^^^^^^^^^^
 
-All data posted to the listener is transformed from JSON API format to 
+All data posted to the listener is transformed from JSON API format to
 standard CakePHP format so it can be processed "as usual" once the data
-is accepted. To make sure posted data complies with the JSON API 
+is accepted. To make sure posted data complies with the JSON API
 specification it is validated by the listener's DocumentValidator which
 will throw a (422) ValidationException if it does not comply along
 with a pointer to the cause.
@@ -312,7 +305,7 @@ would look similar to:
             "id": "1"
           }
         }
-      }    
+      }
     }
   }
 
@@ -399,7 +392,7 @@ and a ``hasMany`` relationship with Cultures:
     return $this->Crud->execute();
   }
 
-Assuming a succesful find the listener would produce the 
+Assuming a succesful find the listener would produce the
 following JSON API response including all associated data:
 
 .. code-block:: json
@@ -484,7 +477,6 @@ following JSON API response including all associated data:
 Please note that only support for ``belongsTo`` and ``hasMany``
 relationships has been implemented.
 
-
 Configuration
 -------------
 
@@ -504,7 +496,7 @@ by adding them to the ``initialize()`` event like this:
 withJsonApiVersion
 ^^^^^^^^^^^^^^^^^^
 
-Setting this **boolean** option to true (default: false) will make the listener add 
+Setting this **boolean** option to true (default: false) will make the listener add
 the top-level ``jsonapi`` node with member node ``version`` to each response like
 shown below.
 
@@ -514,14 +506,14 @@ shown below.
     "jsonapi": {
       "version": "1.0"
     }
-  }  
-  
+  }
+
 meta
 ^^^^
 
-Pass this **mixed** option (default: false) an array or hash will make the listener add the 
-the top-level ``jsonapi`` node with member node ``meta`` to each response like
-shown below. Set to ``false`` to disable the ``meta`` node.
+Pass this **array** option (default: empty) an array or hash will make the listener
+add the the top-level ``jsonapi`` node with member node ``meta`` to each response
+like shown below.
 
 .. code-block:: json
 
@@ -547,11 +539,10 @@ debugPrettyPrint
 Setting this **boolean** option to false (default: true) will make the listener
 render non-pretty json in debug mode.
 
-
 jsonOptions
 ^^^^^^^^^^^
 
-Pass this **array** option (default: empty) an array with 
+Pass this **array** option (default: empty) an array with
 `PHP Predefined JSON Constants http://php.net/manual/en/json.constants.php`_
 to manipulate the generated json response. For example:
 
@@ -588,7 +579,7 @@ Please note that entity names:
 fieldSets
 ^^^^^^^^^
 
-Pass this **array** option (default: empty) a hash with 
+Pass this **array** option (default: empty) a hash with
 field names to limit the attributes/fields shown in the
 generated json. For example:
 
@@ -606,7 +597,7 @@ generated json. For example:
 .. note::
 
 Please note that there is no need to hide ``id`` fields as this
-is handled by the listener automatically as per the 
+is handled by the listener automatically as per the
 `JSON API specification <http://jsonapi.org/format/#document-resource-object-fields>`_.
 
 docValidatorAboutLinks
@@ -641,7 +632,7 @@ by a missing ``type`` node in the posted data would be:
 Pagination
 ----------
 
-This listener fully supports the ``API Pagination`` listener and will, 
+This listener fully supports the ``API Pagination`` listener and will,
 once enabled as `described here https://crud.readthedocs.io/en/latest/listeners/api-pagination.html#setup`_
 , add the ``meta`` and ``links`` nodes as per the JSON API specification.
 
@@ -665,7 +656,7 @@ once enabled as `described here https://crud.readthedocs.io/en/latest/listeners/
 Query Logs
 ----------
 
-This listener fully supports the ``API Query Log`` listener and will, 
+This listener fully supports the ``API Query Log`` listener and will,
 once enabled as `described here <https://crud.readthedocs.io/en/latest/listeners/api-query-log.html#setup`_
 , add a top-level ``query`` node to every response when debug mode is enabled.
 
@@ -721,7 +712,7 @@ Custom dynamic schema
 Use a custom dynamic schema if you need to alter the generated JSON API for all
 controllers, application wide.
 
-An example of a custom dynamic schema would require creating 
+An example of a custom dynamic schema would require creating
 a ``src/Schema/JsonApi/DynamicEntitySchema.php`` file looking similar to:
 
 .. code-block:: phpinline
