@@ -213,27 +213,26 @@ class JsonApiView extends View
                 throw new CrudException('JsonApiListener cannot not find Entity class ' . $entityName);
             }
 
-            $entityShortName = $entityName;
             if (strpos($entityName, '\\') !== false) {
                 // Turn full class name back into plugin split format
                 // Not including /Entity in the type makes sure its compatible with other types
-                $entityShortName = App::shortName($entityName, 'Model');
+                $entityName = App::shortName($entityName, 'Model');
 
                 // Take plugin name and entity name off
-                list($pluginName, $entityShortName) = pluginSplit($entityShortName, true);
+                list($pluginName, $entityName) = pluginSplit($entityName, true);
 
                 // Find the first namespace separator to take everything after the entity type.
-                $firstNamespaceSeparator = strpos($entityShortName, '/');
+                $firstNamespaceSeparator = strpos($entityName, '/');
                 if ($firstNamespaceSeparator === false) {
                     throw new CrudException('Invalid entity name specified');
                 }
-                $entityShortName = substr($entityShortName, $firstNamespaceSeparator + 1);
+                $entityName = substr($entityName, $firstNamespaceSeparator + 1);
 
-                $entityShortName = $pluginName . $entityShortName;
+                $entityName = $pluginName . $entityName;
             }
 
             // If user created a custom entity schema... use it
-            $schemaClass = App::className($entityShortName, 'Schema\JsonApi', 'Schema');
+            $schemaClass = App::className($entityName, 'Schema\JsonApi', 'Schema');
 
             // If user created a custom dynamic schema... use it
             if (!$schemaClass) {
@@ -248,6 +247,8 @@ class JsonApiView extends View
             // Uses NeoMerx createSchemaFromClosure()` to generate Closure
             // object with schema information.
             $schema = function ($factory) use ($schemaClass, $entityName) {
+                list(, $entityName) = pluginSplit($entityName);
+
                 return new $schemaClass($factory, $this, $entityName);
             };
 

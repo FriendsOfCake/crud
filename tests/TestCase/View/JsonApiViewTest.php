@@ -118,7 +118,7 @@ class JsonApiViewTest extends TestCase
         // create required (but non user configurable) viewVars next
         $request = new Request();
         $response = new Response();
-        $controller = new Controller($request, $response);
+        $controller = new Controller($request, $response, $tableName);
 
         $builder = $controller->viewBuilder();
         $builder->className('\Crud\View\JsonApiView');
@@ -132,8 +132,7 @@ class JsonApiViewTest extends TestCase
 
         // still here, create view with viewVars for response with resource(s)
         $controller->name = $tableName; // e.g. Countries
-        $table = TableRegistry::get($tableName); // table object
-        $entityName = Inflector::singularize($tableName); // e.g. Country
+        $table = $controller->loadModel(); // table object
 
         // fetch data from test viewVar normally found in subject
         $subject = new Subject(new Event('Crud.beforeHandle'));
@@ -155,7 +154,7 @@ class JsonApiViewTest extends TestCase
         $this->setReflectionClassInstance($listener);
         $entity = $this->callProtectedMethod('_getSingleEntity', [$subject], $listener);
         $associations = $this->callProtectedMethod('_stripNonContainedAssociations', [$table, $entity], $listener);
-        $entities = $this->callProtectedMethod('_getEntityList', [$entityName, $associations], $listener);
+        $entities = $this->callProtectedMethod('_getEntityList', [$table->entityClass(), $associations], $listener);
 
         $viewVars['_entities'] = $entities;
         $viewVars['_associations'] = $associations;
@@ -395,10 +394,25 @@ class JsonApiViewTest extends TestCase
         );
     }
 
+    /**
+     * Make sure the resource type is only the entity name
+     *
+     * @return void
+     */
+    public function testResourceTypes()
+    {
+        $countries = TableRegistry::get('Countries')
+            ->find()
+            ->first();
+        $view = $this->_getView('Countries', [
+            'countries' => $countries,
+        ]);
+
+        $this->assertEquals('countries', json_decode($view->render())->data->type);
+    }
 
     /**
      * Make sure correct $data to be encoded is fetched from set viewVars
-
      *
      * @return void
      */
