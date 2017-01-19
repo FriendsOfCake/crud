@@ -3,7 +3,7 @@ namespace Crud\Listener;
 
 use Cake\Event\Event;
 use Cake\Network\Exception\BadRequestException;
-use Cake\Orm\TableRegistry;
+use Cake\ORM\Association;
 use Cake\Utility\Inflector;
 use Crud\Error\Exception\CrudException;
 use Crud\Event\Subject;
@@ -187,12 +187,12 @@ class JsonApiListener extends ApiListener
     protected function _insertBelongsToDataIntoEventFindResult($event)
     {
         $entity = $event->subject()->entity;
-        $table = TableRegistry::get($this->_controller()->name);
-        $associations = $table->associations();
+        $repository = $this->_controller()->loadModel();
+        $associations = $repository->associations();
 
         foreach ($associations as $association) {
-            if (is_a($association, '\Cake\ORM\Association\BelongsTo')) {
-                $associationTable = TableRegistry::get($association->name());
+            if ($association->type() === Association::MANY_TO_ONE) {
+                $associationTable = $association->target();
                 $foreignKey = $association->foreignKey();
 
                 $result = $associationTable
@@ -221,12 +221,12 @@ class JsonApiListener extends ApiListener
      */
     protected function _removeBelongsToForeignKeysFromEventData($event)
     {
-        $table = TableRegistry::get($this->_controller()->name);
-        $associations = $table->associations();
+        $repository = $this->_controller()->loadModel();
+        $associations = $repository->associations();
 
         $foreignKeys = [];
         foreach ($associations as $association) {
-            if (is_a($association, '\Cake\ORM\Association\BelongsTo')) {
+            if ($association->type() === Association::MANY_TO_ONE) {
                 $foreignKeys[] = $association->foreignKey();
             }
         }
@@ -295,13 +295,11 @@ class JsonApiListener extends ApiListener
      */
     protected function _renderWithResources($subject)
     {
-        $tableName = $this->_controller()->name; // e.g. Countries
-        $entityName = Inflector::singularize($tableName); // e.g. Country
-        $table = $this->_controller()->$tableName; // table object
+        $repository = $this->_controller()->loadModel(); // Default model class
 
         // Remove associations not found in the `find()` result
         $entity = $this->_getSingleEntity($subject);
-        $strippedAssociations = $this->_stripNonContainedAssociations($table, $entity);
+        $strippedAssociations = $this->_stripNonContainedAssociations($repository, $entity);
 
         // Set data before rendering the view
         $this->_controller()->set([
@@ -311,10 +309,10 @@ class JsonApiListener extends ApiListener
             '_jsonApiBelongsToLinks' => $this->config('jsonApiBelongsToLinks'),
             '_jsonOptions' => $this->config('jsonOptions'),
             '_debugPrettyPrint' => $this->config('debugPrettyPrint'),
-            '_entities' => $this->_getEntityList($entityName, $strippedAssociations),
+            '_entities' => $this->_getEntityList($repository->entityClass(), $strippedAssociations),
             '_include' => $this->_getIncludeList($strippedAssociations),
             '_fieldSets' => $this->config('fieldSets'),
-            Inflector::tableize($tableName) => $this->_getFindResult($subject),
+            Inflector::tableize($repository->alias()) => $this->_getFindResult($subject),
             '_associations' => $strippedAssociations,
             '_serialize' => true,
         ]);
@@ -501,7 +499,7 @@ class JsonApiListener extends ApiListener
 
         $result = [];
         foreach ($associations as $association) {
-            if (is_a($association, '\Cake\ORM\Association\BelongsTo')) {
+            if ($association->type() === Association::MANY_TO_ONE) {
                 $include = Inflector::tableize($association->name());
                 $include = Inflector::singularize($include);
 
