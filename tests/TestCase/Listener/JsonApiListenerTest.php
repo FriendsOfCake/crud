@@ -1105,12 +1105,12 @@ class JsonApiListenerTest extends TestCase
     }
 
     /**
-     * Make sure we get a list of entity names for the current entity (name
+     * Make sure we get a list of repository names for the current entity (name
      * passed as string) and all associated models.
      *
      * @return void
      */
-    public function testGetEntityList()
+    public function testGetRepositoryList()
     {
         $table = TableRegistry::get('Countries');
         $table->belongsTo('Currencies');
@@ -1123,12 +1123,12 @@ class JsonApiListenerTest extends TestCase
 
         $listener = new JsonApiListener(new Controller());
         $this->setReflectionClassInstance($listener);
-        $result = $this->callProtectedMethod('_getEntityList', ['Country', $associations], $listener);
+        $result = $this->callProtectedMethod('_getRepositoryList', [$table, $associations], $listener);
 
         $expected = [
-            'Country',
-            'Currency',
-            'Culture'
+            'Countries' => $table,
+            'Currencies' => $table->Currencies->target(),
+            'Cultures' => $table->Cultures->target(),
         ];
 
         $this->assertSame($expected, $result);

@@ -3,10 +3,10 @@ namespace Crud\View;
 
 use Cake\Core\App;
 use Cake\Core\Configure;
+use Cake\Datasource\RepositoryInterface;
 use Cake\Event\EventManager;
 use Cake\Network\Request;
 use Cake\Network\Response;
-use Cake\Utility\Hash;
 use Cake\View\View;
 use Crud\Error\Exception\CrudException;
 use Neomerx\JsonApi\Document\Link;
@@ -73,7 +73,7 @@ class JsonApiView extends View
      */
     public function render($view = null, $layout = null)
     {
-        if (isset($this->viewVars['_entities'])) {
+        if (isset($this->viewVars['_repositories'])) {
             $json = $this->_encodeWithSchemas();
         } else {
             $json = $this->_encodeWithoutSchemas();
@@ -117,7 +117,7 @@ class JsonApiView extends View
      */
     protected function _encodeWithSchemas()
     {
-        $schemas = $this->_entitiesToNeoMerxSchema($this->viewVars['_entities']);
+        $schemas = $this->_entitiesToNeoMerxSchema($this->viewVars['_repositories']);
 
         // Please note that a third NeoMerx EncoderOptions argument `depth`
         // exists but has not been implemented in this plugin.
@@ -198,38 +198,31 @@ class JsonApiView extends View
      * 2. custom dynamic schema
      * 3. Crud's dynamic schema
      *
-     * @param array $entities List holding entity names that need to be mapped to a schema class
+     * @param RepositoryInterface[] $repositories List holding repositories used to map entities to schema classes
      * @throws \Crud\Error\Exception\CrudException
      * @return array A list with Entity class names as key holding NeoMerx Closure object
      */
-    protected function _entitiesToNeoMerxSchema(array $entities)
+    protected function _entitiesToNeoMerxSchema(array $repositories)
     {
         $schemas = [];
-        $entities = Hash::normalize($entities);
-        foreach ($entities as $entityName => $options) {
-            $entityClass = App::className($entityName, 'Model\Entity');
+        foreach ($repositories as $repositoryName => $repository) {
+            $entityClass = $repository->entityClass();
 
-            if (!$entityClass) {
-                throw new CrudException('JsonApiListener cannot not find Entity class ' . $entityName);
+            // Turn full class name back into plugin split format
+            // Not including /Entity in the type makes sure its compatible with other types
+            $entityName = App::shortName($entityClass, 'Model');
+
+            // Take plugin name and entity name off
+            list($pluginName, $entityName) = pluginSplit($entityName, true);
+
+            // Find the first namespace separator to take everything after the entity type.
+            $firstNamespaceSeparator = strpos($entityName, '/');
+            if ($firstNamespaceSeparator === false) {
+                throw new CrudException('Invalid entity name specified');
             }
+            $entityName = substr($entityName, $firstNamespaceSeparator + 1);
 
-            if (strpos($entityName, '\\') !== false) {
-                // Turn full class name back into plugin split format
-                // Not including /Entity in the type makes sure its compatible with other types
-                $entityName = App::shortName($entityName, 'Model');
-
-                // Take plugin name and entity name off
-                list($pluginName, $entityName) = pluginSplit($entityName, true);
-
-                // Find the first namespace separator to take everything after the entity type.
-                $firstNamespaceSeparator = strpos($entityName, '/');
-                if ($firstNamespaceSeparator === false) {
-                    throw new CrudException('Invalid entity name specified');
-                }
-                $entityName = substr($entityName, $firstNamespaceSeparator + 1);
-
-                $entityName = $pluginName . $entityName;
-            }
+            $entityName = $pluginName . $entityName;
 
             // If user created a custom entity schema... use it
             $schemaClass = App::className($entityName, 'Schema\JsonApi', 'Schema');
@@ -246,14 +239,12 @@ class JsonApiView extends View
 
             // Uses NeoMerx createSchemaFromClosure()` to generate Closure
             // object with schema information.
-            $schema = function ($factory) use ($schemaClass, $entityName) {
-                list(, $entityName) = pluginSplit($entityName);
-
-                return new $schemaClass($factory, $this, $entityName);
+            $schema = function ($factory) use ($schemaClass, $repository) {
+                return new $schemaClass($factory, $this, $repository);
             };
 
             // Add generated schema to the collection before processing next
-            $schemas[$entityClass] = $schema;
+            $schemas[$repository->entityClass()] = $schema;
         }
 
         return $schemas;

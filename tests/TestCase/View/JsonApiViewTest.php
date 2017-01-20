@@ -154,9 +154,9 @@ class JsonApiViewTest extends TestCase
         $this->setReflectionClassInstance($listener);
         $entity = $this->callProtectedMethod('_getSingleEntity', [$subject], $listener);
         $associations = $this->callProtectedMethod('_stripNonContainedAssociations', [$table, $entity], $listener);
-        $entities = $this->callProtectedMethod('_getEntityList', [$table->entityClass(), $associations], $listener);
+        $repositories = $this->callProtectedMethod('_getRepositoryList', [$table, $associations], $listener);
 
-        $viewVars['_entities'] = $entities;
+        $viewVars['_repositories'] = $repositories;
         $viewVars['_associations'] = $associations;
 
         // set viewVars before creating the view
@@ -183,22 +183,6 @@ class JsonApiViewTest extends TestCase
 
         $this->assertNotContains('non_underscored_should_not_be_in_special_vars', $result);
         $this->assertContains('_underscored_should_be_in_special_vars', $result);
-    }
-
-    /**
-     * Make sure an exception is thrown when requesting an unloaded Entity class
-     *
-     * @expectedException \Crud\Error\Exception\CrudException
-     * @expectedExceptionMessage JsonApiListener cannot not find Entity class UnknownOrUnloadedEntity
-     */
-    public function testEntitiesToNeoMerxSchemaUnloadedClassException()
-    {
-        $view = new JsonApiView();
-        $this->setReflectionClassInstance($view);
-        $parameters = [
-            'UnknownOrUnloadedEntity'
-        ];
-        $this->callProtectedMethod('_entitiesToNeoMerxSchema', [$parameters], $view);
     }
 
     /**

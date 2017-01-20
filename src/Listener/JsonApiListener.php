@@ -1,6 +1,7 @@
 <?php
 namespace Crud\Listener;
 
+use Cake\Datasource\RepositoryInterface;
 use Cake\Event\Event;
 use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Association;
@@ -309,7 +310,7 @@ class JsonApiListener extends ApiListener
             '_jsonApiBelongsToLinks' => $this->config('jsonApiBelongsToLinks'),
             '_jsonOptions' => $this->config('jsonOptions'),
             '_debugPrettyPrint' => $this->config('debugPrettyPrint'),
-            '_entities' => $this->_getEntityList($repository->entityClass(), $strippedAssociations),
+            '_repositories' => $this->_getRepositoryList($repository, $strippedAssociations),
             '_include' => $this->_getIncludeList($strippedAssociations),
             '_fieldSets' => $this->config('fieldSets'),
             Inflector::tableize($repository->alias()) => $this->_getFindResult($subject),
@@ -438,21 +439,17 @@ class JsonApiListener extends ApiListener
      * query) in the find result from the entity's AssociationCollection to
      * prevent `null` entries appearing in the json api `relationships` node.
      *
-     * @param \Cake\ORM\Table $table Table
+     * @param \Cake\Datasource\RepositoryInterface $repository Repository
      * @param \Cake\ORM\Entity $entity Entity
      * @return \Cake\ORM\AssociationCollection
      */
-    protected function _stripNonContainedAssociations($table, $entity)
+    protected function _stripNonContainedAssociations($repository, $entity)
     {
-        $associations = $table->associations();
+        $associations = $repository->associations();
 
         foreach ($associations as $association) {
             $associationKey = strtolower($association->name());
-            $entityKey = $association->table();
-
-            if (get_class($association) === 'Cake\ORM\Association\BelongsTo') {
-                $entityKey = Inflector::singularize($entityKey);
-            }
+            $entityKey = $association->property();
 
             if (empty($entity->$entityKey)) {
                 $associations->remove($associationKey);
@@ -462,25 +459,32 @@ class JsonApiListener extends ApiListener
         return $associations;
     }
 
-    /**
-     * Returns a list with entity names of both passed entity name (as string)
-     * and all related/associated models. Used to read or generate NeoMerx
-     * schemas inside the view.
-     *
-     * @param string $entityName Name of the current entity
-     * @param \Cake\ORM\AssociationCollection $associations AssciationCollection
-     * @return array
-     * @internal
-     */
-    protected function _getEntityList($entityName, $associations)
+    protected function _getRepositoryList(RepositoryInterface $repository, $associations)
     {
-        $entities = [$entityName];
+        $repositories = [
+            $repository->registryAlias() => $repository
+        ];
 
         foreach ($associations as $association) {
-            $entities[] = Inflector::singularize($association->name());
+            $registryAlias = $association->target()->registryAlias();
+
+            $repositories[$registryAlias] = $association->target();
         }
 
-        return $entities;
+        return $repositories;
+    }
+
+    public static function _convertRepositoryName($entityClass)
+    {
+        list ($plugin, $entityPath) = pluginSplit($entityClass);
+
+        list (, $entity) = explode('/', $entityPath, 2);
+
+        $entityName = $entity;
+        if ($plugin) {
+            $entityName = $plugin . '.' . $entityName;
+        }
+        return $entityName;
     }
 
     /**
