@@ -148,7 +148,8 @@ class DynamicEntitySchema extends SchemaProvider
         return Router::url($this->_getRepositoryRoutingParameters($this->_repository) + [
             '_method' => 'GET',
             'action' => 'view',
-            $entity->get($this->_repository->primaryKey())
+            $entity->get($this->_repository->primaryKey()),
+            '_ext' => 'json',
         ], $this->_view->viewVars['_absoluteLinks']);
     }
 
@@ -183,6 +184,7 @@ class DynamicEntitySchema extends SchemaProvider
                     $sourceName . '_id' => $entity->id,
                     'from' => $this->_repository->registryAlias(),
                     'type' => $name,
+                    '_ext' => 'json',
                 ], $this->_view->viewVars['_absoluteLinks']);
             } else {
                 $relatedEntity = $entity[$name];
@@ -190,7 +192,8 @@ class DynamicEntitySchema extends SchemaProvider
                 $url = Router::url($this->_getRepositoryRoutingParameters($relatedRepository) + [
                     '_method' => 'GET',
                     'action' => 'view',
-                    $relatedEntity->get($relatedRepository->primaryKey())
+                    $relatedEntity->get($relatedRepository->primaryKey()),
+                    '_ext' => 'json',
                 ], $this->_view->viewVars['_absoluteLinks']);
             }
 
@@ -202,7 +205,8 @@ class DynamicEntitySchema extends SchemaProvider
 
         $url = Router::url($this->_getRepositoryRoutingParameters($relatedRepository) + [
             '_method' => 'GET',
-            $searchKey => $entity->id
+            $searchKey => $entity->id,
+            '_ext' => 'json',
         ], $this->_view->viewVars['_absoluteLinks']);
 
         return new Link($url, $meta, $treatAsHref);
@@ -227,7 +231,8 @@ class DynamicEntitySchema extends SchemaProvider
         $url = Router::url($this->_getRepositoryRoutingParameters($repository) + [
             '_method' => 'GET',
             'action' => 'view',
-            $entity->get($repository->primaryKey())
+            $entity->get($repository->primaryKey()),
+            '_ext' => 'json',
         ], $this->_view->viewVars['_absoluteLinks']);
 
         $links = [
