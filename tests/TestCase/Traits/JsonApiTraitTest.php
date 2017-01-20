@@ -1,7 +1,6 @@
 <?php
 namespace Crud\Test\TestCase\Traits;
 
-use Crud\Test\App\Model\Table\CountriesTable;
 use Crud\TestSuite\TestCase;
 use Crud\Test\App\Model\Entity\Country;
 use Crud\Traits\JsonApiTrait;

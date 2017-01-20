@@ -43,7 +43,7 @@ class DynamicEntitySchema extends SchemaProvider
      *
      * @param \Neomerx\JsonApi\Contracts\Schema\SchemaFactoryInterface $factory ContainerInterface
      * @param \Cake\View\View $view Instance of the cake view we are rendering this in
-     * @param RepositoryInterface $repository
+     * @param RepositoryInterface $repository Repository to use
      */
     public function __construct(
         SchemaFactoryInterface $factory,

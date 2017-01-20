@@ -459,6 +459,14 @@ class JsonApiListener extends ApiListener
         return $associations;
     }
 
+    /**
+     * Get a list of all repositories indexed by their registry alias.
+     *
+     * @param RepositoryInterface $repository Current repository
+     * @param Association[] $associations Associations to get repository from
+     * @return array Used repositories indexed by registry alias
+     * @internal
+     */
     protected function _getRepositoryList(RepositoryInterface $repository, $associations)
     {
         $repositories = [
@@ -472,19 +480,6 @@ class JsonApiListener extends ApiListener
         }
 
         return $repositories;
-    }
-
-    public static function _convertRepositoryName($entityClass)
-    {
-        list ($plugin, $entityPath) = pluginSplit($entityClass);
-
-        list (, $entity) = explode('/', $entityPath, 2);
-
-        $entityName = $entity;
-        if ($plugin) {
-            $entityName = $plugin . '.' . $entityName;
-        }
-        return $entityName;
     }
 
     /**

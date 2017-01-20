@@ -26,6 +26,7 @@ Router::scope('/', function ($routes) {
                 'routeClass' => 'Crud.JsonApiRoute',
             ]
         );
+
         return $routes;
     });
     $routes->resources('Currencies');
