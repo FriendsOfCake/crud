@@ -13,7 +13,7 @@ Core event subjects
 You can find many of the subject contents are included as part of the :ref:`Core Crud Events <core-crud-events>`
 documentation. This is because the subject of the event is very specific to the event being emitted.
 
-When dealing with listeners, you are able to manipulate the subject of the event in order to change Cruds behavior. Such
+When dealing with listeners, you are able to manipulate the subject of the event in order to change Crud's behavior. Such
 as changing pagination, or adding extra conditions to a query.
 
 This is an example of the data passed in a ``beforeFind`` event subject.
