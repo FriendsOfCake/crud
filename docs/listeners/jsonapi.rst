@@ -496,15 +496,29 @@ by adding them to the ``initialize()`` event like this:
 withJsonApiVersion
 ^^^^^^^^^^^^^^^^^^
 
-Setting this **boolean** option to true (default: false) will make the listener add
-the top-level ``jsonapi`` node with member node ``version`` to each response like
-shown below.
+Pass this **mixed** option a boolean with value true (default: false) to
+make the listener add the top-level ``jsonapi`` node with member node
+``version`` to each response like shown below.
 
 .. code-block:: json
 
   {
     "jsonapi": {
       "version": "1.0"
+    }
+  }
+
+Passing an array or hash will achieve the same result but will also generate
+the additional `meta` child node.
+
+.. code-block:: json
+
+  {
+    "jsonapi": {
+      "version": "1.0",
+      "meta": {
+        "cool": "stuff"
+      }
     }
   }
 
