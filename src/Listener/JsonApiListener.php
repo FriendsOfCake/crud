@@ -470,6 +470,7 @@ class JsonApiListener extends ApiListener
      * @param string $entityName Name of the current entity
      * @param \Cake\ORM\AssociationCollection $associations AssciationCollection
      * @return array
+     * @internal
      */
     protected function _getEntityList($entityName, $associations)
     {
