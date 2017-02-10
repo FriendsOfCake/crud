@@ -3,7 +3,7 @@ Crud Subject
 ************
 .. _crud-subject:
 
-The Crud Subject is the class which is passed as the subject of all the events that the Crud plugin emits during it's
+The Crud Subject is the class which is passed as the subject of all the events that the Crud plugin emits during its
 execution. Depending on the action being scaffolded, and what it's working on the contents of the subject can be
 different.
 
