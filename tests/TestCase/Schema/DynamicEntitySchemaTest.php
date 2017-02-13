@@ -5,6 +5,7 @@ use Cake\Controller\Controller;
 use Cake\ORM\TableRegistry;
 use Crud\Listener\JsonApiListener;
 use Crud\TestSuite\TestCase;
+use Neomerx\JsonApi\Factories\Factory;
 
 /**
  * Licensed under The MIT License
@@ -145,7 +146,7 @@ class DynamicEntitySchemaTest extends TestCase
         $schema = $this
             ->getMockBuilder('\Crud\Schema\JsonApi\DynamicEntitySchema')
             ->setMethods(null)
-            ->disableOriginalConstructor()
+            ->setConstructorArgs([new Factory(), $view, $table])
             ->getMock();
 
         $this->setReflectionClassInstance($schema);
@@ -193,31 +194,6 @@ class DynamicEntitySchemaTest extends TestCase
         $this->assertArrayHasKey('cultures', $result);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /**
      * Test NeoMerx override getIncludedResourceLinks() used to generate
      * `self` links inside the optional JSON API `included` node.
@@ -236,19 +212,25 @@ class DynamicEntitySchemaTest extends TestCase
         $view->set('_absoluteLinks', false);
         $view->set('_jsonApiBelongsToLinks', false);
 
+        // get results
+        $table = TableRegistry::get('Countries');
+
         $schema = $this
             ->getMockBuilder('\Crud\Schema\JsonApi\DynamicEntitySchema')
             ->setMethods(null)
-            ->disableOriginalConstructor()
+            ->setConstructorArgs([new Factory(), $view, $table])
             ->getMock();
 
         $this->setReflectionClassInstance($schema);
         $this->setProtectedProperty('_view', $view, $schema);
 
-        // get results
-        $table = TableRegistry::get('Countries');
-        $entity = $table->find()->first();
-        $result = $this->callProtectedMethod('getIncludedResourceLinks', [$entity], $schema);
+        $entity = $table
+            ->find()
+            ->contain([
+                'Currencies',
+            ])
+            ->first();
+        $result = $this->callProtectedMethod('getIncludedResourceLinks', [$entity->currency], $schema);
 
         // assert success
         $this->assertArrayHasKey('self', $result);
@@ -256,6 +238,6 @@ class DynamicEntitySchemaTest extends TestCase
         $this->assertTrue(is_a($selfLink, '\Neomerx\JsonApi\Document\Link'));
 
         $this->setReflectionClassInstance($selfLink);
-        $this->assertSame('/countries/1', $this->getProtectedProperty('subHref', $selfLink));
+        $this->assertSame('/currencies/1', $this->getProtectedProperty('subHref', $selfLink));
     }
 }

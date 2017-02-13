@@ -1,51 +1,25 @@
 <?php
 namespace Crud\Traits;
 
-use Cake\ORM\Entity;
-use Cake\Routing\Router;
 use Cake\Utility\Inflector;
 
 trait JsonApiTrait
 {
 
     /**
-     * Use Cake's router to generate all (prefix) URL parts used in the
-     * NeoMerx Link objects to ensure proper handling of prefixes, base, etc.
-     *
-     * @param \Cake\ORM\Entity $entity Entity
-     * @param bool $absolute True for absolute links, false for relative links
-     * @return string
-     */
-    protected function _getCakeSubUrl(Entity $entity, $absolute = true)
-    {
-        $controller = $this->_getControllerNameFromEntity($entity);
-
-        if ($absolute === true) {
-            return Router::url([
-                'controller' => $controller,
-                '_method' => 'GET',
-            ], true);
-        }
-
-        return Router::normalize([
-            'controller' => $controller,
-            '_method' => 'GET',
-        ], true);
-    }
-
-    /**
      * Parses the name of an Entity class to build a lowercase plural
      * controller name to be used in links.
      *
-     * @param \Cake\ORM\Entity $entity Entity
+     * @param \Cake\Datasource\RepositoryInterface $repository Repository
      * @return string Lowercase controller name
      */
-    protected function _getControllerNameFromEntity($entity)
+    protected function _getRepositoryRoutingParameters($repository)
     {
-        $className = $this->_getClassName($entity);
-        $className = Inflector::pluralize($className);
+        list(, $controllerName) = pluginSplit($repository->registryAlias());
 
-        return Inflector::tableize($className);
+        return [
+            'controller' => $controllerName,
+        ];
     }
 
     /**

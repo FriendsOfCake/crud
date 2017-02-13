@@ -15,24 +15,6 @@ class JsonApiTraitTest extends TestCase
     use JsonApiTrait;
 
     /**
-     * _getCakeSubUrl()
-     *
-     * @return void
-     */
-    public function testGetCakeSubUrl()
-    {
-        $entity = new Country();
-
-        // assert success for absolute links
-        $expected = '/countries';
-        $this->assertSame($expected, $this->_getCakeSubUrl($entity, true));
-
-        // assert success for relative links
-        $expected = '/countries';
-        $this->assertSame($expected, $this->_getCakeSubUrl($entity, false));
-    }
-
-    /**
      * _getClassName()
      *
      * @return void
