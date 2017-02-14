@@ -48,7 +48,7 @@ A default custom index action might be as simple as the following:
         protected function _handle()
         {
             $query = $this->_table()->find($this->findMethod());
-            $items = $this_controller()->paginate($query);
+            $items = $this->_controller()->paginate($query);
         }
 
     }
