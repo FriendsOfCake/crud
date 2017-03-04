@@ -500,4 +500,113 @@ class AddActionTest extends IntegrationTestCase
         $this->assertResponseError();
         $this->assertResponseContains('2 validation errors occurred');
     }
+
+    /**
+     * Test the flow when the beforeSave event is stopped using the default
+     * subject `success` state (false).
+     *
+     * @return void
+     */
+    public function testStopAddWithDefaultSubjectSuccess()
+    {
+        $this->_eventManager->on(
+            'Dispatcher.invokeController',
+            ['priority' => 1000],
+            function ($event) {
+                $this->_controller->Flash = $this->getMockBuilder('Cake\Controller\Component\FlashComponent')
+                    ->setMethods(['set'])
+                    ->disableOriginalConstructor()
+                    ->getMock();
+
+                $this->_controller->Flash
+                    ->expects($this->once())
+                    ->method('set')
+                    ->with(
+                        'Could not create blog',
+                        [
+                            'element' => 'default',
+                            'params' => ['class' => 'message error', 'original' => 'Could not create blog'],
+                            'key' => 'flash'
+                        ]
+                    );
+
+                $this->_subscribeToEvents($this->_controller);
+
+                $this->_controller->Crud->on('beforeSave', function ($event) {
+                    $event->stopPropagation();
+                });
+
+                $this->_controller->Blogs = $this->getMockForModel(
+                    $this->tableClass,
+                    ['add'],
+                    ['alias' => 'Blogs', 'table' => 'blogs']
+                );
+
+                $this->_controller->Blogs
+                    ->expects($this->never())
+                    ->method('add');
+            }
+        );
+
+        $this->post('/blogs/add');
+
+        $this->assertEvents(['beforeSave', 'setFlash', 'beforeRedirect']);
+        $this->assertFalse($this->_subject->success);
+        $this->assertRedirect('/blogs');
+    }
+
+    /**
+     * Test the flow when the beforeSave event is stopped using manually
+     * set non-default subject `success` state (true).
+     *
+     * @return void
+     */
+    public function testStopAddWithManuallySetSubjectSuccess()
+    {
+        $this->_eventManager->on(
+            'Dispatcher.invokeController',
+            ['priority' => 1000],
+            function ($event) {
+                $this->_controller->Flash = $this->getMockBuilder('Cake\Controller\Component\FlashComponent')
+                    ->setMethods(['set'])
+                    ->disableOriginalConstructor()
+                    ->getMock();
+
+                $this->_controller->Flash
+                    ->expects($this->once())
+                    ->method('set')
+                    ->with(
+                        'Successfully created blog',
+                        [
+                            'element' => 'default',
+                            'params' => ['class' => 'message success', 'original' => 'Successfully created blog'],
+                            'key' => 'flash'
+                        ]
+                    );
+
+                $this->_subscribeToEvents($this->_controller);
+
+                $this->_controller->Crud->on('beforeSave', function ($event) {
+                    $event->stopPropagation();
+                    $event->subject->success = true; // assert this
+                });
+
+                $this->_controller->Blogs = $this->getMockForModel(
+                    $this->tableClass,
+                    ['add'],
+                    ['alias' => 'Blogs', 'table' => 'blogs']
+                );
+
+                $this->_controller->Blogs
+                    ->expects($this->never())
+                    ->method('add');
+            }
+        );
+
+        $this->post('/blogs/add');
+
+        $this->assertEvents(['beforeSave', 'afterSave', 'setFlash', 'beforeRedirect']);
+        $this->assertTrue($this->_subject->success);
+        $this->assertRedirect('/blogs');
+    }
 }
