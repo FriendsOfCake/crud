@@ -95,7 +95,6 @@ class JsonApiRouteTest extends TestCase
         $this->assertFalse($this->callProtectedMethod('_belongsToRelationshipSelfLink', ['http://my.app/countries/1/relationships/cultures'], $this->_route));
         $this->assertFalse($this->callProtectedMethod('_belongsToRelationshipSelfLink', ['http://my.app/countries/1/relationships/cats'], $this->_route));
 
-
         // assert matching routes without a related record in the database are ignored
         $this->assertFalse($this->callProtectedMethod('_belongsToRelationshipSelfLink', ['/countries/666/relationships/currency'], $this->_route));
         $this->assertFalse($this->callProtectedMethod('_belongsToRelationshipSelfLink', ['/dogs/1/relationships/cat'], $this->_route));

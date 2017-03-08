@@ -37,7 +37,6 @@ abstract class IntegrationTestCase extends \Cake\TestSuite\IntegrationTestCase
         $existing[] = Plugin::path('Crud') . 'tests/App/Template/';
         Configure::write('App.paths.templates', $existing);
 
-
         Configure::write('App.namespace', 'Crud\Test\App');
 
         Router::extensions('json');

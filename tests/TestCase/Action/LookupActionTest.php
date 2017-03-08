@@ -78,7 +78,6 @@ class LookupActionTest extends IntegrationTestCase
         $this->assertEquals($expected, $this->viewVariable('blogs')->toArray());
     }
 
-
     /**
      * Tests that the beforeLookup can be used to modify the query
      *

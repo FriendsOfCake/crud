@@ -327,7 +327,6 @@ class ApiPaginationListenerTest extends TestCase
         $listener->beforeRender(new \Cake\Event\Event('something')); // assert absolute links
     }
 
-
     /**
      * Test with pagination data for plugin model.
      *

@@ -12,7 +12,6 @@ Router::scope('/', function ($routes) {
     $routes->connect('/:controller', ['action' => 'index'], ['routeClass' => 'InflectedRoute']);
     $routes->connect('/:controller/:action/*', [], ['routeClass' => 'InflectedRoute']);
 
-
     $routes->resources('Countries', function (RouteBuilder $routes) {
         $routes->connect(
             '/relationships/:type',
