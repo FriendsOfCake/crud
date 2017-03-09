@@ -88,8 +88,8 @@ within the plugin and change behavior to suit your application, or to provide ex
 	listeners/api
 	listeners/api-pagination
 	listeners/api-query-log
+	listeners/jsonapi
 	listeners/redirect
 	listeners/related-models
 	listeners/search
 	Create your own <listeners/custom>
-	
