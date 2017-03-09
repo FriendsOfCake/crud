@@ -11,3 +11,9 @@ Implementing the API Listener
 
 If you'd like to get started right away with the :doc:`api listener </listeners/api>`, please check the
 :doc:`Listeners chapter </listeners>`.
+
+Implementing the JSON API Listener
+==================================
+
+To get started with the :doc:`jsonapi Listener </listeners/api>`, please check the
+:doc:`Listeners chapter </listeners>`.
