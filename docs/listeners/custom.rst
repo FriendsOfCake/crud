@@ -41,6 +41,7 @@ Creating your own listener class is very similar to using a controller as a list
   namespace App\Lib\Listeners;
 
   use Cake\Event\Event;
+  use Crud\Listener\BaseListener;
 
   class MyListener extends BaseListener
   {
