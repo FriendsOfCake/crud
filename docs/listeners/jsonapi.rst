@@ -6,10 +6,14 @@ Listener for building a Crud API following the
 
 Introduction
 ------------
-This listener brings you a full implementation of the JSON API specification version
+This listener brings you an implementation of the JSON API specification version
 v1.0 with support for data fetching, data posting, (validation) errors and a ton of
 configurable options to manipulate the generated json allowing you to benefit of instant
 compatibility with JSON API supporting tools and frameworks like Ember Data.
+
+Please note that some parts of the JSON API specification have not been implemented yet.
+Feel free to submit a PR for missing functionality and help work towards a full-featured
+implementation of the specification, the effort should be minimal.
 
 Requirements
 ------------
