@@ -116,7 +116,7 @@ class ApiPaginationListener extends BaseListener
             $prev = Router::$routerMethod([
                 'controller' => $this->_controller()->name,
                 'action' => 'index',
-                'page' => $pagination['prevPage']
+                'page' => $pagination['page'] - 1
             ], true);
         }
 
@@ -125,7 +125,7 @@ class ApiPaginationListener extends BaseListener
             $next = Router::$routerMethod([
                 'controller' => $this->_controller()->name,
                 'action' => 'index',
-                'page' => $pagination['nextPage']
+                'page' => $pagination['page'] + 1
             ], true);
         }
 
