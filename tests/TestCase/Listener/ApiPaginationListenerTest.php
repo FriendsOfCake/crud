@@ -444,8 +444,8 @@ class ApiPaginationListenerTest extends TestCase
         $pagination = [
             'page' => 1, // self
             'pageCount' => 1, // last
-            'prevPage' => null, // prev
-            'nextPage' => null, // next
+            'prevPage' => false,
+            'nextPage' => false,
             'count' => 8, // record_count
             'limit' => 10 // page_limit
         ];
@@ -468,8 +468,8 @@ class ApiPaginationListenerTest extends TestCase
         $pagination = [
             'page' => 1,
             'pageCount' => 3,
-            'prevPage' => null,
-            'nextPage' => 2,
+            'prevPage' => false,
+            'nextPage' => true,
             'count' => 28,
             'limit' => 10
         ];
@@ -492,8 +492,8 @@ class ApiPaginationListenerTest extends TestCase
         $pagination = [
             'page' => 2,
             'pageCount' => 3,
-            'prevPage' => null,
-            'nextPage' => 3,
+            'prevPage' => true,
+            'nextPage' => true,
             'count' => 28,
             'limit' => 10
         ];
@@ -502,7 +502,7 @@ class ApiPaginationListenerTest extends TestCase
             'self' => '/countries?page=2',
             'first' => '/countries?page=1',
             'last' => '/countries?page=3',
-            'prev' => null,
+            'prev' => '/countries?page=1',
             'next' => '/countries?page=3',
             'record_count' => 28,
             'page_count' => 3,
@@ -516,8 +516,8 @@ class ApiPaginationListenerTest extends TestCase
         $pagination = [
             'page' => 3,
             'pageCount' => 3,
-            'prevPage' => 2,
-            'nextPage' => null,
+            'prevPage' => true,
+            'nextPage' => false,
             'count' => 28,
             'limit' => 10
         ];
