@@ -47,7 +47,7 @@ to configure your global routing scope in ``config/router.php`` similar to:
             'inflect' => 'dasherize'
         ]);
 	}
-  }
+  });
 
 Controller
 ^^^^^^^^^^
