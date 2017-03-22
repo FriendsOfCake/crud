@@ -110,8 +110,37 @@ Exception handler
 -----------------
 
 The JsonApi listener overrides the ``Exception.renderer`` for ``jsonapi`` requests,
-so in case of an error, a standardized error in JSON API format will be returned
-for both errors/exceptions and validation errors.
+so in case of an error, a standardized error will be returned, in either
+``json`` or ``xml`` - according to the API request type.
+
+Create a custom exception renderer by extending the Crud's ``JsonApiExceptionRenderer``
+class and enabling it with the ``exceptionRenderer`` configuration option.
+
+.. code-block:: php
+
+  <?php
+  class AppController extends Controller {
+
+    public function initialize()
+    {
+      parent::initialize();
+      $this->Crud->config(['listeners.api.exceptionRenderer' => 'App\Error\JsonApiExceptionRenderer']);
+    }
+  }
+
+**Note:** However if you are using CakePHP 3.3+'s PSR7 middleware feature the ``exceptionRenderer``
+config won't be used and instead you will have to set the ``Error.exceptionRenderer``
+config in ``config/app.php`` to ``'Crud\Error\JsonApiExceptionRenderer'`` as following:
+
+.. code-block:: php
+
+    'Error' => [
+        'errorLevel' => E_ALL,
+        'exceptionRenderer' => 'Crud\Error\JsonApiExceptionRenderer',
+        'skipLog' => [],
+        'log' => true,
+        'trace' => true,
+    ],
 
 Errors/exceptions
 ^^^^^^^^^^^^^^^^^
