@@ -226,7 +226,7 @@ class ApiPaginationListenerTest extends TestCase
             ->method('_request')
             ->will($this->returnValue($Request));
         $Instance
-            ->expects($this->once())
+            ->expects($this->any())
             ->method('_controller')
             ->will($this->returnValue($Controller));
         $Instance
@@ -388,7 +388,7 @@ class ApiPaginationListenerTest extends TestCase
             ->method('_request')
             ->will($this->returnValue($Request));
         $Instance
-            ->expects($this->once())
+            ->expects($this->any())
             ->method('_controller')
             ->will($this->returnValue($Controller));
         $Instance

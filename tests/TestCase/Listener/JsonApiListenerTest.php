@@ -40,7 +40,7 @@ class JsonApiListenerTest extends TestCase
 
         $expected = [
             'detectors' => [
-                'jsonapi' => ['ext' => 'json', 'accepts' => 'application/vnd.api+json'],
+                'jsonapi' => ['ext' => false, 'accepts' => 'application/vnd.api+json'],
             ],
             'exception' => [
                 'type' => 'default',
