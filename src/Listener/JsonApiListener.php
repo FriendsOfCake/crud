@@ -36,7 +36,7 @@ class JsonApiListener extends ApiListener
      */
     protected $_defaultConfig = [
         'detectors' => [
-            'jsonapi' => ['ext' => 'json', 'accepts' => 'application/vnd.api+json'],
+            'jsonapi' => ['ext' => false, 'accepts' => 'application/vnd.api+json'],
         ],
         'exception' => [
             'type' => 'default',
