@@ -7,6 +7,7 @@ use Cake\Event\Event;
 use Cake\Filesystem\File;
 use Cake\Network\Request;
 use Cake\Network\Response;
+use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Crud\Event\Subject;
 use Crud\Listener\JsonApiListener;
@@ -59,6 +60,7 @@ class JsonApiListenerTest extends TestCase
             'include' => [],
             'fieldSets' => [],
             'docValidatorAboutLinks' => false,
+            'queryParameters' => [],
         ];
 
         $this->assertSame($expected, $listener->config());
@@ -117,7 +119,9 @@ class JsonApiListenerTest extends TestCase
             'Crud.afterSave' => ['callable' => [$listener, 'afterSave'], 'priority' => 90],
             'Crud.afterDelete' => ['callable' => [$listener, 'afterDelete'], 'priority' => 90],
             'Crud.beforeRender' => ['callable' => [$listener, 'respond'], 'priority' => 100],
-            'Crud.beforeRedirect' => ['callable' => [$listener, 'beforeRedirect'], 'priority' => 100]
+            'Crud.beforeRedirect' => ['callable' => [$listener, 'beforeRedirect'], 'priority' => 100],
+            'Crud.beforePaginate' => ['callable' => [$listener, 'beforeFind'], 'priority' => 10],
+            'Crud.beforeFind' => ['callable' => [$listener, 'beforeFind'], 'priority' => 10],
         ];
 
         $this->assertSame($expected, $result);
@@ -571,6 +575,7 @@ class JsonApiListenerTest extends TestCase
         $subject = $this
             ->getMockBuilder('\Crud\Event\Subject')
             ->getMock();
+        $subject->query = $this->createMock(Query::class);
         $subject->entity = new Country();
 
         $listener->render($subject);
@@ -1098,7 +1103,7 @@ class JsonApiListenerTest extends TestCase
         // make sure cultures are removed from AssociationCollection
         $listener = new JsonApiListener(new Controller());
         $this->setReflectionClassInstance($listener);
-        $associationsAfter = $this->callProtectedMethod('_stripNonContainedAssociations', [$table, $entity], $listener);
+        $associationsAfter = $this->callProtectedMethod('_stripNonContainedAssociations', [$table, $query], $listener);
 
         $this->assertNotEmpty($associationsAfter->get('currencies'));
         $this->assertNull($associationsAfter->get('cultures'));
