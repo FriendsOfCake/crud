@@ -40,10 +40,10 @@ Creating your own listener class is very similar to using a controller as a list
   <?php
   namespace App\Lib\Listeners;
 
-  use Cake\Event\EventListenerInterface;
   use Cake\Event\Event;
+  use Crud\Listener\BaseListener;
 
-  class MyListener implements EventListenerInterface
+  class MyListener extends BaseListener
   {
       public function implementedEvents()
       {
