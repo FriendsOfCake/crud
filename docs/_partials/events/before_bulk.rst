@@ -21,7 +21,7 @@ Stop Bulk Action
   {
       $this->Crud->on('beforeBulk', function(\Cake\Event\Event $event) {
           // Stop the bulk event, the action will not continue
-          if ($event->subject()->item->author !== 'admin') {
+          if ($event->getSubject()->item->author !== 'admin') {
               $event->stopPropagation();
           }
       });

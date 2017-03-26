@@ -13,7 +13,7 @@ Modify the Result
   public function index()
   {
       $this->Crud->on('afterPaginate', function(\Cake\Event\Event $event) {
-          foreach ($event->subject()->entities as $entity) {
+          foreach ($event->getSubject()->entities as $entity) {
               // $entity is an entity
           }
       });

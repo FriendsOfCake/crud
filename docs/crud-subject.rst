@@ -24,9 +24,9 @@ This is an example of the data passed in a ``beforeFind`` event subject.
     public function view($id)
     {
         $this->Crud->on('beforeFind', function (\Cake\Event\Event $event) {
-            $query = $event->subject()->query;
-            $primaryKey = $event->subject()->id;
-            $table = $event->subject()->repository;
+            $query = $event->getSubject()->query;
+            $primaryKey = $event->getSubject()->id;
+            $table = $event->getSubject()->repository;
         });
     }
 

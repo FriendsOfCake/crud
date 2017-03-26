@@ -18,7 +18,7 @@ Check Success
   public function bulk($id)
   {
       $this->Crud->on('afterBulk', function(\Cake\Event\Event $event) {
-          if (!$event->subject()->success) {
+          if (!$event->getSubject()->success) {
               $this->log("Bulk action failed");
           }
       });
