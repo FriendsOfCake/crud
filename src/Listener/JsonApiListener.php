@@ -382,7 +382,7 @@ class JsonApiListener extends ApiListener
 
         // Remove associations not found in the `find()` result
         $entity = $this->_getSingleEntity($subject);
-        $strippedAssociations = $this->_stripNonContainedAssociations($repository, $entity);
+        $strippedAssociations = $this->_stripNonContainedAssociations($repository, $subject->query);
 
         // Set data before rendering the view
         $this->_controller()->set([
@@ -530,15 +530,15 @@ class JsonApiListener extends ApiListener
      * @param \Cake\ORM\Entity $entity Entity
      * @return \Cake\ORM\AssociationCollection
      */
-    protected function _stripNonContainedAssociations($repository, $entity)
+    protected function _stripNonContainedAssociations($repository, $query)
     {
         $associations = $repository->associations();
+        $contains = $query->contain();
 
         foreach ($associations as $association) {
             $associationKey = strtolower($association->name());
-            $entityKey = $association->property();
 
-            if (empty($entity->$entityKey)) {
+            if (!isset($contains[$association->name()])) {
                 $associations->remove($associationKey);
             }
         }
