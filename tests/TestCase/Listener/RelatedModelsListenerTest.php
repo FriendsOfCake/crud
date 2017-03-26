@@ -12,7 +12,7 @@ use Crud\TestSuite\TestCase;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class RelatedModelListenerTest extends TestCase
+class RelatedModelsListenerTest extends TestCase
 {
 
     public $fixtures = ['core.NumberTrees'];
