@@ -926,6 +926,26 @@ class JsonApiListenerTest extends TestCase
     }
 
     /**
+     * Make sure config option `queryParameters` does not accept a string
+     *
+     * @expectedException \Crud\Error\Exception\CrudException
+     * @expectedExceptionMessage JsonApiListener configuration option `queryParameters` only accepts an array
+     */
+    public function testValidateConfigOptionQueryParametersPrintFailWithString()
+    {
+        $listener = $this->getMockBuilder('\Crud\Listener\JsonApiListener')
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $listener->config([
+            'queryParameters' => 'string-not-accepted'
+        ]);
+
+        $this->setReflectionClassInstance($listener);
+        $this->callProtectedMethod('_validateConfigOptions', [], $listener);
+    }
+    /**
      * Make sure the listener accepts the correct request headers
      *
      * @return void
