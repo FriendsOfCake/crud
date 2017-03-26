@@ -22,7 +22,7 @@ Check Created Status
   public function edit($id)
   {
       $this->Crud->on('afterSave', function(\Cake\Event\Event $event) {
-          if ($event->subject()->created) {
+          if ($event->getSubject()->created) {
               $this->log("The entity was created");
           } else {
               $this->log("The entity was updated");
@@ -40,7 +40,7 @@ Check Success Status
   public function edit($id)
   {
       $this->Crud->on('afterSave', function(\Cake\Event\Event $event) {
-          if ($event->subject()->success) {
+          if ($event->getSubject()->success) {
               $this->log("The entity was saved successfully");
           } else {
               $this->log("The entity was NOT saved successfully");
@@ -58,8 +58,8 @@ Get Entity ID
   public function add()
   {
       $this->Crud->on('afterSave', function(\Cake\Event\Event $event) {
-          if ($event->subject()->created) {
-              $this->log("The entity was created with id: " . $event->subject()->id);
+          if ($event->getSubject()->created) {
+              $this->log("The entity was created with id: " . $event->getSubject()->id);
           }
       });
 

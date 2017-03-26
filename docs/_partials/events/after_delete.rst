@@ -17,8 +17,8 @@ Check Success
   public function delete($id)
   {
       $this->Crud->on('afterDelete', function(\Cake\Event\Event $event) {
-          if (!$event->subject()->success) {
-              $this->log("Delete failed for entity " . $event->subject()->id);
+          if (!$event->getSubject()->success) {
+              $this->log("Delete failed for entity " . $event->getSubject()->id);
           }
       });
 

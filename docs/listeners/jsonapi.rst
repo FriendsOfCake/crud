@@ -416,7 +416,7 @@ and a ``hasMany`` relationship with Cultures:
   public function view()
   {
     $this->Crud->on('beforeFind', function (Event $event) {
-      $event->subject()->query->contain([
+      $event->getSubject()->query->contain([
         'Currencies',
         'Cultures',
       ]);

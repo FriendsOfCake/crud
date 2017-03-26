@@ -20,7 +20,7 @@ Stop Delete
   {
       $this->Crud->on('beforeDelete', function(\Cake\Event\Event $event) {
           // Stop the delete event, the entity will not be deleted
-          if ($event->subject()->item->author !== 'admin') {
+          if ($event->getSubject()->item->author !== 'admin') {
               $event->stopPropagation();
           }
       });

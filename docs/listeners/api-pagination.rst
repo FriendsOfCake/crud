@@ -81,7 +81,7 @@ query object.
     public function index()
     {
         $this->Crud->on('beforePaginate', function (\Cake\Event\Event $event) {
-            $event->subject()->query->contain([
+            $event->getSubject()->query->contain([
                 'Comments' => function ($q) {
                     return $q
                         ->select(['id', 'name', 'description'])
