@@ -61,7 +61,7 @@ class DynamicEntitySchemaTest extends TestCase
         // get required AssociationsCollection
         $listener = new JsonApiListener(new Controller());
         $this->setReflectionClassInstance($listener);
-        $associations = $this->callProtectedMethod('_stripNonContainedAssociations', [$table, $entity], $listener);
+        $associations = $this->callProtectedMethod('_stripNonContainedAssociations', [$table, $query], $listener);
 
         // make view return associations on get('_associations') call
         $view = $this
@@ -130,7 +130,7 @@ class DynamicEntitySchemaTest extends TestCase
         // get required AssociationsCollection
         $listener = new JsonApiListener(new Controller());
         $this->setReflectionClassInstance($listener);
-        $associations = $this->callProtectedMethod('_stripNonContainedAssociations', [$table, $entity], $listener);
+        $associations = $this->callProtectedMethod('_stripNonContainedAssociations', [$table, $query], $listener);
 
         // make view return associations on get('_associations') call
         $view = $this

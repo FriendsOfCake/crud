@@ -8,6 +8,7 @@ use Cake\Event\Event;
 use Cake\Filesystem\File;
 use Cake\Network\Request;
 use Cake\Network\Response;
+use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Crud\Event\Subject;
@@ -142,6 +143,7 @@ class JsonApiViewTest extends TestCase
         } else {
             $subject->entity = $findResult;
         }
+        $subject->query = $table->query();
 
         // create required '_entities' and '_associations' viewVars normally
         // produced and set by the JsonApiListener
@@ -153,7 +155,7 @@ class JsonApiViewTest extends TestCase
 
         $this->setReflectionClassInstance($listener);
         $entity = $this->callProtectedMethod('_getSingleEntity', [$subject], $listener);
-        $associations = $this->callProtectedMethod('_stripNonContainedAssociations', [$table, $entity], $listener);
+        $associations = $this->callProtectedMethod('_stripNonContainedAssociations', [$table, $subject->query], $listener);
         $repositories = $this->callProtectedMethod('_getRepositoryList', [$table, $associations], $listener);
 
         $viewVars['_repositories'] = $repositories;

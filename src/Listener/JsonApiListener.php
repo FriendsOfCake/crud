@@ -527,7 +527,7 @@ class JsonApiListener extends ApiListener
      * prevent `null` entries appearing in the json api `relationships` node.
      *
      * @param \Cake\Datasource\RepositoryInterface $repository Repository
-     * @param \Cake\ORM\Entity $entity Entity
+     * @param \Cake\ORM\Query $query Query
      * @return \Cake\ORM\AssociationCollection
      */
     protected function _stripNonContainedAssociations($repository, $query)
