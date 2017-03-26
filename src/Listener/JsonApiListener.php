@@ -5,6 +5,8 @@ use Cake\Datasource\RepositoryInterface;
 use Cake\Event\Event;
 use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Association;
+use Cake\ORM\Table;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Crud\Error\Exception\CrudException;
 use Crud\Event\Subject;
@@ -55,6 +57,7 @@ class JsonApiListener extends ApiListener
         'include' => [],
         'fieldSets' => [], // hash to limit fields shown (can be used for both `data` and `included` members)
         'docValidatorAboutLinks' => false, // true to show links to JSON API specification clarifying the document validation error
+        'queryParameters' => [], //Array of query parameters and associated transformers
     ];
 
     /**
@@ -89,6 +92,8 @@ class JsonApiListener extends ApiListener
             'Crud.afterDelete' => ['callable' => [$this, 'afterDelete'], 'priority' => 90],
             'Crud.beforeRender' => ['callable' => [$this, 'respond'], 'priority' => 100],
             'Crud.beforeRedirect' => ['callable' => [$this, 'beforeRedirect'], 'priority' => 100],
+            'Crud.beforePaginate' => ['callable' => [$this, 'beforeFind'], 'priority' => 10],
+            'Crud.beforeFind' => ['callable' => [$this, 'beforeFind'], 'priority' => 10],
         ];
     }
 
@@ -164,6 +169,79 @@ class JsonApiListener extends ApiListener
     public function beforeRedirect(Event $event)
     {
         $event->stopPropagation();
+    }
+
+    protected function _getIncludes()
+    {
+        $includes = Hash::filter(explode(',', $this->request->getQuery('include')));
+        if (empty($includes)) {
+            return;
+        }
+
+        return array_map(function ($include) {
+            return Inflector::camelize($include, '-');
+        }, $includes);
+    }
+
+    protected function _parseInclude($include, Table $repository = null)
+    {
+        $includes = explode('.', $include);
+        $includeString = [];
+        $currentRepository = $repository;
+        foreach ($includes as $include) {
+            $associationName = Inflector::camelize($include);
+
+            $association = $currentRepository->association($associationName);
+            if ($association === null) {
+                throw new BadRequestException('Invalid relationship path supplied in include parameter');
+            }
+
+            $currentRepository = $association->target();
+            $includeString[] = $associationName;
+        }
+
+        return implode('.', $includeString);
+    }
+
+    protected function _parseIncludes($parameter, Subject $subject)
+    {
+        $includes = Hash::filter(explode(',', $this->_request()->getQuery($parameter)));
+
+        if (empty($includes)) {
+            return;
+        }
+
+        $contains = [];
+        foreach ($includes as $include) {
+            $contain = $this->_parseInclude($include, $subject->query->repository());
+
+            if (!empty($contain)) {
+                $contains[] = $contain;
+            }
+        }
+
+        $subject->query->contain($contains, true);
+    }
+
+    /**
+     * BeforeFind event listener to parse any supplied query parameters
+     *
+     * @param \Cake\Event\Event $event Event
+     * @return void
+     */
+    public function beforeFind(Event $event)
+    {
+        $queryParameters = $this->config('queryParameters') + [
+            'include' => [$this, '_parseIncludes']
+        ];
+
+        foreach ($queryParameters as $parameter => $callable) {
+            if (!is_callable($callable)) {
+                throw new \InvalidArgumentException('Invalid callable supplied for query parameter ' . $parameter);
+            }
+
+            $callable($parameter, $event->subject());
+        }
     }
 
     /**
@@ -379,6 +457,11 @@ class JsonApiListener extends ApiListener
         if (!is_bool($this->config('debugPrettyPrint'))) {
             throw new CrudException('JsonApiListener configuration option `debugPrettyPrint` only accepts a boolean');
         }
+
+        if (!is_array($this->config('queryParameters'))) {
+            throw new CrudException('JsonApiListener configuration option `queryParameters` only accepts an array');
+        }
+
     }
 
     /**
