@@ -993,7 +993,8 @@ class ApiListenerTest extends TestCase
     {
         $detectors = [
             'json' => ['ext' => 'json', 'accepts' => 'application/json'],
-            'xml' => ['ext' => 'xml', 'accepts' => 'text/xml']
+            'xml' => ['ext' => 'xml', 'accepts' => 'text/xml'],
+            'jsonapi' => ['ext' => false, 'accepts' => 'application/vnd.api+json']
         ];
 
         $listener = $this
@@ -1025,7 +1026,9 @@ class ApiListenerTest extends TestCase
         foreach ($detectors as $name => $configuration) {
             $request->params['_ext'] = $configuration['ext'];
             $request->clearDetectorCache();
-            $this->assertTrue($request->is($name));
+            if ($configuration['ext'] !== false) {
+                $this->assertTrue($request->is($name));
+            }
         }
 
         $request->params['_ext'] = null;
@@ -1061,6 +1064,15 @@ class ApiListenerTest extends TestCase
             $request->is('api'),
             "A request with no extensions should not be considered an api request"
         );
+
+        //Ensure that no set extension will not result in a true
+        unset($request->params['_ext']);
+        $request->clearDetectorCache();
+        $request->expects($this->any())
+            ->method('accepts')
+            ->will($this->returnValue(false));
+
+        $this->assertFalse($request->is('jsonapi'), "A request with no extensions should not be considered an jsonapi request");
     }
 
     /**
