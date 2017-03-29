@@ -57,3 +57,4 @@ script:
 
 notifications:
   email: false
+
