@@ -57,4 +57,3 @@ script:
 
 notifications:
   email: false
-
