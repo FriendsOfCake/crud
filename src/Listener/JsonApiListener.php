@@ -171,18 +171,14 @@ class JsonApiListener extends ApiListener
         $event->stopPropagation();
     }
 
-    protected function _getIncludes()
-    {
-        $includes = Hash::filter(explode(',', $this->request->getQuery('include')));
-        if (empty($includes)) {
-            return;
-        }
-
-        return array_map(function ($include) {
-            return Inflector::camelize($include, '-');
-        }, $includes);
-    }
-
+    /**
+     * Takes a "include" string and converts it into a correct CakePHP ORM association alias
+     *
+     * @param string $include The relationship to include
+     * @param \Cake\ORM\Table|null $repository The repository
+     * @return string
+     * @throws \Cake\Network\Exception\BadRequestException
+     */
     protected function _parseInclude($include, Table $repository = null)
     {
         $includes = explode('.', $include);
@@ -191,21 +187,33 @@ class JsonApiListener extends ApiListener
         foreach ($includes as $include) {
             $associationName = Inflector::camelize($include);
 
-            $association = $currentRepository->association($associationName);
-            if ($association === null) {
-                throw new BadRequestException('Invalid relationship path supplied in include parameter');
-            }
+            if ($currentRepository !== null) {
+                $association = $currentRepository->association($associationName);
+                if ($association === null) {
+                    throw new BadRequestException('Invalid relationship path supplied in include parameter');
+                }
 
-            $currentRepository = $association->target();
+                $currentRepository = $association->target();
+            }
             $includeString[] = $associationName;
         }
 
         return implode('.', $includeString);
     }
 
-    protected function _parseIncludes($parameter, Subject $subject)
+    /**
+     * Parses out include query parameter into a containable array, and contains the query.
+     *
+     * @param string|array $includes The query data
+     * @param \Crud\Event\Subject $subject The subject
+     * @return void
+     */
+    protected function _parseIncludes($includes, Subject $subject)
     {
-        $includes = Hash::filter(explode(',', $this->_request()->getQuery($parameter)));
+        if (is_string($includes)) {
+            $includes = explode(',', $includes);
+        }
+        $includes = Hash::filter($includes);
 
         if (empty($includes)) {
             return;
@@ -240,7 +248,7 @@ class JsonApiListener extends ApiListener
                 throw new \InvalidArgumentException('Invalid callable supplied for query parameter ' . $parameter);
             }
 
-            $callable($parameter, $event->subject());
+            $callable($this->_request()->getQuery($parameter), $event->subject());
         }
     }
 
