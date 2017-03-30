@@ -1367,4 +1367,28 @@ class JsonApiListenerTest extends TestCase
         $result = $this->callProtectedMethod('_convertJsonApiDocumentArray', [$jsonApiArray], $listener);
         $this->assertSame($expected, $result);
     }
+
+    /**
+     * Make sure that the include query correct splits include string into a containable format
+     *
+     * @return void
+     */
+    public function testIncludeQuery()
+    {
+        $listener = new JsonApiListener(new Controller());
+        $this->setReflectionClassInstance($listener);
+
+        $expected = [
+            'Articles',
+            'Comments.Author'
+        ];
+        $subject = new Subject();
+        $subject->query = $this->createMock(Query::class);
+        $subject->query
+            ->expects($this->once())
+            ->method('contain')
+            ->with($expected, true);
+
+        $this->callProtectedMethod('_parseIncludes', ['articles,comments.author', $subject], $listener);
+    }
 }
