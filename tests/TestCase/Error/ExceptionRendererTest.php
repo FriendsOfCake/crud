@@ -70,8 +70,9 @@ class ExceptionRendererTest extends TestCase
                 'message' => 'Hello World',
             ]
         ];
+
         $actual = $viewVars['data'];
-        unset($actual['trace']);
+        unset($actual['trace'], $actual['file'], $actual['line']);
         $this->assertEquals($expected, $actual);
 
         $this->assertTrue(!isset($actual['queryLog']));
@@ -149,7 +150,7 @@ class ExceptionRendererTest extends TestCase
         $actual = $viewVars['data'];
         $queryLog = $viewVars['queryLog'];
 
-        unset($actual['trace']);
+        unset($actual['trace'], $actual['file'], $actual['line']);
         $this->assertEquals($expected, $actual);
 
         $this->assertTrue(!empty($queryLog));
@@ -215,8 +216,9 @@ class ExceptionRendererTest extends TestCase
                 'message' => 'Hello World',
             ]
         ];
+
         $actual = $viewVars['data'];
-        unset($actual['trace']);
+        unset($actual['trace'], $actual['file'], $actual['line']);
         $this->assertEquals($expected, $actual);
 
         $this->assertTrue(isset($viewVars['success']));
@@ -278,8 +280,9 @@ class ExceptionRendererTest extends TestCase
                 'message' => 'Hello World',
             ]
         ];
+
         $actual = $viewVars['data'];
-        unset($actual['trace']);
+        unset($actual['trace'], $actual['file'], $actual['line']);
         $this->assertEquals($expected, $actual);
 
         $this->assertTrue(isset($viewVars['success']));
