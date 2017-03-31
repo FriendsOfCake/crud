@@ -590,7 +590,7 @@ jsonOptions
 ^^^^^^^^^^^
 
 Pass this **array** option (default: empty) an array with
-`PHP Predefined JSON Constants http://php.net/manual/en/json.constants.php`_
+`PHP Predefined JSON Constants <http://php.net/manual/en/json.constants.php>`_
 to manipulate the generated json response. For example:
 
 .. code-block:: phpinline
@@ -680,7 +680,7 @@ Pagination
 ----------
 
 This listener fully supports the ``API Pagination`` listener and will,
-once enabled as `described here https://crud.readthedocs.io/en/latest/listeners/api-pagination.html#setup`_
+once enabled as `described here <https://crud.readthedocs.io/en/latest/listeners/api-pagination.html#setup>`_
 , add the ``meta`` and ``links`` nodes as per the JSON API specification.
 
 .. code-block:: json
@@ -704,7 +704,7 @@ Query Logs
 ----------
 
 This listener fully supports the ``API Query Log`` listener and will,
-once enabled as `described here <https://crud.readthedocs.io/en/latest/listeners/api-query-log.html#setup`_
+once enabled as `described here <https://crud.readthedocs.io/en/latest/listeners/api-query-log.html#setup>`_
 , add a top-level ``query`` node to every response when debug mode is enabled.
 
 Schemas
