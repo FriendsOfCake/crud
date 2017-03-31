@@ -1,8 +1,8 @@
-JsonApi
-=======
+JSON API
+========
 
 Listener for building a Crud API following the
-`JSONAPI specification <http://jsonapi.org/>`_.
+`JSON API specification <http://jsonapi.org/>`_.
 
 Introduction
 ------------
@@ -46,7 +46,7 @@ to configure your global routing scope in ``config/router.php`` similar to:
         $routes->resources($apiResource, [
             'inflect' => 'dasherize'
         ]);
-	}
+    }
   });
 
 Controller
@@ -177,13 +177,13 @@ validation error reponses in the following JSON API format.
 
   {
     "errors": [
-	  {
-	    "title": "_required",
-	    "detail": "Primary data does not contain member 'type'",
-	    "source": {
-		  "pointer": "/data"
-	    }
-	  }
+      {
+        "title": "_required",
+        "detail": "Primary data does not contain member 'type'",
+        "source": {
+          "pointer": "/data"
+        }
+      }
     ]
   }
 
@@ -599,9 +599,9 @@ to manipulate the generated json response. For example:
   {
     parent::initialize();
     $this->Crud->config('listeners.jsonApi.jsonOptions', [
-	  JSON_HEX_QUOT,
-	  JSON_UNESCAPED_UNICODE,
-	]);
+      JSON_HEX_QUOT,
+      JSON_UNESCAPED_UNICODE,
+    ]);
   }
 
 include
@@ -636,9 +636,9 @@ generated json. For example:
     'countries' => [ // main record
       'name'
     ],
-	'currencies' => [ // associated data
-	  'code'
-	]
+    'currencies' => [ // associated data
+      'code'
+    ]
   ]);
 
 .. note::
