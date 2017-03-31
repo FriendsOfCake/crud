@@ -68,6 +68,9 @@ class JsonApiExceptionRendererTest extends TestCase
 
         $expected = ['message', 'url', 'code'];
         $actual = $viewVars['_serialize'];
+        $actual = array_flip($actual);
+        unset($actual['file'], $actual['line']);
+        $actual = array_flip($actual);
         $this->assertEquals($expected, $actual);
 
         $this->assertEquals($viewVars['message'], 'Hello World');
