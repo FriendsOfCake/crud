@@ -60,7 +60,12 @@ class JsonApiListenerTest extends TestCase
             'include' => [],
             'fieldSets' => [],
             'docValidatorAboutLinks' => false,
-            'queryParameters' => [],
+            'queryParameters' => [
+                'include' => [
+                    'whitelist' => [],
+                    'blacklist' => []
+                ]
+            ],
         ];
 
         $this->assertSame($expected, $listener->config());
@@ -1380,15 +1385,15 @@ class JsonApiListenerTest extends TestCase
 
         $expected = [
             'Articles',
-            'Comments.Author'
+            'Comments' => ['Author']
         ];
         $subject = new Subject();
         $subject->query = $this->createMock(Query::class);
         $subject->query
             ->expects($this->once())
             ->method('contain')
-            ->with($expected, true);
+            ->with($expected);
 
-        $this->callProtectedMethod('_parseIncludes', ['articles,comments.author', $subject], $listener);
+        $this->callProtectedMethod('_includeParameter', ['articles,comments.author', $subject, ['blacklist' => [], 'whitelist' => []]], $listener);
     }
 }
