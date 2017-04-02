@@ -57,7 +57,12 @@ class JsonApiListener extends ApiListener
         'include' => [],
         'fieldSets' => [], // hash to limit fields shown (can be used for both `data` and `included` members)
         'docValidatorAboutLinks' => false, // true to show links to JSON API specification clarifying the document validation error
-        'queryParameters' => [], //Array of query parameters and associated transformers
+        'queryParameters' => [
+            'include' => [
+                'whitelist' => [],
+                'blacklist' => [],
+            ]
+        ], //Array of query parameters and associated transformers
     ];
 
     /**
@@ -174,41 +179,60 @@ class JsonApiListener extends ApiListener
     /**
      * Takes a "include" string and converts it into a correct CakePHP ORM association alias
      *
-     * @param string $include The relationship to include
+     * @param string $includes The relationships to include
+     * @param array $blacklist Blacklisted includes
+     * @param array $whitelist Whitelisted options
      * @param \Cake\ORM\Table|null $repository The repository
      * @return string
      * @throws \Cake\Network\Exception\BadRequestException
      */
-    protected function _parseInclude($include, Table $repository = null)
+    protected function _parseIncludes($includes, $blacklist, $whitelist, Table $repository = null)
     {
-        $includes = explode('.', $include);
-        $includeString = [];
-        $currentRepository = $repository;
-        foreach ($includes as $include) {
+        $contains = [];
+        foreach ($includes as $include => $nestedIncludes) {
+            if (array_key_exists($include, $blacklist) && empty($blacklist[$include])) {
+                continue;
+            }
+
+            if (!empty($whitelist) && !array_key_exists($include, $whitelist)) {
+                continue;
+            }
+
             $associationName = Inflector::camelize($include);
 
-            if ($currentRepository !== null) {
-                $association = $currentRepository->association($associationName);
+            if ($repository !== null) {
+                $association = $repository->association($associationName);
                 if ($association === null) {
                     throw new BadRequestException('Invalid relationship path supplied in include parameter');
                 }
-
-                $currentRepository = $association->target();
             }
-            $includeString[] = $associationName;
+
+            if (!empty($nestedIncludes)) {
+                $contains[$associationName] = $this->_parseIncludes(
+                    $nestedIncludes,
+                    empty($blacklist[$include]) ? [] : $blacklist[$include],
+                    empty($whitelist[$include]) ? [] : $whitelist[$include],
+                    $association ? $association->target() : null
+                );
+            } else {
+                $contains[] = $associationName;
+            }
         }
 
-        return implode('.', $includeString);
+        return $contains;
     }
 
     /**
      * Parses out include query parameter into a containable array, and contains the query.
      *
+     * Supported options is "Whitelist" and "Blacklist"
+     *
      * @param string|array $includes The query data
      * @param \Crud\Event\Subject $subject The subject
+     * @param array $options Array of options for includes.
      * @return void
      */
-    protected function _parseIncludes($includes, Subject $subject)
+    protected function _includeParameter($includes, Subject $subject, $options)
     {
         if (is_string($includes)) {
             $includes = explode(',', $includes);
@@ -219,16 +243,13 @@ class JsonApiListener extends ApiListener
             return;
         }
 
-        $contains = [];
-        foreach ($includes as $include) {
-            $contain = $this->_parseInclude($include, $subject->query->repository());
+        $includes = Hash::expand(Hash::normalize($includes));
+        $blacklist = Hash::expand(Hash::normalize($options['blacklist']));
+        $whitelist = Hash::expand(Hash::normalize($options['whitelist']));
+        $contains = $this->_parseIncludes($includes, $blacklist, $whitelist, $subject->query->repository());
 
-            if (!empty($contain)) {
-                $contains[] = $contain;
-            }
-        }
-
-        $subject->query->contain($contains, true);
+        $this->config('include', array_keys(Hash::flatten($includes)));
+        $subject->query->contain($contains);
     }
 
     /**
@@ -239,16 +260,25 @@ class JsonApiListener extends ApiListener
      */
     public function beforeFind(Event $event)
     {
-        $queryParameters = $this->config('queryParameters') + [
-            'include' => [$this, '_parseIncludes']
-        ];
+        //Inject default query handlers
+        $queryParameters = Hash::merge($this->config('queryParameters'), [
+            'include' => [
+                'callable' => [$this, '_includeParameter']
+            ]
+        ]);
 
-        foreach ($queryParameters as $parameter => $callable) {
-            if (!is_callable($callable)) {
+        foreach ($queryParameters as $parameter => $options) {
+            if (is_callable($options)) {
+                $options = [
+                    'callable' => $options
+                ];
+            }
+
+            if (!is_callable($options['callable'])) {
                 throw new \InvalidArgumentException('Invalid callable supplied for query parameter ' . $parameter);
             }
 
-            $callable($this->_request()->getQuery($parameter), $event->subject());
+            $options['callable']($this->_request()->getQuery($parameter), $event->subject(), $options);
         }
     }
 
