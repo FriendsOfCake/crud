@@ -186,15 +186,24 @@ class JsonApiListener extends ApiListener
      * @return string
      * @throws \Cake\Network\Exception\BadRequestException
      */
-    protected function _parseIncludes($includes, $blacklist, $whitelist, Table $repository = null)
+    protected function _parseIncludes($includes, $blacklist, $whitelist, Table $repository = null, $path = [])
     {
+        $wildcard = implode('.', array_merge($path, ['*']));
+        $wildcardWhitelist = Hash::get($whitelist, $wildcard);
+        $wildcardBlacklist = Hash::get($blacklist, $wildcard);
         $contains = [];
         foreach ($includes as $include => $nestedIncludes) {
-            if (array_key_exists($include, $blacklist) && empty($blacklist[$include])) {
+            $includePath = array_merge($path, [$include]);
+            $includeDotPath = implode('.', $includePath);
+
+            if (!$wildcardBlacklist && Hash::get($blacklist, $includeDotPath) === true) {
                 continue;
             }
 
-            if (!empty($whitelist) && !array_key_exists($include, $whitelist)) {
+            if (!$wildcardWhitelist &&
+                !empty($whitelist) &&
+                Hash::get($whitelist, $includeDotPath) === null
+            ) {
                 continue;
             }
 
@@ -211,9 +220,10 @@ class JsonApiListener extends ApiListener
             if (!empty($nestedIncludes)) {
                 $contains[$associationName] = $this->_parseIncludes(
                     $nestedIncludes,
-                    empty($blacklist[$include]) ? [] : $blacklist[$include],
-                    empty($whitelist[$include]) ? [] : $whitelist[$include],
-                    $association ? $association->target() : null
+                    $blacklist,
+                    $whitelist,
+                    $association ? $association->target() : null,
+                    $includePath
                 );
             } else {
                 $contains[] = $associationName;
@@ -245,8 +255,8 @@ class JsonApiListener extends ApiListener
         }
 
         $includes = Hash::expand(Hash::normalize($includes));
-        $blacklist = Hash::expand(Hash::normalize($options['blacklist']));
-        $whitelist = Hash::expand(Hash::normalize($options['whitelist']));
+        $blacklist = Hash::expand(Hash::normalize(array_fill_keys($options['blacklist'], true)));
+        $whitelist = Hash::expand(Hash::normalize(array_fill_keys($options['whitelist'], true)));
         $contains = $this->_parseIncludes($includes, $blacklist, $whitelist, $subject->query->repository());
 
         $this->config('include', array_keys(Hash::flatten($includes)));

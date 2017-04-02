@@ -1373,20 +1373,98 @@ class JsonApiListenerTest extends TestCase
         $this->assertSame($expected, $result);
     }
 
+    public function includeQueryProvider()
+    {
+        return [
+            'standardInclude' => [
+                'articles,comments.author',
+                ['blacklist' => [], 'whitelist' => []],
+                [
+                    'Articles',
+                    'Comments' => ['Author']
+                ]
+            ],
+            'blacklist' => [
+                'articles,comments.author,comments.images',
+                ['blacklist' => ['comments.author'], 'whitelist' => []],
+                [
+                    'Articles',
+                    'Comments' => [
+                        'Images'
+                    ]
+                ]
+            ],
+            'whitelist' => [
+                'articles,comments.author,comments.images',
+                ['blacklist' => [], 'whitelist' => ['comments']],
+                [
+                    'Comments' => []
+                ]
+            ],
+            'multiWhitelist' => [
+                'articles,comments.author,comments.images,comments.links',
+                ['blacklist' => [], 'whitelist' => ['comments.author', 'comments.images']],
+                [
+                    'Comments' => [
+                        'Author',
+                        'Images'
+                    ]
+                ]
+            ],
+            'whitelistWildcard' => [
+                'articles,comments.author,comments.images',
+                ['blacklist' => [], 'whitelist' => ['comments.*']],
+                [
+                    'Comments' => [
+                        'Author',
+                        'Images'
+                    ]
+                ]
+            ],
+            'blacklistWildcard' => [
+                'articles,comments.author,comments.images',
+                ['blacklist' => ['comments.*'], 'whitelist' => []],
+                [
+                    'Comments' => [
+                        'Author',
+                        'Images'
+                    ],
+                    'Articles',
+                ]
+            ],
+            'whitelistBlacklistWildcard' => [
+                'articles,comments.author,comments.images,comments.links',
+                ['blacklist' => ['comments.author'], 'whitelist' => ['articles', 'comments.*']],
+                [
+                    'Comments' => [
+                        'Images',
+                        'Links'
+                    ],
+                    'Articles',
+                ]
+            ],
+            'blacklist is more important' => [
+                'articles,comments.author',
+                ['blacklist' => ['comments.author'], 'whitelist' => ['articles', 'comments.author']],
+                [
+                    'Comments' => [],
+                    'Articles',
+                ]
+            ],
+        ];
+    }
+
     /**
      * Make sure that the include query correct splits include string into a containable format
      *
      * @return void
+     * @dataProvider includeQueryProvider
      */
-    public function testIncludeQuery()
+    public function testIncludeQuery($include, $options, $expected)
     {
         $listener = new JsonApiListener(new Controller());
         $this->setReflectionClassInstance($listener);
 
-        $expected = [
-            'Articles',
-            'Comments' => ['Author']
-        ];
         $subject = new Subject();
         $subject->query = $this->createMock(Query::class);
         $subject->query
@@ -1394,6 +1472,6 @@ class JsonApiListenerTest extends TestCase
             ->method('contain')
             ->with($expected);
 
-        $this->callProtectedMethod('_includeParameter', ['articles,comments.author', $subject, ['blacklist' => [], 'whitelist' => []]], $listener);
+        $this->callProtectedMethod('_includeParameter', [$include, $subject, $options], $listener);
     }
 }
