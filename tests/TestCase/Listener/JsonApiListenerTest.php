@@ -1382,7 +1382,10 @@ class JsonApiListenerTest extends TestCase
                 [
                     'Articles',
                     'Comments' => ['Author']
-                ]
+                ],
+                [
+                    'comments.author', 'articles',
+                ],
             ],
             'blacklist' => [
                 'articles,comments.author,comments.images',
@@ -1392,14 +1395,21 @@ class JsonApiListenerTest extends TestCase
                     'Comments' => [
                         'Images'
                     ]
-                ]
+                ],
+                [
+                    'comments.images',
+                    'articles',
+                ],
             ],
             'whitelist' => [
                 'articles,comments.author,comments.images',
                 ['blacklist' => false, 'whitelist' => ['comments']],
                 [
-                    'Comments' => []
-                ]
+                    'Comments'
+                ],
+                [
+                    'comments'
+                ],
             ],
             'multiple whitelists' => [
                 'articles,comments.author,comments.images,comments.links',
@@ -1409,7 +1419,11 @@ class JsonApiListenerTest extends TestCase
                         'Author',
                         'Images'
                     ]
-                ]
+                ],
+                [
+                    'comments.author',
+                    'comments.images'
+                ],
             ],
             'whitelist wildcard' => [
                 'articles,comments.author,comments.images',
@@ -1419,7 +1433,8 @@ class JsonApiListenerTest extends TestCase
                         'Author',
                         'Images'
                     ]
-                ]
+                ],
+                ['comments.author', 'comments.images'],
             ],
             'blacklist wildcard' => [
                 'articles,comments.author,comments.images',
@@ -1430,7 +1445,8 @@ class JsonApiListenerTest extends TestCase
                         'Images'
                     ],
                     'Articles',
-                ]
+                ],
+                ['comments.author', 'comments.images', 'articles']
             ],
             'blacklist with a whitelist wildcard' => [
                 'articles,comments.author,comments.images,comments.links',
@@ -1441,24 +1457,28 @@ class JsonApiListenerTest extends TestCase
                         'Links'
                     ],
                     'Articles',
-                ]
+                ],
+                ['comments.images', 'comments.links', 'articles']
             ],
             'blacklist is more important' => [
                 'articles,comments.author',
                 ['blacklist' => ['comments.author'], 'whitelist' => ['articles', 'comments.author']],
                 [
-                    'Comments' => [],
                     'Articles',
-                ]
+                    'Comments',
+                ],
+                ['articles', 'comments']
             ],
             'blacklist everything' => [
                 'articles,comments.author',
                 ['blacklist' => true, 'whitelist' => ['articles', 'comments.author']],
+                [],
                 []
             ],
             'whitelist nothing' => [
                 'articles,comments.author',
                 ['blacklist' => false, 'whitelist' => false],
+                [],
                 []
             ],
         ];
@@ -1470,7 +1490,7 @@ class JsonApiListenerTest extends TestCase
      * @return void
      * @dataProvider includeQueryProvider
      */
-    public function testIncludeQuery($include, $options, $expected)
+    public function testIncludeQuery($include, $options, $expectedContain, $expectedInclude)
     {
         $listener = new JsonApiListener(new Controller());
         $this->setReflectionClassInstance($listener);
@@ -1478,10 +1498,11 @@ class JsonApiListenerTest extends TestCase
         $subject = new Subject();
         $subject->query = $this->createMock(Query::class);
         $subject->query
-            ->expects($this->once())
+            ->expects($options['blacklist'] !== true && $options['whitelist'] !== false ? $this->once() : $this->never())
             ->method('contain')
-            ->with($expected);
+            ->with($expectedContain);
 
         $this->callProtectedMethod('_includeParameter', [$include, $subject, $options], $listener);
+        $this->assertSame($expectedInclude, $listener->config('include'));
     }
 }
