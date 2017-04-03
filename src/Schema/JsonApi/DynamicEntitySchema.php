@@ -94,7 +94,8 @@ class DynamicEntitySchema extends SchemaProvider
         foreach ($this->_view->viewVars['_associations'] as $association) {
             $associationKey = Inflector::tableize($association->property());
 
-            if ($association->type() === Association::MANY_TO_ONE) {
+            $type = $association->type();
+            if ($type === Association::MANY_TO_ONE || $type === Association::ONE_TO_ONE) {
                 $associationKey = Inflector::singularize($associationKey);
             }
 

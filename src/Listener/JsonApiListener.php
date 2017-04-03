@@ -327,7 +327,8 @@ class JsonApiListener extends ApiListener
         $associations = $repository->associations();
 
         foreach ($associations as $association) {
-            if ($association->type() === Association::MANY_TO_ONE) {
+            $type = $association->type();
+            if ($type === Association::MANY_TO_ONE || $type === Association::ONE_TO_ONE) {
                 $associationTable = $association->target();
                 $foreignKey = $association->foreignKey();
 
@@ -434,8 +435,7 @@ class JsonApiListener extends ApiListener
         $repository = $this->_controller()->loadModel(); // Default model class
 
         // Remove associations not found in the `find()` result
-        $entity = $this->_getSingleEntity($subject);
-        $strippedAssociations = $this->_stripNonContainedAssociations($repository, $subject->query);
+        $strippedAssociations = $this->_getContainedAssociations($repository, $subject->query->contain());
 
         // Set data before rendering the view
         $this->_controller()->set([
@@ -580,19 +580,22 @@ class JsonApiListener extends ApiListener
      * prevent `null` entries appearing in the json api `relationships` node.
      *
      * @param \Cake\Datasource\RepositoryInterface $repository Repository
-     * @param \Cake\ORM\Query $query Query
+     * @param array $contains Array of contained associations
      * @return \Cake\ORM\AssociationCollection
      */
-    protected function _stripNonContainedAssociations($repository, $query)
+    protected function _getContainedAssociations($repository, $contains)
     {
-        $associations = $repository->associations();
-        $contains = $query->contain();
+        $associationCollection = $repository->associations();
 
-        foreach ($associations as $association) {
+        $associations = [];
+        foreach ((array)$contains as $contain => $nestedContains) {
+            $association = $associationCollection->get($contain);
             $associationKey = strtolower($association->name());
 
-            if (!isset($contains[$association->name()])) {
-                $associations->remove($associationKey);
+            $associations += [$associationKey => $association];
+
+            if (!empty($nestedContains)) {
+                $associations += $this->_getContainedAssociations($association->target(), $nestedContains);
             }
         }
 
@@ -639,7 +642,8 @@ class JsonApiListener extends ApiListener
 
         $result = [];
         foreach ($associations as $association) {
-            if ($association->type() === Association::MANY_TO_ONE) {
+            $type = $association->type();
+            if ($type === Association::MANY_TO_ONE || $type === Association::ONE_TO_ONE) {
                 $include = Inflector::tableize($association->name());
                 $include = Inflector::singularize($include);
 

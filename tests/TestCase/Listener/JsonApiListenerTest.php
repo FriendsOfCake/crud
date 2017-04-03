@@ -1105,7 +1105,7 @@ class JsonApiListenerTest extends TestCase
      *
      * @return void
      */
-    public function testStripNonContainedAssociations()
+    public function testGetContainedAssociations()
     {
         $table = TableRegistry::get('Countries');
         $table->belongsTo('Currencies');
@@ -1128,10 +1128,10 @@ class JsonApiListenerTest extends TestCase
         // make sure cultures are removed from AssociationCollection
         $listener = new JsonApiListener(new Controller());
         $this->setReflectionClassInstance($listener);
-        $associationsAfter = $this->callProtectedMethod('_stripNonContainedAssociations', [$table, $query], $listener);
+        $associationsAfter = $this->callProtectedMethod('_getContainedAssociations', [$table, $query->contain()], $listener);
 
-        $this->assertNotEmpty($associationsAfter->get('currencies'));
-        $this->assertNull($associationsAfter->get('cultures'));
+        $this->assertNotEmpty($associationsAfter['currencies']);
+        $this->assertArrayNotHasKey('cultures', $associationsAfter);
     }
 
     /**
