@@ -1440,13 +1440,10 @@ class JsonApiListenerTest extends TestCase
                 'articles,comments.author,comments.images',
                 ['blacklist' => ['comments.*'], 'whitelist' => true],
                 [
-                    'Comments' => [
-                        'Author',
-                        'Images'
-                    ],
                     'Articles',
+                    'Comments',
                 ],
-                ['comments.author', 'comments.images', 'articles']
+                ['articles', 'comments',]
             ],
             'blacklist with a whitelist wildcard' => [
                 'articles,comments.author,comments.images,comments.links',

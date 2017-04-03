@@ -198,7 +198,7 @@ class JsonApiListener extends ApiListener
             $includePath = array_merge($path, [$include]);
             $includeDotPath = implode('.', $includePath);
 
-            if ($blacklist === true || ($blacklist !== false && !$wildcardBlacklist && Hash::get($blacklist, $includeDotPath) === true)) {
+            if ($blacklist === true || ($blacklist !== false && ($wildcardBlacklist === true || Hash::get($blacklist, $includeDotPath) === true))) {
                 continue;
             }
 
