@@ -31,7 +31,7 @@ Setup
 Routing
 ^^^^^^^
 
-Only controllers explicitely mapped can be exposed as API resources so make sure
+Only controllers explicitly mapped can be exposed as API resources so make sure
 to configure your global routing scope in ``config/router.php`` similar to:
 
 .. code-block:: phpinline
@@ -171,7 +171,7 @@ Validation errors
 ^^^^^^^^^^^^^^^^^
 
 For (422) validation errors the listener produces will produce
-validation error reponses in the following JSON API format.
+validation error responses in the following JSON API format.
 
 .. code-block:: json
 
@@ -204,7 +204,7 @@ Requests to the ``index`` action **must** use:
 - the ``HTTP GET`` request type
 - an ``Accept`` header  set to ``application/vnd.api+json``
 
-A succesful request will respond with HTTP response code ``200``
+A successful request will respond with HTTP response code ``200``
 and response body similar to this output produced by
 ``http://example.com/countries``:
 
@@ -245,7 +245,7 @@ Requests to the ``view`` action **must** use:
 - the ``HTTP GET`` request type
 - an ``Accept`` header  set to ``application/vnd.api+json``
 
-A succesful request will respond with HTTP response code ``200``
+A successful request will respond with HTTP response code ``200``
 and response body similar to this output produced by
 ````http://example.com/countries/1``:
 
@@ -275,7 +275,7 @@ Requests to the ``add`` action **must** use:
 - a ``Content-Type`` header  set to ``application/vnd.api+json``
 - request data in valid JSON API document format
 
-A succesful request will respond with HTTP response code ``200``
+A successful request will respond with HTTP response code ``200``
 and response body containing the ``id`` of the newly created
 record. Request failing ORM validation will result in a (422) validation
 error response as described earlier.
@@ -353,7 +353,7 @@ All requests to the ``edit`` action **must** use:
 - request data in valid JSON API document format
 - request data containing the ``id`` of the resource to update
 
-A succesful request will respond with HTTP response code ``200``
+A successful request will respond with HTTP response code ``200``
 and response body similar to the one produced by the ``view`` action.
 
 A valid JSON API document structure for updating the ``name`` field
@@ -383,7 +383,7 @@ All requests to the ``delete`` action **must** use:
 - request data in valid JSON API document format
 - request data containing the ``id`` of the resource to delete
 
-A succesful request will return HTTP response code ``204`` (No Content)
+A successful request will return HTTP response code ``204`` (No Content)
 and empty response body. Failed requests will return HTTP response
 code ``400`` with empty response body.
 
@@ -425,7 +425,7 @@ and a ``hasMany`` relationship with Cultures:
     return $this->Crud->execute();
   }
 
-Assuming a succesful find the listener would produce the
+Assuming a successful find the listener would produce the
 following JSON API response including all associated data:
 
 .. code-block:: json
@@ -503,6 +503,44 @@ following JSON API response including all associated data:
         }
       }
     ]
+  }
+
+The listener also supports the ``include`` parameter to allow clients to
+customize related resources. Using that same example as above, the client
+might request ``/countries/2?include=cultures,currencies`` to achieve the
+same response. If the include parameter is provided, then only requested
+relationships will be included in the ``included`` schema.
+
+It is possible blacklist, or whitelist what the client is allowed to include.
+This is done using the listener configuration:
+
+.. code-block:: php
+
+  public function view()
+  {
+    $this->Crud
+      ->listener('jsonApi')
+      ->setConfig('queryParameters.include.whitelist', ['cultures', 'cities']);
+
+    return $this->Crud->execute();
+  }
+
+Whitelisting will prevent all non-whitelisted associations from being
+contained. Blacklisting will prevent any blacklisted associations from
+being included. Blacklisting takes precedence of whitelisting (i.e
+blacklisting and whitelisting the same association will prevent it from
+being included). If you wish to prevent any associations, set the ``blacklist``
+config option to ``true``:
+
+.. code-block:: php
+
+  public function view()
+  {
+    $this->Crud
+      ->listener('jsonApi')
+      ->setConfig('queryParameters.include.blacklist', true);
+
+    return $this->Crud->execute();
   }
 
 .. note::
@@ -623,6 +661,11 @@ Please note that entity names:
     'cultures' // hasMany relationship and thus plural
   ]);
 
+.. note::
+
+The value of the ``include`` configuration will be overwritten if the
+the client uses the ``?include`` query parameter.
+
 fieldSets
 ^^^^^^^^^
 
@@ -675,6 +718,21 @@ by a missing ``type`` node in the posted data would be:
       }
     ]
   }
+
+queryParameters
+^^^^^^^^^^^^^^^
+
+This **array** option allows you to specify query parameters to parse in your application.
+Currently this listener supports the official ``include`` parameter. You can easily add your own
+by specifying a callable.
+
+.. code-block:: phpinline
+
+  $this->Crud->listener('jsonApi')->config('queryParameter.parent', [
+    'callable' => function ($queryData, $subject) {
+      $subject->query->where('parent' => $queryData);
+    }
+  ]);
 
 Pagination
 ----------
