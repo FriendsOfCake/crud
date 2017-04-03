@@ -59,8 +59,8 @@ class JsonApiListener extends ApiListener
         'docValidatorAboutLinks' => false, // true to show links to JSON API specification clarifying the document validation error
         'queryParameters' => [
             'include' => [
-                'whitelist' => [],
-                'blacklist' => [],
+                'whitelist' => true,
+                'blacklist' => false,
             ]
         ], //Array of query parameters and associated transformers
     ];
@@ -180,8 +180,8 @@ class JsonApiListener extends ApiListener
      * Takes a "include" string and converts it into a correct CakePHP ORM association alias
      *
      * @param string $includes The relationships to include
-     * @param array $blacklist Blacklisted includes
-     * @param array $whitelist Whitelisted options
+     * @param array|bool $blacklist Blacklisted includes
+     * @param array|bool $whitelist Whitelisted options
      * @param \Cake\ORM\Table|null $repository The repository
      * @return string
      * @throws \Cake\Network\Exception\BadRequestException
@@ -189,21 +189,22 @@ class JsonApiListener extends ApiListener
     protected function _parseIncludes($includes, $blacklist, $whitelist, Table $repository = null, $path = [])
     {
         $wildcard = implode('.', array_merge($path, ['*']));
-        $wildcardWhitelist = Hash::get($whitelist, $wildcard);
-        $wildcardBlacklist = Hash::get($blacklist, $wildcard);
+        $wildcardWhitelist = Hash::get((array)$whitelist, $wildcard);
+        $wildcardBlacklist = Hash::get((array)$blacklist, $wildcard);
         $contains = [];
         foreach ($includes as $include => $nestedIncludes) {
             $includePath = array_merge($path, [$include]);
             $includeDotPath = implode('.', $includePath);
 
-            if (!$wildcardBlacklist && Hash::get($blacklist, $includeDotPath) === true) {
+            if ($blacklist === true || ($blacklist !== false && !$wildcardBlacklist && Hash::get($blacklist, $includeDotPath) === true)) {
                 continue;
             }
 
-            if (!$wildcardWhitelist &&
-                !empty($whitelist) &&
+            if ($whitelist === false || (
+                $whitelist !== true &&
+                !$wildcardWhitelist &&
                 Hash::get($whitelist, $includeDotPath) === null
-            ) {
+            )) {
                 continue;
             }
 
@@ -255,8 +256,8 @@ class JsonApiListener extends ApiListener
         }
 
         $includes = Hash::expand(Hash::normalize($includes));
-        $blacklist = Hash::expand(Hash::normalize(array_fill_keys($options['blacklist'], true)));
-        $whitelist = Hash::expand(Hash::normalize(array_fill_keys($options['whitelist'], true)));
+        $blacklist = is_array($options['blacklist']) ? Hash::expand(Hash::normalize(array_fill_keys($options['blacklist'], true))) : $options['blacklist'];
+        $whitelist = is_array($options['whitelist']) ? Hash::expand(Hash::normalize(array_fill_keys($options['whitelist'], true))) : $options['whitelist'];
         $contains = $this->_parseIncludes($includes, $blacklist, $whitelist, $subject->query->repository());
 
         $this->config('include', array_keys(Hash::flatten($includes)));

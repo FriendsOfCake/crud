@@ -62,8 +62,8 @@ class JsonApiListenerTest extends TestCase
             'docValidatorAboutLinks' => false,
             'queryParameters' => [
                 'include' => [
-                    'whitelist' => [],
-                    'blacklist' => []
+                    'whitelist' => true,
+                    'blacklist' => false
                 ]
             ],
         ];
@@ -1376,9 +1376,9 @@ class JsonApiListenerTest extends TestCase
     public function includeQueryProvider()
     {
         return [
-            'standardInclude' => [
+            'standard' => [
                 'articles,comments.author',
-                ['blacklist' => [], 'whitelist' => []],
+                ['blacklist' => false, 'whitelist' => true],
                 [
                     'Articles',
                     'Comments' => ['Author']
@@ -1386,7 +1386,7 @@ class JsonApiListenerTest extends TestCase
             ],
             'blacklist' => [
                 'articles,comments.author,comments.images',
-                ['blacklist' => ['comments.author'], 'whitelist' => []],
+                ['blacklist' => ['comments.author'], 'whitelist' => true],
                 [
                     'Articles',
                     'Comments' => [
@@ -1396,14 +1396,14 @@ class JsonApiListenerTest extends TestCase
             ],
             'whitelist' => [
                 'articles,comments.author,comments.images',
-                ['blacklist' => [], 'whitelist' => ['comments']],
+                ['blacklist' => false, 'whitelist' => ['comments']],
                 [
                     'Comments' => []
                 ]
             ],
-            'multiWhitelist' => [
+            'multiple whitelists' => [
                 'articles,comments.author,comments.images,comments.links',
-                ['blacklist' => [], 'whitelist' => ['comments.author', 'comments.images']],
+                ['blacklist' => false, 'whitelist' => ['comments.author', 'comments.images']],
                 [
                     'Comments' => [
                         'Author',
@@ -1411,9 +1411,9 @@ class JsonApiListenerTest extends TestCase
                     ]
                 ]
             ],
-            'whitelistWildcard' => [
+            'whitelist wildcard' => [
                 'articles,comments.author,comments.images',
-                ['blacklist' => [], 'whitelist' => ['comments.*']],
+                ['blacklist' => false, 'whitelist' => ['comments.*']],
                 [
                     'Comments' => [
                         'Author',
@@ -1421,9 +1421,9 @@ class JsonApiListenerTest extends TestCase
                     ]
                 ]
             ],
-            'blacklistWildcard' => [
+            'blacklist wildcard' => [
                 'articles,comments.author,comments.images',
-                ['blacklist' => ['comments.*'], 'whitelist' => []],
+                ['blacklist' => ['comments.*'], 'whitelist' => true],
                 [
                     'Comments' => [
                         'Author',
@@ -1432,7 +1432,7 @@ class JsonApiListenerTest extends TestCase
                     'Articles',
                 ]
             ],
-            'whitelistBlacklistWildcard' => [
+            'blacklist with a whitelist wildcard' => [
                 'articles,comments.author,comments.images,comments.links',
                 ['blacklist' => ['comments.author'], 'whitelist' => ['articles', 'comments.*']],
                 [
@@ -1450,6 +1450,16 @@ class JsonApiListenerTest extends TestCase
                     'Comments' => [],
                     'Articles',
                 ]
+            ],
+            'blacklist everything' => [
+                'articles,comments.author',
+                ['blacklist' => true, 'whitelist' => ['articles', 'comments.author']],
+                []
+            ],
+            'whitelist nothing' => [
+                'articles,comments.author',
+                ['blacklist' => false, 'whitelist' => false],
+                []
             ],
         ];
     }
