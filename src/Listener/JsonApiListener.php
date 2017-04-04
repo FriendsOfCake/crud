@@ -252,7 +252,7 @@ class JsonApiListener extends ApiListener
         if (is_string($includes)) {
             $includes = explode(',', $includes);
         }
-        $includes = Hash::filter($includes);
+        $includes = Hash::filter((array)$includes);
 
         if (empty($includes) || $options['blacklist'] === true || $options['whitelist'] === false) {
             return;
