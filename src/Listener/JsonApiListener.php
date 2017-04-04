@@ -293,7 +293,7 @@ class JsonApiListener extends ApiListener
                 throw new \InvalidArgumentException('Invalid callable supplied for query parameter ' . $parameter);
             }
 
-            $options['callable']($this->_request()->getQuery($parameter), $event->subject(), $options);
+            $options['callable']($this->_request()->query($parameter), $event->subject(), $options);
         }
     }
 
