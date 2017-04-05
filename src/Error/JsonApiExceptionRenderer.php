@@ -16,7 +16,7 @@ use Neomerx\JsonApi\Exceptions\ErrorCollection;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class JsonApiExceptionRenderer extends \Cake\Error\ExceptionRenderer
+class JsonApiExceptionRenderer extends ExceptionRenderer
 {
 
     /**
@@ -27,6 +27,10 @@ class JsonApiExceptionRenderer extends \Cake\Error\ExceptionRenderer
      */
     protected function _outputMessage($template)
     {
+        if (!$this->controller->request->is('jsonapi')) {
+            return parent::_outputMessage($template);
+        }
+
         $viewVars = $this->controller->viewVars;
 
         $code = $viewVars['code']; // e.g. 404
@@ -75,6 +79,10 @@ class JsonApiExceptionRenderer extends \Cake\Error\ExceptionRenderer
      */
     public function validation($exception)
     {
+        if (!$this->controller->request->is('jsonapi')) {
+            return parent::validation($exception);
+        }
+
         $status = $exception->getCode();
 
         try {
