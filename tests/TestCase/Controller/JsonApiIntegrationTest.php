@@ -41,6 +41,12 @@ class JsonApiIntegrationTest extends IntegrationTestCase
             $routes->resources('Countries', [
                 'inflect' => 'dasherize'
             ]);
+            $routes->resources('Currencies', [
+                'inflect' => 'dasherize'
+            ]);
+            $routes->resources('Cultures', [
+                'inflect' => 'dasherize'
+            ]);
         });
 
         $this->configRequest([
