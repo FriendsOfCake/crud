@@ -15,7 +15,7 @@ class CountriesFixture extends TestFixture
     ];
 
     public $records = [
-        ['id' => 1, 'code' => 'NL', 'name' => 'The Netherlands', 'currency_id' => 1],
-        ['id' => 2, 'code' => 'BE', 'name' => 'Belgium', 'currency_id' => 1],
+        ['code' => 'NL', 'name' => 'The Netherlands', 'currency_id' => 1],
+        ['code' => 'BE', 'name' => 'Belgium', 'currency_id' => 1],
     ];
 }
