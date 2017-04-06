@@ -264,7 +264,7 @@ class JsonApiListener extends ApiListener
         $whitelist = is_array($options['whitelist']) ? Hash::expand(Hash::normalize(array_fill_keys($options['whitelist'], true))) : $options['whitelist'];
         $contains = $this->_parseIncludes($includes, $blacklist, $whitelist, $subject->query->repository());
 
-        $subject->query->contain($contains);
+        $subject->query = $subject->query->contain($contains);
     }
 
     /**

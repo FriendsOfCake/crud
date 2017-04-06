@@ -20,7 +20,7 @@
                 "name": "The Netherlands"
             },
             "links": {
-                "self": "\/countries\/view\/1"
+                "self": "\/countries\/1"
             }
         },
         {
@@ -31,7 +31,7 @@
                 "name": "Belgium"
             },
             "links": {
-                "self": "\/countries\/view\/2"
+                "self": "\/countries\/2"
             }
         }
     ]

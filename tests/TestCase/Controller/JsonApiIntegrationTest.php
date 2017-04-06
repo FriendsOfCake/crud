@@ -1,8 +1,9 @@
 <?php
 namespace Crud\TestCase\Controller;
 
+use Cake\Core\Plugin;
 use Cake\Routing\Router;
-use Crud\TestSuite\IntegrationTestCase;
+use Cake\TestSuite\IntegrationTestCase;
 
 class JsonApiIntegrationTest extends IntegrationTestCase
 {
@@ -30,6 +31,9 @@ class JsonApiIntegrationTest extends IntegrationTestCase
                 'inflect' => 'dasherize'
             ]);
         });
+
+        // store path the the json fixtures
+        $this->_JsonDir = Plugin::path('Crud') . 'tests' . DS . 'Fixture' . DS . 'JsonApi' . DS;
     }
 
     protected function _getExpected($file)
@@ -112,5 +116,42 @@ class JsonApiIntegrationTest extends IntegrationTestCase
     {
         $this->assertHeader('Content-Type', 'application/vnd.api+json');
         $this->assertContentType('application/vnd.api+json');
+    }
+
+    public function viewProvider()
+    {
+        return [
+            'no relations' => [
+                '/countries/1',
+                'get_country_no_relationships.json',
+            ],
+            'include culture' => [
+                '/countries/1?include=cultures',
+                'get_country_with_culture.json'
+            ],
+            'include currency' => [
+                '/countries/1?include=currencies',
+                'get_country_with_currency.json'
+            ],
+        ];
+    }
+
+    /**
+     * @param string $url The endpoint to hit
+     * @param string $expectedFile The file to find the expected result in
+     * @return void
+     * @dataProvider viewProvider
+     */
+    public function testView($url, $expectedFile)
+    {
+        $this->configRequest([
+            'headers' => [
+                'Accept' => 'application/vnd.api+json'
+            ]
+        ]);
+        $this->get($url);
+
+        $this->assertResponseSuccess();
+        $this->assertSame($this->_getExpected($expectedFile), $this->_getResponseAsArray());
     }
 }

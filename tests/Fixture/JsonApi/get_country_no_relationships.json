@@ -4,8 +4,7 @@
         "id": "1",
         "attributes": {
             "code": "NL",
-            "name": "The Netherlands",
-            "currency_id": 1
+            "name": "The Netherlands"
         },
         "links": {
             "self": "\/countries\/1"
