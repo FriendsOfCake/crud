@@ -9,8 +9,16 @@ class JsonApiIntegrationTest extends IntegrationTestCase
 
     public $fixtures = [
         'plugin.crud.countries',
-        'plugin.crud.currencies'
+        'plugin.crud.currencies',
+        'plugin.crud.cultures',
     ];
+
+    /**
+     * Path to directory holding json fixtures with trailing slash
+     *
+     * @var
+     */
+    protected $_JsonDir;
 
     /**
      * Set up required RESTful resource routes.
@@ -22,6 +30,21 @@ class JsonApiIntegrationTest extends IntegrationTestCase
                 'inflect' => 'dasherize'
             ]);
         });
+    }
+
+    protected function _getExpected($file)
+    {
+        return json_decode((new File($this->_JsonDir . $file))->read(), true);
+    }
+
+    protected function _getResponseAsArray()
+    {
+        $this->_response->getBody()
+            ->rewind();
+        $response = $this->_response->getBody()
+            ->getContents();
+
+        return json_decode($response, true);
     }
 
     /**
@@ -41,6 +64,7 @@ class JsonApiIntegrationTest extends IntegrationTestCase
         $this->_assertJsonApiResponse();
         $this->assertResponseCode(200);
         $this->assertResponseNotEmpty();
+        $this->assertSame($this->_getExpected('get_countries_with_pagination.json'), $this->_getResponseAsArray());
     }
 
     /**

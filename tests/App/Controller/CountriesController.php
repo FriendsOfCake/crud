@@ -12,22 +12,22 @@ class CountriesController extends Controller
 
     use ControllerTrait;
 
-    public $paginate = [
-        'limit' => 3
-    ];
+    public $paginate = ['limit' => 3];
 
     public $components = [
         'RequestHandler',
+        'Flash',
         'Crud.Crud' => [
             'actions' => [
                 'Crud.Index',
-                'Crud.View',
                 'Crud.Add',
                 'Crud.Edit',
+                'Crud.View',
                 'Crud.Delete',
             ],
             'listeners' => [
-                'Crud.JsonApi'
+                'Crud.JsonApi',
+                'Crud.ApiPagination',
             ]
         ]
     ];
