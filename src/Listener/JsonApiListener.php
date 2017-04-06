@@ -219,7 +219,7 @@ class JsonApiListener extends ApiListener
             if ($repository !== null) {
                 $association = $repository->association($associationName);
                 if ($association === null) {
-                    throw new BadRequestException('Invalid relationship path supplied in include parameter');
+                    throw new BadRequestException("Invalid relationship path '{$includeDotPath}' supplied in include parameter");
                 }
             }
 

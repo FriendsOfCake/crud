@@ -2,12 +2,20 @@
 namespace Crud\TestCase\Controller;
 
 use Cake\Core\Plugin;
+use Cake\Event\Event;
+use Cake\Event\EventManager;
+use Cake\Filesystem\File;
 use Cake\Routing\Router;
 use Cake\TestSuite\IntegrationTestCase;
+use Crud\Error\JsonApiExceptionRenderer;
 
 class JsonApiIntegrationTest extends IntegrationTestCase
 {
-
+    /**
+     * fixtures property
+     *
+     * @var array
+     */
     public $fixtures = [
         'plugin.crud.countries',
         'plugin.crud.currencies',
@@ -31,6 +39,12 @@ class JsonApiIntegrationTest extends IntegrationTestCase
                 'inflect' => 'dasherize'
             ]);
         });
+
+        $this->configRequest([
+            'headers' => [
+                'Accept' => 'application/vnd.api+json'
+            ]
+        ]);
 
         // store path the the json fixtures
         $this->_JsonDir = Plugin::path('Crud') . 'tests' . DS . 'Fixture' . DS . 'JsonApi' . DS;
@@ -58,10 +72,6 @@ class JsonApiIntegrationTest extends IntegrationTestCase
      */
     public function testGet()
     {
-        $this->configRequest([
-            'headers' => ['Accept' => 'application/vnd.api+json']
-        ]);
-
         $this->get('/countries');
 
         $this->assertResponseOk();
@@ -152,14 +162,38 @@ class JsonApiIntegrationTest extends IntegrationTestCase
      */
     public function testView($url, $expectedFile)
     {
-        $this->configRequest([
-            'headers' => [
-                'Accept' => 'application/vnd.api+json'
-            ]
-        ]);
         $this->get($url);
 
         $this->assertResponseSuccess();
         $this->assertSame($this->_getExpected($expectedFile), $this->_getResponseAsArray());
+    }
+
+    /**
+     * @return void
+     */
+    public function testViewWithContain()
+    {
+        EventManager::instance()
+            ->on('Crud.beforeFind', function (Event $event) {
+                $event->subject()->query->contain([
+                    'Currencies',
+                    'Cultures',
+                ]);
+            });
+        $this->get('/countries/1');
+
+        $this->assertResponseSuccess();
+        $this->assertSame($this->_getExpected('get_country_with_currency_and_culture.json'), $this->_getResponseAsArray());
+    }
+
+    /**
+     * @return void
+     */
+    public function testViewInvalidInclude()
+    {
+        Configure::write('Error.exceptionRenderer', JsonApiExceptionRenderer::class);
+        $this->get('/countries/1?include=donkey');
+
+        $this->assertResponseError();
     }
 }
