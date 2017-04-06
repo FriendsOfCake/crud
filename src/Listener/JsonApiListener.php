@@ -192,7 +192,6 @@ class JsonApiListener extends ApiListener
         $wildcardWhitelist = Hash::get((array)$whitelist, $wildcard);
         $wildcardBlacklist = Hash::get((array)$blacklist, $wildcard);
         $contains = [];
-        $includeConfig = $this->config('include');
         foreach ($includes as $include => $nestedIncludes) {
             $nestedContains = [];
             $includePath = array_merge($path, [$include]);
@@ -228,11 +227,9 @@ class JsonApiListener extends ApiListener
                 $contains[$associationName] = $nestedContains;
             } else {
                 $contains[] = $associationName;
-                $includeConfig[] = $includeDotPath;
             }
         }
 
-        $this->config('include', $includeConfig);
 
         return $contains;
     }
@@ -265,6 +262,12 @@ class JsonApiListener extends ApiListener
         $contains = $this->_parseIncludes($includes, $blacklist, $whitelist, $subject->query->repository());
 
         $subject->query = $subject->query->contain($contains);
+
+        $this->config('include', []);
+        $associations = $this->_getContainedAssociations($this->_controller()->loadModel(), $contains);
+        $include = $this->_getIncludeList($associations);
+
+        $this->config('include', $include);
     }
 
     /**
@@ -587,6 +590,11 @@ class JsonApiListener extends ApiListener
 
         $associations = [];
         foreach ((array)$contains as $contain => $nestedContains) {
+            if (is_string($nestedContains)) {
+                $contain = $nestedContains;
+                $nestedContains = [];
+            }
+
             $association = $associationCollection->get($contain);
             $associationKey = strtolower($association->name());
 

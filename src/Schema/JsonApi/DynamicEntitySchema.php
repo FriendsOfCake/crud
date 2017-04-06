@@ -92,12 +92,7 @@ class DynamicEntitySchema extends SchemaProvider
 
         // remove associated data so it won't appear inside jsonapi `attributes`
         foreach ($this->_view->viewVars['_associations'] as $association) {
-            $associationKey = Inflector::tableize($association->property());
-
-            $type = $association->type();
-            if ($type === Association::MANY_TO_ONE || $type === Association::ONE_TO_ONE) {
-                $associationKey = Inflector::singularize($associationKey);
-            }
+            $associationKey = $association['association']->property();
 
             unset($attributes[$associationKey]);
         }
@@ -121,7 +116,7 @@ class DynamicEntitySchema extends SchemaProvider
         $relations = [];
 
         foreach ($this->_view->viewVars['_associations'] as $association) {
-            $associationKey = $association->property();
+            $associationKey = $association['association']->property();
 
             $data = $resource->get($associationKey);
             if (!$data) {
