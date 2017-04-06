@@ -435,7 +435,7 @@ class JsonApiListener extends ApiListener
         $repository = $this->_controller()->loadModel(); // Default model class
 
         // Remove associations not found in the `find()` result
-        $strippedAssociations = $this->_getContainedAssociations($repository, $subject->query->contain());
+        $usedAssociations = $this->_getContainedAssociations($repository, $subject->query->contain());
 
         // Set data before rendering the view
         $this->_controller()->set([
@@ -445,11 +445,11 @@ class JsonApiListener extends ApiListener
             '_jsonApiBelongsToLinks' => $this->config('jsonApiBelongsToLinks'),
             '_jsonOptions' => $this->config('jsonOptions'),
             '_debugPrettyPrint' => $this->config('debugPrettyPrint'),
-            '_repositories' => $this->_getRepositoryList($repository, $strippedAssociations),
-            '_include' => $this->_getIncludeList($strippedAssociations),
+            '_repositories' => $this->_getRepositoryList($repository, $usedAssociations),
+            '_include' => $this->_getIncludeList($usedAssociations),
             '_fieldSets' => $this->config('fieldSets'),
             Inflector::tableize($repository->alias()) => $this->_getFindResult($subject),
-            '_associations' => $strippedAssociations,
+            '_associations' => $usedAssociations,
             '_serialize' => true,
         ]);
 
@@ -575,9 +575,7 @@ class JsonApiListener extends ApiListener
     }
 
     /**
-     * Removes all associated models not detected (as the result of a contain
-     * query) in the find result from the entity's AssociationCollection to
-     * prevent `null` entries appearing in the json api `relationships` node.
+     * Creates a nested array of all associations used in the query
      *
      * @param \Cake\Datasource\RepositoryInterface $repository Repository
      * @param array $contains Array of contained associations
@@ -592,10 +590,13 @@ class JsonApiListener extends ApiListener
             $association = $associationCollection->get($contain);
             $associationKey = strtolower($association->name());
 
-            $associations += [$associationKey => $association];
+            $associations[$associationKey] = [
+                'association' => $association,
+                'children' => []
+            ];
 
             if (!empty($nestedContains)) {
-                $associations += $this->_getContainedAssociations($association->target(), $nestedContains);
+                $associations[$associationKey]['children'] = $this->_getContainedAssociations($association->target(), $nestedContains);
             }
         }
 
@@ -603,10 +604,10 @@ class JsonApiListener extends ApiListener
     }
 
     /**
-     * Get a list of all repositories indexed by their registry alias.
+     * Get a flat list of all repositories indexed by their registry alias.
      *
      * @param RepositoryInterface $repository Current repository
-     * @param Association[] $associations Associations to get repository from
+     * @param array $associations Nested associations to get repository from
      * @return array Used repositories indexed by registry alias
      * @internal
      */
@@ -617,9 +618,18 @@ class JsonApiListener extends ApiListener
         ];
 
         foreach ($associations as $association) {
-            $registryAlias = $association->target()->registryAlias();
+            $association += [
+                'association' => null,
+                'children' => []
+            ];
 
-            $repositories[$registryAlias] = $association->target();
+            if ($association['association'] === null) {
+                throw new \InvalidArgumentException("Association {$name} does not have an association object set");
+            }
+
+            $associationRepository = $association['association']->target();
+
+            $repositories += $this->_getRepositoryList($associationRepository, $association['children'] ?: []);
         }
 
         return $repositories;
@@ -633,29 +643,29 @@ class JsonApiListener extends ApiListener
      *
      * @param \Cake\ORM\AssociationCollection $associations AssociationCollection
      * @return array
+     * @throws \InvalidArgumentException
      */
-    protected function _getIncludeList($associations)
+    protected function _getIncludeList($associations, $last = true)
     {
         if (!empty($this->config('include'))) {
             return $this->config('include');
         }
 
         $result = [];
-        foreach ($associations as $association) {
-            $type = $association->type();
-            if ($type === Association::MANY_TO_ONE || $type === Association::ONE_TO_ONE) {
-                $include = Inflector::tableize($association->name());
-                $include = Inflector::singularize($include);
+        foreach ($associations as $name => $association) {
+            $association += [
+                'association' => null,
+                'children' => []
+            ];
 
-                $result[] = $include;
-                continue;
+            if ($association['association'] === null) {
+                throw new \InvalidArgumentException("Association {$name} does not have an association object set");
             }
 
-            // hasMany
-            $result[] = Inflector::tableize($association->name());
+            $result[$association['association']->property()] = $this->_getIncludeList($association['children'], false);
         }
 
-        return $result;
+        return $last ? array_keys(Hash::flatten($result)) : $result;
     }
 
     /**

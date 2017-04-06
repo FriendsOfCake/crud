@@ -1146,10 +1146,22 @@ class JsonApiListenerTest extends TestCase
         $table->belongsTo('Currencies');
         $table->hasMany('Cultures');
 
-        $associations = $table->associations();
+        $associations = [];
+        foreach ($table->associations() as $association) {
+            $associations[strtolower($association->name())] = [
+                'association' => $association,
+                'children' => []
+            ];
+        }
 
-        $this->assertNotEmpty($associations->get('currencies'));
-        $this->assertNotEmpty($associations->get('cultures'));
+        $associations['currencies']['children'] = [
+            'countries' => [
+                'association' => $table->Currencies->Countries,
+            ]
+        ];
+
+        $this->assertArrayHasKey('currencies', $associations);
+        $this->assertArrayHasKey('cultures', $associations);
 
         $listener = new JsonApiListener(new Controller());
         $this->setReflectionClassInstance($listener);
@@ -1184,11 +1196,22 @@ class JsonApiListenerTest extends TestCase
         $this->assertEmpty($listener->config('include'));
 
         $table = TableRegistry::get('Countries');
-        $associations = $table->associations();
-        $this->assertSame(['currencies', 'cultures'], $associations->keys());
+        $associations = [];
+        foreach ($table->associations() as $association) {
+            $associations[strtolower($association->name())] = [
+                'association' => $association,
+                'children' => []
+            ];
+        }
+
+        $associations['currencies']['children'] = [
+            'countries' => [
+                'association' => $table->Currencies->Countries,
+            ]
+        ];
 
         $expected = [
-            'currency',
+            'currency.countries',
             'cultures'
         ];
 
@@ -1196,10 +1219,16 @@ class JsonApiListenerTest extends TestCase
 
         $this->assertSame($expected, $result);
 
+        unset($associations['currencies']['children']['countries']);
+        $this->assertSame(['currencies', 'cultures'], array_keys($associations));
+        $result = $this->callProtectedMethod('_getIncludeList', [$associations], $listener);
+
+        $this->assertSame(['currency', 'cultures'], $result);
+
         // assert the include list is still auto-generated if an association is
         // removed from the AssociationsCollection
-        $associations->remove('cultures');
-        $this->assertSame(['currencies'], $associations->keys());
+        unset($associations['cultures']);
+        $this->assertSame(['currencies'], array_keys($associations));
         $result = $this->callProtectedMethod('_getIncludeList', [$associations], $listener);
 
         $this->assertSame(['currency'], $result);

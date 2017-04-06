@@ -154,7 +154,6 @@ class JsonApiViewTest extends TestCase
             ->getMock();
 
         $this->setReflectionClassInstance($listener);
-        $entity = $this->callProtectedMethod('_getSingleEntity', [$subject], $listener);
         $associations = $this->callProtectedMethod('_getContainedAssociations', [$table, $subject->query->contain()], $listener);
         $repositories = $this->callProtectedMethod('_getRepositoryList', [$table, $associations], $listener);
 
