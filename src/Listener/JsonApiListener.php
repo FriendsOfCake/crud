@@ -441,8 +441,12 @@ class JsonApiListener extends ApiListener
     {
         $repository = $this->_controller()->loadModel(); // Default model class
 
-        // Remove associations not found in the `find()` result
-        $usedAssociations = $this->_getContainedAssociations($repository, $subject->query->contain());
+        if (isset($subject->query)) {
+            $usedAssociations = $this->_getContainedAssociations($repository, $subject->query->contain());
+        } else {
+            $entity = $this->_getSingleEntity($subject);
+            $usedAssociations = $this->_extractEntityAssociations($repository, $entity);
+        }
 
         // Set data before rendering the view
         $this->_controller()->set([
@@ -609,6 +613,33 @@ class JsonApiListener extends ApiListener
 
             if (!empty($nestedContains)) {
                 $associations[$associationKey]['children'] = $this->_getContainedAssociations($association->target(), $nestedContains);
+            }
+        }
+
+        return $associations;
+    }
+
+    /**
+     * Removes all associated models not detected (as the result of a contain
+     * query) in the find result from the entity's AssociationCollection to
+     * prevent `null` entries appearing in the json api `relationships` node.
+     *
+     * @param \Cake\Datasource\RepositoryInterface $repository Repository
+     * @param \Cake\ORM\Entity $entity Entity
+     * @return array
+     */
+    protected function _extractEntityAssociations($repository, $entity)
+    {
+        $associationCollection = $repository->associations();
+        $associations = [];
+        foreach ($associationCollection as $association) {
+            $associationKey = strtolower($association->name());
+            $entityKey = $association->property();
+            if (!empty($entity->$entityKey)) {
+                $associations[$associationKey] = [
+                    'association' => $association,
+                    'children' => $this->_extractEntityAssociations($association->target(), $entity->$entityKey)
+                ];
             }
         }
 

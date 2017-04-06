@@ -1,6 +1,7 @@
 <?php
 namespace Crud\TestCase\Controller;
 
+use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
@@ -34,6 +35,8 @@ class JsonApiIntegrationTest extends IntegrationTestCase
      */
     public function setUp()
     {
+        Configure::write('Error.exceptionRenderer', JsonApiExceptionRenderer::class);
+
         Router::scope('/', function ($routes) {
             $routes->resources('Countries', [
                 'inflect' => 'dasherize'
@@ -128,6 +131,9 @@ class JsonApiIntegrationTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
     }
 
+    /**
+     * @return array
+     */
     public function viewProvider()
     {
         return [
@@ -191,7 +197,6 @@ class JsonApiIntegrationTest extends IntegrationTestCase
      */
     public function testViewInvalidInclude()
     {
-        Configure::write('Error.exceptionRenderer', JsonApiExceptionRenderer::class);
         $this->get('/countries/1?include=donkey');
 
         $this->assertResponseError();
