@@ -14,7 +14,7 @@ class CurrenciesFixture extends TestFixture
     ];
 
     public $records = [
-        ['id' => 1, 'code' => 'EUR', 'name' => 'Euro'],
-        ['id' => 2, 'code' => 'USD', 'name' => 'US Dollar'],
+        ['code' => 'EUR', 'name' => 'Euro'],
+        ['code' => 'USD', 'name' => 'US Dollar'],
     ];
 }

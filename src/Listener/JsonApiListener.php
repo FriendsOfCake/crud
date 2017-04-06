@@ -109,9 +109,9 @@ class JsonApiListener extends ApiListener
     }
 
     /**
-     * afterSave() event used to respond with `Location` header pointing to
-     * the newly created resources. Only applied to `add` actions as described
-     * at http://jsonapi.org/format/#crud-creating-responses-201.
+     * afterSave() event used to respond with Status Code 201 for newly
+     * created resources. Only applied to `add` actions as described at
+     * http://jsonapi.org/format/#crud-creating-responses-201.
      *
      * @param \Cake\Event\Event $event Event
      * @return false|null
@@ -125,6 +125,10 @@ class JsonApiListener extends ApiListener
         // `created` will be set for add actions, `id` for edit actions
         if (!$event->subject()->created && !$event->subject()->id) {
             return false;
+        }
+
+        if ($event->subject()->created) {
+            $this->_controller()->response->statusCode(201);
         }
 
         $this->_insertBelongsToDataIntoEventFindResult($event);
