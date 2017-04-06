@@ -201,7 +201,6 @@ class JsonApiView extends View
      *
      * @param RepositoryInterface[] $repositories List holding repositories used to map entities to schema classes
      * @throws \Crud\Error\Exception\CrudException
-     * @throws \InvalidArgumentException
      * @return array A list with Entity class names as key holding NeoMerx Closure object
      */
     protected function _entitiesToNeoMerxSchema(array $repositories)
@@ -211,7 +210,7 @@ class JsonApiView extends View
             $entityClass = $repository->entityClass();
 
             if ($entityClass === Entity::class) {
-                throw new \InvalidArgumentException(sprintf('Entity classes must not use the generic "%s" class for repository "%s"', $entityClass, $repositoryName));
+                throw new CrudException(sprintf('Entity classes must be the generic "%s" class for repository "%s"', $entityClass, $repositoryName));
             }
 
             // Turn full class name back into plugin split format
