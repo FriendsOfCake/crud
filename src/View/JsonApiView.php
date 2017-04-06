@@ -7,6 +7,7 @@ use Cake\Datasource\RepositoryInterface;
 use Cake\Event\EventManager;
 use Cake\Network\Request;
 use Cake\Network\Response;
+use Cake\ORM\Entity;
 use Cake\View\View;
 use Crud\Error\Exception\CrudException;
 use Neomerx\JsonApi\Document\Link;
@@ -200,6 +201,7 @@ class JsonApiView extends View
      *
      * @param RepositoryInterface[] $repositories List holding repositories used to map entities to schema classes
      * @throws \Crud\Error\Exception\CrudException
+     * @throws \InvalidArgumentException
      * @return array A list with Entity class names as key holding NeoMerx Closure object
      */
     protected function _entitiesToNeoMerxSchema(array $repositories)
@@ -207,6 +209,10 @@ class JsonApiView extends View
         $schemas = [];
         foreach ($repositories as $repositoryName => $repository) {
             $entityClass = $repository->entityClass();
+
+            if ($entityClass === Entity::class) {
+                throw new \InvalidArgumentException(sprintf('Entity classes must not use the generic "%s" class for repository "%s"', $entityClass, $repositoryName));
+            }
 
             // Turn full class name back into plugin split format
             // Not including /Entity in the type makes sure its compatible with other types
