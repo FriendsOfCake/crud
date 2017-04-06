@@ -27,7 +27,7 @@ class JsonApiExceptionRenderer extends ExceptionRenderer
      */
     protected function _outputMessage($template)
     {
-        if (!$this->controller->request->is('jsonapi')) {
+        if (!$this->controller->request->accepts('application/vnd.api+json')) {
             return parent::_outputMessage($template);
         }
 
@@ -79,7 +79,7 @@ class JsonApiExceptionRenderer extends ExceptionRenderer
      */
     public function validation($exception)
     {
-        if (!$this->controller->request->is('jsonapi')) {
+        if (!$this->controller->request->accepts('application/vnd.api+json')) {
             return parent::validation($exception);
         }
 
