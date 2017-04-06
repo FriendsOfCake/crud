@@ -121,17 +121,25 @@ class JsonApiIntegrationTest extends IntegrationTestCase
     public function viewProvider()
     {
         return [
-//            'no relations' => [
-//                '/countries/1',
-//                'get_country_no_relationships.json',
-//            ],
-//            'include culture' => [
-//                '/countries/1?include=cultures',
-//                'get_country_with_culture.json'
-//            ],
-            'include currency' => [
+            'no relations' => [
+                '/countries/1',
+                'get_country_no_relationships.json',
+            ],
+            'include culture' => [
+                '/countries/1?include=cultures',
+                'get_country_with_culture.json'
+            ],
+            'include currency plural' => [
                 '/countries/1?include=currencies',
                 'get_country_with_currency.json'
+            ],
+            'include currency singular' => [
+                '/countries/1?include=currency',
+                'get_country_with_currency.json'
+            ],
+            'include currency and culture' => [
+                '/countries/1?include=currencies,cultures',
+                'get_country_with_currency_and_culture.json'
             ],
         ];
     }

@@ -212,6 +212,10 @@ class JsonApiListener extends ApiListener
             $association = null;
             $associationName = Inflector::camelize($include);
 
+            if ($this->_stringIsSingular($include)) {
+                $associationName = Inflector::pluralize($associationName);
+            }
+
             if ($repository !== null) {
                 $association = $repository->association($associationName);
                 if ($association === null) {
