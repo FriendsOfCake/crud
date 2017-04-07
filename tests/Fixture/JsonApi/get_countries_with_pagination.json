@@ -5,9 +5,9 @@
         "page_limit": null
     },
     "links": {
-        "self": "/countries?page=1",
-        "first": "/countries?page=1",
-        "last": "/countries?page=1",
+        "self": "\/countries?page=1",
+        "first": "\/countries?page=1",
+        "last": "\/countries?page=1",
         "prev": null,
         "next": null
     },

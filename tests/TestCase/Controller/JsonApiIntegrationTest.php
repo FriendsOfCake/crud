@@ -61,17 +61,15 @@ class JsonApiIntegrationTest extends IntegrationTestCase
 
     protected function _getExpected($file)
     {
-        return json_decode((new File($this->_JsonDir . $file))->read(), true);
+        return trim((new File($this->_JsonDir . $file))->read());
     }
 
-    protected function _getResponseAsArray()
+    protected function _getResponse()
     {
-        $this->_response->getBody()
-            ->rewind();
-        $response = $this->_response->getBody()
-            ->getContents();
+        $this->_response->getBody()->rewind();
+        $response = $this->_response->getBody()->getContents();
 
-        return json_decode($response, true);
+        return $response;
     }
 
     /**
@@ -87,7 +85,7 @@ class JsonApiIntegrationTest extends IntegrationTestCase
         $this->_assertJsonApiResponse();
         $this->assertResponseCode(200);
         $this->assertResponseNotEmpty();
-        $this->assertSame($this->_getExpected('get_countries_with_pagination.json'), $this->_getResponseAsArray());
+        $this->assertSame($this->_getExpected('get_countries_with_pagination.json'), $this->_getResponse());
     }
 
     /**
@@ -163,6 +161,10 @@ class JsonApiIntegrationTest extends IntegrationTestCase
                 '/countries/1?include=currencies,cultures',
                 'get_country_with_currency_and_culture.json'
             ],
+            'include currency and deep countries' => [
+                '/countries/1?include=currencies.countries',
+                'get_country_with_currency_and_countries.json'
+            ],
         ];
     }
 
@@ -177,7 +179,7 @@ class JsonApiIntegrationTest extends IntegrationTestCase
         $this->get($url);
 
         $this->assertResponseSuccess();
-        $this->assertSame($this->_getExpected($expectedFile), $this->_getResponseAsArray());
+        $this->assertSame($this->_getExpected($expectedFile), $this->_getResponse());
     }
 
     /**
@@ -195,7 +197,7 @@ class JsonApiIntegrationTest extends IntegrationTestCase
         $this->get('/countries/1');
 
         $this->assertResponseSuccess();
-        $this->assertSame($this->_getExpected('get_country_with_currency_and_culture.json'), $this->_getResponseAsArray());
+        $this->assertSame($this->_getExpected('get_country_with_currency_and_culture.json'), $this->_getResponse());
     }
 
     /**
