@@ -99,15 +99,10 @@ class DynamicEntitySchema extends SchemaProvider
             $entity->hiddenProperties($hidden);
         }
 
-        $repository = $this->_getRepository($entity);
         $attributes = $entity->toArray();
 
-        if (!$repository) {
-            return $attributes;
-        }
-
         // remove associated data so it won't appear inside jsonapi `attributes`
-        foreach ($repository->associations() as $association) {
+        foreach ($this->_repository->associations() as $association) {
             $propertyName = $association->property();
 
             if ($association->type() === Association::MANY_TO_ONE) {
@@ -136,13 +131,7 @@ class DynamicEntitySchema extends SchemaProvider
     {
         $relations = [];
 
-        $repository = $this->_getRepository($entity);
-
-        if (!$repository) {
-            return $relations;
-        }
-
-        foreach ($repository->associations() as $association) {
+        foreach ($this->_repository->associations() as $association) {
             $property = $association->property();
 
             $data = $entity->get($property);
@@ -191,11 +180,11 @@ class DynamicEntitySchema extends SchemaProvider
      */
     public function getRelationshipSelfLink($entity, $name, $meta = null, $treatAsHref = false)
     {
-        $byProperty = $this->_repository->associations()->getByProperty($name);
-        $relatedRepository = $byProperty->target();
+        $association = $this->_repository->associations()->getByProperty($name);
+        $relatedRepository = $association->target();
 
         // generate link for belongsTo relationship
-        if ($this->_stringIsSingular($name)) {
+        if (in_array($association->type(), [Association::MANY_TO_ONE, Association::ONE_TO_ONE])) {
             if ($this->_view->viewVars['_jsonApiBelongsToLinks'] === true) {
                 list(, $controllerName) = pluginSplit($this->_repository->registryAlias());
                 $sourceName = Inflector::underscore(Inflector::singularize($controllerName));
@@ -225,6 +214,7 @@ class DynamicEntitySchema extends SchemaProvider
 
         $url = Router::url($this->_getRepositoryRoutingParameters($relatedRepository) + [
             '_method' => 'GET',
+            'action' => 'index',
             $searchKey => $entity->id,
         ], $this->_view->viewVars['_absoluteLinks']);
 

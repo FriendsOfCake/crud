@@ -5,6 +5,7 @@ use Cake\Controller\Controller;
 use Cake\ORM\TableRegistry;
 use Crud\Listener\JsonApiListener;
 use Crud\TestSuite\TestCase;
+use Neomerx\JsonApi\Contracts\Schema\SchemaFactoryInterface;
 use Neomerx\JsonApi\Factories\Factory;
 
 /**
@@ -77,7 +78,7 @@ class DynamicEntitySchemaTest extends TestCase
         $schema = $this
             ->getMockBuilder('\Crud\Schema\JsonApi\DynamicEntitySchema')
             ->setMethods(null)
-            ->disableOriginalConstructor()
+            ->setConstructorArgs([$this->createMock(SchemaFactoryInterface::class), $view, $table])
             ->getMock();
 
         $this->setReflectionClassInstance($schema);
