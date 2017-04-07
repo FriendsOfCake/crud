@@ -1406,103 +1406,111 @@ class JsonApiListenerTest extends TestCase
     {
         return [
             'standard' => [
-                'articles,comments.author',
+                'cultures,currencies.countries',
                 ['blacklist' => false, 'whitelist' => true],
                 [
-                    'Articles',
-                    'Comments' => ['Author']
+                    'Cultures',
+                    'Currencies' => ['Countries']
                 ],
                 [
-                    'comments.author', 'articles',
+                    'cultures', 'currency.countries',
+                ],
+            ],
+            'singular name' => [
+                'cultures,currency',
+                ['blacklist' => false, 'whitelist' => true],
+                [
+                    'Cultures',
+                    'Currencies'
+                ],
+                [
+                    'cultures',
+                    'currency',
                 ],
             ],
             'blacklist' => [
-                'articles,comments.author,comments.images',
-                ['blacklist' => ['comments.author'], 'whitelist' => true],
+                'cultures,currencies.countries',
+                ['blacklist' => ['currencies.countries'], 'whitelist' => true],
                 [
-                    'Articles',
-                    'Comments' => [
-                        'Images'
-                    ]
+                    'Cultures',
+                    'Currencies'
                 ],
                 [
-                    'comments.images',
-                    'articles',
+                    'cultures',
+                    'currency',
                 ],
             ],
             'whitelist' => [
-                'articles,comments.author,comments.images',
-                ['blacklist' => false, 'whitelist' => ['comments']],
+                'cultures,currencies.countries',
+                ['blacklist' => false, 'whitelist' => ['cultures']],
                 [
-                    'Comments'
+                    'Cultures'
                 ],
                 [
-                    'comments'
+                    'cultures'
                 ],
             ],
             'multiple whitelists' => [
-                'articles,comments.author,comments.images,comments.links',
-                ['blacklist' => false, 'whitelist' => ['comments.author', 'comments.images']],
+                'cultures,currencies.countries,cultures.language',
+                ['blacklist' => false, 'whitelist' => ['cultures', 'currencies.countries']],
                 [
-                    'Comments' => [
-                        'Author',
-                        'Images'
+                    'Cultures',
+                    'Currencies' => [
+                        'Countries',
                     ]
                 ],
                 [
-                    'comments.author',
-                    'comments.images'
+                    'cultures',
+                    'currency.countries'
                 ],
             ],
             'whitelist wildcard' => [
-                'articles,comments.author,comments.images',
-                ['blacklist' => false, 'whitelist' => ['comments.*']],
+                'cultures,currencies.countries,cultures.language',
+                ['blacklist' => false, 'whitelist' => ['currencies.*']],
                 [
-                    'Comments' => [
-                        'Author',
-                        'Images'
+                    'Currencies' => [
+                        'Countries'
                     ]
                 ],
-                ['comments.author', 'comments.images'],
+                ['currency.countries'],
             ],
             'blacklist wildcard' => [
-                'articles,comments.author,comments.images',
-                ['blacklist' => ['comments.*'], 'whitelist' => true],
+                'cultures,currencies.countries,currencies.names',
+                ['blacklist' => ['currencies.*'], 'whitelist' => true],
                 [
-                    'Articles',
-                    'Comments',
+                    'Cultures',
+                    'Currencies',
                 ],
-                ['articles', 'comments',]
+                ['cultures', 'currency',]
             ],
             'blacklist with a whitelist wildcard' => [
-                'articles,comments.author,comments.images,comments.links',
-                ['blacklist' => ['comments.author'], 'whitelist' => ['articles', 'comments.*']],
+                'cultures,currencies.countries,currencies.names,cultures.countries',
+                ['blacklist' => ['currencies.names'], 'whitelist' => ['cultures', 'currencies.*']],
                 [
-                    'Comments' => [
-                        'Images',
-                        'Links'
+                    'Currencies' => [
+                        'Countries',
                     ],
-                    'Articles',
+                    'Cultures',
                 ],
-                ['comments.images', 'comments.links', 'articles']
+                ['cultures', 'currency.countries']
             ],
             'blacklist is more important' => [
-                'articles,comments.author',
-                ['blacklist' => ['comments.author'], 'whitelist' => ['articles', 'comments.author']],
+                'cultures,currencies.countries',
+                ['blacklist' => ['currencies.countries'], 'whitelist' => ['cultures', 'currencies.countries']],
                 [
-                    'Articles',
-                    'Comments',
+                    'Cultures',
+                    'Currencies',
                 ],
-                ['articles', 'comments']
+                ['cultures', 'currency']
             ],
             'blacklist everything' => [
-                'articles,comments.author',
-                ['blacklist' => true, 'whitelist' => ['articles', 'comments.author']],
+                'cultures,currencies.countries',
+                ['blacklist' => true, 'whitelist' => ['cultures', 'currencies.countries']],
                 [],
                 []
             ],
             'whitelist nothing' => [
-                'articles,comments.author',
+                'cultures,currencies.countries',
                 ['blacklist' => false, 'whitelist' => false],
                 [],
                 []
@@ -1527,6 +1535,10 @@ class JsonApiListenerTest extends TestCase
             ->expects($options['blacklist'] !== true && $options['whitelist'] !== false ? $this->once() : $this->never())
             ->method('contain')
             ->with($expectedContain);
+        $subject->query
+            ->expects($this->any())
+            ->method('repository')
+            ->willReturn(TableRegistry::get('Countries'));
 
         $this->callProtectedMethod('_includeParameter', [$include, $subject, $options], $listener);
         $this->assertSame($expectedInclude, $listener->config('include'));

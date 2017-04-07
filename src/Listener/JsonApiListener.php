@@ -265,10 +265,10 @@ class JsonApiListener extends ApiListener
         $whitelist = is_array($options['whitelist']) ? Hash::expand(Hash::normalize(array_fill_keys($options['whitelist'], true))) : $options['whitelist'];
         $contains = $this->_parseIncludes($includes, $blacklist, $whitelist, $subject->query->repository());
 
-        $subject->query = $subject->query->contain($contains);
+        $subject->query->contain($contains);
 
         $this->config('include', []);
-        $associations = $this->_getContainedAssociations($this->_controller()->loadModel(), $contains);
+        $associations = $this->_getContainedAssociations($subject->query->repository(), $contains);
         $include = $this->_getIncludeList($associations);
 
         $this->config('include', $include);
@@ -604,6 +604,10 @@ class JsonApiListener extends ApiListener
             }
 
             $association = $associationCollection->get($contain);
+            if ($association === null) {
+                continue;
+            }
+
             $associationKey = strtolower($association->name());
 
             $associations[$associationKey] = [
