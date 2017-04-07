@@ -46,8 +46,7 @@
             "id": "1",
             "attributes": {
                 "code": "nl-NL",
-                "name": "Dutch",
-                "country_id": 1
+                "name": "Dutch"
             }
         }
     ]

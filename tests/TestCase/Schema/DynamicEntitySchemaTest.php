@@ -62,6 +62,7 @@ class DynamicEntitySchemaTest extends TestCase
         $listener = new JsonApiListener(new Controller());
         $this->setReflectionClassInstance($listener);
         $associations = $this->callProtectedMethod('_getContainedAssociations', [$table, $query->contain()], $listener);
+        $repositories = $this->callProtectedMethod('_getRepositoryList', [$table, $associations], $listener);
 
         // make view return associations on get('_associations') call
         $view = $this
@@ -70,7 +71,7 @@ class DynamicEntitySchemaTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $view->set('_associations', $associations);
+        $view->set('_repositories', $repositories);
 
         // setup the schema
         $schema = $this
@@ -131,6 +132,7 @@ class DynamicEntitySchemaTest extends TestCase
         $listener = new JsonApiListener(new Controller());
         $this->setReflectionClassInstance($listener);
         $associations = $this->callProtectedMethod('_getContainedAssociations', [$table, $query->contain()], $listener);
+        $repositories = $this->callProtectedMethod('_getRepositoryList', [$table, $associations], $listener);
 
         // make view return associations on get('_associations') call
         $view = $this
@@ -139,7 +141,7 @@ class DynamicEntitySchemaTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $view->set('_associations', $associations);
+        $view->set('_repositories', $repositories);
         $view->set('_absoluteLinks', false); // test relative links (listener default)
 
         // setup the schema

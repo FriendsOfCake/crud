@@ -305,19 +305,6 @@ class JsonApiListener extends ApiListener
     }
 
     /**
-     * respond() event.
-     *
-     * @param \Cake\Event\Event $event Event
-     * @return void
-     */
-    public function respond(Event $event)
-    {
-        $this->_removeBelongsToForeignKeysFromEventData($event);
-
-        parent::respond($event);
-    }
-
-    /**
      * Adds belongsTo data to the find() result so the 201 success response
      * is able to render the jsonapi `relationships` member.
      *
@@ -353,43 +340,6 @@ class JsonApiListener extends ApiListener
         }
 
         $event->subject()->entity = $entity;
-    }
-
-    /**
-     * Removes all belongsTo `_id`  fields from the entity or entities so
-     * they don't show up as jsonapi attributes in the response as described
-     * at http://jsonapi.org/format/#document-resource-object-attributes.
-     *
-     * @param \Cake\Event\Event $event Event
-     * @return void
-     */
-    protected function _removeBelongsToForeignKeysFromEventData($event)
-    {
-        $repository = $this->_controller()->loadModel();
-        $associations = $repository->associations();
-
-        $foreignKeys = [];
-        foreach ($associations as $association) {
-            if ($association->type() === Association::MANY_TO_ONE) {
-                $foreignKeys[] = $association->foreignKey();
-            }
-        }
-
-        // remove from single entity
-        if (isset($event->subject()->entity)) {
-            foreach ($foreignKeys as $foreignKey) {
-                $event->subject()->entity->unsetProperty($foreignKey);
-            }
-
-            return;
-        }
-
-        // remove from collection
-        foreach ($event->subject()->entities as $key => $entity) {
-            foreach ($foreignKeys as $foreignKey) {
-                $event->subject()->entities->current()->unsetProperty($foreignKey);
-            }
-        }
     }
 
     /**

@@ -205,7 +205,7 @@ class JsonApiViewTest extends TestCase
         ]);
 
         $this->assertSame(
-            (new File($this->_JsonDir . 'get_countries_no_relationships.json'))->read(),
+            trim((new File($this->_JsonDir . 'get_countries_no_relationships.json'))->read()),
             $view->render()
         );
 
@@ -216,7 +216,7 @@ class JsonApiViewTest extends TestCase
         ]);
 
         $this->assertSame(
-            (new File($this->_JsonDir . 'get_country_no_relationships.json'))->read(),
+            trim((new File($this->_JsonDir . 'get_country_no_relationships.json'))->read()),
             $view->render()
         );
     }
@@ -242,7 +242,7 @@ class JsonApiViewTest extends TestCase
         ]);
 
         $this->assertSame(
-            (new File($this->_JsonDir . 'response_without_resources_meta.json'))->read(),
+            trim((new File($this->_JsonDir . 'response_without_resources_meta.json'))->read()),
             $view->render()
         );
     }
@@ -361,7 +361,7 @@ class JsonApiViewTest extends TestCase
         ]);
 
         $this->assertSame(
-            (new File($this->_JsonDir . 'get_country_no_relationships.json'))->read(),
+            trim((new File($this->_JsonDir . 'get_country_no_relationships.json'))->read()),
             $view->render()
         );
 
@@ -374,7 +374,7 @@ class JsonApiViewTest extends TestCase
         ]);
 
         $this->assertSame(
-            '{"data":{"type":"countries","id":"1","attributes":{"code":"NL","name":"The Netherlands","currency_id":1},"links":{"self":"\/countries\/1"}}}',
+            '{"data":{"type":"countries","id":"1","attributes":{"code":"NL","name":"The Netherlands"},"links":{"self":"\/countries\/1"}}}',
             $view->render()
         );
     }

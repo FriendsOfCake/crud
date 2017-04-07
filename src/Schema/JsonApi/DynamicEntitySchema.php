@@ -1,6 +1,7 @@
 <?php
 namespace Crud\Schema\JsonApi;
 
+use Cake\Datasource\EntityInterface;
 use Cake\Datasource\RepositoryInterface;
 use Cake\ORM\Association;
 use Cake\Routing\Router;
@@ -75,6 +76,16 @@ class DynamicEntitySchema extends SchemaProvider
     }
 
     /**
+     * @param \Cake\Datasource\EntityInterface $entity
+     * @return \Cake\Datasource\RepositoryInterface $repository
+     */
+    protected function _getRepository($entity)
+    {
+        $repositoryName = $entity->source();
+        return isset($this->_view->viewVars['_repositories'][$repositoryName]) ? $this->_view->viewVars['_repositories'][$repositoryName] : null;
+    }
+
+    /**
      * NeoMerx override used to pass entity root properties to be shown
      * as JsonApi `attributes`.
      *
@@ -88,13 +99,23 @@ class DynamicEntitySchema extends SchemaProvider
             $entity->hiddenProperties($hidden);
         }
 
+        $repository = $this->_getRepository($entity);
         $attributes = $entity->toArray();
 
-        // remove associated data so it won't appear inside jsonapi `attributes`
-        foreach ($this->_view->viewVars['_associations'] as $association) {
-            $associationKey = $association['association']->property();
+        if (!$repository) {
+            return $attributes;
+        }
 
-            unset($attributes[$associationKey]);
+        // remove associated data so it won't appear inside jsonapi `attributes`
+        foreach ($repository->associations() as $association) {
+            $propertyName = $association->property();
+
+            if ($association->type() === Association::MANY_TO_ONE) {
+                $foreignKey = $association->foreignKey();
+                unset($attributes[$foreignKey]);
+            }
+
+            unset($attributes[$propertyName]);
         }
 
         return $attributes;
@@ -106,24 +127,30 @@ class DynamicEntitySchema extends SchemaProvider
      *
      * JSON API optional `related` links not implemented yet.
      *
-     * @param \Cake\Datasource\EntityInterface $resource Entity object
+     * @param \Cake\Datasource\EntityInterface $entity Entity object
      * @param bool $isPrimary True to add resource to data section instead of included
      * @param array $includeRelationships Used to fine tune relationships
      * @return array
      */
-    public function getRelationships($resource, $isPrimary, array $includeRelationships)
+    public function getRelationships($entity, $isPrimary, array $includeRelationships)
     {
         $relations = [];
 
-        foreach ($this->_view->viewVars['_associations'] as $association) {
-            $associationKey = $association['association']->property();
+        $repository = $this->_getRepository($entity);
 
-            $data = $resource->get($associationKey);
+        if (!$repository) {
+            return $relations;
+        }
+
+        foreach ($repository->associations() as $association) {
+            $property = $association->property();
+
+            $data = $entity->get($property);
             if (!$data) {
                 continue;
             }
 
-            $relations[$associationKey] = [
+            $relations[$property] = [
                 self::DATA => $data,
                 self::SHOW_SELF => true,
                 self::SHOW_RELATED => false,
