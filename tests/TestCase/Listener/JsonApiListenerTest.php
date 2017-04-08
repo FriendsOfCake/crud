@@ -1336,7 +1336,7 @@ class JsonApiListenerTest extends TestCase
                     'Cultures',
                     'Currencies',
                 ],
-                ['cultures', 'currency',]
+                ['cultures', 'currency']
             ],
             'blacklist with a whitelist wildcard' => [
                 'cultures,currencies.countries,currencies.names,cultures.countries',

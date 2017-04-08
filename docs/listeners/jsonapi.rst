@@ -520,7 +520,7 @@ This is done using the listener configuration:
   {
     $this->Crud
       ->listener('jsonApi')
-      ->setConfig('queryParameters.include.whitelist', ['cultures', 'cities']);
+      ->config('queryParameters.include.whitelist', ['cultures', 'cities']);
 
     return $this->Crud->execute();
   }
@@ -538,7 +538,7 @@ config option to ``true``:
   {
     $this->Crud
       ->listener('jsonApi')
-      ->setConfig('queryParameters.include.blacklist', true);
+      ->config('queryParameters.include.blacklist', true);
 
     return $this->Crud->execute();
   }
