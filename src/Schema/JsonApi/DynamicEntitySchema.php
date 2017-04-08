@@ -76,12 +76,13 @@ class DynamicEntitySchema extends SchemaProvider
     }
 
     /**
-     * @param \Cake\Datasource\EntityInterface $entity
+     * @param \Cake\Datasource\EntityInterface $entity Entity
      * @return \Cake\Datasource\RepositoryInterface $repository
      */
     protected function _getRepository($entity)
     {
         $repositoryName = $entity->source();
+
         return isset($this->_view->viewVars['_repositories'][$repositoryName]) ? $this->_view->viewVars['_repositories'][$repositoryName] : null;
     }
 

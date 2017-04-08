@@ -224,7 +224,7 @@ class JsonApiListener extends ApiListener
             }
 
             if (!empty($nestedIncludes)) {
-                $nestedContains = $this->_parseIncludes($nestedIncludes, $blacklist, $whitelist, $association ? $association->target() : null, $includePath);;
+                $nestedContains = $this->_parseIncludes($nestedIncludes, $blacklist, $whitelist, $association ? $association->target() : null, $includePath);
             }
 
             if (!empty($nestedContains)) {
@@ -233,7 +233,6 @@ class JsonApiListener extends ApiListener
                 $contains[] = $associationName;
             }
         }
-
 
         return $contains;
     }
@@ -475,7 +474,6 @@ class JsonApiListener extends ApiListener
         if (!is_array($this->config('queryParameters'))) {
             throw new CrudException('JsonApiListener configuration option `queryParameters` only accepts an array');
         }
-
     }
 
     /**
