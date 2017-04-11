@@ -63,6 +63,7 @@ class JsonApiListener extends ApiListener
                 'blacklist' => false,
             ]
         ], //Array of query parameters and associated transformers
+        'inflect' => 'dasherize'
     ];
 
     /**
@@ -177,6 +178,30 @@ class JsonApiListener extends ApiListener
     }
 
     /**
+     * @param \Cake\Datasource\RepositoryInterface $repository Repository
+     * @param string $include The association include path
+     * @return \Cake\ORM\Association|null
+     */
+    protected function _getAssociation(RepositoryInterface $repository, $include)
+    {
+        $delimiter = '-';
+        if (strpos($include, '_') !== false) {
+            $delimiter = '_';
+        }
+        $associationName = Inflector::camelize($include, $delimiter);
+
+        $association = $repository->association($associationName);//First check base name
+
+        if ($association) {
+            return $association;
+        }
+
+        //If base name doesn't work, try to pluralize it
+        $associationName = Inflector::pluralize($associationName);
+        return $repository->association($associationName);
+    }
+
+    /**
      * Takes a "include" string and converts it into a correct CakePHP ORM association alias
      *
      * @param string $includes The relationships to include
@@ -210,14 +235,9 @@ class JsonApiListener extends ApiListener
             }
 
             $association = null;
-            $associationName = Inflector::camelize($include);
-
-            if ($this->_stringIsSingular($include)) {
-                $associationName = Inflector::pluralize($associationName);
-            }
 
             if ($repository !== null) {
-                $association = $repository->association($associationName);
+                $association = $this->_getAssociation($repository, $include);
                 if ($association === null) {
                     throw new BadRequestException("Invalid relationship path '{$includeDotPath}' supplied in include parameter");
                 }
@@ -228,9 +248,9 @@ class JsonApiListener extends ApiListener
             }
 
             if (!empty($nestedContains)) {
-                $contains[$associationName] = $nestedContains;
+                $contains[$association->alias()] = $nestedContains;
             } else {
-                $contains[] = $associationName;
+                $contains[] = $association->alias();
             }
         }
 
@@ -411,6 +431,7 @@ class JsonApiListener extends ApiListener
             Inflector::tableize($repository->alias()) => $this->_getFindResult($subject),
             '_associations' => $usedAssociations,
             '_serialize' => true,
+            '_inflect' => $this->config('inflect')
         ]);
 
         return $this->_controller()->render();

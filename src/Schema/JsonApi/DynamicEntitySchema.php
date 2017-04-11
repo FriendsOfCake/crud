@@ -56,8 +56,8 @@ class DynamicEntitySchema extends SchemaProvider
         // NeoMerx required property holding lowercase singular or plural resource name
         if (!isset($this->resourceType)) {
             list (, $entityName) = pluginSplit($repository->registryAlias());
-
-            $this->resourceType = Inflector::underscore($entityName);
+            $method = isset($view->viewVars['_inflect']) ? $view->viewVars['_inflect'] : 'dasherize';
+            $this->resourceType = Inflector::$method($entityName);
         }
 
         parent::__construct($factory);

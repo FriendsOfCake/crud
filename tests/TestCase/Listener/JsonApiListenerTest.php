@@ -66,6 +66,7 @@ class JsonApiListenerTest extends TestCase
                     'blacklist' => false
                 ]
             ],
+            'inflect' => 'dasherize'
         ];
 
         $this->assertSame($expected, $listener->config());
