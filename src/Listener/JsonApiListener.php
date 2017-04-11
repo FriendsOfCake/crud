@@ -429,7 +429,6 @@ class JsonApiListener extends ApiListener
             '_include' => $this->_getIncludeList($usedAssociations),
             '_fieldSets' => $this->config('fieldSets'),
             Inflector::tableize($repository->alias()) => $this->_getFindResult($subject),
-            '_associations' => $usedAssociations,
             '_serialize' => true,
             '_inflect' => $this->config('inflect')
         ]);
