@@ -230,13 +230,11 @@ class DynamicEntitySchema extends SchemaProvider
      */
     public function getIncludedResourceLinks($entity)
     {
-        list(, $entityName) = namespaceSplit(get_class($entity));
-
-        $byProperty = $this->_repository->associations()->getByProperty(Inflector::underscore($entityName));
-        if (!$byProperty) {
+        $repositoryName = $entity->source();
+        if (!isset($this->_view->viewVars['_repositories'][$repositoryName])) {
             return [];
         }
-        $repository = $byProperty->target();
+        $repository = $this->_view->viewVars['_repositories'][$repositoryName];
 
         $url = Router::url($this->_getRepositoryRoutingParameters($repository) + [
             '_method' => 'GET',

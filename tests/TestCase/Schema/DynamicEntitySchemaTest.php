@@ -214,6 +214,10 @@ class DynamicEntitySchemaTest extends TestCase
 
         $view->set('_absoluteLinks', false);
         $view->set('_jsonApiBelongsToLinks', false);
+        $view->set('_repositories', [
+            'Countries' => TableRegistry::get('Countries'),
+            'Currencies' => TableRegistry::get('Currencies')
+        ]);
 
         // get results
         $table = TableRegistry::get('Countries');

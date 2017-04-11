@@ -39,6 +39,9 @@
             "attributes": {
                 "code": "EUR",
                 "name": "Euro"
+            },
+            "links": {
+                "self": "\/currencies\/1"
             }
         },
         {
@@ -47,6 +50,9 @@
             "attributes": {
                 "code": "nl-NL",
                 "name": "Dutch"
+            },
+            "links": {
+                "self": "\/cultures\/1"
             }
         }
     ]

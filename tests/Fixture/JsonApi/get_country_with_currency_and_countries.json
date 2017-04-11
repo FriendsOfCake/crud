@@ -28,6 +28,9 @@
             "attributes": {
                 "code": "BE",
                 "name": "Belgium"
+            },
+            "links": {
+                "self": "\/countries\/2"
             }
         },
         {
@@ -53,6 +56,9 @@
                         "self": "\/countries?currency_id=1"
                     }
                 }
+            },
+            "links": {
+                "self": "\/currencies\/1"
             }
         }
     ]

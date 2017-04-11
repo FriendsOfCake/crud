@@ -28,6 +28,9 @@
             "attributes": {
                 "code": "EUR",
                 "name": "Euro"
+            },
+            "links": {
+                "self": "\/currencies\/1"
             }
         }
     ]
