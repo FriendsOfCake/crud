@@ -5,8 +5,7 @@
             "id": "1",
             "attributes": {
                 "code": "NL",
-                "name": "The Netherlands",
-                "currency_id": 1
+                "name": "The Netherlands"
             },
             "links": {
                 "self": "\/countries\/1"
@@ -17,8 +16,7 @@
             "id": "2",
             "attributes": {
                 "code": "BE",
-                "name": "Belgium",
-                "currency_id": 1
+                "name": "Belgium"
             },
             "links": {
                 "self": "\/countries\/2"

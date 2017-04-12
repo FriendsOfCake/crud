@@ -7,6 +7,7 @@ use Cake\Event\Event;
 use Cake\Filesystem\File;
 use Cake\Network\Request;
 use Cake\Network\Response;
+use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Crud\Event\Subject;
 use Crud\Listener\JsonApiListener;
@@ -59,6 +60,13 @@ class JsonApiListenerTest extends TestCase
             'include' => [],
             'fieldSets' => [],
             'docValidatorAboutLinks' => false,
+            'queryParameters' => [
+                'include' => [
+                    'whitelist' => true,
+                    'blacklist' => false
+                ]
+            ],
+            'inflect' => 'dasherize'
         ];
 
         $this->assertSame($expected, $listener->config());
@@ -117,7 +125,9 @@ class JsonApiListenerTest extends TestCase
             'Crud.afterSave' => ['callable' => [$listener, 'afterSave'], 'priority' => 90],
             'Crud.afterDelete' => ['callable' => [$listener, 'afterDelete'], 'priority' => 90],
             'Crud.beforeRender' => ['callable' => [$listener, 'respond'], 'priority' => 100],
-            'Crud.beforeRedirect' => ['callable' => [$listener, 'beforeRedirect'], 'priority' => 100]
+            'Crud.beforeRedirect' => ['callable' => [$listener, 'beforeRedirect'], 'priority' => 100],
+            'Crud.beforePaginate' => ['callable' => [$listener, 'beforeFind'], 'priority' => 10],
+            'Crud.beforeFind' => ['callable' => [$listener, 'beforeFind'], 'priority' => 10],
         ];
 
         $this->assertSame($expected, $result);
@@ -176,75 +186,6 @@ class JsonApiListenerTest extends TestCase
             ->will($this->returnValue(true));
 
         $listener->beforeHandle(new Event('Crud.beforeHandle'));
-    }
-
-    /**
-     * respond()
-     *
-     * @return void
-     */
-    public function testRespond()
-    {
-        $controller = $this
-            ->getMockBuilder('\Cake\Controller\Controller')
-            ->setMethods(null)
-            ->enableOriginalConstructor()
-            ->getMock();
-
-        $controller->name = 'Countries';
-
-        $action = $this
-            ->getMockBuilder('\Crud\Action\IndexAction')
-            ->disableOriginalConstructor()
-            ->setMethods(['config'])
-            ->getMock();
-        $response = $this
-            ->getMockBuilder('\Cake\Network\Response')
-            ->setMethods(['statusCode'])
-            ->getMock();
-
-        $subject = $this
-            ->getMockBuilder('\Crud\Event\Subject')
-            ->getMock();
-        $subject->success = true;
-
-        $table = TableRegistry::get('Countries');
-        $entity = $table->find()->first();
-        $subject->entity = $entity;
-
-        $event = new Event('Crud.afterSave', $subject);
-
-        $listener = $this
-            ->getMockBuilder('\Crud\Listener\JsonApiListener')
-            ->disableOriginalConstructor()
-            ->setMethods(['_controller', '_action', 'render'])
-            ->getMock();
-        $listener
-            ->expects($this->next($listener))
-            ->method('_controller')
-            ->with()
-            ->will($this->returnValue($controller));
-        $listener
-            ->expects($this->next($listener))
-            ->method('_action')
-            ->with()
-            ->will($this->returnValue($action));
-        $action
-            ->expects($this->next($action))
-            ->method('config')
-            ->with('api.success')
-            ->will($this->returnValue(['code' => 200]));
-        $listener
-            ->expects($this->next($listener))
-            ->method('render')
-            ->with($subject)
-            ->will($this->returnValue($response));
-        $response
-            ->expects($this->next($response))
-            ->method('statusCode')
-            ->with(200);
-
-        $listener->respond($event);
     }
 
     /**
@@ -468,82 +409,6 @@ class JsonApiListenerTest extends TestCase
     }
 
     /**
-     * _removeForeignKeysFromEventData()
-     *
-     * @return void
-     */
-    public function testRemoveForeignKeysFromEventData()
-    {
-        $controller = $this
-            ->getMockBuilder('\Cake\Controller\Controller')
-            ->setMethods(null)
-            ->setConstructorArgs([null, null, 'Countries'])
-            ->enableOriginalConstructor()
-            ->getMock();
-
-        $event = $this
-            ->getMockBuilder('\Cake\Event\Event')
-            ->disableOriginalConstructor()
-            ->setMethods(['subject'])
-            ->getMock();
-
-        $subject = $this
-            ->getMockBuilder('\Crud\Event\Subject')
-            ->disableOriginalConstructor()
-            ->setMethods(null)
-            ->getMock();
-
-        $event
-            ->expects($this->any())
-            ->method('subject')
-            ->will($this->returnValue($subject));
-
-        $listener = $this
-            ->getMockBuilder('\Crud\Listener\JsonApiListener')
-            ->disableOriginalConstructor()
-            ->setMethods(['_controller'])
-            ->getMock();
-
-        $listener
-            ->expects($this->any())
-            ->method('_controller')
-            ->will($this->returnValue($controller));
-
-        $this->setReflectionClassInstance($listener);
-
-        // assert foreign keys are removed from single entity
-        $table = TableRegistry::get('Countries');
-        $entity = $table->find()->first();
-        $this->assertArrayHasKey('name', $entity);
-        $this->assertArrayHasKey('currency_id', $entity);
-
-        $subject->entity = $entity;
-
-        $this->callProtectedMethod('_removeBelongsToForeignKeysFromEventData', [$event], $listener);
-
-        $this->assertArrayHasKey('name', $subject->entity);
-        $this->assertArrayNotHasKey('currency_id', $subject->entity);
-
-        unset($subject->entity);
-
-        // assert foreign keys are removed from entity collections
-        $entities = $table->find()->all();
-        foreach ($entities as $entity) {
-            $this->assertArrayHasKey('name', $entity);
-            $this->assertArrayHasKey('currency_id', $entity);
-        }
-
-        $subject->entities = $entities;
-
-        $this->callProtectedMethod('_removeBelongsToForeignKeysFromEventData', [$event], $listener);
-
-        foreach ($subject->entities as $entity) {
-            $this->assertArrayHasKey('name', $entity);
-            $this->assertArrayNotHasKey('currency_id', $entity);
-        }
-    }
-
-    /**
      * Make sure render() works with find data
      *
      * @return void
@@ -571,6 +436,7 @@ class JsonApiListenerTest extends TestCase
         $subject = $this
             ->getMockBuilder('\Crud\Event\Subject')
             ->getMock();
+        $subject->query = $this->createMock(Query::class);
         $subject->entity = new Country();
 
         $listener->render($subject);
@@ -921,6 +787,26 @@ class JsonApiListenerTest extends TestCase
     }
 
     /**
+     * Make sure config option `queryParameters` does not accept a string
+     *
+     * @expectedException \Crud\Error\Exception\CrudException
+     * @expectedExceptionMessage JsonApiListener configuration option `queryParameters` only accepts an array
+     */
+    public function testValidateConfigOptionQueryParametersPrintFailWithString()
+    {
+        $listener = $this->getMockBuilder('\Crud\Listener\JsonApiListener')
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $listener->config([
+            'queryParameters' => 'string-not-accepted'
+        ]);
+
+        $this->setReflectionClassInstance($listener);
+        $this->callProtectedMethod('_validateConfigOptions', [], $listener);
+    }
+    /**
      * Make sure the listener accepts the correct request headers
      *
      * @return void
@@ -1075,7 +961,7 @@ class JsonApiListenerTest extends TestCase
      *
      * @return void
      */
-    public function testStripNonContainedAssociations()
+    public function testGetContainedAssociations()
     {
         $table = TableRegistry::get('Countries');
         $table->belongsTo('Currencies');
@@ -1098,10 +984,10 @@ class JsonApiListenerTest extends TestCase
         // make sure cultures are removed from AssociationCollection
         $listener = new JsonApiListener(new Controller());
         $this->setReflectionClassInstance($listener);
-        $associationsAfter = $this->callProtectedMethod('_stripNonContainedAssociations', [$table, $entity], $listener);
+        $associationsAfter = $this->callProtectedMethod('_getContainedAssociations', [$table, $query->contain()], $listener);
 
-        $this->assertNotEmpty($associationsAfter->get('currencies'));
-        $this->assertNull($associationsAfter->get('cultures'));
+        $this->assertNotEmpty($associationsAfter['currencies']);
+        $this->assertArrayNotHasKey('cultures', $associationsAfter);
     }
 
     /**
@@ -1116,10 +1002,22 @@ class JsonApiListenerTest extends TestCase
         $table->belongsTo('Currencies');
         $table->hasMany('Cultures');
 
-        $associations = $table->associations();
+        $associations = [];
+        foreach ($table->associations() as $association) {
+            $associations[strtolower($association->name())] = [
+                'association' => $association,
+                'children' => []
+            ];
+        }
 
-        $this->assertNotEmpty($associations->get('currencies'));
-        $this->assertNotEmpty($associations->get('cultures'));
+        $associations['currencies']['children'] = [
+            'countries' => [
+                'association' => $table->Currencies->Countries,
+            ]
+        ];
+
+        $this->assertArrayHasKey('currencies', $associations);
+        $this->assertArrayHasKey('cultures', $associations);
 
         $listener = new JsonApiListener(new Controller());
         $this->setReflectionClassInstance($listener);
@@ -1154,11 +1052,22 @@ class JsonApiListenerTest extends TestCase
         $this->assertEmpty($listener->config('include'));
 
         $table = TableRegistry::get('Countries');
-        $associations = $table->associations();
-        $this->assertSame(['currencies', 'cultures'], $associations->keys());
+        $associations = [];
+        foreach ($table->associations() as $association) {
+            $associations[strtolower($association->name())] = [
+                'association' => $association,
+                'children' => []
+            ];
+        }
+
+        $associations['currencies']['children'] = [
+            'countries' => [
+                'association' => $table->Currencies->Countries,
+            ]
+        ];
 
         $expected = [
-            'currency',
+            'currency.countries',
             'cultures'
         ];
 
@@ -1166,10 +1075,16 @@ class JsonApiListenerTest extends TestCase
 
         $this->assertSame($expected, $result);
 
+        unset($associations['currencies']['children']['countries']);
+        $this->assertSame(['currencies', 'cultures'], array_keys($associations));
+        $result = $this->callProtectedMethod('_getIncludeList', [$associations], $listener);
+
+        $this->assertSame(['currency', 'cultures'], $result);
+
         // assert the include list is still auto-generated if an association is
         // removed from the AssociationsCollection
-        $associations->remove('cultures');
-        $this->assertSame(['currencies'], $associations->keys());
+        unset($associations['cultures']);
+        $this->assertSame(['currencies'], array_keys($associations));
         $result = $this->callProtectedMethod('_getIncludeList', [$associations], $listener);
 
         $this->assertSame(['currency'], $result);
@@ -1341,5 +1256,147 @@ class JsonApiListenerTest extends TestCase
         ];
         $result = $this->callProtectedMethod('_convertJsonApiDocumentArray', [$jsonApiArray], $listener);
         $this->assertSame($expected, $result);
+    }
+
+    public function includeQueryProvider()
+    {
+        return [
+            'standard' => [
+                'cultures,currencies.countries',
+                ['blacklist' => false, 'whitelist' => true],
+                [
+                    'Cultures',
+                    'Currencies' => ['Countries']
+                ],
+                [
+                    'cultures', 'currency.countries',
+                ],
+            ],
+            'singular name' => [
+                'cultures,currency',
+                ['blacklist' => false, 'whitelist' => true],
+                [
+                    'Cultures',
+                    'Currencies'
+                ],
+                [
+                    'cultures',
+                    'currency',
+                ],
+            ],
+            'blacklist' => [
+                'cultures,currencies.countries',
+                ['blacklist' => ['currencies.countries'], 'whitelist' => true],
+                [
+                    'Cultures',
+                    'Currencies'
+                ],
+                [
+                    'cultures',
+                    'currency',
+                ],
+            ],
+            'whitelist' => [
+                'cultures,currencies.countries',
+                ['blacklist' => false, 'whitelist' => ['cultures']],
+                [
+                    'Cultures'
+                ],
+                [
+                    'cultures'
+                ],
+            ],
+            'multiple whitelists' => [
+                'cultures,currencies.countries,cultures.language',
+                ['blacklist' => false, 'whitelist' => ['cultures', 'currencies.countries']],
+                [
+                    'Cultures',
+                    'Currencies' => [
+                        'Countries',
+                    ]
+                ],
+                [
+                    'cultures',
+                    'currency.countries'
+                ],
+            ],
+            'whitelist wildcard' => [
+                'cultures,currencies.countries,cultures.language',
+                ['blacklist' => false, 'whitelist' => ['currencies.*']],
+                [
+                    'Currencies' => [
+                        'Countries'
+                    ]
+                ],
+                ['currency.countries'],
+            ],
+            'blacklist wildcard' => [
+                'cultures,currencies.countries,currencies.names',
+                ['blacklist' => ['currencies.*'], 'whitelist' => true],
+                [
+                    'Cultures',
+                    'Currencies',
+                ],
+                ['cultures', 'currency']
+            ],
+            'blacklist with a whitelist wildcard' => [
+                'cultures,currencies.countries,currencies.names,cultures.countries',
+                ['blacklist' => ['currencies.names'], 'whitelist' => ['cultures', 'currencies.*']],
+                [
+                    'Currencies' => [
+                        'Countries',
+                    ],
+                    'Cultures',
+                ],
+                ['cultures', 'currency.countries']
+            ],
+            'blacklist is more important' => [
+                'cultures,currencies.countries',
+                ['blacklist' => ['currencies.countries'], 'whitelist' => ['cultures', 'currencies.countries']],
+                [
+                    'Cultures',
+                    'Currencies',
+                ],
+                ['cultures', 'currency']
+            ],
+            'blacklist everything' => [
+                'cultures,currencies.countries',
+                ['blacklist' => true, 'whitelist' => ['cultures', 'currencies.countries']],
+                [],
+                []
+            ],
+            'whitelist nothing' => [
+                'cultures,currencies.countries',
+                ['blacklist' => false, 'whitelist' => false],
+                [],
+                []
+            ],
+        ];
+    }
+
+    /**
+     * Make sure that the include query correct splits include string into a containable format
+     *
+     * @return void
+     * @dataProvider includeQueryProvider
+     */
+    public function testIncludeQuery($include, $options, $expectedContain, $expectedInclude)
+    {
+        $listener = new JsonApiListener(new Controller());
+        $this->setReflectionClassInstance($listener);
+
+        $subject = new Subject();
+        $subject->query = $this->createMock(Query::class);
+        $subject->query
+            ->expects($options['blacklist'] !== true && $options['whitelist'] !== false ? $this->once() : $this->never())
+            ->method('contain')
+            ->with($expectedContain);
+        $subject->query
+            ->expects($this->any())
+            ->method('repository')
+            ->willReturn(TableRegistry::get('Countries'));
+
+        $this->callProtectedMethod('_includeParameter', [$include, $subject, $options], $listener);
+        $this->assertSame($expectedInclude, $listener->config('include'));
     }
 }

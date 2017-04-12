@@ -5,6 +5,8 @@ use Cake\Datasource\RepositoryInterface;
 use Cake\Event\Event;
 use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Association;
+use Cake\ORM\Table;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Crud\Error\Exception\CrudException;
 use Crud\Event\Subject;
@@ -55,6 +57,13 @@ class JsonApiListener extends ApiListener
         'include' => [],
         'fieldSets' => [], // hash to limit fields shown (can be used for both `data` and `included` members)
         'docValidatorAboutLinks' => false, // true to show links to JSON API specification clarifying the document validation error
+        'queryParameters' => [
+            'include' => [
+                'whitelist' => true,
+                'blacklist' => false,
+            ]
+        ], //Array of query parameters and associated transformers
+        'inflect' => 'dasherize'
     ];
 
     /**
@@ -89,6 +98,8 @@ class JsonApiListener extends ApiListener
             'Crud.afterDelete' => ['callable' => [$this, 'afterDelete'], 'priority' => 90],
             'Crud.beforeRender' => ['callable' => [$this, 'respond'], 'priority' => 100],
             'Crud.beforeRedirect' => ['callable' => [$this, 'beforeRedirect'], 'priority' => 100],
+            'Crud.beforePaginate' => ['callable' => [$this, 'beforeFind'], 'priority' => 10],
+            'Crud.beforeFind' => ['callable' => [$this, 'beforeFind'], 'priority' => 10],
         ];
     }
 
@@ -167,16 +178,149 @@ class JsonApiListener extends ApiListener
     }
 
     /**
-     * respond() event.
+     * @param \Cake\Datasource\RepositoryInterface $repository Repository
+     * @param string $include The association include path
+     * @return \Cake\ORM\Association|null
+     */
+    protected function _getAssociation(RepositoryInterface $repository, $include)
+    {
+        $delimiter = '-';
+        if (strpos($include, '_') !== false) {
+            $delimiter = '_';
+        }
+        $associationName = Inflector::camelize($include, $delimiter);
+
+        $association = $repository->association($associationName);//First check base name
+
+        if ($association) {
+            return $association;
+        }
+
+        //If base name doesn't work, try to pluralize it
+        $associationName = Inflector::pluralize($associationName);
+        return $repository->association($associationName);
+    }
+
+    /**
+     * Takes a "include" string and converts it into a correct CakePHP ORM association alias
+     *
+     * @param string $includes The relationships to include
+     * @param array|bool $blacklist Blacklisted includes
+     * @param array|bool $whitelist Whitelisted options
+     * @param \Cake\ORM\Table|null $repository The repository
+     * @return string
+     * @throws \Cake\Network\Exception\BadRequestException
+     */
+    protected function _parseIncludes($includes, $blacklist, $whitelist, Table $repository = null, $path = [])
+    {
+        $wildcard = implode('.', array_merge($path, ['*']));
+        $wildcardWhitelist = Hash::get((array)$whitelist, $wildcard);
+        $wildcardBlacklist = Hash::get((array)$blacklist, $wildcard);
+        $contains = [];
+        foreach ($includes as $include => $nestedIncludes) {
+            $nestedContains = [];
+            $includePath = array_merge($path, [$include]);
+            $includeDotPath = implode('.', $includePath);
+
+            if ($blacklist === true || ($blacklist !== false && ($wildcardBlacklist === true || Hash::get($blacklist, $includeDotPath) === true))) {
+                continue;
+            }
+
+            if ($whitelist === false || (
+                $whitelist !== true &&
+                !$wildcardWhitelist &&
+                Hash::get($whitelist, $includeDotPath) === null
+            )) {
+                continue;
+            }
+
+            $association = null;
+
+            if ($repository !== null) {
+                $association = $this->_getAssociation($repository, $include);
+                if ($association === null) {
+                    throw new BadRequestException("Invalid relationship path '{$includeDotPath}' supplied in include parameter");
+                }
+            }
+
+            if (!empty($nestedIncludes)) {
+                $nestedContains = $this->_parseIncludes($nestedIncludes, $blacklist, $whitelist, $association ? $association->target() : null, $includePath);
+            }
+
+            if (!empty($nestedContains)) {
+                $contains[$association->alias()] = $nestedContains;
+            } else {
+                $contains[] = $association->alias();
+            }
+        }
+
+        return $contains;
+    }
+
+    /**
+     * Parses out include query parameter into a containable array, and contains the query.
+     *
+     * Supported options is "Whitelist" and "Blacklist"
+     *
+     * @param string|array $includes The query data
+     * @param \Crud\Event\Subject $subject The subject
+     * @param array $options Array of options for includes.
+     * @return void
+     */
+    protected function _includeParameter($includes, Subject $subject, $options)
+    {
+        if (is_string($includes)) {
+            $includes = explode(',', $includes);
+        }
+        $includes = Hash::filter((array)$includes);
+
+        if (empty($includes) || $options['blacklist'] === true || $options['whitelist'] === false) {
+            return;
+        }
+
+        $this->config('include', []);
+        $includes = Hash::expand(Hash::normalize($includes));
+        $blacklist = is_array($options['blacklist']) ? Hash::expand(Hash::normalize(array_fill_keys($options['blacklist'], true))) : $options['blacklist'];
+        $whitelist = is_array($options['whitelist']) ? Hash::expand(Hash::normalize(array_fill_keys($options['whitelist'], true))) : $options['whitelist'];
+        $contains = $this->_parseIncludes($includes, $blacklist, $whitelist, $subject->query->repository());
+
+        $subject->query->contain($contains);
+
+        $this->config('include', []);
+        $associations = $this->_getContainedAssociations($subject->query->repository(), $contains);
+        $include = $this->_getIncludeList($associations);
+
+        $this->config('include', $include);
+    }
+
+    /**
+     * BeforeFind event listener to parse any supplied query parameters
      *
      * @param \Cake\Event\Event $event Event
      * @return void
      */
-    public function respond(Event $event)
+    public function beforeFind(Event $event)
     {
-        $this->_removeBelongsToForeignKeysFromEventData($event);
+        //Inject default query handlers
+        $queryParameters = Hash::merge($this->config('queryParameters'), [
+            'include' => [
+                'callable' => [$this, '_includeParameter']
+            ]
+        ]);
 
-        parent::respond($event);
+        foreach ($queryParameters as $parameter => $options) {
+            if (is_callable($options)) {
+                $options = [
+                    'callable' => $options
+                ];
+            }
+
+            if (!is_callable($options['callable'])) {
+                throw new \InvalidArgumentException('Invalid callable supplied for query parameter ' . $parameter);
+            }
+
+            $options['callable']($this->_request()->query($parameter), $event->subject(), $options);
+        }
     }
 
     /**
@@ -196,7 +340,8 @@ class JsonApiListener extends ApiListener
         $associations = $repository->associations();
 
         foreach ($associations as $association) {
-            if ($association->type() === Association::MANY_TO_ONE) {
+            $type = $association->type();
+            if ($type === Association::MANY_TO_ONE || $type === Association::ONE_TO_ONE) {
                 $associationTable = $association->target();
                 $foreignKey = $association->foreignKey();
 
@@ -214,43 +359,6 @@ class JsonApiListener extends ApiListener
         }
 
         $event->subject()->entity = $entity;
-    }
-
-    /**
-     * Removes all belongsTo `_id`  fields from the entity or entities so
-     * they don't show up as jsonapi attributes in the response as described
-     * at http://jsonapi.org/format/#document-resource-object-attributes.
-     *
-     * @param \Cake\Event\Event $event Event
-     * @return void
-     */
-    protected function _removeBelongsToForeignKeysFromEventData($event)
-    {
-        $repository = $this->_controller()->loadModel();
-        $associations = $repository->associations();
-
-        $foreignKeys = [];
-        foreach ($associations as $association) {
-            if ($association->type() === Association::MANY_TO_ONE) {
-                $foreignKeys[] = $association->foreignKey();
-            }
-        }
-
-        // remove from single entity
-        if (isset($event->subject()->entity)) {
-            foreach ($foreignKeys as $foreignKey) {
-                $event->subject()->entity->unsetProperty($foreignKey);
-            }
-
-            return;
-        }
-
-        // remove from collection
-        foreach ($event->subject()->entities as $key => $entity) {
-            foreach ($foreignKeys as $foreignKey) {
-                $event->subject()->entities->current()->unsetProperty($foreignKey);
-            }
-        }
     }
 
     /**
@@ -302,9 +410,12 @@ class JsonApiListener extends ApiListener
     {
         $repository = $this->_controller()->loadModel(); // Default model class
 
-        // Remove associations not found in the `find()` result
-        $entity = $this->_getSingleEntity($subject);
-        $strippedAssociations = $this->_stripNonContainedAssociations($repository, $entity);
+        if (isset($subject->query)) {
+            $usedAssociations = $this->_getContainedAssociations($repository, $subject->query->contain());
+        } else {
+            $entity = $this->_getSingleEntity($subject);
+            $usedAssociations = $this->_extractEntityAssociations($repository, $entity);
+        }
 
         // Set data before rendering the view
         $this->_controller()->set([
@@ -314,12 +425,12 @@ class JsonApiListener extends ApiListener
             '_jsonApiBelongsToLinks' => $this->config('jsonApiBelongsToLinks'),
             '_jsonOptions' => $this->config('jsonOptions'),
             '_debugPrettyPrint' => $this->config('debugPrettyPrint'),
-            '_repositories' => $this->_getRepositoryList($repository, $strippedAssociations),
-            '_include' => $this->_getIncludeList($strippedAssociations),
+            '_repositories' => $this->_getRepositoryList($repository, $usedAssociations),
+            '_include' => $this->_getIncludeList($usedAssociations),
             '_fieldSets' => $this->config('fieldSets'),
             Inflector::tableize($repository->alias()) => $this->_getFindResult($subject),
-            '_associations' => $strippedAssociations,
             '_serialize' => true,
+            '_inflect' => $this->config('inflect')
         ]);
 
         return $this->_controller()->render();
@@ -378,6 +489,10 @@ class JsonApiListener extends ApiListener
 
         if (!is_bool($this->config('debugPrettyPrint'))) {
             throw new CrudException('JsonApiListener configuration option `debugPrettyPrint` only accepts a boolean');
+        }
+
+        if (!is_array($this->config('queryParameters'))) {
+            throw new CrudException('JsonApiListener configuration option `queryParameters` only accepts an array');
         }
     }
 
@@ -439,24 +554,37 @@ class JsonApiListener extends ApiListener
     }
 
     /**
-     * Removes all associated models not detected (as the result of a contain
-     * query) in the find result from the entity's AssociationCollection to
-     * prevent `null` entries appearing in the json api `relationships` node.
+     * Creates a nested array of all associations used in the query
      *
      * @param \Cake\Datasource\RepositoryInterface $repository Repository
-     * @param \Cake\ORM\Entity $entity Entity
+     * @param array $contains Array of contained associations
      * @return \Cake\ORM\AssociationCollection
      */
-    protected function _stripNonContainedAssociations($repository, $entity)
+    protected function _getContainedAssociations($repository, $contains)
     {
-        $associations = $repository->associations();
+        $associationCollection = $repository->associations();
 
-        foreach ($associations as $association) {
+        $associations = [];
+        foreach ((array)$contains as $contain => $nestedContains) {
+            if (is_string($nestedContains)) {
+                $contain = $nestedContains;
+                $nestedContains = [];
+            }
+
+            $association = $associationCollection->get($contain);
+            if ($association === null) {
+                continue;
+            }
+
             $associationKey = strtolower($association->name());
-            $entityKey = $association->property();
 
-            if (empty($entity->$entityKey)) {
-                $associations->remove($associationKey);
+            $associations[$associationKey] = [
+                'association' => $association,
+                'children' => []
+            ];
+
+            if (!empty($nestedContains)) {
+                $associations[$associationKey]['children'] = $this->_getContainedAssociations($association->target(), $nestedContains);
             }
         }
 
@@ -464,10 +592,37 @@ class JsonApiListener extends ApiListener
     }
 
     /**
-     * Get a list of all repositories indexed by their registry alias.
+     * Removes all associated models not detected (as the result of a contain
+     * query) in the find result from the entity's AssociationCollection to
+     * prevent `null` entries appearing in the json api `relationships` node.
+     *
+     * @param \Cake\Datasource\RepositoryInterface $repository Repository
+     * @param \Cake\ORM\Entity $entity Entity
+     * @return array
+     */
+    protected function _extractEntityAssociations($repository, $entity)
+    {
+        $associationCollection = $repository->associations();
+        $associations = [];
+        foreach ($associationCollection as $association) {
+            $associationKey = strtolower($association->name());
+            $entityKey = $association->property();
+            if (!empty($entity->$entityKey)) {
+                $associations[$associationKey] = [
+                    'association' => $association,
+                    'children' => $this->_extractEntityAssociations($association->target(), $entity->$entityKey)
+                ];
+            }
+        }
+
+        return $associations;
+    }
+
+    /**
+     * Get a flat list of all repositories indexed by their registry alias.
      *
      * @param RepositoryInterface $repository Current repository
-     * @param Association[] $associations Associations to get repository from
+     * @param array $associations Nested associations to get repository from
      * @return array Used repositories indexed by registry alias
      * @internal
      */
@@ -478,9 +633,18 @@ class JsonApiListener extends ApiListener
         ];
 
         foreach ($associations as $association) {
-            $registryAlias = $association->target()->registryAlias();
+            $association += [
+                'association' => null,
+                'children' => []
+            ];
 
-            $repositories[$registryAlias] = $association->target();
+            if ($association['association'] === null) {
+                throw new \InvalidArgumentException("Association {$name} does not have an association object set");
+            }
+
+            $associationRepository = $association['association']->target();
+
+            $repositories += $this->_getRepositoryList($associationRepository, $association['children'] ?: []);
         }
 
         return $repositories;
@@ -494,28 +658,29 @@ class JsonApiListener extends ApiListener
      *
      * @param \Cake\ORM\AssociationCollection $associations AssociationCollection
      * @return array
+     * @throws \InvalidArgumentException
      */
-    protected function _getIncludeList($associations)
+    protected function _getIncludeList($associations, $last = true)
     {
         if (!empty($this->config('include'))) {
             return $this->config('include');
         }
 
         $result = [];
-        foreach ($associations as $association) {
-            if ($association->type() === Association::MANY_TO_ONE) {
-                $include = Inflector::tableize($association->name());
-                $include = Inflector::singularize($include);
+        foreach ($associations as $name => $association) {
+            $association += [
+                'association' => null,
+                'children' => []
+            ];
 
-                $result[] = $include;
-                continue;
+            if ($association['association'] === null) {
+                throw new \InvalidArgumentException("Association {$name} does not have an association object set");
             }
 
-            // hasMany
-            $result[] = Inflector::tableize($association->name());
+            $result[$association['association']->property()] = $this->_getIncludeList($association['children'], false);
         }
 
-        return $result;
+        return $last ? array_keys(Hash::flatten($result)) : $result;
     }
 
     /**

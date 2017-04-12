@@ -1,6 +1,7 @@
 <?php
 namespace Crud\Schema\JsonApi;
 
+use Cake\Datasource\EntityInterface;
 use Cake\Datasource\RepositoryInterface;
 use Cake\ORM\Association;
 use Cake\Routing\Router;
@@ -55,8 +56,8 @@ class DynamicEntitySchema extends SchemaProvider
         // NeoMerx required property holding lowercase singular or plural resource name
         if (!isset($this->resourceType)) {
             list (, $entityName) = pluginSplit($repository->registryAlias());
-
-            $this->resourceType = Inflector::underscore($entityName);
+            $method = isset($view->viewVars['_inflect']) ? $view->viewVars['_inflect'] : 'dasherize';
+            $this->resourceType = Inflector::$method($entityName);
         }
 
         parent::__construct($factory);
@@ -72,6 +73,17 @@ class DynamicEntitySchema extends SchemaProvider
     public function getId($entity)
     {
         return (string)$entity->get($this->_repository->primaryKey());
+    }
+
+    /**
+     * @param \Cake\Datasource\EntityInterface $entity Entity
+     * @return \Cake\Datasource\RepositoryInterface $repository
+     */
+    protected function _getRepository($entity)
+    {
+        $repositoryName = $entity->source();
+
+        return isset($this->_view->viewVars['_repositories'][$repositoryName]) ? $this->_view->viewVars['_repositories'][$repositoryName] : null;
     }
 
     /**
@@ -91,14 +103,15 @@ class DynamicEntitySchema extends SchemaProvider
         $attributes = $entity->toArray();
 
         // remove associated data so it won't appear inside jsonapi `attributes`
-        foreach ($this->_view->viewVars['_associations'] as $association) {
-            $associationKey = Inflector::tableize($association->property());
+        foreach ($this->_repository->associations() as $association) {
+            $propertyName = $association->property();
 
             if ($association->type() === Association::MANY_TO_ONE) {
-                $associationKey = Inflector::singularize($associationKey);
+                $foreignKey = $association->foreignKey();
+                unset($attributes[$foreignKey]);
             }
 
-            unset($attributes[$associationKey]);
+            unset($attributes[$propertyName]);
         }
 
         return $attributes;
@@ -110,24 +123,24 @@ class DynamicEntitySchema extends SchemaProvider
      *
      * JSON API optional `related` links not implemented yet.
      *
-     * @param \Cake\Datasource\EntityInterface $resource Entity object
+     * @param \Cake\Datasource\EntityInterface $entity Entity object
      * @param bool $isPrimary True to add resource to data section instead of included
      * @param array $includeRelationships Used to fine tune relationships
      * @return array
      */
-    public function getRelationships($resource, $isPrimary, array $includeRelationships)
+    public function getRelationships($entity, $isPrimary, array $includeRelationships)
     {
         $relations = [];
 
-        foreach ($this->_view->viewVars['_associations'] as $association) {
-            $associationKey = $association->property();
+        foreach ($this->_repository->associations() as $association) {
+            $property = $association->property();
 
-            $data = $resource->get($associationKey);
+            $data = $entity->get($property);
             if (!$data) {
                 continue;
             }
 
-            $relations[$associationKey] = [
+            $relations[$property] = [
                 self::DATA => $data,
                 self::SHOW_SELF => true,
                 self::SHOW_RELATED => false,
@@ -168,11 +181,11 @@ class DynamicEntitySchema extends SchemaProvider
      */
     public function getRelationshipSelfLink($entity, $name, $meta = null, $treatAsHref = false)
     {
-        $byProperty = $this->_repository->associations()->getByProperty($name);
-        $relatedRepository = $byProperty->target();
+        $association = $this->_repository->associations()->getByProperty($name);
+        $relatedRepository = $association->target();
 
         // generate link for belongsTo relationship
-        if ($this->_stringIsSingular($name)) {
+        if (in_array($association->type(), [Association::MANY_TO_ONE, Association::ONE_TO_ONE])) {
             if ($this->_view->viewVars['_jsonApiBelongsToLinks'] === true) {
                 list(, $controllerName) = pluginSplit($this->_repository->registryAlias());
                 $sourceName = Inflector::underscore(Inflector::singularize($controllerName));
@@ -202,6 +215,7 @@ class DynamicEntitySchema extends SchemaProvider
 
         $url = Router::url($this->_getRepositoryRoutingParameters($relatedRepository) + [
             '_method' => 'GET',
+            'action' => 'index',
             $searchKey => $entity->id,
         ], $this->_view->viewVars['_absoluteLinks']);
 
@@ -216,13 +230,11 @@ class DynamicEntitySchema extends SchemaProvider
      */
     public function getIncludedResourceLinks($entity)
     {
-        list(, $entityName) = namespaceSplit(get_class($entity));
-
-        $byProperty = $this->_repository->associations()->getByProperty(Inflector::underscore($entityName));
-        if (!$byProperty) {
+        $repositoryName = $entity->source();
+        if (!isset($this->_view->viewVars['_repositories'][$repositoryName])) {
             return [];
         }
-        $repository = $byProperty->target();
+        $repository = $this->_view->viewVars['_repositories'][$repositoryName];
 
         $url = Router::url($this->_getRepositoryRoutingParameters($repository) + [
             '_method' => 'GET',

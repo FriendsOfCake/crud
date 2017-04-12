@@ -5,6 +5,7 @@ use Cake\Controller\Controller;
 use Cake\ORM\TableRegistry;
 use Crud\Listener\JsonApiListener;
 use Crud\TestSuite\TestCase;
+use Neomerx\JsonApi\Contracts\Schema\SchemaFactoryInterface;
 use Neomerx\JsonApi\Factories\Factory;
 
 /**
@@ -61,7 +62,8 @@ class DynamicEntitySchemaTest extends TestCase
         // get required AssociationsCollection
         $listener = new JsonApiListener(new Controller());
         $this->setReflectionClassInstance($listener);
-        $associations = $this->callProtectedMethod('_stripNonContainedAssociations', [$table, $entity], $listener);
+        $associations = $this->callProtectedMethod('_getContainedAssociations', [$table, $query->contain()], $listener);
+        $repositories = $this->callProtectedMethod('_getRepositoryList', [$table, $associations], $listener);
 
         // make view return associations on get('_associations') call
         $view = $this
@@ -70,13 +72,13 @@ class DynamicEntitySchemaTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $view->set('_associations', $associations);
+        $view->set('_repositories', $repositories);
 
         // setup the schema
         $schema = $this
             ->getMockBuilder('\Crud\Schema\JsonApi\DynamicEntitySchema')
             ->setMethods(null)
-            ->disableOriginalConstructor()
+            ->setConstructorArgs([$this->createMock(SchemaFactoryInterface::class), $view, $table])
             ->getMock();
 
         $this->setReflectionClassInstance($schema);
@@ -130,7 +132,8 @@ class DynamicEntitySchemaTest extends TestCase
         // get required AssociationsCollection
         $listener = new JsonApiListener(new Controller());
         $this->setReflectionClassInstance($listener);
-        $associations = $this->callProtectedMethod('_stripNonContainedAssociations', [$table, $entity], $listener);
+        $associations = $this->callProtectedMethod('_getContainedAssociations', [$table, $query->contain()], $listener);
+        $repositories = $this->callProtectedMethod('_getRepositoryList', [$table, $associations], $listener);
 
         // make view return associations on get('_associations') call
         $view = $this
@@ -139,7 +142,7 @@ class DynamicEntitySchemaTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $view->set('_associations', $associations);
+        $view->set('_repositories', $repositories);
         $view->set('_absoluteLinks', false); // test relative links (listener default)
 
         // setup the schema
@@ -211,6 +214,10 @@ class DynamicEntitySchemaTest extends TestCase
 
         $view->set('_absoluteLinks', false);
         $view->set('_jsonApiBelongsToLinks', false);
+        $view->set('_repositories', [
+            'Countries' => TableRegistry::get('Countries'),
+            'Currencies' => TableRegistry::get('Currencies')
+        ]);
 
         // get results
         $table = TableRegistry::get('Countries');
