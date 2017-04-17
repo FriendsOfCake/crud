@@ -67,6 +67,19 @@ class RelatedModelsListener extends BaseListener
     }
 
     /**
+     * Automatically parse and contain related table classes
+     *
+     * @param Event $event
+     * @return void
+     */
+    public function beforePaginate(Event $event)
+    {
+        if (!$event->subject()->query->contain()) {
+            $event->subject()->query->contain($this->relatedModels());
+        }
+    }
+
+    /**
      * Find and publish all related models to the view
      * for an action
      *
