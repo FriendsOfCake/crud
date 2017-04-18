@@ -264,3 +264,22 @@ they inherit the Crud configuration without impacting other areas of our applica
   {
   }
 
+Use alternate model
+===================
+
+You may have case that you need to use an alternate Model in the Controller, to do that, you can change the property of ``Controller::modelClass`` at the Controller.
+
+.. code-block:: phpinline
+
+  namespace App\Controller\Api;
+
+  class ProductsController extends ApiAppController
+  {
+      public function initialize()
+      {
+        parent::initialize();
+
+        $this->modelClass = 'TableName';
+      }
+  }
+  
