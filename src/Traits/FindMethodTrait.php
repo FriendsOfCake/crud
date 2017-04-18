@@ -57,6 +57,35 @@ trait FindMethodTrait
     }
 
     /**
+     * Find all records
+     *
+     * @param \Crud\Event\Subject $subject Event subject
+     * @return \Cake\ORM\Entity
+     */
+    protected function _findAll(Subject $subject)
+    {
+        $repository = $this->_table();
+
+        $query = $repository->find($this->findMethod());
+
+        $subject->set([
+            'repository' => $repository,
+            'query' => $query
+        ]);
+
+        $this->_trigger('beforeFind', $subject);
+        $entities = $query->all();
+
+        if (!$entities) {
+            return $this->_notFound($id, $subject);
+        }
+
+        $subject->set(['entities' => $entities, 'success' => true]);
+        $this->_trigger('afterFind', $subject);
+        return $entities;
+    }
+
+    /**
      * Throw exception if a record is not found
      *
      * @param string $id Record id
