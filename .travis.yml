@@ -8,6 +8,10 @@ php:
 
 sudo: false
 
+cache:
+  directories:
+    - $HOME/.composer/cache/files
+    
 env:
   matrix:
     - DB=mysql db_dsn='mysql://travis@0.0.0.0/cakephp_test'
