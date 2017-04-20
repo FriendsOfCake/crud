@@ -119,7 +119,7 @@ class EditAction extends BaseAction
         );
 
         $this->_trigger('beforeSave', $subject);
-        if (call_user_func([$this->_table(), $this->saveMethod()], $entity, $this->saveOptions())) {
+        if ($this->_table()->{$this->saveMethod()}($entity, $this->saveOptions())) {
             return $this->_success($subject);
         }
 

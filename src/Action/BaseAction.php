@@ -61,14 +61,14 @@ abstract class BaseAction extends Object
             $this->_responding = true;
             $this->_controller()->eventManager()->on($this);
 
-            return call_user_func_array([$this, $method], $args);
+            return $this->{$method}(...$args);
         }
 
         if (method_exists($this, '_handle')) {
             $this->_responding = true;
             $this->_controller()->eventManager()->on($this);
 
-            return call_user_func_array([$this, '_handle'], $args);
+            return $this->{'_handle'}(...$args);
         }
 
         throw new NotImplementedException(sprintf(
