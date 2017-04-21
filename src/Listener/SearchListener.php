@@ -53,6 +53,10 @@ class SearchListener extends BaseListener
         }
 
         $table = $this->_table();
+        if (!$table->behaviors()->has('Search')) {
+            return;
+        }
+
         if (!$table->behaviors()->hasMethod('filterParams')) {
             throw new RuntimeException(sprintf(
                 'Missing Search.Search behavior on %s',
