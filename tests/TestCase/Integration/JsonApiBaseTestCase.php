@@ -85,18 +85,4 @@ abstract class JsonApiBaseTestCase extends IntegrationTestCase
     {
         return trim((new File($this->_JsonDir . $file))->read());
     }
-
-    /**
-     * Helper function to get the json body of a response for use in the assertions.
-     *
-     * return @void
-     */
-    protected function _getResponse()
-    {
-        $this->_response->getBody()->rewind();
-        $response = $this->_response->getBody()->getContents();
-
-        return $response;
-    }
 }
-

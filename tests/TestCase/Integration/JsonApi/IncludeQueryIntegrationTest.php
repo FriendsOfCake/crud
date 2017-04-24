@@ -53,7 +53,7 @@ class IncludeQueryIntegrationTest extends JsonApiBaseTestCase
         $this->assertResponseSuccess();
         $this->_assertJsonApiResponseHeaders();
 
-        $this->assertSame($this->_getExpected($expectedFile), $this->_getResponse());
+        $this->assertResponseEquals($this->_getExpected($expectedFile));
     }
 
     /**
@@ -71,7 +71,7 @@ class IncludeQueryIntegrationTest extends JsonApiBaseTestCase
         $this->get('/countries/1');
 
         $this->assertResponseSuccess();
-        $this->assertSame($this->_getExpected('get_country_include_currency_and_culture.json'), $this->_getResponse());
+        $this->assertResponseEquals($this->_getExpected('get_country_include_currency_and_culture.json'));
     }
 
     /**

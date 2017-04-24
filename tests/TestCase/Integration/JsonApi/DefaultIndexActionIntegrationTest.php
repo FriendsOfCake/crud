@@ -18,6 +18,6 @@ class DefaultIndexActionIntegrationTest extends JsonApiBaseTestCase
         $this->_assertJsonApiResponseHeaders();
         $this->assertResponseCode(200);
         $this->assertResponseNotEmpty();
-        $this->assertSame($this->_getExpected('default_get_countries_with_pagination.json'), $this->_getResponse());
+        $this->assertResponseEquals($this->_getExpected('default_get_countries_with_pagination.json'));
     }
 }
