@@ -75,10 +75,15 @@ class DynamicEntitySchemaTest extends TestCase
         $view->set('_repositories', $repositories);
 
         // setup the schema
+        $schemaFactoryInterface = $this
+            ->getMockBuilder(SchemaFactoryInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
         $schema = $this
             ->getMockBuilder('\Crud\Schema\JsonApi\DynamicEntitySchema')
             ->setMethods(null)
-            ->setConstructorArgs([$this->createMock(SchemaFactoryInterface::class), $view, $table])
+            ->setConstructorArgs([$schemaFactoryInterface, $view, $table])
             ->getMock();
 
         $this->setReflectionClassInstance($schema);
