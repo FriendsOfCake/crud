@@ -198,6 +198,7 @@ class JsonApiListener extends ApiListener
 
         //If base name doesn't work, try to pluralize it
         $associationName = Inflector::pluralize($associationName);
+
         return $repository->association($associationName);
     }
 

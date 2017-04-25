@@ -1,0 +1,38 @@
+{
+    "meta": {
+        "record_count": 2,
+        "page_count": 1,
+        "page_limit": null
+    },
+    "links": {
+        "self": "\/countries?page=1",
+        "first": "\/countries?page=1",
+        "last": "\/countries?page=1",
+        "prev": null,
+        "next": null
+    },
+    "data": [
+        {
+            "type": "countries",
+            "id": "1",
+            "attributes": {
+                "code": "NL",
+                "name": "The Netherlands"
+            },
+            "links": {
+                "self": "\/countries\/1"
+            }
+        },
+        {
+            "type": "countries",
+            "id": "2",
+            "attributes": {
+                "code": "BE",
+                "name": "Belgium"
+            },
+            "links": {
+                "self": "\/countries\/2"
+            }
+        }
+    ]
+}

@@ -436,7 +436,13 @@ class JsonApiListenerTest extends TestCase
         $subject = $this
             ->getMockBuilder('\Crud\Event\Subject')
             ->getMock();
-        $subject->query = $this->createMock(Query::class);
+
+        $query = $this
+            ->getMockBuilder(Query::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $subject->query = $query;
         $subject->entity = new Country();
 
         $listener->render($subject);
@@ -1386,7 +1392,13 @@ class JsonApiListenerTest extends TestCase
         $this->setReflectionClassInstance($listener);
 
         $subject = new Subject();
-        $subject->query = $this->createMock(Query::class);
+
+        $query = $this
+            ->getMockBuilder(Query::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $subject->query = $query;
         $subject->query
             ->expects($options['blacklist'] !== true && $options['whitelist'] !== false ? $this->once() : $this->never())
             ->method('contain')
