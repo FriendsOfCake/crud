@@ -778,8 +778,7 @@ and then simply use search aliases named ``filter`` like shown below:
   public function searchConfiguration()
   {
     $search = new Manager($this);
-    $search
-      ->like('filter', [
+    $search->like('filter', [
         'before' => true,
         'after' => true,
         'field' => [$this->aliasField('name')]
