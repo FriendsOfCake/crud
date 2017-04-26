@@ -1,0 +1,39 @@
+{
+    "data": {
+        "type": "countries",
+        "id": "1",
+        "attributes": {
+            "code": "NL",
+            "name": "The Netherlands"
+        },
+        "relationships": {
+            "cultures": {
+                "data": [
+                    {
+                        "type": "cultures",
+                        "id": "1"
+                    }
+                ],
+                "links": {
+                    "self": "\/cultures?country_id=1"
+                }
+            }
+        },
+        "links": {
+            "self": "\/countries\/1"
+        }
+    },
+    "included": [
+        {
+            "type": "cultures",
+            "id": "1",
+            "attributes": {
+                "code": "nl-NL",
+                "name": "Dutch"
+            },
+            "links": {
+                "self": "\/cultures\/1"
+            }
+        }
+    ]
+}

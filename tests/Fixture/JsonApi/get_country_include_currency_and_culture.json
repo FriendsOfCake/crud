@@ -1,0 +1,59 @@
+{
+    "data": {
+        "type": "countries",
+        "id": "1",
+        "attributes": {
+            "code": "NL",
+            "name": "The Netherlands"
+        },
+        "relationships": {
+            "currency": {
+                "data": {
+                    "type": "currencies",
+                    "id": "1"
+                },
+                "links": {
+                    "self": "\/currencies\/1"
+                }
+            },
+            "cultures": {
+                "data": [
+                    {
+                        "type": "cultures",
+                        "id": "1"
+                    }
+                ],
+                "links": {
+                    "self": "\/cultures?country_id=1"
+                }
+            }
+        },
+        "links": {
+            "self": "\/countries\/1"
+        }
+    },
+    "included": [
+        {
+            "type": "currencies",
+            "id": "1",
+            "attributes": {
+                "code": "EUR",
+                "name": "Euro"
+            },
+            "links": {
+                "self": "\/currencies\/1"
+            }
+        },
+        {
+            "type": "cultures",
+            "id": "1",
+            "attributes": {
+                "code": "nl-NL",
+                "name": "Dutch"
+            },
+            "links": {
+                "self": "\/cultures\/1"
+            }
+        }
+    ]
+}

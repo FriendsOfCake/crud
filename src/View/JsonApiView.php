@@ -207,6 +207,10 @@ class JsonApiView extends View
     {
         $schemas = [];
         foreach ($repositories as $repositoryName => $repository) {
+            if (isset($schemas[$repository->entityClass()])) {
+                continue;
+            }
+
             $entityClass = $repository->entityClass();
 
             if ($entityClass === Entity::class) {

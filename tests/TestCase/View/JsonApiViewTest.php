@@ -9,6 +9,7 @@ use Cake\Filesystem\File;
 use Cake\Network\Request;
 use Cake\Network\Response;
 use Cake\ORM\Entity;
+use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Crud\Error\Exception\CrudException;
@@ -144,6 +145,7 @@ class JsonApiViewTest extends TestCase
         } else {
             $subject->entity = $findResult;
         }
+        $subject->query = $table->query();
 
         // create required '_entities' and '_associations' viewVars normally
         // produced and set by the JsonApiListener
@@ -154,8 +156,7 @@ class JsonApiViewTest extends TestCase
             ->getMock();
 
         $this->setReflectionClassInstance($listener);
-        $entity = $this->callProtectedMethod('_getSingleEntity', [$subject], $listener);
-        $associations = $this->callProtectedMethod('_stripNonContainedAssociations', [$table, $entity], $listener);
+        $associations = $this->callProtectedMethod('_getContainedAssociations', [$table, $subject->query->contain()], $listener);
         $repositories = $this->callProtectedMethod('_getRepositoryList', [$table, $associations], $listener);
 
         $viewVars['_repositories'] = $repositories;
@@ -228,7 +229,7 @@ class JsonApiViewTest extends TestCase
         ]);
 
         $this->assertSame(
-            (new File($this->_JsonDir . 'get_countries_no_relationships.json'))->read(),
+            trim((new File($this->_JsonDir . 'get_countries_no_relationships.json'))->read()),
             $view->render()
         );
 
@@ -239,7 +240,7 @@ class JsonApiViewTest extends TestCase
         ]);
 
         $this->assertSame(
-            (new File($this->_JsonDir . 'get_country_no_relationships.json'))->read(),
+            trim((new File($this->_JsonDir . 'get_country_no_relationships.json'))->read()),
             $view->render()
         );
     }
@@ -265,7 +266,7 @@ class JsonApiViewTest extends TestCase
         ]);
 
         $this->assertSame(
-            (new File($this->_JsonDir . 'response_without_resources_meta.json'))->read(),
+            trim((new File($this->_JsonDir . 'response_without_resources_meta.json'))->read()),
             $view->render()
         );
     }
@@ -384,7 +385,7 @@ class JsonApiViewTest extends TestCase
         ]);
 
         $this->assertSame(
-            (new File($this->_JsonDir . 'get_country_no_relationships.json'))->read(),
+            trim((new File($this->_JsonDir . 'get_country_no_relationships.json'))->read()),
             $view->render()
         );
 
@@ -397,7 +398,7 @@ class JsonApiViewTest extends TestCase
         ]);
 
         $this->assertSame(
-            '{"data":{"type":"countries","id":"1","attributes":{"code":"NL","name":"The Netherlands","currency_id":1},"links":{"self":"\/countries\/1"}}}',
+            '{"data":{"type":"countries","id":"1","attributes":{"code":"NL","name":"The Netherlands"},"links":{"self":"\/countries\/1"}}}',
             $view->render()
         );
     }
