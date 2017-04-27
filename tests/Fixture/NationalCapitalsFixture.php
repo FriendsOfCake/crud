@@ -8,7 +8,7 @@ class NationalCapitalsFixture extends TestFixture
 
     public $fields = [
         'id' => ['type' => 'integer'],
-        'name' => ['type' => 'string', 'length' => 3, 'null' => false],
+        'name' => ['type' => 'string', 'length' => 100, 'null' => false],
         'description' => ['type' => 'string', 'length' => 255, 'null' => false],
         '_constraints' => ['primary' => ['type' => 'primary', 'columns' => ['id']]],
     ];
