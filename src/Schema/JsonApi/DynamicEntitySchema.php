@@ -140,6 +140,17 @@ class DynamicEntitySchema extends SchemaProvider
                 continue;
             }
 
+            // change related  data in entity to dasherized if need be
+            if ($this->_view->viewVars['_inflect'] === 'dasherize') {
+                $dasherizedProperty = Inflector::dasherize($property);
+
+                if (empty($entity->$dasherizedProperty)) {
+                    $entity->$dasherizedProperty = $entity->$property;
+                    unset($entity->$property);
+                    $property = $dasherizedProperty;
+                }
+            }
+
             $relations[$property] = [
                 self::DATA => $data,
                 self::SHOW_SELF => true,
@@ -181,6 +192,10 @@ class DynamicEntitySchema extends SchemaProvider
      */
     public function getRelationshipSelfLink($entity, $name, $meta = null, $treatAsHref = false)
     {
+        if ($this->_view->viewVars['_inflect'] === 'dasherize') {
+            $name = Inflector::underscore($name);
+        }
+
         $association = $this->_repository->associations()->getByProperty($name);
         $relatedRepository = $association->target();
 
@@ -198,6 +213,7 @@ class DynamicEntitySchema extends SchemaProvider
                     'type' => $name,
                 ], $this->_view->viewVars['_absoluteLinks']);
             } else {
+                $name = Inflector::dasherize($name);
                 $relatedEntity = $entity[$name];
 
                 $url = Router::url($this->_getRepositoryRoutingParameters($relatedRepository) + [
