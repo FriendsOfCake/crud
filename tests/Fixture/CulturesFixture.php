@@ -9,7 +9,7 @@ class CulturesFixture extends TestFixture
     public $fields = [
         'id' => ['type' => 'integer'],
         'code' => ['type' => 'string', 'length' => 5, 'null' => false],
-        'name' => ['type' => 'string', 'length' => 255, 'null' => false],
+        'name' => ['type' => 'string', 'length' => 100, 'null' => false],
         'country_id' => ['type' => 'integer', 'null' => false],
         '_constraints' => ['primary' => ['type' => 'primary', 'columns' => ['id']]],
     ];

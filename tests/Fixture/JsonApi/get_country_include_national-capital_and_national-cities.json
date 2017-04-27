@@ -1,0 +1,72 @@
+{
+    "data": {
+        "type": "countries",
+        "id": "1",
+        "attributes": {
+            "code": "NL",
+            "name": "The Netherlands"
+        },
+        "relationships": {
+            "national-capital": {
+                "data": {
+                    "type": "national-capitals",
+                    "id": "1"
+                },
+                "links": {
+                    "self": "\/national-capitals\/1"
+                }
+            },
+            "national-cities": {
+                "data": [
+                    {
+                        "type": "national-cities",
+                        "id": "1"
+                    },
+                    {
+                        "type": "national-cities",
+                        "id": "2"
+                    }
+                ],
+                "links": {
+                    "self": "\/national-cities?country_id=1"
+                }
+            }
+        },
+        "links": {
+            "self": "\/countries\/1"
+        }
+    },
+    "included": [
+        {
+            "type": "national-capitals",
+            "id": "1",
+            "attributes": {
+                "name": "Amsterdam",
+                "description": "National capital of the Netherlands"
+            },
+            "links": {
+                "self": "\/national-capitals\/1"
+            }
+        },
+        {
+            "type": "national-cities",
+            "id": "1",
+            "attributes": {
+                "name": "Amsterdam"
+            },
+            "links": {
+                "self": "\/national-cities\/1"
+            }
+        },
+        {
+            "type": "national-cities",
+            "id": "2",
+            "attributes": {
+                "name": "Rotterdam"
+            },
+            "links": {
+                "self": "\/national-cities\/2"
+            }
+        }
+    ]
+}
