@@ -17,17 +17,18 @@ class IncludeQueryIntegrationTest extends JsonApiBaseTestCase
                 '/countries/1',
                 'get_country_no_relationships.json',
             ],
-            'include culture' => [
-                '/countries/1?include=cultures',
-                'get_country_include_culture.json'
-            ],
-            'include currency plural' => [
+            // assert single-word associations
+            'include currency belongsTo plural' => [
                 '/countries/1?include=currencies',
                 'get_country_include_currency.json'
             ],
-            'include currency singular' => [
+            'include currency belongsTo singular' => [
                 '/countries/1?include=currency',
                 'get_country_include_currency.json'
+            ],
+            'include culture hasMany' => [
+                '/countries/1?include=cultures',
+                'get_country_include_culture.json'
             ],
             'include currency and culture' => [
                 '/countries/1?include=currencies,cultures',
@@ -36,6 +37,28 @@ class IncludeQueryIntegrationTest extends JsonApiBaseTestCase
             'include currency and deep countries' => [
                 '/countries/1?include=currencies.countries',
                 'get_country_include_currency_and_countries.json'
+            ],
+            // assert multi-word associations
+            'include national-capital belongsTo singular' => [
+                '/countries/1?include=national-capital',
+                'get_country_include_national-capital.json'
+            ],
+            'include national-capital belongsTo plural' => [
+                '/countries/1?include=national-capitals',
+                'get_country_include_national-capital.json'
+            ],
+            'include national-cities hasMany' => [
+                '/countries/1?include=national-cities',
+                'get_country_include_national-cities.json'
+            ],
+            // assert all of the above in a single request
+            'include all supported associations (singular belongsTo)' => [
+                '/countries/1?include=currency,cultures,national-capital,national-cities',
+                'get_country_include_all_supported_associations.json'
+            ],
+            'include all supported associations (plural belongsTo)' => [
+                '/countries/1?include=currencies,cultures,national-capitals,national-cities',
+                'get_country_include_all_supported_associations.json'
             ],
         ];
     }
@@ -52,7 +75,6 @@ class IncludeQueryIntegrationTest extends JsonApiBaseTestCase
 
         $this->assertResponseSuccess();
         $this->_assertJsonApiResponseHeaders();
-
         $this->assertResponseEquals($this->_getExpected($expectedFile));
     }
 

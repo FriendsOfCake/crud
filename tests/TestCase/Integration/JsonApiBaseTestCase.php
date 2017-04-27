@@ -19,6 +19,8 @@ abstract class JsonApiBaseTestCase extends IntegrationTestCase
         'plugin.crud.countries',
         'plugin.crud.currencies',
         'plugin.crud.cultures',
+        'plugin.crud.national_capitals',
+        'plugin.crud.national_cities',
     ];
 
     /**
@@ -39,10 +41,16 @@ abstract class JsonApiBaseTestCase extends IntegrationTestCase
             $routes->resources('Countries', [
                 'inflect' => 'dasherize'
             ]);
-            $routes->resources('Currencies', [
+            $routes->resources('Currencies', [ // single word belongsTo association
                 'inflect' => 'dasherize'
             ]);
-            $routes->resources('Cultures', [
+            $routes->resources('Cultures', [ // single word hasMany association
+                'inflect' => 'dasherize'
+            ]);
+            $routes->resources('NationalCapitals', [ // multi-word belongsTo association
+                'inflect' => 'dasherize'
+            ]);
+            $routes->resources('NationalCities', [ // multi-word hasMany association
                 'inflect' => 'dasherize'
             ]);
         });

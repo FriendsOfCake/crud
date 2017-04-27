@@ -8,9 +8,11 @@ use Cake\Event\Event;
 use Cake\Filesystem\File;
 use Cake\Network\Request;
 use Cake\Network\Response;
+use Cake\ORM\Entity;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
+use Crud\Error\Exception\CrudException;
 use Crud\Event\Subject;
 use Crud\Listener\JsonApiListener;
 use Crud\TestSuite\TestCase;
@@ -68,6 +70,7 @@ class JsonApiViewTest extends TestCase
             '_fieldSets' => $listener->config('fieldSets'),
             '_jsonOptions' => $listener->config('jsonOptions'),
             '_debugPrettyPrint' => $listener->config('debugPrettyPrint'),
+            '_inflect' => $listener->config('inflect')
         ];
 
         // override some defaults to create more DRY tests
@@ -95,6 +98,7 @@ class JsonApiViewTest extends TestCase
                 JSON_PRETTY_PRINT
             ],
             '_debugPrettyPrint' => true,
+            '_inflect' => 'dasherize',
             '_serialize' => true
         ];
         $this->assertSame($expected, $this->_defaultViewVars);
@@ -184,6 +188,28 @@ class JsonApiViewTest extends TestCase
 
         $this->assertNotContains('non_underscored_should_not_be_in_special_vars', $result);
         $this->assertContains('_underscored_should_be_in_special_vars', $result);
+    }
+
+    /**
+     * Make sure that an exception is thrown for generic entity classes
+     *
+     * @return void
+     */
+    public function DISABLEDtestEncodeWithGenericEntity()
+    {
+        TableRegistry::get('Countries')->entityClass(Entity::class);
+
+        // test collection of entities without relationships
+        $countries = TableRegistry::get('Countries')
+            ->find()
+            ->all();
+        $view = $this->_getView('Countries', [
+            'countries' => $countries
+        ]);
+
+        $this->expectException(CrudException::class);
+        $this->expectExceptionMessage('Entity classes must be the generic "Cake\ORM\Entity" class for repository "Countries"');
+        $view->render();
     }
 
     /**
