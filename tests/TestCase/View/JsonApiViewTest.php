@@ -192,6 +192,8 @@ class JsonApiViewTest extends TestCase
      * Make sure that an exception is thrown for generic entity classes
      *
      * @return void
+     * @expectedException \Crud\Error\Exception\CrudException
+     * @expectedExceptionMessage Entity classes must be the generic "Cake\ORM\Entity" class for repository "Countries"
      */
     public function testEncodeWithGenericEntity()
     {
@@ -205,8 +207,6 @@ class JsonApiViewTest extends TestCase
             'countries' => $countries
         ]);
 
-        $this->expectException(CrudException::class);
-        $this->expectExceptionMessage('Entity classes must be the generic "Cake\ORM\Entity" class for repository "Countries"');
         $view->render();
     }
 
