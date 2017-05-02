@@ -179,6 +179,7 @@ class ApiListener extends BaseListener
 
         if ($exceptionConfig['type'] === 'validate') {
             $exception = new $class($Event->subject->entity);
+            $exception->responseHeader($this->_controller()->response->getHeaders());
             throw $exception;
         }
 
