@@ -7,6 +7,7 @@ use Cake\Datasource\RepositoryInterface;
 use Cake\Event\EventManager;
 use Cake\Network\Request;
 use Cake\Network\Response;
+use Cake\ORM\Entity;
 use Cake\Utility\Inflector;
 use Cake\View\View;
 use Crud\Error\Exception\CrudException;
@@ -216,6 +217,10 @@ class JsonApiView extends View
             }
 
             $entityClass = $repository->entityClass();
+
+            if ($entityClass === Entity::class) {
+                throw new CrudException(sprintf('Entity classes must not be the generic "%s" class for repository "%s"', $entityClass, $repositoryName));
+            }
 
             // Turn full class name back into plugin split format
             // Not including /Entity in the type makes sure its compatible with other types

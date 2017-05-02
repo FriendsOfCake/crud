@@ -191,6 +191,28 @@ class JsonApiViewTest extends TestCase
     }
 
     /**
+     * Make sure that an exception is thrown for generic entity classes
+     *
+     * @return void
+     * @expectedException \Crud\Error\Exception\CrudException
+     * @expectedExceptionMessage Entity classes must not be the generic "Cake\ORM\Entity" class for repository "Countries"
+     */
+    public function testEncodeWithGenericEntity()
+    {
+        TableRegistry::get('Countries')->entityClass(Entity::class);
+
+        // test collection of entities without relationships
+        $countries = TableRegistry::get('Countries')
+            ->find()
+            ->all();
+        $view = $this->_getView('Countries', [
+            'countries' => $countries
+        ]);
+
+        $view->render();
+    }
+
+    /**
      * Make sure expected JSON API strings are generated as expected when
      * using Crud's DynamicEntitySchema.
      *
