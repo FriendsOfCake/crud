@@ -511,7 +511,7 @@ might request ``/countries/2?include=cultures,currencies`` to achieve the
 same response. If the include parameter is provided, then only requested
 relationships will be included in the ``included`` schema.
 
-It is possible blacklist, or whitelist what the client is allowed to include.
+It is possible to blacklist, or whitelist what the client is allowed to include.
 This is done using the listener configuration:
 
 .. code-block:: php
@@ -788,7 +788,7 @@ and then simply use search aliases named ``filter`` like shown below:
   }
 
 Please note that not
-`all filtering options <https://github.com/FriendsOfCake/crud/issues/524`_
+`all filtering options <https://github.com/FriendsOfCake/crud/issues/524>`_
 have been implemented yet.
 
 Schemas

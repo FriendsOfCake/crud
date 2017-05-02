@@ -11,11 +11,12 @@ class CountriesFixture extends TestFixture
         'code' => ['type' => 'string', 'length' => 2, 'null' => false],
         'name' => ['type' => 'string', 'length' => 255, 'null' => false],
         'currency_id' => ['type' => 'integer', 'null' => false],
+        'national_capital_id' => ['type' => 'integer', 'null' => false],
         '_constraints' => ['primary' => ['type' => 'primary', 'columns' => ['id']]],
     ];
 
     public $records = [
-        ['code' => 'NL', 'name' => 'The Netherlands', 'currency_id' => 1],
-        ['code' => 'BE', 'name' => 'Belgium', 'currency_id' => 1],
+        ['code' => 'NL', 'name' => 'The Netherlands', 'currency_id' => 1, 'national_capital_id' => 1],
+        ['code' => 'BE', 'name' => 'Belgium', 'currency_id' => 1, 'national_capital_id' => 2]
     ];
 }
