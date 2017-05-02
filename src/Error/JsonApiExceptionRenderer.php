@@ -105,6 +105,10 @@ class JsonApiExceptionRenderer extends ExceptionRenderer
         // set data and send response
         $this->controller->response->type('jsonapi');
         $this->controller->response->body($json);
+        $this->controller->response->cors($this->controller->request)
+            ->allowOrigin('*')
+            ->allowCredentials()
+            ->build();
 
         return $this->controller->response;
     }
