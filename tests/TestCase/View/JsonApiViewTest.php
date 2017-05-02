@@ -70,6 +70,7 @@ class JsonApiViewTest extends TestCase
             '_fieldSets' => $listener->config('fieldSets'),
             '_jsonOptions' => $listener->config('jsonOptions'),
             '_debugPrettyPrint' => $listener->config('debugPrettyPrint'),
+            '_inflect' => $listener->config('inflect')
         ];
 
         // override some defaults to create more DRY tests
@@ -97,6 +98,7 @@ class JsonApiViewTest extends TestCase
                 JSON_PRETTY_PRINT
             ],
             '_debugPrettyPrint' => true,
+            '_inflect' => 'dasherize',
             '_serialize' => true
         ];
         $this->assertSame($expected, $this->_defaultViewVars);

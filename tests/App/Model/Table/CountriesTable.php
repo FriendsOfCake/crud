@@ -9,8 +9,10 @@ class CountriesTable extends Table
     public function initialize(array $config)
     {
         $this->belongsTo('Currencies');
+        $this->belongsTo('NationalCapitals');
 
         $this->hasMany('Cultures');
+        $this->hasMany('NationalCities');
     }
 
     public function validationDefault(Validator $validator)

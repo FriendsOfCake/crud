@@ -30,6 +30,8 @@ class JsonApiListenerTest extends TestCase
         'plugin.crud.countries',
         'plugin.crud.cultures',
         'plugin.crud.currencies',
+        'plugin.crud.national_capitals',
+        'plugin.crud.national_cities',
     ];
 
     /**
@@ -1006,7 +1008,9 @@ class JsonApiListenerTest extends TestCase
     {
         $table = TableRegistry::get('Countries');
         $table->belongsTo('Currencies');
+        $table->belongsTo('NationalCapitals');
         $table->hasMany('Cultures');
+        $table->hasMany('NationalCities');
 
         $associations = [];
         foreach ($table->associations() as $association) {
@@ -1032,7 +1036,9 @@ class JsonApiListenerTest extends TestCase
         $expected = [
             'Countries' => $table,
             'Currencies' => $table->Currencies->target(),
+            'NationalCapitals' => $table->NationalCapitals->target(),
             'Cultures' => $table->Cultures->target(),
+            'NationalCities' => $table->NationalCities->target(),
         ];
 
         $this->assertSame($expected, $result);
@@ -1074,26 +1080,26 @@ class JsonApiListenerTest extends TestCase
 
         $expected = [
             'currency.countries',
-            'cultures'
+            'national_capital',
+            'cultures',
+            'national_cities',
         ];
-
         $result = $this->callProtectedMethod('_getIncludeList', [$associations], $listener);
-
         $this->assertSame($expected, $result);
 
         unset($associations['currencies']['children']['countries']);
-        $this->assertSame(['currencies', 'cultures'], array_keys($associations));
-        $result = $this->callProtectedMethod('_getIncludeList', [$associations], $listener);
+        $this->assertSame(['currencies', 'nationalcapitals', 'cultures', 'nationalcities'], array_keys($associations));
 
-        $this->assertSame(['currency', 'cultures'], $result);
+        $result = $this->callProtectedMethod('_getIncludeList', [$associations], $listener);
+        $this->assertSame(['currency', 'national_capital', 'cultures', 'national_cities'], $result);
 
         // assert the include list is still auto-generated if an association is
         // removed from the AssociationsCollection
         unset($associations['cultures']);
-        $this->assertSame(['currencies'], array_keys($associations));
-        $result = $this->callProtectedMethod('_getIncludeList', [$associations], $listener);
+        $this->assertSame(['currencies', 'nationalcapitals', 'nationalcities'], array_keys($associations));
 
-        $this->assertSame(['currency'], $result);
+        $result = $this->callProtectedMethod('_getIncludeList', [$associations], $listener);
+        $this->assertSame(['currency', 'national_capital', 'national_cities'], $result);
 
         // assert user specified listener config option is returned as-is (no magic)
         $userSpecifiedIncludes = [

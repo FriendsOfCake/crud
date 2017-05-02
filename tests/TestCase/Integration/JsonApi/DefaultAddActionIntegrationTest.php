@@ -20,7 +20,8 @@ class DefaultAddActionIntegrationTest extends JsonApiBaseTestCase
                 'attributes' => [
                     'code' => 'NZ',
                     'name' => 'New Zealand',
-                    'currency_id' => 1
+                    'currency_id' => 1,
+                    'national_capital_id' => 3
                 ]
             ]
         ];

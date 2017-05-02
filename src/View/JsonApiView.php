@@ -8,6 +8,7 @@ use Cake\Event\EventManager;
 use Cake\Network\Request;
 use Cake\Network\Response;
 use Cake\ORM\Entity;
+use Cake\Utility\Inflector;
 use Cake\View\View;
 use Crud\Error\Exception\CrudException;
 use Neomerx\JsonApi\Document\Link;
@@ -118,6 +119,10 @@ class JsonApiView extends View
      */
     protected function _encodeWithSchemas()
     {
+        if ($this->viewVars['_inflect'] === 'dasherize') {
+            $this->_dasherizeIncludesViewVar();
+        }
+
         $schemas = $this->_entitiesToNeoMerxSchema($this->viewVars['_repositories']);
 
         // Please note that a third NeoMerx EncoderOptions argument `depth`
@@ -357,5 +362,17 @@ class JsonApiView extends View
         }
 
         return $jsonOptions;
+    }
+
+    /**
+     * Dasherizes all values in the '_includes` viewVar array.
+     *
+     * @return void
+     */
+    protected function _dasherizeIncludesViewVar()
+    {
+        foreach ($this->viewVars['_include'] as $key => $value) {
+            $this->viewVars['_include'][$key] = Inflector::dasherize($value);
+        }
     }
 }

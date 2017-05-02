@@ -209,6 +209,7 @@ class JsonApiListener extends ApiListener
      * @param array|bool $blacklist Blacklisted includes
      * @param array|bool $whitelist Whitelisted options
      * @param \Cake\ORM\Table|null $repository The repository
+     * @param array $path Include path
      * @return string
      * @throws \Cake\Network\Exception\BadRequestException
      */
@@ -658,6 +659,7 @@ class JsonApiListener extends ApiListener
      * config option 'include'.
      *
      * @param \Cake\ORM\AssociationCollection $associations AssociationCollection
+     * @param bool $last What does this do?
      * @return array
      * @throws \InvalidArgumentException
      */

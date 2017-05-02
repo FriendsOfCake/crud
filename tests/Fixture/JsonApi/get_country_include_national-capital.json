@@ -1,0 +1,37 @@
+{
+    "data": {
+        "type": "countries",
+        "id": "1",
+        "attributes": {
+            "code": "NL",
+            "name": "The Netherlands"
+        },
+        "relationships": {
+            "national-capital": {
+                "data": {
+                    "type": "national-capitals",
+                    "id": "1"
+                },
+                "links": {
+                    "self": "\/national-capitals\/1"
+                }
+            }
+        },
+        "links": {
+            "self": "\/countries\/1"
+        }
+    },
+    "included": [
+        {
+            "type": "national-capitals",
+            "id": "1",
+            "attributes": {
+                "name": "Amsterdam",
+                "description": "National capital of the Netherlands"
+            },
+            "links": {
+                "self": "\/national-capitals\/1"
+            }
+        }
+    ]
+}

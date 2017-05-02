@@ -149,6 +149,7 @@ class DynamicEntitySchemaTest extends TestCase
 
         $view->set('_repositories', $repositories);
         $view->set('_absoluteLinks', false); // test relative links (listener default)
+        $view->set('_inflect', 'dasherize');
 
         // setup the schema
         $schema = $this
