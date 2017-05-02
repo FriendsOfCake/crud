@@ -195,7 +195,7 @@ class JsonApiViewTest extends TestCase
      *
      * @return void
      * @expectedException \Crud\Error\Exception\CrudException
-     * @expectedExceptionMessage Entity classes must be the generic "Cake\ORM\Entity" class for repository "Countries"
+     * @expectedExceptionMessage Entity classes must not be the generic "Cake\ORM\Entity" class for repository "Countries"
      */
     public function testEncodeWithGenericEntity()
     {
