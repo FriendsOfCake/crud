@@ -16,4 +16,4 @@ Implementing the JSON API Listener
 ==================================
 
 To get started with the :doc:`JSON API Listener </listeners/jsonapi>`, please check the
-:doc:`Listeners chapter </listeners>`.
+`listener's documentation <https://crud-json-api.readthedocs.io>`_.
