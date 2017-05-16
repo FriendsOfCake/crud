@@ -1,6 +1,7 @@
 <?php
 namespace Crud\Traits;
 
+use Cake\Datasource\Exception\InvalidPrimaryKeyException;
 use Crud\Event\Subject;
 
 trait FindMethodTrait
@@ -30,13 +31,34 @@ trait FindMethodTrait
      * @param string $id Record id
      * @param \Crud\Event\Subject $subject Event subject
      * @return \Cake\ORM\Entity
+     * @throws \Cake\Datasource\Exception\InvalidPrimaryKeyException When $primaryKey has an
+     *      incorrect number of elements.
      */
     protected function _findRecord($id, Subject $subject)
     {
         $repository = $this->_table();
 
+        $key = (array)$repository->primaryKey();
+        $alias = $repository->alias();
+        foreach ($key as $index => $keyname) {
+            $key[$index] = $alias . '.' . $keyname;
+        }
+        $primaryKey = (array)$id;
+        if (count($key) !== count($primaryKey)) {
+            $primaryKey = $primaryKey ?: [null];
+            $primaryKey = array_map(function ($key) {
+                return var_export($key, true);
+            }, $primaryKey);
+            throw new InvalidPrimaryKeyException(sprintf(
+                'Record not found in table "%s" with primary key [%s]',
+                $repository,
+                implode($primaryKey, ', ')
+            ));
+        }
+        $conditions = array_combine($key, $primaryKey);
+
         $query = $repository->find($this->findMethod());
-        $query->where([current($query->aliasField($repository->primaryKey())) => $id]);
+        $query->where($conditions);
 
         $subject->set([
             'repository' => $repository,
