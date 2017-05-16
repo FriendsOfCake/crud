@@ -22,7 +22,7 @@ Why Use Crud
 
 * Crud allows you to hook into all stages of a request, only building the controller code needed specifically for your business logic, outsourcing all the heavy boiler-plating to Crud.
 
-* Crud allows you to use your own views, baked or hand-crafted, in addition to adding the code needed to fulfill your application logic, using :doc:`events<events>`. It is by default compatible with CakePHP's baked views.
+* Crud allows you to use your own views, baked or hand-crafted, in addition to adding the code needed to fulfill your application logic, using :doc:`events<events>`. It is by default compatible with CakePHP's baked views. (Note: at this time the plug-in's actions *do not* support returning `contained data <http://book.cakephp.org/3.0/en/orm/retrieving-data-and-resultsets.html#eager-loading-associations>`_  from associated objects to populate, e.g., your view or edit templates. The :doc:`relatedModels listener<listeners/related-models>` *does* allow these objects to be queried in order to populate and process forms used to create or update this data, however.)
 
 * Optionally there is the `Crud-View plugin <https://github.com/FriendsOfCake/crud-view>`_ for automatic generation of your admin area templates.
 
