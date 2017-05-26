@@ -173,10 +173,12 @@ class CrudComponent extends Component
     /**
      * Add self to list of components capable of dispatching an action.
      *
-     * @param array $config
+     * @param array $config Configuration values for component
      */
     public function initialize(array $config)
     {
+        parent::initialize($config);
+
         $this->_action = $this->_controller->request->action;
         $this->_request = $this->_controller->request;
 
