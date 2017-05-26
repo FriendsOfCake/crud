@@ -121,7 +121,6 @@ If you've loaded an action in eg. your ``AppController`` - but don't want it inc
 Example of disable a loaded action:
 
 ..code-block:: phpinline
-
   class AppController extends \Cake\Controller\Controller {
 
     public $components = [
@@ -133,7 +132,6 @@ Example of disable a loaded action:
   }
 
 ..code-block:: phpinline
-
   class PostsController extends AppController {
 
     public function beforeFilter(\Cake\Event\Event $event) {
