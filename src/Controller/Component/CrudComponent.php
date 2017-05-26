@@ -173,10 +173,9 @@ class CrudComponent extends Component
     /**
      * Add self to list of components capable of dispatching an action.
      *
-     * @param \Cake\Event\Event $event Event instance
-     * @return void
+     * @param array $config
      */
-    public function beforeFilter(Event $event)
+    public function initialize(array $config)
     {
         $this->_action = $this->_controller->request->action;
         $this->_request = $this->_controller->request;
@@ -186,7 +185,16 @@ class CrudComponent extends Component
         }
 
         $this->_controller->dispatchComponents['Crud'] = true;
+    }
 
+    /**
+     * Loads listeners
+     *
+     * @param \Cake\Event\Event $event Event instance
+     * @return void
+     */
+    public function beforeFilter(Event $event)
+    {
         $this->_loadListeners();
         $this->trigger('beforeFilter');
     }
