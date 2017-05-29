@@ -347,7 +347,7 @@ class AddActionTest extends IntegrationTestCase
         $this->{$method}('/Blogs/add.json');
 
         $this->assertResponseError();
-        $this->assertResponseContains('Wrong request method');
+        $this->assertResponseContains('Method Not Allowed');
     }
 
     /**
