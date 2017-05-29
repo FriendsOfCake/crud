@@ -149,7 +149,7 @@ class ApiListener extends BaseListener
             }
         }
 
-        throw new MethodNotAllowedException('Wrong request method');
+        throw new MethodNotAllowedException();
     }
 
     /**
