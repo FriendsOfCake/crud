@@ -375,7 +375,7 @@ class CrudComponentTest extends TestCase
         $this->assertTrue($result);
 
         $this->controller->request->action = 'edit';
-        $this->Crud->beforeFilter(new Event('Controller.beforeFilter'));
+        $this->Crud->initialize([]);
         $result = $this->Crud->isActionMapped();
         $this->assertTrue($result);
     }
