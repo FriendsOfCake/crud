@@ -276,6 +276,27 @@ class CrudComponentTest extends TestCase
     }
 
     /**
+     * testDefaultActionSetting
+     *
+     * @see https://github.com/FriendsOfCake/crud/pull/534
+     * @return void
+     */
+    public function testDefaultActionSetting()
+    {
+        $config = [
+            'actions' => [
+                'Crud.Index',
+            ],
+        ];
+
+        $this->request->action = 'index';
+
+        $Crud = new CrudComponent($this->Registry, $config);
+
+        $this->assertTrue($Crud->isActionMapped('index'));
+    }
+
+    /**
      * Test deprecated `executeAction` calls `execute` correctly
      *
      */
