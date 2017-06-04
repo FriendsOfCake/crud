@@ -1095,7 +1095,7 @@ class ApiListenerTest extends TestCase
             ],
             'invalid post' => [
                 ['methods' => ['post']],
-                'Cake\Network\Exception\BadRequestException',
+                'Cake\Network\Exception\MethodNotAllowedException',
                 ['post' => false]
             ],
             'valid put' => [
