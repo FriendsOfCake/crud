@@ -110,7 +110,11 @@ class EditAction extends BaseAction
     protected function _put($id = null)
     {
         $subject = $this->_subject();
-        $subject->set(['id' => $id]);
+        $subject->set([
+            'id' => $id,
+            'saveMethod' => $this->saveMethod(),
+            'saveOptions' => $this->saveOptions()
+        ]);
 
         $entity = $this->_table()->patchEntity(
             $this->_findRecord($id, $subject),
