@@ -39,7 +39,7 @@ specific controllers and actions.
   class SamplesController extends AppController {
 
     public function beforeFilter(\Cake\Event\Event $event) {
-      parent::beforeFilter();
+      parent::beforeFilter($event);
       $this->Crud->addListener('Crud.Api');
     }
   }
