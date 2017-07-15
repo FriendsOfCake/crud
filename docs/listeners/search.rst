@@ -30,7 +30,15 @@ you want to attach it only to specific controllers and actions.
   class SamplesController extends AppController {
 
     public function beforeFilter(\Cake\Event\Event $event) {
-        $this->Crud->addListener('Crud.Search');
+        $this->Crud->addListener('Crud.Search', [
+            // Events to listen for and apply search finder to query.
+            'enabled' => [
+                'Crud.beforeLookup',
+                'Crud.beforePaginate'
+            ],
+            // Search collection to use
+            'collection' => 'default'
+        ]);
 
         parent::beforeFilter($event);
     }

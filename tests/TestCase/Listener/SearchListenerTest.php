@@ -63,6 +63,7 @@ class SearchListenerTest extends TestCase
             'search' => [
                 'name' => '1st post',
             ],
+            'collection' => 'search'
         ];
 
         $request = new \Cake\Network\Request();
