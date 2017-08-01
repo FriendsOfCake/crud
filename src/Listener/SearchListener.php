@@ -17,7 +17,8 @@ class SearchListener extends BaseListener
         'enabled' => [
             'Crud.beforeLookup',
             'Crud.beforePaginate'
-        ]
+        ],
+        'collection' => 'default'
     ];
 
     /**
@@ -61,6 +62,7 @@ class SearchListener extends BaseListener
         }
 
         $filterParams = $table->filterParams($this->_request()->query);
+        $filterParams += ['collection' => $this->config('collection')];
         $event->subject->query->find('search', $filterParams);
     }
 }
