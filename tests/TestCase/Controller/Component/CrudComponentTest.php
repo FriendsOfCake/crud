@@ -1035,5 +1035,11 @@ class CrudComponentTest extends TestCase
         $this->setReflectionClassInstance($this->Crud);
         $listener = $this->callProtectedMethod('_loadListener', ['HasSetup'], $this->Crud);
         $this->assertSame(1, $listener->callCount, 'Setup should be called');
+
+        // assert non-loaded Listener with config setting in user application is skipped
+        $this->Crud->config('listeners.someListener', [
+            'someOption' => 'butNotClassName'
+        ]);
+        $this->assertNull($this->callProtectedMethod('_loadListener', ['someListener'], $this->Crud));
     }
 }
