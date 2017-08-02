@@ -34,7 +34,7 @@ trait CrudTestTrait
      * @param \Cake\Controller\Controller|null $controller Controller
      * @return void
      */
-    public function _subscribeToEvents(Controller $controller = null)
+    protected function _subscribeToEvents(Controller $controller = null)
     {
         if ($controller === null) {
             $controller = $this->controller;
