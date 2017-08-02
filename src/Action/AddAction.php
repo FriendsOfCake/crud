@@ -159,7 +159,7 @@ class AddAction extends BaseAction
      * Post error callback
      *
      * @param \Crud\Event\Subject $subject Event subject
-     * @return void
+     * @return \Cake\Network\Response|void
      */
     protected function _error(Subject $subject)
     {

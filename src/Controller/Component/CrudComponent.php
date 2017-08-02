@@ -412,7 +412,7 @@ class CrudComponent extends Component
      * Attaches an event listener function to the controller for Crud Events.
      *
      * @param string|array $events Name of the Crud Event you want to attach to controller.
-     * @param callback $callback Callable method or closure to be executed on event.
+     * @param callable $callback Callable method or closure to be executed on event.
      * @param array $options Used to set the `priority` and `passParams` flags to the listener.
      * @return void
      */
@@ -660,7 +660,7 @@ class CrudComponent extends Component
                 throw new ListenerNotConfiguredException(sprintf('Listener "%s" is not configured', $name));
             }
 
-            $className = App::classname($config['className'], 'Listener', 'Listener');
+            $className = App::className($config['className'], 'Listener', 'Listener');
             if (empty($className)) {
                 throw new MissingListenerException('Could not find listener class: ' . $config['className']);
             }
@@ -696,7 +696,7 @@ class CrudComponent extends Component
                 throw new ActionNotConfiguredException(sprintf('Action "%s" has not been mapped', $name));
             }
 
-            $className = App::classname($config['className'], 'Action', 'Action');
+            $className = App::className($config['className'], 'Action', 'Action');
             if (empty($className)) {
                 throw new MissingActionException('Could not find action class: ' . $config['className']);
             }

@@ -110,7 +110,7 @@ class ApiListener extends BaseListener
      * Handle response
      *
      * @param \Cake\Event\Event $event Event
-     * @return \Cake\Network\Response
+     * @return \Cake\Network\Response|null
      */
     public function respond(Event $event)
     {
@@ -118,7 +118,9 @@ class ApiListener extends BaseListener
         $apiConfig = $this->_action()->config('api.' . $key);
 
         if (isset($apiConfig['exception'])) {
-            return $this->_exceptionResponse($event, $apiConfig['exception']);
+            $this->_exceptionResponse($event, $apiConfig['exception']);
+
+            return null;
         }
 
         $response = $this->render($event->subject);
