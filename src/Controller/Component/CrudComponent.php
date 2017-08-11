@@ -180,7 +180,7 @@ class CrudComponent extends Component
     {
         parent::initialize($config);
 
-        $this->_action = $this->_controller->request->action;
+        $this->_action = $this->_controller->request->param('action');
         $this->_request = $this->_controller->request;
 
         if (!isset($this->_controller->dispatchComponents)) {
@@ -600,7 +600,7 @@ class CrudComponent extends Component
      * Returns new entity
      *
      * @param array $data Data
-     * @return \Cake\ORM\Entity
+     * @return \Cake\Datasource\EntityInterface
      */
     public function entity(array $data = [])
     {

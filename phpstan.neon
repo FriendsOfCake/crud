@@ -1,3 +1,12 @@
 parameters:
     excludes_analyse:
         - */src/TestSuite/*
+    universalObjectCratesClasses:
+        - Crud\Event\Subject
+    ignoreErrors:
+        - '#Access to an undefined property Exception::\$response#'
+        - '#Access to an undefined property Cake\\Controller\\Controller::\$dispatchComponents#'
+        - '#Access to an undefined property Cake\\Controller\\Controller::\$Crud#'
+        - '#Call to an undefined method Crud\\Action\\BaseAction::view\(\)#'
+        - '#Call to an undefined method Crud\\Action\\BaseAction::viewVar\(\)#'
+        - '#Call to an undefined method Crud\\Action\\BaseAction::findMethod\(\)#'

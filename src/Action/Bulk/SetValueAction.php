@@ -65,6 +65,6 @@ class SetValueAction extends BaseAction
         $statement = $query->execute();
         $statement->closeCursor();
 
-        return $statement->rowCount();
+        return (bool)$statement->rowCount();
     }
 }
