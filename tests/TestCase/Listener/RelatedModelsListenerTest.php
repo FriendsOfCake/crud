@@ -308,4 +308,42 @@ class RelatedModelListenerTest extends TestCase
 
         $this->assertEquals(['Users' => []], $result);
     }
+
+    /**
+     * testbeforeFind
+     *
+     * @return void
+     */
+    public function testbeforeFind()
+    {
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\RelatedModelsListener')
+            ->disableOriginalConstructor()
+            ->setMethods(['models'])
+            ->getMock();
+        $table = $this
+            ->getMockBuilder('\Cake\ORM\Table')
+            ->disableOriginalConstructor()
+            ->setMethods(['associations', 'association'])
+            ->getMock();
+
+        $listener
+            ->expects($this->once())
+            ->method('models')
+            ->will($this->returnValue(['Users' => 'manyToOne']));
+
+        $db = $this->getMockBuilder('\Cake\Database\Connection')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $query = new Query($db, null);
+        $query->repository($table);
+        $subject = new Subject(['query' => $query]);
+        $event = new Event('beforeFind', $subject);
+
+        $listener->beforeFind($event);
+        $result = $event->subject()->query->contain();
+
+        $this->assertEquals(['Users' => []], $result);
+    }
 }
