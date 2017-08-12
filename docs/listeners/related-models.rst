@@ -60,7 +60,7 @@ You can enable and disable which model relations you want to have automatically 
                     ],
                     'edit' => [
                         'className' => 'Crud.Edit',
-                        'relatedModels' => ['Tags', 'Cms.Pages']
+                        'relatedModels' => ['Tags', 'Authors']
                     ]
                 ]
             ]);
