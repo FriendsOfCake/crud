@@ -10,7 +10,7 @@ sudo: false
 
 env:
   matrix:
-    - DB=mysql db_dsn='mysql://travis@0.0.0.0/cakephp_test'
+    - DB=mysql db_dsn='mysql://root@127.0.0.1/cakephp_test'
     - DB=pgsql db_dsn='postgres://postgres@127.0.0.1/cakephp_test'
     - DB=sqlite db_dsn='sqlite:///:memory:'
   global:
@@ -29,8 +29,8 @@ matrix:
 before_script:
   - if [[ $TRAVIS_PHP_VERSION != 7.0 ]]; then phpenv config-rm xdebug.ini; fi
 
-  - composer self-update
-  - composer install --prefer-dist --no-interaction
+  - if [[ $TRAVIS_PHP_VERSION = 5.5 ]]; then composer require --dev friendsofcake/search:^3.0; fi
+  - if [[ $TRAVIS_PHP_VERSION != 5.5 ]]; then composer install --prefer-dist --no-interaction; fi
 
   - if [[ $DB = 'mysql' ]]; then mysql -e 'CREATE DATABASE cakephp_test;'; fi
   - if [[ $DB = 'pgsql' ]]; then psql -c 'CREATE DATABASE cakephp_test;' -U postgres; fi
