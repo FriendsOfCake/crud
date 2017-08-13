@@ -1,6 +1,15 @@
 <?php
 namespace Crud\Test\TestCase\Listener;
 
+use Cake\Controller\Controller;
+use Cake\Core\Plugin;
+use Cake\Event\Event;
+use Cake\Event\EventManager;
+use Cake\Network\Request;
+use Cake\Network\Response;
+use Cake\ORM\TableRegistry;
+use Crud\Event\Subject;
+use Crud\Listener\SearchListener;
 use Crud\TestSuite\TestCase;
 
 /**
@@ -9,6 +18,11 @@ use Crud\TestSuite\TestCase;
  */
 class SearchListenerTest extends TestCase
 {
+    public function tearDown()
+    {
+        Plugin::unload('Search');
+        TableRegistry::clear();
+    }
 
     /**
      * Test implemented events
@@ -39,15 +53,44 @@ class SearchListenerTest extends TestCase
      */
     public function testInjectSearchException()
     {
-        $listener = $this
-            ->getMockBuilder('\Crud\Listener\SearchListener')
-            ->setMethods(null)
-            ->disableoriginalConstructor()
+        Plugin::load('Search', ['path' => ROOT . DS]);
+
+        $request = new Request();
+        $response = new Response();
+        $eventManager = new EventManager();
+        $controller = new Controller($request, $response, 'Search', $eventManager);
+
+        $behaviorRegistryMock = $this->getMockBuilder('\Cake\ORM\BehaviorRegistry')
+            ->setMockClassName('BehaviorRegistry')
+            ->getMock();
+        $behaviorRegistryMock->expects($this->once())
+            ->method('has')
+            ->will($this->returnValue(false));
+
+        $tableMock = $this->getMockBuilder('\Cake\ORM\Table')
+            ->setMockClassName('SearchTables')
+            ->setMethods(['behaviors', 'filterParams'])
+            ->getMock();
+        $tableMock->expects($this->any())
+            ->method('behaviors')
+            ->will($this->returnValue($behaviorRegistryMock));
+
+        TableRegistry::set('Search', $tableMock);
+
+        $queryMock = $this->getMockBuilder('\Cake\ORM\Query')
+            ->disableOriginalConstructor()
             ->getMock();
 
-        $subject = new \Crud\Event\Subject();
+        $subject = new Subject();
+        $subject->query = $queryMock;
 
-        $listener->injectSearch(new \Cake\Event\Event('Crud.beforePaginate', $subject));
+        $listener = new SearchListener($controller, [
+            'enabled' => [
+                'Crud.beforeLookup'
+            ]
+        ]);
+
+        $listener->injectSearch(new Event('Crud.beforePaginate', $subject));
     }
 
     /**
@@ -57,7 +100,7 @@ class SearchListenerTest extends TestCase
      */
     public function testInjectSearch()
     {
-        \Cake\Core\Plugin::load('Search', ['path' => ROOT . DS]);
+        Plugin::load('Search', ['path' => ROOT . DS]);
 
         $params = [
             'search' => [
@@ -66,31 +109,33 @@ class SearchListenerTest extends TestCase
             'collection' => 'search'
         ];
 
-        $request = new \Cake\Network\Request();
-        $response = new \Cake\Network\Response();
-        $eventManager = new \Cake\Event\EventManager();
-        $controller = new \Cake\Controller\Controller($request, $response, 'Search', $eventManager);
+        $request = new Request();
+        $request->query = $params['search'];
+
+        $response = new Response();
+        $eventManager = new EventManager();
+        $controller = new Controller($request, $response, 'Search', $eventManager);
 
         $behaviorRegistryMock = $this->getMockBuilder('\Cake\ORM\BehaviorRegistry')
             ->setMockClassName('BehaviorRegistry')
-            ->setMethods(['hasMethod'])
+            ->setMethods(['hasMethod', 'has'])
             ->getMock();
         $behaviorRegistryMock->expects($this->once())
-            ->method('hasMethod')
+            ->method('has')
             ->will($this->returnValue(true));
+        $behaviorRegistryMock->expects($this->once())
+            ->method('hasMethod')
+            ->will($this->returnValue(false));
 
         $tableMock = $this->getMockBuilder('\Cake\ORM\Table')
             ->setMockClassName('SearchTables')
-            ->setMethods(['filterParams', 'behaviors'])
+            ->setMethods(['behaviors'])
             ->getMock();
-        $tableMock->expects($this->once())
-            ->method('filterParams')
-            ->will($this->returnValue($params));
-        $tableMock->expects($this->once())
+        $tableMock->expects($this->any())
             ->method('behaviors')
             ->will($this->returnValue($behaviorRegistryMock));
 
-        \Cake\ORM\TableRegistry::set('Search', $tableMock);
+        TableRegistry::set('Search', $tableMock);
 
         $queryMock = $this->getMockBuilder('\Cake\ORM\Query')
             ->disableOriginalConstructor()
@@ -100,15 +145,16 @@ class SearchListenerTest extends TestCase
             ->with('search', $params)
             ->will($this->returnValue($queryMock));
 
-        $subject = new \Crud\Event\Subject();
+        $subject = new Subject();
         $subject->query = $queryMock;
 
-        $event = new \Cake\Event\Event('Crud.beforeLookup', $subject);
+        $event = new Event('Crud.beforeLookup', $subject);
 
-        $listener = new \Crud\Listener\SearchListener($controller, [
+        $listener = new SearchListener($controller, [
             'enabled' => [
                 'Crud.beforeLookup'
-            ]
+            ],
+            'collection' => 'search'
         ]);
         $listener->injectSearch($event);
     }

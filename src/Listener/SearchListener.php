@@ -43,26 +43,25 @@ class SearchListener extends BaseListener
      */
     public function injectSearch(Event $event)
     {
-        if (!Plugin::loaded('Search')) {
-            throw new RuntimeException(
-                'You need to load the Search plugin in order to use the SearchListener.'
-            );
-        }
-
         if (!in_array($event->name, $this->config('enabled'))) {
             return;
         }
 
         $table = $this->_table();
-        if (!$table->behaviors()->hasMethod('filterParams')) {
+        if (!$table->behaviors()->has('Search')) {
             throw new RuntimeException(sprintf(
                 'Missing Search.Search behavior on %s',
                 get_class($table)
             ));
         }
 
-        $filterParams = $table->filterParams($this->_request()->query);
-        $filterParams += ['collection' => $this->config('collection')];
+        if ($table->behaviors()->hasMethod('filterParams')) {
+            $filterParams = $table->filterParams($this->_request()->query);
+        } else {
+            $filterParams = ['search' => $this->_request()->query];
+        }
+
+        $filterParams['collection'] = $this->config('collection');
         $event->subject->query->find('search', $filterParams);
     }
 }
