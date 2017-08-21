@@ -123,7 +123,7 @@ config in ``config/app.php`` to ``'Crud\Error\ExceptionRenderer'`` as following:
 
     'Error' => [
         'errorLevel' => E_ALL,
-        'exceptionRenderer' => 'Crud\Error\JsonApiExceptionRenderer',
+        'exceptionRenderer' => 'Crud\Error\ExceptionRenderer',
         'skipLog' => [],
         'log' => true,
         'trace' => true,
