@@ -6,7 +6,7 @@ use Cake\Network\Exception\NotImplementedException;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Cake\Utility\Text;
-use Crud\Core\Object;
+use Crud\Core\BaseObject;
 use Crud\Event\Subject;
 
 /**
@@ -15,7 +15,7 @@ use Crud\Event\Subject;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-abstract class BaseAction extends Object
+abstract class BaseAction extends BaseObject
 {
 
     /**
