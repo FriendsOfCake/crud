@@ -1,7 +1,7 @@
 <?php
 namespace Crud\Listener;
 
-use Crud\Core\Object;
+use Crud\Core\BaseObject;
 
 /**
  * The Base Crud Listener
@@ -11,7 +11,7 @@ use Crud\Core\Object;
  *
  * @codeCoverageIgnore
  */
-abstract class BaseListener extends Object
+abstract class BaseListener extends BaseObject
 {
 
     /**
