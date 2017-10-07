@@ -93,3 +93,31 @@ Crud component configuration.
 .. note::
 
   Ensure that you escape your namespace when loading your own action classes.
+  
+Using custom named controller actions
+-------------------------------------
+
+When using non CRUD named controller actions, like ``UsersController::drinkbeer()`` you can use one of the provided Crud Actions or create your own custom Action. Just assign the wanted action to the controller function:
+
+.. code-block:: phpinline
+
+  class UsersController extends \Cake\Controller\Controller
+  {
+
+      use \Crud\Controller\ControllerTrait;
+
+      public function initialize()
+      {
+          parent::initialize();
+
+          $this->loadComponent('Crud.Crud', [
+              'actions' => [
+                  'drinkbeer' => ['className' => '\App\Crud\Action\DrinkbeerAction']
+              ]
+          ]);
+      }
+      
+      public function drinkbeer() {
+        $this->Crud->execute();
+      }
+  
