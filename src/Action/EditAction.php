@@ -5,6 +5,7 @@ use Crud\Event\Subject;
 use Crud\Traits\FindMethodTrait;
 use Crud\Traits\RedirectTrait;
 use Crud\Traits\SaveMethodTrait;
+use Crud\Traits\StoppableTrait;
 use Crud\Traits\ViewTrait;
 use Crud\Traits\ViewVarTrait;
 
@@ -20,6 +21,7 @@ class EditAction extends BaseAction
     use FindMethodTrait;
     use RedirectTrait;
     use SaveMethodTrait;
+    use StoppableTrait;
     use ViewTrait;
     use ViewVarTrait;
 
@@ -118,7 +120,13 @@ class EditAction extends BaseAction
             $this->saveOptions()
         );
 
-        $this->_trigger('beforeSave', $subject);
+        $event = $this->_trigger('beforeSave', $subject);
+        if ($event->isStopped()) {
+            $subject->set(['success' => false]);
+
+            return $this->_stopped($subject);
+        }
+
         if (call_user_func([$this->_table(), $this->saveMethod()], $entity, $this->saveOptions())) {
             return $this->_success($subject);
         }
