@@ -5,6 +5,7 @@ use Crud\Event\Subject;
 use Crud\Traits\RedirectTrait;
 use Crud\Traits\SaveMethodTrait;
 use Crud\Traits\SerializeTrait;
+use Crud\Traits\StoppableTrait;
 use Crud\Traits\ViewTrait;
 use Crud\Traits\ViewVarTrait;
 
@@ -20,6 +21,7 @@ class AddAction extends BaseAction
     use RedirectTrait;
     use SaveMethodTrait;
     use SerializeTrait;
+    use StoppableTrait;
     use ViewTrait;
     use ViewVarTrait;
 
@@ -168,27 +170,5 @@ class AddAction extends BaseAction
         $this->_trigger('afterSave', $subject);
         $this->setFlash('error', $subject);
         $this->_trigger('beforeRender', $subject);
-    }
-
-    /**
-     * Stopped callback
-     *
-     * @param \Crud\Event\Subject $subject Event subject
-     * @return \Cake\Network\Response
-     */
-    protected function _stopped(Subject $subject)
-    {
-        if (!isset($subject->success)) {
-            $subject->success = false;
-        }
-
-        if ($subject->success) {
-            return $this->_success($subject);
-        }
-
-        $subject->set(['success' => false]);
-        $this->setFlash('error', $subject);
-
-        return $this->_redirect($subject, ['action' => 'index']);
     }
 }
