@@ -5,6 +5,7 @@ use Crud\Event\Subject;
 use Crud\Traits\FindMethodTrait;
 use Crud\Traits\RedirectTrait;
 use Crud\Traits\SaveMethodTrait;
+use Crud\Traits\SerializeTrait;
 use Crud\Traits\ViewTrait;
 use Crud\Traits\ViewVarTrait;
 
@@ -20,6 +21,7 @@ class EditAction extends BaseAction
     use FindMethodTrait;
     use RedirectTrait;
     use SaveMethodTrait;
+    use SerializeTrait;
     use ViewTrait;
     use ViewVarTrait;
 
