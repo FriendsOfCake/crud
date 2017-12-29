@@ -48,6 +48,9 @@ class ExceptionRendererTest extends TestCase
         $this->assertNotEmpty($viewVars['_serialize']);
 
         $expected = ['success', 'data'];
+        if (version_compare(PHP_VERSION, '5.6.0') >= 0) {
+            $expected[] = 'queryLog';
+        }
         $actual = $viewVars['_serialize'];
         $this->assertEquals($expected, $actual);
 
@@ -194,6 +197,9 @@ class ExceptionRendererTest extends TestCase
         $this->assertNotEmpty($viewVars['_serialize']);
 
         $expected = ['success', 'data'];
+        if (version_compare(PHP_VERSION, '5.6.0') >= 0) {
+            $expected[] = 'queryLog';
+        }
         $actual = $viewVars['_serialize'];
         $this->assertEquals($expected, $actual);
 
@@ -258,6 +264,9 @@ class ExceptionRendererTest extends TestCase
         $this->assertNotEmpty($viewVars['_serialize']);
 
         $expected = ['success', 'data'];
+        if (version_compare(PHP_VERSION, '5.6.0') >= 0) {
+            $expected[] = 'queryLog';
+        }
         $actual = $viewVars['_serialize'];
         $this->assertEquals($expected, $actual);
 
