@@ -12,8 +12,9 @@ trait FindMethodTrait
      * If `$method` is NULL the current value is returned
      * else the `findMethod` is changed
      *
-     * @param string|null $method Method name
-     * @return string
+     * @param string|array|null $method Method name as string or array where
+     * key is finder name and value is find options.
+     * @return string|array
      */
     public function findMethod($method = null)
     {
@@ -35,7 +36,13 @@ trait FindMethodTrait
     {
         $repository = $this->_table();
 
-        $query = $repository->find($this->findMethod());
+        $finder = $this->findMethod();
+        $options = [];
+        if (is_array($finder)) {
+            $options = (array)current($finder);
+            $finder = key($finder);
+        }
+        $query = $repository->find($finder, $options);
         $query->where([current($query->aliasField($repository->primaryKey())) => $id]);
 
         $subject->set([
