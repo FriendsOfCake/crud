@@ -178,4 +178,31 @@ class SetValueActionTest extends IntegrationTestCase
         $this->assertTrue($this->_subject->success);
         $this->assertRedirect('/users');
     }
+
+    /**
+     * Test custom finder with options
+     *
+     * @return void
+     */
+    public function testPostWithCustomFinder()
+    {
+        $this->_eventManager->on(
+            'Dispatcher.invokeController',
+            ['priority' => 1000],
+            function ($event) {
+                $this->_subscribeToEvents($this->_controller);
+                $this->_controller->Crud->action('deactivateAll')
+                    ->findMethod(['withCustomOptions' => ['foo' => 'bar']]);
+            }
+        );
+
+        $this->post('/blogs/deactivateAll', [
+            'id' => [
+                1,
+                2,
+            ],
+        ]);
+
+        $this->assertSame(['foo' => 'bar'], $this->_controller->Blogs->customOptions);
+    }
 }

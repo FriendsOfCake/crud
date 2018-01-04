@@ -105,7 +105,9 @@ abstract class BaseAction extends CrudBaseAction
     {
         $repository = $this->_table();
 
-        $query = $repository->find($this->findMethod(), $this->_getFindConfig($ids));
+        list($finder, $options) = $this->_extractFinder();
+        $options = array_merge($options, $this->_getFindConfig($ids));
+        $query = $repository->find($finder, $options);
 
         $subject = $this->_subject();
         $subject->set([

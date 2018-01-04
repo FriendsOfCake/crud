@@ -104,4 +104,24 @@ class IndexActionTest extends IntegrationTestCase
         $this->get('/blogs');
         $this->assertContains('Page 1 of 1, showing 1 records out of 1 total', $this->_response->body());
     }
+
+    /**
+     * Test using custom finder with options.
+     *
+     * @return void
+     */
+    public function testGetWithCustomFinder()
+    {
+        $this->_eventManager->on(
+            'Dispatcher.invokeController',
+            ['priority' => 1000],
+            function () {
+                $this->_controller->Crud->action('index')
+                    ->findMethod(['withCustomOptions' => ['foo' => 'bar']]);
+            }
+        );
+
+        $this->get('/blogs');
+        $this->assertSame(['foo' => 'bar'], $this->_controller->Blogs->customOptions);
+    }
 }
