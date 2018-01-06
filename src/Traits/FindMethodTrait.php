@@ -26,6 +26,24 @@ trait FindMethodTrait
     }
 
     /**
+     * Extracts the finder name and options out of the "findMethod" option.
+     *
+     * @return array An array containing in the first position the finder name
+     *   and in the second the options to be passed to it.
+     */
+    protected function _extractFinder()
+    {
+        $finder = $this->findMethod();
+        $options = [];
+        if (is_array($finder)) {
+            $options = (array)current($finder);
+            $finder = key($finder);
+        }
+
+        return [$finder, $options];
+    }
+
+    /**
      * Find a record from the ID
      *
      * @param string $id Record id
@@ -36,12 +54,7 @@ trait FindMethodTrait
     {
         $repository = $this->_table();
 
-        $finder = $this->findMethod();
-        $options = [];
-        if (is_array($finder)) {
-            $options = (array)current($finder);
-            $finder = key($finder);
-        }
+        list($finder, $options) = $this->_extractFinder();
         $query = $repository->find($finder, $options);
         $query->where([current($query->aliasField($repository->primaryKey())) => $id]);
 
