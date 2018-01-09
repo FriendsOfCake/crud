@@ -71,7 +71,7 @@ abstract class BaseAction extends CrudBaseAction
      */
     protected function _processIds()
     {
-        $ids = $this->_controller()->request->data('id');
+        $ids = $this->_controller()->request->getData('id');
 
         $all = false;
         if (is_array($ids)) {

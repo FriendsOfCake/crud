@@ -114,7 +114,7 @@ class EditAction extends BaseAction
 
         $entity = $this->_table()->patchEntity(
             $this->_findRecord($id, $subject),
-            $this->_request()->data,
+            $this->_request()->getData(),
             $this->saveOptions()
         );
 

@@ -64,14 +64,14 @@ trait RedirectTrait
     {
         $request = $this->_request();
 
-        if (!empty($request->data['_redirect_url'])) {
-            return $request->data['_redirect_url'];
+        if (!empty($request->getData('_redirect_url'))) {
+            return $request->getData('_redirect_url');
         }
         if (!empty($request->getQuery('_redirect_url'))) {
             return $request->getQuery('_redirect_url');
         }
-        if (!empty($request->data['redirect_url'])) {
-            return $request->data['redirect_url'];
+        if (!empty($request->getData('redirect_url'))) {
+            return $request->getData('redirect_url');
         }
         if (!empty($request->getQuery('redirect_url'))) {
             return $request->getQuery('redirect_url');

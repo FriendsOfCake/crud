@@ -111,7 +111,7 @@ class AddAction extends BaseAction
     protected function _post()
     {
         $subject = $this->_subject([
-            'entity' => $this->_entity($this->_request()->data, $this->saveOptions()),
+            'entity' => $this->_entity($this->_request()->getData(), $this->saveOptions()),
             'saveMethod' => $this->saveMethod(),
             'saveOptions' => $this->saveOptions()
         ]);

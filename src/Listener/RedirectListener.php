@@ -62,7 +62,7 @@ class RedirectListener extends BaseListener
         $this->reader('request.data', function (Subject $subject, $key = null) {
             $request = $this->_request();
 
-            return $request->data($key);
+            return $request->getData($key);
         });
 
         $this->reader('request.query', function (Subject $subject, $key = null) {
