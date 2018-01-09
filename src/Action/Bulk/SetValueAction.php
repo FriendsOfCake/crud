@@ -43,7 +43,7 @@ class SetValueAction extends BaseAction
      */
     protected function _handle()
     {
-        $field = $this->config('field');
+        $field = $this->getConfig('field');
         if (empty($field)) {
             throw new ActionNotConfiguredException('No field value specified');
         }
@@ -59,8 +59,8 @@ class SetValueAction extends BaseAction
      */
     protected function _bulk(Query $query = null)
     {
-        $field = $this->config('field');
-        $value = $this->config('value');
+        $field = $this->getConfig('field');
+        $value = $this->getConfig('value');
         $query->update()->set([$field => $value]);
         $statement = $query->execute();
         $statement->closeCursor();

@@ -38,10 +38,10 @@ trait ViewVarTrait
     public function viewVar($name = null)
     {
         if (empty($name)) {
-            return $this->config('viewVar') ?: $this->_deriveViewVar();
+            return $this->getConfig('viewVar') ?: $this->_deriveViewVar();
         }
 
-        return $this->config('viewVar', $name);
+        return $this->setConfig('viewVar', $name);
     }
 
     /**

@@ -111,7 +111,7 @@ trait ProxyTrait
     protected function _table()
     {
         return $this->_controller()
-            ->loadModel(null, $this->config('modelFactory') ?: $this->_controller()->modelType());
+            ->loadModel(null, $this->getConfig('modelFactory') ?: $this->_controller()->modelType());
     }
 
     /**

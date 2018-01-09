@@ -43,7 +43,7 @@ abstract class BaseObject implements EventListenerInterface
     public function __construct(Controller $Controller, $config = [])
     {
         $this->_controller = $Controller;
-        $this->config($config);
+        $this->setConfig($config);
     }
 
     /**

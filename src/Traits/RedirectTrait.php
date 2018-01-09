@@ -30,15 +30,15 @@ trait RedirectTrait
     public function redirectConfig($name = null, $config = null)
     {
         if ($name === null && $config === null) {
-            return $this->config('redirect');
+            return $this->getConfig('redirect');
         }
 
         $path = sprintf('redirect.%s', $name);
         if ($config === null) {
-            return $this->config($path);
+            return $this->getConfig($path);
         }
 
-        return $this->config($path, $config);
+        return $this->setConfig($path, $config);
     }
 
     /**

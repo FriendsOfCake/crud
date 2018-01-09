@@ -60,7 +60,7 @@ class LookupAction extends BaseAction
         $request = $this->_request();
 
         $columns = $this->_table()->schema()->columns();
-        $config = (array)$this->config('findConfig');
+        $config = (array)$this->getConfig('findConfig');
 
         $idField = $request->query('id');
         if (in_array($idField, $columns)) {

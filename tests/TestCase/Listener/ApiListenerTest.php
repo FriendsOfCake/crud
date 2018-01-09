@@ -122,7 +122,7 @@ class ApiListenerTest extends TestCase
         $action = $this
             ->getMockBuilder('\Crud\Action\IndexAction')
             ->disableOriginalConstructor()
-            ->setMethods(['config'])
+            ->setMethods(['getConfig'])
             ->getMock();
 
         $response = $this
@@ -149,7 +149,7 @@ class ApiListenerTest extends TestCase
             ->will($this->returnValue($action));
         $action
             ->expects($this->next($action))
-            ->method('config')
+            ->method('getConfig')
             ->with('api.success')
             ->will($this->returnValue(['code' => 200]));
         $listener
@@ -175,7 +175,7 @@ class ApiListenerTest extends TestCase
         $action = $this
             ->getMockBuilder('\Crud\Action\IndexAction')
             ->disableOriginalConstructor()
-            ->setMethods(['config'])
+            ->setMethods(['getConfig'])
             ->getMock();
 
         $subject = $this->getMockBuilder('\Crud\Event\Subject')
@@ -198,7 +198,7 @@ class ApiListenerTest extends TestCase
             ->will($this->returnValue($action));
         $action
             ->expects($this->next($action))
-            ->method('config')
+            ->method('getConfig')
             ->with('api.success')
             ->will($this->returnValue(['exception' => 'SomethingExceptional']));
         $listener
@@ -598,7 +598,7 @@ class ApiListenerTest extends TestCase
 
         $action = $this
             ->getMockBuilder('Crud\Action\BaseAction')
-            ->setMethods(['config'])
+            ->setMethods(['getConfig'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -617,7 +617,7 @@ class ApiListenerTest extends TestCase
             ->will($this->returnValue($action));
         $action
             ->expects($this->at(0))
-            ->method('config')
+            ->method('getConfig')
             ->with('api.success')
             ->will($this->returnValue($config));
         $controller
@@ -650,7 +650,7 @@ class ApiListenerTest extends TestCase
 
         $action = $this
             ->getMockBuilder('Crud\Action\BaseAction')
-            ->setMethods(['config'])
+            ->setMethods(['getConfig'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -674,7 +674,7 @@ class ApiListenerTest extends TestCase
             ->will($this->returnValue($action));
         $action
             ->expects($this->at(0))
-            ->method('config')
+            ->method('getConfig')
             ->with('api.success')
             ->will($this->returnValue($config));
         $controller
@@ -707,7 +707,7 @@ class ApiListenerTest extends TestCase
 
         $action = $this
             ->getMockBuilder('\Crud\Action\BaseAction')
-            ->setMethods(['config'])
+            ->setMethods(['getConfig'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -726,7 +726,7 @@ class ApiListenerTest extends TestCase
             ->will($this->returnValue($action));
         $action
             ->expects($this->at(0))
-            ->method('config')
+            ->method('getConfig')
             ->with('api.success')
             ->will($this->returnValue($config));
         $controller
@@ -759,7 +759,7 @@ class ApiListenerTest extends TestCase
 
         $action = $this
             ->getMockBuilder('\Crud\Action\BaseAction')
-            ->setMethods(['config'])
+            ->setMethods(['getConfig'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -778,7 +778,7 @@ class ApiListenerTest extends TestCase
             ->will($this->returnValue($action));
         $action
             ->expects($this->at(0))
-            ->method('config')
+            ->method('getConfig')
             ->with('api.error')
             ->will($this->returnValue($config));
         $controller
@@ -999,7 +999,7 @@ class ApiListenerTest extends TestCase
 
         $listener = $this
             ->getMockBuilder('\Crud\Listener\ApiListener')
-            ->setMethods(['_request', 'config'])
+            ->setMethods(['_request', 'getConfig'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -1016,7 +1016,7 @@ class ApiListenerTest extends TestCase
             ->will($this->returnValue($request));
         $listener
             ->expects($this->at($i++))
-            ->method('config')
+            ->method('getConfig')
             ->with('detectors')
             ->will($this->returnValue($detectors));
 
@@ -1122,7 +1122,7 @@ class ApiListenerTest extends TestCase
 
         $action = $this
             ->getMockBuilder('\Crud\Action\IndexAction')
-            ->setMethods(['config'])
+            ->setMethods(['getConfig'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -1138,7 +1138,7 @@ class ApiListenerTest extends TestCase
             ->will($this->returnValue($action));
         $action
             ->expects($this->at(0))
-            ->method('config')
+            ->method('getConfig')
             ->with('api')
             ->will($this->returnValue($apiConfig));
 
@@ -1233,16 +1233,16 @@ class ApiListenerTest extends TestCase
             ->getMock();
 
         $controller->RequestHandler = $this->getMockBuilder('\Cake\Controller\Component\RequestHandlerComponent')
-            ->setMethods(['config'])
+            ->setMethods(['setConfig'])
             ->disableOriginalConstructor()
             ->getMock();
         $controller->RequestHandler
             ->expects($this->at(0))
-            ->method('config')
+            ->method('setConfig')
             ->with('viewClassMap', ['json' => 'Json']);
         $controller->RequestHandler
             ->expects($this->at(1))
-            ->method('config')
+            ->method('setConfig')
             ->with('viewClassMap', ['xml' => 'Xml']);
 
         $apiListener = $this->getMockBuilder('\Crud\Listener\ApiListener')

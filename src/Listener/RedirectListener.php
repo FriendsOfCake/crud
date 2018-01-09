@@ -94,10 +94,10 @@ class RedirectListener extends BaseListener
     public function reader($key, $reader = null)
     {
         if ($reader === null) {
-            return $this->config('readers.' . $key);
+            return $this->getConfig('readers.' . $key);
         }
 
-        return $this->config('readers.' . $key, $reader);
+        return $this->setConfig('readers.' . $key, $reader);
     }
 
     /**

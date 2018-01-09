@@ -380,7 +380,7 @@ class CrudComponent extends Component
             $config = ['className' => $config];
         }
         $action = Inflector::variable($action);
-        $this->config('actions.' . $action, $config);
+        $this->setConfig('actions.' . $action, $config);
 
         if ($enable) {
             $this->enable($action);
@@ -400,12 +400,12 @@ class CrudComponent extends Component
         }
 
         $action = Inflector::variable($action);
-        $test = $this->config('actions.' . $action);
+        $test = $this->getConfig('actions.' . $action);
         if (empty($test)) {
             return false;
         }
 
-        return $this->action($action)->config('enabled');
+        return $this->action($action)->getConfig('enabled');
     }
 
     /**
@@ -461,7 +461,7 @@ class CrudComponent extends Component
         }
 
         $name = Inflector::variable($name);
-        $this->config(sprintf('listeners.%s', $name), compact('className') + $config);
+        $this->setConfig(sprintf('listeners.%s', $name), compact('className') + $config);
     }
 
     /**
@@ -474,7 +474,7 @@ class CrudComponent extends Component
      */
     public function removeListener($name)
     {
-        $listeners = $this->config('listeners');
+        $listeners = $this->getConfig('listeners');
         if (!array_key_exists($name, $listeners)) {
             return false;
         }
@@ -555,13 +555,13 @@ class CrudComponent extends Component
             }
 
             foreach ($name as $realName) {
-                $this->config(sprintf('%s.%s', $type, $realName), $config);
+                $this->setConfig(sprintf('%s.%s', $type, $realName), $config);
             }
 
             return null;
         }
 
-        return $this->config(sprintf('%s.%s', $type, $name));
+        return $this->getConfig(sprintf('%s.%s', $type, $name));
     }
 
     /**
@@ -638,7 +638,7 @@ class CrudComponent extends Component
      */
     protected function _loadListeners()
     {
-        foreach (array_keys($this->config('listeners')) as $name) {
+        foreach (array_keys($this->getConfig('listeners')) as $name) {
             $this->_loadListener($name);
         }
     }
@@ -654,7 +654,7 @@ class CrudComponent extends Component
     protected function _loadListener($name)
     {
         if (!isset($this->_listenerInstances[$name])) {
-            $config = $this->config('listeners.' . $name);
+            $config = $this->getConfig('listeners.' . $name);
 
             if (empty($config)) {
                 throw new ListenerNotConfiguredException(sprintf('Listener "%s" is not configured', $name));
@@ -667,7 +667,7 @@ class CrudComponent extends Component
 
             $this->_listenerInstances[$name] = new $className($this->_controller);
             unset($config['className']);
-            $this->_listenerInstances[$name]->config($config);
+            $this->_listenerInstances[$name]->setConfig($config);
 
             $this->_eventManager->on($this->_listenerInstances[$name]);
 
@@ -690,7 +690,7 @@ class CrudComponent extends Component
     protected function _loadAction($name)
     {
         if (!isset($this->_actionInstances[$name])) {
-            $config = $this->config('actions.' . $name);
+            $config = $this->getConfig('actions.' . $name);
 
             if (empty($config)) {
                 throw new ActionNotConfiguredException(sprintf('Action "%s" has not been mapped', $name));
@@ -703,7 +703,7 @@ class CrudComponent extends Component
 
             $this->_actionInstances[$name] = new $className($this->_controller);
             unset($config['className']);
-            $this->_actionInstances[$name]->config($config);
+            $this->_actionInstances[$name]->setConfig($config);
         }
 
         return $this->_actionInstances[$name];

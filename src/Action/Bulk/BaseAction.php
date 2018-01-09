@@ -127,7 +127,7 @@ abstract class BaseAction extends CrudBaseAction
      */
     protected function _getFindConfig(array $ids)
     {
-        $config = (array)$this->config('findConfig');
+        $config = (array)$this->getConfig('findConfig');
         if (!empty($config)) {
             return $config;
         }

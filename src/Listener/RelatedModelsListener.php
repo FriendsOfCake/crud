@@ -167,10 +167,10 @@ class RelatedModelsListener extends BaseListener
     public function relatedModels($related = null, $action = null)
     {
         if ($related === null) {
-            return $this->_action($action)->config('relatedModels');
+            return $this->_action($action)->getConfig('relatedModels');
         }
 
-        return $this->_action($action)->config('relatedModels', $related, false);
+        return $this->_action($action)->setConfig('relatedModels', $related, false);
     }
 
     /**
