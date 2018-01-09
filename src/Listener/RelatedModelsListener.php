@@ -37,7 +37,7 @@ class RelatedModelsListener extends BaseListener
      */
     public function beforePaginate(Event $event)
     {
-        $contained = $event->subject()->query->contain();
+        $contained = $event->getSubject()->query->contain();
         if (!empty($contained)) {
             return;
         }
@@ -47,7 +47,7 @@ class RelatedModelsListener extends BaseListener
             return;
         }
 
-        $event->subject()->query->contain(array_keys($models));
+        $event->getSubject()->query->contain(array_keys($models));
     }
 
     /**
