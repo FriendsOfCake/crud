@@ -112,7 +112,7 @@ class RelatedModelsListener extends BaseListener
     protected function _findOptions(Association $association)
     {
         return [
-            'keyField' => $association->bindingKey()
+            'keyField' => $association->getBindingKey()
         ];
     }
 
@@ -124,7 +124,7 @@ class RelatedModelsListener extends BaseListener
      */
     public function finder(Association $association)
     {
-        if ($association->target()->behaviors()->has('Tree')) {
+        if ($association->getTarget()->behaviors()->has('Tree')) {
             return 'treeList';
         }
 

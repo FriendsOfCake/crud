@@ -253,12 +253,12 @@ class RelatedModelListenerTest extends TestCase
         $association = $this
             ->getMockBuilder('\Cake\ORM\Association\BelongsTo')
             ->disableOriginalConstructor()
-            ->setMethods(['target'])
+            ->setMethods(['getTarget'])
             ->getMock();
 
         $association
             ->expects($this->any())
-            ->method('target')
+            ->method('getTarget')
             ->will($this->returnValue($model));
 
         $listener = $this
