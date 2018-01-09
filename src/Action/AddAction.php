@@ -97,7 +97,7 @@ class AddAction extends BaseAction
     {
         $subject = $this->_subject([
             'success' => true,
-            'entity' => $this->_entity($this->_request()->query ?: null, ['validate' => false] + $this->saveOptions())
+            'entity' => $this->_entity($this->_request()->getQuery() ?: null, ['validate' => false] + $this->saveOptions())
         ]);
 
         $this->_trigger('beforeRender', $subject);

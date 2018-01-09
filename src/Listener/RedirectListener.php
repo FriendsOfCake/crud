@@ -68,7 +68,7 @@ class RedirectListener extends BaseListener
         $this->reader('request.query', function (Subject $subject, $key = null) {
             $request = $this->_request();
 
-            return $request->query($key);
+            return $request->getQuery($key);
         });
 
         $this->reader('entity.field', function (Subject $subject, $key = null) {
