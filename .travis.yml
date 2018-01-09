@@ -1,7 +1,6 @@
 language: php
 
 php:
-  - 5.5
   - 5.6
   - 7.0
   - 7.1
@@ -30,8 +29,7 @@ matrix:
 before_script:
   - if [[ $TRAVIS_PHP_VERSION != 7.0 && $TRAVIS_PHP_VERSION != 7.2 ]]; then phpenv config-rm xdebug.ini; fi
 
-  - if [[ $TRAVIS_PHP_VERSION = 5.5 ]]; then composer require --dev friendsofcake/search:^3.0; fi
-  - if [[ $TRAVIS_PHP_VERSION != 5.5 ]]; then composer install --prefer-dist --no-interaction; fi
+  - composer install --prefer-dist --no-interaction
 
   - if [[ $DB = 'mysql' ]]; then mysql -e 'CREATE DATABASE cakephp_test;'; fi
   - if [[ $DB = 'pgsql' ]]; then psql -c 'CREATE DATABASE cakephp_test;' -U postgres; fi
