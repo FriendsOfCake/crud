@@ -47,7 +47,7 @@ class ExceptionRendererTest extends TestCase
 
         $this->assertNotEmpty($viewVars['_serialize']);
 
-        $expected = ['success', 'data'];
+        $expected = ['success', 'data', 'queryLog'];
         $actual = $viewVars['_serialize'];
         $this->assertEquals($expected, $actual);
 
@@ -193,7 +193,7 @@ class ExceptionRendererTest extends TestCase
 
         $this->assertNotEmpty($viewVars['_serialize']);
 
-        $expected = ['success', 'data'];
+        $expected = ['success', 'data', 'queryLog'];
         $actual = $viewVars['_serialize'];
         $this->assertEquals($expected, $actual);
 
@@ -257,7 +257,7 @@ class ExceptionRendererTest extends TestCase
 
         $this->assertNotEmpty($viewVars['_serialize']);
 
-        $expected = ['success', 'data'];
+        $expected = ['success', 'data', 'queryLog'];
         $actual = $viewVars['_serialize'];
         $this->assertEquals($expected, $actual);
 
