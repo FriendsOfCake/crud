@@ -470,7 +470,7 @@ class CrudComponent extends Component
      * This will also detach it from the EventManager if it's attached.
      *
      * @param string $name Name
-     * @return bool
+     * @return bool|null
      */
     public function removeListener($name)
     {

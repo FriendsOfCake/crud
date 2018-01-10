@@ -14,6 +14,7 @@ trait ViewVarTrait
      *
      * @param Event $event Event
      * @return false|null
+     * @throws \Exception
      */
     public function publishViewVar(Event $event)
     {
@@ -34,6 +35,7 @@ trait ViewVarTrait
      *
      * @param mixed $name Var name
      * @return mixed
+     * @throws \Exception
      */
     public function viewVar($name = null)
     {
