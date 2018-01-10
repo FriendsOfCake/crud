@@ -36,7 +36,7 @@ class SearchListener extends BaseListener
     }
 
     /**
-     * Inject search conditions to the qeury object.
+     * Inject search conditions into the query object.
      *
      * @param \Cake\Event\Event $event Event
      * @return void
