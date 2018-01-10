@@ -316,6 +316,8 @@ class CrudComponent extends Component
      * @param string|array $action Action or array of actions
      * @param string|null $view View name
      * @return void
+     * @throws \Crud\Error\Exception\ActionNotConfiguredException
+     * @throws \Crud\Error\Exception\MissingActionException
      */
     public function view($action, $view = null)
     {
@@ -338,6 +340,8 @@ class CrudComponent extends Component
      * @param string|array $action Action or array of actions.
      * @param string|null $viewVar View var name.
      * @return void
+     * @throws \Crud\Error\Exception\ActionNotConfiguredException
+     * @throws \Crud\Error\Exception\MissingActionException
      */
     public function viewVar($action, $viewVar = null)
     {
@@ -360,6 +364,8 @@ class CrudComponent extends Component
      * @param string|array $action Action or array of actions.
      * @param string|null $method Find method name
      * @return void
+     * @throws \Crud\Error\Exception\ActionNotConfiguredException
+     * @throws \Crud\Error\Exception\MissingActionException
      */
     public function findMethod($action, $method = null)
     {
@@ -381,6 +387,8 @@ class CrudComponent extends Component
      * @param string|array $config Config array or class name like Crud.Index.
      * @param bool $enable Should the mapping be enabled right away?
      * @return void
+     * @throws \Crud\Error\Exception\ActionNotConfiguredException
+     * @throws \Crud\Error\Exception\MissingActionException
      */
     public function mapAction($action, $config = [], $enable = true)
     {
@@ -400,6 +408,8 @@ class CrudComponent extends Component
      *
      * @param string|null $action If null, use the current action.
      * @return bool
+     * @throws \Crud\Error\Exception\ActionNotConfiguredException
+     * @throws \Crud\Error\Exception\MissingActionException
      */
     public function isActionMapped($action = null)
     {
