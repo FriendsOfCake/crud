@@ -1,7 +1,6 @@
 <?php
 namespace Crud\Listener;
 
-use Cake\Core\Plugin;
 use Cake\Event\Event;
 use RuntimeException;
 
