@@ -108,6 +108,7 @@ class RedirectListener extends BaseListener
      *
      * @param Event $event Event
      * @return void
+     * @throws \Exception
      */
     public function beforeRedirect(Event $event)
     {
@@ -137,6 +138,7 @@ class RedirectListener extends BaseListener
      * @param \Crud\Event\Subject $subject Subject
      * @param array $url URL
      * @return array
+     * @throws \Exception
      */
     protected function _getUrl(Subject $subject, array $url)
     {

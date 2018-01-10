@@ -111,6 +111,7 @@ class ApiListener extends BaseListener
      *
      * @param \Cake\Event\Event $event Event
      * @return \Cake\Network\Response|null
+     * @throws \Exception
      */
     public function respond(Event $event)
     {

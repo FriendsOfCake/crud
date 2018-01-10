@@ -195,6 +195,7 @@ class CrudComponent extends Component
      *
      * @param \Cake\Event\Event $event Event instance
      * @return void
+     * @throws \Exception
      */
     public function beforeFilter(Event $event)
     {
@@ -207,6 +208,7 @@ class CrudComponent extends Component
      *
      * @param \Cake\Event\Event $event Event instance
      * @return void
+     * @throws \Exception
      */
     public function startup(Event $event)
     {
@@ -262,6 +264,8 @@ class CrudComponent extends Component
      *
      * @param string|null $name The controller action name.
      * @return \Crud\Action\BaseAction
+     * @throws \Crud\Error\Exception\ActionNotConfiguredException
+     * @throws \Crud\Error\Exception\MissingActionException
      */
     public function action($name = null)
     {
@@ -279,6 +283,8 @@ class CrudComponent extends Component
      *
      * @param string|array $actions The action to enable.
      * @return void
+     * @throws \Crud\Error\Exception\ActionNotConfiguredException
+     * @throws \Crud\Error\Exception\MissingActionException
      */
     public function enable($actions)
     {
@@ -292,6 +298,8 @@ class CrudComponent extends Component
      *
      * @param string|array $actions The action to disable.
      * @return void
+     * @throws \Crud\Error\Exception\ActionNotConfiguredException
+     * @throws \Crud\Error\Exception\MissingActionException
      */
     public function disable($actions)
     {
@@ -432,6 +440,8 @@ class CrudComponent extends Component
      *
      * @param string $name Listener
      * @return \Crud\Listener\BaseListener
+     * @throws \Crud\Error\Exception\ListenerNotConfiguredException
+     * @throws \Crud\Error\Exception\MissingListenerException
      */
     public function listener($name)
     {
@@ -635,6 +645,8 @@ class CrudComponent extends Component
      * Load all event classes attached to Crud.
      *
      * @return void
+     * @throws \Crud\Error\Exception\ListenerNotConfiguredException
+     * @throws \Crud\Error\Exception\MissingListenerException
      */
     protected function _loadListeners()
     {

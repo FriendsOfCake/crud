@@ -49,6 +49,7 @@ trait FindMethodTrait
      * @param string $id Record id
      * @param \Crud\Event\Subject $subject Event subject
      * @return \Cake\ORM\Entity
+     * @throws \Exception
      */
     protected function _findRecord($id, Subject $subject)
     {
