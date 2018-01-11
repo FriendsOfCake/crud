@@ -59,14 +59,14 @@ abstract class BaseAction extends BaseObject
 
         if (method_exists($this, $method)) {
             $this->_responding = true;
-            $this->_controller()->eventManager()->on($this);
+            $this->_controller()->getEventManager()->on($this);
 
             return call_user_func_array([$this, $method], $args);
         }
 
         if (method_exists($this, '_handle')) {
             $this->_responding = true;
-            $this->_controller()->eventManager()->on($this);
+            $this->_controller()->getEventManager()->on($this);
 
             return call_user_func_array([$this, '_handle'], $args);
         }

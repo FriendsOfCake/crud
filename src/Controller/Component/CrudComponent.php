@@ -139,7 +139,7 @@ class CrudComponent extends Component
         $config['listeners'] = $this->normalizeArray($config['listeners']);
 
         $this->_controller = $collection->getController();
-        $this->_eventManager = $this->_controller->eventManager();
+        $this->_eventManager = $this->_controller->getEventManager();
 
         parent::__construct($collection, $config);
     }
