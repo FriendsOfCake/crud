@@ -2,8 +2,8 @@
 namespace Crud\Test\TestCase\Listener;
 
 use Cake\Core\Configure;
-use Cake\Http\ServerRequest;
 use Cake\Http\Response;
+use Cake\Http\ServerRequest;
 use Crud\TestSuite\TestCase;
 
 /**
