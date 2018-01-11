@@ -180,7 +180,7 @@ class CrudComponent extends Component
     {
         parent::initialize($config);
 
-        $this->_action = $this->_controller->request->param('action');
+        $this->_action = $this->_controller->request->getParam('action');
         $this->_request = $this->_controller->request;
 
         if (!isset($this->_controller->dispatchComponents)) {
@@ -232,7 +232,7 @@ class CrudComponent extends Component
 
         $action = $this->_action;
         if (empty($args)) {
-            $args = $this->_request->params['pass'];
+            $args = $this->_request->getParam('pass');
         }
 
         try {
