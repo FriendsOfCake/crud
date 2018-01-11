@@ -110,7 +110,7 @@ class ApiListener extends BaseListener
      * Handle response
      *
      * @param \Cake\Event\Event $event Event
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      * @throws \Exception
      */
     public function respond(Event $event)
@@ -124,8 +124,8 @@ class ApiListener extends BaseListener
             return null;
         }
 
-        $response = $this->render($event->subject);
-        $response->statusCode($apiConfig['code']);
+        $response = $this->render($event->subject)
+            ->withStatus($apiConfig['code']);
 
         return $response;
     }
@@ -193,7 +193,7 @@ class ApiListener extends BaseListener
      * Selects an specific Crud view class to render the output
      *
      * @param \Crud\Event\Subject $subject Subject
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response
      */
     public function render(Subject $subject)
     {

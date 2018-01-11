@@ -2,6 +2,7 @@
 namespace Crud\Test\TestCase\Listener;
 
 use Cake\Core\Configure;
+use Cake\Http\Response;
 use Crud\TestSuite\TestCase;
 
 /**
@@ -126,8 +127,8 @@ class ApiListenerTest extends TestCase
             ->getMock();
 
         $response = $this
-            ->getMockBuilder('\Cake\Network\Response')
-            ->setMethods(['statusCode'])
+            ->getMockBuilder(Response::class)
+            ->setMethods(['withStatus'])
             ->getMock();
 
         $subject = $this
@@ -159,7 +160,7 @@ class ApiListenerTest extends TestCase
             ->will($this->returnValue($response));
         $response
             ->expects($this->next($response))
-            ->method('statusCode')
+            ->method('withStatus')
             ->with(200);
 
         $listener->respond($event);

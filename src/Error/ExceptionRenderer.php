@@ -26,10 +26,10 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer
         $url = $this->controller->request->here();
         $status = $code = $error->getCode();
         try {
-            $this->controller->response->statusCode($status);
+            $this->controller->response = $this->controller->response->withStatus($status);
         } catch (Exception $e) {
             $status = 422;
-            $this->controller->response->statusCode($status);
+            $this->controller->response = $this->controller->response->withStatus($status);
         }
 
         $sets = [

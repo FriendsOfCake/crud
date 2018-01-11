@@ -5,7 +5,7 @@ use Cake\Core\Configure;
 use Cake\Core\Exception\Exception;
 use Cake\Datasource\ConnectionManager;
 use Cake\Network\Request;
-use Cake\Network\Response;
+use Cake\Http\Response;
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -236,7 +236,7 @@ class ExceptionRendererTest extends TestCase
             ->setMethods(['render'])
             ->getMock();
         $Controller->request = new Request();
-        $Controller->response = $this->getMockBuilder('Cake\Network\Response')
+        $Controller->response = $this->getMockBuilder(Response::class)
             ->setMethods(['send'])
             ->getMock();
 
@@ -303,7 +303,7 @@ class ExceptionRendererTest extends TestCase
             ->setMethods(['render'])
             ->getMock();
         $Controller->request = new Request();
-        $Controller->response = $this->getMockBuilder('Cake\Network\Response')
+        $Controller->response = $this->getMockBuilder(Response::class)
             ->getMock();
 
         $Renderer = $this->getMockBuilder('Crud\Error\ExceptionRenderer')
