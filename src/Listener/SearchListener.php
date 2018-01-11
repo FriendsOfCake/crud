@@ -1,7 +1,6 @@
 <?php
 namespace Crud\Listener;
 
-use Cake\Core\Plugin;
 use Cake\Event\Event;
 use RuntimeException;
 
@@ -36,7 +35,7 @@ class SearchListener extends BaseListener
     }
 
     /**
-     * Inject search conditions to the qeury object.
+     * Inject search conditions into the query object.
      *
      * @param \Cake\Event\Event $event Event
      * @return void

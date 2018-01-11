@@ -184,6 +184,7 @@ abstract class BaseAction extends BaseObject
      * @param string $type Message type
      * @param \Crud\Event\Subject $subject Event subject
      * @return void
+     * @throws \Exception
      */
     public function setFlash($type, Subject $subject)
     {

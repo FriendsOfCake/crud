@@ -145,7 +145,7 @@ class EditAction extends BaseAction
      * Thin proxy for _put
      *
      * @param mixed $id Record id
-     * @return void|\Cake\Network\Response
+     * @return \Cake\Network\Response|null
      */
     protected function _patch($id = null)
     {

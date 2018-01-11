@@ -195,6 +195,7 @@ class CrudComponent extends Component
      *
      * @param \Cake\Event\Event $event Event instance
      * @return void
+     * @throws \Exception
      */
     public function beforeFilter(Event $event)
     {
@@ -207,6 +208,7 @@ class CrudComponent extends Component
      *
      * @param \Cake\Event\Event $event Event instance
      * @return void
+     * @throws \Exception
      */
     public function startup(Event $event)
     {
@@ -262,6 +264,8 @@ class CrudComponent extends Component
      *
      * @param string|null $name The controller action name.
      * @return \Crud\Action\BaseAction
+     * @throws \Crud\Error\Exception\ActionNotConfiguredException
+     * @throws \Crud\Error\Exception\MissingActionException
      */
     public function action($name = null)
     {
@@ -279,6 +283,8 @@ class CrudComponent extends Component
      *
      * @param string|array $actions The action to enable.
      * @return void
+     * @throws \Crud\Error\Exception\ActionNotConfiguredException
+     * @throws \Crud\Error\Exception\MissingActionException
      */
     public function enable($actions)
     {
@@ -292,6 +298,8 @@ class CrudComponent extends Component
      *
      * @param string|array $actions The action to disable.
      * @return void
+     * @throws \Crud\Error\Exception\ActionNotConfiguredException
+     * @throws \Crud\Error\Exception\MissingActionException
      */
     public function disable($actions)
     {
@@ -308,6 +316,8 @@ class CrudComponent extends Component
      * @param string|array $action Action or array of actions
      * @param string|null $view View name
      * @return void
+     * @throws \Crud\Error\Exception\ActionNotConfiguredException
+     * @throws \Crud\Error\Exception\MissingActionException
      */
     public function view($action, $view = null)
     {
@@ -330,6 +340,8 @@ class CrudComponent extends Component
      * @param string|array $action Action or array of actions.
      * @param string|null $viewVar View var name.
      * @return void
+     * @throws \Crud\Error\Exception\ActionNotConfiguredException
+     * @throws \Crud\Error\Exception\MissingActionException
      */
     public function viewVar($action, $viewVar = null)
     {
@@ -352,6 +364,8 @@ class CrudComponent extends Component
      * @param string|array $action Action or array of actions.
      * @param string|null $method Find method name
      * @return void
+     * @throws \Crud\Error\Exception\ActionNotConfiguredException
+     * @throws \Crud\Error\Exception\MissingActionException
      */
     public function findMethod($action, $method = null)
     {
@@ -373,6 +387,8 @@ class CrudComponent extends Component
      * @param string|array $config Config array or class name like Crud.Index.
      * @param bool $enable Should the mapping be enabled right away?
      * @return void
+     * @throws \Crud\Error\Exception\ActionNotConfiguredException
+     * @throws \Crud\Error\Exception\MissingActionException
      */
     public function mapAction($action, $config = [], $enable = true)
     {
@@ -392,6 +408,8 @@ class CrudComponent extends Component
      *
      * @param string|null $action If null, use the current action.
      * @return bool
+     * @throws \Crud\Error\Exception\ActionNotConfiguredException
+     * @throws \Crud\Error\Exception\MissingActionException
      */
     public function isActionMapped($action = null)
     {
@@ -432,6 +450,8 @@ class CrudComponent extends Component
      *
      * @param string $name Listener
      * @return \Crud\Listener\BaseListener
+     * @throws \Crud\Error\Exception\ListenerNotConfiguredException
+     * @throws \Crud\Error\Exception\MissingListenerException
      */
     public function listener($name)
     {
@@ -470,7 +490,7 @@ class CrudComponent extends Component
      * This will also detach it from the EventManager if it's attached.
      *
      * @param string $name Name
-     * @return bool
+     * @return bool|null
      */
     public function removeListener($name)
     {
@@ -635,6 +655,8 @@ class CrudComponent extends Component
      * Load all event classes attached to Crud.
      *
      * @return void
+     * @throws \Crud\Error\Exception\ListenerNotConfiguredException
+     * @throws \Crud\Error\Exception\MissingListenerException
      */
     protected function _loadListeners()
     {
