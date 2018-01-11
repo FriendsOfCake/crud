@@ -1,6 +1,7 @@
 <?php
 namespace Crud\TestCase\Action;
 
+use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Crud\Event\Subject;
 use Crud\TestSuite\TestCase;
@@ -17,7 +18,7 @@ class BaseActionTest extends TestCase
     {
         parent::setUp();
 
-        $this->Request = $this->getMockBuilder('Cake\Network\Request')
+        $this->Request = $this->getMockBuilder(ServerRequest::class)
             ->getMock();
         $this->Controller = $this->getMockBuilder('Cake\Controller\Controller')
             ->setMethods(['set'])
@@ -127,13 +128,13 @@ class BaseActionTest extends TestCase
      */
     public function testEnabledActionWorks()
     {
-        $Request = $this->getMockBuilder('Cake\Network\Request')
-            ->setMethods(['method'])
+        $Request = $this->getMockBuilder(ServerRequest::class)
+            ->setMethods(['getMethod'])
             ->getMock();
         $Request->action = 'add';
         $Request
             ->expects($this->once())
-            ->method('method')
+            ->method('getMethod')
             ->will($this->returnValue('GET'));
 
         $Action = $this->getMockBuilder('Crud\Action\BaseAction')
@@ -518,12 +519,12 @@ class BaseActionTest extends TestCase
             ->setConstructorArgs([$this->Controller])
             ->getMock();
 
-        $Request = $this->getMockBuilder('Cake\Network\Request')
-            ->setMethods(['method'])
+        $Request = $this->getMockBuilder(ServerRequest::class)
+            ->setMethods(['getMethod'])
             ->getMock();
         $Request
             ->expects($this->once())
-            ->method('method')
+            ->method('getMethod')
             ->will($this->returnValue('GET'));
 
         $i = 0;
@@ -586,12 +587,12 @@ class BaseActionTest extends TestCase
             ->setConstructorArgs([$this->Controller])
             ->getMock();
 
-        $Request = $this->getMockBuilder('Cake\Network\Request')
-            ->setMethods(['method'])
+        $Request = $this->getMockBuilder(ServerRequest::class)
+            ->setMethods(['getMethod'])
             ->getMock();
         $Request
             ->expects($this->once())
-            ->method('method')
+            ->method('getMethod')
             ->will($this->returnValue('GET'));
 
         $i = 0;
@@ -627,12 +628,12 @@ class BaseActionTest extends TestCase
             ->setConstructorArgs([$this->Controller])
             ->getMock();
 
-        $Request = $this->getMockBuilder('Cake\Network\Request')
-            ->setMethods(['method'])
+        $Request = $this->getMockBuilder(ServerRequest::class)
+            ->setMethods(['getMethod'])
             ->getMock();
         $Request
             ->expects($this->once())
-            ->method('method')
+            ->method('getMethod')
             ->will($this->returnValue('GET'));
 
         $i = 0;

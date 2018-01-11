@@ -55,7 +55,7 @@ abstract class BaseAction extends BaseObject
             $args = (array)$args;
         }
 
-        $method = '_' . strtolower($this->_request()->method());
+        $method = '_' . strtolower($this->_request()->getMethod());
 
         if (method_exists($this, $method)) {
             $this->_responding = true;

@@ -5,7 +5,7 @@ use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\Network\Request;
+use Cake\Http\ServerRequest;
 use Cake\Network\Response;
 use Cake\ORM\TableRegistry;
 use Crud\Controller\Component\CrudComponent;
@@ -187,8 +187,8 @@ class CrudComponentTest extends TestCase
 
         $this->model = TableRegistry::get('CrudExamples');
 
-        $this->request = $this->getMockBuilder('Cake\Network\Request')
-            ->setMethods(['is', 'method'])
+        $this->request = $this->getMockBuilder(ServerRequest::class)
+            ->setMethods(['is', 'getMethod'])
             ->getMock();
 
         $this->request->expects($this->any())->method('is')->will($this->returnValue(true));
@@ -375,7 +375,7 @@ class CrudComponentTest extends TestCase
     {
         $this->request
             ->expects($this->once())
-            ->method('method')
+            ->method('getMethod')
             ->will($this->returnValue('GET'));
 
         $this->controller
@@ -480,12 +480,12 @@ class CrudComponentTest extends TestCase
     {
         $this->request
             ->expects($this->once())
-            ->method('method')
+            ->method('getMethod')
             ->will($this->returnValue('GET'));
 
         $this->request
             ->expects($this->once())
-            ->method('method')
+            ->method('getMethod')
             ->will($this->returnValue('GET'));
 
         $this->controller
@@ -508,7 +508,7 @@ class CrudComponentTest extends TestCase
     {
         $this->request
             ->expects($this->once())
-            ->method('method')
+            ->method('getMethod')
             ->will($this->returnValue('GET'));
 
         $this->controller
@@ -561,7 +561,7 @@ class CrudComponentTest extends TestCase
     {
         $this->request
             ->expects($this->once())
-            ->method('method')
+            ->method('getMethod')
             ->will($this->returnValue('GET'));
 
         $this->request->action = 'search';
