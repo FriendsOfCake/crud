@@ -85,7 +85,7 @@ abstract class BaseAction extends BaseObject
      */
     public function responding()
     {
-        return (bool)$this->_responding;
+        return $this->_responding;
     }
 
     /**

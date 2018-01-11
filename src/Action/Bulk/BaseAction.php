@@ -75,7 +75,7 @@ abstract class BaseAction extends CrudBaseAction
 
         $all = false;
         if (is_array($ids)) {
-            $all = Hash::get((array)$ids, '_all', false);
+            $all = Hash::get($ids, '_all', false);
             unset($ids['_all']);
         }
 
