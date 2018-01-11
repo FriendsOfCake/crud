@@ -5,7 +5,7 @@ use Cake\Core\Configure;
 use Cake\Error\ErrorHandler;
 use Cake\Event\Event;
 use Cake\Network\Exception\MethodNotAllowedException;
-use Cake\Network\Request;
+use Cake\Http\ServerRequest;
 use Cake\Utility\Hash;
 use Cake\Utility\Text;
 use Crud\Event\Subject;
@@ -417,7 +417,7 @@ class ApiListener extends BaseListener
         $detectors = $this->getConfig('detectors');
 
         foreach ($detectors as $name => $config) {
-            $request->addDetector($name, function (Request $request) use ($config) {
+            $request->addDetector($name, function (ServerRequest $request) use ($config) {
                 if ($config['ext'] !== false && $request->param('_ext') === $config['ext']) {
                     return true;
                 }
@@ -426,7 +426,7 @@ class ApiListener extends BaseListener
             });
         }
 
-        $request->addDetector('api', function (Request $request) use ($detectors) {
+        $request->addDetector('api', function (ServerRequest $request) use ($detectors) {
             foreach ($detectors as $name => $config) {
                 if ($request->is($name)) {
                     return true;

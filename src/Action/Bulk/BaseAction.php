@@ -43,7 +43,7 @@ abstract class BaseAction extends CrudBaseAction
     /**
      * Handle a bulk event
      *
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response
      */
     protected function _handle()
     {
@@ -173,7 +173,7 @@ abstract class BaseAction extends CrudBaseAction
      * Stopped callback
      *
      * @param \Crud\Event\Subject $subject Event subject
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response
      */
     protected function _stopped(Subject $subject)
     {

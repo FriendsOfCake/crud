@@ -4,7 +4,7 @@ namespace Crud\Test\TestCase\Error;
 use Cake\Core\Configure;
 use Cake\Core\Exception\Exception;
 use Cake\Datasource\ConnectionManager;
-use Cake\Network\Request;
+use Cake\Http\ServerRequest;
 use Cake\Http\Response;
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
@@ -27,7 +27,7 @@ class ExceptionRendererTest extends TestCase
         $Controller = $this->getMockBuilder('Cake\Controller\Controller')
             ->setMethods(['render'])
             ->getMock();
-        $Controller->request = new Request();
+        $Controller->request = new ServerRequest();
         $Controller->response = new Response();
 
         $Renderer = $this->getMockBuilder('Crud\Error\ExceptionRenderer')
@@ -103,7 +103,7 @@ class ExceptionRendererTest extends TestCase
         $Controller = $this->getMockBuilder('Cake\Controller\Controller')
             ->setMethods(['render'])
             ->getMock();
-        $Controller->request = new Request();
+        $Controller->request = new ServerRequest();
         $Controller->response = new Response();
 
         $Renderer = $this->getMockBuilder('Crud\Error\ExceptionRenderer')
@@ -173,7 +173,7 @@ class ExceptionRendererTest extends TestCase
         $Controller = $this->getMockBuilder('Cake\Controller\Controller')
             ->setMethods(['render'])
             ->getMock();
-        $Controller->request = new Request();
+        $Controller->request = new ServerRequest();
         $Controller->response = new Response();
 
         $Renderer = $this->getMockBuilder('Crud\Error\ExceptionRenderer')
@@ -235,7 +235,7 @@ class ExceptionRendererTest extends TestCase
         $Controller = $this->getMockBuilder('Cake\Controller\Controller')
             ->setMethods(['render'])
             ->getMock();
-        $Controller->request = new Request();
+        $Controller->request = new ServerRequest();
         $Controller->response = $this->getMockBuilder(Response::class)
             ->setMethods(['send'])
             ->getMock();
@@ -302,7 +302,7 @@ class ExceptionRendererTest extends TestCase
         $Controller = $this->getMockBuilder('Cake\Controller\Controller')
             ->setMethods(['render'])
             ->getMock();
-        $Controller->request = new Request();
+        $Controller->request = new ServerRequest();
         $Controller->response = $this->getMockBuilder(Response::class)
             ->getMock();
 
@@ -369,7 +369,7 @@ class ExceptionRendererTest extends TestCase
         $Controller = $this->getMockBuilder('Cake\Controller\Controller')
             ->setMethods(['render'])
             ->getMock();
-        $Controller->request = new Request();
+        $Controller->request = new ServerRequest();
         $Controller->response = new Response();
 
         $Renderer = $this->getMockBuilder('Crud\Error\ExceptionRenderer')
@@ -411,7 +411,7 @@ class ExceptionRendererTest extends TestCase
         $Controller = $this->getMockBuilder('Cake\Controller\Controller')
             ->setMethods(['render'])
             ->getMock();
-        $Controller->request = new Request();
+        $Controller->request = new ServerRequest();
         $Controller->response = new Response();
 
         $Renderer = $this->getMockBuilder('Crud\Error\ExceptionRenderer')
@@ -462,7 +462,7 @@ class ExceptionRendererTest extends TestCase
         $Controller = $this->getMockBuilder('Cake\Controller\Controller')
             ->setMethods(['render'])
             ->getMock();
-        $Controller->request = new Request();
+        $Controller->request = new ServerRequest();
         $Controller->response = new Response();
 
         $Renderer = $this->getMockBuilder('Crud\Error\ExceptionRenderer')

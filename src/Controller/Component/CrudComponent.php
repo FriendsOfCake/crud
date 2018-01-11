@@ -5,7 +5,7 @@ use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
 use Cake\Core\App;
 use Cake\Event\Event;
-use Cake\Network\Response;
+use Cake\Http\Response;
 use Cake\Utility\Inflector;
 use Crud\Error\Exception\ActionNotConfiguredException;
 use Crud\Error\Exception\ListenerNotConfiguredException;
@@ -42,7 +42,7 @@ class CrudComponent extends Component
     /**
      * Reference to the current request.
      *
-     * @var \Cake\Network\Request
+     * @var \Cake\Http\ServerRequest
      */
     protected $_request;
 

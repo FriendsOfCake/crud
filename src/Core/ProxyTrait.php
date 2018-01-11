@@ -98,7 +98,7 @@ trait ProxyTrait
      *
      * Primarily here to ease unit testing
      *
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response
      * @codeCoverageIgnore
      */
     protected function _response()

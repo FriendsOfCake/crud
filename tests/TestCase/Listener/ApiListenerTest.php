@@ -2,6 +2,7 @@
 namespace Crud\Test\TestCase\Listener;
 
 use Cake\Core\Configure;
+use Cake\Http\ServerRequest;
 use Cake\Http\Response;
 use Crud\TestSuite\TestCase;
 
@@ -837,7 +838,7 @@ class ApiListenerTest extends TestCase
      */
     public function testFlashMessageSupressed()
     {
-        $Request = new \Cake\Network\Request();
+        $Request = new ServerRequest();
         $Request->addDetector('api', ['callback' => function () {
             return true;
         }]);
@@ -867,7 +868,7 @@ class ApiListenerTest extends TestCase
      */
     public function testFlashMessageEnabled()
     {
-        $Request = new \Cake\Network\Request();
+        $Request = new ServerRequest();
         $Request->addDetector('api', ['callback' => function () {
             return true;
         }]);
@@ -953,7 +954,7 @@ class ApiListenerTest extends TestCase
             ->getMock();
 
         $request = $this
-            ->getMockBuilder('\Cake\Network\Request')
+            ->getMockBuilder(ServerRequest::class)
             ->setMethods(['addDetector'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -1005,7 +1006,7 @@ class ApiListenerTest extends TestCase
             ->getMock();
 
         $request = $this
-            ->getMockBuilder('\Cake\Network\Request')
+            ->getMockBuilder(ServerRequest::class)
             ->setMethods(['accepts'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -1128,7 +1129,7 @@ class ApiListenerTest extends TestCase
             ->getMock();
 
         $request = $this
-            ->getMockBuilder('\Cake\Network\Request')
+            ->getMockBuilder(ServerRequest::class)
             ->setMethods(['is'])
             ->disableOriginalConstructor()
             ->getMock();

@@ -38,7 +38,7 @@ class ToggleAction extends BaseAction
     /**
      * Handle a bulk event
      *
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response
      * @throws \Crud\Error\Exception\ActionNotConfiguredException
      */
     protected function _handle()

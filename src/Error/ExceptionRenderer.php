@@ -19,7 +19,7 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer
      * Renders validation errors and sends a 422 error code
      *
      * @param \Crud\Error\Exception\ValidationException $error Exception instance
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response
      */
     public function validation($error)
     {
@@ -55,7 +55,7 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer
      * a MissingView exception
      *
      * @param string $template The template to render.
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response
      */
     protected function _outputMessage($template)
     {

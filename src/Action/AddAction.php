@@ -106,7 +106,7 @@ class AddAction extends BaseAction
     /**
      * HTTP POST handler
      *
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      */
     protected function _post()
     {
@@ -132,7 +132,7 @@ class AddAction extends BaseAction
     /**
      * HTTP PUT handler
      *
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      */
     protected function _put()
     {
@@ -143,7 +143,7 @@ class AddAction extends BaseAction
      * Post success callback
      *
      * @param \Crud\Event\Subject $subject Event subject
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response
      */
     protected function _success(Subject $subject)
     {
@@ -159,7 +159,7 @@ class AddAction extends BaseAction
      * Post error callback
      *
      * @param \Crud\Event\Subject $subject Event subject
-     * @return \Cake\Network\Response|void
+     * @return \Cake\Http\Response|void
      */
     protected function _error(Subject $subject)
     {
@@ -174,7 +174,7 @@ class AddAction extends BaseAction
      * Stopped callback
      *
      * @param \Crud\Event\Subject $subject Event subject
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response
      */
     protected function _stopped(Subject $subject)
     {

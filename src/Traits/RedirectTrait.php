@@ -86,7 +86,7 @@ trait RedirectTrait
      * @param \Crud\Event\Subject $subject Event subject
      * @param string|array|null $url URL
      * @param int|null $status Status code
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response
      */
     protected function _redirect(Subject $subject, $url = null, $status = null)
     {
