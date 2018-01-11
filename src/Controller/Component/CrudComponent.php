@@ -238,7 +238,7 @@ class CrudComponent extends Component
         try {
             $event = $this->trigger('beforeHandle', $this->getSubject(compact('args', 'action')));
 
-            $response = $this->action($event->subject->action)->handle($event->subject->args);
+            $response = $this->action($event->subject()->action)->handle($event->subject()->args);
             if ($response instanceof Response) {
                 return $response;
             }

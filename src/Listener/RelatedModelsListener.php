@@ -60,8 +60,8 @@ class RelatedModelsListener extends BaseListener
     public function beforeRender(Event $event)
     {
         $entity = null;
-        if (isset($event->subject->entity)) {
-            $entity = $event->subject->entity;
+        if (isset($event->subject()->entity)) {
+            $entity = $event->subject()->entity;
         }
         $this->publishRelatedModels(null, $entity);
     }
@@ -96,7 +96,7 @@ class RelatedModelsListener extends BaseListener
             $subject = $this->_subject(compact('name', 'viewVar', 'query', 'association', 'entity'));
             $event = $this->_trigger('relatedModel', $subject);
 
-            $controller->set($event->subject->viewVar, $event->subject->query->toArray());
+            $controller->set($event->subject()->viewVar, $event->subject()->query->toArray());
         }
     }
 

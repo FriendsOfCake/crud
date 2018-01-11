@@ -256,11 +256,11 @@ abstract class BaseAction extends BaseObject
      */
     public function publishSuccess(Event $event)
     {
-        if (!isset($event->subject->success)) {
+        if (!isset($event->subject()->success)) {
             return false;
         }
 
-        $this->_controller()->set('success', $event->subject->success);
+        $this->_controller()->set('success', $event->subject()->success);
     }
 
     /**
