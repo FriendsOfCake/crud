@@ -41,11 +41,11 @@ trait CrudTestTrait
         }
 
         $controller->Crud->on('beforeRender', function ($event) {
-            $this->_subject = $event->subject;
+            $this->_subject = $event->subject();
         });
 
         $controller->Crud->on('beforeRedirect', function ($event) {
-            $this->_subject = $event->subject;
+            $this->_subject = $event->subject();
         });
     }
 
@@ -87,7 +87,7 @@ trait CrudTestTrait
         }
 
         if ($actual instanceof Event) {
-            $actual = $actual->subject->getEvents();
+            $actual = $actual->subject()->getEvents();
         }
 
         if ($actual instanceof Subject) {

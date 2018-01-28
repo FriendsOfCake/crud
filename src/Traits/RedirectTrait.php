@@ -30,15 +30,15 @@ trait RedirectTrait
     public function redirectConfig($name = null, $config = null)
     {
         if ($name === null && $config === null) {
-            return $this->config('redirect');
+            return $this->getConfig('redirect');
         }
 
         $path = sprintf('redirect.%s', $name);
         if ($config === null) {
-            return $this->config($path);
+            return $this->getConfig($path);
         }
 
-        return $this->config($path, $config);
+        return $this->setConfig($path, $config);
     }
 
     /**
@@ -64,17 +64,17 @@ trait RedirectTrait
     {
         $request = $this->_request();
 
-        if (!empty($request->data['_redirect_url'])) {
-            return $request->data['_redirect_url'];
+        if (!empty($request->getData('_redirect_url'))) {
+            return $request->getData('_redirect_url');
         }
-        if (!empty($request->query['_redirect_url'])) {
-            return $request->query['_redirect_url'];
+        if (!empty($request->getQuery('_redirect_url'))) {
+            return $request->getQuery('_redirect_url');
         }
-        if (!empty($request->data['redirect_url'])) {
-            return $request->data['redirect_url'];
+        if (!empty($request->getData('redirect_url'))) {
+            return $request->getData('redirect_url');
         }
-        if (!empty($request->query['redirect_url'])) {
-            return $request->query['redirect_url'];
+        if (!empty($request->getQuery('redirect_url'))) {
+            return $request->getQuery('redirect_url');
         }
 
         return $default;
@@ -86,7 +86,7 @@ trait RedirectTrait
      * @param \Crud\Event\Subject $subject Event subject
      * @param string|array|null $url URL
      * @param int|null $status Status code
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response
      */
     protected function _redirect(Subject $subject, $url = null, $status = null)
     {

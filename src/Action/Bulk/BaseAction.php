@@ -43,7 +43,7 @@ abstract class BaseAction extends CrudBaseAction
     /**
      * Handle a bulk event
      *
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response
      */
     protected function _handle()
     {
@@ -71,11 +71,11 @@ abstract class BaseAction extends CrudBaseAction
      */
     protected function _processIds()
     {
-        $ids = $this->_controller()->request->data('id');
+        $ids = $this->_controller()->request->getData('id');
 
         $all = false;
         if (is_array($ids)) {
-            $all = Hash::get((array)$ids, '_all', false);
+            $all = Hash::get($ids, '_all', false);
             unset($ids['_all']);
         }
 
@@ -127,7 +127,7 @@ abstract class BaseAction extends CrudBaseAction
      */
     protected function _getFindConfig(array $ids)
     {
-        $config = (array)$this->config('findConfig');
+        $config = (array)$this->getConfig('findConfig');
         if (!empty($config)) {
             return $config;
         }
@@ -173,7 +173,7 @@ abstract class BaseAction extends CrudBaseAction
      * Stopped callback
      *
      * @param \Crud\Event\Subject $subject Event subject
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response
      */
     protected function _stopped(Subject $subject)
     {

@@ -37,7 +37,7 @@ class RelatedModelsListener extends BaseListener
      */
     public function beforePaginate(Event $event)
     {
-        $contained = $event->subject()->query->contain();
+        $contained = $event->getSubject()->query->contain();
         if (!empty($contained)) {
             return;
         }
@@ -47,7 +47,7 @@ class RelatedModelsListener extends BaseListener
             return;
         }
 
-        $event->subject()->query->contain(array_keys($models));
+        $event->getSubject()->query->contain(array_keys($models));
     }
 
     /**
@@ -60,8 +60,8 @@ class RelatedModelsListener extends BaseListener
     public function beforeRender(Event $event)
     {
         $entity = null;
-        if (isset($event->subject->entity)) {
-            $entity = $event->subject->entity;
+        if (isset($event->subject()->entity)) {
+            $entity = $event->subject()->entity;
         }
         $this->publishRelatedModels(null, $entity);
     }
@@ -96,7 +96,7 @@ class RelatedModelsListener extends BaseListener
             $subject = $this->_subject(compact('name', 'viewVar', 'query', 'association', 'entity'));
             $event = $this->_trigger('relatedModel', $subject);
 
-            $controller->set($event->subject->viewVar, $event->subject->query->toArray());
+            $controller->set($event->subject()->viewVar, $event->subject()->query->toArray());
         }
     }
 
@@ -112,7 +112,7 @@ class RelatedModelsListener extends BaseListener
     protected function _findOptions(Association $association)
     {
         return [
-            'keyField' => $association->bindingKey()
+            'keyField' => $association->getBindingKey()
         ];
     }
 
@@ -124,7 +124,7 @@ class RelatedModelsListener extends BaseListener
      */
     public function finder(Association $association)
     {
-        if ($association->target()->behaviors()->has('Tree')) {
+        if ($association->getTarget()->behaviors()->has('Tree')) {
             return 'treeList';
         }
 
@@ -167,10 +167,10 @@ class RelatedModelsListener extends BaseListener
     public function relatedModels($related = null, $action = null)
     {
         if ($related === null) {
-            return $this->_action($action)->config('relatedModels');
+            return $this->_action($action)->getConfig('relatedModels');
         }
 
-        return $this->_action($action)->config('relatedModels', $related, false);
+        return $this->_action($action)->setConfig('relatedModels', $related, false);
     }
 
     /**

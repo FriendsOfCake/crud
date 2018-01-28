@@ -55,18 +55,18 @@ abstract class BaseAction extends BaseObject
             $args = (array)$args;
         }
 
-        $method = '_' . strtolower($this->_request()->method());
+        $method = '_' . strtolower($this->_request()->getMethod());
 
         if (method_exists($this, $method)) {
             $this->_responding = true;
-            $this->_controller()->eventManager()->on($this);
+            $this->_controller()->getEventManager()->on($this);
 
             return call_user_func_array([$this, $method], $args);
         }
 
         if (method_exists($this, '_handle')) {
             $this->_responding = true;
-            $this->_controller()->eventManager()->on($this);
+            $this->_controller()->getEventManager()->on($this);
 
             return call_user_func_array([$this, '_handle'], $args);
         }
@@ -85,7 +85,7 @@ abstract class BaseAction extends BaseObject
      */
     public function responding()
     {
-        return (bool)$this->_responding;
+        return $this->_responding;
     }
 
     /**
@@ -95,7 +95,7 @@ abstract class BaseAction extends BaseObject
      */
     public function enable()
     {
-        $this->config('enabled', true);
+        $this->setConfig('enabled', true);
     }
 
     /**
@@ -105,7 +105,7 @@ abstract class BaseAction extends BaseObject
      */
     public function enabled()
     {
-        return $this->config('enabled');
+        return $this->getConfig('enabled');
     }
 
     /**
@@ -115,7 +115,7 @@ abstract class BaseAction extends BaseObject
      */
     public function disable()
     {
-        $this->config('enabled', false);
+        $this->setConfig('enabled', false);
     }
 
     /**
@@ -134,9 +134,9 @@ abstract class BaseAction extends BaseObject
 
         $crud = $this->_crud();
 
-        $config = $this->config('messages.' . $type);
+        $config = $this->getConfig('messages.' . $type);
         if (empty($config)) {
-            $config = $crud->config('messages.' . $type);
+            $config = $crud->getConfig('messages.' . $type);
             if (empty($config)) {
                 throw new \Exception(sprintf('Invalid message type "%s"', $type));
             }
@@ -150,7 +150,7 @@ abstract class BaseAction extends BaseObject
             'element' => 'default',
             'params' => ['class' => 'message'],
             'key' => 'flash',
-            'type' => $this->config('action') . '.' . $type,
+            'type' => $this->getConfig('action') . '.' . $type,
             'name' => $this->resourceName()
         ], $config);
 
@@ -160,9 +160,9 @@ abstract class BaseAction extends BaseObject
 
         $config['params']['original'] = ucfirst(str_replace('{name}', $config['name'], $config['text']));
 
-        $domain = $this->config('messages.domain');
+        $domain = $this->getConfig('messages.domain');
         if (!$domain) {
-            $domain = $crud->config('messages.domain') ?: 'crud';
+            $domain = $crud->getConfig('messages.domain') ?: 'crud';
         }
 
         $config['text'] = __d($domain, $config['params']['original']);
@@ -184,6 +184,7 @@ abstract class BaseAction extends BaseObject
      * @param string $type Message type
      * @param \Crud\Event\Subject $subject Event subject
      * @return void
+     * @throws \Exception
      */
     public function setFlash($type, Subject $subject)
     {
@@ -224,15 +225,15 @@ abstract class BaseAction extends BaseObject
     public function redirectConfig($name = null, $config = null)
     {
         if ($name === null && $config === null) {
-            return $this->config('redirect');
+            return $this->getConfig('redirect');
         }
 
         $path = sprintf('redirect.%s', $name);
         if ($config === null) {
-            return $this->config($path);
+            return $this->getConfig($path);
         }
 
-        return $this->config($path, $config);
+        return $this->setConfig($path, $config);
     }
 
     /**
@@ -244,7 +245,7 @@ abstract class BaseAction extends BaseObject
      */
     public function scope()
     {
-        return $this->config('scope');
+        return $this->getConfig('scope');
     }
 
     /**
@@ -255,11 +256,11 @@ abstract class BaseAction extends BaseObject
      */
     public function publishSuccess(Event $event)
     {
-        if (!isset($event->subject->success)) {
+        if (!isset($event->subject()->success)) {
             return false;
         }
 
-        $this->_controller()->set('success', $event->subject->success);
+        $this->_controller()->set('success', $event->subject()->success);
     }
 
     /**
@@ -274,14 +275,14 @@ abstract class BaseAction extends BaseObject
     public function resourceName($value = null)
     {
         if ($value !== null) {
-            return $this->config('name', $value);
+            return $this->setConfig('name', $value);
         }
 
         if (empty($this->_config['name'])) {
-            $this->config('name', $this->_deriveResourceName());
+            $this->setConfig('name', $this->_deriveResourceName());
         }
 
-        return $this->config('name');
+        return $this->getConfig('name');
     }
 
     /**
@@ -291,7 +292,7 @@ abstract class BaseAction extends BaseObject
      */
     protected function _deriveResourceName()
     {
-        $inflectionType = $this->config('inflection');
+        $inflectionType = $this->getConfig('inflection');
 
         if ($inflectionType === null) {
             $inflectionType = $this->scope() === 'entity' ? 'singular' : 'plural';
@@ -331,7 +332,7 @@ abstract class BaseAction extends BaseObject
      */
     public function subjectEntityKey()
     {
-        $key = $this->config('entityKey');
+        $key = $this->getConfig('entityKey');
         if ($key !== null) {
             return $key;
         }
