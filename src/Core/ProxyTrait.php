@@ -30,6 +30,7 @@ trait ProxyTrait
      * @param string $eventName Event name
      * @param \Crud\Event\Subject|null $data Event data
      * @return \Cake\Event\Event
+     * @throws \Exception
      * @codeCoverageIgnore
      */
     protected function _trigger($eventName, Subject $data = null)
@@ -44,6 +45,8 @@ trait ProxyTrait
      *
      * @param string $name Listener name
      * @return \Crud\Listener\BaseListener
+     * @throws \Crud\Error\Exception\ListenerNotConfiguredException
+     * @throws \Crud\Error\Exception\MissingListenerException
      * @codeCoverageIgnore
      */
     protected function _listener($name)
@@ -82,7 +85,7 @@ trait ProxyTrait
      *
      * Primarily here to ease unit testing
      *
-     * @return \Cake\Network\Request
+     * @return \Cake\Http\ServerRequest
      * @codeCoverageIgnore
      */
     protected function _request()
@@ -95,7 +98,7 @@ trait ProxyTrait
      *
      * Primarily here to ease unit testing
      *
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response
      * @codeCoverageIgnore
      */
     protected function _response()
@@ -111,7 +114,7 @@ trait ProxyTrait
     protected function _table()
     {
         return $this->_controller()
-            ->loadModel(null, $this->config('modelFactory') ?: $this->_controller()->modelType());
+            ->loadModel(null, $this->getConfig('modelFactory') ?: $this->_controller()->modelType());
     }
 
     /**

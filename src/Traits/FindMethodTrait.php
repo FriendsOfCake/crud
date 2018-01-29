@@ -19,10 +19,10 @@ trait FindMethodTrait
     public function findMethod($method = null)
     {
         if ($method === null) {
-            return $this->config('findMethod');
+            return $this->getConfig('findMethod');
         }
 
-        return $this->config('findMethod', $method);
+        return $this->setConfig('findMethod', $method);
     }
 
     /**
@@ -49,6 +49,7 @@ trait FindMethodTrait
      * @param string $id Record id
      * @param \Crud\Event\Subject $subject Event subject
      * @return \Cake\ORM\Entity
+     * @throws \Exception
      */
     protected function _findRecord($id, Subject $subject)
     {

@@ -116,11 +116,11 @@ class ApiQueryLogListenerTest extends TestCase
         $Action = $this
             ->getMockBuilder('\Crud\Action\BaseAction')
             ->disableOriginalConstructor()
-            ->setMethods(['config'])
+            ->setMethods(['setConfig'])
             ->getMock();
         $Action
             ->expects($this->once())
-            ->method('config')
+            ->method('setConfig')
             ->with('serialize.queryLog', 'queryLog');
 
         $Controller = $this

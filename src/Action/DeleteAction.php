@@ -53,7 +53,7 @@ class DeleteAction extends BaseAction
      * HTTP POST handler
      *
      * @param string|null $id Record id
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response
      */
     protected function _post($id = null)
     {
@@ -67,7 +67,7 @@ class DeleteAction extends BaseAction
             return $this->_stopped($subject);
         }
 
-        $method = $this->config('deleteMethod');
+        $method = $this->getConfig('deleteMethod');
         if ($this->_table()->$method($entity)) {
             $this->_success($subject);
         } else {
@@ -81,7 +81,7 @@ class DeleteAction extends BaseAction
      * HTTP DELETE handler
      *
      * @param string|null $id Record id
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response
      */
     protected function _delete($id = null)
     {
@@ -120,7 +120,7 @@ class DeleteAction extends BaseAction
      * Stopped callback
      *
      * @param \Crud\Event\Subject $subject Event subject
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response
      */
     protected function _stopped(Subject $subject)
     {

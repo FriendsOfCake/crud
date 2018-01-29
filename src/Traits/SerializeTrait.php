@@ -16,9 +16,9 @@ trait SerializeTrait
     public function serialize($keys = null)
     {
         if ($keys === null) {
-            return (array)$this->config('serialize');
+            return (array)$this->getConfig('serialize');
         }
 
-        return $this->config('serialize', (array)$keys);
+        return $this->setConfig('serialize', (array)$keys);
     }
 }

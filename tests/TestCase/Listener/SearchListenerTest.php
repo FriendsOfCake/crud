@@ -5,8 +5,8 @@ use Cake\Controller\Controller;
 use Cake\Core\Plugin;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\Network\Request;
-use Cake\Network\Response;
+use Cake\Http\Response;
+use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Crud\Event\Subject;
 use Crud\Listener\SearchListener;
@@ -56,7 +56,7 @@ class SearchListenerTest extends TestCase
     {
         Plugin::load('Search', ['path' => ROOT . DS]);
 
-        $request = new Request();
+        $request = new ServerRequest();
         $response = new Response();
         $eventManager = new EventManager();
         $controller = new Controller($request, $response, 'Search', $eventManager);
@@ -110,7 +110,7 @@ class SearchListenerTest extends TestCase
             'collection' => 'search'
         ];
 
-        $request = new Request();
+        $request = new ServerRequest();
         $request->query = $params['search'];
 
         $response = new Response();

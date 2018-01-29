@@ -38,12 +38,12 @@ class ToggleAction extends BaseAction
     /**
      * Handle a bulk event
      *
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response
      * @throws \Crud\Error\Exception\ActionNotConfiguredException
      */
     protected function _handle()
     {
-        $field = $this->config('field');
+        $field = $this->getConfig('field');
         if (empty($field)) {
             throw new ActionNotConfiguredException('No field value specified');
         }
@@ -59,7 +59,7 @@ class ToggleAction extends BaseAction
      */
     protected function _bulk(Query $query = null)
     {
-        $field = $this->config('field');
+        $field = $this->getConfig('field');
         $expression = [new QueryExpression(sprintf('%1$s= NOT %1$s', $field))];
         $query->update()->set($expression);
         $statement = $query->execute();

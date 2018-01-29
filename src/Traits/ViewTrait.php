@@ -19,9 +19,9 @@ trait ViewTrait
     public function view($view = null)
     {
         if (empty($view)) {
-            return $this->config('view') ?: $this->_request()->action;
+            return $this->getConfig('view') ?: $this->_request()->action;
         }
 
-        return $this->config('view', $view);
+        return $this->setConfig('view', $view);
     }
 }
