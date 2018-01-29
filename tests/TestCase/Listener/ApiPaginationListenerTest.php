@@ -1,6 +1,7 @@
 <?php
 namespace Crud\Test\TestCase\Listener;
 
+use Cake\Http\ServerRequest;
 use Crud\TestSuite\TestCase;
 
 /**
@@ -43,7 +44,7 @@ class ApiPaginationListenerTest extends TestCase
     public function testBeforeRenderNoPaginationData()
     {
         $Request = $this
-            ->getMockBuilder('\Cake\Network\Request')
+            ->getMockBuilder(ServerRequest::class)
             ->setMethods(null)
             ->getMock();
 
@@ -82,7 +83,7 @@ class ApiPaginationListenerTest extends TestCase
     public function testBeforeRenderPaginationDataIsNull()
     {
         $Request = $this
-            ->getMockBuilder('\Cake\Network\Request')
+            ->getMockBuilder(ServerRequest::class)
             ->setMethods(null)
             ->getMock();
 
@@ -113,7 +114,7 @@ class ApiPaginationListenerTest extends TestCase
     public function testBeforeRenderWithPaginationData()
     {
         $Request = $this
-            ->getMockBuilder('\Cake\Network\Request')
+            ->getMockBuilder(ServerRequest::class)
             ->setMethods(null)
             ->getMock();
         $Request->paging = [
@@ -149,11 +150,11 @@ class ApiPaginationListenerTest extends TestCase
         $Action = $this
             ->getMockBuilder('\Crud\Action\BaseAction')
             ->disableOriginalConstructor()
-            ->setMethods(['config'])
+            ->setMethods(['getConfig'])
             ->getMock();
         $Action
             ->expects($this->once())
-            ->method('config')
+            ->method('getConfig')
             ->with('serialize.pagination', 'pagination');
 
         $Instance = $this
@@ -187,7 +188,7 @@ class ApiPaginationListenerTest extends TestCase
     public function testBeforeRenderWithPaginationDataForPluginModel()
     {
         $Request = $this
-            ->getMockBuilder('\Cake\Network\Request')
+            ->getMockBuilder(ServerRequest::class)
             ->setMethods(null)
             ->getMock();
         $Request->paging = [
@@ -223,11 +224,11 @@ class ApiPaginationListenerTest extends TestCase
         $Action = $this
             ->getMockBuilder('\Crud\Action\BaseAction')
             ->disableOriginalConstructor()
-            ->setMethods(['config'])
+            ->setMethods(['getConfig'])
             ->getMock();
         $Action
             ->expects($this->once())
-            ->method('config')
+            ->method('getConfig')
             ->with('serialize.pagination', 'pagination');
 
         $Instance = $this

@@ -2,11 +2,8 @@
 namespace Crud\Error;
 
 use Cake\Core\Configure;
-use Cake\Core\Exception\MissingPluginException;
 use Cake\Datasource\ConnectionManager;
 use Cake\Error\Debugger;
-use Cake\Event\Event;
-use Cake\View\Exception\MissingViewException;
 use Exception;
 
 /**
@@ -22,17 +19,17 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer
      * Renders validation errors and sends a 422 error code
      *
      * @param \Crud\Error\Exception\ValidationException $error Exception instance
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response
      */
     public function validation($error)
     {
         $url = $this->controller->request->here();
         $status = $code = $error->getCode();
         try {
-            $this->controller->response->statusCode($status);
+            $this->controller->response = $this->controller->response->withStatus($status);
         } catch (Exception $e) {
             $status = 422;
-            $this->controller->response->statusCode($status);
+            $this->controller->response = $this->controller->response->withStatus($status);
         }
 
         $sets = [
@@ -58,7 +55,7 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer
      * a MissingView exception
      *
      * @param string $template The template to render.
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response
      */
     protected function _outputMessage($template)
     {

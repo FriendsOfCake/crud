@@ -103,4 +103,25 @@ class LookupActionTest extends IntegrationTestCase
         $this->assertNotNull($this->viewVariable('viewVar'));
         $this->assertEquals($expected, $this->viewVariable('blogs')->toArray());
     }
+
+    /**
+     * Test using custom finder with options.
+     *
+     * @return void
+     */
+    public function testGetWithCustomFinder()
+    {
+        $this->_eventManager->on(
+            'Dispatcher.invokeController',
+            ['priority' => 1000],
+            function () {
+                $this->_subscribeToEvents($this->_controller);
+                $this->_controller->Crud->action('lookup')
+                    ->findMethod(['withCustomOptions' => ['foo' => 'bar']]);
+            }
+        );
+
+        $this->get('/blogs/lookup.json');
+        $this->assertSame(['foo' => 'bar'], $this->_controller->Blogs->customOptions);
+    }
 }

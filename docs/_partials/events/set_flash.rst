@@ -49,6 +49,6 @@ If you'd like to configure it on the fly you can use the eventManager to change 
 
   $this->eventManager()->on('Crud.setFlash', function (Event $event) {
       if ($event->getSubject()->success) {
-          $event->getSubject()->params['class'] = 'alert alert-success alert-dismissible';
+          $event->getSubject()->params['class'] = ['alert', 'alert-success', 'alert-dismissible'];
       }
   });

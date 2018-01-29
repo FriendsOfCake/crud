@@ -1,6 +1,7 @@
 <?php
 namespace Crud\Test\TestCase\Listener;
 
+use Cake\Http\ServerRequest;
 use Cake\Utility\Hash;
 use Crud\TestSuite\TestCase;
 
@@ -150,7 +151,7 @@ class RedirectListenerTest extends TestCase
         $listener->setup();
 
         $subject = new \Crud\Event\Subject();
-        $request = new \Cake\Network\Request();
+        $request = new ServerRequest();
         $request->params['action'] = 'index';
 
         $listener->expects($this->any())->method('_request')->will($this->returnValue($request));
@@ -179,7 +180,7 @@ class RedirectListenerTest extends TestCase
         $listener->setup();
 
         $subject = new \Crud\Event\Subject();
-        $request = new \Cake\Network\Request();
+        $request = new ServerRequest();
         $request->data = ['hello' => 'world'];
 
         $listener->expects($this->any())->method('_request')->will($this->returnValue($request));
@@ -208,7 +209,7 @@ class RedirectListenerTest extends TestCase
         $listener->setup();
 
         $subject = new \Crud\Event\Subject();
-        $request = new \Cake\Network\Request();
+        $request = new ServerRequest();
         $request->query = ['hello' => 'world'];
 
         $listener->expects($this->any())->method('_request')->will($this->returnValue($request));
@@ -404,7 +405,7 @@ class RedirectListenerTest extends TestCase
      */
     public function dataProviderGetUrl()
     {
-        $Request = new \Cake\Network\Request;
+        $Request = new ServerRequest;
         $Request->params['action'] = 'index';
         $Request->query['parent_id'] = 10;
         $Request->data['epic'] = 'jippi';
@@ -463,7 +464,7 @@ class RedirectListenerTest extends TestCase
             ->getMock();
 
         if (empty($subject->request)) {
-            $request = new \Cake\Network\Request();
+            $request = new ServerRequest();
         } else {
             $request = $subject->request;
         }

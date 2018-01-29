@@ -2,7 +2,7 @@ FROM debian:jessie
 
 ENV DEBIAN_FRONTEND noninteractive
 
-LABEL Description="This image is used to create an environment to contribute to the cakephp/docs"
+LABEL Description="This image is used to create an environment to contribute to the crud/docs"
 
 RUN apt-get update && apt-get install -y \
     python-pip \

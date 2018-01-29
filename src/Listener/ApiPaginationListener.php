@@ -68,6 +68,6 @@ class ApiPaginationListener extends BaseListener
         ];
 
         $controller->set('pagination', $paginationResponse);
-        $this->_action()->config('serialize.pagination', 'pagination');
+        $this->_action()->getConfig('serialize.pagination', 'pagination');
     }
 }

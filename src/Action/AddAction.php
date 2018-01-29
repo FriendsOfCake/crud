@@ -99,7 +99,7 @@ class AddAction extends BaseAction
     {
         $subject = $this->_subject([
             'success' => true,
-            'entity' => $this->_entity($this->_request()->query ?: null, ['validate' => false] + $this->saveOptions())
+            'entity' => $this->_entity($this->_request()->getQuery() ?: null, ['validate' => false] + $this->saveOptions())
         ]);
 
         $this->_trigger('beforeRender', $subject);
@@ -108,12 +108,12 @@ class AddAction extends BaseAction
     /**
      * HTTP POST handler
      *
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      */
     protected function _post()
     {
         $subject = $this->_subject([
-            'entity' => $this->_entity($this->_request()->data, $this->saveOptions()),
+            'entity' => $this->_entity($this->_request()->getData(), $this->saveOptions()),
             'saveMethod' => $this->saveMethod(),
             'saveOptions' => $this->saveOptions()
         ]);
@@ -128,13 +128,13 @@ class AddAction extends BaseAction
             return $this->_success($subject);
         }
 
-        return $this->_error($subject);
+        $this->_error($subject);
     }
 
     /**
      * HTTP PUT handler
      *
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      */
     protected function _put()
     {
@@ -145,7 +145,7 @@ class AddAction extends BaseAction
      * Post success callback
      *
      * @param \Crud\Event\Subject $subject Event subject
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response
      */
     protected function _success(Subject $subject)
     {
@@ -161,7 +161,7 @@ class AddAction extends BaseAction
      * Post error callback
      *
      * @param \Crud\Event\Subject $subject Event subject
-     * @return \Cake\Network\Response|void
+     * @return void
      */
     protected function _error(Subject $subject)
     {

@@ -16,10 +16,10 @@ trait SaveMethodTrait
     public function saveMethod($method = null)
     {
         if ($method === null) {
-            return $this->config('saveMethod');
+            return $this->getConfig('saveMethod');
         }
 
-        return $this->config('saveMethod', $method);
+        return $this->setConfig('saveMethod', $method);
     }
 
     /**
@@ -36,9 +36,9 @@ trait SaveMethodTrait
     public function saveOptions($config = null)
     {
         if ($config === null) {
-            return $this->config('saveOptions');
+            return $this->getConfig('saveOptions');
         }
 
-        return $this->config('saveOptions', $config);
+        return $this->setConfig('saveOptions', $config);
     }
 }

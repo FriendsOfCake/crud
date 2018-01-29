@@ -14,6 +14,7 @@ trait ViewVarTrait
      *
      * @param Event $event Event
      * @return false|null
+     * @throws \Exception
      */
     public function publishViewVar(Event $event)
     {
@@ -34,14 +35,15 @@ trait ViewVarTrait
      *
      * @param mixed $name Var name
      * @return mixed
+     * @throws \Exception
      */
     public function viewVar($name = null)
     {
         if (empty($name)) {
-            return $this->config('viewVar') ?: $this->_deriveViewVar();
+            return $this->getConfig('viewVar') ?: $this->_deriveViewVar();
         }
 
-        return $this->config('viewVar', $name);
+        return $this->setConfig('viewVar', $name);
     }
 
     /**
@@ -78,6 +80,6 @@ trait ViewVarTrait
     {
         $key = $this->_action()->subjectEntityKey();
 
-        return $event->subject->{$key};
+        return $event->subject()->{$key};
     }
 }

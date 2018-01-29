@@ -75,6 +75,26 @@ class EditActionTest extends IntegrationTestCase
     }
 
     /**
+     * Test for custom finder with options.
+     *
+     * @return void
+     */
+    public function testCustomFinder()
+    {
+        $this->_eventManager->on(
+            'Dispatcher.invokeController',
+            ['priority' => 1000],
+            function ($event) {
+                $this->_controller->Crud->action('edit')
+                    ->findMethod(['withCustomOptions' => ['foo' => 'bar']]);
+            }
+        );
+
+        $this->get('/blogs/edit/1');
+        $this->assertSame(['foo' => 'bar'], $this->_controller->Blogs->customOptions);
+    }
+
+    /**
      * Test POST will update an existing record
      *
      * @return void

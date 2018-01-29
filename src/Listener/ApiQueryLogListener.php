@@ -71,7 +71,7 @@ class ApiQueryLogListener extends BaseListener
             return;
         }
 
-        $this->_action()->config('serialize.queryLog', 'queryLog');
+        $this->_action()->setConfig('serialize.queryLog', 'queryLog');
         $this->_controller()->set('queryLog', $this->_getQueryLogs());
     }
 

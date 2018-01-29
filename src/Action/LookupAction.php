@@ -1,6 +1,7 @@
 <?php
 namespace Crud\Action;
 
+use Crud\Traits\FindMethodTrait;
 use Crud\Traits\SerializeTrait;
 use Crud\Traits\ViewTrait;
 use Crud\Traits\ViewVarTrait;
@@ -14,6 +15,7 @@ use Crud\Traits\ViewVarTrait;
 class LookupAction extends BaseAction
 {
 
+    use FindMethodTrait;
     use SerializeTrait;
     use ViewTrait;
     use ViewVarTrait;
@@ -36,7 +38,9 @@ class LookupAction extends BaseAction
      */
     protected function _handle()
     {
-        $query = $this->_table()->find($this->config('findMethod'), $this->_getFindConfig());
+        list($finder, $options) = $this->_extractFinder();
+        $options = array_merge($options, $this->_getFindConfig());
+        $query = $this->_table()->find($finder, $options);
         $subject = $this->_subject(['success' => true, 'query' => $query]);
 
         $this->_trigger('beforeLookup', $subject);
@@ -56,14 +60,14 @@ class LookupAction extends BaseAction
         $request = $this->_request();
 
         $columns = $this->_table()->schema()->columns();
-        $config = (array)$this->config('findConfig');
+        $config = (array)$this->getConfig('findConfig');
 
-        $idField = $request->query('id');
+        $idField = $request->getQuery('id');
         if (in_array($idField, $columns)) {
             $config['keyField'] = $idField;
         }
 
-        $valueField = $request->query('value');
+        $valueField = $request->getQuery('value');
         if (in_array($valueField, $columns)) {
             $config['valueField'] = $valueField;
         }

@@ -37,18 +37,18 @@ trait ControllerTrait
         if (!isset($request)) {
             throw new \LogicException('No Request object configured. Cannot invoke action');
         }
-        if (!$this->isAction($request->params['action'])) {
+        if (!$this->isAction($request->getParam('action'))) {
             throw new MissingActionException([
                 'controller' => $this->name . 'Controller',
-                'action' => $request->params['action'],
-                'prefix' => isset($request->params['prefix']) ? $request->params['prefix'] : '',
-                'plugin' => $request->params['plugin'],
+                'action' => $request->getParam('action'),
+                'prefix' => $request->getParam('prefix') ?: '',
+                'plugin' => $request->getParam('plugin'),
             ]);
         }
 
-        $callable = [$this, $request->params['action']];
+        $callable = [$this, $request->getParam('action')];
         if (is_callable($callable)) {
-            return call_user_func_array($callable, $request->params['pass']);
+            return call_user_func_array($callable, $request->getParam('pass'));
         }
 
         $component = $this->_isActionMapped();
@@ -58,9 +58,9 @@ trait ControllerTrait
 
         throw new MissingActionException([
             'controller' => $this->name . 'Controller',
-            'action' => $request->params['action'],
-            'prefix' => isset($request->params['prefix']) ? $request->params['prefix'] : '',
-            'plugin' => $request->params['plugin'],
+            'action' => $request->getParam('action'),
+            'prefix' => $request->getParam('prefix') ?: '',
+            'plugin' => $request->getParam('plugin'),
         ]);
     }
 

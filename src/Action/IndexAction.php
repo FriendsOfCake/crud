@@ -49,7 +49,8 @@ class IndexAction extends BaseAction
      */
     protected function _handle()
     {
-        $query = $this->_table()->find($this->findMethod());
+        list($finder, $options) = $this->_extractFinder();
+        $query = $this->_table()->find($finder, $options);
         $subject = $this->_subject(['success' => true, 'query' => $query]);
 
         $this->_trigger('beforePaginate', $subject);
