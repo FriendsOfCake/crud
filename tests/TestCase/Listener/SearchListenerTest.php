@@ -177,7 +177,7 @@ class SearchListenerTest extends TestCase
             'collection' => 'search'
         ];
 
-        $request = new ServerRequest(['query' => $params['search']);
+        $request = new ServerRequest(['query' => $params['search']]);
 
         $response = new Response();
         $eventManager = new EventManager();
