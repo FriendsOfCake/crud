@@ -177,14 +177,13 @@ class SearchListenerTest extends TestCase
             'collection' => 'search'
         ];
 
-        $request = new Request();
-        $request->query = $params['search'];
+        $request = new ServerRequest(['query' => $params['search']);
 
         $response = new Response();
         $eventManager = new EventManager();
         $controller = new Controller($request, $response, 'Search', $eventManager);
         $controller->modelFactory('Endpoint', ['Muffin\Webservice\Model\EndpointRegistry', 'get']);
-        $controller->modelType('Endpoint');
+        $controller->setModelType('Endpoint');
 
         $queryMock = $this->getMockBuilder('\Muffin\Webservice\Query')
             ->disableOriginalConstructor()
