@@ -28,7 +28,15 @@ class LookupAction extends BaseAction
     protected $_defaultConfig = [
         'enabled' => true,
         'scope' => 'table',
-        'findMethod' => 'list'
+        'findMethod' => 'list',
+        'api' => [
+            'success' => [
+                'code' => 200
+            ],
+            'error' => [
+                'code' => 400
+            ]
+        ]
     ];
 
     /**
