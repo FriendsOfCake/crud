@@ -124,10 +124,13 @@ class ApiListener extends BaseListener
             return null;
         }
 
-        $response = $this->render($event->subject())
-            ->withStatus($apiConfig['code']);
+        $response = $this->render($event->subject());
 
-        return $response;
+        if (empty($apiConfig['code'])) {
+            return $response;
+        }
+
+        return $response->withStatus($apiConfig['code']);
     }
 
     /**
