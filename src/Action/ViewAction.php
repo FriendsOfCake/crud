@@ -36,7 +36,15 @@ class ViewAction extends BaseAction
         'findMethod' => 'all',
         'view' => null,
         'viewVar' => null,
-        'serialize' => []
+        'serialize' => [],
+        'api' => [
+            'success' => [
+                'code' => 200
+            ],
+            'error' => [
+                'code' => 400
+            ]
+        ]
     ];
 
     /**
