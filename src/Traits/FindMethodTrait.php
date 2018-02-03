@@ -87,10 +87,15 @@ trait FindMethodTrait
      */
     protected function _notFound($id, Subject $subject)
     {
-        $subject->set(['success' => false]);
-        $this->_trigger('recordNotFound', $subject);
-
         $message = $this->message('recordNotFound', compact('id'));
+        $subject->set(['message' => $message, 'success' => false]);
+        $event = $this->_trigger('recordNotFound', $subject);
+
+        if ($event->isStopped()) {
+            return $this->_controller()->response;
+        }
+
+        $message = $subject->message;
         $exceptionClass = $message['class'];
         throw new $exceptionClass($message['text'], $message['code']);
     }
