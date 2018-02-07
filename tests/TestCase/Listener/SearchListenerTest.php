@@ -11,6 +11,7 @@ use Cake\ORM\TableRegistry;
 use Crud\Event\Subject;
 use Crud\Listener\SearchListener;
 use Crud\TestSuite\TestCase;
+use Muffin\Webservice\Model\EndpointRegistry;
 
 /**
  * Licensed under The MIT License
@@ -138,6 +139,53 @@ class SearchListenerTest extends TestCase
         TableRegistry::set('Search', $tableMock);
 
         $queryMock = $this->getMockBuilder('\Cake\ORM\Query')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $queryMock->expects($this->once())
+            ->method('find')
+            ->with('search', $params)
+            ->will($this->returnValue($queryMock));
+
+        $subject = new Subject();
+        $subject->query = $queryMock;
+
+        $event = new Event('Crud.beforeLookup', $subject);
+
+        $listener = new SearchListener($controller, [
+            'enabled' => [
+                'Crud.beforeLookup'
+            ],
+            'collection' => 'search'
+        ]);
+        $listener->injectSearch($event);
+    }
+
+    /**
+     * Test inject search
+     *
+     * @return void
+     */
+    public function testInjectSearchWebserviceEndpoint()
+    {
+        Plugin::load('Search', ['path' => ROOT . DS]);
+        Plugin::load('Muffin/Webservice', ['path' => ROOT . '/vendor/muffin/webservice/']);
+
+        $params = [
+            'search' => [
+                'name' => '1st post',
+            ],
+            'collection' => 'search'
+        ];
+
+        $request = new ServerRequest(['query' => $params['search']]);
+
+        $response = new Response();
+        $eventManager = new EventManager();
+        $controller = new Controller($request, $response, 'Search', $eventManager);
+        $controller->modelFactory('Endpoint', ['Muffin\Webservice\Model\EndpointRegistry', 'get']);
+        $controller->setModelType('Endpoint');
+
+        $queryMock = $this->getMockBuilder('\Muffin\Webservice\Query')
             ->disableOriginalConstructor()
             ->getMock();
         $queryMock->expects($this->once())

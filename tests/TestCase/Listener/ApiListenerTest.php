@@ -168,6 +168,59 @@ class ApiListenerTest extends TestCase
     }
 
     /**
+     * testResponseWithStatusCodeNotSpecified
+     *
+     * @return void
+     * @see https://github.com/FriendsOfCake/crud/issues/572
+     */
+    public function testResponseWithStatusCodeNotSpecified()
+    {
+        $action = $this
+            ->getMockBuilder('\Crud\Action\ViewAction')
+            ->disableOriginalConstructor()
+            ->setMethods(['getConfig'])
+            ->getMock();
+
+        $response = $this
+            ->getMockBuilder(Response::class)
+            ->setMethods(['withStatus'])
+            ->getMock();
+
+        $subject = $this
+            ->getMockBuilder('\Crud\Event\Subject')
+            ->getMock();
+        $subject->success = true;
+
+        $event = new \Cake\Event\Event('Crud.afterSave', $subject);
+
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\ApiListener')
+            ->disableOriginalConstructor()
+            ->setMethods(['_action', 'render'])
+            ->getMock();
+        $listener
+            ->expects($this->next($listener))
+            ->method('_action')
+            ->with()
+            ->will($this->returnValue($action));
+        $action
+            ->expects($this->next($action))
+            ->method('getConfig')
+            ->with('api.success')
+            ->will($this->returnValue(null));
+        $listener
+            ->expects($this->next($listener))
+            ->method('render')
+            ->with($subject)
+            ->will($this->returnValue($response));
+        $response
+            ->expects($this->never())
+            ->method('withStatus');
+
+        $response = $listener->respond($event);
+    }
+
+    /**
      * Test response method with exception config
      *
      * @return void
