@@ -150,11 +150,11 @@ class ApiPaginationListenerTest extends TestCase
         $Action = $this
             ->getMockBuilder('\Crud\Action\BaseAction')
             ->disableOriginalConstructor()
-            ->setMethods(['getConfig'])
+            ->setMethods(['setConfig'])
             ->getMock();
         $Action
             ->expects($this->once())
-            ->method('getConfig')
+            ->method('setConfig')
             ->with('serialize.pagination', 'pagination');
 
         $Instance = $this
@@ -224,11 +224,11 @@ class ApiPaginationListenerTest extends TestCase
         $Action = $this
             ->getMockBuilder('\Crud\Action\BaseAction')
             ->disableOriginalConstructor()
-            ->setMethods(['getConfig'])
+            ->setMethods(['setConfig'])
             ->getMock();
         $Action
             ->expects($this->once())
-            ->method('getConfig')
+            ->method('setConfig')
             ->with('serialize.pagination', 'pagination');
 
         $Instance = $this
