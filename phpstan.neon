@@ -10,7 +10,7 @@ parameters:
         - '#Call to an undefined method Crud\\Action\\BaseAction::view\(\)#'
         - '#Call to an undefined method Crud\\Action\\BaseAction::viewVar\(\)#'
         - '#Call to an undefined method Crud\\Action\\BaseAction::findMethod\(\)#'
-        - '#Call to an undefined method Cake\\ORM\\BehaviorRegistry::filterParams\(\)# '
+        - '#Call to an undefined method Cake\\ORM\\Table::filterParams\(\)# '
         - '#Call to an undefined method object::getLogs\(\)#'
         - '#Access to an undefined property object::\$url#'
         - '#Access to an undefined property object::\$success#'
