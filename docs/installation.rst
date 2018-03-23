@@ -15,7 +15,7 @@ The recommended installation method for this plugin is by using composer.
 
 .. code-block:: sh
 
-	composer require friendsofcake/crud:^4.3
+	composer require friendsofcake/crud:^5.0
 
 You can also check `Packagist <https://packagist.org/packages/friendsofcake/crud>`_.
 
