@@ -50,7 +50,7 @@
   },
   "require":{
     "composer/installers":"*",
-		"cakephp/cakephp": "^2.9.0"
+    "cakephp/cakephp": "^2.9.0"
   },
   "extra": {
     "installer-name": "Crud"
