@@ -85,3 +85,5 @@ Cake\Datasource\ConnectionManager::config('test', [
     'url' => getenv('db_dsn'),
     'timezone' => 'UTC'
 ]);
+
+loadPHPUnitAliases();

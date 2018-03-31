@@ -4,7 +4,7 @@ namespace Crud\Test\TestSuite;
 use Cake\Core\Plugin;
 use Cake\TestSuite\TestSuite;
 
-class AllTest extends \PHPUnit_Framework_TestSuite
+class AllTest extends TestSuite
 {
 
     public static function suite()

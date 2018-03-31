@@ -768,7 +768,7 @@ class CrudComponentTest extends TestCase
         $this->assertEquals([], $listeners);
 
         // Should now throw an exception
-        $this->setExpectedException('Exception', 'Listener "api" is not configured');
+        $this->expectException('Exception', 'Listener "api" is not configured');
         $this->Crud->listener('api');
     }
 

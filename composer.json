@@ -38,12 +38,12 @@
             "homepage":"https://github.com/admad"
         }
     ],
-    "require":{
-        "cakephp/cakephp": "^3.4.0"
+    "require": {
+        "cakephp/cakephp": "^3.4"
     },
     "require-dev": {
-        "phpunit/phpunit": "<6.0",
-        "friendsofcake/cakephp-test-utilities": "dev-master",
+        "phpunit/phpunit": "^5.7.14|^6.0",
+        "friendsofcake/cakephp-test-utilities": "^1.0",
         "friendsofcake/search": "dev-master",
         "muffin/webservice": "^1.2"
     },
