@@ -42,18 +42,18 @@ class ApiPaginationListener extends BaseListener
     {
         $request = $this->_request();
 
-        if (empty($request->paging)) {
+        if (empty($request->getParam('paging'))) {
             return;
         }
 
         $controller = $this->_controller();
         list(, $modelClass) = pluginSplit($controller->modelClass);
 
-        if (!array_key_exists($modelClass, $request->paging)) {
+        if (!array_key_exists($modelClass, $request->getParam('paging'))) {
             return;
         }
 
-        $pagination = $request->paging[$modelClass];
+        $pagination = $request->getParam('paging')[$modelClass];
         if (empty($pagination)) {
             return;
         }

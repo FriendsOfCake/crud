@@ -26,6 +26,13 @@ class AddActionTest extends IntegrationTestCase
      */
     public $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
 
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->useHttpServer(true);
+    }
+
     /**
      * Test the normal HTTP GET flow of _get
      *

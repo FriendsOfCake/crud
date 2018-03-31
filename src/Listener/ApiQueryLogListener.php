@@ -52,7 +52,7 @@ class ApiQueryLogListener extends BaseListener
         foreach ($this->_getSources() as $connectionName) {
             try {
                 $this->_getSource($connectionName)->logQueries(true);
-                $this->_getSource($connectionName)->logger(new QueryLogger());
+                $this->_getSource($connectionName)->setLogger(new QueryLogger());
             } catch (MissingDatasourceConfigException $e) {
                 //Safe to ignore this :-)
             }
@@ -86,7 +86,7 @@ class ApiQueryLogListener extends BaseListener
 
         $queryLog = [];
         foreach ($sources as $source) {
-            $logger = $this->_getSource($source)->logger();
+            $logger = $this->_getSource($source)->getLogger();
             if (method_exists($logger, 'getLogs')) {
                 $queryLog[$source] = $logger->getLogs();
             }

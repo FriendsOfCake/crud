@@ -23,7 +23,7 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer
      */
     public function validation($error)
     {
-        $url = $this->controller->request->here();
+        $url = $this->controller->request->getRequestTarget();
         $status = $code = $error->getCode();
         try {
             $this->controller->response = $this->controller->response->withStatus($status);
@@ -118,7 +118,7 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer
         $queryLog = [];
         $sources = ConnectionManager::configured();
         foreach ($sources as $source) {
-            $logger = ConnectionManager::get($source)->logger();
+            $logger = ConnectionManager::get($source)->getLogger();
             if (method_exists($logger, 'getLogs')) {
                 $queryLog[$source] = $logger->getLogs();
             }

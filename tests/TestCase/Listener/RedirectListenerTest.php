@@ -47,7 +47,7 @@ class RedirectListenerTest extends TestCase
 
         $listener->setup();
 
-        $result = $listener->config('readers');
+        $result = $listener->getConfig('readers');
 
         $result['request'] = array_keys($result['request']);
         $result['entity'] = array_keys($result['entity']);
@@ -151,8 +151,7 @@ class RedirectListenerTest extends TestCase
         $listener->setup();
 
         $subject = new \Crud\Event\Subject();
-        $request = new ServerRequest();
-        $request->params['action'] = 'index';
+        $request = (new ServerRequest())->withParam('action', 'index');
 
         $listener->expects($this->any())->method('_request')->will($this->returnValue($request));
 
@@ -180,8 +179,7 @@ class RedirectListenerTest extends TestCase
         $listener->setup();
 
         $subject = new \Crud\Event\Subject();
-        $request = new ServerRequest();
-        $request->data = ['hello' => 'world'];
+        $request = (new ServerRequest())->withData('hello', 'world');
 
         $listener->expects($this->any())->method('_request')->will($this->returnValue($request));
 
@@ -209,8 +207,7 @@ class RedirectListenerTest extends TestCase
         $listener->setup();
 
         $subject = new \Crud\Event\Subject();
-        $request = new ServerRequest();
-        $request->query = ['hello' => 'world'];
+        $request = (new ServerRequest())->withQueryParams(['hello' => 'world']);
 
         $listener->expects($this->any())->method('_request')->will($this->returnValue($request));
 
