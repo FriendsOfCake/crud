@@ -27,6 +27,18 @@ class DeleteActionTest extends IntegrationTestCase
     public $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
 
     /**
+     * setUp()
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->useHttpServer(true);
+    }
+
+    /**
      * Data provider with HTTP verbs
      *
      * @return array
@@ -48,8 +60,8 @@ class DeleteActionTest extends IntegrationTestCase
     public function testAllRequestMethods($method)
     {
         $this->_eventManager->on(
-            'Dispatcher.invokeController',
-            ['priority' => 1000],
+            'Controller.initialize',
+            ['priority' => 11],
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder('Cake\Controller\Component\FlashComponent')
                     ->setMethods(['set'])
@@ -98,8 +110,8 @@ class DeleteActionTest extends IntegrationTestCase
     public function testStopDelete()
     {
         $this->_eventManager->on(
-            'Dispatcher.invokeController',
-            ['priority' => 1000],
+            'Controller.initialize',
+            ['priority' => 11],
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder('Cake\Controller\Component\FlashComponent')
                     ->setMethods(['set'])
@@ -152,8 +164,8 @@ class DeleteActionTest extends IntegrationTestCase
     public function testStopBeforeRedirect()
     {
         $this->_eventManager->on(
-            'Dispatcher.invokeController',
-            ['priority' => 1000],
+            'Controller.initialize',
+            ['priority' => 11],
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder('Cake\Controller\Component\FlashComponent')
                     ->setMethods(['set'])

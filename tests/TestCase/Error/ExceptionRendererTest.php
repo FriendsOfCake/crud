@@ -75,7 +75,7 @@ class ExceptionRendererTest extends TestCase
         $this->assertSame(500, $viewVars['code']);
 
         $this->assertTrue(isset($viewVars['url']));
-        $this->assertSame($Controller->request->here(), $viewVars['url']);
+        $this->assertSame($Controller->request->getRequestTarget(), $viewVars['url']);
 
         $this->assertTrue(isset($viewVars['message']));
         $this->assertSame('Hello World', $viewVars['message']);
@@ -129,7 +129,7 @@ class ExceptionRendererTest extends TestCase
 
         $expected = [
             'code' => 500,
-            'url' => $Controller->request->here(),
+            'url' => $Controller->request->getRequestTarget(),
             'message' => 'Hello World',
             'exception' => [
                 'class' => 'Cake\Core\Exception\Exception',
@@ -155,7 +155,7 @@ class ExceptionRendererTest extends TestCase
         $this->assertSame(500, $viewVars['code']);
 
         $this->assertTrue(isset($viewVars['url']));
-        $this->assertSame($Controller->request->here(), $viewVars['url']);
+        $this->assertSame($Controller->request->getRequestTarget(), $viewVars['url']);
 
         $this->assertTrue(isset($viewVars['message']));
         $this->assertSame('Hello World', $viewVars['message']);
@@ -163,7 +163,7 @@ class ExceptionRendererTest extends TestCase
         $this->assertTrue(isset($viewVars['error']));
         $this->assertSame($Exception, $viewVars['error']);
 
-        ConnectionManager::get('test')->logger($currentLogger);
+        ConnectionManager::get('test')->setLogger($currentLogger);
     }
 
     public function testNormalNestedExceptionRendering()
@@ -219,7 +219,7 @@ class ExceptionRendererTest extends TestCase
         $this->assertSame(500, $viewVars['code']);
 
         $this->assertTrue(isset($viewVars['url']));
-        $this->assertSame($Controller->request->here(), $viewVars['url']);
+        $this->assertSame($Controller->request->getRequestTarget(), $viewVars['url']);
 
         $this->assertTrue(isset($viewVars['message']));
         $this->assertSame('Hello World', $viewVars['message']);
@@ -283,7 +283,7 @@ class ExceptionRendererTest extends TestCase
         $this->assertSame(500, $viewVars['code']);
 
         $this->assertTrue(isset($viewVars['url']));
-        $this->assertSame($Controller->request->here(), $viewVars['url']);
+        $this->assertSame($Controller->request->getRequestTarget(), $viewVars['url']);
 
         $this->assertTrue(isset($viewVars['message']));
         $this->assertSame('Hello World', $viewVars['message']);
@@ -329,7 +329,7 @@ class ExceptionRendererTest extends TestCase
 
         $expected = [
             'code' => 500,
-            'url' => $Controller->request->here(),
+            'url' => $Controller->request->getRequestTarget(),
             'message' => 'Hello World',
             'exception' => [
                 'class' => 'Cake\Core\Exception\Exception',
@@ -348,7 +348,7 @@ class ExceptionRendererTest extends TestCase
         $this->assertSame(500, $viewVars['code']);
 
         $this->assertTrue(isset($viewVars['url']));
-        $this->assertSame($Controller->request->here(), $viewVars['url']);
+        $this->assertSame($Controller->request->getRequestTarget(), $viewVars['url']);
 
         $this->assertTrue(isset($viewVars['message']));
         $this->assertSame('Generic Exception Description', $viewVars['message']);
@@ -387,7 +387,7 @@ class ExceptionRendererTest extends TestCase
 
         $expected = [
             'code' => 422,
-            'url' => $Controller->request->here(),
+            'url' => $Controller->request->getRequestTarget(),
             'errorCount' => 1,
             'errors' => [
                 'title' => [

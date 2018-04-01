@@ -4,8 +4,8 @@ namespace Crud\Listener;
 use Cake\Core\Configure;
 use Cake\Error\ErrorHandler;
 use Cake\Event\Event;
+use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\Http\ServerRequest;
-use Cake\Network\Exception\MethodNotAllowedException;
 use Cake\Utility\Hash;
 use Cake\Utility\Text;
 use Crud\Event\Subject;
@@ -38,7 +38,7 @@ class ApiListener extends BaseListener
         ],
         'exception' => [
             'type' => 'default',
-            'class' => 'Cake\Network\Exception\BadRequestException',
+            'class' => 'Cake\Http\Exception\BadRequestException',
             'message' => 'Unknown error',
             'code' => 0
         ],

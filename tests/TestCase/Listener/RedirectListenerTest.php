@@ -403,9 +403,9 @@ class RedirectListenerTest extends TestCase
     public function dataProviderGetUrl()
     {
         $Request = new ServerRequest;
-        $Request->params['action'] = 'index';
-        $Request->query['parent_id'] = 10;
-        $Request->data['epic'] = 'jippi';
+        $Request = $Request->withParam('action', 'index')
+            ->withQueryParams(['parent_id' => 10])
+            ->withData('epic', 'jippi');
 
         $Model = new \Cake\ORM\Entity();
         $Model->id = 69;

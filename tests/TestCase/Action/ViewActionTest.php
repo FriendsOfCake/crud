@@ -21,6 +21,18 @@ class ViewActionTest extends IntegrationTestCase
     public $fixtures = ['plugin.crud.blogs'];
 
     /**
+     * setUp()
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->useHttpServer(true);
+    }
+
+    /**
      * Data provider with all HTTP verbs
      *
      * @return array
@@ -44,8 +56,8 @@ class ViewActionTest extends IntegrationTestCase
     public function testGet($method)
     {
         $this->_eventManager->on(
-            'Dispatcher.invokeController',
-            ['priority' => 1000],
+            'Controller.initialize',
+            ['priority' => 11],
             function ($event) {
                 $this->_subscribeToEvents($this->_controller);
             }
@@ -67,8 +79,8 @@ class ViewActionTest extends IntegrationTestCase
     public function testGetWithViewVar()
     {
         $this->_eventManager->on(
-            'Dispatcher.invokeController',
-            ['priority' => 1000],
+            'Controller.initialize',
+            ['priority' => 11],
             function ($event) {
                 $this->_controller->Crud->action('view')->viewVar('item');
                 $this->_subscribeToEvents($this->_controller);

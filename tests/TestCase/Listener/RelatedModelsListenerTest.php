@@ -286,7 +286,7 @@ class RelatedModelListenerTest extends TestCase
         $table = $this
             ->getMockBuilder('\Cake\ORM\Table')
             ->disableOriginalConstructor()
-            ->setMethods(['associations', 'association'])
+            ->setMethods(['associations', 'findAssociation'])
             ->getMock();
 
         $listener
@@ -304,7 +304,7 @@ class RelatedModelListenerTest extends TestCase
         $event = new Event('beforePaginate', $subject);
 
         $listener->beforePaginate($event);
-        $result = $event->subject()->query->contain();
+        $result = $event->getSubject()->query->getContain();
 
         $this->assertEquals(['Users' => []], $result);
     }

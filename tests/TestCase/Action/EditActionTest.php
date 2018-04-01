@@ -27,6 +27,18 @@ class EditActionTest extends IntegrationTestCase
     public $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
 
     /**
+     * setUp()
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->useHttpServer(true);
+    }
+
+    /**
      * Test the normal HTTP GET flow of _get
      *
      * @return void
@@ -34,7 +46,7 @@ class EditActionTest extends IntegrationTestCase
     public function testActionGet()
     {
         $this->get('/blogs/edit/1');
-        $result = $this->_response->body();
+        $result = (string)$this->_response->getBody();
 
         $expected = '<legend>Edit Blog</legend>';
         $this->assertContains($expected, $result, 'legend do not match the expected value');
@@ -59,7 +71,7 @@ class EditActionTest extends IntegrationTestCase
     public function testActionGetWithQueryArgs()
     {
         $this->get('/blogs/edit/1?name=test');
-        $result = $this->_response->body();
+        $result = (string)$this->_response->getBody();
 
         $expected = '<legend>Edit Blog</legend>';
         $this->assertContains($expected, $result, 'legend do not match the expected value');
@@ -82,8 +94,8 @@ class EditActionTest extends IntegrationTestCase
     public function testCustomFinder()
     {
         $this->_eventManager->on(
-            'Dispatcher.invokeController',
-            ['priority' => 1000],
+            'Controller.initialize',
+            ['priority' => 11],
             function ($event) {
                 $this->_controller->Crud->action('edit')
                     ->findMethod(['withCustomOptions' => ['foo' => 'bar']]);
@@ -102,8 +114,8 @@ class EditActionTest extends IntegrationTestCase
     public function testActionPost()
     {
         $this->_eventManager->on(
-            'Dispatcher.invokeController',
-            ['priority' => 1000],
+            'Controller.initialize',
+            ['priority' => 11],
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder('Cake\Controller\Component\FlashComponent')
                     ->setMethods(['set'])
@@ -145,8 +157,8 @@ class EditActionTest extends IntegrationTestCase
     public function testActionPostErrorSave()
     {
         $this->_eventManager->on(
-            'Dispatcher.invokeController',
-            ['priority' => 1000],
+            'Controller.initialize',
+            ['priority' => 11],
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder('Cake\Controller\Component\FlashComponent')
                     ->setMethods(['set'])
@@ -198,8 +210,8 @@ class EditActionTest extends IntegrationTestCase
     public function testActionPostValidationErrors()
     {
         $this->_eventManager->on(
-            'Dispatcher.invokeController',
-            ['priority' => 1000],
+            'Controller.initialize',
+            ['priority' => 11],
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder('Cake\Controller\Component\FlashComponent')
                     ->setMethods(['set'])
@@ -221,7 +233,7 @@ class EditActionTest extends IntegrationTestCase
                 $this->_subscribeToEvents($this->_controller);
 
                 $this->_controller->Blogs
-                    ->validator()
+                    ->getValidator()
                     ->requirePresence('name')
                     ->add('name', [
                         'length' => [
@@ -243,7 +255,11 @@ class EditActionTest extends IntegrationTestCase
         $this->assertFalse($this->_subject->created);
 
         $expected = '<div class="error-message">Name need to be at least 10 characters long</div>';
-        $this->assertContains($expected, $this->_response->body(), 'Could not find validation error in HTML');
+        $this->assertContains(
+            $expected,
+            (string)$this->_response->getBody(),
+            'Could not find validation error in HTML'
+        );
     }
 
     /**
@@ -254,8 +270,8 @@ class EditActionTest extends IntegrationTestCase
     public function testActionPatch()
     {
         $this->_eventManager->on(
-            'Dispatcher.invokeController',
-            ['priority' => 1000],
+            'Controller.initialize',
+            ['priority' => 11],
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder('Cake\Controller\Component\FlashComponent')
                     ->setMethods(['set'])

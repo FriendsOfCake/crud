@@ -21,6 +21,18 @@ class LookupActionTest extends IntegrationTestCase
     public $fixtures = ['plugin.crud.blogs'];
 
     /**
+     * setUp()
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->useHttpServer(true);
+    }
+
+    /**
      * Test with no extra options
      *
      * @return void
@@ -28,8 +40,8 @@ class LookupActionTest extends IntegrationTestCase
     public function testGet()
     {
         $this->_eventManager->on(
-            'Dispatcher.invokeController',
-            ['priority' => 1000],
+            'Controller.initialize',
+            ['priority' => 11],
             function () {
                 $this->_subscribeToEvents($this->_controller);
             }
@@ -57,8 +69,8 @@ class LookupActionTest extends IntegrationTestCase
     public function testGetWithCustomParams()
     {
         $this->_eventManager->on(
-            'Dispatcher.invokeController',
-            ['priority' => 1000],
+            'Controller.initialize',
+            ['priority' => 11],
             function () {
                 $this->_subscribeToEvents($this->_controller);
             }
@@ -86,11 +98,11 @@ class LookupActionTest extends IntegrationTestCase
     public function testGetWithQueryModification()
     {
         $this->_eventManager->on(
-            'Dispatcher.invokeController',
-            ['priority' => 1000],
+            'Controller.initialize',
+            ['priority' => 11],
             function () {
                 $this->_controller->Crud->on('beforeLookup', function ($event) {
-                    $event->subject->query->where(['id <' => 2]);
+                    $event->getSubject()->query->where(['id <' => 2]);
                 });
             }
         );
@@ -112,8 +124,8 @@ class LookupActionTest extends IntegrationTestCase
     public function testGetWithCustomFinder()
     {
         $this->_eventManager->on(
-            'Dispatcher.invokeController',
-            ['priority' => 1000],
+            'Controller.initialize',
+            ['priority' => 11],
             function () {
                 $this->_subscribeToEvents($this->_controller);
                 $this->_controller->Crud->action('lookup')

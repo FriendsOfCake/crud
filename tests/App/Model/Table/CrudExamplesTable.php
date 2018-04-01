@@ -29,7 +29,7 @@ class CrudExamplesTable extends \Cake\ORM\Table
      */
     public function initialize(array $config)
     {
-        $this->table('posts');
+        $this->setTable('posts');
     }
 
     /**

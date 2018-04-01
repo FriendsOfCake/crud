@@ -72,30 +72,6 @@ class ApiListenerTest extends TestCase
     }
 
     /**
-     * testSetup
-     *
-     * @return void
-     */
-    public function testSetup()
-    {
-        $listener = $this
-            ->getMockBuilder('\Crud\Listener\ApiListener')
-            ->setMethods(['registerExceptionHandler', '_checkRequestType'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $listener
-            ->expects($this->nextCounter($listener))
-            ->method('_checkRequestType')
-            ->with('api')
-            ->will($this->returnValue(true));
-        $listener
-            ->expects($this->nextCounter($listener))
-            ->method('registerExceptionHandler');
-
-        $listener->setup();
-    }
-
-    /**
      * testBeforeHandle
      *
      * @return void
@@ -291,7 +267,7 @@ class ApiListenerTest extends TestCase
             ],
             'exception' => [
                 'type' => 'default',
-                'class' => 'Cake\Network\Exception\BadRequestException',
+                'class' => 'Cake\Http\Exception\BadRequestException',
                 'message' => 'Unknown error',
                 'code' => 0
             ],
@@ -312,7 +288,7 @@ class ApiListenerTest extends TestCase
         return [
             'default configuration' => [
                 [],
-                '\Cake\Network\Exception\BadRequestException',
+                '\Cake\Http\Exception\BadRequestException',
                 'Unknown error',
                 0
             ],
@@ -326,14 +302,14 @@ class ApiListenerTest extends TestCase
 
             'change exception code' => [
                 ['code' => 10],
-                '\Cake\Network\Exception\BadRequestException',
+                '\Cake\Http\Exception\BadRequestException',
                 'Unknown error',
                 10
             ],
 
             'change exception message' => [
                 ['message' => 'epic message'],
-                '\Cake\Network\Exception\BadRequestException',
+                '\Cake\Http\Exception\BadRequestException',
                 'epic message',
                 0
             ],
@@ -1149,7 +1125,7 @@ class ApiListenerTest extends TestCase
             ],
             'invalid post' => [
                 ['methods' => ['post']],
-                'Cake\Network\Exception\MethodNotAllowedException',
+                'Cake\Http\Exception\MethodNotAllowedException',
                 ['post' => false]
             ],
             'valid put' => [

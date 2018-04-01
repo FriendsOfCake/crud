@@ -80,6 +80,6 @@ trait ViewVarTrait
     {
         $key = $this->_action()->subjectEntityKey();
 
-        return $event->subject()->{$key};
+        return $event->getSubject()->{$key};
     }
 }
