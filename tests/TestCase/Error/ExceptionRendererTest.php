@@ -47,9 +47,9 @@ class ExceptionRendererTest extends TestCase
 
         $this->assertNotEmpty($viewVars['_serialize']);
 
-        $expected = ['success', 'data', 'queryLog'];
         $actual = $viewVars['_serialize'];
-        $this->assertEquals($expected, $actual);
+        $this->assertNotFalse(array_search('success', $actual));
+        $this->assertNotFalse(array_search('data', $actual));
 
         $expected = [
             'code' => 500,
@@ -123,9 +123,9 @@ class ExceptionRendererTest extends TestCase
 
         $this->assertNotEmpty($viewVars['_serialize']);
 
-        $expected = ['success', 'data', 'queryLog'];
         $actual = $viewVars['_serialize'];
-        $this->assertEquals($expected, $actual);
+        $this->assertNotFalse(array_search('success', $actual));
+        $this->assertNotFalse(array_search('data', $actual));
 
         $expected = [
             'code' => 500,
@@ -193,9 +193,9 @@ class ExceptionRendererTest extends TestCase
 
         $this->assertNotEmpty($viewVars['_serialize']);
 
-        $expected = ['success', 'data', 'queryLog'];
         $actual = $viewVars['_serialize'];
-        $this->assertEquals($expected, $actual);
+        $this->assertNotFalse(array_search('success', $actual));
+        $this->assertNotFalse(array_search('data', $actual));
 
         $expected = [
             'code' => 500,
@@ -257,9 +257,9 @@ class ExceptionRendererTest extends TestCase
 
         $this->assertNotEmpty($viewVars['_serialize']);
 
-        $expected = ['success', 'data', 'queryLog'];
         $actual = $viewVars['_serialize'];
-        $this->assertEquals($expected, $actual);
+        $this->assertNotFalse(array_search('success', $actual));
+        $this->assertNotFalse(array_search('data', $actual));
 
         $expected = [
             'code' => 500,
