@@ -2,7 +2,7 @@
 namespace Crud\Action;
 
 use Cake\Event\Event;
-use Cake\Network\Exception\NotImplementedException;
+use Cake\Http\Exception\NotImplementedException;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Cake\Utility\Text;
@@ -256,11 +256,11 @@ abstract class BaseAction extends BaseObject
      */
     public function publishSuccess(Event $event)
     {
-        if (!isset($event->subject()->success)) {
+        if (!isset($event->getSubject()->success)) {
             return false;
         }
 
-        $this->_controller()->set('success', $event->subject()->success);
+        $this->_controller()->set('success', $event->getSubject()->success);
     }
 
     /**
@@ -300,11 +300,11 @@ abstract class BaseAction extends BaseObject
 
         if ($inflectionType === 'singular') {
             return strtolower(Inflector::humanize(
-                Inflector::singularize(Inflector::underscore($this->_table()->alias()))
+                Inflector::singularize(Inflector::underscore($this->_table()->getAlias()))
             ));
         }
 
-        return strtolower(Inflector::humanize(Inflector::underscore($this->_table()->alias())));
+        return strtolower(Inflector::humanize(Inflector::underscore($this->_table()->getAlias())));
     }
 
     /**

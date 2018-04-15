@@ -43,7 +43,7 @@ class SearchListener extends BaseListener
      */
     public function injectSearch(Event $event)
     {
-        if (!in_array($event->name, $this->getConfig('enabled'))) {
+        if (!in_array($event->getName(), $this->getConfig('enabled'))) {
             return;
         }
 
@@ -62,6 +62,6 @@ class SearchListener extends BaseListener
         }
 
         $filterParams['collection'] = $this->getConfig('collection');
-        $event->subject()->query->find('search', $filterParams);
+        $event->getSubject()->query->find('search', $filterParams);
     }
 }

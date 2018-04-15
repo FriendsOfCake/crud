@@ -1,7 +1,7 @@
 <?php
 namespace Crud\Error\Exception;
 
-use Cake\Network\Exception\BadRequestException;
+use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Entity;
 use Cake\Utility\Hash;
 
@@ -35,7 +35,7 @@ class ValidationException extends BadRequestException
      */
     public function __construct(Entity $entity, $code = 422)
     {
-        $this->_validationErrors = array_filter((array)$entity->errors());
+        $this->_validationErrors = array_filter((array)$entity->getErrors());
         $flat = Hash::flatten($this->_validationErrors);
 
         $errorCount = $this->_validationErrorCount = count($flat);

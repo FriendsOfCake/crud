@@ -4,8 +4,8 @@ namespace Crud\Listener;
 use Cake\Core\Configure;
 use Cake\Error\ErrorHandler;
 use Cake\Event\Event;
+use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\Http\ServerRequest;
-use Cake\Network\Exception\MethodNotAllowedException;
 use Cake\Utility\Hash;
 use Cake\Utility\Text;
 use Crud\Event\Subject;
@@ -38,7 +38,7 @@ class ApiListener extends BaseListener
         ],
         'exception' => [
             'type' => 'default',
-            'class' => 'Cake\Network\Exception\BadRequestException',
+            'class' => 'Cake\Http\Exception\BadRequestException',
             'message' => 'Unknown error',
             'code' => 0
         ],
@@ -115,7 +115,7 @@ class ApiListener extends BaseListener
      */
     public function respond(Event $event)
     {
-        $key = $event->subject()->success ? 'success' : 'error';
+        $key = $event->getSubject()->success ? 'success' : 'error';
         $apiConfig = $this->_action()->getConfig('api.' . $key);
 
         if (isset($apiConfig['exception'])) {
@@ -124,7 +124,7 @@ class ApiListener extends BaseListener
             return null;
         }
 
-        $response = $this->render($event->subject());
+        $response = $this->render($event->getSubject());
 
         if (empty($apiConfig['code'])) {
             return $response;
@@ -184,7 +184,7 @@ class ApiListener extends BaseListener
         $class = $exceptionConfig['class'];
 
         if ($exceptionConfig['type'] === 'validate') {
-            $exception = new $class($Event->subject()->entity);
+            $exception = new $class($Event->getSubject()->entity);
             throw $exception;
         }
 

@@ -72,30 +72,6 @@ class ApiListenerTest extends TestCase
     }
 
     /**
-     * testSetup
-     *
-     * @return void
-     */
-    public function testSetup()
-    {
-        $listener = $this
-            ->getMockBuilder('\Crud\Listener\ApiListener')
-            ->setMethods(['registerExceptionHandler', '_checkRequestType'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $listener
-            ->expects($this->nextCounter($listener))
-            ->method('_checkRequestType')
-            ->with('api')
-            ->will($this->returnValue(true));
-        $listener
-            ->expects($this->nextCounter($listener))
-            ->method('registerExceptionHandler');
-
-        $listener->setup();
-    }
-
-    /**
      * testBeforeHandle
      *
      * @return void
@@ -291,14 +267,14 @@ class ApiListenerTest extends TestCase
             ],
             'exception' => [
                 'type' => 'default',
-                'class' => 'Cake\Network\Exception\BadRequestException',
+                'class' => 'Cake\Http\Exception\BadRequestException',
                 'message' => 'Unknown error',
                 'code' => 0
             ],
             'exceptionRenderer' => 'Crud\Error\ExceptionRenderer',
             'setFlash' => false
         ];
-        $result = $listener->config();
+        $result = $listener->getConfig();
         $this->assertEquals($expected, $result);
     }
 
@@ -312,7 +288,7 @@ class ApiListenerTest extends TestCase
         return [
             'default configuration' => [
                 [],
-                '\Cake\Network\Exception\BadRequestException',
+                '\Cake\Http\Exception\BadRequestException',
                 'Unknown error',
                 0
             ],
@@ -326,14 +302,14 @@ class ApiListenerTest extends TestCase
 
             'change exception code' => [
                 ['code' => 10],
-                '\Cake\Network\Exception\BadRequestException',
+                '\Cake\Http\Exception\BadRequestException',
                 'Unknown error',
                 10
             ],
 
             'change exception message' => [
                 ['message' => 'epic message'],
-                '\Cake\Network\Exception\BadRequestException',
+                '\Cake\Http\Exception\BadRequestException',
                 'epic message',
                 0
             ],
@@ -390,13 +366,13 @@ class ApiListenerTest extends TestCase
         $event = new \Cake\Event\Event('Crud.Exception', new \Crud\Event\Subject());
 
         if (isset($apiConfig['type']) && $apiConfig['type'] === 'validate') {
-            $event->subject->set([
+            $event->getSubject()->set([
                 'entity' => $this->getMockBuilder('\Cake\ORM\Entity')
                     ->setMethods(['errors'])
                     ->getMock()
             ]);
 
-            $event->subject->entity
+            $event->getSubject()->entity
                 ->expects($this->any())
                 ->method('errors')
                 ->will($this->returnValue($validationErrors));
@@ -935,7 +911,7 @@ class ApiListenerTest extends TestCase
             ->getMock();
 
         $event = new \Cake\Event\Event('Crud.setFlash', $subject);
-        $apiListener->config(['setFlash' => true]);
+        $apiListener->setConfig(['setFlash' => true]);
         $apiListener->setFlash($event);
 
         $stopped = $event->isStopped();
@@ -1079,14 +1055,14 @@ class ApiListenerTest extends TestCase
 
         // Test with "ext"
         foreach ($detectors as $name => $configuration) {
-            $request->params['_ext'] = $configuration['ext'];
+            $request = $request->withParam('_ext', $configuration['ext']);
             $request->clearDetectorCache();
             if ($configuration['ext'] !== false) {
                 $this->assertTrue($request->is($name));
             }
         }
 
-        $request->params['_ext'] = null;
+        $request = $request->withParam('_ext', null);
         $request->clearDetectorCache();
 
         // Test with "accepts"
@@ -1104,7 +1080,7 @@ class ApiListenerTest extends TestCase
             $this->assertTrue($request->is($name));
         }
 
-        $request->params['_ext'] = 'xml';
+        $request = $request->withParam('_ext', 'xml');
         $request->clearDetectorCache();
 
         $this->assertTrue(
@@ -1112,7 +1088,7 @@ class ApiListenerTest extends TestCase
             "A request with xml extensions should be considered an api request"
         );
 
-        $request->params['_ext'] = null;
+        $request = $request->withParam('_ext', null);
         $request->clearDetectorCache();
 
         $this->assertFalse(
@@ -1121,7 +1097,6 @@ class ApiListenerTest extends TestCase
         );
 
         //Ensure that no set extension will not result in a true
-        unset($request->params['_ext']);
         $request->clearDetectorCache();
         $request->expects($this->any())
             ->method('accepts')
@@ -1150,7 +1125,7 @@ class ApiListenerTest extends TestCase
             ],
             'invalid post' => [
                 ['methods' => ['post']],
-                'Cake\Network\Exception\MethodNotAllowedException',
+                'Cake\Http\Exception\MethodNotAllowedException',
                 ['post' => false]
             ],
             'valid put' => [
@@ -1266,7 +1241,7 @@ class ApiListenerTest extends TestCase
             ->setMethods(null)
             ->getMock();
 
-        $result = $apiListener->config('viewClasses');
+        $result = $apiListener->getConfig('viewClasses');
         $expected = [
             'json' => 'Json',
             'xml' => 'Xml'

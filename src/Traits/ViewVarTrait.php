@@ -58,11 +58,11 @@ trait ViewVarTrait
     protected function _deriveViewVar()
     {
         if ($this->scope() === 'table') {
-            return Inflector::variable($this->_controller()->name);
+            return Inflector::variable($this->_controller()->getName());
         }
 
         if ($this->scope() === 'entity') {
-            return Inflector::variable(Inflector::singularize($this->_controller()->name));
+            return Inflector::variable(Inflector::singularize($this->_controller()->getName()));
         }
 
         throw new Exception('Unknown action scope: ' . $this->scope());
@@ -80,6 +80,6 @@ trait ViewVarTrait
     {
         $key = $this->_action()->subjectEntityKey();
 
-        return $event->subject()->{$key};
+        return $event->getSubject()->{$key};
     }
 }

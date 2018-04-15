@@ -132,7 +132,7 @@ abstract class BaseAction extends CrudBaseAction
             return $config;
         }
 
-        $primaryKey = $this->_table()->primaryKey();
+        $primaryKey = $this->_table()->getPrimaryKey();
         $config['conditions'] = [];
         $config['conditions'][] = function ($exp) use ($primaryKey, $ids) {
             return $exp->in($primaryKey, $ids);

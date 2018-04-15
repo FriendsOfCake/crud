@@ -30,6 +30,18 @@ class SetValueActionTest extends IntegrationTestCase
     public $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
 
     /**
+     * setUp()
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->useHttpServer(true);
+    }
+
+    /**
      * Data provider with all HTTP verbs
      *
      * @return array
@@ -51,8 +63,8 @@ class SetValueActionTest extends IntegrationTestCase
     public function testAllRequestMethods($method)
     {
         $this->_eventManager->on(
-            'Dispatcher.invokeController',
-            ['priority' => 1000],
+            'Controller.initialize',
+            ['priority' => 11],
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder('Cake\Controller\Component\FlashComponent')
                     ->setMethods(['set'])
@@ -95,8 +107,8 @@ class SetValueActionTest extends IntegrationTestCase
     public function testStopBeforeBulk()
     {
         $this->_eventManager->on(
-            'Dispatcher.invokeController',
-            ['priority' => 1000],
+            'Controller.initialize',
+            ['priority' => 11],
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder('Cake\Controller\Component\FlashComponent')
                     ->setMethods(['set'])
@@ -143,8 +155,8 @@ class SetValueActionTest extends IntegrationTestCase
     public function testUuidRequestData()
     {
         $this->_eventManager->on(
-            'Dispatcher.invokeController',
-            ['priority' => 1000],
+            'Controller.initialize',
+            ['priority' => 11],
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder('Cake\Controller\Component\FlashComponent')
                     ->setMethods(['set'])
@@ -187,8 +199,8 @@ class SetValueActionTest extends IntegrationTestCase
     public function testPostWithCustomFinder()
     {
         $this->_eventManager->on(
-            'Dispatcher.invokeController',
-            ['priority' => 1000],
+            'Controller.initialize',
+            ['priority' => 11],
             function ($event) {
                 $this->_subscribeToEvents($this->_controller);
                 $this->_controller->Crud->action('deactivateAll')

@@ -49,6 +49,7 @@ class ApiPaginationListenerTest extends TestCase
             ->getMockBuilder(ServerRequest::class)
             ->setMethods(null)
             ->getMock();
+        $Request = $Request->withParam('paging', ['MyModel' => []]);
 
         $Controller = $this
             ->getMockBuilder('\Cake\Controller\Controller')
@@ -70,7 +71,6 @@ class ApiPaginationListenerTest extends TestCase
             ->method('_controller')
             ->will($this->returnValue($Controller));
 
-        $Request->paging = ['MyModel' => []];
         $Controller->modelClass = 'MyModel';
 
         $Instance->beforeRender(new \Cake\Event\Event('something'));
@@ -102,7 +102,7 @@ class ApiPaginationListenerTest extends TestCase
             ->expects($this->never())
             ->method('_controller');
 
-        $Request->paging = null;
+        $Request = $Request->withParam('paging', null);
 
         $Instance->beforeRender(new \Cake\Event\Event('something'));
     }
@@ -119,7 +119,7 @@ class ApiPaginationListenerTest extends TestCase
             ->getMockBuilder(ServerRequest::class)
             ->setMethods(null)
             ->getMock();
-        $Request->paging = [
+        $Request = $Request->withParam('paging', [
             'MyModel' => [
                 'pageCount' => 10,
                 'page' => 2,
@@ -128,7 +128,7 @@ class ApiPaginationListenerTest extends TestCase
                 'count' => 100,
                 'limit' => 10
             ]
-        ];
+        ]);
 
         $expected = [
             'page_count' => 10,
@@ -193,7 +193,7 @@ class ApiPaginationListenerTest extends TestCase
             ->getMockBuilder(ServerRequest::class)
             ->setMethods(null)
             ->getMock();
-        $Request->paging = [
+        $Request = $Request->withParam('paging', [
             'MyModel' => [
                 'pageCount' => 10,
                 'page' => 2,
@@ -202,7 +202,7 @@ class ApiPaginationListenerTest extends TestCase
                 'count' => 100,
                 'limit' => 10
             ]
-        ];
+        ]);
 
         $expected = [
             'page_count' => 10,
@@ -267,7 +267,7 @@ class ApiPaginationListenerTest extends TestCase
             ->getMockBuilder(ServerRequest::class)
             ->setMethods(null)
             ->getMock();
-        $Request->paging = [
+        $Request = $Request->withParam('paging', [
             'MyModel' => [
                 'pageCount' => 10,
                 'page' => 2,
@@ -276,7 +276,7 @@ class ApiPaginationListenerTest extends TestCase
                 'count' => 100,
                 'limit' => 10
             ]
-        ];
+        ]);
 
         $expected = [
             'page_count' => 10,

@@ -1,8 +1,8 @@
 {
-    "name":"friendsofcake/crud",
-    "description":"CakePHP Application development on steroids - rapid prototyping / scaffolding & production ready code - XML / JSON APIs and more",
-    "type":"cakephp-plugin",
-    "keywords":[
+    "name": "friendsofcake/crud",
+    "description": "CakePHP Application development on steroids - rapid prototyping / scaffolding & production ready code - XML / JSON APIs and more",
+    "type": "cakephp-plugin",
+    "keywords": [
         "cakephp",
         "crud",
         "create",
@@ -14,38 +14,38 @@
         "scaffold",
         "scaffolding"
     ],
-    "homepage":"https://github.com/FriendsOfCake/crud",
-    "license":"MIT",
-    "authors":[
+    "homepage": "https://github.com/FriendsOfCake/crud",
+    "license": "MIT",
+    "authors": [
         {
-            "name":"Christian Winther",
-            "role":"Author",
-            "homepage":"http://cakephp.nu/"
+            "name": "Christian Winther",
+            "role": "Author",
+            "homepage": "http://cakephp.nu/"
         },
         {
-            "name":"José Lorenzo Rodríguez",
-            "role":"Contributor",
-            "homepage":"https://github.com/lorenzo"
+            "name": "José Lorenzo Rodríguez",
+            "role": "Contributor",
+            "homepage": "https://github.com/lorenzo"
         },
         {
-            "name":"Andy Dawson",
-            "role":"Contributor",
-            "homepage":"https://github.com/ad7six"
+            "name": "Andy Dawson",
+            "role": "Contributor",
+            "homepage": "https://github.com/ad7six"
         },
         {
-            "name":"ADmad",
-            "role":"Contributor",
-            "homepage":"https://github.com/admad"
+            "name": "ADmad",
+            "role": "Contributor",
+            "homepage": "https://github.com/admad"
         }
     ],
     "require": {
-        "cakephp/cakephp": "^3.4"
+        "cakephp/cakephp": "^3.6"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.7.14|^6.0",
         "friendsofcake/cakephp-test-utilities": "^1.0",
-        "friendsofcake/search": "dev-master",
-        "muffin/webservice": "^1.2"
+        "friendsofcake/search": "^4.4",
+        "muffin/webservice": "^1.3"
     },
     "autoload": {
         "psr-4": {
@@ -63,10 +63,10 @@
         "friendsofcake/crud-view": "Automated admin backend based on your Crud configuration.",
         "friendsofcake/crud-json-api": "Crud listener for building APIs following the JSON API specification"
     },
-    "support":{
-        "source":"https://github.com/FriendsOfCake/crud",
-        "issues":"https://github.com/FriendsOfCake/crud/issues",
-        "wiki":"http://crud.readthedocs.org/en/latest/",
-        "irc":"irc://irc.freenode.org/friendsofcake"
+    "support": {
+        "source": "https://github.com/FriendsOfCake/crud",
+        "issues": "https://github.com/FriendsOfCake/crud/issues",
+        "wiki": "http://crud.readthedocs.org/en/latest/",
+        "irc": "irc://irc.freenode.org/friendsofcake"
     }
 }

@@ -57,7 +57,7 @@ trait FindMethodTrait
 
         list($finder, $options) = $this->_extractFinder();
         $query = $repository->find($finder, $options);
-        $query->where([current($query->aliasField($repository->primaryKey())) => $id]);
+        $query->where([current($query->aliasField($repository->getPrimaryKey())) => $id]);
 
         $subject->set([
             'repository' => $repository,

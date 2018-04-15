@@ -52,11 +52,7 @@ class RedirectListener extends BaseListener
         $this->reader('request.key', function (Subject $subject, $key = null) {
             $request = $this->_request();
 
-            if (!isset($request->{$key})) {
-                return null;
-            }
-
-            return $request->{$key};
+            return $request->getParam($key, null);
         });
 
         $this->reader('request.data', function (Subject $subject, $key = null) {
@@ -112,7 +108,7 @@ class RedirectListener extends BaseListener
      */
     public function beforeRedirect(Event $event)
     {
-        $subject = $event->subject();
+        $subject = $event->getSubject();
 
         $redirects = $this->_action()->redirectConfig();
         if (empty($redirects)) {

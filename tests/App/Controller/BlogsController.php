@@ -12,7 +12,9 @@ class BlogsController extends Controller
     public $paginate = ['limit' => 3];
 
     public $components = [
-        'RequestHandler',
+        'RequestHandler' => [
+            'enableBeforeRedirect' => false,
+        ],
         'Flash',
         'Crud.Crud' => [
             'actions' => [

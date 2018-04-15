@@ -37,7 +37,7 @@ class RelatedModelsListener extends BaseListener
      */
     public function beforePaginate(Event $event)
     {
-        $contained = $event->getSubject()->query->contain();
+        $contained = $event->getSubject()->query->getContain();
         if (!empty($contained)) {
             return;
         }
@@ -60,8 +60,8 @@ class RelatedModelsListener extends BaseListener
     public function beforeRender(Event $event)
     {
         $entity = null;
-        if (isset($event->subject()->entity)) {
-            $entity = $event->subject()->entity;
+        if (isset($event->getSubject()->entity)) {
+            $entity = $event->getSubject()->entity;
         }
         $this->publishRelatedModels(null, $entity);
     }
@@ -96,7 +96,7 @@ class RelatedModelsListener extends BaseListener
             $subject = $this->_subject(compact('name', 'viewVar', 'query', 'association', 'entity'));
             $event = $this->_trigger('relatedModel', $subject);
 
-            $controller->set($event->subject()->viewVar, $event->subject()->query->toArray());
+            $controller->set($event->getSubject()->viewVar, $event->getSubject()->query->toArray());
         }
     }
 

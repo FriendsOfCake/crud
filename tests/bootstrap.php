@@ -66,22 +66,19 @@ $cache = [
     ]
 ];
 
-Cake\Cache\Cache::config($cache);
+Cake\Cache\Cache::setConfig($cache);
 Cake\Core\Configure::write('Session', [
     'defaults' => 'php'
 ]);
 
 Cake\Core\Plugin::load('Crud', ['path' => ROOT . DS, 'autoload' => true]);
 
-Cake\Routing\DispatcherFactory::add('Routing');
-Cake\Routing\DispatcherFactory::add('ControllerFactory');
-
 // Ensure default test connection is defined
 if (!getenv('db_dsn')) {
     putenv('db_dsn=sqlite:///:memory:');
 }
 
-Cake\Datasource\ConnectionManager::config('test', [
+Cake\Datasource\ConnectionManager::setConfig('test', [
     'url' => getenv('db_dsn'),
     'timezone' => 'UTC'
 ]);
