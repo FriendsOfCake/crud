@@ -1,6 +1,7 @@
 <?php
 namespace Crud\Test\TestCase\Listener;
 
+use Cake\Database\Schema\TableSchema;
 use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
@@ -286,8 +287,13 @@ class RelatedModelListenerTest extends TestCase
         $table = $this
             ->getMockBuilder('\Cake\ORM\Table')
             ->disableOriginalConstructor()
-            ->setMethods(['associations', 'findAssociation'])
+            ->setMethods(['associations', 'findAssociation', 'getSchema'])
             ->getMock();
+
+        $table
+            ->expects($this->any())
+            ->method('getSchema')
+            ->will($this->returnValue(new TableSchema('Users')));
 
         $listener
             ->expects($this->once())
@@ -298,8 +304,7 @@ class RelatedModelListenerTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $query = new Query($db, null);
-        $query->repository($table);
+        $query = new Query($db, $table);
         $subject = new Subject(['query' => $query]);
         $event = new Event('beforePaginate', $subject);
 
