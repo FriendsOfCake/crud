@@ -538,7 +538,7 @@ class ApiListenerTest extends TestCase
             ->getMock();
 
         $controller = $this
-            ->getMockBuilder('\Cake\Controller\Controller')
+            ->getMockBuilder('\Crud\Test\App\Controller\BlogsController')
             ->setMethods(['set'])
             ->disableOriginalConstructor()
             ->getMock();
