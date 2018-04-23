@@ -287,7 +287,7 @@ class RelatedModelListenerTest extends TestCase
         $table = $this
             ->getMockBuilder('\Cake\ORM\Table')
             ->disableOriginalConstructor()
-            ->setMethods(['associations', 'findAssociation', 'getSchema'])
+            ->setMethods(['associations', 'findAssociation', 'association', 'getSchema'])
             ->getMock();
 
         $table
@@ -309,7 +309,11 @@ class RelatedModelListenerTest extends TestCase
         $event = new Event('beforePaginate', $subject);
 
         $listener->beforePaginate($event);
-        $result = $event->getSubject()->query->getContain();
+        if (method_exists($event->getSubject()->query, 'getContain')) {
+            $result = $event->getSubject()->query->getContain();
+        } else {
+            $result = $event->getSubject()->query->contain();
+        }
 
         $this->assertEquals(['Users' => []], $result);
     }

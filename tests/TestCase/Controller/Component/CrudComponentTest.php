@@ -56,6 +56,7 @@ class TestCrudEventManager extends \Cake\Event\EventManager
 
 class CrudExamplesController extends \Cake\Controller\Controller
 {
+    use \Crud\Controller\ControllerTrait;
 
     public $modelClass = 'CrudExamples';
 

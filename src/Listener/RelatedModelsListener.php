@@ -37,7 +37,12 @@ class RelatedModelsListener extends BaseListener
      */
     public function beforePaginate(Event $event)
     {
-        $contained = $event->getSubject()->query->getContain();
+        $method = 'contain';
+        if (method_exists($event->getSubject()->query, 'getContain')) {
+            $method = 'getContain';
+        }
+        $contained = $event->getSubject()->query->$method();
+
         if (!empty($contained)) {
             return;
         }
