@@ -90,7 +90,7 @@ class RelatedModelsListener extends BaseListener
         $controller = $this->_controller();
 
         foreach ($models as $name => $association) {
-            list(, $associationName) = pluginSplit($association->name());
+            list(, $associationName) = pluginSplit($association->getName());
             $viewVar = Inflector::variable($associationName);
             if (array_key_exists($viewVar, $controller->viewVars)) {
                 continue;
@@ -196,7 +196,7 @@ class RelatedModelsListener extends BaseListener
                 continue;
             }
 
-            $return[$associationClass->name()] = $associationClass;
+            $return[$associationClass->getName()] = $associationClass;
         }
 
         return $return;
@@ -224,7 +224,7 @@ class RelatedModelsListener extends BaseListener
                     $association
                 ));
             }
-            $return[$associationClass->name()] = $associationClass;
+            $return[$associationClass->getName()] = $associationClass;
         }
 
         return $return;
