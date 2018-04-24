@@ -149,7 +149,7 @@ class RelatedModelListenerTest extends TestCase
         $association = $this
             ->getMockBuilder('\Cake\ORM\Association')
             ->disableOriginalConstructor()
-            ->setMethods(['type', 'name', 'eagerLoader', 'cascadeDelete', 'isOwningSide', 'saveAssociated'])
+            ->setMethods(['type', 'getName', 'eagerLoader', 'cascadeDelete', 'isOwningSide', 'saveAssociated'])
             ->getMock();
 
         $listener
@@ -172,7 +172,7 @@ class RelatedModelListenerTest extends TestCase
             ->will($this->returnValue($association));
         $association
             ->expects($this->once())
-            ->method('name')
+            ->method('getName')
             ->will($this->returnValue('Posts'));
         $association
             ->expects($this->once())
@@ -212,7 +212,7 @@ class RelatedModelListenerTest extends TestCase
         $association = $this
             ->getMockBuilder('\Cake\ORM\Association')
             ->disableOriginalConstructor()
-            ->setMethods(['type', 'name', 'eagerLoader', 'cascadeDelete', 'isOwningSide', 'saveAssociated'])
+            ->setMethods(['type', 'getName', 'eagerLoader', 'cascadeDelete', 'isOwningSide', 'saveAssociated'])
             ->getMock();
 
         $listener
@@ -231,8 +231,7 @@ class RelatedModelListenerTest extends TestCase
             ->will($this->returnValue($association));
         $association
             ->expects($this->once())
-            ->method('name')
-            ->with(null)
+            ->method('getName')
             ->will($this->returnValue('Posts'));
 
         $expected = ['Posts' => $association];
