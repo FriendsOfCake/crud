@@ -12,7 +12,7 @@ App::uses('Object', 'Core');
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-abstract class CrudBaseObject extends Object implements CakeEventListener {
+abstract class CrudBaseObject extends CakeObject implements CakeEventListener {
 
 /**
  * Container with reference to all objects
