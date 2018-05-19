@@ -1,7 +1,7 @@
 <?php
 namespace Crud\Action\Bulk;
 
-use Cake\Network\Exception\BadRequestException;
+use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\Utility\Hash;
 use Crud\Action\BaseAction as CrudBaseAction;

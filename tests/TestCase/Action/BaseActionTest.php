@@ -1,6 +1,9 @@
 <?php
 namespace Crud\TestCase\Action;
 
+use Cake\Http\Exception\BadRequestException;
+use Cake\Http\Exception\MethodNotAllowedException;
+use Cake\Http\Exception\NotFoundException;
 use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Crud\Event\Subject;
@@ -441,7 +444,7 @@ class BaseActionTest extends TestCase
     {
         $expected = [
             'code' => 400,
-            'class' => 'Cake\Network\Exception\BadRequestException',
+            'class' => BadRequestException::class,
             'element' => 'default',
             'params' => [
                 'class' => 'message invalidId',
@@ -465,7 +468,7 @@ class BaseActionTest extends TestCase
     {
         $expected = [
             'code' => 404,
-            'class' => 'Cake\Network\Exception\NotFoundException',
+            'class' => NotFoundException::class,
             'element' => 'default',
             'params' => [
                 'class' => 'message recordNotFound',
@@ -489,7 +492,7 @@ class BaseActionTest extends TestCase
     {
         $expected = [
             'code' => 405,
-            'class' => 'Cake\Network\Exception\MethodNotAllowedException',
+            'class' => MethodNotAllowedException::class,
             'element' => 'default',
             'params' => [
                 'class' => 'message badRequestMethod',

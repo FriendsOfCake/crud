@@ -1,6 +1,7 @@
 <?php
 namespace Crud\Action;
 
+use Crud\Error\Exception\ValidationException;
 use Crud\Event\Subject;
 use Crud\Traits\RedirectTrait;
 use Crud\Traits\SaveMethodTrait;
@@ -61,7 +62,7 @@ class AddAction extends BaseAction
             'error' => [
                 'exception' => [
                     'type' => 'validate',
-                    'class' => '\Crud\Error\Exception\ValidationException'
+                    'class' => ValidationException::class
                 ]
             ]
         ],
