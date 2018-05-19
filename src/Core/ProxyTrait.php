@@ -59,7 +59,7 @@ trait ProxyTrait
      *
      * Primarily here to ease unit testing
      *
-     * @return \Cake\Network\Session
+     * @return \Cake\Http\Session
      * @codeCoverageIgnore
      */
     protected function _session()

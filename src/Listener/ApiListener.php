@@ -4,10 +4,12 @@ namespace Crud\Listener;
 use Cake\Core\Configure;
 use Cake\Error\ErrorHandler;
 use Cake\Event\Event;
+use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\Http\ServerRequest;
 use Cake\Utility\Hash;
 use Cake\Utility\Text;
+use Crud\Error\ExceptionRenderer;
 use Crud\Event\Subject;
 
 /**
@@ -38,11 +40,11 @@ class ApiListener extends BaseListener
         ],
         'exception' => [
             'type' => 'default',
-            'class' => 'Cake\Http\Exception\BadRequestException',
+            'class' => BadRequestException::class,
             'message' => 'Unknown error',
             'code' => 0
         ],
-        'exceptionRenderer' => 'Crud\Error\ExceptionRenderer',
+        'exceptionRenderer' => ExceptionRenderer::class,
         'setFlash' => false
     ];
 
@@ -136,7 +138,7 @@ class ApiListener extends BaseListener
     /**
      * Check for allowed HTTP request types
      *
-     * @throws \Cake\Network\Exception\MethodNotAllowedException
+     * @throws \Cake\Http\Exception\MethodNotAllowedException
      * @return bool
      */
     protected function _checkRequestMethods()

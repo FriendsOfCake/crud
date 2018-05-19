@@ -43,7 +43,7 @@ abstract class BaseAction extends BaseObject
      *
      * @param array $args Arguments
      * @return mixed
-     * @throws \Cake\Network\Exception\NotImplementedException if the action can't handle the request
+     * @throws \Cake\Http\Exception\NotImplementedException if the action can't handle the request
      */
     public function handle($args = [])
     {
