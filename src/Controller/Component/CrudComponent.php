@@ -5,6 +5,9 @@ use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
 use Cake\Core\App;
 use Cake\Event\Event;
+use Cake\Http\Exception\BadRequestException;
+use Cake\Http\Exception\MethodNotAllowedException;
+use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Response;
 use Cake\Utility\Inflector;
 use Crud\Error\Exception\ActionNotConfiguredException;
@@ -108,17 +111,17 @@ class CrudComponent extends Component
             'domain' => 'crud',
             'invalidId' => [
                 'code' => 400,
-                'class' => 'Cake\Network\Exception\BadRequestException',
+                'class' => BadRequestException::class,
                 'text' => 'Invalid id'
             ],
             'recordNotFound' => [
                 'code' => 404,
-                'class' => 'Cake\Network\Exception\NotFoundException',
+                'class' => NotFoundException::class,
                 'text' => 'Not found'
             ],
             'badRequestMethod' => [
                 'code' => 405,
-                'class' => 'Cake\Network\Exception\MethodNotAllowedException',
+                'class' => MethodNotAllowedException::class,
                 'text' => 'Method not allowed. This action permits only {methods}'
             ]
         ],

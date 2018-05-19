@@ -1,10 +1,11 @@
 <?php
 namespace Crud\TestCase\Controller\Crud;
 
-use Cake\Controller\ComponentRegistry;
-use Cake\Controller\Controller;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
+use Cake\Http\Exception\BadRequestException;
+use Cake\Http\Exception\MethodNotAllowedException;
+use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
@@ -593,17 +594,17 @@ class CrudComponentTest extends TestCase
                 'domain' => 'crud',
                 'invalidId' => [
                     'code' => 400,
-                    'class' => 'Cake\Network\Exception\BadRequestException',
+                    'class' => BadRequestException::class,
                     'text' => 'Invalid id'
                 ],
                 'recordNotFound' => [
                     'code' => 404,
-                    'class' => 'Cake\Network\Exception\NotFoundException',
+                    'class' => NotFoundException::class,
                     'text' => 'Not found'
                 ],
                 'badRequestMethod' => [
                     'code' => 405,
-                    'class' => 'Cake\Network\Exception\MethodNotAllowedException',
+                    'class' => MethodNotAllowedException::class,
                     'text' => 'Method not allowed. This action permits only {methods}'
                 ]
             ],
@@ -639,17 +640,17 @@ class CrudComponentTest extends TestCase
                 'domain' => 'crud',
                 'invalidId' => [
                     'code' => 400,
-                    'class' => 'Cake\Network\Exception\BadRequestException',
+                    'class' => BadRequestException::class,
                     'text' => 'Invalid id'
                 ],
                 'recordNotFound' => [
                     'code' => 404,
-                    'class' => 'Cake\Network\Exception\NotFoundException',
+                    'class' => NotFoundException::class,
                     'text' => 'Not found'
                 ],
                 'badRequestMethod' => [
                     'code' => 405,
-                    'class' => 'Cake\Network\Exception\MethodNotAllowedException',
+                    'class' => MethodNotAllowedException::class,
                     'text' => 'Method not allowed. This action permits only {methods}'
                 ]
             ],
@@ -682,17 +683,17 @@ class CrudComponentTest extends TestCase
                 'domain' => 'crud',
                 'invalidId' => [
                     'code' => 400,
-                    'class' => 'Cake\Network\Exception\BadRequestException',
+                    'class' => BadRequestException::class,
                     'text' => 'Invalid id'
                 ],
                 'recordNotFound' => [
                     'code' => 404,
-                    'class' => 'Cake\Network\Exception\NotFoundException',
+                    'class' => NotFoundException::class,
                     'text' => 'Not found'
                 ],
                 'badRequestMethod' => [
                     'code' => 405,
-                    'class' => 'Cake\Network\Exception\MethodNotAllowedException',
+                    'class' => MethodNotAllowedException::class,
                     'text' => 'Method not allowed. This action permits only {methods}'
                 ]
             ],
@@ -951,7 +952,7 @@ class CrudComponentTest extends TestCase
 
         $expected = [
             'code' => 500,
-            'class' => 'Cake\Network\Exception\BadRequestException',
+            'class' => BadRequestException::class,
             'text' => 'Invalid id'
         ];
         $result = $this->Crud->getConfig('messages.invalidId');
@@ -974,12 +975,12 @@ class CrudComponentTest extends TestCase
             ],
             'recordNotFound' => [
                 'code' => 404,
-                'class' => 'Cake\Network\Exception\NotFoundException',
+                'class' => NotFoundException::class,
                 'text' => 'Not found'
             ],
             'badRequestMethod' => [
                 'code' => 405,
-                'class' => 'Cake\Network\Exception\MethodNotAllowedException',
+                'class' => MethodNotAllowedException::class,
                 'text' => 'Method not allowed. This action permits only {methods}'
             ]
         ];
