@@ -13,7 +13,7 @@ if (!class_exists('Cake\Http\Exception\MethodNotAllowedException')) {
         'Cake\Http\Exception\BadRequestException'
     );
     class_alias(
-        'Cake\Network\Exception\NotFoundException'
-        'Cake\Http\Exception\NotFoundException',
+        'Cake\Network\Exception\NotFoundException',
+        'Cake\Http\Exception\NotFoundException'
     );
 }
