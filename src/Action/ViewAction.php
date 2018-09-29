@@ -2,6 +2,7 @@
 namespace Crud\Action;
 
 use Crud\Traits\FindMethodTrait;
+use Crud\Traits\SerializeTrait;
 use Crud\Traits\ViewTrait;
 use Crud\Traits\ViewVarTrait;
 
@@ -15,6 +16,7 @@ class ViewAction extends BaseAction
 {
 
     use FindMethodTrait;
+    use SerializeTrait;
     use ViewTrait;
     use ViewVarTrait;
 

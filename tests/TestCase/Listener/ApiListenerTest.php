@@ -432,6 +432,82 @@ class ApiListenerTest extends TestCase
     }
 
     /**
+     * Data provider for testExpandPath
+     *
+     * @return array
+     */
+    public function dataSerializeTraitActions()
+    {
+        return [
+            'View Action' => ['\Crud\Action\ViewAction'],
+            'Index Action' => ['\Crud\Action\IndexAction'],
+            'Edit Action' => ['\Crud\Action\EditAction'],
+            'Add Action' => ['\Crud\Action\AddAction'],
+        ];
+    }
+
+    /**
+     * Test SerializeTrait
+     *
+     * @dataProvider dataSerializeTraitActions
+     * @return void
+     */
+    public function testEnsureSerializeWithSerializeTrait($action)
+    {
+        $listener = $this
+            ->getMockBuilder('\Crud\Listener\ApiListener')
+            ->setMethods(['_action', '_controller'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $action = $this
+            ->getMockBuilder($action)
+            ->setMethods(['setConfig', 'getConfig', 'viewVar'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $controller = $this
+            ->getMockBuilder('\Cake\Controller\Controller')
+            ->setMethods(['set'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $i = 0;
+        $listener
+            ->expects($this->at($i++))
+            ->method('_controller')
+            ->will($this->returnValue($controller));
+        $listener
+            ->expects($this->at($i++))
+            ->method('_action')
+            ->will($this->returnValue($action));
+        $i = 0;
+        $action
+            ->expects($this->at($i++))
+            ->method('setConfig')
+            ->with('serialize', ['something']);
+        $action
+            ->expects($this->at($i++))
+            ->method('viewVar')
+            ->will($this->returnValue(null));
+        $action
+            ->expects($this->once())
+            ->method('getConfig')
+            ->with('serialize')
+            ->will($this->returnValue(['something']));
+        $controller
+            ->expects($this->once())
+            ->method('set')
+            ->with('_serialize', ['success', 'something', 'data' => null]);
+
+        $this->setReflectionClassInstance($action);
+        $this->callProtectedMethod('serialize', [['something']], $action);
+
+        $this->setReflectionClassInstance($listener);
+        $this->callProtectedMethod('_ensureSerialize', [], $listener);
+    }
+
+    /**
      * testEnsureSerializeAlreadySet
      *
      * @return void
