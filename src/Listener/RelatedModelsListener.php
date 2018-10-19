@@ -107,9 +107,9 @@ class RelatedModelsListener extends BaseListener
 
     /**
      * Default find options
-     * 
-     * Set a default limit of 200 rows to prevent including an association to a 
-     * huge table attempting to generate an array of all rows. This can be 
+     *
+     * Set a default limit of 200 rows to prevent including an association to a
+     * huge table attempting to generate an array of all rows. This can be
      * overriden using the relatedModel crud event
      *
      * Find keyField and valueField for find('list')
