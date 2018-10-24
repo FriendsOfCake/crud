@@ -11,7 +11,7 @@ Three BulkAction classes exist in the core:
 - :doc:`Toggle</actions/bulk-toggle>`: Toggles the value of a boolean field for a set of entities
 
 To create your own BulkAction, simply create a new action class with a ``_bulk``
-method. This method takes a CakePHP ``Query`` object as it's first argument
+method. This method takes a CakePHP ``Query`` object as its first argument
 
 .. code-block:: phpinline
 
