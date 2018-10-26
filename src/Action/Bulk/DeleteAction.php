@@ -29,8 +29,48 @@ class DeleteAction extends BaseAction
                 'text' => 'Could not complete deletion'
             ]
         ];
+        $this->_defaultConfig['cascade'] = false;
 
         parent::__construct($Controller, $config);
+    }
+
+    /**
+     * @param \Cake\ORM\Query|null $query The query to act upon
+     *
+     * @return bool
+     */
+    protected function _deleteAll(Query $query = null)
+    {
+        $query = $query->delete();
+        $statement = $query->execute();
+        $statement->closeCursor();
+
+        return (bool)$statement->rowCount();
+    }
+
+    /**
+     * @param \Cake\ORM\Query|null $query The query to act upon
+     *
+     * @throws \Exception
+     * @return bool
+     */
+    protected function _cascadeDeletes(Query $query = null)
+    {
+        $repository = $this->_table();
+
+        $connection = $repository->getConnection();
+        return $connection->transactional(function () use ($repository, $query) {
+            $result = true;
+            foreach ($query as $entity) {
+                $result = $result && (bool)$repository->delete($entity);
+
+                if (!$result) {
+                    return $result;
+                }
+            }
+
+            return $result;
+        });
     }
 
     /**
@@ -41,10 +81,10 @@ class DeleteAction extends BaseAction
      */
     protected function _bulk(Query $query = null)
     {
-        $query = $query->delete();
-        $statement = $query->execute();
-        $statement->closeCursor();
+        if ((bool)$this->getConfig('cascade')) {
+            return $this->_cascadeDeletes($query);
+        }
 
-        return (bool)$statement->rowCount();
+        return $this->_deleteAll($query);
     }
 }
