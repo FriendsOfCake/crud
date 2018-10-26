@@ -190,4 +190,75 @@ class DeleteActionTest extends IntegrationTestCase
         $this->assertTrue($this->_subject->success);
         $this->assertRedirect('/users');
     }
+
+    /**
+     * Test cascade deletes
+     *
+     * @return void
+     */
+    public function testCascadeDelete()
+    {
+        $this->_eventManager->on('Controller.initialize', ['priority' => 11], function ($event) {
+            $this->_controller->Flash = $this->getMockBuilder('Cake\Controller\Component\FlashComponent')
+                ->setMethods(['set'])
+                ->disableOriginalConstructor()
+                ->getMock();
+
+            $this->_controller->Flash->expects($this->once())
+                ->method('set')
+                ->with('Delete completed successfully', [
+                        'element' => 'default',
+                        'params' => ['class' => 'message success', 'original' => 'Delete completed successfully'],
+                        'key' => 'flash'
+                    ]);
+
+            $this->_controller->Crud->setConfig('actions.deleteAll.cascade', true);
+
+            $this->_subscribeToEvents($this->_controller);
+        });
+
+        $this->getTableLocator()
+            ->get('Users')
+            ->hasMany('Blogs', [
+                'dependent' => true
+            ]);
+
+        $blogs = $this->getTableLocator()->get('Blogs')->find()
+            ->where([
+                'id IN' => [
+                    1 => 1,
+                    2 => 2,
+                ]
+            ])
+            ->toArray();
+
+        $user = $this->getTableLocator()
+            ->get('Users')
+            ->find()
+            ->where([
+                'id' => $blogs[0]->user_id
+            ])
+            ->first();
+
+        $this->assertNotNull($user);
+
+        $this->post('/users/deleteAll', [
+            'id' => [
+                $blogs[0]->user_id,
+                $blogs[1]->user_id,
+            ],
+        ]);
+
+        $this->assertEvents(['beforeBulk', 'afterBulk', 'setFlash', 'beforeRedirect']);
+        $this->assertTrue($this->_subject->success);
+        $this->assertRedirect('/users');
+
+        $user = $this->getTableLocator()->get('Users')->find()
+            ->where([
+                'id' => $blogs[0]->user_id
+            ])
+            ->first();
+
+        $this->assertNull($user);
+    }
 }
