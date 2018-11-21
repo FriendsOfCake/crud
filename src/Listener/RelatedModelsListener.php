@@ -147,7 +147,7 @@ class RelatedModelsListener extends BaseListener
         $settings = $this->relatedModels(null, $action);
 
         if ($settings === true) {
-            return $this->getAssociatedByType(['oneToOne', 'manyToMany', 'manyToOne']);
+            return $this->getAssociatedByType(['oneToOne', 'manyToMany', 'manyToOne', 'oneToMany']);
         }
 
         if (empty($settings)) {
