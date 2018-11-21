@@ -117,7 +117,7 @@ class RelatedModelListenerTest extends TestCase
         $listener
             ->expects($this->once())
             ->method('getAssociatedByType')
-            ->with(['oneToOne', 'manyToMany', 'manyToOne']);
+            ->with(['oneToOne', 'manyToMany', 'manyToOne', 'oneToMany']);
 
         $result = $listener->models();
     }
@@ -180,7 +180,7 @@ class RelatedModelListenerTest extends TestCase
             ->will($this->returnValue('oneToOne'));
 
         $expected = ['Posts' => $association];
-        $result = $listener->getAssociatedByType(['oneToOne', 'manyToMany', 'manyToOne']);
+        $result = $listener->getAssociatedByType(['oneToOne', 'manyToMany', 'manyToOne', 'oneToMany']);
 
         $this->assertEquals($expected, $result);
     }
