@@ -16,7 +16,7 @@ directly to ``SessionComponent::setFlash``.
 
 Defaults are stored in the ``messages`` configuration array for each :doc:`action </actions>`.
 
-If you do not want to use this feature, simply stop the event by calling it's ``stopPropagation()`` method.
+If you do not want to use this feature, simply stop the event by calling its ``stopPropagation()`` method.
 
 If you'd like to customise the flash messages that are used, perhaps you're using
 `friendsofcake/bootstrap-ui <https://github.com/friendsofcake/bootstrap-ui>`_. It's actually quite simple to do, and can
