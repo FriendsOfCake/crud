@@ -11,8 +11,7 @@ class ActionsTest extends TestSuite
     {
         $suite = new TestSuite('All CRUD action tests');
 
-        $path = Plugin::path('Crud');
-        $testPath = $path . '/tests/TestCase';
+        $testPath = ROOT . '/tests/TestCase';
         if (!is_dir($testPath)) {
             return $suite;
         }

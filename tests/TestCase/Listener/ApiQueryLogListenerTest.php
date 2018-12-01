@@ -161,14 +161,19 @@ class ApiQueryLogListenerTest extends TestCase
      */
     public function testSetupLogging()
     {
+        $methodName = 'enableQueryLogging';
+        if (version_compare(Configure::version(), '3.7.0RC', '<')) {
+            $methodName = 'logQueries';
+        }
+
         $DefaultSource = $this
             ->getMockBuilder('\Cake\Database\Connection')
             ->disableOriginalConstructor()
-            ->setMethods(['logQueries', 'setLogger'])
+            ->setMethods([$methodName, 'setLogger'])
             ->getMock();
         $DefaultSource
             ->expects($this->once())
-            ->method('logQueries')
+            ->method($methodName)
             ->with(true);
         $DefaultSource
             ->expects($this->once())

@@ -51,8 +51,15 @@ class ApiQueryLogListener extends BaseListener
     {
         foreach ($this->_getSources() as $connectionName) {
             try {
-                $this->_getSource($connectionName)->logQueries(true);
-                $this->_getSource($connectionName)->setLogger(new QueryLogger());
+                $connection = $this->_getSource($connectionName);
+
+                if (method_exists($connection, 'enableQueryLogging')) {
+                    $connection->enableQueryLogging(true);
+                } else {
+                    $connection->logQueries(true);
+                }
+
+                $connection->setLogger(new QueryLogger());
             } catch (MissingDatasourceConfigException $e) {
                 //Safe to ignore this :-)
             }

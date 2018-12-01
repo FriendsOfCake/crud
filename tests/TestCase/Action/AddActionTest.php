@@ -1,6 +1,7 @@
 <?php
 namespace Crud\Test\TestCase\Action;
 
+use Cake\Core\Plugin;
 use Cake\Routing\DispatcherFactory;
 use Cake\Routing\Router;
 use Crud\TestSuite\IntegrationTestCase;
@@ -17,7 +18,7 @@ class AddActionTest extends IntegrationTestCase
      *
      * @var array
      */
-    public $fixtures = ['plugin.crud.blogs'];
+    public $fixtures = ['plugin.Crud.Blogs'];
 
     /**
      * Table class to mock on
@@ -33,6 +34,10 @@ class AddActionTest extends IntegrationTestCase
      */
     public function setUp()
     {
+        $this->deprecated(function () {
+            Plugin::load('Crud', ['path' => ROOT . DS, 'autoload' => true]);
+        });
+
         parent::setUp();
 
         $this->useHttpServer(true);

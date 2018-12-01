@@ -71,8 +71,6 @@ Cake\Core\Configure::write('Session', [
     'defaults' => 'php'
 ]);
 
-Cake\Core\Plugin::load('Crud', ['path' => ROOT . DS, 'autoload' => true]);
-
 // Ensure default test connection is defined
 if (!getenv('db_dsn')) {
     putenv('db_dsn=sqlite:///:memory:');
