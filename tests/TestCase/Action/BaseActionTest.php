@@ -1,6 +1,7 @@
 <?php
 namespace Crud\TestCase\Action;
 
+use Cake\Core\Plugin;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\Http\Exception\NotFoundException;
@@ -19,6 +20,10 @@ class BaseActionTest extends TestCase
 
     public function setUp()
     {
+        $this->deprecated(function () {
+            Plugin::load('Crud', ['path' => ROOT . DS, 'autoload' => true]);
+        });
+
         parent::setUp();
 
         $this->Request = $this->getMockBuilder(ServerRequest::class)

@@ -21,7 +21,10 @@ class SearchListenerTest extends TestCase
 {
     public function tearDown()
     {
-        Plugin::unload('Search');
+        $this->deprecated(function () {
+            Plugin::unload('Search');
+        });
+
         TableRegistry::clear();
     }
 
@@ -54,7 +57,9 @@ class SearchListenerTest extends TestCase
      */
     public function testInjectSearchException()
     {
-        Plugin::load('Search', ['path' => ROOT . DS]);
+        $this->deprecated(function () {
+            Plugin::load('Search', ['path' => ROOT . DS]);
+        });
 
         $request = new ServerRequest();
         $response = new Response();
@@ -101,7 +106,9 @@ class SearchListenerTest extends TestCase
      */
     public function testInjectSearch()
     {
-        Plugin::load('Search', ['path' => ROOT . DS]);
+        $this->deprecated(function () {
+            Plugin::load('Search', ['path' => ROOT . DS]);
+        });
 
         $params = [
             'search' => [
@@ -166,8 +173,10 @@ class SearchListenerTest extends TestCase
      */
     public function testInjectSearchWebserviceEndpoint()
     {
-        Plugin::load('Search', ['path' => ROOT . DS]);
-        Plugin::load('Muffin/Webservice', ['path' => ROOT . '/vendor/muffin/webservice/']);
+        $this->deprecated(function () {
+            Plugin::load('Search', ['path' => ROOT . DS]);
+            Plugin::load('Muffin/Webservice', ['path' => ROOT . '/vendor/muffin/webservice/']);
+        });
 
         $params = [
             'search' => [

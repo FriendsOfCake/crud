@@ -11,8 +11,7 @@ class ListenersTest extends TestSuite
     {
         $suite = new TestSuite('All CRUD listener tests');
 
-        $path = Plugin::path('Crud');
-        $testPath = $path . DS . 'tests' . DS . 'TestCase';
+        $testPath = ROOT . DS . 'tests' . DS . 'TestCase';
         if (!is_dir($testPath)) {
             return $suite;
         }

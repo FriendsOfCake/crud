@@ -18,8 +18,8 @@ class SetValueActionTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.crud.blogs',
-        'plugin.crud.users'
+        'plugin.Crud.Blogs',
+        'plugin.Crud.Users',
     ];
 
     /**
