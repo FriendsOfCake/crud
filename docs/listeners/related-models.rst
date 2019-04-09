@@ -132,7 +132,7 @@ Example
     class DemoController extends AppController {
 
         public function beforeFilter(\Cake\Event\Event $event) {
-            parent::beforeFilter();
+            parent::beforeFilter($event);
 
             $this->Crud->on('relatedModel', function(\Cake\Event\Event $event) {
                 if ($event->getSubject()->association->name() === 'Authors') {
