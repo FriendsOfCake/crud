@@ -99,7 +99,7 @@ class AddAction extends BaseAction
         $subject = $this->_subject([
             'success' => true,
             'entity' => $this->_entity(
-                $this->_request()->getQuery() ?: [],
+                $this->_request()->getQueryParams(),
                 ['validate' => false] + $this->saveOptions()
             ),
         ]);
