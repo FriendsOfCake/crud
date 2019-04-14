@@ -2,7 +2,7 @@
 declare(strict_types=1);
 namespace Crud\Traits;
 
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\Utility\Inflector;
 use Exception;
 
@@ -12,11 +12,11 @@ trait ViewVarTrait
      * Publish the viewVar so people can do $$viewVar and end up
      * wit the entity in the view
      *
-     * @param \Cake\Event\Event $event Event
+     * @param \Cake\Event\EventInterface $event Event
      * @return false|null
      * @throws \Exception
      */
-    public function publishViewVar(Event $event)
+    public function publishViewVar(EventInterface $event)
     {
         if (!$this->responding()) {
             return false;
@@ -72,11 +72,11 @@ trait ViewVarTrait
      * Derive the viewVar value based on the scope of the action
      * as well as the Event being handled
      *
-     * @param \Cake\Event\Event $event Event
+     * @param \Cake\Event\EventInterface $event Event
      * @return mixed
      * @throws \Exception
      */
-    protected function _deriveViewValue(Event $event)
+    protected function _deriveViewValue(EventInterface $event)
     {
         $key = $this->_action()->subjectEntityKey();
 

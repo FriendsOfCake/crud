@@ -5,6 +5,7 @@ namespace Crud\Listener;
 use Cake\Core\Configure;
 use Cake\Error\ErrorHandler;
 use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\Http\ServerRequest;
@@ -100,10 +101,10 @@ class ApiListener extends BaseListener
      *
      * Called before the crud action is executed
      *
-     * @param \Cake\Event\Event $event Event
+     * @param \Cake\Event\EventInterface $event Event
      * @return void
      */
-    public function beforeHandle(Event $event)
+    public function beforeHandle(EventInterface $event)
     {
         $this->_checkRequestMethods();
     }
@@ -111,11 +112,11 @@ class ApiListener extends BaseListener
     /**
      * Handle response
      *
-     * @param \Cake\Event\Event $event Event
+     * @param \Cake\Event\EventInterface $event Event
      * @return \Cake\Http\Response|null
      * @throws \Exception
      */
-    public function respond(Event $event)
+    public function respond(EventInterface $event)
     {
         $key = $event->getSubject()->success ? 'success' : 'error';
         $apiConfig = $this->_action()->getConfig('api.' . $key);
@@ -395,10 +396,10 @@ class ApiListener extends BaseListener
      *
      * An API request doesn't need flash messages - so stop them being processed
      *
-     * @param \Cake\Event\Event $event Event
+     * @param \Cake\Event\EventInterface $event Event
      * @return void
      */
-    public function setFlash(Event $event)
+    public function setFlash(EventInterface $event)
     {
         if (!$this->getConfig('setFlash')) {
             $event->stopPropagation();

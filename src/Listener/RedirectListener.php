@@ -2,7 +2,7 @@
 declare(strict_types=1);
 namespace Crud\Listener;
 
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Crud\Event\Subject;
 use Exception;
 
@@ -102,11 +102,11 @@ class RedirectListener extends BaseListener
      * If a special redirect key is provided, change the
      * redirection URL target
      *
-     * @param \Cake\Event\Event $event Event
+     * @param \Cake\Event\EventInterface $event Event
      * @return void
      * @throws \Exception
      */
-    public function beforeRedirect(Event $event)
+    public function beforeRedirect(EventInterface $event)
     {
         $subject = $event->getSubject();
 

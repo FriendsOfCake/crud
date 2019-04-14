@@ -6,6 +6,7 @@ use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
 use Cake\Core\App;
 use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\Http\Exception\NotFoundException;
@@ -195,11 +196,11 @@ class CrudComponent extends Component
     /**
      * Loads listeners
      *
-     * @param \Cake\Event\Event $event Event instance
+     * @param \Cake\Event\EventInterface $event Event instance
      * @return void
      * @throws \Exception
      */
-    public function beforeFilter(Event $event)
+    public function beforeFilter(EventInterface $event)
     {
         $this->_loadListeners();
         $this->trigger('beforeFilter');
@@ -208,11 +209,11 @@ class CrudComponent extends Component
     /**
      * Called after the Controller::beforeFilter() and before the controller action.
      *
-     * @param \Cake\Event\Event $event Event instance
+     * @param \Cake\Event\EventInterface $event Event instance
      * @return void
      * @throws \Exception
      */
-    public function startup(Event $event)
+    public function startup(EventInterface $event)
     {
         $this->_loadListeners();
         $this->trigger('startup');

@@ -2,7 +2,7 @@
 declare(strict_types=1);
 namespace Crud\Listener;
 
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 
 /**
  * When loaded Crud API Pagination Listener will include
@@ -35,10 +35,10 @@ class ApiPaginationListener extends BaseListener
     /**
      * Appends the pagination information to the JSON or XML output
      *
-     * @param \Cake\Event\Event $event Event
+     * @param \Cake\Event\EventInterface $event Event
      * @return void
      */
-    public function beforeRender(Event $event)
+    public function beforeRender(EventInterface $event)
     {
         $request = $this->_request();
 

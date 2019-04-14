@@ -2,7 +2,7 @@
 declare(strict_types=1);
 namespace Crud\Action;
 
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\Http\Exception\NotImplementedException;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
@@ -251,10 +251,10 @@ abstract class BaseAction extends BaseObject
     /**
      * Set "success" variable for view.
      *
-     * @param \Cake\Event\Event $event Event
+     * @param \Cake\Event\EventInterface $event Event
      * @return bool|null
      */
-    public function publishSuccess(Event $event)
+    public function publishSuccess(EventInterface $event)
     {
         if (!isset($event->getSubject()->success)) {
             return false;

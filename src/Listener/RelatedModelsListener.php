@@ -2,7 +2,7 @@
 declare(strict_types=1);
 namespace Crud\Listener;
 
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\ORM\Association;
 use Cake\Utility\Inflector;
 use RuntimeException;
@@ -32,10 +32,10 @@ class RelatedModelsListener extends BaseListener
     /**
      * Automatically parse and contain related table classes
      *
-     * @param \Cake\Event\Event $event Before paginate event
+     * @param \Cake\Event\EventInterface $event Before paginate event
      * @return void
      */
-    public function beforePaginate(Event $event)
+    public function beforePaginate(EventInterface $event)
     {
         $method = 'contain';
         if (method_exists($event->getSubject()->query, 'getContain')) {
@@ -58,11 +58,11 @@ class RelatedModelsListener extends BaseListener
     /**
      * Fetches related models' list and sets them to a variable for the view
      *
-     * @param \Cake\Event\Event $event Event
+     * @param \Cake\Event\EventInterface $event Event
      * @return void
      * @codeCoverageIgnore
      */
-    public function beforeRender(Event $event)
+    public function beforeRender(EventInterface $event)
     {
         $entity = null;
         if (isset($event->getSubject()->entity)) {

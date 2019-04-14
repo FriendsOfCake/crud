@@ -5,7 +5,7 @@ namespace Crud\Listener;
 use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
 use Cake\Datasource\Exception\MissingDatasourceConfigException;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Crud\Log\QueryLogger;
 
 /**
@@ -44,10 +44,10 @@ class ApiQueryLogListener extends BaseListener
     /**
      * Setup logging for all connections
      *
-     * @param \Cake\Event\Event $event Event
+     * @param \Cake\Event\EventInterface $event Event
      * @return void
      */
-    public function setupLogging(Event $event)
+    public function setupLogging(EventInterface $event)
     {
         foreach ($this->_getSources() as $connectionName) {
             try {
@@ -63,10 +63,10 @@ class ApiQueryLogListener extends BaseListener
     /**
      * Appends the query log to the JSON or XML output
      *
-     * @param \Cake\Event\Event $event Event
+     * @param \Cake\Event\EventInterface $event Event
      * @return void
      */
-    public function beforeRender(Event $event)
+    public function beforeRender(EventInterface $event)
     {
         if (!Configure::read('debug')) {
             return;
