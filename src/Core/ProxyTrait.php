@@ -109,7 +109,7 @@ trait ProxyTrait
     /**
      * Get a table instance
      *
-     * @return \Cake\Datasource\RepositoryInterface
+     * @return \Cake\ORM\Table
      */
     protected function _table()
     {
@@ -125,7 +125,7 @@ trait ProxyTrait
      *
      * @param array $data Data array
      * @param array $options A list of options for the object hydration.
-     * @return \Cake\ORM\EntityInterface
+     * @return \Cake\Datasource\EntityInterface
      */
     protected function _entity(array $data = [], array $options = [])
     {
