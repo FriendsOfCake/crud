@@ -35,8 +35,8 @@ class ApiListener extends BaseListener
             'xml' => 'Xml'
         ],
         'detectors' => [
-            'json' => ['ext' => 'json', 'accepts' => 'application/json'],
-            'xml' => ['ext' => 'xml', 'accepts' => 'text/xml']
+            'json' => ['accept' => ['application/json'], 'param' => '_ext', 'value' => 'json'],
+            'xml' => ['accept' => ['application/xml', 'text/xml'], 'param' => '_ext', 'value' => 'xml'],
         ],
         'exception' => [
             'type' => 'default',
@@ -56,7 +56,7 @@ class ApiListener extends BaseListener
      *
      * @return array
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         $this->setupDetectors();
 
@@ -219,7 +219,7 @@ class ApiListener extends BaseListener
     {
         $controller = $this->_controller();
 
-        if (isset($controller->viewVars['_serialize'])) {
+        if ($controller->viewBuilder()->getVar('_serialize') !== null) {
             return;
         }
 
@@ -247,7 +247,7 @@ class ApiListener extends BaseListener
     {
         $controller = $this->_controller();
 
-        if (isset($controller->viewVars['success'])) {
+        if ($controller->viewBuilder()->getVar('success') !== null) {
             return;
         }
 
@@ -271,7 +271,7 @@ class ApiListener extends BaseListener
             $viewVar = 'data';
         }
 
-        if (isset($controller->viewVars[$viewVar])) {
+        if ($controller->viewBuilder()->getVar($viewVar) !== null) {
             return;
         }
 
@@ -422,13 +422,7 @@ class ApiListener extends BaseListener
         $detectors = $this->getConfig('detectors');
 
         foreach ($detectors as $name => $config) {
-            $request->addDetector($name, function (ServerRequest $request) use ($config) {
-                if ($config['ext'] !== false && $request->getParam('_ext') === $config['ext']) {
-                    return true;
-                }
-
-                return $request->accepts($config['accepts']);
-            });
+            $request->addDetector($name, $config);
         }
 
         $request->addDetector('api', function (ServerRequest $request) use ($detectors) {

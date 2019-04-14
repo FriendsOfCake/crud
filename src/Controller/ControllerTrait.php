@@ -22,18 +22,6 @@ trait ControllerTrait
     public $dispatchComponents = [];
 
     /**
-     * Get controller name.
-     *
-     * Added for backwards compatibility with CakePHP 3.5.
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
      * Dispatches the controller action. Checks that the action exists and isn't private.
      *
      * If CakePHP raises MissingActionException we attempt to execute Crud
@@ -83,7 +71,7 @@ trait ControllerTrait
      * @param string $action Action name
      * @return bool True is action is mapped and enabled.
      */
-    public function isAction($action)
+    public function isAction(string $action): bool
     {
         $isAction = parent::isAction($action);
         if ($isAction) {

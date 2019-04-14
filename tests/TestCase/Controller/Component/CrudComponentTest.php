@@ -2,6 +2,7 @@
 namespace Crud\TestCase\Controller\Crud;
 
 use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\Event\EventManager;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\MethodNotAllowedException;
@@ -24,13 +25,14 @@ class TestCrudEventManager extends \Cake\Event\EventManager
 
     protected $_log = [];
 
-    public function dispatch($event)
+    public function dispatch($event): EventInterface
     {
         $this->_log[] = [
-            'name' => $event->name(),
+            'name' => $event->getName(),
             'subject' => $event->getSubject()
         ];
-        parent::dispatch($event);
+
+        return parent::dispatch($event);
     }
 
     public function getLog($params = [])
@@ -80,15 +82,13 @@ class CrudExamplesController extends \Cake\Controller\Controller
     /**
      * Make it possible to dynamically define the components array during tests
      *
-     * @param CakeRequest $request
-     * @param CakeResponse $response
      * @return void
      */
-    public function __construct($request = null, $response = null)
+    public function initialize(): void
     {
-        $this->components = self::$componentsArray;
-
-        return parent::__construct($request, $response);
+        foreach (self::$componentsArray as $plugin => $config) {
+            $this->loadComponent($plugin, $config);
+        }
     }
 
     /**
@@ -200,7 +200,6 @@ class CrudComponentTest extends TestCase
             ->setMethods(['header', 'redirect', 'render', '_stop'])
             ->setConstructorArgs([$this->request, $response, 'CrudExamples', EventManager::instance()])
             ->getMock();
-        $this->controller->methods = [];
 
         $this->Registry = $this->controller->components();
 
@@ -397,7 +396,8 @@ class CrudComponentTest extends TestCase
         $result = $this->Crud->isActionMapped('index');
         $this->assertTrue($result);
 
-        $this->controller->request = $this->controller->request->withParam('action', 'edit');
+        $request = $this->controller->getRequest()->withParam('action', 'edit');
+        $this->controller->setRequest($request);
         $this->Crud->initialize([]);
         $result = $this->Crud->isActionMapped();
         $this->assertTrue($result);
@@ -412,7 +412,23 @@ class CrudComponentTest extends TestCase
         $result = $this->Crud->isActionMapped('puppies');
         $this->assertFalse($result);
 
-        $this->controller->action = 'rainbows';
+        $config = [
+            'actions' => [
+                'Crud.Index',
+                'Crud.Add',
+                'Crud.Edit',
+                'Crud.View',
+                'Crud.Delete'
+            ]
+        ];
+
+        $request = $this->controller->getRequest()->withParam('action', 'rainbows');
+        $this->controller->setRequest($request);
+
+        $this->Crud = new TestCrudComponent($this->Registry, $config);
+        $this->Crud->beforeFilter(new Event('Controller.beforeFilter'));
+        $this->controller->Crud = $this->Crud;
+
         $this->Crud->beforeFilter(new Event('Controller.beforeFilter'));
         $result = $this->Crud->isActionMapped();
         $this->assertFalse($result);
@@ -424,13 +440,15 @@ class CrudComponentTest extends TestCase
      */
     public function testOn()
     {
-        $this->Crud->on('event', 'fakeCallback');
+        $callback = function () {
+        };
+        $this->Crud->on('event', $callback);
 
         $return = $this->controller->getEventManager()->listeners('Crud.event');
 
         $expected = [
             [
-                'callable' => 'fakeCallback'
+                'callable' => $callback
             ]
         ];
         $this->assertSame($expected, $return);
@@ -442,21 +460,27 @@ class CrudComponentTest extends TestCase
      */
     public function testOnWithPriPriority()
     {
-        $this->Crud->on('event', 'fakeCallback');
-        $this->Crud->on('event', 'fakeHighPriority', ['priority' => 1]);
-        $this->Crud->on('event', 'fakeLowPriority', ['priority' => 99999]);
+        $one = function () {
+        };
+        $two = function () {
+        };
+        $three = function () {
+        };
+        $this->Crud->on('event', $one);
+        $this->Crud->on('event', $two, ['priority' => 1]);
+        $this->Crud->on('event', $three, ['priority' => 99999]);
 
         $return = $this->controller->getEventManager()->listeners('Crud.event');
 
         $expected = [
             [
-                'callable' => 'fakeHighPriority'
+                'callable' => $two
             ],
             [
-                'callable' => 'fakeCallback'
+                'callable' => $one
             ],
             [
-                'callable' => 'fakeLowPriority'
+                'callable' => $three
             ]
         ];
         $this->assertSame($expected, $return);
@@ -561,12 +585,14 @@ class CrudComponentTest extends TestCase
      */
     public function testViewCanBeChangedInControllerAction()
     {
-        $this->controller->request = $this->request->withParam('action', 'search');
+        $request = $this->request->withParam('action', 'search');
 
-        $this->controller->request
+        $request
             ->expects($this->once())
             ->method('getMethod')
             ->will($this->returnValue('GET'));
+
+        $this->controller->setRequest($request);
 
         $this->controller
             ->expects($this->once())

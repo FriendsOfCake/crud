@@ -1,4 +1,6 @@
 <?php
+
+use Cake\Core\Plugin;
 // @codingStandardsIgnoreFile
 
 $findRoot = function () {
@@ -22,10 +24,10 @@ if (!defined('DS')) {
     define('DS', DIRECTORY_SEPARATOR);
 }
 define('ROOT', $findRoot());
-define('APP_DIR', 'App');
+define('APP_DIR', 'test_app');
 define('WEBROOT_DIR', 'webroot');
-define('APP', ROOT . '/tests/App/');
-define('CONFIG', ROOT . '/tests/config/');
+define('APP', ROOT . '/tests/test_app/src/');
+define('CONFIG', ROOT . '/tests/test_app/config/');
 define('WWW_ROOT', ROOT . DS . WEBROOT_DIR . DS);
 define('TESTS', ROOT . DS . 'tests' . DS);
 define('TMP', ROOT . DS . 'tmp' . DS);
@@ -38,7 +40,11 @@ define('CAKE', CORE_PATH . 'src' . DS);
 require ROOT . '/vendor/autoload.php';
 require CORE_PATH . 'config/bootstrap.php';
 
-Cake\Core\Configure::write('App', ['namespace' => 'Crud\Test\App']);
+Cake\Core\Configure::write('App', [
+    'namespace' => 'Crud\Test\App',
+    'encoding' => 'UTF-8',
+    'fullBaseUrl' => 'http://localhost'
+]);
 Cake\Core\Configure::write('debug', true);
 
 $TMP = new \Cake\Filesystem\Folder(TMP);
@@ -81,4 +87,4 @@ Cake\Datasource\ConnectionManager::setConfig('test', [
     'timezone' => 'UTC'
 ]);
 
-loadPHPUnitAliases();
+Plugin::getCollection()->add(new \Crud\Plugin());

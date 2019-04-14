@@ -88,7 +88,7 @@ trait RedirectTrait
      * @param int|null $status Status code
      * @return \Cake\Http\Response
      */
-    protected function _redirect(Subject $subject, $url = null, $status = null)
+    protected function _redirect(Subject $subject, $url = null, int $status = 302)
     {
         $url = $this->_redirectUrl($url);
 
@@ -97,7 +97,7 @@ trait RedirectTrait
         $event = $this->_trigger('beforeRedirect', $subject);
 
         if ($event->isStopped()) {
-            return $this->_controller()->response;
+            return $this->_controller()->getResponse();
         }
 
         return $this->_controller()->redirect($subject->url, $subject->status);

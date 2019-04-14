@@ -262,8 +262,8 @@ class ApiListenerTest extends TestCase
                 'xml' => 'Xml'
             ],
             'detectors' => [
-                'json' => ['ext' => 'json', 'accepts' => 'application/json'],
-                'xml' => ['ext' => 'xml', 'accepts' => 'text/xml']
+                'json' => ['accept' => ['application/json'], 'param' => '_ext', 'value' => 'json'],
+                'xml' => ['accept' => ['application/xml', 'text/xml'], 'param' => '_ext', 'value' => 'xml'],
             ],
             'exception' => [
                 'type' => 'default',
@@ -526,7 +526,7 @@ class ApiListenerTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $controller->viewVars['_serialize'] = 'hello world';
+        $controller->viewBuilder()->setVar('_serialize', 'hello world');
 
         $action = $this
             ->getMockBuilder('\Crud\Action\IndexAction')
@@ -615,7 +615,7 @@ class ApiListenerTest extends TestCase
 
         $controller = $this
             ->getMockBuilder('\Crud\Test\App\Controller\BlogsController')
-            ->setMethods(['set'])
+            ->setMethods(['set', 'getName'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -634,6 +634,10 @@ class ApiListenerTest extends TestCase
             ->expects($this->at($i++))
             ->method('_action')
             ->will($this->returnValue($action));
+        $controller
+            ->expects($this->any())
+            ->method('getName')
+            ->will($this->returnValue(''));
         $controller
             ->expects($this->once())
             ->method('set')
@@ -918,7 +922,7 @@ class ApiListenerTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $controller->viewVars['success'] = true;
+        $controller->viewBuilder()->setVar('success', true);
 
         $i = 0;
         $listener
@@ -1099,9 +1103,9 @@ class ApiListenerTest extends TestCase
     public function testSetupDetectorsIntigration()
     {
         $detectors = [
-            'json' => ['ext' => 'json', 'accepts' => 'application/json'],
-            'xml' => ['ext' => 'xml', 'accepts' => 'text/xml'],
-            'jsonapi' => ['ext' => false, 'accepts' => 'application/vnd.api+json']
+            'json' => ['accept' => ['application/json'], 'param' => '_ext', 'value' => 'json'],
+            'xml' => ['accept' => ['application/xml', 'text/xml'], 'param' => '_ext', 'value' => 'xml'],
+            'jsonapi' => ['accept' => ['application/vnd.api+json']],
         ];
 
         $listener = $this
@@ -1112,7 +1116,7 @@ class ApiListenerTest extends TestCase
 
         $request = $this
             ->getMockBuilder(ServerRequest::class)
-            ->setMethods(['accepts'])
+            ->setMethods(['_acceptHeaderDetector'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -1131,9 +1135,12 @@ class ApiListenerTest extends TestCase
 
         // Test with "ext"
         foreach ($detectors as $name => $configuration) {
-            $request = $request->withParam('_ext', $configuration['ext']);
+            if (!isset($configuration['value'])) {
+                continue;
+            }
+            $request = $request->withParam('_ext', $configuration['value']);
             $request->clearDetectorCache();
-            if ($configuration['ext'] !== false) {
+            if ($configuration['value'] !== false) {
                 $this->assertTrue($request->is($name));
             }
         }
@@ -1146,8 +1153,8 @@ class ApiListenerTest extends TestCase
         foreach ($detectors as $name => $configuration) {
             $request
                 ->expects($this->at($r++))
-                ->method('accepts')
-                ->with($configuration['accepts'])
+                ->method('_acceptHeaderDetector')
+                ->with($configuration)
                 ->will($this->returnValue(true));
         }
 
@@ -1175,7 +1182,7 @@ class ApiListenerTest extends TestCase
         //Ensure that no set extension will not result in a true
         $request->clearDetectorCache();
         $request->expects($this->any())
-            ->method('accepts')
+            ->method('_acceptHeaderDetector')
             ->will($this->returnValue(false));
 
         $this->assertFalse($request->is('jsonapi'), "A request with no extensions should not be considered an jsonapi request");

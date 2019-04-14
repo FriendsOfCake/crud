@@ -21,9 +21,7 @@ class SearchListenerTest extends TestCase
 {
     public function tearDown()
     {
-        $this->deprecated(function () {
-            Plugin::unload('Search');
-        });
+        $this->removePlugins(['Search']);
 
         TableRegistry::clear();
     }
@@ -57,10 +55,6 @@ class SearchListenerTest extends TestCase
      */
     public function testInjectSearchException()
     {
-        $this->deprecated(function () {
-            Plugin::load('Search', ['path' => ROOT . DS]);
-        });
-
         $request = new ServerRequest();
         $response = new Response();
         $eventManager = new EventManager();
@@ -106,9 +100,7 @@ class SearchListenerTest extends TestCase
      */
     public function testInjectSearch()
     {
-        $this->deprecated(function () {
-            Plugin::load('Search', ['path' => ROOT . DS]);
-        });
+        $this->loadPlugins(['Search']);
 
         $params = [
             'search' => [
@@ -173,10 +165,13 @@ class SearchListenerTest extends TestCase
      */
     public function testInjectSearchWebserviceEndpoint()
     {
-        $this->deprecated(function () {
-            Plugin::load('Search', ['path' => ROOT . DS]);
-            Plugin::load('Muffin/Webservice', ['path' => ROOT . '/vendor/muffin/webservice/']);
-        });
+        if (!class_exists(EndpointRegistry::class)) {
+            $this->markTestSkipped(
+                'Muffin/Webservice plugin is not loaded.'
+            );
+        }
+
+        $this->loadPlugins(['Search', 'Muffin/Webservice']);
 
         $params = [
             'search' => [

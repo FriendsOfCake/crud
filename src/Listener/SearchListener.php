@@ -27,7 +27,7 @@ class SearchListener extends BaseListener
      *
      * @return array
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         return [
             'Crud.beforeLookup' => ['callable' => 'injectSearch'],

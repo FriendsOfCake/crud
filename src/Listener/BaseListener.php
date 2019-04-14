@@ -29,7 +29,7 @@ abstract class BaseListener extends BaseObject
      *
      * @return array
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         $eventMap = [
             'Crud.beforeFilter' => 'beforeFilter',

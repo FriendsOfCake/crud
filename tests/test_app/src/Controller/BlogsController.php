@@ -4,19 +4,18 @@ namespace Crud\Test\App\Controller;
 use Cake\Controller\Controller;
 use Crud\Controller\ControllerTrait;
 
-class UsersController extends Controller
+class BlogsController extends Controller
 {
 
     use ControllerTrait;
 
     public $paginate = ['limit' => 3];
 
-    public $components = [
-        'RequestHandler' => [
-            'enableBeforeRedirect' => false,
-        ],
-        'Flash',
-        'Crud.Crud' => [
+    public function initialize(): void
+    {
+        $this->loadComponent('RequestHandler');
+        $this->loadComponent('Flash');
+        $this->loadComponent('Crud.Crud', [
             'actions' => [
                 'Crud.Index',
                 'Crud.Add',
@@ -42,6 +41,6 @@ class UsersController extends Controller
                 'Crud.RelatedModels',
                 'Crud.Redirect'
             ]
-        ]
-    ];
+        ]);
+    }
 }

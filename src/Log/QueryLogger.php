@@ -1,6 +1,8 @@
 <?php
 namespace Crud\Log;
 
+use Cake\Database\Log\LoggedQuery;
+
 class QueryLogger extends \Cake\Database\Log\QueryLogger
 {
 
@@ -28,9 +30,10 @@ class QueryLogger extends \Cake\Database\Log\QueryLogger
      * @param \Cake\Database\Log\LoggedQuery $query to be written in log
      * @return void
      */
-    protected function _log($query)
+    protected function _log(LoggedQuery $query): void
     {
         $this->_logs[] = $query;
+
         parent::_log($query);
     }
 }

@@ -22,22 +22,6 @@ class LookupActionTest extends IntegrationTestCase
     public $fixtures = ['plugin.Crud.Blogs'];
 
     /**
-     * setUp()
-     *
-     * @return void
-     */
-    public function setUp()
-    {
-        $this->deprecated(function () {
-            Plugin::load('Crud', ['path' => ROOT . DS, 'autoload' => true]);
-        });
-
-        parent::setUp();
-
-        $this->useHttpServer(true);
-    }
-
-    /**
      * Test with no extra options
      *
      * @return void

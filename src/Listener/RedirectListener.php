@@ -31,7 +31,7 @@ class RedirectListener extends BaseListener
      *
      * @return array
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         return [
             'Crud.beforeRedirect' => ['callable' => 'beforeRedirect', 'priority' => 90]

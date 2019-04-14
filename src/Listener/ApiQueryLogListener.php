@@ -29,7 +29,7 @@ class ApiQueryLogListener extends BaseListener
      *
      * @return array
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         if (!$this->_checkRequestType('api')) {
             return [];

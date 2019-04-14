@@ -23,13 +23,13 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer
      */
     public function validation($error)
     {
-        $url = $this->controller->request->getRequestTarget();
+        $url = $this->controller->getRequest()->getRequestTarget();
         $status = $code = $error->getCode();
         try {
-            $this->controller->response = $this->controller->response->withStatus($status);
+            $this->controller->setResponse($this->controller->getResponse()->withStatus($status));
         } catch (Exception $e) {
             $status = 422;
-            $this->controller->response = $this->controller->response->withStatus($status);
+            $this->controller->setResponse($this->controller->getResponse()->withStatus($status));
         }
 
         $sets = [
@@ -57,7 +57,7 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer
      * @param string $template The template to render.
      * @return \Cake\Http\Response
      */
-    protected function _outputMessage($template)
+    protected function _outputMessage(string $template)
     {
         $viewVars = ['success', 'data'];
         $this->controller->set('success', false);
@@ -83,7 +83,7 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer
     {
         $data = [];
 
-        $viewVars = $this->controller->viewVars;
+        $viewVars = $this->controller->viewBuilder()->getVars();
         if (!empty($viewVars['_serialize'])) {
             foreach ($viewVars['_serialize'] as $v) {
                 $data[$v] = $viewVars[$v];

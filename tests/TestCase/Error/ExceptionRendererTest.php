@@ -43,7 +43,7 @@ class ExceptionRendererTest extends TestCase
         $Renderer->__construct($Exception);
         $Renderer->render();
 
-        $viewVars = $Controller->viewVars;
+        $viewVars = $Controller->viewBuilder()->getVars();
 
         $this->assertNotEmpty($viewVars['_serialize']);
 
@@ -53,7 +53,7 @@ class ExceptionRendererTest extends TestCase
 
         $expected = [
             'code' => 500,
-            'url' => $Controller->request->getRequestTarget(),
+            'url' => $Controller->getRequest()->getRequestTarget(),
             'message' => 'Hello World',
             'exception' => [
                 'class' => 'Cake\Core\Exception\Exception',
@@ -75,7 +75,7 @@ class ExceptionRendererTest extends TestCase
         $this->assertSame(500, $viewVars['code']);
 
         $this->assertTrue(isset($viewVars['url']));
-        $this->assertSame($Controller->request->getRequestTarget(), $viewVars['url']);
+        $this->assertSame($Controller->getRequest()->getRequestTarget(), $viewVars['url']);
 
         $this->assertTrue(isset($viewVars['message']));
         $this->assertSame('Hello World', $viewVars['message']);
@@ -119,7 +119,7 @@ class ExceptionRendererTest extends TestCase
         $Renderer->__construct($Exception);
         $Renderer->render();
 
-        $viewVars = $Controller->viewVars;
+        $viewVars = $Controller->viewBuilder()->getVars();
 
         $this->assertNotEmpty($viewVars['_serialize']);
 
@@ -129,7 +129,7 @@ class ExceptionRendererTest extends TestCase
 
         $expected = [
             'code' => 500,
-            'url' => $Controller->request->getRequestTarget(),
+            'url' => $Controller->getRequest()->getRequestTarget(),
             'message' => 'Hello World',
             'exception' => [
                 'class' => 'Cake\Core\Exception\Exception',
@@ -155,7 +155,7 @@ class ExceptionRendererTest extends TestCase
         $this->assertSame(500, $viewVars['code']);
 
         $this->assertTrue(isset($viewVars['url']));
-        $this->assertSame($Controller->request->getRequestTarget(), $viewVars['url']);
+        $this->assertSame($Controller->getRequest()->getRequestTarget(), $viewVars['url']);
 
         $this->assertTrue(isset($viewVars['message']));
         $this->assertSame('Hello World', $viewVars['message']);
@@ -189,7 +189,7 @@ class ExceptionRendererTest extends TestCase
         $Renderer->__construct($Exception);
         $Renderer->render();
 
-        $viewVars = $Controller->viewVars;
+        $viewVars = $Controller->viewBuilder()->getVars();
 
         $this->assertNotEmpty($viewVars['_serialize']);
 
@@ -199,7 +199,7 @@ class ExceptionRendererTest extends TestCase
 
         $expected = [
             'code' => 500,
-            'url' => $Controller->request->getRequestTarget(),
+            'url' => $Controller->getRequest()->getRequestTarget(),
             'message' => 'Hello World',
             'exception' => [
                 'class' => 'Cake\Core\Exception\Exception',
@@ -219,7 +219,7 @@ class ExceptionRendererTest extends TestCase
         $this->assertSame(500, $viewVars['code']);
 
         $this->assertTrue(isset($viewVars['url']));
-        $this->assertSame($Controller->request->getRequestTarget(), $viewVars['url']);
+        $this->assertSame($Controller->getRequest()->getRequestTarget(), $viewVars['url']);
 
         $this->assertTrue(isset($viewVars['message']));
         $this->assertSame('Hello World', $viewVars['message']);
@@ -253,7 +253,7 @@ class ExceptionRendererTest extends TestCase
         $Renderer->__construct($Exception);
         $Renderer->render();
 
-        $viewVars = $Controller->viewVars;
+        $viewVars = $Controller->viewBuilder()->getVars();
 
         $this->assertNotEmpty($viewVars['_serialize']);
 
@@ -263,7 +263,7 @@ class ExceptionRendererTest extends TestCase
 
         $expected = [
             'code' => 500,
-            'url' => $Controller->request->getRequestTarget(),
+            'url' => $Controller->getRequest()->getRequestTarget(),
             'message' => 'Hello World',
             'exception' => [
                 'class' => 'Cake\Core\Exception\Exception',
@@ -283,7 +283,7 @@ class ExceptionRendererTest extends TestCase
         $this->assertSame(500, $viewVars['code']);
 
         $this->assertTrue(isset($viewVars['url']));
-        $this->assertSame($Controller->request->getRequestTarget(), $viewVars['url']);
+        $this->assertSame($Controller->getRequest()->getRequestTarget(), $viewVars['url']);
 
         $this->assertTrue(isset($viewVars['message']));
         $this->assertSame('Hello World', $viewVars['message']);
@@ -319,7 +319,7 @@ class ExceptionRendererTest extends TestCase
         $Renderer->__construct($Exception);
         $Renderer->render();
 
-        $viewVars = $Controller->viewVars;
+        $viewVars = $Controller->viewBuilder()->getVars();
 
         $this->assertNotEmpty($viewVars['_serialize']);
 
@@ -329,7 +329,7 @@ class ExceptionRendererTest extends TestCase
 
         $expected = [
             'code' => 500,
-            'url' => $Controller->request->getRequestTarget(),
+            'url' => $Controller->getRequest()->getRequestTarget(),
             'message' => 'Hello World',
             'exception' => [
                 'class' => 'Cake\Core\Exception\Exception',
@@ -348,7 +348,7 @@ class ExceptionRendererTest extends TestCase
         $this->assertSame(500, $viewVars['code']);
 
         $this->assertTrue(isset($viewVars['url']));
-        $this->assertSame($Controller->request->getRequestTarget(), $viewVars['url']);
+        $this->assertSame($Controller->getRequest()->getRequestTarget(), $viewVars['url']);
 
         $this->assertTrue(isset($viewVars['message']));
         $this->assertSame('Generic Exception Description', $viewVars['message']);
@@ -387,7 +387,7 @@ class ExceptionRendererTest extends TestCase
 
         $expected = [
             'code' => 422,
-            'url' => $Controller->request->getRequestTarget(),
+            'url' => $Controller->getRequest()->getRequestTarget(),
             'errorCount' => 1,
             'errors' => [
                 'title' => [
@@ -396,7 +396,7 @@ class ExceptionRendererTest extends TestCase
             ],
             'message' => 'A validation error occurred'
         ];
-        $this->assertEquals($expected, $Controller->viewVars['data']);
+        $this->assertEquals($expected, $Controller->viewBuilder()->getVar('data'));
     }
 
     public function testValidationErrorSingleKnownErrorWithDebug()
@@ -427,12 +427,13 @@ class ExceptionRendererTest extends TestCase
         $Renderer->__construct($Exception);
         $Renderer->render();
 
-        $this->assertContains('trace', array_keys($Controller->viewVars['data']));
-        unset($Controller->viewVars['data']['trace']);
+        $result = $Controller->viewBuilder()->getVar('data');
+        $this->assertContains('trace', array_keys($Controller->viewBuilder()->getVar('data')));
+        unset($result['trace']);
 
         $expected = [
             'code' => 422,
-            'url' => $Controller->request->getRequestTarget(),
+            'url' => $Controller->getRequest()->getRequestTarget(),
             'errorCount' => 1,
             'errors' => [
                 'title' => [
@@ -446,7 +447,7 @@ class ExceptionRendererTest extends TestCase
             ],
             'message' => 'A validation error occurred'
         ];
-        $this->assertEquals($expected, $Controller->viewVars['data']);
+        $this->assertEquals($expected, $result);
     }
 
     public function testValidationErrorMultipleMessages()
@@ -480,7 +481,7 @@ class ExceptionRendererTest extends TestCase
 
         $expected = [
             'code' => 422,
-            'url' => $Controller->request->getRequestTarget(),
+            'url' => $Controller->getRequest()->getRequestTarget(),
             'message' => '2 validation errors occurred',
             'errorCount' => 2,
             'errors' => [
@@ -497,7 +498,7 @@ class ExceptionRendererTest extends TestCase
                 'message' => '2 validation errors occurred',
             ]
         ];
-        $data = $Controller->viewVars['data'];
+        $data = $Controller->viewBuilder()->getVar('data');
         unset($data['trace']);
         $this->assertEquals($expected, $data);
     }

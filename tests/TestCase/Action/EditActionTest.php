@@ -28,22 +28,6 @@ class EditActionTest extends IntegrationTestCase
     public $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
 
     /**
-     * setUp()
-     *
-     * @return void
-     */
-    public function setUp()
-    {
-        $this->deprecated(function () {
-            Plugin::load('Crud', ['path' => ROOT . DS, 'autoload' => true]);
-        });
-
-        parent::setUp();
-
-        $this->useHttpServer(true);
-    }
-
-    /**
      * Test the normal HTTP GET flow of _get
      *
      * @return void

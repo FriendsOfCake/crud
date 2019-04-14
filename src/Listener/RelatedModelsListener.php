@@ -21,7 +21,7 @@ class RelatedModelsListener extends BaseListener
      *
      * @return array
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         return [
             'Crud.beforePaginate' => 'beforePaginate',

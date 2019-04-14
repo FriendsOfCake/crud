@@ -5,6 +5,7 @@ use Cake\Core\Plugin;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\Http\Exception\NotFoundException;
+use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Crud\Event\Subject;
@@ -20,10 +21,6 @@ class BaseActionTest extends TestCase
 
     public function setUp()
     {
-        $this->deprecated(function () {
-            Plugin::load('Crud', ['path' => ROOT . DS, 'autoload' => true]);
-        });
-
         parent::setUp();
 
         $this->Request = $this->getMockBuilder(ServerRequest::class)
@@ -32,7 +29,7 @@ class BaseActionTest extends TestCase
             ->setMethods(['set'])
             ->setConstructorArgs([
                 $this->Request,
-                new \Cake\Network\Response,
+                new Response(),
                 'CrudExamples',
                 \Cake\Event\EventManager::instance()
             ])

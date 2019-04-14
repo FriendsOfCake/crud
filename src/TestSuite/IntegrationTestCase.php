@@ -29,12 +29,13 @@ abstract class IntegrationTestCase extends \Cake\TestSuite\IntegrationTestCase
     public function setUp()
     {
         parent::setUp();
+
         $this->resetReflectionCache();
 
         $this->_eventManager = EventManager::instance();
 
         $existing = Configure::read('App.paths.templates');
-        $existing[] = Plugin::path('Crud') . 'tests/App/Template/';
+        $existing[] = Plugin::path('Crud') . 'tests/test_app/templates/';
         Configure::write('App.paths.templates', $existing);
 
         Configure::write('App.namespace', 'Crud\Test\App');
@@ -43,23 +44,5 @@ abstract class IntegrationTestCase extends \Cake\TestSuite\IntegrationTestCase
 
         Router::connect('/:controller', ['action' => 'index'], ['routeClass' => 'DashedRoute']);
         Router::connect('/:controller/:action/*', [], ['routeClass' => 'DashedRoute']);
-        $this->useHttpServer(false);
-    }
-
-    /**
-     * Helper method for check deprecation methods
-     *
-     * @param callable $callable callable function that will receive asserts
-     * @return void
-     */
-    public function deprecated($callable)
-    {
-        $errorLevel = error_reporting();
-        error_reporting(E_ALL ^ E_USER_DEPRECATED);
-        try {
-            $callable();
-        } finally {
-            error_reporting($errorLevel);
-        }
     }
 }

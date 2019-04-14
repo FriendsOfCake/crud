@@ -312,7 +312,7 @@ abstract class BaseAction extends BaseObject
      *
      * @return array
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         $events = parent::implementedEvents();
 

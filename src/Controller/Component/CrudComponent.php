@@ -179,12 +179,11 @@ class CrudComponent extends Component
      * @param array $config Configuration values for component.
      * @return void
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
-        $this->_action = $this->_controller->request->getParam('action');
-        $this->_request = $this->_controller->request;
+        $this->_action = $this->getController()->getRequest()->getParam('action');
 
         if (!isset($this->_controller->dispatchComponents)) {
             $this->_controller->dispatchComponents = [];
@@ -235,7 +234,7 @@ class CrudComponent extends Component
 
         $action = $this->_action;
         if (empty($args)) {
-            $args = $this->_request->getParam('pass');
+            $args = $this->getController()->getRequest()->getParam('pass');
         }
 
         try {
@@ -537,11 +536,11 @@ class CrudComponent extends Component
         }
 
         $Event = new Event($eventName, $Subject);
-        $this->_eventManager->dispatch($Event);
+        $Event = $this->_eventManager->dispatch($Event);
 
-        if ($Event->result instanceof Response) {
+        if ($Event->getResult() instanceof Response) {
             $Exception = new Exception();
-            $Exception->response = $Event->result;
+            $Exception->response = $Event->getResult();
             throw $Exception;
         }
 

@@ -27,7 +27,7 @@ class CrudExamplesTable extends \Cake\ORM\Table
      * @param array $config Config
      * @return void
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         $this->setTable('posts');
     }
