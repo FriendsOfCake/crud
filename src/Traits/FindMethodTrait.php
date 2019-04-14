@@ -22,7 +22,9 @@ trait FindMethodTrait
             return $this->getConfig('findMethod');
         }
 
-        return $this->setConfig('findMethod', $method);
+        $this->setConfig('findMethod', $method);
+
+        return $method;
     }
 
     /**

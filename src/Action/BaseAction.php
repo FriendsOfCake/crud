@@ -275,7 +275,9 @@ abstract class BaseAction extends BaseObject
     public function resourceName($value = null)
     {
         if ($value !== null) {
-            return $this->setConfig('name', $value);
+            $this->setConfig('name', $value);
+
+            return $value;
         }
 
         if (empty($this->_config['name'])) {

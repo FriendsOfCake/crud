@@ -29,7 +29,7 @@ trait ProxyTrait
      *
      * @param string $eventName Event name
      * @param \Crud\Event\Subject|null $data Event data
-     * @return \Cake\Event\Event
+     * @return \Cake\Event\EventInterface
      * @throws \Exception
      * @codeCoverageIgnore
      */
@@ -55,7 +55,7 @@ trait ProxyTrait
     }
 
     /**
-     * Proxy method for `$this->_crud()->Session`
+     * Proxy method to get session instance.
      *
      * Primarily here to ease unit testing
      *
@@ -64,7 +64,7 @@ trait ProxyTrait
      */
     protected function _session()
     {
-        return $this->_crud()->Session;
+        return $this->_request()->getSession();
     }
 
     /**
@@ -94,7 +94,7 @@ trait ProxyTrait
     }
 
     /**
-     * Proxy method for `$this->_controller()->response`
+     * Proxy method for `$this->_controller()->getResponse()`
      *
      * Primarily here to ease unit testing
      *
@@ -103,13 +103,13 @@ trait ProxyTrait
      */
     protected function _response()
     {
-        return $this->_controller()->response;
+        return $this->_controller()->getResponse();
     }
 
     /**
      * Get a table instance
      *
-     * @return \Cake\ORM\Table
+     * @return \Cake\Datasource\RepositoryInterface
      */
     protected function _table()
     {
@@ -125,7 +125,7 @@ trait ProxyTrait
      *
      * @param array $data Data array
      * @param array $options A list of options for the object hydration.
-     * @return \Cake\ORM\Entity
+     * @return \Cake\ORM\EntityInterface
      */
     protected function _entity(array $data = [], array $options = [])
     {
@@ -145,19 +145,6 @@ trait ProxyTrait
     protected function _subject($additional = [])
     {
         return new Subject($additional);
-    }
-
-    /**
-     * Proxy method for `$this->_crud()->validationErrors()`
-     *
-     * Primarily here to ease unit testing
-     *
-     * @return array
-     * @codeCoverageIgnore
-     */
-    protected function _validationErrors()
-    {
-        return $this->_crud()->validationErrors();
     }
 
     /**

@@ -59,7 +59,7 @@ class CrudComponent extends Component
     /**
      * Reference to the current event manager.
      *
-     * @var \Cake\Event\EventManager
+     * @var \Cake\Event\EventManagerInterface
      */
     protected $_eventManager;
 
@@ -258,7 +258,7 @@ class CrudComponent extends Component
             $view = $crudAction->view();
         }
 
-        return $this->_controller->response = $this->_controller->render($view);
+        return $this->_controller->render($view);
     }
 
     /**
@@ -522,7 +522,7 @@ class CrudComponent extends Component
      * @param string $eventName Event name
      * @param \Crud\Event\Subject|null $data Event data
      * @throws \Exception if any event listener return a CakeResponse object.
-     * @return \Cake\Event\Event
+     * @return \Cake\Event\EventInterface
      */
     public function trigger($eventName, ?Subject $data = null)
     {
