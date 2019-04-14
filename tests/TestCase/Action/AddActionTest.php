@@ -402,7 +402,7 @@ class AddActionTest extends IntegrationTestCase
         $this->assertTrue($this->_subject->created);
         $this->assertEquals(
             ['success' => true, 'data' => ['id' => 6]],
-            json_decode($this->_response->getBody(), true)
+            json_decode((string)$this->_response->getBody(), true)
         );
     }
 
