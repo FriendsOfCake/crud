@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Action;
 
 use Cake\Event\Event;
@@ -17,7 +18,6 @@ use Crud\Event\Subject;
  */
 abstract class BaseAction extends BaseObject
 {
-
     /**
      * Check if the current action is responding to a request or not
      *
@@ -73,7 +73,7 @@ abstract class BaseAction extends BaseObject
 
         throw new NotImplementedException(sprintf(
             'Action %s does not implement a handler for HTTP verb %s',
-            get_class($this),
+            static::class,
             $method
         ));
     }
@@ -151,7 +151,7 @@ abstract class BaseAction extends BaseObject
             'params' => ['class' => 'message'],
             'key' => 'flash',
             'type' => $this->getConfig('action') . '.' . $type,
-            'name' => $this->resourceName()
+            'name' => $this->resourceName(),
         ], $config);
 
         if (!isset($config['text'])) {
@@ -197,7 +197,7 @@ abstract class BaseAction extends BaseObject
         $this->_controller()->Flash->set($subject->text, [
             'element' => $subject->element,
             'params' => $subject->params,
-            'key' => $subject->key
+            'key' => $subject->key,
         ]);
     }
 

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Core;
 
 use Cake\Controller\Controller;
@@ -15,7 +16,6 @@ use Cake\Event\EventListenerInterface;
  */
 abstract class BaseObject implements EventListenerInterface
 {
-
     use InstanceConfigTrait;
     use ProxyTrait;
 

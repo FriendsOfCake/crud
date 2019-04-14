@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Listener;
 
 use Cake\Event\Event;
@@ -15,14 +16,13 @@ use Exception;
  */
 class RedirectListener extends BaseListener
 {
-
     /**
      * Settings
      *
      * @var array
      */
     protected $_defaultConfig = [
-        'readers' => []
+        'readers' => [],
     ];
 
     /**
@@ -34,7 +34,7 @@ class RedirectListener extends BaseListener
     public function implementedEvents(): array
     {
         return [
-            'Crud.beforeRedirect' => ['callable' => 'beforeRedirect', 'priority' => 90]
+            'Crud.beforeRedirect' => ['callable' => 'beforeRedirect', 'priority' => 90],
         ];
     }
 
@@ -102,7 +102,7 @@ class RedirectListener extends BaseListener
      * If a special redirect key is provided, change the
      * redirection URL target
      *
-     * @param Event $event Event
+     * @param \Cake\Event\Event $event Event
      * @return void
      * @throws \Exception
      */
@@ -161,7 +161,7 @@ class RedirectListener extends BaseListener
      * @param string $reader Reader
      * @param string $key Key
      * @return mixed
-     * @throws Exception if the reader is invalid
+     * @throws \Exception if the reader is invalid
      */
     protected function _getKey(Subject $subject, $reader, $key)
     {

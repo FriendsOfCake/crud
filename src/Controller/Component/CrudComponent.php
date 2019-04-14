@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Controller\Component;
 
 use Cake\Controller\Component;
@@ -27,7 +28,6 @@ use Exception;
  */
 class CrudComponent extends Component
 {
-
     /**
      * The current controller action.
      *
@@ -112,20 +112,20 @@ class CrudComponent extends Component
             'invalidId' => [
                 'code' => 400,
                 'class' => BadRequestException::class,
-                'text' => 'Invalid id'
+                'text' => 'Invalid id',
             ],
             'recordNotFound' => [
                 'code' => 404,
                 'class' => NotFoundException::class,
-                'text' => 'Not found'
+                'text' => 'Not found',
             ],
             'badRequestMethod' => [
                 'code' => 405,
                 'class' => MethodNotAllowedException::class,
-                'text' => 'Method not allowed. This action permits only {methods}'
-            ]
+                'text' => 'Method not allowed. This action permits only {methods}',
+            ],
         ],
-        'eventLogging' => false
+        'eventLogging' => false,
     ];
 
     /**
@@ -163,7 +163,7 @@ class CrudComponent extends Component
             }
 
             if (is_int($action)) {
-                list(, $action) = pluginSplit($config['className']);
+                [, $action] = pluginSplit($config['className']);
             }
 
             $action = Inflector::variable($action);
@@ -224,7 +224,7 @@ class CrudComponent extends Component
      * @param string $controllerAction Override the controller action to execute as.
      * @param array $args List of arguments to pass to the CRUD action (Usually an ID to edit / delete).
      * @return \Cake\Http\Response
-     * @throws Exception If an action is not mapped.
+     * @throws \Exception If an action is not mapped.
      */
     public function execute($controllerAction = null, $args = [])
     {
@@ -478,7 +478,7 @@ class CrudComponent extends Component
     public function addListener($name, $className = null, $config = [])
     {
         if (strpos($name, '.') !== false) {
-            list($plugin, $name) = pluginSplit($name);
+            [$plugin, $name] = pluginSplit($name);
             $className = $plugin . '.' . Inflector::camelize($name);
         }
 
@@ -521,10 +521,10 @@ class CrudComponent extends Component
      *
      * @param string $eventName Event name
      * @param \Crud\Event\Subject|null $data Event data
-     * @throws Exception if any event listener return a CakeResponse object.
+     * @throws \Exception if any event listener return a CakeResponse object.
      * @return \Cake\Event\Event
      */
-    public function trigger($eventName, Subject $data = null)
+    public function trigger($eventName, ?Subject $data = null)
     {
         $eventName = $this->_config['eventPrefix'] . '.' . $eventName;
 
@@ -605,7 +605,7 @@ class CrudComponent extends Component
     public function useModel($modelName)
     {
         $this->_controller->loadModel($modelName);
-        list(, $this->_modelName) = pluginSplit($modelName);
+        [, $this->_modelName] = pluginSplit($modelName);
     }
 
     /**

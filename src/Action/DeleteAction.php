@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Action;
 
 use Crud\Event\Subject;
@@ -13,7 +14,6 @@ use Crud\Traits\RedirectTrait;
  */
 class DeleteAction extends BaseAction
 {
-
     use FindMethodTrait;
     use RedirectTrait;
 
@@ -33,20 +33,20 @@ class DeleteAction extends BaseAction
         'deleteMethod' => 'delete',
         'messages' => [
             'success' => [
-                'text' => 'Successfully deleted {name}'
+                'text' => 'Successfully deleted {name}',
             ],
             'error' => [
-                'text' => 'Could not delete {name}'
-            ]
+                'text' => 'Could not delete {name}',
+            ],
         ],
         'api' => [
             'success' => [
-                'code' => 200
+                'code' => 200,
             ],
             'error' => [
-                'code' => 400
-            ]
-        ]
+                'code' => 400,
+            ],
+        ],
     ];
 
     /**

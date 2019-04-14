@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Listener;
 
 use Cake\Core\Configure;
@@ -23,7 +24,6 @@ use Crud\Event\Subject;
  */
 class ApiListener extends BaseListener
 {
-
     /**
      * Default configuration
      *
@@ -32,7 +32,7 @@ class ApiListener extends BaseListener
     protected $_defaultConfig = [
         'viewClasses' => [
             'json' => 'Json',
-            'xml' => 'Xml'
+            'xml' => 'Xml',
         ],
         'detectors' => [
             'json' => ['accept' => ['application/json'], 'param' => '_ext', 'value' => 'json'],
@@ -42,10 +42,10 @@ class ApiListener extends BaseListener
             'type' => 'default',
             'class' => BadRequestException::class,
             'message' => 'Unknown error',
-            'code' => 0
+            'code' => 0,
         ],
         'exceptionRenderer' => ExceptionRenderer::class,
-        'setFlash' => false
+        'setFlash' => false,
     ];
 
     /**
@@ -69,7 +69,7 @@ class ApiListener extends BaseListener
             'Crud.setFlash' => ['callable' => [$this, 'setFlash'], 'priority' => 5],
 
             'Crud.beforeRender' => ['callable' => [$this, 'respond'], 'priority' => 100],
-            'Crud.beforeRedirect' => ['callable' => [$this, 'respond'], 'priority' => 100]
+            'Crud.beforeRedirect' => ['callable' => [$this, 'respond'], 'priority' => 100],
         ];
     }
 

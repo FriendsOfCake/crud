@@ -1,9 +1,9 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Traits;
 
 trait SerializeTrait
 {
-
     /**
      * Change the serialize keys
      *

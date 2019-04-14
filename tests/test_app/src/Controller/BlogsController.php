@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Test\App\Controller;
 
 use Cake\Controller\Controller;
@@ -6,7 +7,6 @@ use Crud\Controller\ControllerTrait;
 
 class BlogsController extends Controller
 {
-
     use ControllerTrait;
 
     public $paginate = ['limit' => 3];
@@ -39,8 +39,8 @@ class BlogsController extends Controller
             'listeners' => [
                 'Crud.Api',
                 'Crud.RelatedModels',
-                'Crud.Redirect'
-            ]
+                'Crud.Redirect',
+            ],
         ]);
     }
 }

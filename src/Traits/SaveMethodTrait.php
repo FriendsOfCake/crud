@@ -1,9 +1,9 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Traits;
 
 trait SaveMethodTrait
 {
-
     /**
      * Change the save() method
      *

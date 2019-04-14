@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Listener;
 
 use Cake\Core\Configure;
@@ -20,7 +21,6 @@ use Crud\Log\QueryLogger;
  */
 class ApiQueryLogListener extends BaseListener
 {
-
     /**
      * Returns a list of all events that will fire in the controller during its lifecycle.
      * You can override this function to add you own listener callbacks
@@ -37,7 +37,7 @@ class ApiQueryLogListener extends BaseListener
 
         return [
             'Crud.beforeFilter' => ['callable' => [$this, 'setupLogging'], 'priority' => 1],
-            'Crud.beforeRender' => ['callable' => [$this, 'beforeRender'], 'priority' => 75]
+            'Crud.beforeRender' => ['callable' => [$this, 'beforeRender'], 'priority' => 75],
         ];
     }
 

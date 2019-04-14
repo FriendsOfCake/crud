@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Listener;
 
 use Crud\Core\BaseObject;
@@ -13,7 +14,6 @@ use Crud\Core\BaseObject;
  */
 abstract class BaseListener extends BaseObject
 {
-
     /**
      * Returns a list of all events that will fire in the controller during its life cycle.
      * You can override this function to add you own listener callbacks.

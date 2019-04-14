@@ -1,11 +1,11 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Core;
 
 use Crud\Event\Subject;
 
 trait ProxyTrait
 {
-
     protected $_entity;
 
     /**
@@ -33,7 +33,7 @@ trait ProxyTrait
      * @throws \Exception
      * @codeCoverageIgnore
      */
-    protected function _trigger($eventName, Subject $data = null)
+    protected function _trigger($eventName, ?Subject $data = null)
     {
         return $this->_crud()->trigger($eventName, $data);
     }

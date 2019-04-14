@@ -1,8 +1,7 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Test\TestCase\Action\Bulk;
 
-use Cake\Routing\DispatcherFactory;
-use Cake\Routing\Router;
 use Crud\TestSuite\IntegrationTestCase;
 
 /**
@@ -11,7 +10,6 @@ use Crud\TestSuite\IntegrationTestCase;
  */
 class SetValueActionTest extends IntegrationTestCase
 {
-
     /**
      * Fixtures
      *
@@ -79,7 +77,7 @@ class SetValueActionTest extends IntegrationTestCase
                         [
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Set value successfully'],
-                            'key' => 'flash'
+                            'key' => 'flash',
                         ]
                     );
 
@@ -123,7 +121,7 @@ class SetValueActionTest extends IntegrationTestCase
                         [
                             'element' => 'default',
                             'params' => ['class' => 'message error', 'original' => 'Could not set value'],
-                            'key' => 'flash'
+                            'key' => 'flash',
                         ]
                     );
 
@@ -171,7 +169,7 @@ class SetValueActionTest extends IntegrationTestCase
                         [
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Set value successfully'],
-                            'key' => 'flash'
+                            'key' => 'flash',
                         ]
                     );
 

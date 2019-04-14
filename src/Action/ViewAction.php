@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Action;
 
 use Crud\Traits\FindMethodTrait;
@@ -14,7 +15,6 @@ use Crud\Traits\ViewVarTrait;
  */
 class ViewAction extends BaseAction
 {
-
     use FindMethodTrait;
     use SerializeTrait;
     use ViewTrait;
@@ -38,7 +38,7 @@ class ViewAction extends BaseAction
         'findMethod' => 'all',
         'view' => null,
         'viewVar' => null,
-        'serialize' => []
+        'serialize' => [],
     ];
 
     /**

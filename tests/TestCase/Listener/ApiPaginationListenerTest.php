@@ -1,9 +1,8 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Test\TestCase\Listener;
 
 use Cake\Http\ServerRequest;
-use Crud\Action\BaseAction;
-use Crud\Listener\ApiPaginationListener;
 use Crud\TestSuite\TestCase;
 
 /**
@@ -12,7 +11,6 @@ use Crud\TestSuite\TestCase;
  */
 class ApiPaginationListenerTest extends TestCase
 {
-
     /**
      * Test implemented events
      *
@@ -32,7 +30,7 @@ class ApiPaginationListenerTest extends TestCase
 
         $result = $Instance->implementedEvents();
         $expected = [
-            'Crud.beforeRender' => ['callable' => 'beforeRender', 'priority' => 75]
+            'Crud.beforeRender' => ['callable' => 'beforeRender', 'priority' => 75],
         ];
         $this->assertEquals($expected, $result);
     }
@@ -126,8 +124,8 @@ class ApiPaginationListenerTest extends TestCase
                 'nextPage' => true,
                 'prevPage' => true,
                 'count' => 100,
-                'limit' => 10
-            ]
+                'limit' => 10,
+            ],
         ]);
 
         $expected = [
@@ -136,7 +134,7 @@ class ApiPaginationListenerTest extends TestCase
             'has_next_page' => true,
             'has_prev_page' => true,
             'count' => 100,
-            'limit' => 10
+            'limit' => 10,
         ];
 
         $Controller = $this
@@ -200,8 +198,8 @@ class ApiPaginationListenerTest extends TestCase
                 'nextPage' => true,
                 'prevPage' => true,
                 'count' => 100,
-                'limit' => 10
-            ]
+                'limit' => 10,
+            ],
         ]);
 
         $expected = [
@@ -210,7 +208,7 @@ class ApiPaginationListenerTest extends TestCase
             'has_next_page' => true,
             'has_prev_page' => true,
             'count' => 100,
-            'limit' => 10
+            'limit' => 10,
         ];
 
         $Controller = $this
@@ -274,8 +272,8 @@ class ApiPaginationListenerTest extends TestCase
                 'nextPage' => true,
                 'prevPage' => true,
                 'count' => 100,
-                'limit' => 10
-            ]
+                'limit' => 10,
+            ],
         ]);
 
         $expected = [
@@ -284,7 +282,7 @@ class ApiPaginationListenerTest extends TestCase
             'has_next_page' => true,
             'has_prev_page' => true,
             'count' => 100,
-            'limit' => 10
+            'limit' => 10,
         ];
 
         $Controller = $this

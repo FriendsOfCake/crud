@@ -1,11 +1,11 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Traits;
 
 use Crud\Event\Subject;
 
 trait RedirectTrait
 {
-
     /**
      * Change redirect configuration
      *

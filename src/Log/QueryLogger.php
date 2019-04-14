@@ -1,11 +1,11 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Log;
 
 use Cake\Database\Log\LoggedQuery;
 
 class QueryLogger extends \Cake\Database\Log\QueryLogger
 {
-
     /**
      * Logs
      *

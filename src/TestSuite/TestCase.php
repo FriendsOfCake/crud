@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Crud\TestSuite;
 
 use Crud\TestSuite\Traits\CrudTestTrait;
@@ -12,7 +13,6 @@ use FriendsOfCake\TestUtilities\CounterHelperTrait;
  */
 abstract class TestCase extends \Cake\TestSuite\TestCase
 {
-
     use AccessibilityHelperTrait;
     use CounterHelperTrait;
     use CrudTestTrait;

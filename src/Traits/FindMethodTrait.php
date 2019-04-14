@@ -1,11 +1,11 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Traits;
 
 use Crud\Event\Subject;
 
 trait FindMethodTrait
 {
-
     /**
      * Change the find() method
      *
@@ -55,13 +55,13 @@ trait FindMethodTrait
     {
         $repository = $this->_table();
 
-        list($finder, $options) = $this->_extractFinder();
+        [$finder, $options] = $this->_extractFinder();
         $query = $repository->find($finder, $options);
         $query->where([current($query->aliasField($repository->getPrimaryKey())) => $id]);
 
         $subject->set([
             'repository' => $repository,
-            'query' => $query
+            'query' => $query,
         ]);
 
         $this->_trigger('beforeFind', $subject);

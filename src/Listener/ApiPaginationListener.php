@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Listener;
 
 use Cake\Event\Event;
@@ -12,7 +13,6 @@ use Cake\Event\Event;
  */
 class ApiPaginationListener extends BaseListener
 {
-
     /**
      * Returns a list of all events that will fire in the controller during its life-cycle.
      * You can override this function to add you own listener callbacks
@@ -28,7 +28,7 @@ class ApiPaginationListener extends BaseListener
         }
 
         return [
-            'Crud.beforeRender' => ['callable' => 'beforeRender', 'priority' => 75]
+            'Crud.beforeRender' => ['callable' => 'beforeRender', 'priority' => 75],
         ];
     }
 
@@ -47,7 +47,7 @@ class ApiPaginationListener extends BaseListener
         }
 
         $controller = $this->_controller();
-        list(, $modelClass) = pluginSplit($controller->modelClass);
+        [, $modelClass] = pluginSplit($controller->modelClass);
 
         if (!array_key_exists($modelClass, $request->getParam('paging'))) {
             return;
@@ -64,7 +64,7 @@ class ApiPaginationListener extends BaseListener
             'has_next_page' => $pagination['nextPage'],
             'has_prev_page' => $pagination['prevPage'],
             'count' => $pagination['count'],
-            'limit' => $pagination['limit']
+            'limit' => $pagination['limit'],
         ];
 
         $controller->set('pagination', $paginationResponse);

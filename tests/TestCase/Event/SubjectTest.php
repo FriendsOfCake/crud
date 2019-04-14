@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Crud\TestCase\Event;
 
 use Crud\Event\Subject;
@@ -11,7 +12,6 @@ use Crud\TestSuite\TestCase;
  */
 class SubjectTest extends TestCase
 {
-
     public function setup()
     {
         parent::setup();

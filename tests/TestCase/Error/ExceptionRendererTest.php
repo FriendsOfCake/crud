@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Test\TestCase\Error;
 
 use Cake\Core\Configure;
@@ -7,13 +8,11 @@ use Cake\Datasource\ConnectionManager;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\ORM\Entity;
-use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Crud\Error\Exception\ValidationException;
 
 class ExceptionRendererTest extends TestCase
 {
-
     public function setUp()
     {
         parent::setUp();
@@ -59,7 +58,7 @@ class ExceptionRendererTest extends TestCase
                 'class' => 'Cake\Core\Exception\Exception',
                 'code' => 500,
                 'message' => 'Hello World',
-            ]
+            ],
         ];
 
         $actual = $viewVars['data'];
@@ -135,7 +134,7 @@ class ExceptionRendererTest extends TestCase
                 'class' => 'Cake\Core\Exception\Exception',
                 'code' => 500,
                 'message' => 'Hello World',
-            ]
+            ],
         ];
 
         $actual = $viewVars['data'];
@@ -205,7 +204,7 @@ class ExceptionRendererTest extends TestCase
                 'class' => 'Cake\Core\Exception\Exception',
                 'code' => 500,
                 'message' => 'Hello World',
-            ]
+            ],
         ];
 
         $actual = $viewVars['data'];
@@ -269,7 +268,7 @@ class ExceptionRendererTest extends TestCase
                 'class' => 'Cake\Core\Exception\Exception',
                 'code' => 500,
                 'message' => 'Hello World',
-            ]
+            ],
         ];
 
         $actual = $viewVars['data'];
@@ -335,7 +334,7 @@ class ExceptionRendererTest extends TestCase
                 'class' => 'Cake\Core\Exception\Exception',
                 'code' => 500,
                 'message' => 'Hello World',
-            ]
+            ],
         ];
         $actual = $viewVars['data'];
         unset($actual['trace']);
@@ -391,10 +390,10 @@ class ExceptionRendererTest extends TestCase
             'errorCount' => 1,
             'errors' => [
                 'title' => [
-                    'error message'
-                ]
+                    'error message',
+                ],
             ],
-            'message' => 'A validation error occurred'
+            'message' => 'A validation error occurred',
         ];
         $this->assertEquals($expected, $Controller->viewBuilder()->getVar('data'));
     }
@@ -437,15 +436,15 @@ class ExceptionRendererTest extends TestCase
             'errorCount' => 1,
             'errors' => [
                 'title' => [
-                    'error message'
-                ]
+                    'error message',
+                ],
             ],
             'exception' => [
                 'class' => 'Crud\Error\Exception\ValidationException',
                 'code' => 422,
-                'message' => 'A validation error occurred'
+                'message' => 'A validation error occurred',
             ],
-            'message' => 'A validation error occurred'
+            'message' => 'A validation error occurred',
         ];
         $this->assertEquals($expected, $result);
     }
@@ -455,7 +454,7 @@ class ExceptionRendererTest extends TestCase
         $entity = new Entity();
         $entity->setErrors([
             'title' => ['error message'],
-            'body' => ['another field message']
+            'body' => ['another field message'],
         ]);
 
         $Exception = new ValidationException($entity);
@@ -486,17 +485,17 @@ class ExceptionRendererTest extends TestCase
             'errorCount' => 2,
             'errors' => [
                 'title' => [
-                    'error message'
+                    'error message',
                 ],
                 'body' => [
-                    'another field message'
-                ]
+                    'another field message',
+                ],
             ],
             'exception' => [
                 'class' => 'Crud\Error\Exception\ValidationException',
                 'code' => 422,
                 'message' => '2 validation errors occurred',
-            ]
+            ],
         ];
         $data = $Controller->viewBuilder()->getVar('data');
         unset($data['trace']);

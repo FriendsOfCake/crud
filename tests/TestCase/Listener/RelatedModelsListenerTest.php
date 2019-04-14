@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Test\TestCase\Listener;
 
 use Cake\Database\Schema\TableSchema;
@@ -13,9 +14,8 @@ use Crud\TestSuite\TestCase;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class RelatedModelListenerTest extends TestCase
+class RelatedModelsListenerTest extends TestCase
 {
-
     public $fixtures = ['core.NumberTrees'];
 
     /**

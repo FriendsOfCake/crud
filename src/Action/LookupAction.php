@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Action;
 
 use Crud\Traits\FindMethodTrait;
@@ -14,7 +15,6 @@ use Crud\Traits\ViewVarTrait;
  */
 class LookupAction extends BaseAction
 {
-
     use FindMethodTrait;
     use SerializeTrait;
     use ViewTrait;
@@ -28,7 +28,7 @@ class LookupAction extends BaseAction
     protected $_defaultConfig = [
         'enabled' => true,
         'scope' => 'table',
-        'findMethod' => 'list'
+        'findMethod' => 'list',
     ];
 
     /**
@@ -38,7 +38,7 @@ class LookupAction extends BaseAction
      */
     protected function _handle()
     {
-        list($finder, $options) = $this->_extractFinder();
+        [$finder, $options] = $this->_extractFinder();
         $options = array_merge($options, $this->_getFindConfig());
         $query = $this->_table()->find($finder, $options);
         $subject = $this->_subject(['success' => true, 'query' => $query]);

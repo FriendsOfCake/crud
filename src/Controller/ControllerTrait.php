@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Controller;
 
 use Cake\Controller\Exception\MissingActionException;
@@ -12,7 +13,6 @@ use Cake\Controller\Exception\MissingActionException;
  */
 trait ControllerTrait
 {
-
     /**
      * List of components that are capable of dispatching an action that is
      * not already implemented

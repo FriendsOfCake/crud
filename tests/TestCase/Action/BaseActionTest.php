@@ -1,7 +1,7 @@
 <?php
+declare(strict_types=1);
 namespace Crud\TestCase\Action;
 
-use Cake\Core\Plugin;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\Http\Exception\NotFoundException;
@@ -18,7 +18,6 @@ use Crud\TestSuite\TestCase;
  */
 class BaseActionTest extends TestCase
 {
-
     public function setUp()
     {
         parent::setUp();
@@ -31,7 +30,7 @@ class BaseActionTest extends TestCase
                 $this->Request,
                 new Response(),
                 'CrudExamples',
-                \Cake\Event\EventManager::instance()
+                \Cake\Event\EventManager::instance(),
             ])
             ->getMock();
         $this->Registry = $this->Controller->components();
@@ -73,12 +72,12 @@ class BaseActionTest extends TestCase
             'validateId' => null,
             'saveOptions' => [
                 'validate' => 'first',
-                'atomic' => true
+                'atomic' => true,
             ],
             'serialize' => [
                 'success',
-                'data'
-            ]
+                'data',
+            ],
         ]);
     }
 
@@ -98,13 +97,13 @@ class BaseActionTest extends TestCase
             'validateId' => 'id',
             'saveOptions' => [
                 'validate' => 'never',
-                'atomic' => false
+                'atomic' => false,
             ],
             'serialize' => [
                 'yay',
-                'ney'
+                'ney',
             ],
-            'action' => 'add'
+            'action' => 'add',
         ];
 
         $ActionClass = new $this->actionClassName($this->Controller, $expected);
@@ -227,7 +226,7 @@ class BaseActionTest extends TestCase
             'element' => 'default',
             'params' => [
                 'class' => 'message success',
-                'original' => 'Ahoy'
+                'original' => 'Ahoy',
             ],
             'key' => 'custom',
             'type' => 'add.success',
@@ -265,7 +264,7 @@ class BaseActionTest extends TestCase
 
         $this->ActionClass->setConfig('name', 'test');
         $this->ActionClass->setConfig('messages', [
-            'success' => ['text' => 'Ahoy', 'key' => 'custom']
+            'success' => ['text' => 'Ahoy', 'key' => 'custom'],
         ]);
         $this->ActionClass->setFlash('success', $Subject);
     }
@@ -281,7 +280,7 @@ class BaseActionTest extends TestCase
 
         $expected = [
             'validate' => 'first',
-            'atomic' => true
+            'atomic' => true,
         ];
         $actual = $CrudAction->getConfig('saveOptions');
         $this->assertEquals($expected, $actual);
@@ -289,18 +288,18 @@ class BaseActionTest extends TestCase
         $CrudAction->setConfig('saveOptions.atomic', true);
         $expected = [
             'validate' => 'first',
-            'atomic' => true
+            'atomic' => true,
         ];
         $actual = $CrudAction->getConfig('saveOptions');
         $this->assertEquals($expected, $actual);
 
         $CrudAction->setConfig('saveOptions', [
-            'fieldList' => ['hello']
+            'fieldList' => ['hello'],
         ]);
         $expected = [
             'validate' => 'first',
             'atomic' => true,
-            'fieldList' => ['hello']
+            'fieldList' => ['hello'],
         ];
         $actual = $CrudAction->getConfig('saveOptions');
         $this->assertEquals($expected, $actual);
@@ -353,12 +352,12 @@ class BaseActionTest extends TestCase
             'element' => 'default',
             'params' => [
                 'class' => 'message simple',
-                'original' => 'Simple message'
+                'original' => 'Simple message',
             ],
             'key' => 'flash',
             'type' => 'add.simple',
             'name' => 'my model',
-            'text' => 'Simple message'
+            'text' => 'Simple message',
         ];
         $actual = $this->ActionClass->message('simple');
         $this->assertEquals($expected, $actual);
@@ -378,12 +377,12 @@ class BaseActionTest extends TestCase
             'element' => 'default',
             'params' => [
                 'class' => 'message simple',
-                'original' => 'Overridden message'
+                'original' => 'Overridden message',
             ],
             'key' => 'flash',
             'type' => 'add.simple',
             'name' => 'my model',
-            'text' => 'Overridden message'
+            'text' => 'Overridden message',
         ];
         $actual = $this->ActionClass->message('simple');
         $this->assertEquals($expected, $actual);
@@ -402,12 +401,12 @@ class BaseActionTest extends TestCase
             'element' => 'default',
             'params' => [
                 'class' => 'message simple',
-                'original' => 'Simple message'
+                'original' => 'Simple message',
             ],
             'key' => 'flash',
             'type' => 'add.simple',
             'name' => 'my model',
-            'text' => 'Simple message'
+            'text' => 'Simple message',
         ];
         $actual = $this->ActionClass->message('simple');
         $this->assertEquals($expected, $actual);
@@ -426,12 +425,12 @@ class BaseActionTest extends TestCase
             'element' => 'default',
             'params' => [
                 'class' => 'message simple',
-                'original' => 'Simple message with id "{id}"'
+                'original' => 'Simple message with id "{id}"',
             ],
             'key' => 'flash',
             'type' => 'add.simple',
             'name' => 'my model',
-            'text' => 'Simple message with id "123"'
+            'text' => 'Simple message with id "123"',
         ];
         $actual = $this->ActionClass->message('simple', ['id' => 123]);
         $this->assertEquals($expected, $actual);
@@ -450,12 +449,12 @@ class BaseActionTest extends TestCase
             'element' => 'default',
             'params' => [
                 'class' => 'message invalidId',
-                'original' => 'Invalid id'
+                'original' => 'Invalid id',
             ],
             'key' => 'flash',
             'type' => 'add.invalidId',
             'name' => 'my model',
-            'text' => 'Invalid id'
+            'text' => 'Invalid id',
         ];
         $actual = $this->ActionClass->message('invalidId');
         $this->assertEquals($expected, $actual);
@@ -474,12 +473,12 @@ class BaseActionTest extends TestCase
             'element' => 'default',
             'params' => [
                 'class' => 'message recordNotFound',
-                'original' => 'Not found'
+                'original' => 'Not found',
             ],
             'key' => 'flash',
             'type' => 'add.recordNotFound',
             'name' => 'my model',
-            'text' => 'Not found'
+            'text' => 'Not found',
         ];
         $actual = $this->ActionClass->message('recordNotFound');
         $this->assertEquals($expected, $actual);
@@ -498,12 +497,12 @@ class BaseActionTest extends TestCase
             'element' => 'default',
             'params' => [
                 'class' => 'message badRequestMethod',
-                'original' => 'Method not allowed. This action permits only {methods}'
+                'original' => 'Method not allowed. This action permits only {methods}',
             ],
             'key' => 'flash',
             'type' => 'add.badRequestMethod',
             'name' => 'my model',
-            'text' => 'Method not allowed. This action permits only THESE ONES'
+            'text' => 'Method not allowed. This action permits only THESE ONES',
         ];
         $actual = $this->ActionClass->message('badRequestMethod', ['methods' => 'THESE ONES']);
         $this->assertEquals($expected, $actual);

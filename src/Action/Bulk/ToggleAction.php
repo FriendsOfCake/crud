@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Action\Bulk;
 
 use Cake\Controller\Controller;
@@ -25,11 +26,11 @@ class ToggleAction extends BaseAction
     {
         $this->_defaultConfig['messages'] = [
             'success' => [
-                'text' => 'Value toggled successfully'
+                'text' => 'Value toggled successfully',
             ],
             'error' => [
-                'text' => 'Could not toggle value'
-            ]
+                'text' => 'Could not toggle value',
+            ],
         ];
 
         parent::__construct($Controller, $config);
@@ -57,7 +58,7 @@ class ToggleAction extends BaseAction
      * @param \Cake\ORM\Query|null $query The query to act upon
      * @return bool
      */
-    protected function _bulk(Query $query = null)
+    protected function _bulk(?Query $query = null)
     {
         $field = $this->getConfig('field');
         $expression = [new QueryExpression(sprintf('%1$s= NOT %1$s', $field))];

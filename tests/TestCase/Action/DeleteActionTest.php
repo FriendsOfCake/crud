@@ -1,9 +1,7 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Test\TestCase\Action;
 
-use Cake\Core\Plugin;
-use Cake\Routing\DispatcherFactory;
-use Cake\Routing\Router;
 use Crud\TestSuite\IntegrationTestCase;
 
 /**
@@ -12,7 +10,6 @@ use Crud\TestSuite\IntegrationTestCase;
  */
 class DeleteActionTest extends IntegrationTestCase
 {
-
     /**
      * fixtures property
      *
@@ -36,7 +33,7 @@ class DeleteActionTest extends IntegrationTestCase
     {
         return [
             ['post'],
-            ['delete']
+            ['delete'],
         ];
     }
 
@@ -65,7 +62,7 @@ class DeleteActionTest extends IntegrationTestCase
                         [
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Successfully deleted blog'],
-                            'key' => 'flash'
+                            'key' => 'flash',
                         ]
                     );
 
@@ -115,7 +112,7 @@ class DeleteActionTest extends IntegrationTestCase
                         [
                             'element' => 'default',
                             'params' => ['class' => 'message error', 'original' => 'Could not delete blog'],
-                            'key' => 'flash'
+                            'key' => 'flash',
                         ]
                     );
 
@@ -169,7 +166,7 @@ class DeleteActionTest extends IntegrationTestCase
                         [
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Successfully deleted blog'],
-                            'key' => 'flash'
+                            'key' => 'flash',
                         ]
                     );
 

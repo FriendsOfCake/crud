@@ -1,8 +1,8 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Test\TestCase\Listener;
 
 use Cake\Http\ServerRequest;
-use Cake\Utility\Hash;
 use Crud\TestSuite\TestCase;
 
 /**
@@ -11,7 +11,6 @@ use Crud\TestSuite\TestCase;
  */
 class RedirectListenerTest extends TestCase
 {
-
     /**
      * Test the correct events is bound
      *
@@ -27,7 +26,7 @@ class RedirectListenerTest extends TestCase
 
         $result = $listener->implementedEvents();
         $expected = [
-            'Crud.beforeRedirect' => ['callable' => 'beforeRedirect', 'priority' => 90]
+            'Crud.beforeRedirect' => ['callable' => 'beforeRedirect', 'priority' => 90],
         ];
         $this->assertEquals($expected, $result);
     }
@@ -57,14 +56,14 @@ class RedirectListenerTest extends TestCase
             'request' => [
                 'key',
                 'data',
-                'query'
+                'query',
             ],
             'entity' => [
-                'field'
+                'field',
             ],
             'subject' => [
-                'key'
-            ]
+                'key',
+            ],
         ];
         $this->assertEquals($expected, $result);
     }
@@ -365,7 +364,7 @@ class RedirectListenerTest extends TestCase
         $action->redirectConfig('add', [
             'reader' => 'request.key',
             'key' => 'hello',
-            'url' => ['action' => 'index']
+            'url' => ['action' => 'index'],
         ]);
 
         $subject = new \Crud\Event\Subject();
@@ -402,7 +401,7 @@ class RedirectListenerTest extends TestCase
      */
     public function dataProviderGetUrl()
     {
-        $Request = new ServerRequest;
+        $Request = new ServerRequest();
         $Request = $Request->withParam('action', 'index')
             ->withQueryParams(['parent_id' => 10])
             ->withData('epic', 'jippi');
@@ -416,33 +415,33 @@ class RedirectListenerTest extends TestCase
             [
                 new \Crud\Event\Subject(),
                 ['action' => 'index'],
-                ['action' => 'index']
+                ['action' => 'index'],
             ],
             [
                 new \Crud\Event\Subject(),
                 ['controller' => 'posts', 'action' => 'index'],
-                ['controller' => 'posts', 'action' => 'index']
+                ['controller' => 'posts', 'action' => 'index'],
             ],
             [
                 new \Crud\Event\Subject(['request' => $Request]),
                 ['action' => ['request.key', 'action']],
-                ['action' => 'index']
+                ['action' => 'index'],
             ],
             [
                 new \Crud\Event\Subject(['request' => $Request]),
                 ['action' => ['request.data', 'epic']],
-                ['action' => 'jippi']
+                ['action' => 'jippi'],
             ],
             [
                 new \Crud\Event\Subject(['request' => $Request]),
                 ['action' => ['request.query', 'parent_id']],
-                ['action' => 10]
+                ['action' => 10],
             ],
             [
                 new \Crud\Event\Subject(['id' => 69]),
                 ['action' => 'edit', ['subject.key', 'id']],
-                ['action' => 'edit', 69]
-            ]
+                ['action' => 'edit', 69],
+            ],
         ];
     }
 

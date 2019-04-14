@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Traits;
 
 use Cake\Event\Event;
@@ -7,12 +8,11 @@ use Exception;
 
 trait ViewVarTrait
 {
-
     /**
      * Publish the viewVar so people can do $$viewVar and end up
      * wit the entity in the view
      *
-     * @param Event $event Event
+     * @param \Cake\Event\Event $event Event
      * @return false|null
      * @throws \Exception
      */
@@ -52,7 +52,7 @@ trait ViewVarTrait
      * Actions working on a single entity will use singular name,
      * and actions working on a full table will use plural name
      *
-     * @throws Exception
+     * @throws \Exception
      * @return string
      */
     protected function _deriveViewVar()
@@ -74,7 +74,7 @@ trait ViewVarTrait
      *
      * @param \Cake\Event\Event $event Event
      * @return mixed
-     * @throws Exception
+     * @throws \Exception
      */
     protected function _deriveViewValue(Event $event)
     {

@@ -1,9 +1,7 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Test\TestCase\Action;
 
-use Cake\Core\Plugin;
-use Cake\Routing\DispatcherFactory;
-use Cake\Routing\Router;
 use Crud\TestSuite\IntegrationTestCase;
 
 /**
@@ -12,7 +10,6 @@ use Crud\TestSuite\IntegrationTestCase;
  */
 class EditActionTest extends IntegrationTestCase
 {
-
     /**
      * fixtures property
      *
@@ -119,7 +116,7 @@ class EditActionTest extends IntegrationTestCase
                         [
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Successfully updated blog'],
-                            'key' => 'flash'
+                            'key' => 'flash',
                         ]
                     );
 
@@ -129,7 +126,7 @@ class EditActionTest extends IntegrationTestCase
 
         $this->post('/blogs/edit/1', [
             'name' => 'Hello World',
-            'body' => 'Pretty hot body'
+            'body' => 'Pretty hot body',
         ]);
 
         $this->assertEvents(['beforeFind', 'afterFind', 'beforeSave', 'afterSave', 'setFlash', 'beforeRedirect']);
@@ -162,7 +159,7 @@ class EditActionTest extends IntegrationTestCase
                         [
                             'element' => 'default',
                             'params' => ['class' => 'message error', 'original' => 'Could not update blog'],
-                            'key' => 'flash'
+                            'key' => 'flash',
                         ]
                     );
 
@@ -183,7 +180,7 @@ class EditActionTest extends IntegrationTestCase
 
         $this->put('/blogs/edit/1', [
             'name' => 'Hello World',
-            'body' => 'Pretty hot body'
+            'body' => 'Pretty hot body',
         ]);
 
         $this->assertEvents(['beforeFind', 'afterFind', 'beforeSave', 'afterSave', 'setFlash', 'beforeRender']);
@@ -215,7 +212,7 @@ class EditActionTest extends IntegrationTestCase
                         [
                             'element' => 'default',
                             'params' => ['class' => 'message error', 'original' => 'Could not update blog'],
-                            'key' => 'flash'
+                            'key' => 'flash',
                         ]
                     );
 
@@ -228,14 +225,14 @@ class EditActionTest extends IntegrationTestCase
                         'length' => [
                             'rule' => ['minLength', 10],
                             'message' => 'Name need to be at least 10 characters long',
-                        ]
+                        ],
                     ]);
             }
         );
 
         $this->put('/blogs/edit/1', [
             'name' => 'Hello',
-            'body' => 'Pretty hot body'
+            'body' => 'Pretty hot body',
         ]);
 
         $this->assertEvents(['beforeFind', 'afterFind', 'beforeSave', 'afterSave', 'setFlash', 'beforeRender']);
@@ -275,7 +272,7 @@ class EditActionTest extends IntegrationTestCase
                         [
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Successfully updated blog'],
-                            'key' => 'flash'
+                            'key' => 'flash',
                         ]
                     );
 
@@ -285,7 +282,7 @@ class EditActionTest extends IntegrationTestCase
 
         $this->patch('/blogs/edit/1', [
             'name' => 'Hello World',
-            'body' => 'Even hotter body'
+            'body' => 'Even hotter body',
         ]);
 
         $this->assertEvents(['beforeFind', 'afterFind', 'beforeSave', 'afterSave', 'setFlash', 'beforeRedirect']);

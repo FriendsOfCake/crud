@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Action\Bulk;
 
 use Cake\Controller\Controller;
@@ -23,11 +24,11 @@ class DeleteAction extends BaseAction
     {
         $this->_defaultConfig['messages'] = [
             'success' => [
-                'text' => 'Delete completed successfully'
+                'text' => 'Delete completed successfully',
             ],
             'error' => [
-                'text' => 'Could not complete deletion'
-            ]
+                'text' => 'Could not complete deletion',
+            ],
         ];
 
         parent::__construct($Controller, $config);
@@ -39,7 +40,7 @@ class DeleteAction extends BaseAction
      * @param \Cake\ORM\Query|null $query The query to act upon
      * @return bool
      */
-    protected function _bulk(Query $query = null)
+    protected function _bulk(?Query $query = null)
     {
         $query = $query->delete();
         $statement = $query->execute();

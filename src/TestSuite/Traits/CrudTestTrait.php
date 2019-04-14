@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Crud\TestSuite\Traits;
 
 use Cake\Controller\Controller;
@@ -15,7 +16,6 @@ use Exception;
  */
 trait CrudTestTrait
 {
-
     /**
      * Reference to the final CRUD event subject after full event cycle
      *
@@ -34,7 +34,7 @@ trait CrudTestTrait
      * @param \Cake\Controller\Controller|null $controller Controller
      * @return void
      */
-    protected function _subscribeToEvents(Controller $controller = null)
+    protected function _subscribeToEvents(?Controller $controller = null)
     {
         if ($controller === null) {
             $controller = $this->controller;
@@ -78,7 +78,7 @@ trait CrudTestTrait
      * @param array $expected An array of CRUD events we expected to be fired
      * @param array|null $actual Can be an Event class, Crud subject or array with event names
      * @return void
-     * @throws Exception
+     * @throws \Exception
      */
     public function assertEvents(array $expected, $actual = null)
     {
@@ -103,7 +103,7 @@ trait CrudTestTrait
         }
 
         foreach ($expected as &$key) {
-            if (false !== strpos($key, '.')) {
+            if (strpos($key, '.') !== false) {
                 continue;
             }
 

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Event;
 
 /**
@@ -11,7 +12,6 @@ namespace Crud\Event;
  */
 class Subject
 {
-
     /**
      * List of events this subject has passed through
      *

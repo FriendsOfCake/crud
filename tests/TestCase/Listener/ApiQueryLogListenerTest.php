@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Test\TestCase\Listener;
 
 use Cake\Controller\Controller;
@@ -14,7 +15,6 @@ use Crud\TestSuite\TestCase;
  */
 class ApiQueryLogListenerTest extends TestCase
 {
-
     protected $_debug;
 
     public function setUp()
@@ -50,7 +50,7 @@ class ApiQueryLogListenerTest extends TestCase
         $result = $Instance->implementedEvents();
         $expected = [
             'Crud.beforeFilter' => ['callable' => [$Instance, 'setupLogging'], 'priority' => 1],
-            'Crud.beforeRender' => ['callable' => [$Instance, 'beforeRender'], 'priority' => 75]
+            'Crud.beforeRender' => ['callable' => [$Instance, 'beforeRender'], 'priority' => 75],
         ];
 
         $this->assertEquals($expected, $result);
@@ -210,7 +210,7 @@ class ApiQueryLogListenerTest extends TestCase
         $this->setReflectionClassInstance($listener);
 
         $expected = [
-            'test' => []
+            'test' => [],
         ];
 
         $this->assertEquals($expected, $this->callProtectedMethod('_getQueryLogs', [], $listener));
@@ -227,7 +227,7 @@ class ApiQueryLogListenerTest extends TestCase
         $listener->setupLogging(new Event('something'));
 
         $expected = [
-            'test' => []
+            'test' => [],
         ];
 
         $this->assertEquals($expected, $listener->getQueryLogs());

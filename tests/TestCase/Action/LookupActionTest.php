@@ -1,9 +1,7 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Test\TestCase\Action;
 
-use Cake\Core\Plugin;
-use Cake\Routing\DispatcherFactory;
-use Cake\Routing\Router;
 use Crud\TestSuite\IntegrationTestCase;
 
 /**
@@ -13,7 +11,6 @@ use Crud\TestSuite\IntegrationTestCase;
  */
 class LookupActionTest extends IntegrationTestCase
 {
-
     /**
      * fixtures property
      *

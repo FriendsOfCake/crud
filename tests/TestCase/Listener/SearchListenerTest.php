@@ -1,8 +1,8 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Test\TestCase\Listener;
 
 use Cake\Controller\Controller;
-use Cake\Core\Plugin;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Http\Response;
@@ -42,7 +42,7 @@ class SearchListenerTest extends TestCase
         $result = $listener->implementedEvents();
         $expected = [
             'Crud.beforeLookup' => ['callable' => 'injectSearch'],
-            'Crud.beforePaginate' => ['callable' => 'injectSearch']
+            'Crud.beforePaginate' => ['callable' => 'injectSearch'],
         ];
         $this->assertEquals($expected, $result);
     }
@@ -86,8 +86,8 @@ class SearchListenerTest extends TestCase
 
         $listener = new SearchListener($controller, [
             'enabled' => [
-                'Crud.beforeLookup'
-            ]
+                'Crud.beforeLookup',
+            ],
         ]);
 
         $listener->injectSearch(new Event('Crud.beforePaginate', $subject));
@@ -106,7 +106,7 @@ class SearchListenerTest extends TestCase
             'search' => [
                 'name' => '1st post',
             ],
-            'collection' => 'search'
+            'collection' => 'search',
         ];
 
         $request = (new ServerRequest())->withQueryParams($params['search']);
@@ -151,9 +151,9 @@ class SearchListenerTest extends TestCase
 
         $listener = new SearchListener($controller, [
             'enabled' => [
-                'Crud.beforeLookup'
+                'Crud.beforeLookup',
             ],
-            'collection' => 'search'
+            'collection' => 'search',
         ]);
         $listener->injectSearch($event);
     }
@@ -177,7 +177,7 @@ class SearchListenerTest extends TestCase
             'search' => [
                 'name' => '1st post',
             ],
-            'collection' => 'search'
+            'collection' => 'search',
         ];
 
         $request = new ServerRequest(['query' => $params['search']]);
@@ -203,9 +203,9 @@ class SearchListenerTest extends TestCase
 
         $listener = new SearchListener($controller, [
             'enabled' => [
-                'Crud.beforeLookup'
+                'Crud.beforeLookup',
             ],
-            'collection' => 'search'
+            'collection' => 'search',
         ]);
         $listener->injectSearch($event);
     }

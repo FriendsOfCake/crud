@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Listener;
 
 use Cake\Event\Event;
@@ -15,7 +16,6 @@ use RuntimeException;
  */
 class RelatedModelsListener extends BaseListener
 {
-
     /**
      * Returns a list of events this listener is interested in.
      *
@@ -58,7 +58,7 @@ class RelatedModelsListener extends BaseListener
     /**
      * Fetches related models' list and sets them to a variable for the view
      *
-     * @param Event $event Event
+     * @param \Cake\Event\Event $event Event
      * @return void
      * @codeCoverageIgnore
      */
@@ -90,7 +90,7 @@ class RelatedModelsListener extends BaseListener
         $controller = $this->_controller();
 
         foreach ($models as $name => $association) {
-            list(, $associationName) = pluginSplit($association->getName());
+            [, $associationName] = pluginSplit($association->getName());
             $viewVar = Inflector::variable($associationName);
             if (array_key_exists($viewVar, $controller->viewVars)) {
                 continue;
@@ -111,13 +111,13 @@ class RelatedModelsListener extends BaseListener
      * This is useful for cases where the relation has a different binding key
      * than the primary key in the associated table (e.g. NOT 'id')
      *
-     * @param Association $association The association that we process
+     * @param \Cake\ORM\Association $association The association that we process
      * @return array
      */
     protected function _findOptions(Association $association)
     {
         return [
-            'keyField' => $association->getBindingKey()
+            'keyField' => $association->getBindingKey(),
         ];
     }
 

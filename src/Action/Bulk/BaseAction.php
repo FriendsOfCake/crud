@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Action\Bulk;
 
 use Cake\Http\Exception\BadRequestException;
@@ -32,11 +33,11 @@ abstract class BaseAction extends CrudBaseAction
         'findConfig' => [],
         'messages' => [
             'success' => [
-                'text' => 'Bulk action successfully completed'
+                'text' => 'Bulk action successfully completed',
             ],
             'error' => [
-                'text' => 'Could not complete bulk action'
-            ]
+                'text' => 'Could not complete bulk action',
+            ],
         ],
     ];
 
@@ -105,7 +106,7 @@ abstract class BaseAction extends CrudBaseAction
     {
         $repository = $this->_table();
 
-        list($finder, $options) = $this->_extractFinder();
+        [$finder, $options] = $this->_extractFinder();
         $options = array_merge($options, $this->_getFindConfig($ids));
         $query = $repository->find($finder, $options);
 
@@ -189,5 +190,5 @@ abstract class BaseAction extends CrudBaseAction
      * @param \Cake\ORM\Query|null $query The query to act upon
      * @return bool
      */
-    abstract protected function _bulk(Query $query = null);
+    abstract protected function _bulk(?Query $query = null);
 }

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Error\Exception;
 
 use Cake\Http\Exception\BadRequestException;
@@ -12,7 +13,6 @@ use Cake\Utility\Hash;
  */
 class ValidationException extends BadRequestException
 {
-
     /**
      * List of validation errors that occurred in the model
      *

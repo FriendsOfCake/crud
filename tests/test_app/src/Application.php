@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Crud\Test\App;
 
 use Cake\Http\BaseApplication;
@@ -8,7 +9,6 @@ use Cake\Routing\Middleware\RoutingMiddleware;
 
 class Application extends BaseApplication
 {
-
     public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
     {
         $middlewareQueue
