@@ -59,7 +59,14 @@ An example of on the fly enabling an Crud action:
 
     public function beforeFilter(\Cake\Event\Event $event)
     {
-        $this->Crud->mapAction('index', 'Crud.Index');
+        $this->Crud->mapAction('myIndex', 'Crud.Index');
+    }
+    
+    public function myIndex()
+    {
+        // intercept events here
+        
+        return $this->Crud->execute();
     }
   }
 
