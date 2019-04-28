@@ -9,7 +9,6 @@ This event is emitted right after the call to ``Table::save()``.
 
 The :ref:`Crud Subject <crud-subject>` contains the following keys:
 
-- **id** The newly inserted ID. It's only available if the call to ``Table::save()`` was successful.
 - **success** indicates whether or not the ``Table::save()`` call succeed or not.
 - **created** ``true`` if the record was ``created`` and ``false`` if the record was ``updated``.
 - **entity** An ``entity`` object marshaled with the ``HTTP POST`` data from the request and the ``save()`` logic.
@@ -59,7 +58,7 @@ Get Entity ID
   {
       $this->Crud->on('afterSave', function(\Cake\Event\Event $event) {
           if ($event->getSubject()->created) {
-              $this->log("The entity was created with id: " . $event->getSubject()->id);
+              $this->log("The entity was created with id: " . $event->getSubject()->entity->id);
           }
       });
 
