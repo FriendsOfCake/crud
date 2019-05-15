@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace Crud\TestSuite;
 
 use Cake\Core\Configure;
@@ -26,7 +27,7 @@ abstract class IntegrationTestCase extends \Cake\TestSuite\IntegrationTestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

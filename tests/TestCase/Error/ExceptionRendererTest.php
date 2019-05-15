@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace Crud\Test\TestCase\Error;
 
 use Cake\Core\Configure;
@@ -13,7 +14,7 @@ use Crud\Error\Exception\ValidationException;
 
 class ExceptionRendererTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         Configure::write('debug', true);

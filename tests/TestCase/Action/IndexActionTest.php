@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace Crud\Test\TestCase\Action;
 
 use Crud\TestSuite\IntegrationTestCase;
@@ -50,7 +51,7 @@ class IndexActionTest extends IntegrationTestCase
         );
 
         $this->{$method}('/blogs');
-        $this->assertContains(
+        $this->assertStringContainsString(
             'Page 1 of 2, showing 3 records out of 5 total',
             (string)$this->_response->getBody()
         );
@@ -78,7 +79,7 @@ class IndexActionTest extends IntegrationTestCase
 
         $this->get('/blogs');
 
-        $this->assertContains(
+        $this->assertStringContainsString(
             'Page 1 of 2, showing 3 records out of 5 total',
             (string)$this->_response->getBody()
         );
@@ -106,7 +107,7 @@ class IndexActionTest extends IntegrationTestCase
         );
 
         $this->get('/blogs');
-        $this->assertContains(
+        $this->assertStringContainsString(
             'Page 1 of 1, showing 1 records out of 1 total',
             (string)$this->_response->getBody()
         );

@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace Crud\Test\TestCase\Action\Bulk;
 
 use Crud\TestSuite\IntegrationTestCase;
@@ -32,7 +33,7 @@ class ToggleActionTest extends IntegrationTestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

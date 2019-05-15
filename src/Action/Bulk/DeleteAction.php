@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace Crud\Action\Bulk;
 
 use Cake\Controller\Controller;

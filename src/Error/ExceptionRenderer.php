@@ -1,10 +1,12 @@
 <?php
 declare(strict_types=1);
+
 namespace Crud\Error;
 
 use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
 use Cake\Error\Debugger;
+use Cake\Http\Response;
 use Exception;
 
 /**
@@ -57,7 +59,7 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer
      * @param string $template The template to render.
      * @return \Cake\Http\Response
      */
-    protected function _outputMessage(string $template)
+    protected function _outputMessage(string $template): Response
     {
         $viewVars = ['success', 'data'];
         $this->controller->set('success', false);

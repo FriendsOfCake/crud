@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace Crud\Listener;
 
 use Cake\Event\EventInterface;
@@ -40,20 +41,12 @@ class ApiPaginationListener extends BaseListener
      */
     public function beforeRender(EventInterface $event)
     {
-        $request = $this->_request();
-
-        if (empty($request->getParam('paging'))) {
+        $paging = $this->_request()->getParam('paging');
+        if (empty($paging)) {
             return;
         }
 
-        $controller = $this->_controller();
-        [, $modelClass] = pluginSplit($controller->modelClass);
-
-        if (!array_key_exists($modelClass, $request->getParam('paging'))) {
-            return;
-        }
-
-        $pagination = $request->getParam('paging')[$modelClass];
+        $pagination = current($paging);
         if (empty($pagination)) {
             return;
         }
@@ -67,7 +60,7 @@ class ApiPaginationListener extends BaseListener
             'limit' => $pagination['limit'],
         ];
 
-        $controller->set('pagination', $paginationResponse);
+        $this->_controller()->set('pagination', $paginationResponse);
         $this->_action()->setConfig('serialize.pagination', 'pagination');
     }
 }

@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace Crud\TestCase\Controller\Crud;
 
 use Cake\Event\Event;
@@ -37,7 +38,7 @@ class CrudComponentTest extends TestCase
      *
      * Setup the classes the crud component needs to be testable
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -77,7 +78,7 @@ class CrudComponentTest extends TestCase
     /**
      * tearDown method
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset(
             $this->model,
@@ -345,11 +346,12 @@ class CrudComponentTest extends TestCase
     /**
      * Test if crud complains about unmapped actions
      *
-     * @expectedException \Exception
      * @return void
      */
     public function testCrudWillComplainAboutUnmappedAction()
     {
+        $this->expectException(\Exception::class);
+
         $this->Crud->execute('show_all');
     }
 
@@ -423,12 +425,13 @@ class CrudComponentTest extends TestCase
     /**
      * testMappingNonExistentAction
      *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Could not find action class: Sample.Index
      * @return void
      */
     public function testMappingNonExistentAction()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Could not find action class: Sample.Index');
+
         $this->Crud->mapAction('test', 'Sample.Index');
     }
 

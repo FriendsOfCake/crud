@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace Crud\Test\TestCase\Listener;
 
 use Cake\Controller\Controller;
@@ -17,13 +18,13 @@ class ApiQueryLogListenerTest extends TestCase
 {
     protected $_debug;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->_debug = Configure::read('debug');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         Configure::write('debug', $this->_debug);

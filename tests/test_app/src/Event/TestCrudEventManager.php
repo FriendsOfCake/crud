@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace Crud\Test\App\Event;
 
 use Cake\Event\EventInterface;

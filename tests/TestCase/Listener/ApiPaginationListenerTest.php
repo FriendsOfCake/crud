@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace Crud\Test\TestCase\Listener;
 
 use Cake\Http\ServerRequest;
@@ -58,16 +59,12 @@ class ApiPaginationListenerTest extends TestCase
         $Instance = $this
             ->getMockBuilder('\Crud\Listener\ApiPaginationListener')
             ->disableOriginalConstructor()
-            ->setMethods(['_request', '_controller'])
+            ->setMethods(['_request'])
             ->getMock();
         $Instance
             ->expects($this->once())
             ->method('_request')
             ->will($this->returnValue($Request));
-        $Instance
-            ->expects($this->once())
-            ->method('_controller')
-            ->will($this->returnValue($Controller));
 
         $Controller->modelClass = 'MyModel';
 

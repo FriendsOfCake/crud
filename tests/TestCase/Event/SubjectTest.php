@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace Crud\TestCase\Event;
 
 use Crud\Event\Subject;
@@ -12,14 +13,14 @@ use Crud\TestSuite\TestCase;
  */
 class SubjectTest extends TestCase
 {
-    public function setup()
+    public function setup(): void
     {
         parent::setup();
 
         $this->Subject = new Subject(['action' => 'index']);
     }
 
-    public function teardown()
+    public function teardown(): void
     {
         parent::teardown();
 
@@ -74,12 +75,13 @@ class SubjectTest extends TestCase
     /**
      * testInvalidMode
      *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Invalid mode
      * @return void
      */
     public function testInvalidMode()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Invalid mode');
+
         $this->Subject->shouldProcess('invalid');
     }
 }

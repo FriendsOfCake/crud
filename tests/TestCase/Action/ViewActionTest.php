@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace Crud\Test\TestCase\Action;
 
 use Crud\TestSuite\IntegrationTestCase;

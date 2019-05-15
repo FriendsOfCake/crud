@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace Crud\Test\TestCase\Listener;
 
 use Cake\Controller\Controller;
@@ -19,7 +20,7 @@ use Muffin\Webservice\Model\EndpointRegistry;
  */
 class SearchListenerTest extends TestCase
 {
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->removePlugins(['Search']);
 
@@ -50,11 +51,12 @@ class SearchListenerTest extends TestCase
     /**
      * Test inject search exception
      *
-     * @expectedException RuntimeException
      * @return void
      */
     public function testInjectSearchException()
     {
+        $this->expectException(\RuntimeException::class);
+
         $request = new ServerRequest();
         $response = new Response();
         $eventManager = new EventManager();

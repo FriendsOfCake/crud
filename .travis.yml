@@ -1,7 +1,6 @@
 language: php
 
 php:
-  - 7.1
   - 7.2
   - 7.3
 
@@ -18,17 +17,17 @@ matrix:
   fast_finish: true
 
   include:
-    - php: 7.1
+    - php: 7.2
       env: PHPCS=1 DEFAULT=0
 
-    - php: 7.1
+    - php: 7.2
       env: STATIC_ANALYSIS=1 DEFAULT=0
 
-    - php: 7.1
+    - php: 7.2
       env: PREFER_LOWEST=1
 
 before_script:
-  - if [[ $TRAVIS_PHP_VERSION != 7.1 ]]; then phpenv config-rm xdebug.ini; fi
+  - if [[ $TRAVIS_PHP_VERSION != 7.2 ]]; then phpenv config-rm xdebug.ini; fi
 
   - if [[ $PREFER_LOWEST != 1 ]]; then composer update --no-interaction; fi
   - if [[ $PREFER_LOWEST == 1 ]]; then composer update --no-interaction --prefer-lowest --prefer-stable; fi
@@ -40,12 +39,12 @@ before_script:
 
 script:
   - |
-      if [[ $DEFAULT = 1 && $TRAVIS_PHP_VERSION = 7.1 ]]; then
+      if [[ $DEFAULT = 1 && $TRAVIS_PHP_VERSION = 7.2 ]]; then
         mkdir -p build/logs
         vendor/bin/phpunit --coverage-clover=build/logs/clover.xml
       fi
 
-  - if [[ $DEFAULT = 1 && $TRAVIS_PHP_VERSION != 7.1 ]]; then vendor/bin/phpunit; fi
+  - if [[ $DEFAULT = 1 && $TRAVIS_PHP_VERSION != 7.2 ]]; then vendor/bin/phpunit; fi
 
   - if [[ $PHPCS = 1 ]]; then vendor/bin/phpcs -p --standard=vendor/cakephp/cakephp-codesniffer/CakePHP ./src ./tests; fi
 
@@ -53,7 +52,7 @@ script:
 
 after_success:
   - |
-      if [[ $DEFAULT = 1 && $TRAVIS_PHP_VERSION = 7.1 ]]; then
+      if [[ $DEFAULT = 1 && $TRAVIS_PHP_VERSION = 7.2 ]]; then
         wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.1.0/php-coveralls.phar
         chmod +x php-coveralls.phar
         ./php-coveralls.phar

@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace Crud\Test\TestCase\Action\Bulk;
 
 use Crud\TestSuite\IntegrationTestCase;
@@ -28,11 +29,11 @@ class DeleteActionTest extends IntegrationTestCase
     public $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
 
     /**
-     * setUp()
+     * setUp(): void
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

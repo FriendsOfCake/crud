@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace Crud\Test\TestCase\Action;
 
 use Crud\TestSuite\IntegrationTestCase;
@@ -35,16 +36,16 @@ class EditActionTest extends IntegrationTestCase
         $result = (string)$this->_response->getBody();
 
         $expected = '<legend>Edit Blog</legend>';
-        $this->assertContains($expected, $result, 'legend do not match the expected value');
+        $this->assertStringContainsString($expected, $result, 'legend do not match the expected value');
 
         $expected = '<input type="hidden" name="id" id="id" value="1"/>';
-        $this->assertContains($expected, $result, '"id" do not match the expected value');
+        $this->assertStringContainsString($expected, $result, '"id" do not match the expected value');
 
         $expected = '<input type="text" name="name" maxlength="255" id="name" value="1st post"/>';
-        $this->assertContains($expected, $result, '"name" do not match the expected value');
+        $this->assertStringContainsString($expected, $result, '"name" do not match the expected value');
 
         $expected = '<textarea name="body" id="body" rows="5">1st post body</textarea>';
-        $this->assertContains($expected, $result, '"body" do not match the expected value');
+        $this->assertStringContainsString($expected, $result, '"body" do not match the expected value');
     }
 
     /**
@@ -60,16 +61,16 @@ class EditActionTest extends IntegrationTestCase
         $result = (string)$this->_response->getBody();
 
         $expected = '<legend>Edit Blog</legend>';
-        $this->assertContains($expected, $result, 'legend do not match the expected value');
+        $this->assertStringContainsString($expected, $result, 'legend do not match the expected value');
 
         $expected = '<input type="hidden" name="id" id="id" value="1"/>';
-        $this->assertContains($expected, $result, '"id" do not match the expected value');
+        $this->assertStringContainsString($expected, $result, '"id" do not match the expected value');
 
         $expected = '<input type="text" name="name" maxlength="255" id="name" value="1st post"/>';
-        $this->assertContains($expected, $result, '"name" do not match the expected value');
+        $this->assertStringContainsString($expected, $result, '"name" do not match the expected value');
 
         $expected = '<textarea name="body" id="body" rows="5">1st post body</textarea>';
-        $this->assertContains($expected, $result, '"body" do not match the expected value');
+        $this->assertStringContainsString($expected, $result, '"body" do not match the expected value');
     }
 
     /**
@@ -241,7 +242,7 @@ class EditActionTest extends IntegrationTestCase
         $this->assertFalse($this->_subject->created);
 
         $expected = '<div class="error-message">Name need to be at least 10 characters long</div>';
-        $this->assertContains(
+        $this->assertStringContainsString(
             $expected,
             (string)$this->_response->getBody(),
             'Could not find validation error in HTML'

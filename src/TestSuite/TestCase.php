@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace Crud\TestSuite;
 
 use Crud\TestSuite\Traits\CrudTestTrait;
@@ -22,7 +23,7 @@ abstract class TestCase extends \Cake\TestSuite\TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

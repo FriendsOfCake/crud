@@ -1,10 +1,12 @@
 <?php
 declare(strict_types=1);
+
 namespace Crud\TestCase\Action;
 
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\Http\Exception\NotFoundException;
+use Cake\Http\Exception\NotImplementedException;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
@@ -18,7 +20,7 @@ use Crud\TestSuite\TestCase;
  */
 class BaseActionTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -48,7 +50,7 @@ class BaseActionTest extends TestCase
         $this->_configureAction($this->ActionClass);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         TableRegistry::clear();
@@ -307,34 +309,34 @@ class BaseActionTest extends TestCase
 
     /**
      * testEmptyMessage
-     *
-     * @expectedException Exception
-     * @expectedExceptionMessage Missing message type
      */
     public function testEmptyMessage()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Missing message type');
+
         $this->ActionClass->message(null);
     }
 
     /**
      * testUndefinedMessage
-     *
-     * @expectedException Exception
-     * @expectedExceptionMessage Invalid message type "not defined"
      */
     public function testUndefinedMessage()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Invalid message type "not defined"');
+
         $this->ActionClass->message('not defined');
     }
 
     /**
      * testBadMessageConfig
-     *
-     * @expectedException Exception
-     * @expectedExceptionMessage Invalid message config for "badConfig" no text key found
      */
     public function testBadMessageConfig()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Invalid message config for "badConfig" no text key found');
+
         $this->Crud->setConfig('messages.badConfig', ['foo' => 'bar']);
         $this->ActionClass->message('badConfig');
     }
@@ -622,11 +624,12 @@ class BaseActionTest extends TestCase
      * Test that calling handle will not invoke _handle
      * when the action is disabled
      *
-     * @expectedException Cake\Http\Exception\NotImplementedException
      * @return void
      */
     public function testHandleException()
     {
+        $this->expectException(NotImplementedException::class);
+
         $Action = $this->getMockBuilder('Crud\Action\BaseAction')
             ->setMethods(['_request', 'getConfig'])
             ->setConstructorArgs([$this->Controller])
