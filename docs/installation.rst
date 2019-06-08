@@ -22,12 +22,16 @@ You can also check `Packagist <https://packagist.org/packages/friendsofcake/crud
 Loading the plugin
 ==================
 
-Add the following to your ``/config/bootstrap.php``
+Add the following to your ``/src/Application.php`` 
 
 .. code-block:: phpinline
-
-	Plugin::load('Crud');
-
+  public function bootstrap()
+  {
+    parent::bootstrap();
+	  $this->addPlugin('Crud');
+    
+    // other plugin bootstrap setup
+  }
 
 Configuring the controller
 ==========================
