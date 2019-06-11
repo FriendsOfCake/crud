@@ -15,19 +15,21 @@ The recommended installation method for this plugin is by using composer.
 
 .. code-block:: sh
 
-	composer require friendsofcake/crud:^5.0
+	composer require friendsofcake/crud
 
 You can also check `Packagist <https://packagist.org/packages/friendsofcake/crud>`_.
 
 Loading the plugin
 ==================
 
-Add the following to your ``/config/bootstrap.php``
+Run the following command
 
-.. code-block:: phpinline
+.. code-block:: sh
 
-	Plugin::load('Crud');
+	bin/cake plugin load Crud
 
+Depending on your CakePHP version your ``src/Application.php`` or ``config/bootstrap.php``
+will be modified to load the plugin.
 
 Configuring the controller
 ==========================
