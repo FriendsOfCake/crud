@@ -216,13 +216,17 @@ class RelatedModelsListener extends BaseListener
 
         $table = $this->_table();
         foreach ($names as $association) {
-            $associationClass = $table->associations()->get($association);
-            if (!$associationClass) {
-                throw new RuntimeException(sprintf(
-                    'Table "%s" is not associated with "%s"',
-                    get_class($table),
-                    $association
-                ));
+            $associations = explode('.', $association);
+            $associationClass = $table;
+            foreach ($associations as $association) {
+                $associationClass = $associationClass->association($association);
+                if (!$associationClass) {
+                    throw new RuntimeException(sprintf(
+                        'Table "%s" is not associated with "%s"',
+                        get_class($table),
+                        $association
+                    ));
+                }
             }
             $return[$associationClass->getName()] = $associationClass;
         }
