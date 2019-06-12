@@ -218,17 +218,18 @@ class RelatedModelsListener extends BaseListener
         foreach ($names as $association) {
             $associations = explode('.', $association);
             $associationClass = $table;
-            foreach ($associations as $association) {
-                $associationClass = $associationClass->association($association);
+            foreach ($associations as $associationName) {
+                $lastAssociationClass = $associationClass;
+                $associationClass = $associationClass->association($associationName);
                 if (!$associationClass) {
                     throw new RuntimeException(sprintf(
                         'Table "%s" is not associated with "%s"',
-                        get_class($table),
-                        $association
+                        $associationName,
+                        $lastAssociationClass->getName()
                     ));
                 }
             }
-            $return[$associationClass->getName()] = $associationClass;
+            $return[$association] = $associationClass;
         }
 
         return $return;
