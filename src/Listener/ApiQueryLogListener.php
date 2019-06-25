@@ -49,6 +49,10 @@ class ApiQueryLogListener extends BaseListener
      */
     public function setupLogging(Event $event)
     {
+        if (!Configure::read('debug')) {
+            return;
+        }
+
         foreach ($this->_getSources() as $connectionName) {
             try {
                 $connection = $this->_getSource($connectionName);
