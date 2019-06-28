@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Crud\Controller;
 
 use Cake\Controller\Exception\MissingActionException;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Enable Crud to catch MissingActionException and attempt to generate response
@@ -27,12 +28,12 @@ trait ControllerTrait
      *
      * If CakePHP raises MissingActionException we attempt to execute Crud
      *
-     * @return mixed The resulting response.
+     * @return \Psr\Http\Message\ResponseInterface|null The resulting response.
      * @throws \LogicException When request is not set.
      * @throws \Cake\Controller\Exception\MissingActionException When actions are not defined
      *   and CRUD is not enabled.
      */
-    public function invokeAction()
+    public function invokeAction(): ?ResponseInterface
     {
         $request = $this->request;
         if (!isset($request)) {

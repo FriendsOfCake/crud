@@ -221,7 +221,7 @@ class ApiListener extends BaseListener
     {
         $controller = $this->_controller();
 
-        if ($controller->viewBuilder()->getVar('_serialize') !== null) {
+        if ($controller->viewBuilder()->getOption('serialize') !== null) {
             return;
         }
 
@@ -236,7 +236,7 @@ class ApiListener extends BaseListener
         }
 
         $serialize = array_merge($serialize, (array)$action->getConfig('serialize'));
-        $controller->set('_serialize', $serialize);
+        $controller->viewBuilder()->setOption('serialize', $serialize);
     }
 
     /**

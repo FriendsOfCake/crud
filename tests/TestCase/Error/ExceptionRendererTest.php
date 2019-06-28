@@ -43,13 +43,13 @@ class ExceptionRendererTest extends TestCase
         $Renderer->__construct($Exception);
         $Renderer->render();
 
+        $serialize = $Controller->viewBuilder()->getOption('serialize');
+
+        $this->assertNotEmpty($serialize);
+        $this->assertNotFalse(array_search('success', $serialize));
+        $this->assertNotFalse(array_search('data', $serialize));
+
         $viewVars = $Controller->viewBuilder()->getVars();
-
-        $this->assertNotEmpty($viewVars['_serialize']);
-
-        $actual = $viewVars['_serialize'];
-        $this->assertNotFalse(array_search('success', $actual));
-        $this->assertNotFalse(array_search('data', $actual));
 
         $expected = [
             'code' => 500,
@@ -119,13 +119,13 @@ class ExceptionRendererTest extends TestCase
         $Renderer->__construct($Exception);
         $Renderer->render();
 
+        $serialize = $Controller->viewBuilder()->getOption('serialize');
+
+        $this->assertNotEmpty($serialize);
+        $this->assertNotFalse(array_search('success', $serialize));
+        $this->assertNotFalse(array_search('data', $serialize));
+
         $viewVars = $Controller->viewBuilder()->getVars();
-
-        $this->assertNotEmpty($viewVars['_serialize']);
-
-        $actual = $viewVars['_serialize'];
-        $this->assertNotFalse(array_search('success', $actual));
-        $this->assertNotFalse(array_search('data', $actual));
 
         $expected = [
             'code' => 500,
@@ -189,13 +189,13 @@ class ExceptionRendererTest extends TestCase
         $Renderer->__construct($Exception);
         $Renderer->render();
 
+        $serialize = $Controller->viewBuilder()->getOption('serialize');
+
+        $this->assertNotEmpty($serialize);
+        $this->assertNotFalse(array_search('success', $serialize));
+        $this->assertNotFalse(array_search('data', $serialize));
+
         $viewVars = $Controller->viewBuilder()->getVars();
-
-        $this->assertNotEmpty($viewVars['_serialize']);
-
-        $actual = $viewVars['_serialize'];
-        $this->assertNotFalse(array_search('success', $actual));
-        $this->assertNotFalse(array_search('data', $actual));
 
         $expected = [
             'code' => 500,
@@ -253,13 +253,13 @@ class ExceptionRendererTest extends TestCase
         $Renderer->__construct($Exception);
         $Renderer->render();
 
+        $serialize = $Controller->viewBuilder()->getOption('serialize');
+
+        $this->assertNotEmpty($serialize);
+        $this->assertNotFalse(array_search('success', $serialize));
+        $this->assertNotFalse(array_search('data', $serialize));
+
         $viewVars = $Controller->viewBuilder()->getVars();
-
-        $this->assertNotEmpty($viewVars['_serialize']);
-
-        $actual = $viewVars['_serialize'];
-        $this->assertNotFalse(array_search('success', $actual));
-        $this->assertNotFalse(array_search('data', $actual));
 
         $expected = [
             'code' => 500,
@@ -319,13 +319,12 @@ class ExceptionRendererTest extends TestCase
         $Renderer->__construct($Exception);
         $Renderer->render();
 
+        $serialize = $Controller->viewBuilder()->getOption('serialize');
+
+        $this->assertNotEmpty($serialize);
+        $this->assertEquals(['success', 'data'], $serialize);
+
         $viewVars = $Controller->viewBuilder()->getVars();
-
-        $this->assertNotEmpty($viewVars['_serialize']);
-
-        $expected = ['success', 'data'];
-        $actual = $viewVars['_serialize'];
-        $this->assertEquals($expected, $actual);
 
         $expected = [
             'code' => 500,

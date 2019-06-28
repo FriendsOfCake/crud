@@ -422,13 +422,14 @@ class ApiListenerTest extends TestCase
             ->expects($this->at(0))
             ->method('viewVar')
             ->will($this->returnValue('items'));
-        $controller
-            ->expects($this->once())
-            ->method('set')
-            ->with('_serialize', ['success', 'data' => 'items']);
 
         $this->setReflectionClassInstance($listener);
         $this->callProtectedMethod('_ensureSerialize', [], $listener);
+
+        $this->assertEquals(
+            ['success', 'data' => 'items'],
+            $controller->viewBuilder()->getOption('serialize')
+        );
     }
 
     /**
@@ -495,16 +496,17 @@ class ApiListenerTest extends TestCase
             ->method('getConfig')
             ->with('serialize')
             ->will($this->returnValue(['something']));
-        $controller
-            ->expects($this->once())
-            ->method('set')
-            ->with('_serialize', ['success', 'something', 'data' => null]);
 
         $this->setReflectionClassInstance($action);
         $this->callProtectedMethod('serialize', [['something']], $action);
 
         $this->setReflectionClassInstance($listener);
         $this->callProtectedMethod('_ensureSerialize', [], $listener);
+
+        $this->assertEquals(
+            ['success', 'something', 'data' => null],
+            $controller->viewBuilder()->getOption('serialize')
+        );
     }
 
     /**
@@ -526,7 +528,7 @@ class ApiListenerTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $controller->viewBuilder()->setVar('_serialize', 'hello world');
+        $controller->viewBuilder()->setOption('serialize', 'hello world');
 
         $action = $this
             ->getMockBuilder('\Crud\Action\IndexAction')
@@ -551,6 +553,11 @@ class ApiListenerTest extends TestCase
 
         $this->setReflectionClassInstance($listener);
         $this->callProtectedMethod('_ensureSerialize', [], $listener);
+
+        $this->assertEquals(
+            'hello world',
+            $controller->viewBuilder()->getOption('serialize')
+        );
     }
 
     /**
@@ -591,13 +598,14 @@ class ApiListenerTest extends TestCase
             ->expects($this->at(0))
             ->method('viewVar')
             ->will($this->returnValue('helloWorld'));
-        $controller
-            ->expects($this->once())
-            ->method('set')
-            ->with('_serialize', ['success', 'data' => 'helloWorld']);
 
         $this->setReflectionClassInstance($listener);
         $this->callProtectedMethod('_ensureSerialize', [], $listener);
+
+        $this->assertEquals(
+            ['success', 'data' => 'helloWorld'],
+            $controller->viewBuilder()->getOption('serialize')
+        );
     }
 
     /**
@@ -638,10 +646,6 @@ class ApiListenerTest extends TestCase
             ->expects($this->any())
             ->method('getName')
             ->will($this->returnValue(''));
-        $controller
-            ->expects($this->once())
-            ->method('set')
-            ->with('_serialize', ['success', 'data' => '']);
         $action->expects($this->any())
             ->method('scope')
             ->will($this->returnValue('table'));
@@ -651,6 +655,11 @@ class ApiListenerTest extends TestCase
 
         $this->setReflectionClassInstance($listener);
         $this->callProtectedMethod('_ensureSerialize', [], $listener);
+
+        $this->assertEquals(
+            ['success', 'data' => ''],
+            $controller->viewBuilder()->getOption('serialize')
+        );
     }
 
     /**
