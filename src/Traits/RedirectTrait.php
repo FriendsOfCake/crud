@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Crud\Traits;
 
+use Cake\Http\Response;
 use Crud\Event\Subject;
 
 trait RedirectTrait
@@ -28,7 +29,7 @@ trait RedirectTrait
      * @param null|array $config Redirection configuration
      * @return mixed
      */
-    public function redirectConfig($name = null, $config = null)
+    public function redirectConfig(?string $name = null, ?array $config = null)
     {
         if ($name === null && $config === null) {
             return $this->getConfig('redirect');
@@ -48,7 +49,7 @@ trait RedirectTrait
      * @param string|null $default Default URL to use redirect_url is not found in request or data
      * @return mixed
      */
-    protected function _refererRedirectUrl($default = null)
+    protected function _refererRedirectUrl(?string $default = null)
     {
         $controller = $this->_controller();
 
@@ -58,7 +59,7 @@ trait RedirectTrait
     /**
      * Returns the _redirect_url for this request.
      *
-     * @param string|null $default Default URL to use if _redirect_url if not found in request or data.
+     * @param string|array|null $default Default URL to use if _redirect_url if not found in request or data.
      * @return mixed
      */
     protected function _redirectUrl($default = null)
@@ -89,7 +90,7 @@ trait RedirectTrait
      * @param int $status Status code
      * @return \Cake\Http\Response
      */
-    protected function _redirect(Subject $subject, $url = null, int $status = 302)
+    protected function _redirect(Subject $subject, $url = null, int $status = 302): Response
     {
         $url = $this->_redirectUrl($url);
 

@@ -48,7 +48,7 @@ class IndexAction extends BaseAction
      *
      * @return void
      */
-    protected function _handle()
+    protected function _handle(): void
     {
         [$finder, $options] = $this->_extractFinder();
         $query = $this->_table()->find($finder, $options);

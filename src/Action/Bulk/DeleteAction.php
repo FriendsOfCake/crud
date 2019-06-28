@@ -21,7 +21,7 @@ class DeleteAction extends BaseAction
      * @param array $config Default settings
      * @return void
      */
-    public function __construct(Controller $Controller, $config = [])
+    public function __construct(Controller $Controller, array $config = [])
     {
         $this->_defaultConfig['messages'] = [
             'success' => [
@@ -41,7 +41,7 @@ class DeleteAction extends BaseAction
      * @param \Cake\ORM\Query|null $query The query to act upon
      * @return bool
      */
-    protected function _bulk(?Query $query = null)
+    protected function _bulk(?Query $query = null): bool
     {
         $query = $query->delete();
         $statement = $query->execute();

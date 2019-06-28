@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Crud\Action;
 
+use Cake\Http\Response;
 use Crud\Event\Subject;
 use Crud\Traits\FindMethodTrait;
 use Crud\Traits\RedirectTrait;
@@ -56,7 +57,7 @@ class DeleteAction extends BaseAction
      * @param string|null $id Record id
      * @return \Cake\Http\Response
      */
-    protected function _post($id = null)
+    protected function _post(?string $id = null): Response
     {
         $subject = $this->_subject();
         $subject->set(['id' => $id]);
@@ -84,7 +85,7 @@ class DeleteAction extends BaseAction
      * @param string|null $id Record id
      * @return \Cake\Http\Response
      */
-    protected function _delete($id = null)
+    protected function _delete(?string $id = null): Response
     {
         return $this->_post($id);
     }
@@ -95,7 +96,7 @@ class DeleteAction extends BaseAction
      * @param \Crud\Event\Subject $subject Event subject
      * @return void
      */
-    protected function _success(Subject $subject)
+    protected function _success(Subject $subject): void
     {
         $subject->set(['success' => true]);
         $this->_trigger('afterDelete', $subject);
@@ -109,7 +110,7 @@ class DeleteAction extends BaseAction
      * @param \Crud\Event\Subject $subject Event subject
      * @return void
      */
-    protected function _error(Subject $subject)
+    protected function _error(Subject $subject): void
     {
         $subject->set(['success' => false]);
         $this->_trigger('afterDelete', $subject);
@@ -123,7 +124,7 @@ class DeleteAction extends BaseAction
      * @param \Crud\Event\Subject $subject Event subject
      * @return \Cake\Http\Response
      */
-    protected function _stopped(Subject $subject)
+    protected function _stopped(Subject $subject): Response
     {
         $subject->set(['success' => false]);
         $this->setFlash('error', $subject);

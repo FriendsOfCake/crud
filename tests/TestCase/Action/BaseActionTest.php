@@ -308,17 +308,6 @@ class BaseActionTest extends TestCase
     }
 
     /**
-     * testEmptyMessage
-     */
-    public function testEmptyMessage()
-    {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Missing message type');
-
-        $this->ActionClass->message(null);
-    }
-
-    /**
      * testUndefinedMessage
      */
     public function testUndefinedMessage()

@@ -7,6 +7,7 @@ use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
 use Cake\Error\Debugger;
 use Cake\Http\Response;
+use Crud\Error\Exception\ValidationException;
 use Exception;
 
 /**
@@ -23,7 +24,7 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer
      * @param \Crud\Error\Exception\ValidationException $error Exception instance
      * @return \Cake\Http\Response
      */
-    public function validation($error)
+    public function validation(ValidationException $error): Response
     {
         $url = $this->controller->getRequest()->getRequestTarget();
         $status = $code = $error->getCode();
@@ -87,7 +88,7 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer
      *
      * @return array debugging data
      */
-    protected function _getErrorData()
+    protected function _getErrorData(): array
     {
         $data = [];
 
@@ -122,7 +123,7 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer
      *
      * @return array Query log.
      */
-    protected function _getQueryLog()
+    protected function _getQueryLog(): array
     {
         $queryLog = [];
         $sources = ConnectionManager::configured();

@@ -231,11 +231,11 @@ class ApiListenerTest extends TestCase
             ->expects($this->nextCounter($action))
             ->method('getConfig')
             ->with('api.success')
-            ->will($this->returnValue(['exception' => 'SomethingExceptional']));
+            ->will($this->returnValue(['exception' => ['SomethingExceptional']]));
         $listener
             ->expects($this->nextCounter($listener))
             ->method('_exceptionResponse')
-            ->with($event, 'SomethingExceptional');
+            ->with($event, ['SomethingExceptional']);
         $listener
             ->expects($this->never())
             ->method('render');

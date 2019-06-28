@@ -6,6 +6,7 @@ namespace Crud\TestSuite\Traits;
 use Cake\Controller\Controller;
 use Cake\Datasource\ConnectionManager;
 use Cake\Event\Event;
+use Cake\ORM\Table;
 use Crud\Event\Subject;
 use Exception;
 
@@ -35,17 +36,17 @@ trait CrudTestTrait
      * @param \Cake\Controller\Controller|null $controller Controller
      * @return void
      */
-    protected function _subscribeToEvents(?Controller $controller = null)
+    protected function _subscribeToEvents(?Controller $controller = null): void
     {
         if ($controller === null) {
             $controller = $this->controller;
         }
 
-        $controller->Crud->on('beforeRender', function ($event) {
+        $controller->Crud->on('beforeRender', function ($event): void {
             $this->_subject = $event->getSubject();
         });
 
-        $controller->Crud->on('beforeRedirect', function ($event) {
+        $controller->Crud->on('beforeRedirect', function ($event): void {
             $this->_subject = $event->getSubject();
         });
     }
@@ -59,7 +60,7 @@ trait CrudTestTrait
      * @param string $table Table name in the database
      * @return \Cake\ORM\Table
      */
-    public function getModel($class, $methods, $alias, $table)
+    public function getModel(string $class, $methods, string $alias, string $table): Table
     {
         $mock = $this->getMockBuilder($class)
             ->setMethods($methods)
@@ -81,7 +82,7 @@ trait CrudTestTrait
      * @return void
      * @throws \Exception
      */
-    public function assertEvents(array $expected, $actual = null)
+    public function assertEvents(array $expected, ?array $actual = null): void
     {
         if ($actual === null) {
             $actual = $this->_subject;

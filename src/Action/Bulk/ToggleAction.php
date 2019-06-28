@@ -5,6 +5,7 @@ namespace Crud\Action\Bulk;
 
 use Cake\Controller\Controller;
 use Cake\Database\Expression\QueryExpression;
+use Cake\Http\Response;
 use Cake\ORM\Query;
 use Crud\Error\Exception\ActionNotConfiguredException;
 
@@ -23,7 +24,7 @@ class ToggleAction extends BaseAction
      * @param array $config Default settings
      * @return void
      */
-    public function __construct(Controller $Controller, $config = [])
+    public function __construct(Controller $Controller, array $config = [])
     {
         $this->_defaultConfig['messages'] = [
             'success' => [
@@ -43,7 +44,7 @@ class ToggleAction extends BaseAction
      * @return \Cake\Http\Response
      * @throws \Crud\Error\Exception\ActionNotConfiguredException
      */
-    protected function _handle()
+    protected function _handle(): Response
     {
         $field = $this->getConfig('field');
         if (empty($field)) {
@@ -59,7 +60,7 @@ class ToggleAction extends BaseAction
      * @param \Cake\ORM\Query|null $query The query to act upon
      * @return bool
      */
-    protected function _bulk(?Query $query = null)
+    protected function _bulk(?Query $query = null): bool
     {
         $field = $this->getConfig('field');
         $expression = [new QueryExpression(sprintf('%1$s= NOT %1$s', $field))];

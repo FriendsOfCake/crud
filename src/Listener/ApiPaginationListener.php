@@ -39,7 +39,7 @@ class ApiPaginationListener extends BaseListener
      * @param \Cake\Event\EventInterface $event Event
      * @return void
      */
-    public function beforeRender(EventInterface $event)
+    public function beforeRender(EventInterface $event): void
     {
         $paging = $this->_request()->getParam('paging');
         if (empty($paging)) {

@@ -3,7 +3,17 @@ declare(strict_types=1);
 
 namespace Crud\Core;
 
+use Cake\Controller\Controller;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\EventInterface;
+use Cake\Http\Response;
+use Cake\Http\ServerRequest;
+use Cake\Http\Session;
+use Cake\ORM\Table;
+use Crud\Action\BaseAction;
+use Crud\Controller\Component\CrudComponent;
 use Crud\Event\Subject;
+use Crud\Listener\BaseListener;
 
 trait ProxyTrait
 {
@@ -18,7 +28,7 @@ trait ProxyTrait
      * @return \Crud\Action\BaseAction
      * @codeCoverageIgnore
      */
-    protected function _action($name = null)
+    protected function _action(?string $name = null): BaseAction
     {
         return $this->_crud()->action($name);
     }
@@ -34,7 +44,7 @@ trait ProxyTrait
      * @throws \Exception
      * @codeCoverageIgnore
      */
-    protected function _trigger($eventName, ?Subject $data = null)
+    protected function _trigger(string $eventName, ?Subject $data = null): EventInterface
     {
         return $this->_crud()->trigger($eventName, $data);
     }
@@ -50,7 +60,7 @@ trait ProxyTrait
      * @throws \Crud\Error\Exception\MissingListenerException
      * @codeCoverageIgnore
      */
-    protected function _listener($name)
+    protected function _listener(string $name): BaseListener
     {
         return $this->_crud()->listener($name);
     }
@@ -63,7 +73,7 @@ trait ProxyTrait
      * @return \Cake\Http\Session
      * @codeCoverageIgnore
      */
-    protected function _session()
+    protected function _session(): Session
     {
         return $this->_request()->getSession();
     }
@@ -76,7 +86,7 @@ trait ProxyTrait
      * @return \Cake\Controller\Controller
      * @codeCoverageIgnore
      */
-    protected function _controller()
+    protected function _controller(): Controller
     {
         return $this->_controller;
     }
@@ -89,7 +99,7 @@ trait ProxyTrait
      * @return \Cake\Http\ServerRequest
      * @codeCoverageIgnore
      */
-    protected function _request()
+    protected function _request(): ServerRequest
     {
         return $this->_controller()->getRequest();
     }
@@ -102,7 +112,7 @@ trait ProxyTrait
      * @return \Cake\Http\Response
      * @codeCoverageIgnore
      */
-    protected function _response()
+    protected function _response(): Response
     {
         return $this->_controller()->getResponse();
     }
@@ -112,7 +122,7 @@ trait ProxyTrait
      *
      * @return \Cake\ORM\Table
      */
-    protected function _table()
+    protected function _table(): Table
     {
         return $this->_controller()
             ->loadModel(
@@ -128,7 +138,7 @@ trait ProxyTrait
      * @param array $options A list of options for the object hydration.
      * @return \Cake\Datasource\EntityInterface
      */
-    protected function _entity(array $data = [], array $options = [])
+    protected function _entity(array $data = [], array $options = []): EntityInterface
     {
         if ($this->_entity && empty($data)) {
             return $this->_entity;
@@ -143,7 +153,7 @@ trait ProxyTrait
      * @param array $additional Array of subject properties to set
      * @return \Crud\Event\Subject
      */
-    protected function _subject($additional = [])
+    protected function _subject(array $additional = []): Subject
     {
         return new Subject($additional);
     }
@@ -153,7 +163,7 @@ trait ProxyTrait
      *
      * @return \Crud\Controller\Component\CrudComponent
      */
-    protected function _crud()
+    protected function _crud(): CrudComponent
     {
         if (!$this->_controller->Crud) {
             return $this->_controller->components()->load('Crud.Crud');

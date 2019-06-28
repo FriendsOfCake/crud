@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Crud\Action;
 
+use Cake\Http\Response;
 use Crud\Error\Exception\ValidationException;
 use Crud\Event\Subject;
 use Crud\Traits\RedirectTrait;
@@ -95,7 +96,7 @@ class AddAction extends BaseAction
      *
      * @return void
      */
-    protected function _get()
+    protected function _get(): void
     {
         $subject = $this->_subject([
             'success' => true,
@@ -150,7 +151,7 @@ class AddAction extends BaseAction
      * @param \Crud\Event\Subject $subject Event subject
      * @return \Cake\Http\Response
      */
-    protected function _success(Subject $subject)
+    protected function _success(Subject $subject): Response
     {
         $subject->set(['success' => true, 'created' => true]);
 
@@ -166,7 +167,7 @@ class AddAction extends BaseAction
      * @param \Crud\Event\Subject $subject Event subject
      * @return void
      */
-    protected function _error(Subject $subject)
+    protected function _error(Subject $subject): void
     {
         $subject->set(['success' => false, 'created' => false]);
 
@@ -181,7 +182,7 @@ class AddAction extends BaseAction
      * @param \Crud\Event\Subject $subject Event subject
      * @return \Cake\Http\Response
      */
-    protected function _stopped(Subject $subject)
+    protected function _stopped(Subject $subject): Response
     {
         if (!isset($subject->success)) {
             $subject->success = false;

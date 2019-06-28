@@ -37,7 +37,7 @@ class LookupAction extends BaseAction
      *
      * @return void
      */
-    protected function _handle()
+    protected function _handle(): void
     {
         [$finder, $options] = $this->_extractFinder();
         $options = array_merge($options, $this->_getFindConfig());
@@ -56,7 +56,7 @@ class LookupAction extends BaseAction
      *
      * @return array
      */
-    protected function _getFindConfig()
+    protected function _getFindConfig(): array
     {
         $request = $this->_request();
 

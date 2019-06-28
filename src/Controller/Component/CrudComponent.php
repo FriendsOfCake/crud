@@ -5,19 +5,24 @@ namespace Crud\Controller\Component;
 
 use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
+use Cake\Controller\Controller;
 use Cake\Core\App;
+use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Response;
+use Cake\ORM\Table;
 use Cake\Utility\Inflector;
+use Crud\Action\BaseAction;
 use Crud\Error\Exception\ActionNotConfiguredException;
 use Crud\Error\Exception\ListenerNotConfiguredException;
 use Crud\Error\Exception\MissingActionException;
 use Crud\Error\Exception\MissingListenerException;
 use Crud\Event\Subject;
+use Crud\Listener\BaseListener;
 use Exception;
 
 /**
@@ -137,7 +142,7 @@ class CrudComponent extends Component
      *   can use to lazy load its components.
      * @param array $config Array of configuration settings.
      */
-    public function __construct(ComponentRegistry $collection, $config = [])
+    public function __construct(ComponentRegistry $collection, array $config = [])
     {
         $config += ['actions' => [], 'listeners' => []];
         $config['actions'] = $this->normalizeArray($config['actions']);
@@ -155,7 +160,7 @@ class CrudComponent extends Component
      * @param array $array List to normalize
      * @return array
      */
-    public function normalizeArray(array $array)
+    public function normalizeArray(array $array): array
     {
         $normal = [];
 
@@ -201,7 +206,7 @@ class CrudComponent extends Component
      * @return void
      * @throws \Exception
      */
-    public function beforeFilter(EventInterface $event)
+    public function beforeFilter(EventInterface $event): void
     {
         $this->_loadListeners();
         $this->trigger('beforeFilter');
@@ -214,7 +219,7 @@ class CrudComponent extends Component
      * @return void
      * @throws \Exception
      */
-    public function startup(EventInterface $event)
+    public function startup(EventInterface $event): void
     {
         $this->_loadListeners();
         $this->trigger('startup');
@@ -223,12 +228,12 @@ class CrudComponent extends Component
     /**
      * Execute a Crud action
      *
-     * @param string $controllerAction Override the controller action to execute as.
+     * @param string|null $controllerAction Override the controller action to execute as.
      * @param array $args List of arguments to pass to the CRUD action (Usually an ID to edit / delete).
      * @return \Cake\Http\Response
      * @throws \Exception If an action is not mapped.
      */
-    public function execute($controllerAction = null, $args = [])
+    public function execute(?string $controllerAction = null, array $args = []): Response
     {
         $this->_loadListeners();
 
@@ -271,7 +276,7 @@ class CrudComponent extends Component
      * @throws \Crud\Error\Exception\ActionNotConfiguredException
      * @throws \Crud\Error\Exception\MissingActionException
      */
-    public function action($name = null)
+    public function action(?string $name = null): BaseAction
     {
         if (empty($name)) {
             $name = $this->_action;
@@ -290,7 +295,7 @@ class CrudComponent extends Component
      * @throws \Crud\Error\Exception\ActionNotConfiguredException
      * @throws \Crud\Error\Exception\MissingActionException
      */
-    public function enable($actions)
+    public function enable($actions): void
     {
         foreach ((array)$actions as $action) {
             $this->action($action)->enable();
@@ -305,7 +310,7 @@ class CrudComponent extends Component
      * @throws \Crud\Error\Exception\ActionNotConfiguredException
      * @throws \Crud\Error\Exception\MissingActionException
      */
-    public function disable($actions)
+    public function disable($actions): void
     {
         foreach ((array)$actions as $action) {
             $this->action($action)->disable();
@@ -323,7 +328,7 @@ class CrudComponent extends Component
      * @throws \Crud\Error\Exception\ActionNotConfiguredException
      * @throws \Crud\Error\Exception\MissingActionException
      */
-    public function view($action, $view = null)
+    public function view($action, ?string $view = null): void
     {
         if (is_array($action)) {
             foreach ($action as $realAction => $realView) {
@@ -347,7 +352,7 @@ class CrudComponent extends Component
      * @throws \Crud\Error\Exception\ActionNotConfiguredException
      * @throws \Crud\Error\Exception\MissingActionException
      */
-    public function viewVar($action, $viewVar = null)
+    public function viewVar($action, ?string $viewVar = null): void
     {
         if (is_array($action)) {
             foreach ($action as $realAction => $realViewVar) {
@@ -371,7 +376,7 @@ class CrudComponent extends Component
      * @throws \Crud\Error\Exception\ActionNotConfiguredException
      * @throws \Crud\Error\Exception\MissingActionException
      */
-    public function findMethod($action, $method = null)
+    public function findMethod($action, ?string $method = null): void
     {
         if (is_array($action)) {
             foreach ($action as $realAction => $realMethod) {
@@ -394,7 +399,7 @@ class CrudComponent extends Component
      * @throws \Crud\Error\Exception\ActionNotConfiguredException
      * @throws \Crud\Error\Exception\MissingActionException
      */
-    public function mapAction($action, $config = [], $enable = true)
+    public function mapAction(string $action, $config = [], bool $enable = true): void
     {
         if (is_string($config)) {
             $config = ['className' => $config];
@@ -415,7 +420,7 @@ class CrudComponent extends Component
      * @throws \Crud\Error\Exception\ActionNotConfiguredException
      * @throws \Crud\Error\Exception\MissingActionException
      */
-    public function isActionMapped($action = null)
+    public function isActionMapped(?string $action = null): bool
     {
         if (empty($action)) {
             $action = $this->_action;
@@ -438,7 +443,7 @@ class CrudComponent extends Component
      * @param array $options Used to set the `priority` and `passParams` flags to the listener.
      * @return void
      */
-    public function on($events, $callback, $options = [])
+    public function on($events, callable $callback, array $options = []): void
     {
         foreach ((array)$events as $event) {
             if (!strpos($event, '.')) {
@@ -457,7 +462,7 @@ class CrudComponent extends Component
      * @throws \Crud\Error\Exception\ListenerNotConfiguredException
      * @throws \Crud\Error\Exception\MissingListenerException
      */
-    public function listener($name)
+    public function listener(string $name): BaseListener
     {
         return $this->_loadListener($name);
     }
@@ -473,11 +478,11 @@ class CrudComponent extends Component
      * CakePHP Plugin.ClassName format for `$name` and `$class` is supported.
      *
      * @param string $name Name
-     * @param string $className Normal CakePHP plugin-dot annotation supported.
+     * @param string|null $className Normal CakePHP plugin-dot annotation supported.
      * @param array $config Any default settings for a listener.
      * @return void
      */
-    public function addListener($name, $className = null, $config = [])
+    public function addListener(string $name, ?string $className = null, array $config = []): void
     {
         if (strpos($name, '.') !== false) {
             [$plugin, $name] = pluginSplit($name);
@@ -494,9 +499,9 @@ class CrudComponent extends Component
      * This will also detach it from the EventManager if it's attached.
      *
      * @param string $name Name
-     * @return bool|null
+     * @return bool
      */
-    public function removeListener($name)
+    public function removeListener(string $name): bool
     {
         $listeners = $this->getConfig('listeners');
         if (!array_key_exists($name, $listeners)) {
@@ -510,6 +515,8 @@ class CrudComponent extends Component
 
         unset($listeners[$name]);
         $this->_config['listeners'] = $listeners;
+
+        return true;
     }
 
     /**
@@ -522,19 +529,19 @@ class CrudComponent extends Component
      * object.
      *
      * @param string $eventName Event name
-     * @param \Crud\Event\Subject|null $data Event data
+     * @param \Crud\Event\Subject|array|null $data Event subject / data
      * @throws \Exception if any event listener return a CakeResponse object.
      * @return \Cake\Event\EventInterface
      */
-    public function trigger($eventName, ?Subject $data = null)
+    public function trigger(string $eventName, $data = null): EventInterface
     {
         $eventName = $this->_config['eventPrefix'] . '.' . $eventName;
 
-        $Subject = $data ?: $this->getSubject();
+        $Subject = $data ?: $this->getSubject($data ?? []);
         $Subject->addEvent($eventName);
 
         if (!empty($this->_config['eventLogging'])) {
-            $this->logEvent($eventName, $data);
+            $this->logEvent($eventName, $Subject);
         }
 
         $Event = new Event($eventName, $Subject);
@@ -553,12 +560,12 @@ class CrudComponent extends Component
      * Add a log entry for the event.
      *
      * @param string $eventName Event name
-     * @param array $data Event data
+     * @param \Crud\Event\Subject $subject Event subject
      * @return void
      */
-    public function logEvent($eventName, $data = [])
+    public function logEvent(string $eventName, Subject $subject): void
     {
-        $this->_eventLog[] = [$eventName, $data];
+        $this->_eventLog[] = [$eventName, $subject];
     }
 
     /**
@@ -571,7 +578,7 @@ class CrudComponent extends Component
      * @param mixed $config If NULL, the defaults is returned, else the defaults are changed.
      * @return mixed
      */
-    public function defaults($type, $name, $config = null)
+    public function defaults(string $type, $name, $config = null)
     {
         if ($config !== null) {
             if (!is_array($name)) {
@@ -593,7 +600,7 @@ class CrudComponent extends Component
      *
      * @return array
      */
-    public function eventLog()
+    public function eventLog(): array
     {
         return $this->_eventLog;
     }
@@ -604,7 +611,7 @@ class CrudComponent extends Component
      * @param string $modelName The name of the model to load.
      * @return void
      */
-    public function useModel($modelName)
+    public function useModel(string $modelName): void
     {
         $this->_controller->loadModel($modelName);
         [, $this->_modelName] = pluginSplit($modelName);
@@ -615,7 +622,7 @@ class CrudComponent extends Component
      *
      * @return \Cake\ORM\Table
      */
-    public function table()
+    public function table(): Table
     {
         return $this->_controller->{$this->_modelName};
     }
@@ -626,7 +633,7 @@ class CrudComponent extends Component
      * @param array $data Data
      * @return \Cake\Datasource\EntityInterface
      */
-    public function entity(array $data = [])
+    public function entity(array $data = []): EntityInterface
     {
         return $this->table()->newEntity($data);
     }
@@ -636,7 +643,7 @@ class CrudComponent extends Component
      *
      * @return \Cake\Controller\Controller
      */
-    public function controller()
+    public function controller(): Controller
     {
         return $this->_controller;
     }
@@ -647,7 +654,7 @@ class CrudComponent extends Component
      * @param array $additional Additional properties for the subject.
      * @return \Crud\Event\Subject
      */
-    public function getSubject($additional = [])
+    public function getSubject(array $additional = []): Subject
     {
         $subject = new Subject();
         $subject->set($additional);
@@ -662,7 +669,7 @@ class CrudComponent extends Component
      * @throws \Crud\Error\Exception\ListenerNotConfiguredException
      * @throws \Crud\Error\Exception\MissingListenerException
      */
-    protected function _loadListeners()
+    protected function _loadListeners(): void
     {
         foreach (array_keys($this->getConfig('listeners')) as $name) {
             $this->_loadListener($name);
@@ -677,7 +684,7 @@ class CrudComponent extends Component
      * @throws \Crud\Error\Exception\ListenerNotConfiguredException
      * @throws \Crud\Error\Exception\MissingListenerException
      */
-    protected function _loadListener($name)
+    protected function _loadListener(string $name): BaseListener
     {
         if (!isset($this->_listenerInstances[$name])) {
             $config = $this->getConfig('listeners.' . $name);
@@ -713,7 +720,7 @@ class CrudComponent extends Component
      * @throws \Crud\Error\Exception\ActionNotConfiguredException
      * @throws \Crud\Error\Exception\MissingActionException
      */
-    protected function _loadAction($name)
+    protected function _loadAction(string $name): BaseAction
     {
         if (!isset($this->_actionInstances[$name])) {
             $config = $this->getConfig('actions.' . $name);

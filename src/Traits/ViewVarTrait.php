@@ -56,7 +56,7 @@ trait ViewVarTrait
      * @throws \Exception
      * @return string
      */
-    protected function _deriveViewVar()
+    protected function _deriveViewVar(): string
     {
         if ($this->scope() === 'table') {
             return Inflector::variable($this->_controller()->getName());

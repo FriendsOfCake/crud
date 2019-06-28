@@ -1,5 +1,5 @@
 parameters:
-    level: 4
+    level: 5
     excludes_analyse:
         - */src/TestSuite/*
     universalObjectCratesClasses:
@@ -13,3 +13,4 @@ parameters:
         - '#Call to an undefined method Crud\\Action\\BaseAction::findMethod\(\)#'
         - '#Call to an undefined method Cake\\ORM\\Table::filterParams\(\)#'
         - '#Method Crud\\Core\\BaseObject::_table\(\) should return Cake\\ORM\\Table but returns Cake\\Datasource\\RepositoryInterface#'
+        - '#Parameter \#1 \$subject of method Crud\\Listener\\[^\s]+ expects Crud\\Event\\Subject, object given#'

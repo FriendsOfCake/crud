@@ -77,7 +77,7 @@ abstract class BaseListener extends BaseObject
      * @param string|null $value Value
      * @return string
      */
-    public function resourceName($value = null)
+    public function resourceName(?string $value = null): string
     {
         if ($value === null) {
             return $this->_action()->resourceName();

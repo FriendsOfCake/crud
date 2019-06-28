@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Crud\Action;
 
+use Cake\Http\Response;
 use Crud\Error\Exception\ValidationException;
 use Crud\Event\Subject;
 use Crud\Traits\FindMethodTrait;
@@ -96,7 +97,7 @@ class EditAction extends BaseAction
      * @return void
      * @throws \Cake\Http\Exception\NotFoundException If record not found
      */
-    protected function _get($id = null)
+    protected function _get(?string $id = null): void
     {
         $subject = $this->_subject();
         $subject->set(['id' => $id]);
@@ -111,7 +112,7 @@ class EditAction extends BaseAction
      * @param string|null $id Record id
      * @return \Cake\Http\Response|null
      */
-    protected function _put($id = null)
+    protected function _put(?string $id = null)
     {
         $subject = $this->_subject();
         $subject->set(['id' => $id]);
@@ -138,7 +139,7 @@ class EditAction extends BaseAction
      * @param string|null $id Record id
      * @return \Cake\Http\Response|null
      */
-    protected function _post($id = null)
+    protected function _post(?string $id = null)
     {
         return $this->_put($id);
     }
@@ -162,7 +163,7 @@ class EditAction extends BaseAction
      * @param \Crud\Event\Subject $subject Event subject
      * @return \Cake\Http\Response
      */
-    protected function _success(Subject $subject)
+    protected function _success(Subject $subject): Response
     {
         $subject->set(['success' => true, 'created' => false]);
         $this->_trigger('afterSave', $subject);
@@ -178,7 +179,7 @@ class EditAction extends BaseAction
      * @param \Crud\Event\Subject $subject Event subject
      * @return void
      */
-    protected function _error(Subject $subject)
+    protected function _error(Subject $subject): void
     {
         $subject->set(['success' => false, 'created' => false]);
         $this->_trigger('afterSave', $subject);

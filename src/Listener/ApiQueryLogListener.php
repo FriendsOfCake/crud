@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Crud\Listener;
 
 use Cake\Core\Configure;
+use Cake\Datasource\ConnectionInterface;
 use Cake\Datasource\ConnectionManager;
 use Cake\Datasource\Exception\MissingDatasourceConfigException;
 use Cake\Event\EventInterface;
@@ -48,7 +49,7 @@ class ApiQueryLogListener extends BaseListener
      * @param \Cake\Event\EventInterface $event Event
      * @return void
      */
-    public function setupLogging(EventInterface $event)
+    public function setupLogging(EventInterface $event): void
     {
         foreach ($this->_getSources() as $connectionName) {
             try {
@@ -67,7 +68,7 @@ class ApiQueryLogListener extends BaseListener
      * @param \Cake\Event\EventInterface $event Event
      * @return void
      */
-    public function beforeRender(EventInterface $event)
+    public function beforeRender(EventInterface $event): void
     {
         if (!Configure::read('debug')) {
             return;
@@ -82,7 +83,7 @@ class ApiQueryLogListener extends BaseListener
      *
      * @return array
      */
-    protected function _getQueryLogs()
+    protected function _getQueryLogs(): array
     {
         $sources = $this->_getSources();
 
@@ -102,7 +103,7 @@ class ApiQueryLogListener extends BaseListener
      *
      * @return array
      */
-    public function getQueryLogs()
+    public function getQueryLogs(): array
     {
         return $this->_getQueryLogs();
     }
@@ -113,7 +114,7 @@ class ApiQueryLogListener extends BaseListener
      * @return array
      * @codeCoverageIgnore
      */
-    protected function _getSources()
+    protected function _getSources(): array
     {
         return ConnectionManager::configured();
     }
@@ -125,7 +126,7 @@ class ApiQueryLogListener extends BaseListener
      * @return \Cake\Datasource\ConnectionInterface
      * @codeCoverageIgnore
      */
-    protected function _getSource($source)
+    protected function _getSource(string $source)
     {
         return ConnectionManager::get($source);
     }

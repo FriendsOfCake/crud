@@ -46,7 +46,7 @@ abstract class BaseAction extends BaseObject
      * @return mixed
      * @throws \Cake\Http\Exception\NotImplementedException if the action can't handle the request
      */
-    public function handle($args = [])
+    public function handle(array $args = [])
     {
         if (!$this->enabled()) {
             return false;
@@ -84,7 +84,7 @@ abstract class BaseAction extends BaseObject
      *
      * @return bool
      */
-    public function responding()
+    public function responding(): bool
     {
         return $this->_responding;
     }
@@ -94,7 +94,7 @@ abstract class BaseAction extends BaseObject
      *
      * @return void
      */
-    public function enable()
+    public function enable(): void
     {
         $this->setConfig('enabled', true);
     }
@@ -104,7 +104,7 @@ abstract class BaseAction extends BaseObject
      *
      * @return bool
      */
-    public function enabled()
+    public function enabled(): bool
     {
         return $this->getConfig('enabled');
     }
@@ -114,7 +114,7 @@ abstract class BaseAction extends BaseObject
      *
      * @return void
      */
-    public function disable()
+    public function disable(): void
     {
         $this->setConfig('enabled', false);
     }
@@ -127,12 +127,8 @@ abstract class BaseAction extends BaseObject
      * @return array
      * @throws \Exception for a missing or undefined message type
      */
-    public function message($type, array $replacements = [])
+    public function message(string $type, array $replacements = []): array
     {
-        if (empty($type)) {
-            throw new \Exception('Missing message type');
-        }
-
         $crud = $this->_crud();
 
         $config = $this->getConfig('messages.' . $type);
@@ -187,7 +183,7 @@ abstract class BaseAction extends BaseObject
      * @return void
      * @throws \Exception
      */
-    public function setFlash($type, Subject $subject)
+    public function setFlash(string $type, Subject $subject): void
     {
         $subject->set($this->message($type));
         $event = $this->_trigger('setFlash', $subject);
@@ -223,7 +219,7 @@ abstract class BaseAction extends BaseObject
      * @param null|array $config Redirection configuration
      * @return mixed
      */
-    public function redirectConfig($name = null, $config = null)
+    public function redirectConfig(?string $name = null, ?array $config = null)
     {
         if ($name === null && $config === null) {
             return $this->getConfig('redirect');
@@ -242,9 +238,9 @@ abstract class BaseAction extends BaseObject
      *
      * Usually it's 'table' or 'entity'
      *
-     * @return string
+     * @return string|null
      */
-    public function scope()
+    public function scope(): ?string
     {
         return $this->getConfig('scope');
     }
@@ -255,13 +251,15 @@ abstract class BaseAction extends BaseObject
      * @param \Cake\Event\EventInterface $event Event
      * @return bool|null
      */
-    public function publishSuccess(EventInterface $event)
+    public function publishSuccess(EventInterface $event): ?bool
     {
         if (!isset($event->getSubject()->success)) {
             return false;
         }
 
         $this->_controller()->set('success', $event->getSubject()->success);
+
+        return null;
     }
 
     /**
@@ -273,7 +271,7 @@ abstract class BaseAction extends BaseObject
      * @param string|null $value Name to set
      * @return string
      */
-    public function resourceName($value = null)
+    public function resourceName(?string $value = null): string
     {
         if ($value !== null) {
             $this->setConfig('name', $value);
@@ -293,7 +291,7 @@ abstract class BaseAction extends BaseObject
      *
      * @return string
      */
-    protected function _deriveResourceName()
+    protected function _deriveResourceName(): string
     {
         $inflectionType = $this->getConfig('inflection');
 
@@ -333,7 +331,7 @@ abstract class BaseAction extends BaseObject
      *
      * @return string
      */
-    public function subjectEntityKey()
+    public function subjectEntityKey(): string
     {
         $key = $this->getConfig('entityKey');
         if ($key !== null) {

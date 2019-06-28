@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace Crud\Error\Exception;
 
+use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\BadRequestException;
-use Cake\ORM\Entity;
 use Cake\Utility\Hash;
+use Throwable;
 
 /**
  * Exception containing validation errors from the model. Useful for API
@@ -31,10 +32,11 @@ class ValidationException extends BadRequestException
     /**
      * Constructor
      *
-     * @param \Cake\ORM\Entity $entity Entity
+     * @param \Cake\Datasource\EntityInterface $entity Entity
      * @param int $code code to report to client
+     * @param \Throwable|null $previous The previous exception.
      */
-    public function __construct(Entity $entity, $code = 422)
+    public function __construct(EntityInterface $entity, int $code = 422, ?Throwable $previous = null)
     {
         $this->_validationErrors = array_filter((array)$entity->getErrors());
         $flat = Hash::flatten($this->_validationErrors);
@@ -48,7 +50,7 @@ class ValidationException extends BadRequestException
             [$errorCount]
         );
 
-        parent::__construct($this->message, $code);
+        parent::__construct($this->message, $code, $previous);
     }
 
     /**
@@ -56,7 +58,7 @@ class ValidationException extends BadRequestException
      *
      * @return array
      */
-    public function getValidationErrors()
+    public function getValidationErrors(): array
     {
         return $this->_validationErrors;
     }
@@ -66,7 +68,7 @@ class ValidationException extends BadRequestException
      *
      * @return int
      */
-    public function getValidationErrorCount()
+    public function getValidationErrorCount(): int
     {
         return $this->_validationErrorCount;
     }

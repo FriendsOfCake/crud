@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Crud\Traits;
 
+use Cake\Datasource\EntityInterface;
 use Crud\Event\Subject;
 
 trait FindMethodTrait
@@ -34,7 +35,7 @@ trait FindMethodTrait
      * @return array An array containing in the first position the finder name
      *   and in the second the options to be passed to it.
      */
-    protected function _extractFinder()
+    protected function _extractFinder(): array
     {
         $finder = $this->findMethod();
         $options = [];
@@ -51,10 +52,10 @@ trait FindMethodTrait
      *
      * @param string $id Record id
      * @param \Crud\Event\Subject $subject Event subject
-     * @return \Cake\ORM\Entity
+     * @return \Cake\Datasource\EntityInterface
      * @throws \Exception
      */
-    protected function _findRecord($id, Subject $subject)
+    protected function _findRecord(string $id, Subject $subject): EntityInterface
     {
         $repository = $this->_table();
 
@@ -88,7 +89,7 @@ trait FindMethodTrait
      * @return void
      * @throws \Exception
      */
-    protected function _notFound($id, Subject $subject)
+    protected function _notFound(string $id, Subject $subject): void
     {
         $subject->set(['success' => false]);
         $this->_trigger('recordNotFound', $subject);

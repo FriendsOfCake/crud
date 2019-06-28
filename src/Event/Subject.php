@@ -25,7 +25,7 @@ class Subject
      *
      * @param array $fields Fields
      */
-    public function __construct($fields = [])
+    public function __construct(array $fields = [])
     {
         $this->set($fields);
     }
@@ -36,7 +36,7 @@ class Subject
      * @param string $name name of event
      * @return void
      */
-    public function addEvent($name)
+    public function addEvent(string $name): void
     {
         $this->_events[] = $name;
     }
@@ -46,7 +46,7 @@ class Subject
      *
      * @return array
      */
-    public function getEvents()
+    public function getEvents(): array
     {
         return $this->_events;
     }
@@ -58,7 +58,7 @@ class Subject
      * @param string $name name of event
      * @return bool
      */
-    public function hasEvent($name)
+    public function hasEvent(string $name): bool
     {
         return in_array($name, $this->_events);
     }
@@ -69,7 +69,7 @@ class Subject
      * @param array $fields Fields
      * @return \Crud\Event\Subject
      */
-    public function set($fields)
+    public function set(array $fields)
     {
         foreach ($fields as $k => $v) {
             $this->{$k} = $v;
@@ -91,7 +91,7 @@ class Subject
      * @return bool
      * @throws \Exception In case of invalid mode
      */
-    public function shouldProcess($mode, $actions = [])
+    public function shouldProcess(string $mode, $actions = []): bool
     {
         if (is_string($actions)) {
             $actions = [$actions];

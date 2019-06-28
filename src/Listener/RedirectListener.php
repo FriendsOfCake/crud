@@ -48,7 +48,7 @@ class RedirectListener extends BaseListener
      *
      * @return void
      */
-    public function setup()
+    public function setup(): void
     {
         $this->reader('request.key', function (Subject $subject, $key = null) {
             $request = $this->_request();
@@ -88,7 +88,7 @@ class RedirectListener extends BaseListener
      * @param mixed $reader Reader
      * @return mixed
      */
-    public function reader($key, $reader = null)
+    public function reader(string $key, $reader = null)
     {
         if ($reader === null) {
             return $this->getConfig('readers.' . $key);
@@ -107,7 +107,7 @@ class RedirectListener extends BaseListener
      * @return void
      * @throws \Exception
      */
-    public function beforeRedirect(EventInterface $event)
+    public function beforeRedirect(EventInterface $event): void
     {
         $subject = $event->getSubject();
 
@@ -137,7 +137,7 @@ class RedirectListener extends BaseListener
      * @return array
      * @throws \Exception
      */
-    protected function _getUrl(Subject $subject, array $url)
+    protected function _getUrl(Subject $subject, array $url): array
     {
         foreach ($url as $key => $value) {
             if (!is_array($value)) {
@@ -164,7 +164,7 @@ class RedirectListener extends BaseListener
      * @return mixed
      * @throws \Exception if the reader is invalid
      */
-    protected function _getKey(Subject $subject, $reader, $key)
+    protected function _getKey(Subject $subject, string $reader, string $key)
     {
         $callable = $this->reader($reader);
 

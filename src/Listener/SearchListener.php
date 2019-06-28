@@ -42,7 +42,7 @@ class SearchListener extends BaseListener
      * @param \Cake\Event\EventInterface $event Event
      * @return void
      */
-    public function injectSearch(EventInterface $event)
+    public function injectSearch(EventInterface $event): void
     {
         if (!in_array($event->getName(), $this->getConfig('enabled'))) {
             return;
