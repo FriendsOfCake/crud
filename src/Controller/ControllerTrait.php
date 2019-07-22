@@ -68,7 +68,7 @@ trait ControllerTrait
      * @return \Cake\Controller\Component|null The component instance if action is
      *  mapped else `null`.
      */
-    protected function _isActionMapped(): Component
+    protected function _isActionMapped(): ?Component
     {
         if (!empty($this->dispatchComponents)) {
             foreach ($this->dispatchComponents as $component => $enabled) {
