@@ -220,7 +220,7 @@ class RelatedModelsListener extends BaseListener
             $associationClass = $table;
             foreach ($associations as $associationName) {
                 $lastAssociationClass = $associationClass;
-                $associationClass = $associationClass->association($associationName);
+                $associationClass = $associationClass->getAssociation($associationName);
                 if (!$associationClass) {
                     throw new RuntimeException(sprintf(
                         'Table "%s" is not associated with "%s"',
