@@ -48,7 +48,7 @@ class ApiPaginationListenerTest extends TestCase
             ->getMockBuilder(ServerRequest::class)
             ->setMethods(null)
             ->getMock();
-        $Request = $Request->withParam('paging', ['MyModel' => []]);
+        $Request = $Request->withAttribute('paging', ['MyModel' => []]);
 
         $Controller = $this
             ->getMockBuilder('\Cake\Controller\Controller')
@@ -97,7 +97,7 @@ class ApiPaginationListenerTest extends TestCase
             ->expects($this->never())
             ->method('_controller');
 
-        $Request = $Request->withParam('paging', null);
+        $Request = $Request->withAttribute('paging', null);
 
         $Instance->beforeRender(new \Cake\Event\Event('something'));
     }
@@ -114,7 +114,7 @@ class ApiPaginationListenerTest extends TestCase
             ->getMockBuilder(ServerRequest::class)
             ->setMethods(null)
             ->getMock();
-        $Request = $Request->withParam('paging', [
+        $Request = $Request->withAttribute('paging', [
             'MyModel' => [
                 'pageCount' => 10,
                 'page' => 2,
@@ -188,7 +188,7 @@ class ApiPaginationListenerTest extends TestCase
             ->getMockBuilder(ServerRequest::class)
             ->setMethods(null)
             ->getMock();
-        $Request = $Request->withParam('paging', [
+        $Request = $Request->withAttribute('paging', [
             'MyModel' => [
                 'pageCount' => 10,
                 'page' => 2,
@@ -262,7 +262,7 @@ class ApiPaginationListenerTest extends TestCase
             ->getMockBuilder(ServerRequest::class)
             ->setMethods(null)
             ->getMock();
-        $Request = $Request->withParam('paging', [
+        $Request = $Request->withAttribute('paging', [
             'MyModel' => [
                 'pageCount' => 10,
                 'page' => 2,
