@@ -41,7 +41,7 @@ class ApiPaginationListener extends BaseListener
      */
     public function beforeRender(EventInterface $event): void
     {
-        $paging = $this->_request()->getParam('paging');
+        $paging = $this->_request()->getAttribute('paging');
         if (empty($paging)) {
             return;
         }
