@@ -25,9 +25,6 @@ matrix:
     - php: 7.2
       env: STATIC_ANALYSIS=1 DEFAULT=0
 
-    - php: 7.2
-      env: PREFER_LOWEST=1
-
 before_script:
   - if [[ $TRAVIS_PHP_VERSION != 7.2 ]]; then phpenv config-rm xdebug.ini; fi
 
