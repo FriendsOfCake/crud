@@ -548,13 +548,9 @@ class AddActionTest extends IntegrationTestCase
 
                 $this->_controller->Blogs = $this->getMockForModel(
                     $this->tableClass,
-                    ['add'],
+                    [],
                     ['alias' => 'Blogs', 'table' => 'blogs']
                 );
-
-                $this->_controller->Blogs
-                    ->expects($this->never())
-                    ->method('add');
             }
         );
 
@@ -603,13 +599,9 @@ class AddActionTest extends IntegrationTestCase
 
                 $this->_controller->Blogs = $this->getMockForModel(
                     $this->tableClass,
-                    ['add'],
+                    [],
                     ['alias' => 'Blogs', 'table' => 'blogs']
                 );
-
-                $this->_controller->Blogs
-                    ->expects($this->never())
-                    ->method('add');
             }
         );
 
