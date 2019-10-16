@@ -132,4 +132,24 @@ class IndexActionTest extends IntegrationTestCase
         $this->get('/blogs');
         $this->assertSame(['foo' => 'bar'], $this->_controller->Blogs->customOptions);
     }
+
+    /**
+     * Test that trying to access a non existent page number redirects to 1st page.
+     *
+     * @return void
+     */
+    public function testForPageOutOfBounds()
+    {
+        $this->_eventManager->on(
+            'Controller.initialize',
+            ['priority' => 11],
+            function ($event) {
+                $this->_subscribeToEvents($this->_controller);
+            }
+        );
+
+        $this->get('/blogs?page=999&foo=bar');
+        $this->assertSame(302, $this->_response->getStatusCode());
+        $this->assertSame('http://localhost/blogs?foo=bar', $this->_response->getHeaderLine('Location'));
+    }
 }
