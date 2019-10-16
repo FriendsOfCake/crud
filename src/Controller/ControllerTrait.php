@@ -55,11 +55,15 @@ trait ControllerTrait
             }
         }
 
-        if ($result === null) {
-            return $result;
+        if ($result === null && $this->isAutoRenderEnabled()) {
+            $result = $this->render();
         }
-
-        return $this->response = $result;
+        
+        if ($result) {
+            $this->response = $result;
+        }
+        
+        return $this->response;
     }
 
     /**
