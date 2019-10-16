@@ -58,11 +58,11 @@ trait ControllerTrait
         if ($result === null && $this->isAutoRenderEnabled()) {
             $result = $this->render();
         }
-        
+
         if ($result) {
             $this->response = $result;
         }
-        
+
         return $this->response;
     }
 

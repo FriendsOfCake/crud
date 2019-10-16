@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Crud\Listener;
 
 use Cake\Core\Configure;
-use Cake\Datasource\ConnectionInterface;
 use Cake\Datasource\ConnectionManager;
 use Cake\Datasource\Exception\MissingDatasourceConfigException;
 use Cake\Event\EventInterface;

@@ -5,7 +5,6 @@ namespace Crud\Listener;
 
 use Cake\Core\Configure;
 use Cake\Error\ErrorHandler;
-use Cake\Event\Event;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\MethodNotAllowedException;

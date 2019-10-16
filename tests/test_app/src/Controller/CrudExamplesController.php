@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace Crud\Test\App\Controller;
 
+use Crud\Controller\ControllerTrait;
+
 class CrudExamplesController extends \Cake\Controller\Controller
 {
-    use \Crud\Controller\ControllerTrait;
+    use ControllerTrait;
 
     public $modelClass = 'CrudExamples';
 
