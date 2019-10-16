@@ -150,6 +150,6 @@ class IndexActionTest extends IntegrationTestCase
 
         $this->get('/blogs?page=999&foo=bar');
         $this->assertSame(302, $this->_response->getStatusCode());
-        $this->assertSame('http://localhost/blogs?foo=bar', $this->_response->getHeaderLine('Location'));
+        $this->assertSame('http://localhost/blogs?page=2&foo=bar', $this->_response->getHeaderLine('Location'));
     }
 }

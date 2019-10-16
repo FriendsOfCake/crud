@@ -61,8 +61,10 @@ class IndexAction extends BaseAction
         try {
             $items = $this->_controller()->paginate($subject->query);
         } catch (NotFoundException $e) {
+            $pagingParams = $this->_request()->getAttribute('paging');
+
             $url = Router::reverseToArray($this->_request());
-            unset($url['?']['page']);
+            $url['?']['page'] = $pagingParams[$this->_table()->getAlias()]['pageCount'];
 
             return $this->_controller()->redirect($url);
         }
