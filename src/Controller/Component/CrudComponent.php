@@ -191,12 +191,6 @@ class CrudComponent extends Component
         parent::initialize($config);
 
         $this->_action = $this->getController()->getRequest()->getParam('action');
-
-        if (!isset($this->_controller->dispatchComponents)) {
-            $this->_controller->dispatchComponents = [];
-        }
-
-        $this->_controller->dispatchComponents['Crud'] = true;
     }
 
     /**
