@@ -24,7 +24,12 @@ trait ControllerTrait
      */
     protected $dispatchComponents = ['Crud' => true];
 
-    protected $crudComponent;
+    /**
+     * Reference to component which should handle the mapped action.
+     *
+     * @var \Controller\Component\CrudComponent|null
+     */
+    protected $mappedComponent;
 
     /**
      * Get the closure for action to be invoked by ControllerFactory.
@@ -37,9 +42,9 @@ trait ControllerTrait
         try {
             return parent::getAction();
         } catch (MissingActionException $e) {
-            $this->crudComponent = $this->_isActionMapped();
-            if ($this->crudComponent) {
-                return Closure::fromCallable([$this->crudComponent, 'execute']);
+            $this->mappedComponent = $this->_isActionMapped();
+            if ($this->mappedComponent) {
+                return Closure::fromCallable([$this->mappedComponent, 'execute']);
             }
         }
 
@@ -58,8 +63,8 @@ trait ControllerTrait
      */
     public function invokeAction(Closure $action, array $args): void
     {
-        if ($this->crudComponent) {
-            $this->response = $this->crudComponent->execute(
+        if ($this->mappedComponent) {
+            $this->response = $this->mappedComponent->execute(
                 $this->request->getParam('action'),
                 $args
             );
