@@ -531,7 +531,7 @@ class CrudComponent extends Component
     {
         $eventName = $this->_config['eventPrefix'] . '.' . $eventName;
 
-        $Subject = $data ?: $this->getSubject($data ?? []);
+        $Subject = $data instanceof Subject ? $data : $this->getSubject($data ?? []);
         $Subject->addEvent($eventName);
 
         if (!empty($this->_config['eventLogging'])) {
