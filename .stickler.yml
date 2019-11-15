@@ -2,11 +2,11 @@
 linters:
   phpcs:
     standard: CakePHP
-    extensions: 'php,ctp'
+    extensions: 'php'
     fixer: true
 
 branches:
-    ignore: ['3.0', 'gh-pages']
+    ignore: ['3.0', 'gh-pages', 'cake-4.x']
 
 fixers:
   enable: true
