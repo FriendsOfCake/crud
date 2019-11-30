@@ -1,5 +1,6 @@
 <?php
 namespace Crud;
+
 use Cake\Core\BasePlugin;
 
 /**
