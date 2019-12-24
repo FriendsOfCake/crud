@@ -52,10 +52,6 @@ abstract class BaseAction extends BaseObject
             return false;
         }
 
-        if (!is_array($args)) {
-            $args = (array)$args;
-        }
-
         $method = '_' . strtolower($this->_request()->getMethod());
 
         if (method_exists($this, $method)) {
@@ -69,6 +65,7 @@ abstract class BaseAction extends BaseObject
             $this->_responding = true;
             $this->_controller()->getEventManager()->on($this);
 
+            /** @psalm-suppress InvalidArgument */
             return call_user_func_array([$this, '_handle'], $args);
         }
 
@@ -170,6 +167,7 @@ abstract class BaseAction extends BaseObject
             ['before' => '{', 'after' => '}']
         );
 
+        /** @psalm-suppress InvalidArrayOffset */
         $config['params']['class'] .= ' ' . $type;
 
         return $config;
@@ -225,6 +223,7 @@ abstract class BaseAction extends BaseObject
             return $this->getConfig('redirect');
         }
 
+        /** @psalm-suppress PossiblyNullArgument */
         $path = sprintf('redirect.%s', $name);
         if ($config === null) {
             return $this->getConfig($path);

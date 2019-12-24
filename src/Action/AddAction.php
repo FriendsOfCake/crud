@@ -149,9 +149,9 @@ class AddAction extends BaseAction
      * Post success callback
      *
      * @param \Crud\Event\Subject $subject Event subject
-     * @return \Cake\Http\Response
+     * @return \Cake\Http\Response|null
      */
-    protected function _success(Subject $subject): Response
+    protected function _success(Subject $subject): ?Response
     {
         $subject->set(['success' => true, 'created' => true]);
 
@@ -180,9 +180,9 @@ class AddAction extends BaseAction
      * Stopped callback
      *
      * @param \Crud\Event\Subject $subject Event subject
-     * @return \Cake\Http\Response
+     * @return \Cake\Http\Response|null
      */
-    protected function _stopped(Subject $subject): Response
+    protected function _stopped(Subject $subject): ?Response
     {
         if (!isset($subject->success)) {
             $subject->success = false;

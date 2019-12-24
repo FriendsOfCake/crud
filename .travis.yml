@@ -38,6 +38,7 @@ before_script:
   - if [[ $DB = 'pgsql' ]]; then psql -c 'CREATE DATABASE cakephp_test;' -U postgres; fi
 
   - if [[ $PHPCS = 1 ]]; then composer require cakephp/cakephp-codesniffer:dev-next; fi
+  - if [[ $STATIC_ANALYSIS = 1 ]]; then composer require --dev phpstan/phpstan:^0.12 && psalm/phar:^3.7; fi
 
 script:
   - |
@@ -50,7 +51,7 @@ script:
 
   - if [[ $PHPCS = 1 ]]; then vendor/bin/phpcs -p --standard=vendor/cakephp/cakephp-codesniffer/CakePHP ./src ./tests; fi
 
-  - if [[ $STATIC_ANALYSIS = 1 ]]; then composer require --dev phpstan/phpstan:^0.12 && vendor/bin/phpstan analyse src; fi
+  - if [[ $STATIC_ANALYSIS = 1 ]]; then vendor/bin/phpstan.phar analyse src && vendor/bin/psalm.phar --show-info=false; fi
 
 after_success:
   - |

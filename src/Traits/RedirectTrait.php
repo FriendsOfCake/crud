@@ -35,6 +35,7 @@ trait RedirectTrait
             return $this->getConfig('redirect');
         }
 
+        /** @psalm-suppress PossiblyNullArgument */
         $path = sprintf('redirect.%s', $name);
         if ($config === null) {
             return $this->getConfig($path);
@@ -88,9 +89,9 @@ trait RedirectTrait
      * @param \Crud\Event\Subject $subject Event subject
      * @param string|array|null $url URL
      * @param int $status Status code
-     * @return \Cake\Http\Response
+     * @return \Cake\Http\Response|null
      */
-    protected function _redirect(Subject $subject, $url = null, int $status = 302): Response
+    protected function _redirect(Subject $subject, $url = null, int $status = 302): ?Response
     {
         $url = $this->_redirectUrl($url);
 

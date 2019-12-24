@@ -81,14 +81,14 @@ class CrudComponent extends Component
     /**
      * List of listener objects attached to Crud.
      *
-     * @var array
+     * @var \Crud\Listener\BaseListener[]
      */
     protected $_listenerInstances = [];
 
     /**
      * List of crud actions.
      *
-     * @var array
+     * @var \Crud\Action\BaseAction[]
      */
     protected $_actionInstances = [];
 
@@ -246,8 +246,9 @@ class CrudComponent extends Component
                 return $response;
             }
         } catch (CrudException $e) {
-            if ($e->getResponse()) {
-                return $e->getResponse();
+            $response = $e->getResponse();
+            if ($response !== null) {
+                return $response;
             }
 
             throw $e;
@@ -326,12 +327,14 @@ class CrudComponent extends Component
     {
         if (is_array($action)) {
             foreach ($action as $realAction => $realView) {
+                /** @psalm-suppress UndefinedMethod */
                 $this->action($realAction)->view($realView);
             }
 
             return;
         }
 
+        /** @psalm-suppress UndefinedMethod */
         $this->action($action)->view($view);
     }
 
@@ -350,12 +353,14 @@ class CrudComponent extends Component
     {
         if (is_array($action)) {
             foreach ($action as $realAction => $realViewVar) {
+                /** @psalm-suppress UndefinedMethod */
                 $this->action($realAction)->viewVar($realViewVar);
             }
 
             return;
         }
 
+        /** @psalm-suppress UndefinedMethod */
         $this->action($action)->viewVar($viewVar);
     }
 
@@ -374,12 +379,14 @@ class CrudComponent extends Component
     {
         if (is_array($action)) {
             foreach ($action as $realAction => $realMethod) {
+                /** @psalm-suppress UndefinedMethod */
                 $this->action($realAction)->findMethod($realMethod);
             }
 
             return;
         }
 
+        /** @psalm-suppress UndefinedMethod */
         $this->action($action)->findMethod($method);
     }
 
@@ -480,6 +487,7 @@ class CrudComponent extends Component
     {
         if (strpos($name, '.') !== false) {
             [$plugin, $name] = pluginSplit($name);
+            /** @psalm-suppress PossiblyNullOperand */
             $className = $plugin . '.' . Inflector::camelize($name);
         }
 
@@ -586,6 +594,7 @@ class CrudComponent extends Component
             return null;
         }
 
+        /** @psalm-suppress PossiblyInvalidArgument */
         return $this->getConfig(sprintf('%s.%s', $type, $name));
     }
 
@@ -687,6 +696,7 @@ class CrudComponent extends Component
                 throw new ListenerNotConfiguredException(sprintf('Listener "%s" is not configured', $name));
             }
 
+            /** @psalm-var class-string<\Crud\Listener\BaseListener>|null $className */
             $className = App::className($config['className'], 'Listener', 'Listener');
             if (empty($className)) {
                 throw new MissingListenerException('Could not find listener class: ' . $config['className']);
@@ -723,6 +733,7 @@ class CrudComponent extends Component
                 throw new ActionNotConfiguredException(sprintf('Action "%s" has not been mapped', $name));
             }
 
+            /** @psalm-var class-string<\Crud\Action\BaseAction>|null */
             $className = App::className($config['className'], 'Action', 'Action');
             if (empty($className)) {
                 throw new MissingActionException('Could not find action class: ' . $config['className']);

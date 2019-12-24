@@ -161,9 +161,9 @@ class EditAction extends BaseAction
      * Success callback
      *
      * @param \Crud\Event\Subject $subject Event subject
-     * @return \Cake\Http\Response
+     * @return \Cake\Http\Response|null
      */
-    protected function _success(Subject $subject): Response
+    protected function _success(Subject $subject): ?Response
     {
         $subject->set(['success' => true, 'created' => false]);
         $this->_trigger('afterSave', $subject);

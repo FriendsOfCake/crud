@@ -38,10 +38,10 @@ class DeleteAction extends BaseAction
     /**
      * Handle a bulk delete
      *
-     * @param \Cake\ORM\Query|null $query The query to act upon
+     * @param \Cake\ORM\Query $query The query to act upon
      * @return bool
      */
-    protected function _bulk(?Query $query = null): bool
+    protected function _bulk(Query $query): bool
     {
         $query = $query->delete();
         $statement = $query->execute();

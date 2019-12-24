@@ -50,17 +50,18 @@ trait FindMethodTrait
     /**
      * Find a record from the ID
      *
-     * @param string $id Record id
+     * @param string|null $id Record id
      * @param \Crud\Event\Subject $subject Event subject
      * @return \Cake\Datasource\EntityInterface
      * @throws \Exception
      */
-    protected function _findRecord(string $id, Subject $subject): EntityInterface
+    protected function _findRecord(?string $id, Subject $subject): EntityInterface
     {
         $repository = $this->_table();
 
         [$finder, $options] = $this->_extractFinder();
         $query = $repository->find($finder, $options);
+        /** @psalm-suppress PossiblyInvalidArgument */
         $query->where([current($query->aliasField($repository->getPrimaryKey())) => $id]);
 
         $subject->set([
@@ -84,17 +85,18 @@ trait FindMethodTrait
     /**
      * Throw exception if a record is not found
      *
-     * @param string $id Record id
+     * @param string|null $id Record id
      * @param \Crud\Event\Subject $subject Event subject
      * @return void
      * @throws \Exception
      */
-    protected function _notFound(string $id, Subject $subject): void
+    protected function _notFound(?string $id, Subject $subject): void
     {
         $subject->set(['success' => false]);
         $this->_trigger('recordNotFound', $subject);
 
         $message = $this->message('recordNotFound', compact('id'));
+        /** @psalm-var class-string<\Exception> $exceptionClass */
         $exceptionClass = $message['class'];
         throw new $exceptionClass($message['text'], $message['code']);
     }

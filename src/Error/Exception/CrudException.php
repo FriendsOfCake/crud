@@ -12,7 +12,7 @@ class CrudException extends \Cake\Core\Exception\Exception
      */
     protected $response;
 
-    public function setResponse(ResponseInterface $response)
+    public function setResponse(ResponseInterface $response): void
     {
         $this->response = $response;
     }

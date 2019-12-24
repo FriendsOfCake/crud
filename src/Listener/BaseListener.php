@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Crud\Listener;
 
+use Cake\Event\EventListenerInterface;
 use Crud\Core\BaseObject;
 
 /**
@@ -13,7 +14,7 @@ use Crud\Core\BaseObject;
  *
  * @codeCoverageIgnore
  */
-abstract class BaseListener extends BaseObject
+abstract class BaseListener extends BaseObject implements EventListenerInterface
 {
     /**
      * Returns a list of all events that will fire in the controller during its life cycle.

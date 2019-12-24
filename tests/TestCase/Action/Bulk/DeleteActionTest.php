@@ -29,18 +29,6 @@ class DeleteActionTest extends IntegrationTestCase
     public $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
 
     /**
-     * setUp(): void
-     *
-     * @return void
-     */
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->useHttpServer(true);
-    }
-
-    /**
      * Data provider with all HTTP verbs
      *
      * @return array

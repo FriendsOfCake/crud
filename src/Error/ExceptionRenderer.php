@@ -27,6 +27,7 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer
     public function validation(ValidationException $error): Response
     {
         $url = $this->controller->getRequest()->getRequestTarget();
+        /** @var int $status */
         $status = $code = $error->getCode();
         try {
             $this->controller->setResponse($this->controller->getResponse()->withStatus($status));
