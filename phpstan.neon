@@ -2,7 +2,8 @@ includes:
     - phpstan-baseline.neon
 
 parameters:
-    level: 5
+    level: 6
+    checkMissingIterableValueType: false
     excludes_analyse:
         - */src/TestSuite/*
     universalObjectCratesClasses:

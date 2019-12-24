@@ -36,7 +36,12 @@ parameters:
 			path: src/Controller/Component/CrudComponent.php
 
 		-
-			message: "#^Method Crud\\\\Core\\\\BaseObject\\:\\:_table\\(\\) should return Cake\\\\ORM\\\\Table but returns Cake\\\\Datasource\\\\RepositoryInterface\\.$#"
+			message: "#^Property Crud\\\\Core\\\\BaseObject\\:\\:\\$_entity has no typehint specified\\.$#"
+			count: 1
+			path: src/Core/BaseObject.php
+
+		-
+			message: "#^Method Crud\\\\Core\\\\BaseObject\\:\\:_table\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Core/BaseObject.php
 
