@@ -12,11 +12,22 @@ class CrudException extends \Cake\Core\Exception\Exception
      */
     protected $response;
 
+    /**
+     * Set response instance.
+     *
+     * @param \Psr\Http\Message\ResponseInterface $response Response instance.
+     * @return void
+     */
     public function setResponse(ResponseInterface $response): void
     {
         $this->response = $response;
     }
 
+    /**
+     * Get response instance.
+     *
+     * @return \Psr\Http\Message\ResponseInterface|null
+     */
     public function getResponse(): ?ResponseInterface
     {
         return $this->response;
