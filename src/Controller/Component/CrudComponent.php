@@ -13,17 +13,17 @@ use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\Http\Exception\NotFoundException;
-use Cake\Http\Response;
 use Cake\ORM\Table;
 use Cake\Utility\Inflector;
 use Crud\Action\BaseAction;
 use Crud\Error\Exception\ActionNotConfiguredException;
+use Crud\Error\Exception\CrudException;
 use Crud\Error\Exception\ListenerNotConfiguredException;
 use Crud\Error\Exception\MissingActionException;
 use Crud\Error\Exception\MissingListenerException;
 use Crud\Event\Subject;
 use Crud\Listener\BaseListener;
-use Exception;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Crud component
@@ -224,10 +224,10 @@ class CrudComponent extends Component
      *
      * @param string|null $controllerAction Override the controller action to execute as.
      * @param array $args List of arguments to pass to the CRUD action (Usually an ID to edit / delete).
-     * @return \Cake\Http\Response
+     * @return \Psr\Http\Message\ResponseInterface
      * @throws \Exception If an action is not mapped.
      */
-    public function execute(?string $controllerAction = null, array $args = []): Response
+    public function execute(?string $controllerAction = null, array $args = []): ResponseInterface
     {
         $this->_loadListeners();
 
@@ -242,12 +242,12 @@ class CrudComponent extends Component
             $event = $this->trigger('beforeHandle', $this->getSubject(compact('args', 'action')));
 
             $response = $this->action($event->getSubject()->action)->handle($event->getSubject()->args);
-            if ($response instanceof Response) {
+            if ($response instanceof ResponseInterface) {
                 return $response;
             }
-        } catch (Exception $e) {
-            if (isset($e->response)) {
-                return $e->response;
+        } catch (CrudException $e) {
+            if ($e->getResponse()) {
+                return $e->getResponse();
             }
 
             throw $e;
@@ -541,9 +541,9 @@ class CrudComponent extends Component
         $Event = new Event($eventName, $Subject);
         $Event = $this->_eventManager->dispatch($Event);
 
-        if ($Event->getResult() instanceof Response) {
-            $Exception = new Exception();
-            $Exception->response = $Event->getResult();
+        if ($Event->getResult() instanceof ResponseInterface) {
+            $Exception = new CrudException();
+            $Exception->setResponse($Event->getResult());
             throw $Exception;
         }
 
