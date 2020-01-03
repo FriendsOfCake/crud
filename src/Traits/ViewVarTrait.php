@@ -66,7 +66,7 @@ trait ViewVarTrait
             return Inflector::variable(Inflector::singularize($this->_controller()->getName()));
         }
 
-        throw new Exception('Unknown action scope: ' . $this->scope());
+        throw new Exception('Unknown action scope: ' . (string)$this->scope());
     }
 
     /**

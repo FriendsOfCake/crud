@@ -1,0 +1,23 @@
+<?php
+declare(strict_types=1);
+
+namespace {{ namespace }}\Controller{{ prefix }};
+
+/**
+ * {{ name }} Controller
+ *
+{% if defaultModel %}
+ * @property \{{ defaultModel }} ${{ name }}
+{% endif %}
+{%- for component in components %}
+    {%- set classInfo = Bake.classInfo(component, 'Controller/Component', 'Component')|raw %}
+ * @property {{ classInfo.fqn }} ${{ classInfo.name }}
+{% endfor %}
+ */
+class {{ name }}Controller extends AppController
+{
+{%- set components = Bake.arrayProperty('components', components, {'indent': false})|raw %}
+{% if components|trim %}
+    {{- components|raw }}
+{% if actions %}
+}

@@ -59,14 +59,18 @@ trait CrudTestTrait
      * @param string $alias Table alias / name
      * @param string $table Table name in the database
      * @return \Cake\ORM\Table
+     * @psalm-param class-string $class
+     * @psalm-suppress InvalidReturnType
      */
     public function getModel(string $class, $methods, string $alias, string $table): Table
     {
+        /** @psalm-suppress DeprecatedMethod */
         $mock = $this->getMockBuilder($class)
             ->setMethods($methods)
             ->setConstructorArgs([['alias' => $alias, 'table' => $table]])
             ->getMock();
-        $mock->connection(ConnectionManager::get('test'));
+        /** @psalm-suppress UndefinedInterfaceMethod */
+        $mock->setConnection(ConnectionManager::get('test'));
 
         return $mock;
     }

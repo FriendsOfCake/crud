@@ -46,9 +46,9 @@ abstract class BaseAction extends CrudBaseAction
     /**
      * Handle a bulk event
      *
-     * @return \Cake\Http\Response
+     * @return \Cake\Http\Response|null
      */
-    protected function _handle(): Response
+    protected function _handle(): ?Response
     {
         $ids = $this->_processIds();
         $subject = $this->_constructSubject($ids);
@@ -176,9 +176,9 @@ abstract class BaseAction extends CrudBaseAction
      * Stopped callback
      *
      * @param \Crud\Event\Subject $subject Event subject
-     * @return \Cake\Http\Response
+     * @return \Cake\Http\Response|null
      */
-    protected function _stopped(Subject $subject): Response
+    protected function _stopped(Subject $subject): ?Response
     {
         $subject->set(['success' => false]);
         $this->setFlash('error', $subject);
@@ -189,8 +189,8 @@ abstract class BaseAction extends CrudBaseAction
     /**
      * Handle a bulk event
      *
-     * @param \Cake\ORM\Query|null $query The query to act upon
+     * @param \Cake\ORM\Query $query The query to act upon
      * @return bool
      */
-    abstract protected function _bulk(?Query $query = null): bool;
+    abstract protected function _bulk(Query $query): bool;
 }

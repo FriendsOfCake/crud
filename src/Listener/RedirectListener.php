@@ -109,6 +109,7 @@ class RedirectListener extends BaseListener
      */
     public function beforeRedirect(EventInterface $event): void
     {
+        /** @var \Crud\Event\Subject $subject */
         $subject = $event->getSubject();
 
         $redirects = $this->_action()->redirectConfig();

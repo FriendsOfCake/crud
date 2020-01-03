@@ -7,6 +7,7 @@ use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Event\EventManager;
 use Cake\Routing\Router;
+use Cake\TestSuite\IntegrationTestTrait;
 use Crud\TestSuite\Traits\CrudTestTrait;
 use FriendsOfCake\TestUtilities\AccessibilityHelperTrait;
 use FriendsOfCake\TestUtilities\CounterHelperTrait;
@@ -16,11 +17,17 @@ use FriendsOfCake\TestUtilities\CounterHelperTrait;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-abstract class IntegrationTestCase extends \Cake\TestSuite\IntegrationTestCase
+abstract class IntegrationTestCase extends TestCase
 {
     use AccessibilityHelperTrait;
     use CounterHelperTrait;
     use CrudTestTrait;
+    use IntegrationTestTrait;
+
+    /**
+     * @var \Cake\Event\EventManagerInterface
+     */
+    protected $_eventManager;
 
     /**
      * [setUp description]

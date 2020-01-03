@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace Crud\Action;
 
+use Cake\Http\Exception\NotFoundException;
+use Cake\Http\Response;
+use Cake\Routing\Router;
 use Crud\Traits\FindMethodTrait;
 use Crud\Traits\SerializeTrait;
 use Crud\Traits\ViewTrait;
@@ -46,19 +49,31 @@ class IndexAction extends BaseAction
     /**
      * Generic handler for all HTTP verbs
      *
-     * @return void
+     * @return \Cake\Http\Response|null
      */
-    protected function _handle(): void
+    protected function _handle(): ?Response
     {
         [$finder, $options] = $this->_extractFinder();
         $query = $this->_table()->find($finder, $options);
         $subject = $this->_subject(['success' => true, 'query' => $query]);
 
         $this->_trigger('beforePaginate', $subject);
-        $items = $this->_controller()->paginate($subject->query);
+        try {
+            $items = $this->_controller()->paginate($subject->query);
+        } catch (NotFoundException $e) {
+            $pagingParams = $this->_request()->getAttribute('paging');
+
+            $url = Router::reverseToArray($this->_request());
+            $url['?']['page'] = $pagingParams[$this->_table()->getAlias()]['pageCount'];
+
+            return $this->_controller()->redirect($url);
+        }
+
         $subject->set(['entities' => $items]);
 
         $this->_trigger('afterPaginate', $subject);
         $this->_trigger('beforeRender', $subject);
+
+        return null;
     }
 }

@@ -56,13 +56,9 @@ class SearchListener extends BaseListener
             ));
         }
 
-        if ($repository instanceof Table && $repository->behaviors()->hasMethod('filterParams')) {
-            $filterParams = $repository->filterParams($this->_request()->getQuery());
-        } else {
-            $filterParams = ['search' => $this->_request()->getQuery()];
-        }
-
+        $filterParams = ['search' => $this->_request()->getQuery()];
         $filterParams['collection'] = $this->getConfig('collection');
+
         $event->getSubject()->query->find('search', $filterParams);
     }
 }

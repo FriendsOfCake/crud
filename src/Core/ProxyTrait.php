@@ -9,7 +9,6 @@ use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Http\Session;
-use Cake\ORM\Table;
 use Crud\Action\BaseAction;
 use Crud\Controller\Component\CrudComponent;
 use Crud\Event\Subject;
@@ -17,6 +16,9 @@ use Crud\Listener\BaseListener;
 
 trait ProxyTrait
 {
+    /**
+     * @var \Cake\Datasource\EntityInterface
+     */
     protected $_entity;
 
     /**
@@ -121,8 +123,9 @@ trait ProxyTrait
      * Get a table instance
      *
      * @return \Cake\ORM\Table
+     * @psalm-suppress MoreSpecificReturnType
      */
-    protected function _table(): Table
+    protected function _table()
     {
         return $this->_controller()
             ->loadModel(
@@ -166,9 +169,11 @@ trait ProxyTrait
     protected function _crud(): CrudComponent
     {
         if (!$this->_controller->Crud) {
+            /** @var \Crud\Controller\Component\CrudComponent */
             return $this->_controller->components()->load('Crud.Crud');
         }
 
+        /** @var \Crud\Controller\Component\CrudComponent */
         return $this->_controller->Crud;
     }
 }

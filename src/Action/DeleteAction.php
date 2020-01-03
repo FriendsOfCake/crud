@@ -55,9 +55,9 @@ class DeleteAction extends BaseAction
      * HTTP POST handler
      *
      * @param string|null $id Record id
-     * @return \Cake\Http\Response
+     * @return \Cake\Http\Response|null
      */
-    protected function _post(?string $id = null): Response
+    protected function _post(?string $id = null): ?Response
     {
         $subject = $this->_subject();
         $subject->set(['id' => $id]);
@@ -83,9 +83,9 @@ class DeleteAction extends BaseAction
      * HTTP DELETE handler
      *
      * @param string|null $id Record id
-     * @return \Cake\Http\Response
+     * @return \Cake\Http\Response|null
      */
-    protected function _delete(?string $id = null): Response
+    protected function _delete(?string $id = null): ?Response
     {
         return $this->_post($id);
     }
@@ -122,9 +122,9 @@ class DeleteAction extends BaseAction
      * Stopped callback
      *
      * @param \Crud\Event\Subject $subject Event subject
-     * @return \Cake\Http\Response
+     * @return \Cake\Http\Response|null
      */
-    protected function _stopped(Subject $subject): Response
+    protected function _stopped(Subject $subject): ?Response
     {
         $subject->set(['success' => false]);
         $this->setFlash('error', $subject);

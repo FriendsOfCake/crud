@@ -119,14 +119,11 @@ class SearchListenerTest extends TestCase
 
         $behaviorRegistryMock = $this->getMockBuilder('\Cake\ORM\BehaviorRegistry')
             ->setMockClassName('BehaviorRegistry')
-            ->setMethods(['hasMethod', 'has'])
+            ->setMethods(['has'])
             ->getMock();
         $behaviorRegistryMock->expects($this->once())
             ->method('has')
             ->will($this->returnValue(true));
-        $behaviorRegistryMock->expects($this->once())
-            ->method('hasMethod')
-            ->will($this->returnValue(false));
 
         $tableMock = $this->getMockBuilder('\Cake\ORM\Table')
             ->setMockClassName('SearchTables')

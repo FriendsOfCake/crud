@@ -5,7 +5,6 @@ namespace Crud\Listener;
 
 use Cake\Core\Configure;
 use Cake\Error\ErrorHandler;
-use Cake\Event\Event;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\MethodNotAllowedException;
@@ -129,6 +128,7 @@ class ApiListener extends BaseListener
             return null;
         }
 
+        /** @psalm-suppress ArgumentTypeCoercion */
         $response = $this->render($event->getSubject());
 
         if (empty($apiConfig['code'])) {
@@ -189,10 +189,12 @@ class ApiListener extends BaseListener
         $class = $exceptionConfig['class'];
 
         if ($exceptionConfig['type'] === 'validate') {
+            /** @var \Exception $exception */
             $exception = new $class($Event->getSubject()->entity);
             throw $exception;
         }
 
+        /** @var \Exception $exception */
         $exception = new $class($exceptionConfig['message'], $exceptionConfig['code']);
         throw $exception;
     }

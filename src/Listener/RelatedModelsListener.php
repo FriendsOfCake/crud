@@ -193,6 +193,7 @@ class RelatedModelsListener extends BaseListener
 
         $table = $this->_table();
         foreach ($table->associations()->keys() as $association) {
+            /** @var \Cake\ORM\Association $associationClass */
             $associationClass = $table->associations()->get($association);
             if (!in_array($associationClass->type(), $types)) {
                 continue;
