@@ -169,11 +169,9 @@ trait ProxyTrait
     protected function _crud(): CrudComponent
     {
         if (!$this->_controller->Crud) {
-            /** @var \Crud\Controller\Component\CrudComponent */
             return $this->_controller->components()->load('Crud.Crud');
         }
 
-        /** @var \Crud\Controller\Component\CrudComponent */
         return $this->_controller->Crud;
     }
 }

@@ -46,6 +46,11 @@ parameters:
 			path: src/Core/BaseObject.php
 
 		-
+			message: "#^Method Crud\\\\Core\\\\BaseObject\\:\\:_crud\\(\\) should return Crud\\\\Controller\\\\Component\\\\CrudComponent but returns Cake\\\\Controller\\\\Component\\.$#"
+			count: 1
+			path: src/Core/BaseObject.php
+
+		-
 			message: "#^Method Crud\\\\Action\\\\IndexAction\\:\\:publishViewVar\\(\\) should return false\\|null but return statement is missing\\.$#"
 			count: 1
 			path: src/Action/IndexAction.php
