@@ -17,7 +17,7 @@ use Crud\Listener\BaseListener;
 trait ProxyTrait
 {
     /**
-     * @var \Cake\Datasource\EntityInterface
+     * @var \Cake\Datasource\EntityInterface|null
      */
     protected $_entity;
 

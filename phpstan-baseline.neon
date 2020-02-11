@@ -36,22 +36,12 @@ parameters:
 			path: src/Controller/Component/CrudComponent.php
 
 		-
-			message: "#^Property Crud\\\\Core\\\\BaseObject\\:\\:\\$_entity has no typehint specified\\.$#"
-			count: 1
-			path: src/Core/BaseObject.php
-
-		-
-			message: "#^Method Crud\\\\Core\\\\BaseObject\\:\\:_table\\(\\) has no return typehint specified\\.$#"
+			message: "#^Method Crud\\\\Core\\\\BaseObject\\:\\:_table\\(\\) should return Cake\\\\ORM\\\\Table but returns Cake\\\\Datasource\\\\RepositoryInterface\\.$#"
 			count: 1
 			path: src/Core/BaseObject.php
 
 		-
 			message: "#^Access to an undefined property Cake\\\\Controller\\\\Controller\\:\\:\\$Crud\\.$#"
-			count: 1
-			path: src/Core/BaseObject.php
-
-		-
-			message: "#^Method Crud\\\\Core\\\\BaseObject\\:\\:_crud\\(\\) should return Crud\\\\Controller\\\\Component\\\\CrudComponent but returns Cake\\\\Controller\\\\Component\\.$#"
 			count: 1
 			path: src/Core/BaseObject.php
 
