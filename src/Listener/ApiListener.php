@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Crud\Listener;
 
-use Cake\Core\Configure;
-use Cake\Error\ErrorHandler;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\MethodNotAllowedException;
@@ -76,28 +74,6 @@ class ApiListener extends BaseListener
     }
 
     /**
-     * setup
-     *
-     * Called when the listener is created
-     *
-     * @return void
-     */
-    public function setup(): void
-    {
-        if (!$this->_checkRequestType('api')) {
-            return;
-        }
-
-        $appClass = Configure::read('App.namespace') . '\Application';
-
-        // If `App\Application` class exists it means Cake 3.3's PSR7 middleware
-        // implementation is used and it's too late to register new error handler.
-        if (!class_exists($appClass, false)) {
-            $this->registerExceptionHandler();
-        }
-    }
-
-    /**
      * beforeHandle
      *
      * Called before the crud action is executed
@@ -161,17 +137,6 @@ class ApiListener extends BaseListener
         }
 
         throw new MethodNotAllowedException();
-    }
-
-    /**
-     * Register the Crud exception handler
-     *
-     * @return void
-     */
-    public function registerExceptionHandler(): void
-    {
-        $exceptionRenderer = $this->getConfig('exceptionRenderer');
-        (new ErrorHandler(compact('exceptionRenderer') + (array)Configure::read('Error')))->register();
     }
 
     /**
