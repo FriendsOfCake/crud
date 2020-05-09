@@ -10,7 +10,6 @@ use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Utility\Hash;
 use Cake\Utility\Text;
-use Crud\Error\ExceptionRenderer;
 use Crud\Event\Subject;
 
 /**
@@ -44,7 +43,6 @@ class ApiListener extends BaseListener
             'message' => 'Unknown error',
             'code' => 0,
         ],
-        'exceptionRenderer' => ExceptionRenderer::class,
         'setFlash' => false,
     ];
 

@@ -271,7 +271,6 @@ class ApiListenerTest extends TestCase
                 'message' => 'Unknown error',
                 'code' => 0,
             ],
-            'exceptionRenderer' => 'Crud\Error\ExceptionRenderer',
             'setFlash' => false,
         ];
         $result = $listener->getConfig();
