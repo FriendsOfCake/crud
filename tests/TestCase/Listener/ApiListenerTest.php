@@ -1207,12 +1207,12 @@ class ApiListenerTest extends TestCase
         return [
             'defaults' => [
                 [],
-                false,
+                null,
                 [],
             ],
             'valid get' => [
                 ['methods' => ['get']],
-                true,
+                null,
                 ['get' => true],
             ],
             'invalid post' => [
@@ -1222,7 +1222,7 @@ class ApiListenerTest extends TestCase
             ],
             'valid put' => [
                 ['methods' => ['post', 'get', 'put']],
-                true,
+                null,
                 ['post' => false, 'get' => false, 'put' => true],
             ],
         ];
@@ -1289,11 +1289,7 @@ class ApiListenerTest extends TestCase
         }
 
         $this->setReflectionClassInstance($listener);
-        $result = $this->callProtectedMethod('_checkRequestMethods', [], $listener);
-
-        if (is_bool($exception)) {
-            $this->assertEquals($exception, $result);
-        }
+        $this->callProtectedMethod('_checkRequestMethods', [], $listener);
     }
 
     /**

@@ -117,22 +117,22 @@ class ApiListener extends BaseListener
     /**
      * Check for allowed HTTP request types
      *
+     * @return void
      * @throws \Cake\Http\Exception\MethodNotAllowedException
-     * @return bool
      */
-    protected function _checkRequestMethods(): bool
+    protected function _checkRequestMethods(): void
     {
         $action = $this->_action();
         $apiConfig = $action->getConfig('api');
 
         if (!isset($apiConfig['methods'])) {
-            return false;
+            return;
         }
 
         $request = $this->_request();
         foreach ($apiConfig['methods'] as $method) {
             if ($request->is($method)) {
-                return true;
+                return;
             }
         }
 
