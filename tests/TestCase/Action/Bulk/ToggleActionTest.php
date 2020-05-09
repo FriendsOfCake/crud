@@ -16,7 +16,7 @@ class ToggleActionTest extends IntegrationTestCase
      *
      * @var array
      */
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.Crud.Blogs',
         'plugin.Crud.Users',
     ];

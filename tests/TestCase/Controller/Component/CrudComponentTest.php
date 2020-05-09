@@ -29,7 +29,7 @@ class CrudComponentTest extends TestCase
      * Use the core posts fixture to have something to work on.
      * What fixture is used is almost irrelevant, was chosen as it is simple
      */
-    public $fixtures = [
+    protected $fixtures = [
         'core.Posts',
     ];
 

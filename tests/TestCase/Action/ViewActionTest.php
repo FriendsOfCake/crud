@@ -16,7 +16,7 @@ class ViewActionTest extends IntegrationTestCase
      *
      * @var array
      */
-    public $fixtures = ['plugin.Crud.Blogs'];
+    protected $fixtures = ['plugin.Crud.Blogs'];
 
     /**
      * Data provider with all HTTP verbs

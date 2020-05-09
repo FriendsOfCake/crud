@@ -17,7 +17,7 @@ class AddActionTest extends IntegrationTestCase
      *
      * @var array
      */
-    public $fixtures = ['plugin.Crud.Blogs'];
+    protected $fixtures = ['plugin.Crud.Blogs'];
 
     /**
      * Table class to mock on
