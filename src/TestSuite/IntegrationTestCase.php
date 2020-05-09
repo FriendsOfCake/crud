@@ -13,7 +13,6 @@ use FriendsOfCake\TestUtilities\AccessibilityHelperTrait;
 use FriendsOfCake\TestUtilities\CounterHelperTrait;
 
 /**
- *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */

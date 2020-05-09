@@ -10,7 +10,6 @@ use Crud\Listener\ApiQueryLogListener;
 use Crud\TestSuite\TestCase;
 
 /**
- *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */

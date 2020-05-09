@@ -11,7 +11,6 @@ use Throwable;
 /**
  * Exception containing validation errors from the model. Useful for API
  * responses where you need an error code in response
- *
  */
 class ValidationException extends BadRequestException
 {

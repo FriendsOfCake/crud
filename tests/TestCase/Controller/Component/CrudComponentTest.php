@@ -156,7 +156,6 @@ class CrudComponentTest extends TestCase
 
     /**
      * Test deprecated `executeAction` calls `execute` correctly
-     *
      */
     public function testExecuteActionToExecute()
     {
@@ -176,7 +175,6 @@ class CrudComponentTest extends TestCase
 
     /**
      * testEnable
-     *
      */
     public function testEnable()
     {
@@ -189,7 +187,6 @@ class CrudComponentTest extends TestCase
 
     /**
      * testDisableAction
-     *
      */
     public function testDisableAction()
     {
@@ -201,7 +198,6 @@ class CrudComponentTest extends TestCase
 
     /**
      * testMapAction
-     *
      */
     public function testMapAction()
     {
@@ -227,7 +223,6 @@ class CrudComponentTest extends TestCase
 
     /**
      * testView
-     *
      */
     public function testView()
     {
@@ -246,7 +241,6 @@ class CrudComponentTest extends TestCase
 
     /**
      * testIsActionMappedYes
-     *
      */
     public function testIsActionMappedYes()
     {
@@ -262,7 +256,6 @@ class CrudComponentTest extends TestCase
 
     /**
      * testIsActionMappedNo
-     *
      */
     public function testIsActionMappedNo()
     {
@@ -293,7 +286,6 @@ class CrudComponentTest extends TestCase
 
     /**
      * Tests on method registers an event
-     *
      */
     public function testOn()
     {
@@ -313,7 +305,6 @@ class CrudComponentTest extends TestCase
 
     /**
      * tests on method registers an event with extra params
-     *
      */
     public function testOnWithPriPriority()
     {
