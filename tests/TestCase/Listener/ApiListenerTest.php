@@ -39,7 +39,7 @@ class ApiListenerTest extends TestCase
             'Crud.setFlash' => ['callable' => [$listener, 'setFlash'], 'priority' => 5],
 
             'Crud.beforeRender' => ['callable' => [$listener, 'respond'], 'priority' => 100],
-            'Crud.beforeRedirect' => ['callable' => [$listener, 'respond'], 'priority' => 100]
+            'Crud.beforeRedirect' => ['callable' => [$listener, 'respond'], 'priority' => 100],
         ];
         $result = $listener->implementedEvents();
         $this->assertEquals($expected, $result);
@@ -259,20 +259,20 @@ class ApiListenerTest extends TestCase
         $expected = [
             'viewClasses' => [
                 'json' => 'Json',
-                'xml' => 'Xml'
+                'xml' => 'Xml',
             ],
             'detectors' => [
                 'json' => ['ext' => 'json', 'accepts' => 'application/json'],
-                'xml' => ['ext' => 'xml', 'accepts' => 'text/xml']
+                'xml' => ['ext' => 'xml', 'accepts' => 'text/xml'],
             ],
             'exception' => [
                 'type' => 'default',
                 'class' => 'Cake\Http\Exception\BadRequestException',
                 'message' => 'Unknown error',
-                'code' => 0
+                'code' => 0,
             ],
             'exceptionRenderer' => 'Crud\Error\ExceptionRenderer',
-            'setFlash' => false
+            'setFlash' => false,
         ];
         $result = $listener->getConfig();
         $this->assertEquals($expected, $result);
@@ -290,35 +290,35 @@ class ApiListenerTest extends TestCase
                 [],
                 '\Cake\Http\Exception\BadRequestException',
                 'Unknown error',
-                0
+                0,
             ],
 
             'change exception class' => [
                 ['class' => '\Cake\Core\Exception\Exception'],
                 '\Cake\Core\Exception\Exception',
                 'Unknown error',
-                0
+                0,
             ],
 
             'change exception code' => [
                 ['code' => 10],
                 '\Cake\Http\Exception\BadRequestException',
                 'Unknown error',
-                10
+                10,
             ],
 
             'change exception message' => [
                 ['message' => 'epic message'],
                 '\Cake\Http\Exception\BadRequestException',
                 'epic message',
-                0
+                0,
             ],
 
             'Validate case #1 - no validation errors' => [
                 ['class' => '\Crud\Error\Exception\ValidationException', 'type' => 'validate'],
                 '\Crud\Error\Exception\ValidationException',
                 '0 validation errors occurred',
-                422
+                422,
             ],
 
             'Validate case #2 - one validation error' => [
@@ -326,7 +326,7 @@ class ApiListenerTest extends TestCase
                 '\Crud\Error\Exception\ValidationException',
                 'A validation error occurred',
                 422,
-                [['id' => 'hello world']]
+                [['id' => 'hello world']],
             ],
 
             'Validate case #3 - two validation errors' => [
@@ -334,8 +334,8 @@ class ApiListenerTest extends TestCase
                 '\Crud\Error\Exception\ValidationException',
                 '2 validation errors occurred',
                 422,
-                [['id' => 'hello world', 'name' => 'fail me']]
-            ]
+                [['id' => 'hello world', 'name' => 'fail me']],
+            ],
         ];
     }
 
@@ -369,7 +369,7 @@ class ApiListenerTest extends TestCase
             $event->getSubject()->set([
                 'entity' => $this->getMockBuilder('\Cake\ORM\Entity')
                     ->setMethods(['errors'])
-                    ->getMock()
+                    ->getMock(),
             ]);
 
             $event->getSubject()->entity
@@ -766,8 +766,8 @@ class ApiListenerTest extends TestCase
         $config = ['data' => [
             'subject' => [
                 '{modelClass}.id' => 'id',
-                'modelClass'
-            ]
+                'modelClass',
+            ],
         ]];
 
         $i = 0;
@@ -1005,20 +1005,20 @@ class ApiListenerTest extends TestCase
             'simple string' => [
                 new \Crud\Event\Subject(['modelClass' => 'MyModel']),
                 '{modelClass}.id',
-                'MyModel.id'
+                'MyModel.id',
             ],
 
             'string and integer' => [
                 new \Crud\Event\Subject(['modelClass' => 'MyModel', 'id' => 1]),
                 '{modelClass}.{id}',
-                'MyModel.1'
+                'MyModel.1',
             ],
 
             'ignore non scalar' => [
-                new \Crud\Event\Subject(['modelClass' => 'MyModel', 'complex' => new \StdClass]),
+                new \Crud\Event\Subject(['modelClass' => 'MyModel', 'complex' => new \StdClass()]),
                 '{modelClass}.{id}',
-                'MyModel.{id}'
-            ]
+                'MyModel.{id}',
+            ],
         ];
     }
 
@@ -1101,7 +1101,7 @@ class ApiListenerTest extends TestCase
         $detectors = [
             'json' => ['ext' => 'json', 'accepts' => 'application/json'],
             'xml' => ['ext' => 'xml', 'accepts' => 'text/xml'],
-            'jsonapi' => ['ext' => false, 'accepts' => 'application/vnd.api+json']
+            'jsonapi' => ['ext' => false, 'accepts' => 'application/vnd.api+json'],
         ];
 
         $listener = $this
@@ -1192,23 +1192,23 @@ class ApiListenerTest extends TestCase
             'defaults' => [
                 [],
                 false,
-                []
+                [],
             ],
             'valid get' => [
                 ['methods' => ['get']],
                 true,
-                ['get' => true]
+                ['get' => true],
             ],
             'invalid post' => [
                 ['methods' => ['post']],
                 'Cake\Http\Exception\MethodNotAllowedException',
-                ['post' => false]
+                ['post' => false],
             ],
             'valid put' => [
                 ['methods' => ['post', 'get', 'put']],
                 true,
-                ['post' => false, 'get' => false, 'put' => true]
-            ]
+                ['post' => false, 'get' => false, 'put' => true],
+            ],
         ];
     }
 
@@ -1320,7 +1320,7 @@ class ApiListenerTest extends TestCase
         $result = $apiListener->getConfig('viewClasses');
         $expected = [
             'json' => 'Json',
-            'xml' => 'Xml'
+            'xml' => 'Xml',
         ];
         $this->assertEquals($expected, $result, 'The default viewClasses setting has changed');
     }

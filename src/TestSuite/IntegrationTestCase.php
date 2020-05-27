@@ -16,7 +16,6 @@ use FriendsOfCake\TestUtilities\CounterHelperTrait;
  */
 abstract class IntegrationTestCase extends \Cake\TestSuite\IntegrationTestCase
 {
-
     use AccessibilityHelperTrait;
     use CounterHelperTrait;
     use CrudTestTrait;

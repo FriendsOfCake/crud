@@ -48,7 +48,7 @@ class ViewActionTest extends IntegrationTestCase
             ['get'],
             ['post'],
             ['put'],
-            ['delete']
+            ['delete'],
         ];
     }
 

@@ -32,11 +32,11 @@ abstract class BaseAction extends CrudBaseAction
         'findConfig' => [],
         'messages' => [
             'success' => [
-                'text' => 'Bulk action successfully completed'
+                'text' => 'Bulk action successfully completed',
             ],
             'error' => [
-                'text' => 'Could not complete bulk action'
-            ]
+                'text' => 'Could not complete bulk action',
+            ],
         ],
     ];
 

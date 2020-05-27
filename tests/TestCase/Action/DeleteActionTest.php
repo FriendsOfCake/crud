@@ -52,7 +52,7 @@ class DeleteActionTest extends IntegrationTestCase
     {
         return [
             ['post'],
-            ['delete']
+            ['delete'],
         ];
     }
 
@@ -81,7 +81,7 @@ class DeleteActionTest extends IntegrationTestCase
                         [
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Successfully deleted blog'],
-                            'key' => 'flash'
+                            'key' => 'flash',
                         ]
                     );
 
@@ -131,7 +131,7 @@ class DeleteActionTest extends IntegrationTestCase
                         [
                             'element' => 'default',
                             'params' => ['class' => 'message error', 'original' => 'Could not delete blog'],
-                            'key' => 'flash'
+                            'key' => 'flash',
                         ]
                     );
 
@@ -185,7 +185,7 @@ class DeleteActionTest extends IntegrationTestCase
                         [
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Successfully deleted blog'],
-                            'key' => 'flash'
+                            'key' => 'flash',
                         ]
                     );
 

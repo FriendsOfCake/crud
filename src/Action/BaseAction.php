@@ -151,7 +151,7 @@ abstract class BaseAction extends BaseObject
             'params' => ['class' => 'message'],
             'key' => 'flash',
             'type' => $this->getConfig('action') . '.' . $type,
-            'name' => $this->resourceName()
+            'name' => $this->resourceName(),
         ], $config);
 
         if (!isset($config['text'])) {
@@ -197,7 +197,7 @@ abstract class BaseAction extends BaseObject
         $this->_controller()->Flash->set($subject->text, [
             'element' => $subject->element,
             'params' => $subject->params,
-            'key' => $subject->key
+            'key' => $subject->key,
         ]);
     }
 

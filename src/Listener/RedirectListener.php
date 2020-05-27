@@ -22,7 +22,7 @@ class RedirectListener extends BaseListener
      * @var array
      */
     protected $_defaultConfig = [
-        'readers' => []
+        'readers' => [],
     ];
 
     /**
@@ -34,7 +34,7 @@ class RedirectListener extends BaseListener
     public function implementedEvents()
     {
         return [
-            'Crud.beforeRedirect' => ['callable' => 'beforeRedirect', 'priority' => 90]
+            'Crud.beforeRedirect' => ['callable' => 'beforeRedirect', 'priority' => 90],
         ];
     }
 

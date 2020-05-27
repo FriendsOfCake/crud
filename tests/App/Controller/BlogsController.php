@@ -6,7 +6,6 @@ use Crud\Controller\ControllerTrait;
 
 class BlogsController extends Controller
 {
-
     use ControllerTrait;
 
     public $paginate = ['limit' => 3];
@@ -40,8 +39,8 @@ class BlogsController extends Controller
             'listeners' => [
                 'Crud.Api',
                 'Crud.RelatedModels',
-                'Crud.Redirect'
-            ]
-        ]
+                'Crud.Redirect',
+            ],
+        ],
     ];
 }

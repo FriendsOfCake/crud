@@ -14,7 +14,6 @@ use Crud\Traits\ViewVarTrait;
  */
 class LookupAction extends BaseAction
 {
-
     use FindMethodTrait;
     use SerializeTrait;
     use ViewTrait;
@@ -28,7 +27,7 @@ class LookupAction extends BaseAction
     protected $_defaultConfig = [
         'enabled' => true,
         'scope' => 'table',
-        'findMethod' => 'list'
+        'findMethod' => 'list',
     ];
 
     /**

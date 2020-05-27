@@ -23,11 +23,11 @@ class DeleteAction extends BaseAction
     {
         $this->_defaultConfig['messages'] = [
             'success' => [
-                'text' => 'Delete completed successfully'
+                'text' => 'Delete completed successfully',
             ],
             'error' => [
-                'text' => 'Could not complete deletion'
-            ]
+                'text' => 'Could not complete deletion',
+            ],
         ];
 
         parent::__construct($Controller, $config);
