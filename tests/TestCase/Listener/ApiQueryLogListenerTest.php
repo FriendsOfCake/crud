@@ -199,6 +199,71 @@ class ApiQueryLogListenerTest extends TestCase
     }
 
     /**
+     * Test setting up only specific query loggers
+     *
+     * @return void
+     */
+    public function testSetupLoggingConfiguredSources()
+    {
+        $methodName = 'enableQueryLogging';
+        if (version_compare(Configure::version(), '3.7.0RC', '<')) {
+            $methodName = 'logQueries';
+        }
+
+        $DefaultSource = $this
+            ->getMockBuilder('\Cake\Database\Connection')
+            ->disableOriginalConstructor()
+            ->setMethods([$methodName, 'setLogger'])
+            ->getMock();
+        $DefaultSource
+            ->expects($this->once())
+            ->method($methodName)
+            ->with(true);
+        $DefaultSource
+            ->expects($this->once())
+            ->method('setLogger')
+            ->with($this->isInstanceOf('\Crud\Log\QueryLogger'));
+
+        $TestSource = $this
+            ->getMockBuilder('\Cake\Database\Connection')
+            ->disableOriginalConstructor()
+            ->setMethods([$methodName, 'setLogger'])
+            ->getMock();
+        $TestSource
+            ->expects($this->once())
+            ->method($methodName)
+            ->with(true);
+        $TestSource
+            ->expects($this->once())
+            ->method('setLogger')
+            ->with($this->isInstanceOf('\Crud\Log\QueryLogger'));
+
+        $Instance = $this
+            ->getMockBuilder('\Crud\Listener\ApiQueryLogListener')
+            ->disableOriginalConstructor()
+            ->setMethods(['_getSources', '_getSource'])
+            ->getMock();
+        $Instance
+            ->expects($this->never())
+            ->method('_getSources');
+
+        $Instance
+            ->expects($this->at(0))
+            ->method('_getSource')
+            ->with('default')
+            ->will($this->returnValue($DefaultSource));
+
+        $Instance
+            ->expects($this->at(1))
+            ->method('_getSource')
+            ->with('test')
+            ->will($this->returnValue($TestSource));
+
+        $Instance->setConfig('connections', ['default', 'test']);
+        $Instance->setupLogging(new Event('something'));
+    }
+
+    /**
      * Test getting query logs using protected method
      *
      * @return void
