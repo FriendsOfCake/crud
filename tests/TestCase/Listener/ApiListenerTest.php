@@ -1176,7 +1176,7 @@ class ApiListenerTest extends TestCase
 
         $this->assertTrue(
             $request->is('api'),
-            "A request with xml extensions should be considered an api request"
+            'A request with xml extensions should be considered an api request'
         );
 
         $request = $request->withParam('_ext', null);
@@ -1184,7 +1184,7 @@ class ApiListenerTest extends TestCase
 
         $this->assertFalse(
             $request->is('api'),
-            "A request with no extensions should not be considered an api request"
+            'A request with no extensions should not be considered an api request'
         );
 
         //Ensure that no set extension will not result in a true
@@ -1193,7 +1193,7 @@ class ApiListenerTest extends TestCase
             ->method('_acceptHeaderDetector')
             ->will($this->returnValue(false));
 
-        $this->assertFalse($request->is('jsonapi'), "A request with no extensions should not be considered an jsonapi request");
+        $this->assertFalse($request->is('jsonapi'), 'A request with no extensions should not be considered an jsonapi request');
     }
 
     /**
