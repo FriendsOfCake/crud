@@ -29,7 +29,7 @@ you want to attach it only to specific controllers and actions
 
     }
 
-Attach it using components array, this is recommended if you want to
+Attach it in :code:`AppController::initialize()`, this is recommended if you want to
 attach it to all controllers, application wide
 
 
@@ -88,3 +88,23 @@ Paginated results will include a
             }
         }
     }
+
+
+Configuration
+-------------
+
+By default this listener will log all defined connections.
+
+If you need to select specific connections to log, you can use the :code:`connections` configuration:
+
+.. code-block:: php
+
+    $this->loadComponent('Crud.Crud', [
+        'listeners' => [
+            'Crud.Api',
+            'ApiQueryLog' => [
+                'className' => 'Crud.ApiQueryLog',
+                'connections' => ['default', 'elastic']
+            ]
+        ]
+    ]);
