@@ -14,7 +14,6 @@ use Crud\Traits\ViewVarTrait;
  */
 class IndexAction extends BaseAction
 {
-
     use FindMethodTrait;
     use SerializeTrait;
     use ViewTrait;
@@ -34,12 +33,12 @@ class IndexAction extends BaseAction
         'serialize' => [],
         'api' => [
             'success' => [
-                'code' => 200
+                'code' => 200,
             ],
             'error' => [
-                'code' => 400
-            ]
-        ]
+                'code' => 400,
+            ],
+        ],
     ];
 
     /**

@@ -12,7 +12,6 @@ use FriendsOfCake\TestUtilities\CounterHelperTrait;
  */
 abstract class TestCase extends \Cake\TestSuite\TestCase
 {
-
     use AccessibilityHelperTrait;
     use CounterHelperTrait;
     use CrudTestTrait;

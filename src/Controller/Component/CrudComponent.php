@@ -112,20 +112,20 @@ class CrudComponent extends Component
             'invalidId' => [
                 'code' => 400,
                 'class' => BadRequestException::class,
-                'text' => 'Invalid id'
+                'text' => 'Invalid id',
             ],
             'recordNotFound' => [
                 'code' => 404,
                 'class' => NotFoundException::class,
-                'text' => 'Not found'
+                'text' => 'Not found',
             ],
             'badRequestMethod' => [
                 'code' => 405,
                 'class' => MethodNotAllowedException::class,
-                'text' => 'Method not allowed. This action permits only {methods}'
-            ]
+                'text' => 'Method not allowed. This action permits only {methods}',
+            ],
         ],
-        'eventLogging' => false
+        'eventLogging' => false,
     ];
 
     /**

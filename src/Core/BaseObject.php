@@ -15,7 +15,6 @@ use Cake\Event\EventListenerInterface;
  */
 abstract class BaseObject implements EventListenerInterface
 {
-
     use InstanceConfigTrait;
     use ProxyTrait;
 

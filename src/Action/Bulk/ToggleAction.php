@@ -25,11 +25,11 @@ class ToggleAction extends BaseAction
     {
         $this->_defaultConfig['messages'] = [
             'success' => [
-                'text' => 'Value toggled successfully'
+                'text' => 'Value toggled successfully',
             ],
             'error' => [
-                'text' => 'Could not toggle value'
-            ]
+                'text' => 'Could not toggle value',
+            ],
         ];
 
         parent::__construct($Controller, $config);

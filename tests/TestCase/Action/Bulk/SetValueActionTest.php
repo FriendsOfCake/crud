@@ -79,7 +79,7 @@ class SetValueActionTest extends IntegrationTestCase
                         [
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Set value successfully'],
-                            'key' => 'flash'
+                            'key' => 'flash',
                         ]
                     );
 
@@ -123,7 +123,7 @@ class SetValueActionTest extends IntegrationTestCase
                         [
                             'element' => 'default',
                             'params' => ['class' => 'message error', 'original' => 'Could not set value'],
-                            'key' => 'flash'
+                            'key' => 'flash',
                         ]
                     );
 
@@ -171,7 +171,7 @@ class SetValueActionTest extends IntegrationTestCase
                         [
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Set value successfully'],
-                            'key' => 'flash'
+                            'key' => 'flash',
                         ]
                     );
 

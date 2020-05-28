@@ -117,7 +117,7 @@ class RelatedModelsListener extends BaseListener
     protected function _findOptions(Association $association)
     {
         return [
-            'keyField' => $association->getBindingKey()
+            'keyField' => $association->getBindingKey(),
         ];
     }
 

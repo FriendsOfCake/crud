@@ -115,7 +115,7 @@ class AddActionTest extends IntegrationTestCase
                         [
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Successfully created blog'],
-                            'key' => 'flash'
+                            'key' => 'flash',
                         ]
                     );
 
@@ -125,7 +125,7 @@ class AddActionTest extends IntegrationTestCase
 
         $this->post('/blogs/add', [
             'name' => 'Hello World',
-            'body' => 'Pretty hot body'
+            'body' => 'Pretty hot body',
         ]);
 
         $this->assertEvents(['beforeSave', 'afterSave', 'setFlash', 'beforeRedirect']);
@@ -160,7 +160,7 @@ class AddActionTest extends IntegrationTestCase
                         [
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Successfully created blog'],
-                            'key' => 'flash'
+                            'key' => 'flash',
                         ]
                     );
 
@@ -171,7 +171,7 @@ class AddActionTest extends IntegrationTestCase
         $this->post('/blogs/add', [
             'name' => 'Hello World',
             'body' => 'Pretty hot body',
-            '_add' => 1
+            '_add' => 1,
         ]);
 
         $this->assertEvents(['beforeSave', 'afterSave', 'setFlash', 'beforeRedirect']);
@@ -205,7 +205,7 @@ class AddActionTest extends IntegrationTestCase
                         [
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Successfully created blog'],
-                            'key' => 'flash'
+                            'key' => 'flash',
                         ]
                     );
 
@@ -216,7 +216,7 @@ class AddActionTest extends IntegrationTestCase
         $this->post('/blogs/add', [
             'name' => 'Hello World',
             'body' => 'Pretty hot body',
-            '_edit' => 1
+            '_edit' => 1,
         ]);
 
         $this->assertEvents(['beforeSave', 'afterSave', 'setFlash', 'beforeRedirect']);
@@ -249,7 +249,7 @@ class AddActionTest extends IntegrationTestCase
                         [
                             'element' => 'default',
                             'params' => ['class' => 'message error', 'original' => 'Could not create blog'],
-                            'key' => 'flash'
+                            'key' => 'flash',
                         ]
                     );
 
@@ -270,7 +270,7 @@ class AddActionTest extends IntegrationTestCase
 
         $this->post('/blogs/add', [
             'name' => 'Hello World',
-            'body' => 'Pretty hot body'
+            'body' => 'Pretty hot body',
         ]);
 
         $this->assertEvents(['beforeSave', 'afterSave', 'setFlash', 'beforeRender']);
@@ -302,7 +302,7 @@ class AddActionTest extends IntegrationTestCase
                         [
                             'element' => 'default',
                             'params' => ['class' => 'message error', 'original' => 'Could not create blog'],
-                            'key' => 'flash'
+                            'key' => 'flash',
                         ]
                     );
 
@@ -315,14 +315,14 @@ class AddActionTest extends IntegrationTestCase
                         'length' => [
                             'rule' => ['minLength', 10],
                             'message' => 'Name need to be at least 10 characters long',
-                        ]
+                        ],
                     ]);
             }
         );
 
         $this->post('/blogs/add', [
             'name' => 'Hello',
-            'body' => 'Pretty hot body'
+            'body' => 'Pretty hot body',
         ]);
 
         $this->assertEvents(['beforeSave', 'afterSave', 'setFlash', 'beforeRender']);
@@ -347,7 +347,7 @@ class AddActionTest extends IntegrationTestCase
     {
         return [
             ['get'],
-            ['delete']
+            ['delete'],
         ];
     }
 
@@ -380,7 +380,7 @@ class AddActionTest extends IntegrationTestCase
     {
         return [
             ['put'],
-            ['post']
+            ['post'],
         ];
     }
 
@@ -415,7 +415,7 @@ class AddActionTest extends IntegrationTestCase
 
         $this->{$method}('/blogs/add.json', [
             'name' => '6th blog post',
-            'body' => 'Amazing blog post'
+            'body' => 'Amazing blog post',
         ]);
         $this->assertEvents(['beforeSave', 'afterSave', 'setFlash', 'beforeRedirect']);
         $this->assertTrue($this->_subject->success);
@@ -464,14 +464,14 @@ class AddActionTest extends IntegrationTestCase
                         'length' => [
                             'rule' => ['minLength', 10],
                             'message' => 'Name need to be at least 10 characters long',
-                        ]
+                        ],
                     ]);
             }
         );
 
         $this->{$method}('/blogs/add.json', [
             'name' => 'too short',
-            'body' => 'Amazing blog post'
+            'body' => 'Amazing blog post',
         ]);
 
         $this->assertResponseCode(422);
@@ -517,13 +517,13 @@ class AddActionTest extends IntegrationTestCase
                         'length' => [
                             'rule' => ['minLength', 10],
                             'message' => 'Name need to be at least 10 characters long',
-                        ]
+                        ],
                     ]);
             }
         );
 
         $this->{$method}('/blogs/add.json', [
-            'name' => 'too short'
+            'name' => 'too short',
         ]);
 
         $this->assertResponseError();
@@ -555,7 +555,7 @@ class AddActionTest extends IntegrationTestCase
                         [
                             'element' => 'default',
                             'params' => ['class' => 'message error', 'original' => 'Could not create blog'],
-                            'key' => 'flash'
+                            'key' => 'flash',
                         ]
                     );
 
@@ -609,7 +609,7 @@ class AddActionTest extends IntegrationTestCase
                         [
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Successfully created blog'],
-                            'key' => 'flash'
+                            'key' => 'flash',
                         ]
                     );
 

@@ -39,7 +39,7 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer
             'error' => $error,
             'errorCount' => $error->getValidationErrorCount(),
             'errors' => $error->getValidationErrors(),
-            '_serialize' => ['code', 'url', 'message', 'errorCount', 'errors']
+            '_serialize' => ['code', 'url', 'message', 'errorCount', 'errors'],
         ];
         $this->controller->set($sets);
 
@@ -100,7 +100,7 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer
             if (!isset($data['trace'])) {
                 $data['trace'] = Debugger::formatTrace($viewVars['error']->getTrace(), [
                     'format' => 'array',
-                    'args' => false
+                    'args' => false,
                 ]);
             }
         }

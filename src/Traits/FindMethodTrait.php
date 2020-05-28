@@ -61,7 +61,7 @@ trait FindMethodTrait
 
         $subject->set([
             'repository' => $repository,
-            'query' => $query
+            'query' => $query,
         ]);
 
         $this->_trigger('beforeFind', $subject);

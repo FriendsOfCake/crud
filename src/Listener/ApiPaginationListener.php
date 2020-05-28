@@ -28,7 +28,7 @@ class ApiPaginationListener extends BaseListener
         }
 
         return [
-            'Crud.beforeRender' => ['callable' => 'beforeRender', 'priority' => 75]
+            'Crud.beforeRender' => ['callable' => 'beforeRender', 'priority' => 75],
         ];
     }
 
@@ -64,7 +64,7 @@ class ApiPaginationListener extends BaseListener
             'has_next_page' => $pagination['nextPage'],
             'has_prev_page' => $pagination['prevPage'],
             'count' => $pagination['count'],
-            'limit' => $pagination['limit']
+            'limit' => $pagination['limit'],
         ];
 
         $controller->set('pagination', $paginationResponse);

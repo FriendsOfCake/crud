@@ -19,7 +19,7 @@ class ToggleActionTest extends IntegrationTestCase
      */
     public $fixtures = [
         'plugin.Crud.Blogs',
-        'plugin.Crud.Users'
+        'plugin.Crud.Users',
     ];
 
     /**
@@ -79,7 +79,7 @@ class ToggleActionTest extends IntegrationTestCase
                         [
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Value toggled successfully'],
-                            'key' => 'flash'
+                            'key' => 'flash',
                         ]
                     );
 
@@ -123,7 +123,7 @@ class ToggleActionTest extends IntegrationTestCase
                         [
                             'element' => 'default',
                             'params' => ['class' => 'message error', 'original' => 'Could not toggle value'],
-                            'key' => 'flash'
+                            'key' => 'flash',
                         ]
                     );
 
@@ -171,7 +171,7 @@ class ToggleActionTest extends IntegrationTestCase
                         [
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Value toggled successfully'],
-                            'key' => 'flash'
+                            'key' => 'flash',
                         ]
                     );
 

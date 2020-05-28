@@ -32,20 +32,20 @@ class ApiListener extends BaseListener
     protected $_defaultConfig = [
         'viewClasses' => [
             'json' => 'Json',
-            'xml' => 'Xml'
+            'xml' => 'Xml',
         ],
         'detectors' => [
             'json' => ['ext' => 'json', 'accepts' => 'application/json'],
-            'xml' => ['ext' => 'xml', 'accepts' => 'text/xml']
+            'xml' => ['ext' => 'xml', 'accepts' => 'text/xml'],
         ],
         'exception' => [
             'type' => 'default',
             'class' => BadRequestException::class,
             'message' => 'Unknown error',
-            'code' => 0
+            'code' => 0,
         ],
         'exceptionRenderer' => ExceptionRenderer::class,
-        'setFlash' => false
+        'setFlash' => false,
     ];
 
     /**
@@ -69,7 +69,7 @@ class ApiListener extends BaseListener
             'Crud.setFlash' => ['callable' => [$this, 'setFlash'], 'priority' => 5],
 
             'Crud.beforeRender' => ['callable' => [$this, 'respond'], 'priority' => 100],
-            'Crud.beforeRedirect' => ['callable' => [$this, 'respond'], 'priority' => 100]
+            'Crud.beforeRedirect' => ['callable' => [$this, 'respond'], 'priority' => 100],
         ];
     }
 

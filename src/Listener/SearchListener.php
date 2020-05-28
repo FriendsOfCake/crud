@@ -16,9 +16,9 @@ class SearchListener extends BaseListener
     protected $_defaultConfig = [
         'enabled' => [
             'Crud.beforeLookup',
-            'Crud.beforePaginate'
+            'Crud.beforePaginate',
         ],
-        'collection' => 'default'
+        'collection' => 'default',
     ];
 
     /**
@@ -31,7 +31,7 @@ class SearchListener extends BaseListener
     {
         return [
             'Crud.beforeLookup' => ['callable' => 'injectSearch'],
-            'Crud.beforePaginate' => ['callable' => 'injectSearch']
+            'Crud.beforePaginate' => ['callable' => 'injectSearch'],
         ];
     }
 

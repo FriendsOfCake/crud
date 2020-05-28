@@ -17,7 +17,6 @@ use Crud\Traits\ViewVarTrait;
  */
 class AddAction extends BaseAction
 {
-
     use RedirectTrait;
     use SaveMethodTrait;
     use SerializeTrait;
@@ -56,37 +55,37 @@ class AddAction extends BaseAction
             'success' => [
                 'code' => 201,
                 'data' => [
-                    'entity' => ['id']
-                ]
+                    'entity' => ['id'],
+                ],
             ],
             'error' => [
                 'exception' => [
                     'type' => 'validate',
-                    'class' => ValidationException::class
-                ]
-            ]
+                    'class' => ValidationException::class,
+                ],
+            ],
         ],
         'redirect' => [
             'post_add' => [
                 'reader' => 'request.data',
                 'key' => '_add',
-                'url' => ['action' => 'add']
+                'url' => ['action' => 'add'],
             ],
             'post_edit' => [
                 'reader' => 'request.data',
                 'key' => '_edit',
-                'url' => ['action' => 'edit', ['entity.field', 'id']]
-            ]
+                'url' => ['action' => 'edit', ['entity.field', 'id']],
+            ],
         ],
         'messages' => [
             'success' => [
-                'text' => 'Successfully created {name}'
+                'text' => 'Successfully created {name}',
             ],
             'error' => [
-                'text' => 'Could not create {name}'
-            ]
+                'text' => 'Could not create {name}',
+            ],
         ],
-        'serialize' => []
+        'serialize' => [],
     ];
 
     /**
@@ -98,7 +97,7 @@ class AddAction extends BaseAction
     {
         $subject = $this->_subject([
             'success' => true,
-            'entity' => $this->_entity($this->_request()->getQuery() ?: null, ['validate' => false] + $this->saveOptions())
+            'entity' => $this->_entity($this->_request()->getQuery() ?: null, ['validate' => false] + $this->saveOptions()),
         ]);
 
         $this->_trigger('beforeRender', $subject);
@@ -114,7 +113,7 @@ class AddAction extends BaseAction
         $subject = $this->_subject([
             'entity' => $this->_entity($this->_request()->getData(), $this->saveOptions()),
             'saveMethod' => $this->saveMethod(),
-            'saveOptions' => $this->saveOptions()
+            'saveOptions' => $this->saveOptions(),
         ]);
 
         $event = $this->_trigger('beforeSave', $subject);

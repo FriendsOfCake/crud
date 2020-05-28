@@ -48,7 +48,7 @@ class IndexActionTest extends IntegrationTestCase
             ['get'],
             ['post'],
             ['put'],
-            ['delete']
+            ['delete'],
         ];
     }
 

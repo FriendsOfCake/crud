@@ -59,7 +59,7 @@ class ExceptionRendererTest extends TestCase
                 'class' => 'Cake\Core\Exception\Exception',
                 'code' => 500,
                 'message' => 'Hello World',
-            ]
+            ],
         ];
 
         $actual = $viewVars['data'];
@@ -135,7 +135,7 @@ class ExceptionRendererTest extends TestCase
                 'class' => 'Cake\Core\Exception\Exception',
                 'code' => 500,
                 'message' => 'Hello World',
-            ]
+            ],
         ];
 
         $actual = $viewVars['data'];
@@ -205,7 +205,7 @@ class ExceptionRendererTest extends TestCase
                 'class' => 'Cake\Core\Exception\Exception',
                 'code' => 500,
                 'message' => 'Hello World',
-            ]
+            ],
         ];
 
         $actual = $viewVars['data'];
@@ -269,7 +269,7 @@ class ExceptionRendererTest extends TestCase
                 'class' => 'Cake\Core\Exception\Exception',
                 'code' => 500,
                 'message' => 'Hello World',
-            ]
+            ],
         ];
 
         $actual = $viewVars['data'];
@@ -335,7 +335,7 @@ class ExceptionRendererTest extends TestCase
                 'class' => 'Cake\Core\Exception\Exception',
                 'code' => 500,
                 'message' => 'Hello World',
-            ]
+            ],
         ];
         $actual = $viewVars['data'];
         unset($actual['trace']);
@@ -391,10 +391,10 @@ class ExceptionRendererTest extends TestCase
             'errorCount' => 1,
             'errors' => [
                 'title' => [
-                    'error message'
-                ]
+                    'error message',
+                ],
             ],
-            'message' => 'A validation error occurred'
+            'message' => 'A validation error occurred',
         ];
         $this->assertEquals($expected, $Controller->viewVars['data']);
     }
@@ -436,15 +436,15 @@ class ExceptionRendererTest extends TestCase
             'errorCount' => 1,
             'errors' => [
                 'title' => [
-                    'error message'
-                ]
+                    'error message',
+                ],
             ],
             'exception' => [
                 'class' => 'Crud\Error\Exception\ValidationException',
                 'code' => 422,
-                'message' => 'A validation error occurred'
+                'message' => 'A validation error occurred',
             ],
-            'message' => 'A validation error occurred'
+            'message' => 'A validation error occurred',
         ];
         $this->assertEquals($expected, $Controller->viewVars['data']);
     }
@@ -454,7 +454,7 @@ class ExceptionRendererTest extends TestCase
         $entity = new Entity();
         $entity->setErrors([
             'title' => ['error message'],
-            'body' => ['another field message']
+            'body' => ['another field message'],
         ]);
 
         $Exception = new ValidationException($entity);
@@ -485,17 +485,17 @@ class ExceptionRendererTest extends TestCase
             'errorCount' => 2,
             'errors' => [
                 'title' => [
-                    'error message'
+                    'error message',
                 ],
                 'body' => [
-                    'another field message'
-                ]
+                    'another field message',
+                ],
             ],
             'exception' => [
                 'class' => 'Crud\Error\Exception\ValidationException',
                 'code' => 422,
                 'message' => '2 validation errors occurred',
-            ]
+            ],
         ];
         $data = $Controller->viewVars['data'];
         unset($data['trace']);

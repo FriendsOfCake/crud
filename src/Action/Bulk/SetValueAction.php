@@ -24,11 +24,11 @@ class SetValueAction extends BaseAction
     {
         $this->_defaultConfig['messages'] = [
             'success' => [
-                'text' => 'Set value successfully'
+                'text' => 'Set value successfully',
             ],
             'error' => [
-                'text' => 'Could not set value'
-            ]
+                'text' => 'Could not set value',
+            ],
         ];
         $this->_defaultConfig['value'] = null;
 

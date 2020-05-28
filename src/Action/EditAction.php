@@ -18,7 +18,6 @@ use Crud\Traits\ViewVarTrait;
  */
 class EditAction extends BaseAction
 {
-
     use FindMethodTrait;
     use RedirectTrait;
     use SaveMethodTrait;
@@ -55,37 +54,37 @@ class EditAction extends BaseAction
         'saveOptions' => [],
         'messages' => [
             'success' => [
-                'text' => 'Successfully updated {name}'
+                'text' => 'Successfully updated {name}',
             ],
             'error' => [
-                'text' => 'Could not update {name}'
-            ]
+                'text' => 'Could not update {name}',
+            ],
         ],
         'redirect' => [
             'post_add' => [
                 'reader' => 'request.data',
                 'key' => '_add',
-                'url' => ['action' => 'add']
+                'url' => ['action' => 'add'],
             ],
             'post_edit' => [
                 'reader' => 'request.data',
                 'key' => '_edit',
-                'url' => ['action' => 'edit', ['subject.key', 'id']]
-            ]
+                'url' => ['action' => 'edit', ['subject.key', 'id']],
+            ],
         ],
         'api' => [
             'methods' => ['put', 'post', 'patch'],
             'success' => [
-                'code' => 200
+                'code' => 200,
             ],
             'error' => [
                 'exception' => [
                     'type' => 'validate',
-                    'class' => ValidationException::class
-                ]
-            ]
+                    'class' => ValidationException::class,
+                ],
+            ],
         ],
-        'serialize' => []
+        'serialize' => [],
     ];
 
     /**

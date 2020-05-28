@@ -8,7 +8,7 @@ php:
 
 services:
   - mysql
-  -postgresql
+  - postgresql
 
 env:
   matrix:

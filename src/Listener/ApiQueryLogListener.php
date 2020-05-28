@@ -37,7 +37,7 @@ class ApiQueryLogListener extends BaseListener
 
         return [
             'Crud.beforeFilter' => ['callable' => [$this, 'setupLogging'], 'priority' => 1],
-            'Crud.beforeRender' => ['callable' => [$this, 'beforeRender'], 'priority' => 75]
+            'Crud.beforeRender' => ['callable' => [$this, 'beforeRender'], 'priority' => 75],
         ];
     }
 
