@@ -21,7 +21,7 @@ class ApiPaginationListenerTest extends TestCase
     public function testImplementedEvents()
     {
         $Instance = $this
-            ->getMockBuilder('\Crud\Listener\ApiPaginationListener')
+            ->getMockBuilder(\Crud\Listener\ApiPaginationListener::class)
             ->disableOriginalConstructor()
             ->setMethods(['_checkRequestType'])
             ->getMock();
@@ -52,13 +52,13 @@ class ApiPaginationListenerTest extends TestCase
         $Request = $Request->withParam('paging', ['MyModel' => []]);
 
         $Controller = $this
-            ->getMockBuilder('\Cake\Controller\Controller')
+            ->getMockBuilder(\Cake\Controller\Controller::class)
             ->disableOriginalConstructor()
             ->setMethods(null)
             ->getMock();
 
         $Instance = $this
-            ->getMockBuilder('\Crud\Listener\ApiPaginationListener')
+            ->getMockBuilder(\Crud\Listener\ApiPaginationListener::class)
             ->disableOriginalConstructor()
             ->setMethods(['_request', '_controller'])
             ->getMock();
@@ -90,7 +90,7 @@ class ApiPaginationListenerTest extends TestCase
             ->getMock();
 
         $Instance = $this
-            ->getMockBuilder('\Crud\Listener\ApiPaginationListener')
+            ->getMockBuilder(\Crud\Listener\ApiPaginationListener::class)
             ->disableOriginalConstructor()
             ->setMethods(['_request', '_controller'])
             ->getMock();
@@ -140,7 +140,7 @@ class ApiPaginationListenerTest extends TestCase
         ];
 
         $Controller = $this
-            ->getMockBuilder('\Cake\Controller\Controller')
+            ->getMockBuilder(\Cake\Controller\Controller::class)
             ->disableOriginalConstructor()
             ->setMethods(['set'])
             ->getMock();
@@ -150,7 +150,7 @@ class ApiPaginationListenerTest extends TestCase
             ->with('pagination', $expected);
 
         $Action = $this
-            ->getMockBuilder('\Crud\Action\BaseAction')
+            ->getMockBuilder(\Crud\Action\BaseAction::class)
             ->disableOriginalConstructor()
             ->setMethods(['setConfig'])
             ->getMock();
@@ -160,7 +160,7 @@ class ApiPaginationListenerTest extends TestCase
             ->with('serialize.pagination', 'pagination');
 
         $Instance = $this
-            ->getMockBuilder('\Crud\Listener\ApiPaginationListener')
+            ->getMockBuilder(\Crud\Listener\ApiPaginationListener::class)
             ->disableOriginalConstructor()
             ->setMethods(['_request', '_controller', '_action'])
             ->getMock();
@@ -214,7 +214,7 @@ class ApiPaginationListenerTest extends TestCase
         ];
 
         $Controller = $this
-            ->getMockBuilder('\Cake\Controller\Controller')
+            ->getMockBuilder(\Cake\Controller\Controller::class)
             ->disableOriginalConstructor()
             ->setMethods(['set'])
             ->getMock();
@@ -224,7 +224,7 @@ class ApiPaginationListenerTest extends TestCase
             ->with('pagination', $expected);
 
         $Action = $this
-            ->getMockBuilder('\Crud\Action\BaseAction')
+            ->getMockBuilder(\Crud\Action\BaseAction::class)
             ->disableOriginalConstructor()
             ->setMethods(['setConfig'])
             ->getMock();
@@ -234,7 +234,7 @@ class ApiPaginationListenerTest extends TestCase
             ->with('serialize.pagination', 'pagination');
 
         $Instance = $this
-            ->getMockBuilder('\Crud\Listener\ApiPaginationListener')
+            ->getMockBuilder(\Crud\Listener\ApiPaginationListener::class)
             ->disableOriginalConstructor()
             ->setMethods(['_request', '_controller', '_action'])
             ->getMock();
@@ -288,7 +288,7 @@ class ApiPaginationListenerTest extends TestCase
         ];
 
         $Controller = $this
-            ->getMockBuilder('\Cake\Controller\Controller')
+            ->getMockBuilder(\Cake\Controller\Controller::class)
             ->disableOriginalConstructor()
             ->setMethods(['set'])
             ->getMock();
@@ -298,13 +298,13 @@ class ApiPaginationListenerTest extends TestCase
             ->with('pagination', $expected);
 
         $Action = $this
-            ->getMockBuilder('\Crud\Action\BaseAction')
+            ->getMockBuilder(\Crud\Action\BaseAction::class)
             ->disableOriginalConstructor()
             ->setMethods(null)
             ->getMock();
 
         $Instance = $this
-            ->getMockBuilder('\Crud\Listener\ApiPaginationListener')
+            ->getMockBuilder(\Crud\Listener\ApiPaginationListener::class)
             ->disableOriginalConstructor()
             ->setMethods(['_request', '_controller', '_action'])
             ->getMock();
