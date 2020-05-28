@@ -3,6 +3,10 @@ declare(strict_types=1);
 
 namespace Crud\TestCase\Action;
 
+use Cake\Controller\Component\FlashComponent;
+use Cake\Controller\Controller;
+use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\Http\Exception\NotFoundException;
@@ -10,8 +14,11 @@ use Cake\Http\Exception\NotImplementedException;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
+use Crud\Action\BaseAction;
+use Crud\Controller\Component\CrudComponent;
 use Crud\Event\Subject;
 use Crud\TestSuite\TestCase;
+use Exception;
 
 /**
  * Licensed under The MIT License
@@ -25,23 +32,23 @@ class BaseActionTest extends TestCase
 
         $this->Request = $this->getMockBuilder(ServerRequest::class)
             ->getMock();
-        $this->Controller = $this->getMockBuilder(\Cake\Controller\Controller::class)
+        $this->Controller = $this->getMockBuilder(Controller::class)
             ->setMethods(['set'])
             ->setConstructorArgs([
                 $this->Request,
                 new Response(),
                 'CrudExamples',
-                \Cake\Event\EventManager::instance(),
+                EventManager::instance(),
             ])
             ->getMock();
         $this->Registry = $this->Controller->components();
-        $this->Crud = $this->getMockBuilder(\Crud\Controller\Component\CrudComponent::class)
+        $this->Crud = $this->getMockBuilder(CrudComponent::class)
             ->setConstructorArgs([$this->Registry])
             ->setMethods(['foobar'])
             ->getMock();
         $this->Controller->Crud = $this->Crud;
         $this->Controller->modelClass = 'CrudExamples';
-        $this->Controller->CrudExamples = \Cake\ORM\TableRegistry::get('Crud.CrudExamples');
+        $this->Controller->CrudExamples = TableRegistry::get('Crud.CrudExamples');
         $this->Controller->CrudExamples->setAlias('MyModel');
 
         $this->actionClassName = $this->getMockClass('Crud\Action\BaseAction', ['_handle']);
@@ -142,7 +149,7 @@ class BaseActionTest extends TestCase
             ->method('getMethod')
             ->will($this->returnValue('GET'));
 
-        $Action = $this->getMockBuilder(\Crud\Action\BaseAction::class)
+        $Action = $this->getMockBuilder(BaseAction::class)
             ->setMethods(['_request', '_get'])
             ->setConstructorArgs([$this->Controller])
             ->getMock();
@@ -180,7 +187,7 @@ class BaseActionTest extends TestCase
     {
         $i = 0;
 
-        $Action = $this->getMockBuilder(\Crud\Action\BaseAction::class)
+        $Action = $this->getMockBuilder(BaseAction::class)
             ->setMethods(['setConfig'])
             ->setConstructorArgs([$this->Controller])
             ->getMock();
@@ -204,7 +211,7 @@ class BaseActionTest extends TestCase
     {
         $i = 0;
 
-        $Action = $this->getMockBuilder(\Crud\Action\BaseAction::class)
+        $Action = $this->getMockBuilder(BaseAction::class)
             ->setMethods(['setConfig'])
             ->setConstructorArgs([$this->Controller])
             ->getMock();
@@ -237,7 +244,7 @@ class BaseActionTest extends TestCase
 
         $Subject = new Subject();
 
-        $this->Controller->Crud = $this->getMockBuilder(\Crud\Controller\Component\CrudComponent::class)
+        $this->Controller->Crud = $this->getMockBuilder(CrudComponent::class)
             ->setMethods(['trigger'])
             ->setConstructorArgs([$this->Registry])
             ->getMock();
@@ -245,9 +252,9 @@ class BaseActionTest extends TestCase
             ->expects($this->once())
             ->method('trigger')
             ->with('setFlash', $Subject)
-            ->will($this->returnValue(new \Cake\Event\Event('Crud.setFlash')));
+            ->will($this->returnValue(new Event('Crud.setFlash')));
 
-        $this->Controller->Flash = $this->getMockBuilder(\Cake\Controller\Component\FlashComponent::class)
+        $this->Controller->Flash = $this->getMockBuilder(FlashComponent::class)
             ->setMethods(['set'])
             ->setConstructorArgs([$this->Registry])
             ->getMock();
@@ -311,7 +318,7 @@ class BaseActionTest extends TestCase
      */
     public function testUndefinedMessage()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Invalid message type "not defined"');
 
         $this->ActionClass->message('not defined');
@@ -322,7 +329,7 @@ class BaseActionTest extends TestCase
      */
     public function testBadMessageConfig()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Invalid message config for "badConfig" no text key found');
 
         $this->Crud->setConfig('messages.badConfig', ['foo' => 'bar']);
@@ -508,7 +515,7 @@ class BaseActionTest extends TestCase
      */
     public function testHandle()
     {
-        $Action = $this->getMockBuilder(\Crud\Action\BaseAction::class)
+        $Action = $this->getMockBuilder(BaseAction::class)
             ->setMethods(['_request', '_get', 'getConfig'])
             ->setConstructorArgs([$this->Controller])
             ->getMock();
@@ -548,7 +555,7 @@ class BaseActionTest extends TestCase
      */
     public function testHandleDisabled()
     {
-        $Action = $this->getMockBuilder(\Crud\Action\BaseAction::class)
+        $Action = $this->getMockBuilder(BaseAction::class)
             ->setMethods(['_handle', '_get', 'getConfig'])
             ->setConstructorArgs([$this->Controller])
             ->getMock();
@@ -576,7 +583,7 @@ class BaseActionTest extends TestCase
      */
     public function testGenericHandle()
     {
-        $Action = $this->getMockBuilder(\Crud\Action\BaseAction::class)
+        $Action = $this->getMockBuilder(BaseAction::class)
             ->setMethods(['_handle', '_request', 'getConfig'])
             ->setConstructorArgs([$this->Controller])
             ->getMock();
@@ -618,7 +625,7 @@ class BaseActionTest extends TestCase
     {
         $this->expectException(NotImplementedException::class);
 
-        $Action = $this->getMockBuilder(\Crud\Action\BaseAction::class)
+        $Action = $this->getMockBuilder(BaseAction::class)
             ->setMethods(['_request', 'getConfig'])
             ->setConstructorArgs([$this->Controller])
             ->getMock();

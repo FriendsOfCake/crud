@@ -5,8 +5,11 @@ namespace Crud\Test\TestCase\Listener;
 
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
+use Cake\Database\Connection;
 use Cake\Event\Event;
+use Crud\Action\BaseAction;
 use Crud\Listener\ApiQueryLogListener;
+use Crud\Log\QueryLogger;
 use Crud\TestSuite\TestCase;
 
 /**
@@ -37,7 +40,7 @@ class ApiQueryLogListenerTest extends TestCase
     public function testImplementedEvents()
     {
         $Instance = $this
-            ->getMockBuilder(\Crud\Listener\ApiQueryLogListener::class)
+            ->getMockBuilder(ApiQueryLogListener::class)
             ->disableOriginalConstructor()
             ->setMethods(['_checkRequestType'])
             ->getMock();
@@ -64,7 +67,7 @@ class ApiQueryLogListenerTest extends TestCase
     public function testImplementedEventsNotApiRequest()
     {
         $Instance = $this
-            ->getMockBuilder(\Crud\Listener\ApiQueryLogListener::class)
+            ->getMockBuilder(ApiQueryLogListener::class)
             ->disableOriginalConstructor()
             ->setMethods(['_checkRequestType'])
             ->getMock();
@@ -91,7 +94,7 @@ class ApiQueryLogListenerTest extends TestCase
         Configure::write('debug', false);
 
         $Instance = $this
-            ->getMockBuilder(\Crud\Listener\ApiQueryLogListener::class)
+            ->getMockBuilder(ApiQueryLogListener::class)
             ->disableOriginalConstructor()
             ->setMethods(['_getQueryLogs'])
             ->getMock();
@@ -114,7 +117,7 @@ class ApiQueryLogListenerTest extends TestCase
         Configure::write('debug', true);
 
         $Action = $this
-            ->getMockBuilder(\Crud\Action\BaseAction::class)
+            ->getMockBuilder(BaseAction::class)
             ->disableOriginalConstructor()
             ->setMethods(['setConfig'])
             ->getMock();
@@ -124,7 +127,7 @@ class ApiQueryLogListenerTest extends TestCase
             ->with('serialize.queryLog', 'queryLog');
 
         $Controller = $this
-            ->getMockBuilder(\Cake\Controller\Controller::class)
+            ->getMockBuilder(Controller::class)
             ->disableOriginalConstructor()
             ->setMethods(['set'])
             ->getMock();
@@ -134,7 +137,7 @@ class ApiQueryLogListenerTest extends TestCase
             ->with('queryLog', []);
 
         $Instance = $this
-            ->getMockBuilder(\Crud\Listener\ApiQueryLogListener::class)
+            ->getMockBuilder(ApiQueryLogListener::class)
             ->disableOriginalConstructor()
             ->setMethods(['_getQueryLogs', '_action', '_controller'])
             ->getMock();
@@ -167,7 +170,7 @@ class ApiQueryLogListenerTest extends TestCase
         }
 
         $DefaultSource = $this
-            ->getMockBuilder(\Cake\Database\Connection::class)
+            ->getMockBuilder(Connection::class)
             ->disableOriginalConstructor()
             ->setMethods([$methodName, 'setLogger'])
             ->getMock();
@@ -178,10 +181,10 @@ class ApiQueryLogListenerTest extends TestCase
         $DefaultSource
             ->expects($this->once())
             ->method('setLogger')
-            ->with($this->isInstanceOf(\Crud\Log\QueryLogger::class));
+            ->with($this->isInstanceOf(QueryLogger::class));
 
         $Instance = $this
-            ->getMockBuilder(\Crud\Listener\ApiQueryLogListener::class)
+            ->getMockBuilder(ApiQueryLogListener::class)
             ->disableOriginalConstructor()
             ->setMethods(['_getSources', '_getSource'])
             ->getMock();
@@ -211,7 +214,7 @@ class ApiQueryLogListenerTest extends TestCase
         }
 
         $DefaultSource = $this
-            ->getMockBuilder(\Cake\Database\Connection::class)
+            ->getMockBuilder(Connection::class)
             ->disableOriginalConstructor()
             ->setMethods([$methodName, 'setLogger'])
             ->getMock();
@@ -222,10 +225,10 @@ class ApiQueryLogListenerTest extends TestCase
         $DefaultSource
             ->expects($this->once())
             ->method('setLogger')
-            ->with($this->isInstanceOf(\Crud\Log\QueryLogger::class));
+            ->with($this->isInstanceOf(QueryLogger::class));
 
         $TestSource = $this
-            ->getMockBuilder(\Cake\Database\Connection::class)
+            ->getMockBuilder(Connection::class)
             ->disableOriginalConstructor()
             ->setMethods([$methodName, 'setLogger'])
             ->getMock();
@@ -236,10 +239,10 @@ class ApiQueryLogListenerTest extends TestCase
         $TestSource
             ->expects($this->once())
             ->method('setLogger')
-            ->with($this->isInstanceOf(\Crud\Log\QueryLogger::class));
+            ->with($this->isInstanceOf(QueryLogger::class));
 
         $Instance = $this
-            ->getMockBuilder(\Crud\Listener\ApiQueryLogListener::class)
+            ->getMockBuilder(ApiQueryLogListener::class)
             ->disableOriginalConstructor()
             ->setMethods(['_getSources', '_getSource'])
             ->getMock();

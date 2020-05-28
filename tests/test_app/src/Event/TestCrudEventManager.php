@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Crud\Test\App\Event;
 
 use Cake\Event\EventInterface;
+use Cake\Event\EventManager;
 
 /**
  * TestCrudEventManager
@@ -12,7 +13,7 @@ use Cake\Event\EventInterface;
  * As such, it becomes a global listener and is used to keep a log of
  * all events fired during the test
  */
-class TestCrudEventManager extends \Cake\Event\EventManager
+class TestCrudEventManager extends EventManager
 {
     protected $_log = [];
 

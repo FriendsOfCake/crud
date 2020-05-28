@@ -17,6 +17,7 @@ use Crud\Test\App\Controller\CrudExamplesController;
 use Crud\Test\App\Event\TestCrudEventManager;
 use Crud\Test\App\Listener\TestListener;
 use Crud\TestSuite\TestCase;
+use Exception;
 
 /**
  * CrudComponentTestCase
@@ -108,7 +109,7 @@ class CrudComponentTest extends TestCase
                 'Crud.Related',
             ],
         ];
-        $Crud = $this->getMockBuilder(\Crud\Controller\Component\CrudComponent::class)
+        $Crud = $this->getMockBuilder(CrudComponent::class)
             ->setMethods(['_loadListeners', 'trigger'])
             ->setConstructorArgs([$this->Registry, $config])
             ->getMock();
@@ -161,7 +162,7 @@ class CrudComponentTest extends TestCase
     {
         $config = ['actions' => ['Crud.Index']];
 
-        $Crud = $this->getMockBuilder(\Crud\Controller\Component\CrudComponent::class)
+        $Crud = $this->getMockBuilder(CrudComponent::class)
             ->setMethods(['execute'])
             ->setConstructorArgs([$this->Registry, $config])
             ->getMock();
@@ -341,7 +342,7 @@ class CrudComponentTest extends TestCase
      */
     public function testCrudWillComplainAboutUnmappedAction()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
 
         $this->Crud->execute('show_all');
     }
@@ -420,7 +421,7 @@ class CrudComponentTest extends TestCase
      */
     public function testMappingNonExistentAction()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Could not find action class: Sample.Index');
 
         $this->Crud->mapAction('test', 'Sample.Index');

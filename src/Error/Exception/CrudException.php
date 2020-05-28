@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace Crud\Error\Exception;
 
+use Cake\Core\Exception\Exception;
 use Psr\Http\Message\ResponseInterface;
 
-class CrudException extends \Cake\Core\Exception\Exception
+class CrudException extends Exception
 {
     /**
      * @var \Psr\Http\Message\ResponseInterface|null

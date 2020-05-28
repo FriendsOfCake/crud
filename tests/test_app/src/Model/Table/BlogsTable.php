@@ -4,8 +4,9 @@ declare(strict_types=1);
 namespace Crud\Test\App\Model\Table;
 
 use Cake\ORM\Query;
+use Cake\ORM\Table;
 
-class BlogsTable extends \Cake\ORM\Table
+class BlogsTable extends Table
 {
     public $customOptions;
 

@@ -5,6 +5,7 @@ namespace Crud\TestCase\Event;
 
 use Crud\Event\Subject;
 use Crud\TestSuite\TestCase;
+use Exception;
 
 /**
  * Licensed under The MIT License
@@ -78,7 +79,7 @@ class SubjectTest extends TestCase
      */
     public function testInvalidMode()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Invalid mode');
 
         $this->Subject->shouldProcess('invalid');

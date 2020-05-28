@@ -1,6 +1,8 @@
 <?php
 
 use Cake\Core\Plugin;
+use Cake\Filesystem\Folder;
+
 // @codingStandardsIgnoreFile
 
 $findRoot = function () {
@@ -47,7 +49,7 @@ Cake\Core\Configure::write('App', [
 ]);
 Cake\Core\Configure::write('debug', true);
 
-$TMP = new \Cake\Filesystem\Folder(TMP);
+$TMP = new Folder(TMP);
 $TMP->create(TMP . 'cache/models', 0777);
 $TMP->create(TMP . 'cache/persistent', 0777);
 $TMP->create(TMP . 'cache/views', 0777);
