@@ -1,7 +1,9 @@
 <?php
 namespace Crud\Test\App\Model\Entity;
 
-class Blog extends \Cake\ORM\Entity
+use Cake\ORM\Entity;
+
+class Blog extends Entity
 {
 
 }

@@ -1,6 +1,7 @@
 <?php
 namespace Crud\Test\TestCase\Action\Bulk;
 
+use Cake\Controller\Component\FlashComponent;
 use Cake\Routing\DispatcherFactory;
 use Cake\Routing\Router;
 use Crud\TestSuite\IntegrationTestCase;
@@ -66,7 +67,7 @@ class ToggleActionTest extends IntegrationTestCase
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder(\Cake\Controller\Component\FlashComponent::class)
+                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->setMethods(['set'])
                     ->disableOriginalConstructor()
                     ->getMock();
@@ -110,7 +111,7 @@ class ToggleActionTest extends IntegrationTestCase
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder(\Cake\Controller\Component\FlashComponent::class)
+                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->setMethods(['set'])
                     ->disableOriginalConstructor()
                     ->getMock();
@@ -158,7 +159,7 @@ class ToggleActionTest extends IntegrationTestCase
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder(\Cake\Controller\Component\FlashComponent::class)
+                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->setMethods(['set'])
                     ->disableOriginalConstructor()
                     ->getMock();

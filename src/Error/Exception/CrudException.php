@@ -1,6 +1,8 @@
 <?php
 namespace Crud\Error\Exception;
 
-class CrudException extends \Exception
+use Exception;
+
+class CrudException extends Exception
 {
 }

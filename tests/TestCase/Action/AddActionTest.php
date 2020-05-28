@@ -1,6 +1,7 @@
 <?php
 namespace Crud\Test\TestCase\Action;
 
+use Cake\Controller\Component\FlashComponent;
 use Cake\Core\Plugin;
 use Cake\Routing\DispatcherFactory;
 use Cake\Routing\Router;
@@ -102,7 +103,7 @@ class AddActionTest extends IntegrationTestCase
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder(\Cake\Controller\Component\FlashComponent::class)
+                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->setMethods(['set'])
                     ->disableOriginalConstructor()
                     ->getMock();
@@ -147,7 +148,7 @@ class AddActionTest extends IntegrationTestCase
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder(\Cake\Controller\Component\FlashComponent::class)
+                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->setMethods(['set'])
                     ->disableOriginalConstructor()
                     ->getMock();
@@ -192,7 +193,7 @@ class AddActionTest extends IntegrationTestCase
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder(\Cake\Controller\Component\FlashComponent::class)
+                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->setMethods(['set'])
                     ->disableOriginalConstructor()
                     ->getMock();
@@ -236,7 +237,7 @@ class AddActionTest extends IntegrationTestCase
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder(\Cake\Controller\Component\FlashComponent::class)
+                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->setMethods(['set'])
                     ->disableOriginalConstructor()
                     ->getMock();
@@ -289,7 +290,7 @@ class AddActionTest extends IntegrationTestCase
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder(\Cake\Controller\Component\FlashComponent::class)
+                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->setMethods(['set'])
                     ->disableOriginalConstructor()
                     ->getMock();
@@ -397,7 +398,7 @@ class AddActionTest extends IntegrationTestCase
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder(\Cake\Controller\Component\FlashComponent::class)
+                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->setMethods(['set'])
                     ->disableOriginalConstructor()
                     ->getMock();
@@ -444,7 +445,7 @@ class AddActionTest extends IntegrationTestCase
                     return;
                 }
 
-                $this->_controller->Flash = $this->getMockBuilder(\Cake\Controller\Component\FlashComponent::class)
+                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->setMethods(['set'])
                     ->disableOriginalConstructor()
                     ->getMock();
@@ -496,7 +497,7 @@ class AddActionTest extends IntegrationTestCase
                     return;
                 }
 
-                $this->_controller->Flash = $this->getMockBuilder(\Cake\Controller\Component\FlashComponent::class)
+                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->setMethods(['set'])
                     ->disableOriginalConstructor()
                     ->getMock();
@@ -542,7 +543,7 @@ class AddActionTest extends IntegrationTestCase
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder(\Cake\Controller\Component\FlashComponent::class)
+                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->setMethods(['set'])
                     ->disableOriginalConstructor()
                     ->getMock();
@@ -596,7 +597,7 @@ class AddActionTest extends IntegrationTestCase
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder(\Cake\Controller\Component\FlashComponent::class)
+                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->setMethods(['set'])
                     ->disableOriginalConstructor()
                     ->getMock();
