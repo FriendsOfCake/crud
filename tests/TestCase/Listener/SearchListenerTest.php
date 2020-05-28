@@ -35,7 +35,7 @@ class SearchListenerTest extends TestCase
     public function testImplementedEvents()
     {
         $listener = $this
-            ->getMockBuilder('\Crud\Listener\SearchListener')
+            ->getMockBuilder(\Crud\Listener\SearchListener::class)
             ->setMethods(null)
             ->disableoriginalConstructor()
             ->getMock();
@@ -62,14 +62,14 @@ class SearchListenerTest extends TestCase
         $eventManager = new EventManager();
         $controller = new Controller($request, $response, 'Search', $eventManager);
 
-        $behaviorRegistryMock = $this->getMockBuilder('\Cake\ORM\BehaviorRegistry')
+        $behaviorRegistryMock = $this->getMockBuilder(\Cake\ORM\BehaviorRegistry::class)
             ->setMockClassName('BehaviorRegistry')
             ->getMock();
         $behaviorRegistryMock->expects($this->once())
             ->method('has')
             ->will($this->returnValue(false));
 
-        $tableMock = $this->getMockBuilder('\Cake\ORM\Table')
+        $tableMock = $this->getMockBuilder(\Cake\ORM\Table::class)
             ->setMockClassName('SearchTables')
             ->setMethods(['behaviors', 'filterParams'])
             ->getMock();
@@ -79,7 +79,7 @@ class SearchListenerTest extends TestCase
 
         TableRegistry::set('Search', $tableMock);
 
-        $queryMock = $this->getMockBuilder('\Cake\ORM\Query')
+        $queryMock = $this->getMockBuilder(\Cake\ORM\Query::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -117,7 +117,7 @@ class SearchListenerTest extends TestCase
         $eventManager = new EventManager();
         $controller = new Controller($request, $response, 'Search', $eventManager);
 
-        $behaviorRegistryMock = $this->getMockBuilder('\Cake\ORM\BehaviorRegistry')
+        $behaviorRegistryMock = $this->getMockBuilder(\Cake\ORM\BehaviorRegistry::class)
             ->setMockClassName('BehaviorRegistry')
             ->setMethods(['has'])
             ->getMock();
@@ -125,7 +125,7 @@ class SearchListenerTest extends TestCase
             ->method('has')
             ->will($this->returnValue(true));
 
-        $tableMock = $this->getMockBuilder('\Cake\ORM\Table')
+        $tableMock = $this->getMockBuilder(\Cake\ORM\Table::class)
             ->setMockClassName('SearchTables')
             ->setMethods(['behaviors'])
             ->getMock();
@@ -135,7 +135,7 @@ class SearchListenerTest extends TestCase
 
         TableRegistry::set('Search', $tableMock);
 
-        $queryMock = $this->getMockBuilder('\Cake\ORM\Query')
+        $queryMock = $this->getMockBuilder(\Cake\ORM\Query::class)
             ->disableOriginalConstructor()
             ->getMock();
         $queryMock->expects($this->once())
@@ -187,7 +187,7 @@ class SearchListenerTest extends TestCase
         $controller->modelFactory('Endpoint', ['Muffin\Webservice\Model\EndpointRegistry', 'get']);
         $controller->setModelType('Endpoint');
 
-        $queryMock = $this->getMockBuilder('\Muffin\Webservice\Query')
+        $queryMock = $this->getMockBuilder(\Muffin\Webservice\Query::class)
             ->disableOriginalConstructor()
             ->getMock();
         $queryMock->expects($this->once())

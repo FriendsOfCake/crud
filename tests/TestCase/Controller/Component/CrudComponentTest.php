@@ -108,7 +108,7 @@ class CrudComponentTest extends TestCase
                 'Crud.Related',
             ],
         ];
-        $Crud = $this->getMockBuilder('Crud\Controller\Component\CrudComponent')
+        $Crud = $this->getMockBuilder(\Crud\Controller\Component\CrudComponent::class)
             ->setMethods(['_loadListeners', 'trigger'])
             ->setConstructorArgs([$this->Registry, $config])
             ->getMock();
@@ -161,7 +161,7 @@ class CrudComponentTest extends TestCase
     {
         $config = ['actions' => ['Crud.Index']];
 
-        $Crud = $this->getMockBuilder('Crud\Controller\Component\CrudComponent')
+        $Crud = $this->getMockBuilder(\Crud\Controller\Component\CrudComponent::class)
             ->setMethods(['execute'])
             ->setConstructorArgs([$this->Registry, $config])
             ->getMock();
