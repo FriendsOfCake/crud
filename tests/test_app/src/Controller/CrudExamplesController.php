@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace Crud\Test\App\Controller;
 
+use Cake\Controller\Controller;
 use Crud\Controller\ControllerTrait;
 
-class CrudExamplesController extends \Cake\Controller\Controller
+class CrudExamplesController extends Controller
 {
     use ControllerTrait;
 

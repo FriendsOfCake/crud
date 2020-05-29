@@ -23,6 +23,15 @@ use Crud\Log\QueryLogger;
 class ApiQueryLogListener extends BaseListener
 {
     /**
+     * {@inheritDoc}
+     *
+     * `connections` List of connection names to log. Empty means all defined connections.
+     */
+    protected $_defaultConfig = [
+        'connections' => [],
+    ];
+
+    /**
      * Returns a list of all events that will fire in the controller during its lifecycle.
      * You can override this function to add you own listener callbacks
      *
@@ -50,7 +59,9 @@ class ApiQueryLogListener extends BaseListener
      */
     public function setupLogging(EventInterface $event): void
     {
-        foreach ($this->_getSources() as $connectionName) {
+        $connections = $this->getConfig('connections') ?: $this->_getSources();
+
+        foreach ($connections as $connectionName) {
             try {
                 $connection = $this->_getSource($connectionName);
                 $connection->enableQueryLogging(true);

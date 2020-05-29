@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Crud\Test\TestCase\Action;
 
+use Cake\Controller\Component\FlashComponent;
 use Crud\TestSuite\IntegrationTestCase;
 
 /**
@@ -104,7 +105,7 @@ class EditActionTest extends IntegrationTestCase
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder('Cake\Controller\Component\FlashComponent')
+                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->setMethods(['set'])
                     ->disableOriginalConstructor()
                     ->getMock();
@@ -147,7 +148,7 @@ class EditActionTest extends IntegrationTestCase
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder('Cake\Controller\Component\FlashComponent')
+                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->setMethods(['set'])
                     ->disableOriginalConstructor()
                     ->getMock();
@@ -200,7 +201,7 @@ class EditActionTest extends IntegrationTestCase
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder('Cake\Controller\Component\FlashComponent')
+                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->setMethods(['set'])
                     ->disableOriginalConstructor()
                     ->getMock();
@@ -260,7 +261,7 @@ class EditActionTest extends IntegrationTestCase
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder('Cake\Controller\Component\FlashComponent')
+                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->setMethods(['set'])
                     ->disableOriginalConstructor()
                     ->getMock();
