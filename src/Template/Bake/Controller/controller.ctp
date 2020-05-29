@@ -4,9 +4,9 @@ use Cake\Utility\Inflector;
 $defaultModel = $name;
 %>
 <?php
-namespace <%= $namespace %>\Controller<%= $prefix %>;
+namespace <%= $namespace %>Controller<%= $prefix %>;
 
-use <%= $namespace %>\Controller\AppController;
+use use const Controller\AppController;<%= $namespace %>AppController;
 
 /**
  * <%= $name %> Controller

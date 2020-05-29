@@ -8,6 +8,7 @@ use Cake\Utility\Inflector;
 use Cake\Utility\Text;
 use Crud\Core\BaseObject;
 use Crud\Event\Subject;
+use Exception;
 
 /**
  * Base Crud class
@@ -129,7 +130,7 @@ abstract class BaseAction extends BaseObject
     public function message($type, array $replacements = [])
     {
         if (empty($type)) {
-            throw new \Exception('Missing message type');
+            throw new Exception('Missing message type');
         }
 
         $crud = $this->_crud();
@@ -138,7 +139,7 @@ abstract class BaseAction extends BaseObject
         if (empty($config)) {
             $config = $crud->getConfig('messages.' . $type);
             if (empty($config)) {
-                throw new \Exception(sprintf('Invalid message type "%s"', $type));
+                throw new Exception(sprintf('Invalid message type "%s"', $type));
             }
         }
 
@@ -155,7 +156,7 @@ abstract class BaseAction extends BaseObject
         ], $config);
 
         if (!isset($config['text'])) {
-            throw new \Exception(sprintf('Invalid message config for "%s" no text key found', $type));
+            throw new Exception(sprintf('Invalid message config for "%s" no text key found', $type));
         }
 
         $config['params']['original'] = ucfirst(str_replace('{name}', $config['name'], $config['text']));

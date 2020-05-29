@@ -1,11 +1,17 @@
 <?php
 namespace Crud\Test\TestCase\Listener;
 
+use Cake\Database\Connection;
 use Cake\Database\Schema\TableSchema;
 use Cake\Event\Event;
+use Cake\ORM\Association;
+use Cake\ORM\AssociationCollection;
+use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Query;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Crud\Event\Subject;
+use Crud\Listener\RelatedModelsListener;
 use Crud\TestSuite\TestCase;
 
 /**
@@ -26,7 +32,7 @@ class RelatedModelListenerTest extends TestCase
     public function testModels()
     {
         $listener = $this
-            ->getMockBuilder('\Crud\Listener\RelatedModelsListener')
+            ->getMockBuilder(RelatedModelsListener::class)
             ->disableOriginalConstructor()
             ->setMethods(['relatedModels'])
             ->getMock();
@@ -52,7 +58,7 @@ class RelatedModelListenerTest extends TestCase
     public function testModelsEmpty()
     {
         $listener = $this
-            ->getMockBuilder('\Crud\Listener\RelatedModelsListener')
+            ->getMockBuilder(RelatedModelsListener::class)
             ->disableOriginalConstructor()
             ->setMethods(['relatedModels'])
             ->getMock();
@@ -78,7 +84,7 @@ class RelatedModelListenerTest extends TestCase
     public function testModelsString()
     {
         $listener = $this
-            ->getMockBuilder('\Crud\Listener\RelatedModelsListener')
+            ->getMockBuilder(RelatedModelsListener::class)
             ->disableOriginalConstructor()
             ->setMethods(['relatedModels', 'getAssociatedByName'])
             ->getMock();
@@ -105,7 +111,7 @@ class RelatedModelListenerTest extends TestCase
     public function testModelsTrue()
     {
         $listener = $this
-            ->getMockBuilder('\Crud\Listener\RelatedModelsListener')
+            ->getMockBuilder(RelatedModelsListener::class)
             ->disableOriginalConstructor()
             ->setMethods(['relatedModels', 'getAssociatedByType'])
             ->getMock();
@@ -132,22 +138,22 @@ class RelatedModelListenerTest extends TestCase
     public function testGetAssociatedByTypeReturnValue()
     {
         $listener = $this
-            ->getMockBuilder('\Crud\Listener\RelatedModelsListener')
+            ->getMockBuilder(RelatedModelsListener::class)
             ->disableOriginalConstructor()
             ->setMethods(['relatedModels', '_table'])
             ->getMock();
         $table = $this
-            ->getMockBuilder('\Cake\ORM\Table')
+            ->getMockBuilder(Table::class)
             ->disableOriginalConstructor()
             ->setMethods(['associations'])
             ->getMock();
         $associationCollection = $this
-            ->getMockBuilder('\Cake\ORM\AssociationCollection')
+            ->getMockBuilder(AssociationCollection::class)
             ->disableOriginalConstructor()
             ->setMethods(['get', 'keys'])
             ->getMock();
         $association = $this
-            ->getMockBuilder('\Cake\ORM\Association')
+            ->getMockBuilder(Association::class)
             ->disableOriginalConstructor()
             ->setMethods(['type', 'getName', 'eagerLoader', 'cascadeDelete', 'isOwningSide', 'saveAssociated'])
             ->getMock();
@@ -195,22 +201,22 @@ class RelatedModelListenerTest extends TestCase
     public function testGetAssociatedByNameReturnValue()
     {
         $listener = $this
-            ->getMockBuilder('\Crud\Listener\RelatedModelsListener')
+            ->getMockBuilder(RelatedModelsListener::class)
             ->disableOriginalConstructor()
             ->setMethods(['relatedModels', '_table'])
             ->getMock();
         $table = $this
-            ->getMockBuilder('\Cake\ORM\Table')
+            ->getMockBuilder(Table::class)
             ->disableOriginalConstructor()
             ->setMethods(['associations'])
             ->getMock();
         $associationCollection = $this
-            ->getMockBuilder('\Cake\ORM\AssociationCollection')
+            ->getMockBuilder(AssociationCollection::class)
             ->disableOriginalConstructor()
             ->setMethods(['get'])
             ->getMock();
         $association = $this
-            ->getMockBuilder('\Cake\ORM\Association')
+            ->getMockBuilder(Association::class)
             ->disableOriginalConstructor()
             ->setMethods(['type', 'getName', 'eagerLoader', 'cascadeDelete', 'isOwningSide', 'saveAssociated'])
             ->getMock();
@@ -251,7 +257,7 @@ class RelatedModelListenerTest extends TestCase
         $model->addBehavior('Tree');
 
         $association = $this
-            ->getMockBuilder('\Cake\ORM\Association\BelongsTo')
+            ->getMockBuilder(BelongsTo::class)
             ->disableOriginalConstructor()
             ->setMethods(['getTarget'])
             ->getMock();
@@ -262,7 +268,7 @@ class RelatedModelListenerTest extends TestCase
             ->will($this->returnValue($model));
 
         $listener = $this
-            ->getMockBuilder('\Crud\Listener\RelatedModelsListener')
+            ->getMockBuilder(RelatedModelsListener::class)
             ->disableOriginalConstructor()
             ->setMethods(['publishRelatedModels'])
             ->getMock();
@@ -279,12 +285,12 @@ class RelatedModelListenerTest extends TestCase
     public function testbeforePaginate()
     {
         $listener = $this
-            ->getMockBuilder('\Crud\Listener\RelatedModelsListener')
+            ->getMockBuilder(RelatedModelsListener::class)
             ->disableOriginalConstructor()
             ->setMethods(['models'])
             ->getMock();
         $table = $this
-            ->getMockBuilder('\Cake\ORM\Table')
+            ->getMockBuilder(Table::class)
             ->disableOriginalConstructor()
             ->setMethods(['associations', 'findAssociation', 'association', 'getSchema'])
             ->getMock();
@@ -299,7 +305,7 @@ class RelatedModelListenerTest extends TestCase
             ->method('models')
             ->will($this->returnValue(['Users' => 'manyToOne']));
 
-        $db = $this->getMockBuilder('\Cake\Database\Connection')
+        $db = $this->getMockBuilder(Connection::class)
             ->disableOriginalConstructor()
             ->getMock();
 

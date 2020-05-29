@@ -2,6 +2,7 @@
 namespace Crud\Test\App\Model\Table;
 
 use Cake\ORM\Query;
+use Cake\ORM\Table;
 
 /**
  * Crud Example Model
@@ -9,7 +10,7 @@ use Cake\ORM\Query;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class CrudExamplesTable extends \Cake\ORM\Table
+class CrudExamplesTable extends Table
 {
 
     public $alias = 'CrudExamples';

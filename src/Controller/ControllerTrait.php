@@ -2,6 +2,7 @@
 namespace Crud\Controller;
 
 use Cake\Controller\Exception\MissingActionException;
+use LogicException;
 
 /**
  * Enable Crud to catch MissingActionException and attempt to generate response
@@ -47,7 +48,7 @@ trait ControllerTrait
     {
         $request = $this->request;
         if (!isset($request)) {
-            throw new \LogicException('No Request object configured. Cannot invoke action');
+            throw new LogicException('No Request object configured. Cannot invoke action');
         }
         if (!$this->isAction($request->getParam('action'))) {
             throw new MissingActionException([

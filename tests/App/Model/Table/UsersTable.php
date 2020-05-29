@@ -1,7 +1,9 @@
 <?php
 namespace Crud\Test\App\Model\Table;
 
-class UsersTable extends \Cake\ORM\Table
+use Cake\ORM\Table;
+
+class UsersTable extends Table
 {
 
 }

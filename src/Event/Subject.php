@@ -1,6 +1,8 @@
 <?php
 namespace Crud\Event;
 
+use Exception;
+
 /**
  * Crud subject
  *
@@ -104,7 +106,7 @@ class Subject
                 return !in_array($this->action, $actions);
 
             default:
-                throw new \Exception('Invalid mode');
+                throw new Exception('Invalid mode');
         }
     }
 }

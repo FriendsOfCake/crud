@@ -1,6 +1,7 @@
 <?php
 namespace Crud\TestCase\Controller\Crud;
 
+use Cake\Controller\Controller;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Http\Exception\BadRequestException;
@@ -10,6 +11,8 @@ use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Crud\Controller\Component\CrudComponent;
+use Crud\Controller\ControllerTrait;
+use Crud\Listener\BaseListener;
 use Crud\TestSuite\TestCase;
 
 /**
@@ -19,7 +22,7 @@ use Crud\TestSuite\TestCase;
  * As such, it becomes a global listener and is used to keep a log of
  * all events fired during the test
  */
-class TestCrudEventManager extends \Cake\Event\EventManager
+class TestCrudEventManager extends EventManager
 {
 
     protected $_log = [];
@@ -55,9 +58,9 @@ class TestCrudEventManager extends \Cake\Event\EventManager
     }
 }
 
-class CrudExamplesController extends \Cake\Controller\Controller
+class CrudExamplesController extends Controller
 {
-    use \Crud\Controller\ControllerTrait;
+    use ControllerTrait;
 
     public $modelClass = 'CrudExamples';
 
@@ -129,7 +132,7 @@ class CrudExamplesController extends \Cake\Controller\Controller
  *
  * Expose protected methods so we can test them in isolation
  */
-class TestCrudComponent extends \Crud\Controller\Component\CrudComponent
+class TestCrudComponent extends CrudComponent
 {
 
     /**
@@ -149,7 +152,7 @@ class TestCrudComponent extends \Crud\Controller\Component\CrudComponent
     }
 }
 
-class TestListener extends \Crud\Listener\BaseListener
+class TestListener extends BaseListener
 {
 
     public $callCount = 0;
@@ -196,7 +199,7 @@ class CrudComponentTest extends TestCase
         $this->request->expects($this->any())->method('is')->will($this->returnValue(true));
 
         $response = new Response();
-        $this->controller = $this->getMockBuilder('Crud\TestCase\Controller\Crud\CrudExamplesController')
+        $this->controller = $this->getMockBuilder(CrudExamplesController::class)
             ->setMethods(['header', 'redirect', 'render', '_stop'])
             ->setConstructorArgs([$this->request, $response, 'CrudExamples', EventManager::instance()])
             ->getMock();
@@ -252,7 +255,7 @@ class CrudComponentTest extends TestCase
                 'Crud.Related',
             ],
         ];
-        $Crud = $this->getMockBuilder('Crud\Controller\Component\CrudComponent')
+        $Crud = $this->getMockBuilder(CrudComponent::class)
             ->setMethods(['_loadListeners', 'trigger'])
             ->setConstructorArgs([$this->Registry, $config])
             ->getMock();
@@ -306,7 +309,7 @@ class CrudComponentTest extends TestCase
     {
         $config = ['actions' => ['Crud.Index']];
 
-        $Crud = $this->getMockBuilder('Crud\Controller\Component\CrudComponent')
+        $Crud = $this->getMockBuilder(CrudComponent::class)
             ->setMethods(['execute'])
             ->setConstructorArgs([$this->Registry, $config])
             ->getMock();
