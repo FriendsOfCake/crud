@@ -3,9 +3,9 @@ Unit Testing
 ************
 
 To ease with unit testing of Crud Listeners and Crud Actions, it's recommended
-to use the proxy methods found in [CrudBaseObject]({{site.url}}/api/develop/class-CrudBaseObject.html).
+to use the proxy methods found in :code:`CrudBaseObject`.
 
-These methods are much easier to mock than the full `CrudComponent` object.
+These methods are much easier to mock than the full :code:`CrudComponent` object.
 
 They also allow you to just mock the methods you need for your specific test, rather than the big dependency nightmare the
 CrudComponent can be in some cases.
@@ -13,7 +13,7 @@ CrudComponent can be in some cases.
 Proxy methods
 =============
 
-These methods are available in all `CrudAction` and `CrudListener` objects.
+These methods are available in all :code:`CrudAction` and :code:`CrudListener` objects.
 
 _crud()
 -------
