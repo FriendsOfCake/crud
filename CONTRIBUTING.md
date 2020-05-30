@@ -75,6 +75,9 @@ You can build the documentation using Docker via the following commands:
 
     # open the generated html docs in docs/_build/html
 
+    # or use Browser Sync with automatic builds and browser refresh on file save
+    browser-sync start --config browser-sync-config.js
+
 # Additional Resources
 
 * [CakePHP coding standards](http://book.cakephp.org/2.0/en/contributing/cakephp-coding-conventions.html)
