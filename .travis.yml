@@ -33,7 +33,7 @@ matrix:
       env: PREFER_LOWEST=1
 
     - language: python
-      python: 2.7
+      python: 3.7
       env: DOCS=1 PHP=0 DEFAULT=0
       install:
         - pip install -r docs/requirements.txt
