@@ -1,3 +1,4 @@
 sphinx==1.8.5
 sphinxcontrib-phpdomain==0.7.0
+rstcheck==3.3.1
 cakephp-theme
