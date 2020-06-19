@@ -106,7 +106,7 @@ class AddAction extends BaseAction
     /**
      * HTTP POST handler
      *
-     * @return \Cake\Http\Response|null
+     * @return \Cake\Http\Response|void
      */
     protected function _post()
     {

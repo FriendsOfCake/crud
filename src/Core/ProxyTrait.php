@@ -5,7 +5,9 @@ use Crud\Event\Subject;
 
 trait ProxyTrait
 {
-
+    /**
+     * @var \Cake\Datasource\EntityInterface|null
+     */
     protected $_entity;
 
     /**
@@ -125,7 +127,7 @@ trait ProxyTrait
      *
      * @param array $data Data array
      * @param array $options A list of options for the object hydration.
-     * @return \Cake\ORM\Entity
+     * @return \Cake\Datasource\EntityInterface
      */
     protected function _entity(array $data = null, array $options = [])
     {

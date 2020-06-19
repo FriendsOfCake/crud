@@ -493,7 +493,7 @@ class CrudComponent extends Component
      * This will also detach it from the EventManager if it's attached.
      *
      * @param string $name Name
-     * @return bool|null
+     * @return false|void
      */
     public function removeListener($name)
     {
@@ -552,7 +552,7 @@ class CrudComponent extends Component
      * Add a log entry for the event.
      *
      * @param string $eventName Event name
-     * @param array $data Event data
+     * @param array|\Crud\Event\Subject $data Event data
      * @return void
      */
     public function logEvent($eventName, $data = [])

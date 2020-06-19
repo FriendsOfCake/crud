@@ -253,7 +253,7 @@ abstract class BaseAction extends BaseObject
      * Set "success" variable for view.
      *
      * @param \Cake\Event\Event $event Event
-     * @return bool|null
+     * @return bool|void
      */
     public function publishSuccess(Event $event)
     {
@@ -271,7 +271,7 @@ abstract class BaseAction extends BaseObject
      * using the "name" configuration property
      *
      * @param string|null $value Name to set
-     * @return string
+     * @return string|$this
      */
     public function resourceName($value = null)
     {
