@@ -9,6 +9,7 @@ use Cake\Http\ServerRequest;
 use Cake\ORM\Entity;
 use Crud\Action\AddAction;
 use Crud\Action\BaseAction;
+use Crud\Action\DeleteAction;
 use Crud\Action\IndexAction;
 use Crud\Action\ViewAction;
 use Crud\Event\Subject;
@@ -150,6 +151,53 @@ class ApiListenerTest extends TestCase
             ->expects($this->nextCounter($response))
             ->method('withStatus')
             ->with(200);
+
+        $listener->respond($event);
+    }
+
+    /**
+     * @see https://github.com/FriendsOfCake/crud/issues/642
+     * @return void
+     */
+    public function testResponseDeleteError()
+    {
+        $action = $this
+            ->getMockBuilder(DeleteAction::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['handle'])
+            ->getMock();
+
+        $response = $this
+            ->getMockBuilder(Response::class)
+            ->setMethods(['withStatus'])
+            ->getMock();
+
+        $subject = $this
+            ->getMockBuilder(Subject::class)
+            ->getMock();
+        $subject->success = false;
+
+        $event = new Event('Crud.beforeRedirect', $subject);
+
+        $listener = $this
+            ->getMockBuilder(ApiListener::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['_action', 'render'])
+            ->getMock();
+        $listener
+            ->expects($this->nextCounter($listener))
+            ->method('_action')
+            ->with()
+            ->will($this->returnValue($action));
+        $listener
+            ->expects($this->nextCounter($listener))
+            ->method('render')
+            ->with($subject)
+            ->will($this->returnValue($response));
+        $response
+            ->expects($this->nextCounter($response))
+            ->method('withStatus')
+            ->with(400);
 
         $listener->respond($event);
     }
