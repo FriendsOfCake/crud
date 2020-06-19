@@ -57,7 +57,7 @@ class Subject
      * this subject has passed through
      *
      * @param string $name name of event
-     * @return array
+     * @return bool
      */
     public function hasEvent($name)
     {

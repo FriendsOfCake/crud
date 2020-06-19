@@ -13,7 +13,7 @@ trait ViewVarTrait
      * wit the entity in the view
      *
      * @param Event $event Event
-     * @return false|null
+     * @return false|void
      * @throws \Exception
      */
     public function publishViewVar(Event $event)

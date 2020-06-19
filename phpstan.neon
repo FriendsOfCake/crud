@@ -1,20 +1,12 @@
+includes:
+	- phpstan-baseline.neon
+
 parameters:
-    excludes_analyse:
-        - */src/TestSuite/*
-    universalObjectCratesClasses:
-        - Crud\Event\Subject
-    ignoreErrors:
-        - '#Access to an undefined property Exception::\$response#'
-        - '#Access to an undefined property Cake\\Controller\\Controller::\$dispatchComponents#'
-        - '#Access to an undefined property Cake\\Controller\\Controller::\$Crud#'
-        - '#Call to an undefined method Crud\\Action\\BaseAction::view\(\)#'
-        - '#Call to an undefined method Crud\\Action\\BaseAction::viewVar\(\)#'
-        - '#Call to an undefined method Crud\\Action\\BaseAction::findMethod\(\)#'
-        - '#Call to an undefined method Cake\\ORM\\Table::filterParams\(\)# '
-        - '#Call to an undefined method object::getLogs\(\)#'
-        - '#Access to an undefined property object::\$url#'
-        - '#Access to an undefined property object::\$success#'
-        - '#Access to an undefined property object::\$entity#'
-        - '#Access to an undefined property object::\$query#'
-        - '#Access to an undefined property object::\$args#'
-        - '#Access to an undefined property object::\$action#'
+	level: 6
+	paths:
+		- src
+	excludes_analyse:
+		- */src/TestSuite/*
+	checkMissingIterableValueType: false
+	universalObjectCratesClasses:
+		- Crud\Event\Subject

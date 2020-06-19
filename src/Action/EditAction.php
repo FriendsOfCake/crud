@@ -107,7 +107,7 @@ class EditAction extends BaseAction
      * HTTP PUT handler
      *
      * @param string|null $id Record id
-     * @return \Cake\Http\Response|null
+     * @return \Cake\Http\Response|void
      */
     protected function _put($id = null)
     {
@@ -134,7 +134,7 @@ class EditAction extends BaseAction
      * Thin proxy for _put
      *
      * @param string|null $id Record id
-     * @return \Cake\Http\Response|null
+     * @return \Cake\Http\Response
      */
     protected function _post($id = null)
     {
@@ -147,7 +147,7 @@ class EditAction extends BaseAction
      * Thin proxy for _put
      *
      * @param mixed $id Record id
-     * @return \Cake\Http\Response|null
+     * @return \Cake\Http\Response
      */
     protected function _patch($id = null)
     {
