@@ -1,10 +1,11 @@
 # How to contribute
 
 Crud loves to welcome your contributions. There are several ways to help out:
+
 * Create a ticket in GitHub, if you have found a bug
 * Write testcases for open bug tickets
 * Write patches for open bug/feature tickets, preferably with testcases included
-* Contribute to the [documentation](https://github.com/friendsofcake/crud/tree/gh-pages)
+* Contribute to the [documentation](https://github.com/FriendsOfCake/crud/tree/master/docs)
 
 There are a few guidelines that we need contributors to follow so that we have a
 chance of keeping on top of things.
@@ -67,12 +68,15 @@ You can build the documentation using Docker via the following commands:
     cd docs
 
     # build the docs
-    docker build .
+    docker build -t friendsofcake/crud .
 
     # make the html
-    docker run -it --rm -v $(pwd)/docs:/data friendsofcake/crud make html
+    docker run -it --rm -v $(pwd):/data friendsofcake/crud make html
 
     # open the generated html docs in docs/_build/html
+
+    # or use Browser Sync with automatic builds and browser refresh on file save
+    browser-sync start --config browser-sync-config.js
 
 # Additional Resources
 

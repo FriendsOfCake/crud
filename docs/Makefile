@@ -5,7 +5,7 @@ SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 PAPER         =
 BUILDDIR      = _build
-PYTHON        = python
+PYTHON        = python3
 LANG          = en
 
 # Internal variables.
