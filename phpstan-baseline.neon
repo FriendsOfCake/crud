@@ -1,19 +1,9 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method Crud\\\\Action\\\\AddAction\\:\\:_post\\(\\) should return Cake\\\\Http\\\\Response\\|null but return statement is missing\\.$#"
-			count: 1
-			path: src/Action/AddAction.php
-
-		-
 			message: "#^Method Crud\\\\Action\\\\AddAction\\:\\:publishViewVar\\(\\) should return false\\|null but return statement is missing\\.$#"
 			count: 1
 			path: src/Action/AddAction.php
-
-		-
-			message: "#^Method Crud\\\\Action\\\\EditAction\\:\\:_put\\(\\) should return Cake\\\\Http\\\\Response\\|null but return statement is missing\\.$#"
-			count: 1
-			path: src/Action/EditAction.php
 
 		-
 			message: "#^Method Crud\\\\Action\\\\EditAction\\:\\:publishViewVar\\(\\) should return false\\|null but return statement is missing\\.$#"

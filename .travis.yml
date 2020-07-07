@@ -50,7 +50,7 @@ script:
 
   - if [[ $PHPCS = 1 ]]; then vendor/bin/phpcs -p --standard=vendor/cakephp/cakephp-codesniffer/CakePHP ./src ./tests; fi
 
-  - if [[ $STATIC_ANALYSIS = 1 ]]; then vendor/bin/phpstan.phar analyse src && vendor/bin/psalm.phar --show-info=false; fi
+  - if [[ $STATIC_ANALYSIS = 1 ]]; then vendor/bin/phpstan.phar analyse && vendor/bin/psalm.phar; fi
 
 after_success:
   - |

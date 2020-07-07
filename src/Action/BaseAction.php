@@ -268,15 +268,13 @@ abstract class BaseAction extends BaseObject
      * By default it uses Inflector::humanize, but can be changed
      * using the "name" configuration property
      *
-     * @param string|null $value Name to set
+     * @param string $value Name to set
      * @return string|$this
      */
-    public function resourceName(?string $value = null): string
+    public function resourceName(?string $value = null)
     {
         if ($value !== null) {
-            $this->setConfig('name', $value);
-
-            return $value;
+            return $this->setConfig('name', $value);
         }
 
         if (empty($this->_config['name'])) {

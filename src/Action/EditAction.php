@@ -137,7 +137,7 @@ class EditAction extends BaseAction
      * Thin proxy for _put
      *
      * @param string|null $id Record id
-     * @return \Cake\Http\Response
+     * @return \Cake\Http\Response|void
      */
     protected function _post(?string $id = null)
     {
@@ -150,7 +150,7 @@ class EditAction extends BaseAction
      * Thin proxy for _put
      *
      * @param mixed $id Record id
-     * @return \Cake\Http\Response
+     * @return \Cake\Http\Response|void
      */
     protected function _patch($id = null)
     {
