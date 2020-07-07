@@ -269,7 +269,7 @@ abstract class BaseAction extends BaseObject
      * using the "name" configuration property
      *
      * @param string|null $value Name to set
-     * @return string
+     * @return string|$this
      */
     public function resourceName(?string $value = null): string
     {

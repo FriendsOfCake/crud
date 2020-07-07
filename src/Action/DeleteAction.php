@@ -7,6 +7,7 @@ use Cake\Http\Response;
 use Crud\Event\Subject;
 use Crud\Traits\FindMethodTrait;
 use Crud\Traits\RedirectTrait;
+use Crud\Traits\SerializeTrait;
 
 /**
  * Handles 'Delete' Crud actions
@@ -18,6 +19,7 @@ class DeleteAction extends BaseAction
 {
     use FindMethodTrait;
     use RedirectTrait;
+    use SerializeTrait;
 
     /**
      * Default settings for 'add' actions
