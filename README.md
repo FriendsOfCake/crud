@@ -5,10 +5,16 @@
 
 # Installation
 
-For CakePHP 3.x compatible version:
+For CakePHP 4.x compatible version:
 
 ```
 composer require friendsofcake/crud
+```
+
+For CakePHP 3.x compatible version:
+
+```
+composer require friendsofcake/crud:^5.0
 ```
 
 For CakePHP 2.x compatible version:
@@ -19,9 +25,9 @@ composer require friendsofcake/crud:~3.0
 
 # Introduction
 
-Crud was built to be [scaffolding](http://book.cakephp.org/2.0/en/controllers/scaffolding.html) on
-steroids, and allow developers to have enough flexibility to use it for both rapid prototyping and
-production applications, even on the same code base -- saving you time.
+Crud was built to be scaffolding on steroids, and allow developers to have
+enough flexibility to use it for both rapid prototyping and production
+applications, even on the same code base -- saving you time.
 
 * Crud is [very fast to install](http://crud.readthedocs.org/en/latest/installation.html), a few minutes tops.
 
