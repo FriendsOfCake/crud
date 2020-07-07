@@ -1,7 +1,10 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\Listener;
 
-use Cake\Event\Event;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\EventInterface;
 use Cake\ORM\Association;
 use Cake\Utility\Inflector;
 use RuntimeException;
@@ -15,13 +18,12 @@ use RuntimeException;
  */
 class RelatedModelsListener extends BaseListener
 {
-
     /**
      * Returns a list of events this listener is interested in.
      *
      * @return array
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         return [
             'Crud.beforePaginate' => 'beforePaginate',
@@ -32,10 +34,10 @@ class RelatedModelsListener extends BaseListener
     /**
      * Automatically parse and contain related table classes
      *
-     * @param \Cake\Event\Event $event Before paginate event
+     * @param \Cake\Event\EventInterface $event Before paginate event
      * @return void
      */
-    public function beforePaginate(Event $event)
+    public function beforePaginate(EventInterface $event): void
     {
         $method = 'contain';
         if (method_exists($event->getSubject()->query, 'getContain')) {
@@ -58,11 +60,11 @@ class RelatedModelsListener extends BaseListener
     /**
      * Fetches related models' list and sets them to a variable for the view
      *
-     * @param Event $event Event
+     * @param \Cake\Event\EventInterface $event Event
      * @return void
      * @codeCoverageIgnore
      */
-    public function beforeRender(Event $event)
+    public function beforeRender(EventInterface $event): void
     {
         $entity = null;
         if (isset($event->getSubject()->entity)) {
@@ -76,10 +78,10 @@ class RelatedModelsListener extends BaseListener
      * for an action
      *
      * @param null|string $action If NULL the current action will be used
-     * @param null|\Cake\ORM\Entity $entity The optional entity for which we we trying to find related
+     * @param null|\Cake\Datasource\EntityInterface $entity The optional entity for which we we trying to find related
      * @return void
      */
-    public function publishRelatedModels($action = null, $entity = null)
+    public function publishRelatedModels(?string $action = null, ?EntityInterface $entity = null): void
     {
         $models = $this->models($action);
 
@@ -90,9 +92,9 @@ class RelatedModelsListener extends BaseListener
         $controller = $this->_controller();
 
         foreach ($models as $name => $association) {
-            list(, $associationName) = pluginSplit($association->getName());
+            [, $associationName] = pluginSplit($association->getName());
             $viewVar = Inflector::variable($associationName);
-            if (array_key_exists($viewVar, $controller->viewVars)) {
+            if (array_key_exists($viewVar, $controller->viewBuilder()->getVars())) {
                 continue;
             }
 
@@ -111,10 +113,10 @@ class RelatedModelsListener extends BaseListener
      * This is useful for cases where the relation has a different binding key
      * than the primary key in the associated table (e.g. NOT 'id')
      *
-     * @param Association $association The association that we process
+     * @param \Cake\ORM\Association $association The association that we process
      * @return array
      */
-    protected function _findOptions(Association $association)
+    protected function _findOptions(Association $association): array
     {
         return [
             'keyField' => $association->getBindingKey(),
@@ -127,7 +129,7 @@ class RelatedModelsListener extends BaseListener
      * @param \Cake\ORM\Association $association Association instance
      * @return string
      */
-    public function finder(Association $association)
+    public function finder(Association $association): string
     {
         if ($association->getTarget()->behaviors()->has('Tree')) {
             return 'treeList';
@@ -142,7 +144,7 @@ class RelatedModelsListener extends BaseListener
      * @param string|null $action name of the action
      * @return array
      */
-    public function models($action = null)
+    public function models(?string $action = null): array
     {
         $settings = $this->relatedModels(null, $action);
 
@@ -169,7 +171,7 @@ class RelatedModelsListener extends BaseListener
      * @param string|null $action The action to configure
      * @return mixed
      */
-    public function relatedModels($related = null, $action = null)
+    public function relatedModels($related = null, ?string $action = null)
     {
         if ($related === null) {
             return $this->_action($action)->getConfig('relatedModels');
@@ -185,12 +187,13 @@ class RelatedModelsListener extends BaseListener
      * @param array $types Association types
      * @return array
      */
-    public function getAssociatedByType($types = [])
+    public function getAssociatedByType(array $types = []): array
     {
         $return = [];
 
         $table = $this->_table();
         foreach ($table->associations()->keys() as $association) {
+            /** @var \Cake\ORM\Association $associationClass */
             $associationClass = $table->associations()->get($association);
             if (!in_array($associationClass->type(), $types)) {
                 continue;
@@ -210,7 +213,7 @@ class RelatedModelsListener extends BaseListener
      * @return array
      * @throws \RuntimeException when association not found.
      */
-    public function getAssociatedByName($names)
+    public function getAssociatedByName(array $names): array
     {
         $return = [];
 

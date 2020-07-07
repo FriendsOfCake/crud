@@ -1,12 +1,12 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\Test\TestSuite;
 
-use Cake\Core\Plugin;
 use Cake\TestSuite\TestSuite;
 
 class ActionsTest extends TestSuite
 {
-
     public static function suite()
     {
         $suite = new TestSuite('All CRUD action tests');

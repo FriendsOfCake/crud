@@ -1,10 +1,12 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\Listener;
 
 use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
 use Cake\Datasource\Exception\MissingDatasourceConfigException;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Crud\Log\QueryLogger;
 
 /**
@@ -20,7 +22,6 @@ use Crud\Log\QueryLogger;
  */
 class ApiQueryLogListener extends BaseListener
 {
-
     /**
      * {@inheritDoc}
      *
@@ -38,7 +39,7 @@ class ApiQueryLogListener extends BaseListener
      *
      * @return array
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         if (!$this->_checkRequestType('api')) {
             return [];
@@ -53,23 +54,17 @@ class ApiQueryLogListener extends BaseListener
     /**
      * Setup logging for all connections
      *
-     * @param \Cake\Event\Event $event Event
+     * @param \Cake\Event\EventInterface $event Event
      * @return void
      */
-    public function setupLogging(Event $event)
+    public function setupLogging(EventInterface $event): void
     {
         $connections = $this->getConfig('connections') ?: $this->_getSources();
 
         foreach ($connections as $connectionName) {
             try {
                 $connection = $this->_getSource($connectionName);
-
-                if (method_exists($connection, 'enableQueryLogging')) {
-                    $connection->enableQueryLogging(true);
-                } else {
-                    $connection->logQueries(true);
-                }
-
+                $connection->enableQueryLogging(true);
                 $connection->setLogger(new QueryLogger());
             } catch (MissingDatasourceConfigException $e) {
                 //Safe to ignore this :-)
@@ -80,10 +75,10 @@ class ApiQueryLogListener extends BaseListener
     /**
      * Appends the query log to the JSON or XML output
      *
-     * @param \Cake\Event\Event $event Event
+     * @param \Cake\Event\EventInterface $event Event
      * @return void
      */
-    public function beforeRender(Event $event)
+    public function beforeRender(EventInterface $event): void
     {
         if (!Configure::read('debug')) {
             return;
@@ -98,7 +93,7 @@ class ApiQueryLogListener extends BaseListener
      *
      * @return array
      */
-    protected function _getQueryLogs()
+    protected function _getQueryLogs(): array
     {
         $sources = $this->_getSources();
 
@@ -118,7 +113,7 @@ class ApiQueryLogListener extends BaseListener
      *
      * @return array
      */
-    public function getQueryLogs()
+    public function getQueryLogs(): array
     {
         return $this->_getQueryLogs();
     }
@@ -129,7 +124,7 @@ class ApiQueryLogListener extends BaseListener
      * @return array
      * @codeCoverageIgnore
      */
-    protected function _getSources()
+    protected function _getSources(): array
     {
         return ConnectionManager::configured();
     }
@@ -141,7 +136,7 @@ class ApiQueryLogListener extends BaseListener
      * @return \Cake\Datasource\ConnectionInterface
      * @codeCoverageIgnore
      */
-    protected function _getSource($source)
+    protected function _getSource(string $source)
     {
         return ConnectionManager::get($source);
     }

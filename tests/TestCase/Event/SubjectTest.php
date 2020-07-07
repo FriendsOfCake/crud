@@ -1,25 +1,26 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\TestCase\Event;
 
 use Crud\Event\Subject;
 use Crud\TestSuite\TestCase;
+use Exception;
 
 /**
- *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
 class SubjectTest extends TestCase
 {
-
-    public function setup()
+    public function setup(): void
     {
         parent::setup();
 
         $this->Subject = new Subject(['action' => 'index']);
     }
 
-    public function teardown()
+    public function teardown(): void
     {
         parent::teardown();
 
@@ -74,12 +75,13 @@ class SubjectTest extends TestCase
     /**
      * testInvalidMode
      *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Invalid mode
      * @return void
      */
     public function testInvalidMode()
     {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Invalid mode');
+
         $this->Subject->shouldProcess('invalid');
     }
 }

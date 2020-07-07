@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\Action;
 
 use Crud\Traits\FindMethodTrait;
@@ -46,7 +48,7 @@ class ViewAction extends BaseAction
      * @param string|null $id Record id
      * @return void
      */
-    protected function _handle($id = null)
+    protected function _handle(?string $id = null): void
     {
         $subject = $this->_subject();
         $subject->set(['id' => $id]);

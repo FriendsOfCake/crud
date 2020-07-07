@@ -1,11 +1,13 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\Traits;
 
+use Cake\Datasource\EntityInterface;
 use Crud\Event\Subject;
 
 trait FindMethodTrait
 {
-
     /**
      * Change the find() method
      *
@@ -22,7 +24,9 @@ trait FindMethodTrait
             return $this->getConfig('findMethod');
         }
 
-        return $this->setConfig('findMethod', $method);
+        $this->setConfig('findMethod', $method);
+
+        return $method;
     }
 
     /**
@@ -31,7 +35,7 @@ trait FindMethodTrait
      * @return array An array containing in the first position the finder name
      *   and in the second the options to be passed to it.
      */
-    protected function _extractFinder()
+    protected function _extractFinder(): array
     {
         $finder = $this->findMethod();
         $options = [];
@@ -46,17 +50,18 @@ trait FindMethodTrait
     /**
      * Find a record from the ID
      *
-     * @param string $id Record id
+     * @param string|null $id Record id
      * @param \Crud\Event\Subject $subject Event subject
-     * @return \Cake\ORM\Entity
+     * @return \Cake\Datasource\EntityInterface
      * @throws \Exception
      */
-    protected function _findRecord($id, Subject $subject)
+    protected function _findRecord(?string $id, Subject $subject): EntityInterface
     {
         $repository = $this->_table();
 
-        list($finder, $options) = $this->_extractFinder();
+        [$finder, $options] = $this->_extractFinder();
         $query = $repository->find($finder, $options);
+        /** @psalm-suppress PossiblyInvalidArgument */
         $query->where([current($query->aliasField($repository->getPrimaryKey())) => $id]);
 
         $subject->set([
@@ -80,17 +85,18 @@ trait FindMethodTrait
     /**
      * Throw exception if a record is not found
      *
-     * @param string $id Record id
+     * @param string|null $id Record id
      * @param \Crud\Event\Subject $subject Event subject
      * @return void
      * @throws \Exception
      */
-    protected function _notFound($id, Subject $subject)
+    protected function _notFound(?string $id, Subject $subject): void
     {
         $subject->set(['success' => false]);
         $this->_trigger('recordNotFound', $subject);
 
         $message = $this->message('recordNotFound', compact('id'));
+        /** @psalm-var class-string<\Exception> $exceptionClass */
         $exceptionClass = $message['class'];
         throw new $exceptionClass($message['text'], $message['code']);
     }

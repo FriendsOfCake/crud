@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\Test\TestCase\Listener;
 
 use Cake\Controller\Component\RequestHandlerComponent;
@@ -14,8 +16,8 @@ use Crud\Action\IndexAction;
 use Crud\Action\ViewAction;
 use Crud\Event\Subject;
 use Crud\Listener\ApiListener;
-use Crud\TestSuite\TestCase;
 use Crud\Test\App\Controller\BlogsController;
+use Crud\TestSuite\TestCase;
 use StdClass;
 
 /**
@@ -24,7 +26,6 @@ use StdClass;
  */
 class ApiListenerTest extends TestCase
 {
-
     /**
      * Test implementedEvents with API request
      *
@@ -290,11 +291,11 @@ class ApiListenerTest extends TestCase
             ->expects($this->nextCounter($action))
             ->method('getConfig')
             ->with('api.success')
-            ->will($this->returnValue(['exception' => 'SomethingExceptional']));
+            ->will($this->returnValue(['exception' => ['SomethingExceptional']]));
         $listener
             ->expects($this->nextCounter($listener))
             ->method('_exceptionResponse')
-            ->with($event, 'SomethingExceptional');
+            ->with($event, ['SomethingExceptional']);
         $listener
             ->expects($this->never())
             ->method('render');
@@ -321,8 +322,8 @@ class ApiListenerTest extends TestCase
                 'xml' => 'Xml',
             ],
             'detectors' => [
-                'json' => ['ext' => 'json', 'accepts' => 'application/json'],
-                'xml' => ['ext' => 'xml', 'accepts' => 'text/xml'],
+                'json' => ['accept' => ['application/json'], 'param' => '_ext', 'value' => 'json'],
+                'xml' => ['accept' => ['application/xml', 'text/xml'], 'param' => '_ext', 'value' => 'xml'],
             ],
             'exception' => [
                 'type' => 'default',
@@ -330,7 +331,6 @@ class ApiListenerTest extends TestCase
                 'message' => 'Unknown error',
                 'code' => 0,
             ],
-            'exceptionRenderer' => 'Crud\Error\ExceptionRenderer',
             'setFlash' => false,
         ];
         $result = $listener->getConfig();
@@ -481,13 +481,14 @@ class ApiListenerTest extends TestCase
             ->expects($this->at(0))
             ->method('viewVar')
             ->will($this->returnValue('items'));
-        $controller
-            ->expects($this->once())
-            ->method('set')
-            ->with('_serialize', ['success', 'data' => 'items']);
 
         $this->setReflectionClassInstance($listener);
         $this->callProtectedMethod('_ensureSerialize', [], $listener);
+
+        $this->assertEquals(
+            ['success', 'data' => 'items'],
+            $controller->viewBuilder()->getOption('serialize')
+        );
     }
 
     /**
@@ -554,16 +555,17 @@ class ApiListenerTest extends TestCase
             ->method('getConfig')
             ->with('serialize')
             ->will($this->returnValue(['something']));
-        $controller
-            ->expects($this->once())
-            ->method('set')
-            ->with('_serialize', ['success', 'something', 'data' => null]);
 
         $this->setReflectionClassInstance($action);
         $this->callProtectedMethod('serialize', [['something']], $action);
 
         $this->setReflectionClassInstance($listener);
         $this->callProtectedMethod('_ensureSerialize', [], $listener);
+
+        $this->assertEquals(
+            ['success', 'something', 'data' => null],
+            $controller->viewBuilder()->getOption('serialize')
+        );
     }
 
     /**
@@ -585,7 +587,7 @@ class ApiListenerTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $controller->viewVars['_serialize'] = 'hello world';
+        $controller->viewBuilder()->setOption('serialize', 'hello world');
 
         $action = $this
             ->getMockBuilder(IndexAction::class)
@@ -610,6 +612,11 @@ class ApiListenerTest extends TestCase
 
         $this->setReflectionClassInstance($listener);
         $this->callProtectedMethod('_ensureSerialize', [], $listener);
+
+        $this->assertEquals(
+            'hello world',
+            $controller->viewBuilder()->getOption('serialize')
+        );
     }
 
     /**
@@ -650,13 +657,14 @@ class ApiListenerTest extends TestCase
             ->expects($this->at(0))
             ->method('viewVar')
             ->will($this->returnValue('helloWorld'));
-        $controller
-            ->expects($this->once())
-            ->method('set')
-            ->with('_serialize', ['success', 'data' => 'helloWorld']);
 
         $this->setReflectionClassInstance($listener);
         $this->callProtectedMethod('_ensureSerialize', [], $listener);
+
+        $this->assertEquals(
+            ['success', 'data' => 'helloWorld'],
+            $controller->viewBuilder()->getOption('serialize')
+        );
     }
 
     /**
@@ -674,7 +682,7 @@ class ApiListenerTest extends TestCase
 
         $controller = $this
             ->getMockBuilder(BlogsController::class)
-            ->setMethods(['set'])
+            ->setMethods(['set', 'getName'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -694,9 +702,9 @@ class ApiListenerTest extends TestCase
             ->method('_action')
             ->will($this->returnValue($action));
         $controller
-            ->expects($this->once())
-            ->method('set')
-            ->with('_serialize', ['success', 'data' => '']);
+            ->expects($this->any())
+            ->method('getName')
+            ->will($this->returnValue(''));
         $action->expects($this->any())
             ->method('scope')
             ->will($this->returnValue('table'));
@@ -706,6 +714,11 @@ class ApiListenerTest extends TestCase
 
         $this->setReflectionClassInstance($listener);
         $this->callProtectedMethod('_ensureSerialize', [], $listener);
+
+        $this->assertEquals(
+            ['success', 'data' => ''],
+            $controller->viewBuilder()->getOption('serialize')
+        );
     }
 
     /**
@@ -977,7 +990,7 @@ class ApiListenerTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $controller->viewVars['success'] = true;
+        $controller->viewBuilder()->setVar('success', true);
 
         $i = 0;
         $listener
@@ -1158,9 +1171,9 @@ class ApiListenerTest extends TestCase
     public function testSetupDetectorsIntigration()
     {
         $detectors = [
-            'json' => ['ext' => 'json', 'accepts' => 'application/json'],
-            'xml' => ['ext' => 'xml', 'accepts' => 'text/xml'],
-            'jsonapi' => ['ext' => false, 'accepts' => 'application/vnd.api+json'],
+            'json' => ['accept' => ['application/json'], 'param' => '_ext', 'value' => 'json'],
+            'xml' => ['accept' => ['application/xml', 'text/xml'], 'param' => '_ext', 'value' => 'xml'],
+            'jsonapi' => ['accept' => ['application/vnd.api+json']],
         ];
 
         $listener = $this
@@ -1171,7 +1184,7 @@ class ApiListenerTest extends TestCase
 
         $request = $this
             ->getMockBuilder(ServerRequest::class)
-            ->setMethods(['accepts'])
+            ->setMethods(['_acceptHeaderDetector'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -1190,9 +1203,12 @@ class ApiListenerTest extends TestCase
 
         // Test with "ext"
         foreach ($detectors as $name => $configuration) {
-            $request = $request->withParam('_ext', $configuration['ext']);
+            if (!isset($configuration['value'])) {
+                continue;
+            }
+            $request = $request->withParam('_ext', $configuration['value']);
             $request->clearDetectorCache();
-            if ($configuration['ext'] !== false) {
+            if ($configuration['value'] !== false) {
                 $this->assertTrue($request->is($name));
             }
         }
@@ -1205,8 +1221,8 @@ class ApiListenerTest extends TestCase
         foreach ($detectors as $name => $configuration) {
             $request
                 ->expects($this->at($r++))
-                ->method('accepts')
-                ->with($configuration['accepts'])
+                ->method('_acceptHeaderDetector')
+                ->with($configuration)
                 ->will($this->returnValue(true));
         }
 
@@ -1220,7 +1236,7 @@ class ApiListenerTest extends TestCase
 
         $this->assertTrue(
             $request->is('api'),
-            "A request with xml extensions should be considered an api request"
+            'A request with xml extensions should be considered an api request'
         );
 
         $request = $request->withParam('_ext', null);
@@ -1228,16 +1244,16 @@ class ApiListenerTest extends TestCase
 
         $this->assertFalse(
             $request->is('api'),
-            "A request with no extensions should not be considered an api request"
+            'A request with no extensions should not be considered an api request'
         );
 
         //Ensure that no set extension will not result in a true
         $request->clearDetectorCache();
         $request->expects($this->any())
-            ->method('accepts')
+            ->method('_acceptHeaderDetector')
             ->will($this->returnValue(false));
 
-        $this->assertFalse($request->is('jsonapi'), "A request with no extensions should not be considered an jsonapi request");
+        $this->assertFalse($request->is('jsonapi'), 'A request with no extensions should not be considered an jsonapi request');
     }
 
     /**
@@ -1250,12 +1266,12 @@ class ApiListenerTest extends TestCase
         return [
             'defaults' => [
                 [],
-                false,
+                null,
                 [],
             ],
             'valid get' => [
                 ['methods' => ['get']],
-                true,
+                null,
                 ['get' => true],
             ],
             'invalid post' => [
@@ -1265,7 +1281,7 @@ class ApiListenerTest extends TestCase
             ],
             'valid put' => [
                 ['methods' => ['post', 'get', 'put']],
-                true,
+                null,
                 ['post' => false, 'get' => false, 'put' => true],
             ],
         ];
@@ -1332,11 +1348,7 @@ class ApiListenerTest extends TestCase
         }
 
         $this->setReflectionClassInstance($listener);
-        $result = $this->callProtectedMethod('_checkRequestMethods', [], $listener);
-
-        if (is_bool($exception)) {
-            $this->assertEquals($exception, $result);
-        }
+        $this->callProtectedMethod('_checkRequestMethods', [], $listener);
     }
 
     /**

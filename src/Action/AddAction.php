@@ -1,6 +1,9 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\Action;
 
+use Cake\Http\Response;
 use Crud\Error\Exception\ValidationException;
 use Crud\Event\Subject;
 use Crud\Traits\RedirectTrait;
@@ -93,11 +96,14 @@ class AddAction extends BaseAction
      *
      * @return void
      */
-    protected function _get()
+    protected function _get(): void
     {
         $subject = $this->_subject([
             'success' => true,
-            'entity' => $this->_entity($this->_request()->getQuery() ?: null, ['validate' => false] + $this->saveOptions()),
+            'entity' => $this->_entity(
+                $this->_request()->getQueryParams(),
+                ['validate' => false] + $this->saveOptions()
+            ),
         ]);
 
         $this->_trigger('beforeRender', $subject);
@@ -143,9 +149,9 @@ class AddAction extends BaseAction
      * Post success callback
      *
      * @param \Crud\Event\Subject $subject Event subject
-     * @return \Cake\Http\Response
+     * @return \Cake\Http\Response|null
      */
-    protected function _success(Subject $subject)
+    protected function _success(Subject $subject): ?Response
     {
         $subject->set(['success' => true, 'created' => true]);
 
@@ -161,7 +167,7 @@ class AddAction extends BaseAction
      * @param \Crud\Event\Subject $subject Event subject
      * @return void
      */
-    protected function _error(Subject $subject)
+    protected function _error(Subject $subject): void
     {
         $subject->set(['success' => false, 'created' => false]);
 
@@ -174,9 +180,9 @@ class AddAction extends BaseAction
      * Stopped callback
      *
      * @param \Crud\Event\Subject $subject Event subject
-     * @return \Cake\Http\Response
+     * @return \Cake\Http\Response|null
      */
-    protected function _stopped(Subject $subject)
+    protected function _stopped(Subject $subject): ?Response
     {
         if (!isset($subject->success)) {
             $subject->success = false;

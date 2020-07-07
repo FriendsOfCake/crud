@@ -1,13 +1,14 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\Listener;
 
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\ORM\Table;
 use RuntimeException;
 
 class SearchListener extends BaseListener
 {
-
     /**
      * Settings
      *
@@ -27,7 +28,7 @@ class SearchListener extends BaseListener
      *
      * @return array
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         return [
             'Crud.beforeLookup' => ['callable' => 'injectSearch'],
@@ -38,10 +39,10 @@ class SearchListener extends BaseListener
     /**
      * Inject search conditions into the query object.
      *
-     * @param \Cake\Event\Event $event Event
+     * @param \Cake\Event\EventInterface $event Event
      * @return void
      */
-    public function injectSearch(Event $event)
+    public function injectSearch(EventInterface $event): void
     {
         if (!in_array($event->getName(), $this->getConfig('enabled'))) {
             return;
@@ -55,13 +56,9 @@ class SearchListener extends BaseListener
             ));
         }
 
-        if ($repository instanceof Table && $repository->behaviors()->hasMethod('filterParams')) {
-            $filterParams = $repository->filterParams($this->_request()->getQuery());
-        } else {
-            $filterParams = ['search' => $this->_request()->getQuery()];
-        }
-
+        $filterParams = ['search' => $this->_request()->getQuery()];
         $filterParams['collection'] = $this->getConfig('collection');
+
         $event->getSubject()->query->find('search', $filterParams);
     }
 }

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\Test\TestCase\Listener;
 
 use Cake\Controller\Controller;
@@ -14,7 +16,6 @@ use Crud\TestSuite\TestCase;
  */
 class ApiPaginationListenerTest extends TestCase
 {
-
     /**
      * Test implemented events
      *
@@ -51,7 +52,7 @@ class ApiPaginationListenerTest extends TestCase
             ->getMockBuilder(ServerRequest::class)
             ->setMethods(null)
             ->getMock();
-        $Request = $Request->withParam('paging', ['MyModel' => []]);
+        $Request = $Request->withAttribute('paging', ['MyModel' => []]);
 
         $Controller = $this
             ->getMockBuilder(Controller::class)
@@ -62,16 +63,12 @@ class ApiPaginationListenerTest extends TestCase
         $Instance = $this
             ->getMockBuilder(ApiPaginationListener::class)
             ->disableOriginalConstructor()
-            ->setMethods(['_request', '_controller'])
+            ->setMethods(['_request'])
             ->getMock();
         $Instance
             ->expects($this->once())
             ->method('_request')
             ->will($this->returnValue($Request));
-        $Instance
-            ->expects($this->once())
-            ->method('_controller')
-            ->will($this->returnValue($Controller));
 
         $Controller->modelClass = 'MyModel';
 
@@ -104,7 +101,7 @@ class ApiPaginationListenerTest extends TestCase
             ->expects($this->never())
             ->method('_controller');
 
-        $Request = $Request->withParam('paging', null);
+        $Request = $Request->withAttribute('paging', null);
 
         $Instance->beforeRender(new Event('something'));
     }
@@ -121,7 +118,7 @@ class ApiPaginationListenerTest extends TestCase
             ->getMockBuilder(ServerRequest::class)
             ->setMethods(null)
             ->getMock();
-        $Request = $Request->withParam('paging', [
+        $Request = $Request->withAttribute('paging', [
             'MyModel' => [
                 'pageCount' => 10,
                 'page' => 2,
@@ -195,7 +192,7 @@ class ApiPaginationListenerTest extends TestCase
             ->getMockBuilder(ServerRequest::class)
             ->setMethods(null)
             ->getMock();
-        $Request = $Request->withParam('paging', [
+        $Request = $Request->withAttribute('paging', [
             'MyModel' => [
                 'pageCount' => 10,
                 'page' => 2,
@@ -269,7 +266,7 @@ class ApiPaginationListenerTest extends TestCase
             ->getMockBuilder(ServerRequest::class)
             ->setMethods(null)
             ->getMock();
-        $Request = $Request->withParam('paging', [
+        $Request = $Request->withAttribute('paging', [
             'MyModel' => [
                 'pageCount' => 10,
                 'page' => 2,

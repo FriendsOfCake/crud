@@ -5,7 +5,6 @@ use Cake\TestSuite\Fixture\TestFixture;
 
 class UsersFixture extends TestFixture
 {
-
     public $fields = [
         'id' => ['type' => 'uuid'],
         'is_active' => ['type' => 'boolean', 'default' => true, 'null' => false],

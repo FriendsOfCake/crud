@@ -1,8 +1,11 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\Controller;
 
+use Cake\Controller\Component;
 use Cake\Controller\Exception\MissingActionException;
-use LogicException;
+use Closure;
 
 /**
  * Enable Crud to catch MissingActionException and attempt to generate response
@@ -13,125 +16,97 @@ use LogicException;
  */
 trait ControllerTrait
 {
-
     /**
      * List of components that are capable of dispatching an action that is
      * not already implemented
      *
      * @var array
      */
-    public $dispatchComponents = [];
+    protected $dispatchComponents = ['Crud' => true];
 
     /**
-     * Get controller name.
+     * Reference to component which should handle the mapped action.
      *
-     * Added for backwards compatibility with CakePHP 3.5.
-     *
-     * @return string
+     * @var \Controller\Component\CrudComponent|null
      */
-    public function getName()
+    protected $mappedComponent;
+
+    /**
+     * Get the closure for action to be invoked by ControllerFactory.
+     *
+     * @return \Closure
+     * @throws \Cake\Controller\Exception\MissingActionException
+     */
+    public function getAction(): Closure
     {
-        return $this->name;
+        try {
+            return parent::getAction();
+        } catch (MissingActionException $e) {
+            $this->mappedComponent = $this->_isActionMapped();
+            if ($this->mappedComponent) {
+                return Closure::fromCallable([$this->mappedComponent, 'execute']);
+            }
+        }
+
+        throw $e;
     }
 
     /**
-     * Dispatches the controller action. Checks that the action exists and isn't private.
+     * Dispatches the controller action.
      *
-     * If CakePHP raises MissingActionException we attempt to execute Crud
+     * If a controller method with required name does not exist we attempt to execute Crud action.
      *
-     * @return mixed The resulting response.
-     * @throws \LogicException When request is not set.
-     * @throws \Cake\Controller\Exception\MissingActionException When actions are not defined
-     *   and CRUD is not enabled.
+     * @param \Closure $action The action closure.
+     * @param array $args The arguments to be passed when invoking action.
+     * @return void
+     * @throws \UnexpectedValueException If return value of action is not `null` or `ResponseInterface` instance.
      */
-    public function invokeAction()
+    public function invokeAction(Closure $action, array $args): void
     {
-        $request = $this->request;
-        if (!isset($request)) {
-            throw new LogicException('No Request object configured. Cannot invoke action');
-        }
-        if (!$this->isAction($request->getParam('action'))) {
-            throw new MissingActionException([
-                'controller' => $this->name . 'Controller',
-                'action' => $request->getParam('action'),
-                'prefix' => $request->getParam('prefix') ?: '',
-                'plugin' => $request->getParam('plugin'),
-            ]);
+        if ($this->mappedComponent) {
+            $this->response = $this->mappedComponent->execute(
+                $this->request->getParam('action'),
+                $args
+            );
+
+            return;
         }
 
-        $callable = [$this, $request->getParam('action')];
-        if (is_callable($callable)) {
-            return call_user_func_array($callable, $request->getParam('pass'));
-        }
-
-        $component = $this->_isActionMapped();
-        if ($component) {
-            return $component->execute();
-        }
-
-        throw new MissingActionException([
-            'controller' => $this->name . 'Controller',
-            'action' => $request->getParam('action'),
-            'prefix' => $request->getParam('prefix') ?: '',
-            'plugin' => $request->getParam('plugin'),
-        ]);
-    }
-
-    /**
-     * Return true for a mapped action so that AuthComponent doesn't skip
-     * authentication / authorization for that action.
-     *
-     * @param string $action Action name
-     * @return bool True is action is mapped and enabled.
-     */
-    public function isAction($action)
-    {
-        $isAction = parent::isAction($action);
-        if ($isAction) {
-            return true;
-        }
-
-        if ($this->_isActionMapped()) {
-            return true;
-        }
-
-        return false;
+        parent::invokeAction($action, $args);
     }
 
     /**
      * Check if an action can be dispatched using CRUD.
      *
-     * @return bool|\Cake\Controller\Component The component instance if action is
-     *  mapped else `false`.
+     * @return \Cake\Controller\Component|null The component instance if action is
+     *  mapped else `null`.
      */
-    protected function _isActionMapped()
+    protected function _isActionMapped(): ?Component
     {
-        if (!empty($this->dispatchComponents)) {
-            foreach ($this->dispatchComponents as $component => $enabled) {
-                if (empty($enabled)) {
-                    continue;
-                }
-
-                // Skip if isActionMapped isn't defined in the Component
-                if (!method_exists($this->{$component}, 'isActionMapped')) {
-                    continue;
-                }
-
-                // Skip if the action isn't mapped
-                if (!$this->{$component}->isActionMapped()) {
-                    continue;
-                }
-
-                // Skip if execute isn't defined in the Component
-                if (!method_exists($this->{$component}, 'execute')) {
-                    continue;
-                }
-
-                // Return the component instance.
-                return $this->{$component};
+        foreach ($this->dispatchComponents as $component => $enabled) {
+            if (empty($enabled)) {
+                continue;
             }
+
+            // Skip if isActionMapped isn't defined in the Component
+            if (!method_exists($this->{$component}, 'isActionMapped')) {
+                continue;
+            }
+
+            // Skip if the action isn't mapped
+            if (!$this->{$component}->isActionMapped()) {
+                continue;
+            }
+
+            // Skip if execute isn't defined in the Component
+            if (!method_exists($this->{$component}, 'execute')) {
+                continue;
+            }
+
+            // Return the component instance.
+            return $this->{$component};
         }
 
-        return false;
+        return null;
     }
 }

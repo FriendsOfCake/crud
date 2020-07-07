@@ -1,9 +1,9 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\Test\TestCase\Action;
 
 use Cake\Controller\Component\FlashComponent;
-use Cake\Core\Plugin;
-use Cake\Routing\DispatcherFactory;
 use Cake\Routing\Router;
 use Crud\TestSuite\IntegrationTestCase;
 
@@ -13,13 +13,12 @@ use Crud\TestSuite\IntegrationTestCase;
  */
 class AddActionTest extends IntegrationTestCase
 {
-
     /**
      * fixtures property
      *
      * @var array
      */
-    public $fixtures = ['plugin.Crud.Blogs'];
+    protected $fixtures = ['plugin.Crud.Blogs'];
 
     /**
      * Table class to mock on
@@ -27,22 +26,6 @@ class AddActionTest extends IntegrationTestCase
      * @var string
      */
     public $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
-
-    /**
-     * setUp()
-     *
-     * @return void
-     */
-    public function setUp()
-    {
-        $this->deprecated(function () {
-            Plugin::load('Crud', ['path' => ROOT . DS, 'autoload' => true]);
-        });
-
-        parent::setUp();
-
-        $this->useHttpServer(true);
-    }
 
     /**
      * Test the normal HTTP GET flow of _get
@@ -55,16 +38,16 @@ class AddActionTest extends IntegrationTestCase
         $result = (string)$this->_response->getBody();
 
         $expected = '<legend>New Blog</legend>';
-        $this->assertContains($expected, $result, 'legend do not match the expected value');
+        $this->assertStringContainsString($expected, $result, 'legend do not match the expected value');
 
         $expected = '<input type="hidden" name="id" id="id"/>';
-        $this->assertContains($expected, $result, '"id" do not match the expected value');
+        $this->assertStringContainsString($expected, $result, '"id" do not match the expected value');
 
-        $expected = '<input type="text" name="name" maxlength="255" id="name"/>';
-        $this->assertContains($expected, $result, '"name" do not match the expected value');
+        $expected = '<input type="text" name="name" id="name" maxlength="255"/>';
+        $this->assertStringContainsString($expected, $result, '"name" do not match the expected value');
 
         $expected = '<textarea name="body" id="body" rows="5"></textarea>';
-        $this->assertContains($expected, $result, '"body" do not match the expected value');
+        $this->assertStringContainsString($expected, $result, '"body" do not match the expected value');
     }
 
     /**
@@ -80,16 +63,16 @@ class AddActionTest extends IntegrationTestCase
         $result = (string)$this->_response->getBody();
 
         $expected = '<legend>New Blog</legend>';
-        $this->assertContains($expected, $result, 'legend do not match the expected value');
+        $this->assertStringContainsString($expected, $result, 'legend do not match the expected value');
 
         $expected = '<input type="hidden" name="id" id="id"/>';
-        $this->assertContains($expected, $result, '"id" do not match the expected value');
+        $this->assertStringContainsString($expected, $result, '"id" do not match the expected value');
 
-        $expected = '<input type="text" name="name" maxlength="255" id="name" value="test"/>';
-        $this->assertContains($expected, $result, '"name" do not match the expected value');
+        $expected = '<input type="text" name="name" id="name" value="test" maxlength="255"/>';
+        $this->assertStringContainsString($expected, $result, '"name" do not match the expected value');
 
         $expected = '<textarea name="body" id="body" rows="5"></textarea>';
-        $this->assertContains($expected, $result, '"body" do not match the expected value');
+        $this->assertStringContainsString($expected, $result, '"body" do not match the expected value');
     }
 
     /**
@@ -332,7 +315,7 @@ class AddActionTest extends IntegrationTestCase
         $this->assertFalse($this->_subject->created);
 
         $expected = '<div class="error-message">Name need to be at least 10 characters long</div>';
-        $this->assertContains(
+        $this->assertStringContainsString(
             $expected,
             (string)$this->_response->getBody(),
             'Could not find validation error in HTML'
@@ -410,7 +393,6 @@ class AddActionTest extends IntegrationTestCase
                 $this->_subscribeToEvents($this->_controller);
 
                 $this->_controller->Crud->addListener('api', 'Crud.Api');
-                $this->_controller->RequestHandler->ext = 'json';
             }
         );
 
@@ -418,12 +400,11 @@ class AddActionTest extends IntegrationTestCase
             'name' => '6th blog post',
             'body' => 'Amazing blog post',
         ]);
-        $this->assertEvents(['beforeSave', 'afterSave', 'setFlash', 'beforeRedirect']);
         $this->assertTrue($this->_subject->success);
         $this->assertTrue($this->_subject->created);
         $this->assertEquals(
             ['success' => true, 'data' => ['id' => 6]],
-            json_decode($this->_response->getBody(), true)
+            json_decode((string)$this->_response->getBody(), true)
         );
     }
 
@@ -568,13 +549,9 @@ class AddActionTest extends IntegrationTestCase
 
                 $this->_controller->Blogs = $this->getMockForModel(
                     $this->tableClass,
-                    ['add'],
+                    [],
                     ['alias' => 'Blogs', 'table' => 'blogs']
                 );
-
-                $this->_controller->Blogs
-                    ->expects($this->never())
-                    ->method('add');
             }
         );
 
@@ -623,13 +600,9 @@ class AddActionTest extends IntegrationTestCase
 
                 $this->_controller->Blogs = $this->getMockForModel(
                     $this->tableClass,
-                    ['add'],
+                    [],
                     ['alias' => 'Blogs', 'table' => 'blogs']
                 );
-
-                $this->_controller->Blogs
-                    ->expects($this->never())
-                    ->method('add');
             }
         );
 

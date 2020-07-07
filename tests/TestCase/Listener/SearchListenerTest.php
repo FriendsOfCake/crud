@@ -1,8 +1,9 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\Test\TestCase\Listener;
 
 use Cake\Controller\Controller;
-use Cake\Core\Plugin;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Http\Response;
@@ -15,6 +16,7 @@ use Crud\Listener\SearchListener;
 use Crud\TestSuite\TestCase;
 use Muffin\Webservice\Model\EndpointRegistry;
 use Muffin\Webservice\Query;
+use RuntimeException;
 
 /**
  * Licensed under The MIT License
@@ -22,11 +24,9 @@ use Muffin\Webservice\Query;
  */
 class SearchListenerTest extends TestCase
 {
-    public function tearDown()
+    public function tearDown(): void
     {
-        $this->deprecated(function () {
-            Plugin::unload('Search');
-        });
+        $this->removePlugins(['Search']);
 
         TableRegistry::clear();
     }
@@ -55,14 +55,11 @@ class SearchListenerTest extends TestCase
     /**
      * Test inject search exception
      *
-     * @expectedException RuntimeException
      * @return void
      */
     public function testInjectSearchException()
     {
-        $this->deprecated(function () {
-            Plugin::load('Search', ['path' => ROOT . DS]);
-        });
+        $this->expectException(RuntimeException::class);
 
         $request = new ServerRequest();
         $response = new Response();
@@ -109,9 +106,7 @@ class SearchListenerTest extends TestCase
      */
     public function testInjectSearch()
     {
-        $this->deprecated(function () {
-            Plugin::load('Search', ['path' => ROOT . DS]);
-        });
+        $this->loadPlugins(['Search']);
 
         $params = [
             'search' => [
@@ -128,14 +123,11 @@ class SearchListenerTest extends TestCase
 
         $behaviorRegistryMock = $this->getMockBuilder(BehaviorRegistry::class)
             ->setMockClassName('BehaviorRegistry')
-            ->setMethods(['hasMethod', 'has'])
+            ->setMethods(['has'])
             ->getMock();
         $behaviorRegistryMock->expects($this->once())
             ->method('has')
             ->will($this->returnValue(true));
-        $behaviorRegistryMock->expects($this->once())
-            ->method('hasMethod')
-            ->will($this->returnValue(false));
 
         $tableMock = $this->getMockBuilder(Table::class)
             ->setMockClassName('SearchTables')
@@ -176,10 +168,13 @@ class SearchListenerTest extends TestCase
      */
     public function testInjectSearchWebserviceEndpoint()
     {
-        $this->deprecated(function () {
-            Plugin::load('Search', ['path' => ROOT . DS]);
-            Plugin::load('Muffin/Webservice', ['path' => ROOT . '/vendor/muffin/webservice/']);
-        });
+        if (!class_exists(EndpointRegistry::class)) {
+            $this->markTestSkipped(
+                'Muffin/Webservice plugin is not loaded.'
+            );
+        }
+
+        $this->loadPlugins(['Search', 'Muffin/Webservice']);
 
         $params = [
             'search' => [

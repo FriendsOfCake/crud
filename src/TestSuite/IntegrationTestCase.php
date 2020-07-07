@@ -1,39 +1,48 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\TestSuite;
 
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Event\EventManager;
 use Cake\Routing\Router;
+use Cake\TestSuite\IntegrationTestTrait;
 use Crud\TestSuite\Traits\CrudTestTrait;
 use FriendsOfCake\TestUtilities\AccessibilityHelperTrait;
 use FriendsOfCake\TestUtilities\CounterHelperTrait;
 
 /**
- *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-abstract class IntegrationTestCase extends \Cake\TestSuite\IntegrationTestCase
+abstract class IntegrationTestCase extends TestCase
 {
     use AccessibilityHelperTrait;
     use CounterHelperTrait;
     use CrudTestTrait;
+    use IntegrationTestTrait;
+
+    /**
+     * @var \Cake\Event\EventManagerInterface
+     */
+    protected $_eventManager;
 
     /**
      * [setUp description]
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
+
         $this->resetReflectionCache();
 
         $this->_eventManager = EventManager::instance();
 
         $existing = Configure::read('App.paths.templates');
-        $existing[] = Plugin::path('Crud') . 'tests/App/Template/';
+        $existing[] = Plugin::path('Crud') . 'tests/test_app/templates/';
         Configure::write('App.paths.templates', $existing);
 
         Configure::write('App.namespace', 'Crud\Test\App');
@@ -42,23 +51,5 @@ abstract class IntegrationTestCase extends \Cake\TestSuite\IntegrationTestCase
 
         Router::connect('/:controller', ['action' => 'index'], ['routeClass' => 'DashedRoute']);
         Router::connect('/:controller/:action/*', [], ['routeClass' => 'DashedRoute']);
-        $this->useHttpServer(false);
-    }
-
-    /**
-     * Helper method for check deprecation methods
-     *
-     * @param callable $callable callable function that will receive asserts
-     * @return void
-     */
-    public function deprecated($callable)
-    {
-        $errorLevel = error_reporting();
-        error_reporting(E_ALL ^ E_USER_DEPRECATED);
-        try {
-            $callable();
-        } finally {
-            error_reporting($errorLevel);
-        }
     }
 }

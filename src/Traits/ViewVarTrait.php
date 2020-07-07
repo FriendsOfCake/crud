@@ -1,22 +1,23 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\Traits;
 
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\Utility\Inflector;
 use Exception;
 
 trait ViewVarTrait
 {
-
     /**
      * Publish the viewVar so people can do $$viewVar and end up
      * wit the entity in the view
      *
-     * @param Event $event Event
-     * @return false|void
+     * @param \Cake\Event\EventInterface $event Event
+     * @return false|null
      * @throws \Exception
      */
-    public function publishViewVar(Event $event)
+    public function publishViewVar(EventInterface $event)
     {
         if (!$this->responding()) {
             return false;
@@ -52,10 +53,10 @@ trait ViewVarTrait
      * Actions working on a single entity will use singular name,
      * and actions working on a full table will use plural name
      *
-     * @throws Exception
+     * @throws \Exception
      * @return string
      */
-    protected function _deriveViewVar()
+    protected function _deriveViewVar(): string
     {
         if ($this->scope() === 'table') {
             return Inflector::variable($this->_controller()->getName());
@@ -65,18 +66,18 @@ trait ViewVarTrait
             return Inflector::variable(Inflector::singularize($this->_controller()->getName()));
         }
 
-        throw new Exception('Unknown action scope: ' . $this->scope());
+        throw new Exception('Unknown action scope: ' . (string)$this->scope());
     }
 
     /**
      * Derive the viewVar value based on the scope of the action
      * as well as the Event being handled
      *
-     * @param \Cake\Event\Event $event Event
+     * @param \Cake\Event\EventInterface $event Event
      * @return mixed
-     * @throws Exception
+     * @throws \Exception
      */
-    protected function _deriveViewValue(Event $event)
+    protected function _deriveViewValue(EventInterface $event)
     {
         $key = $this->_action()->subjectEntityKey();
 

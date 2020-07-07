@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\Action;
 
 use Crud\Traits\FindMethodTrait;
@@ -35,9 +37,9 @@ class LookupAction extends BaseAction
      *
      * @return void
      */
-    protected function _handle()
+    protected function _handle(): void
     {
-        list($finder, $options) = $this->_extractFinder();
+        [$finder, $options] = $this->_extractFinder();
         $options = array_merge($options, $this->_getFindConfig());
         $query = $this->_table()->find($finder, $options);
         $subject = $this->_subject(['success' => true, 'query' => $query]);
@@ -54,7 +56,7 @@ class LookupAction extends BaseAction
      *
      * @return array
      */
-    protected function _getFindConfig()
+    protected function _getFindConfig(): array
     {
         $request = $this->_request();
 

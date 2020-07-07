@@ -1,9 +1,12 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\TestSuite\Traits;
 
 use Cake\Controller\Controller;
 use Cake\Datasource\ConnectionManager;
 use Cake\Event\Event;
+use Cake\ORM\Table;
 use Crud\Event\Subject;
 use Exception;
 
@@ -15,7 +18,6 @@ use Exception;
  */
 trait CrudTestTrait
 {
-
     /**
      * Reference to the final CRUD event subject after full event cycle
      *
@@ -34,17 +36,17 @@ trait CrudTestTrait
      * @param \Cake\Controller\Controller|null $controller Controller
      * @return void
      */
-    protected function _subscribeToEvents(Controller $controller = null)
+    protected function _subscribeToEvents(?Controller $controller = null): void
     {
         if ($controller === null) {
             $controller = $this->controller;
         }
 
-        $controller->Crud->on('beforeRender', function ($event) {
+        $controller->Crud->on('beforeRender', function ($event): void {
             $this->_subject = $event->getSubject();
         });
 
-        $controller->Crud->on('beforeRedirect', function ($event) {
+        $controller->Crud->on('beforeRedirect', function ($event): void {
             $this->_subject = $event->getSubject();
         });
     }
@@ -57,14 +59,18 @@ trait CrudTestTrait
      * @param string $alias Table alias / name
      * @param string $table Table name in the database
      * @return \Cake\ORM\Table
+     * @psalm-param class-string $class
+     * @psalm-suppress InvalidReturnType
      */
-    public function getModel($class, $methods, $alias, $table)
+    public function getModel(string $class, $methods, string $alias, string $table): Table
     {
+        /** @psalm-suppress DeprecatedMethod */
         $mock = $this->getMockBuilder($class)
             ->setMethods($methods)
             ->setConstructorArgs([['alias' => $alias, 'table' => $table]])
             ->getMock();
-        $mock->connection(ConnectionManager::get('test'));
+        /** @psalm-suppress UndefinedInterfaceMethod */
+        $mock->setConnection(ConnectionManager::get('test'));
 
         return $mock;
     }
@@ -78,9 +84,9 @@ trait CrudTestTrait
      * @param array $expected An array of CRUD events we expected to be fired
      * @param array|null $actual Can be an Event class, Crud subject or array with event names
      * @return void
-     * @throws Exception
+     * @throws \Exception
      */
-    public function assertEvents(array $expected, $actual = null)
+    public function assertEvents(array $expected, ?array $actual = null): void
     {
         if ($actual === null) {
             $actual = $this->_subject;
@@ -103,7 +109,7 @@ trait CrudTestTrait
         }
 
         foreach ($expected as &$key) {
-            if (false !== strpos($key, '.')) {
+            if (strpos($key, '.') !== false) {
                 continue;
             }
 

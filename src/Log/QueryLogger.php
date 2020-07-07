@@ -1,9 +1,10 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\Log;
 
 class QueryLogger extends \Cake\Database\Log\QueryLogger
 {
-
     /**
      * Logs
      *
@@ -16,21 +17,18 @@ class QueryLogger extends \Cake\Database\Log\QueryLogger
      *
      * @return array
      */
-    public function getLogs()
+    public function getLogs(): array
     {
         return $this->_logs;
     }
 
     /**
-     * Wrapper function for the logger object, useful for unit testing
-     * or for overriding in subclasses.
-     *
-     * @param \Cake\Database\Log\LoggedQuery $query to be written in log
-     * @return void
+     * @inheritDoc
      */
-    protected function _log($query)
+    public function log($level, $message, array $context = [])
     {
-        $this->_logs[] = $query;
-        parent::_log($query);
+        $this->_logs[] = (string)$context['query'];
+
+        parent::log($level, $message, $context);
     }
 }

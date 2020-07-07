@@ -1,7 +1,10 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\Action\Bulk;
 
 use Cake\Controller\Controller;
+use Cake\Http\Response;
 use Cake\ORM\Query;
 use Crud\Error\Exception\ActionNotConfiguredException;
 
@@ -20,7 +23,7 @@ class SetValueAction extends BaseAction
      * @param array $config Default settings
      * @return void
      */
-    public function __construct(Controller $Controller, $config = [])
+    public function __construct(Controller $Controller, array $config = [])
     {
         $this->_defaultConfig['messages'] = [
             'success' => [
@@ -38,10 +41,10 @@ class SetValueAction extends BaseAction
     /**
      * Handle a bulk event
      *
-     * @return \Cake\Http\Response
+     * @return \Cake\Http\Response|null
      * @throws \Crud\Error\Exception\ActionNotConfiguredException
      */
-    protected function _handle()
+    protected function _handle(): ?Response
     {
         $field = $this->getConfig('field');
         if (empty($field)) {
@@ -54,10 +57,10 @@ class SetValueAction extends BaseAction
     /**
      * Handle a bulk value set
      *
-     * @param \Cake\ORM\Query|null $query The query to act upon
+     * @param \Cake\ORM\Query $query The query to act upon
      * @return bool
      */
-    protected function _bulk(Query $query = null)
+    protected function _bulk(Query $query): bool
     {
         $field = $this->getConfig('field');
         $value = $this->getConfig('value');

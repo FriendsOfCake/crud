@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\Test\TestCase\Listener;
 
 use Cake\Event\Event;
@@ -15,7 +17,6 @@ use Crud\TestSuite\TestCase;
  */
 class RedirectListenerTest extends TestCase
 {
-
     /**
      * Test the correct events is bound
      *

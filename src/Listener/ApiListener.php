@@ -1,15 +1,15 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\Listener;
 
-use Cake\Core\Configure;
-use Cake\Error\ErrorHandler;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\MethodNotAllowedException;
+use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Utility\Hash;
 use Cake\Utility\Text;
-use Crud\Error\ExceptionRenderer;
 use Crud\Event\Subject;
 
 /**
@@ -23,7 +23,6 @@ use Crud\Event\Subject;
  */
 class ApiListener extends BaseListener
 {
-
     /**
      * Default configuration
      *
@@ -35,8 +34,8 @@ class ApiListener extends BaseListener
             'xml' => 'Xml',
         ],
         'detectors' => [
-            'json' => ['ext' => 'json', 'accepts' => 'application/json'],
-            'xml' => ['ext' => 'xml', 'accepts' => 'text/xml'],
+            'json' => ['accept' => ['application/json'], 'param' => '_ext', 'value' => 'json'],
+            'xml' => ['accept' => ['application/xml', 'text/xml'], 'param' => '_ext', 'value' => 'xml'],
         ],
         'exception' => [
             'type' => 'default',
@@ -44,7 +43,6 @@ class ApiListener extends BaseListener
             'message' => 'Unknown error',
             'code' => 0,
         ],
-        'exceptionRenderer' => ExceptionRenderer::class,
         'setFlash' => false,
     ];
 
@@ -56,7 +54,7 @@ class ApiListener extends BaseListener
      *
      * @return array
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         $this->setupDetectors();
 
@@ -74,36 +72,14 @@ class ApiListener extends BaseListener
     }
 
     /**
-     * setup
-     *
-     * Called when the listener is created
-     *
-     * @return void
-     */
-    public function setup()
-    {
-        if (!$this->_checkRequestType('api')) {
-            return;
-        }
-
-        $appClass = Configure::read('App.namespace') . '\Application';
-
-        // If `App\Application` class exists it means Cake 3.3's PSR7 middleware
-        // implementation is used and it's too late to register new error handler.
-        if (!class_exists($appClass, false)) {
-            $this->registerExceptionHandler();
-        }
-    }
-
-    /**
      * beforeHandle
      *
      * Called before the crud action is executed
      *
-     * @param \Cake\Event\Event $event Event
+     * @param \Cake\Event\EventInterface $event Event
      * @return void
      */
-    public function beforeHandle(Event $event)
+    public function beforeHandle(EventInterface $event): void
     {
         $this->_checkRequestMethods();
     }
@@ -111,11 +87,11 @@ class ApiListener extends BaseListener
     /**
      * Handle response
      *
-     * @param \Cake\Event\Event $event Event
+     * @param \Cake\Event\EventInterface $event Event
      * @return \Cake\Http\Response|null
      * @throws \Exception
      */
-    public function respond(Event $event)
+    public function respond(EventInterface $event): ?Response
     {
         $key = $event->getSubject()->success ? 'success' : 'error';
         $apiConfig = $this->_action()->getConfig('api.' . $key);
@@ -126,6 +102,7 @@ class ApiListener extends BaseListener
             return null;
         }
 
+        /** @psalm-suppress ArgumentTypeCoercion */
         $response = $this->render($event->getSubject());
 
         if (empty($apiConfig['code'])) {
@@ -138,22 +115,22 @@ class ApiListener extends BaseListener
     /**
      * Check for allowed HTTP request types
      *
+     * @return void
      * @throws \Cake\Http\Exception\MethodNotAllowedException
-     * @return bool
      */
-    protected function _checkRequestMethods()
+    protected function _checkRequestMethods(): void
     {
         $action = $this->_action();
         $apiConfig = $action->getConfig('api');
 
         if (!isset($apiConfig['methods'])) {
-            return false;
+            return;
         }
 
         $request = $this->_request();
         foreach ($apiConfig['methods'] as $method) {
             if ($request->is($method)) {
-                return true;
+                return;
             }
         }
 
@@ -161,35 +138,26 @@ class ApiListener extends BaseListener
     }
 
     /**
-     * Register the Crud exception handler
-     *
-     * @return void
-     */
-    public function registerExceptionHandler()
-    {
-        $exceptionRenderer = $this->getConfig('exceptionRenderer');
-        (new ErrorHandler(compact('exceptionRenderer') + (array)Configure::read('Error')))->register();
-    }
-
-    /**
      * Throw an exception based on API configuration
      *
-     * @param \Cake\Event\Event $Event Event
+     * @param \Cake\Event\EventInterface $Event Event
      * @param array $exceptionConfig Exception config
      * @return void
      * @throws \Exception
      */
-    protected function _exceptionResponse(Event $Event, $exceptionConfig)
+    protected function _exceptionResponse(EventInterface $Event, array $exceptionConfig): void
     {
         $exceptionConfig = array_merge($this->getConfig('exception'), $exceptionConfig);
 
         $class = $exceptionConfig['class'];
 
         if ($exceptionConfig['type'] === 'validate') {
+            /** @var \Exception $exception */
             $exception = new $class($Event->getSubject()->entity);
             throw $exception;
         }
 
+        /** @var \Exception $exception */
         $exception = new $class($exceptionConfig['message'], $exceptionConfig['code']);
         throw $exception;
     }
@@ -200,7 +168,7 @@ class ApiListener extends BaseListener
      * @param \Crud\Event\Subject $subject Subject
      * @return \Cake\Http\Response
      */
-    public function render(Subject $subject)
+    public function render(Subject $subject): Response
     {
         $this->injectViewClasses();
         $this->_ensureSuccess($subject);
@@ -215,11 +183,11 @@ class ApiListener extends BaseListener
      *
      * @return void
      */
-    protected function _ensureSerialize()
+    protected function _ensureSerialize(): void
     {
         $controller = $this->_controller();
 
-        if (isset($controller->viewVars['_serialize'])) {
+        if ($controller->viewBuilder()->getOption('serialize') !== null) {
             return;
         }
 
@@ -234,7 +202,7 @@ class ApiListener extends BaseListener
         }
 
         $serialize = array_merge($serialize, (array)$action->getConfig('serialize'));
-        $controller->set('_serialize', $serialize);
+        $controller->viewBuilder()->setOption('serialize', $serialize);
     }
 
     /**
@@ -243,11 +211,11 @@ class ApiListener extends BaseListener
      * @param \Crud\Event\Subject $subject Subject
      * @return void
      */
-    protected function _ensureSuccess(Subject $subject)
+    protected function _ensureSuccess(Subject $subject): void
     {
         $controller = $this->_controller();
 
-        if (isset($controller->viewVars['success'])) {
+        if ($controller->viewBuilder()->getVar('success') !== null) {
             return;
         }
 
@@ -260,7 +228,7 @@ class ApiListener extends BaseListener
      * @param \Crud\Event\Subject $subject Subject
      * @return void
      */
-    protected function _ensureData(Subject $subject)
+    protected function _ensureData(Subject $subject): void
     {
         $controller = $this->_controller();
         $action = $this->_action();
@@ -271,7 +239,7 @@ class ApiListener extends BaseListener
             $viewVar = 'data';
         }
 
-        if (isset($controller->viewVars[$viewVar])) {
+        if ($controller->viewBuilder()->getVar($viewVar) !== null) {
             return;
         }
 
@@ -338,7 +306,7 @@ class ApiListener extends BaseListener
      * @param string $path Path
      * @return string
      */
-    protected function _expandPath(Subject $subject, $path)
+    protected function _expandPath(Subject $subject, string $path): string
     {
         $keys = [];
         $subjectArray = (array)$subject;
@@ -359,7 +327,7 @@ class ApiListener extends BaseListener
      *
      * @return void
      */
-    public function injectViewClasses()
+    public function injectViewClasses(): void
     {
         $controller = $this->_controller();
         foreach ($this->getConfig('viewClasses') as $type => $class) {
@@ -381,7 +349,7 @@ class ApiListener extends BaseListener
      * @param string|null $class Class name
      * @return mixed
      */
-    public function viewClass($type, $class = null)
+    public function viewClass(string $type, ?string $class = null)
     {
         if ($class === null) {
             return $this->getConfig('viewClasses.' . $type);
@@ -395,10 +363,10 @@ class ApiListener extends BaseListener
      *
      * An API request doesn't need flash messages - so stop them being processed
      *
-     * @param \Cake\Event\Event $event Event
+     * @param \Cake\Event\EventInterface $event Event
      * @return void
      */
-    public function setFlash(Event $event)
+    public function setFlash(EventInterface $event): void
     {
         if (!$this->getConfig('setFlash')) {
             $event->stopPropagation();
@@ -416,19 +384,13 @@ class ApiListener extends BaseListener
      *
      * @return void
      */
-    public function setupDetectors()
+    public function setupDetectors(): void
     {
         $request = $this->_request();
         $detectors = $this->getConfig('detectors');
 
         foreach ($detectors as $name => $config) {
-            $request->addDetector($name, function (ServerRequest $request) use ($config) {
-                if ($config['ext'] !== false && $request->getParam('_ext') === $config['ext']) {
-                    return true;
-                }
-
-                return $request->accepts($config['accepts']);
-            });
+            $request->addDetector($name, $config);
         }
 
         $request->addDetector('api', function (ServerRequest $request) use ($detectors) {

@@ -1,7 +1,10 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\Action\Bulk;
 
 use Cake\Http\Exception\BadRequestException;
+use Cake\Http\Response;
 use Cake\ORM\Query;
 use Cake\Utility\Hash;
 use Crud\Action\BaseAction as CrudBaseAction;
@@ -43,9 +46,9 @@ abstract class BaseAction extends CrudBaseAction
     /**
      * Handle a bulk event
      *
-     * @return \Cake\Http\Response
+     * @return \Cake\Http\Response|null
      */
-    protected function _handle()
+    protected function _handle(): ?Response
     {
         $ids = $this->_processIds();
         $subject = $this->_constructSubject($ids);
@@ -69,9 +72,9 @@ abstract class BaseAction extends CrudBaseAction
      *
      * @return array
      */
-    protected function _processIds()
+    protected function _processIds(): array
     {
-        $ids = $this->_controller()->request->getData('id');
+        $ids = $this->_controller()->getRequest()->getData('id');
 
         $all = false;
         if (is_array($ids)) {
@@ -101,11 +104,11 @@ abstract class BaseAction extends CrudBaseAction
      * @param array $ids An array of ids to retrieve
      * @return \Crud\Event\Subject
      */
-    protected function _constructSubject(array $ids)
+    protected function _constructSubject(array $ids): Subject
     {
         $repository = $this->_table();
 
-        list($finder, $options) = $this->_extractFinder();
+        [$finder, $options] = $this->_extractFinder();
         $options = array_merge($options, $this->_getFindConfig($ids));
         $query = $repository->find($finder, $options);
 
@@ -125,7 +128,7 @@ abstract class BaseAction extends CrudBaseAction
      * @param array $ids An array of ids to retrieve
      * @return array
      */
-    protected function _getFindConfig(array $ids)
+    protected function _getFindConfig(array $ids): array
     {
         $config = (array)$this->getConfig('findConfig');
         if (!empty($config)) {
@@ -147,7 +150,7 @@ abstract class BaseAction extends CrudBaseAction
      * @param \Crud\Event\Subject $subject Event subject
      * @return void
      */
-    protected function _success(Subject $subject)
+    protected function _success(Subject $subject): void
     {
         $subject->set(['success' => true]);
         $this->_trigger('afterBulk', $subject);
@@ -161,7 +164,7 @@ abstract class BaseAction extends CrudBaseAction
      * @param \Crud\Event\Subject $subject Event subject
      * @return void
      */
-    protected function _error(Subject $subject)
+    protected function _error(Subject $subject): void
     {
         $subject->set(['success' => false]);
         $this->_trigger('afterBulk', $subject);
@@ -173,9 +176,9 @@ abstract class BaseAction extends CrudBaseAction
      * Stopped callback
      *
      * @param \Crud\Event\Subject $subject Event subject
-     * @return \Cake\Http\Response
+     * @return \Cake\Http\Response|null
      */
-    protected function _stopped(Subject $subject)
+    protected function _stopped(Subject $subject): ?Response
     {
         $subject->set(['success' => false]);
         $this->setFlash('error', $subject);
@@ -186,8 +189,8 @@ abstract class BaseAction extends CrudBaseAction
     /**
      * Handle a bulk event
      *
-     * @param \Cake\ORM\Query|null $query The query to act upon
+     * @param \Cake\ORM\Query $query The query to act upon
      * @return bool
      */
-    abstract protected function _bulk(Query $query = null);
+    abstract protected function _bulk(Query $query): bool;
 }

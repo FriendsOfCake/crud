@@ -1,10 +1,9 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\Test\TestCase\Action;
 
 use Cake\Controller\Component\FlashComponent;
-use Cake\Core\Plugin;
-use Cake\Routing\DispatcherFactory;
-use Cake\Routing\Router;
 use Crud\TestSuite\IntegrationTestCase;
 
 /**
@@ -13,13 +12,12 @@ use Crud\TestSuite\IntegrationTestCase;
  */
 class DeleteActionTest extends IntegrationTestCase
 {
-
     /**
      * fixtures property
      *
      * @var array
      */
-    public $fixtures = ['plugin.Crud.Blogs'];
+    protected $fixtures = ['plugin.Crud.Blogs'];
 
     /**
      * Table class to mock on
@@ -27,22 +25,6 @@ class DeleteActionTest extends IntegrationTestCase
      * @var string
      */
     public $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
-
-    /**
-     * setUp()
-     *
-     * @return void
-     */
-    public function setUp()
-    {
-        $this->deprecated(function () {
-            Plugin::load('Crud', ['path' => ROOT . DS, 'autoload' => true]);
-        });
-
-        parent::setUp();
-
-        $this->useHttpServer(true);
-    }
 
     /**
      * Data provider with HTTP verbs

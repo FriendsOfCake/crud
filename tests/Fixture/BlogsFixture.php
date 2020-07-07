@@ -5,7 +5,6 @@ use Cake\TestSuite\Fixture\TestFixture;
 
 class BlogsFixture extends TestFixture
 {
-
     public $fields = [
         'id' => ['type' => 'integer'],
         'is_active' => ['type' => 'boolean', 'default' => true, 'null' => false],

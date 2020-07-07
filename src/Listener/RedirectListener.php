@@ -1,7 +1,9 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\Listener;
 
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Crud\Event\Subject;
 use Exception;
 
@@ -15,7 +17,6 @@ use Exception;
  */
 class RedirectListener extends BaseListener
 {
-
     /**
      * Settings
      *
@@ -31,7 +32,7 @@ class RedirectListener extends BaseListener
      *
      * @return array
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         return [
             'Crud.beforeRedirect' => ['callable' => 'beforeRedirect', 'priority' => 90],
@@ -47,7 +48,7 @@ class RedirectListener extends BaseListener
      *
      * @return void
      */
-    public function setup()
+    public function setup(): void
     {
         $this->reader('request.key', function (Subject $subject, $key = null) {
             $request = $this->_request();
@@ -87,7 +88,7 @@ class RedirectListener extends BaseListener
      * @param mixed $reader Reader
      * @return mixed
      */
-    public function reader($key, $reader = null)
+    public function reader(string $key, $reader = null)
     {
         if ($reader === null) {
             return $this->getConfig('readers.' . $key);
@@ -102,12 +103,13 @@ class RedirectListener extends BaseListener
      * If a special redirect key is provided, change the
      * redirection URL target
      *
-     * @param Event $event Event
+     * @param \Cake\Event\EventInterface $event Event
      * @return void
      * @throws \Exception
      */
-    public function beforeRedirect(Event $event)
+    public function beforeRedirect(EventInterface $event): void
     {
+        /** @var \Crud\Event\Subject $subject */
         $subject = $event->getSubject();
 
         $redirects = $this->_action()->redirectConfig();
@@ -136,7 +138,7 @@ class RedirectListener extends BaseListener
      * @return array
      * @throws \Exception
      */
-    protected function _getUrl(Subject $subject, array $url)
+    protected function _getUrl(Subject $subject, array $url): array
     {
         foreach ($url as $key => $value) {
             if (!is_array($value)) {
@@ -161,9 +163,9 @@ class RedirectListener extends BaseListener
      * @param string $reader Reader
      * @param string $key Key
      * @return mixed
-     * @throws Exception if the reader is invalid
+     * @throws \Exception if the reader is invalid
      */
-    protected function _getKey(Subject $subject, $reader, $key)
+    protected function _getKey(Subject $subject, string $reader, string $key)
     {
         $callable = $this->reader($reader);
 

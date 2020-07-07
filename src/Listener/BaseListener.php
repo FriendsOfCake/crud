@@ -1,6 +1,9 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\Listener;
 
+use Cake\Event\EventListenerInterface;
 use Crud\Core\BaseObject;
 
 /**
@@ -11,9 +14,8 @@ use Crud\Core\BaseObject;
  *
  * @codeCoverageIgnore
  */
-abstract class BaseListener extends BaseObject
+abstract class BaseListener extends BaseObject implements EventListenerInterface
 {
-
     /**
      * Returns a list of all events that will fire in the controller during its life cycle.
      * You can override this function to add you own listener callbacks.
@@ -29,7 +31,7 @@ abstract class BaseListener extends BaseObject
      *
      * @return array
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         $eventMap = [
             'Crud.beforeFilter' => 'beforeFilter',
@@ -74,14 +76,17 @@ abstract class BaseListener extends BaseObject
      * using the "name" configuration property
      *
      * @param string|null $value Value
-     * @return string
+     * @return string|$this
      */
-    public function resourceName($value = null)
+    public function resourceName(?string $value = null)
     {
         if ($value === null) {
-            return $this->_action()->resourceName();
+            $this->_action()->resourceName();
+
+            return $this;
         }
 
+        /** @var string */
         return $this->_action()->resourceName($value);
     }
 }

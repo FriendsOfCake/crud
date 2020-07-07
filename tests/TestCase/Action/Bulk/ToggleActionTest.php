@@ -1,9 +1,9 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\Test\TestCase\Action\Bulk;
 
 use Cake\Controller\Component\FlashComponent;
-use Cake\Routing\DispatcherFactory;
-use Cake\Routing\Router;
 use Crud\TestSuite\IntegrationTestCase;
 
 /**
@@ -12,13 +12,12 @@ use Crud\TestSuite\IntegrationTestCase;
  */
 class ToggleActionTest extends IntegrationTestCase
 {
-
     /**
      * Fixtures
      *
      * @var array
      */
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.Crud.Blogs',
         'plugin.Crud.Users',
     ];
@@ -29,18 +28,6 @@ class ToggleActionTest extends IntegrationTestCase
      * @var string
      */
     public $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
-
-    /**
-     * setUp()
-     *
-     * @return void
-     */
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->useHttpServer(true);
-    }
 
     /**
      * Data provider with all HTTP verbs

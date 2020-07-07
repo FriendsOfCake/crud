@@ -1,41 +1,22 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\Test\TestCase\Action;
 
-use Cake\Core\Plugin;
-use Cake\Routing\DispatcherFactory;
-use Cake\Routing\Router;
 use Crud\TestSuite\IntegrationTestCase;
 
 /**
- *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
 class IndexActionTest extends IntegrationTestCase
 {
-
     /**
      * fixtures property
      *
      * @var array
      */
-    public $fixtures = ['plugin.Crud.Blogs'];
-
-    /**
-     * setUp()
-     *
-     * @return void
-     */
-    public function setUp()
-    {
-        $this->deprecated(function () {
-            Plugin::load('Crud', ['path' => ROOT . DS, 'autoload' => true]);
-        });
-
-        parent::setUp();
-
-        $this->useHttpServer(true);
-    }
+    protected $fixtures = ['plugin.Crud.Blogs'];
 
     /**
      * Data provider with all HTTP verbs
@@ -69,7 +50,7 @@ class IndexActionTest extends IntegrationTestCase
         );
 
         $this->{$method}('/blogs');
-        $this->assertContains(
+        $this->assertStringContainsString(
             'Page 1 of 2, showing 3 records out of 5 total',
             (string)$this->_response->getBody()
         );
@@ -97,7 +78,7 @@ class IndexActionTest extends IntegrationTestCase
 
         $this->get('/blogs');
 
-        $this->assertContains(
+        $this->assertStringContainsString(
             'Page 1 of 2, showing 3 records out of 5 total',
             (string)$this->_response->getBody()
         );
@@ -125,7 +106,7 @@ class IndexActionTest extends IntegrationTestCase
         );
 
         $this->get('/blogs');
-        $this->assertContains(
+        $this->assertStringContainsString(
             'Page 1 of 1, showing 1 records out of 1 total',
             (string)$this->_response->getBody()
         );
@@ -149,5 +130,25 @@ class IndexActionTest extends IntegrationTestCase
 
         $this->get('/blogs');
         $this->assertSame(['foo' => 'bar'], $this->_controller->Blogs->customOptions);
+    }
+
+    /**
+     * Test that trying to access a non existent page number redirects to 1st page.
+     *
+     * @return void
+     */
+    public function testForPageOutOfBounds()
+    {
+        $this->_eventManager->on(
+            'Controller.initialize',
+            ['priority' => 11],
+            function ($event) {
+                $this->_subscribeToEvents($this->_controller);
+            }
+        );
+
+        $this->get('/blogs?page=999&foo=bar');
+        $this->assertSame(302, $this->_response->getStatusCode());
+        $this->assertSame('http://localhost/blogs?page=2&foo=bar', $this->_response->getHeaderLine('Location'));
     }
 }

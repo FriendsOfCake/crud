@@ -1,41 +1,22 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\Test\TestCase\Action;
 
-use Cake\Core\Plugin;
-use Cake\Routing\DispatcherFactory;
-use Cake\Routing\Router;
 use Crud\TestSuite\IntegrationTestCase;
 
 /**
- *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
 class LookupActionTest extends IntegrationTestCase
 {
-
     /**
      * fixtures property
      *
      * @var array
      */
-    public $fixtures = ['plugin.Crud.Blogs'];
-
-    /**
-     * setUp()
-     *
-     * @return void
-     */
-    public function setUp()
-    {
-        $this->deprecated(function () {
-            Plugin::load('Crud', ['path' => ROOT . DS, 'autoload' => true]);
-        });
-
-        parent::setUp();
-
-        $this->useHttpServer(true);
-    }
+    protected $fixtures = ['plugin.Crud.Blogs'];
 
     /**
      * Test with no extra options

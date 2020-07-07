@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\Test\App\Model\Table;
 
 use Cake\ORM\Query;
@@ -12,7 +14,6 @@ use Cake\ORM\Table;
  */
 class CrudExamplesTable extends Table
 {
-
     public $alias = 'CrudExamples';
 
     public $findMethods = [
@@ -28,7 +29,7 @@ class CrudExamplesTable extends Table
      * @param array $config Config
      * @return void
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         $this->setTable('posts');
     }

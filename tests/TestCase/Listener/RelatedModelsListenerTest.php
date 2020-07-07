@@ -1,12 +1,14 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\Test\TestCase\Listener;
 
 use Cake\Database\Connection;
 use Cake\Database\Schema\TableSchema;
 use Cake\Event\Event;
 use Cake\ORM\Association;
-use Cake\ORM\AssociationCollection;
 use Cake\ORM\Association\BelongsTo;
+use Cake\ORM\AssociationCollection;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
@@ -15,14 +17,12 @@ use Crud\Listener\RelatedModelsListener;
 use Crud\TestSuite\TestCase;
 
 /**
- *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class RelatedModelListenerTest extends TestCase
+class RelatedModelsListenerTest extends TestCase
 {
-
-    public $fixtures = ['core.NumberTrees'];
+    protected $fixtures = ['core.NumberTrees'];
 
     /**
      * testModels

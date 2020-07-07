@@ -1,7 +1,9 @@
 <?php
+declare(strict_types=1);
+
 namespace Crud\Listener;
 
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 
 /**
  * When loaded Crud API Pagination Listener will include
@@ -12,19 +14,18 @@ use Cake\Event\Event;
  */
 class ApiPaginationListener extends BaseListener
 {
-
     /**
      * Returns a list of all events that will fire in the controller during its life-cycle.
      * You can override this function to add you own listener callbacks
      *
      * We attach at priority 10 so normal bound events can run before us
      *
-     * @return array|null
+     * @return array
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         if (!$this->_checkRequestType('api')) {
-            return null;
+            return [];
         }
 
         return [
@@ -35,25 +36,17 @@ class ApiPaginationListener extends BaseListener
     /**
      * Appends the pagination information to the JSON or XML output
      *
-     * @param \Cake\Event\Event $event Event
+     * @param \Cake\Event\EventInterface $event Event
      * @return void
      */
-    public function beforeRender(Event $event)
+    public function beforeRender(EventInterface $event): void
     {
-        $request = $this->_request();
-
-        if (empty($request->getParam('paging'))) {
+        $paging = $this->_request()->getAttribute('paging');
+        if (empty($paging)) {
             return;
         }
 
-        $controller = $this->_controller();
-        list(, $modelClass) = pluginSplit($controller->modelClass);
-
-        if (!array_key_exists($modelClass, $request->getParam('paging'))) {
-            return;
-        }
-
-        $pagination = $request->getParam('paging')[$modelClass];
+        $pagination = current($paging);
         if (empty($pagination)) {
             return;
         }
@@ -67,7 +60,7 @@ class ApiPaginationListener extends BaseListener
             'limit' => $pagination['limit'],
         ];
 
-        $controller->set('pagination', $paginationResponse);
+        $this->_controller()->set('pagination', $paginationResponse);
         $this->_action()->setConfig('serialize.pagination', 'pagination');
     }
 }

@@ -5,8 +5,8 @@ parameters:
 	level: 6
 	paths:
 		- src
+	checkMissingIterableValueType: false
 	excludes_analyse:
 		- */src/TestSuite/*
-	checkMissingIterableValueType: false
 	universalObjectCratesClasses:
 		- Crud\Event\Subject
