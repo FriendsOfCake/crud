@@ -19,5 +19,5 @@ class {{ name }}Controller extends AppController
 {%- set components = Bake.arrayProperty('components', components, {'indent': false})|raw %}
 {% if components|trim %}
     {{- components|raw }}
-{% if actions %}
+{% endif %}
 }
