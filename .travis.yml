@@ -40,11 +40,7 @@ before_script:
   - if [[ $STATIC_ANALYSIS = 1 ]]; then composer require --dev phpstan/phpstan:^0.12 psalm/phar:^3.18; fi
 
 script:
-  - |
-      if [[ $DEFAULT = 1 && $TRAVIS_PHP_VERSION = 7.4 ]]; then
-        mkdir -p build/logs
-        vendor/bin/phpunit --coverage-clover=build/logs/clover.xml
-      fi
+  - if [[ $DEFAULT = 1 && $TRAVIS_PHP_VERSION = 7.4 ]]; then vendor/bin/phpunit --coverage-clover=clover.xml; fi
 
   - if [[ $DEFAULT = 1 && $TRAVIS_PHP_VERSION != 7.4 ]]; then vendor/bin/phpunit; fi
 
@@ -53,12 +49,7 @@ script:
   - if [[ $STATIC_ANALYSIS = 1 ]]; then vendor/bin/phpstan.phar analyse && vendor/bin/psalm.phar; fi
 
 after_success:
-  - |
-      if [[ $DEFAULT = 1 && $TRAVIS_PHP_VERSION = 7.4 ]]; then
-        wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.1.0/php-coveralls.phar
-        chmod +x php-coveralls.phar
-        ./php-coveralls.phar
-      fi
+  - if [[ $DEFAULT = 1 && $TRAVIS_PHP_VERSION = 7.4 ]]; then bash <(curl -s https://codecov.io/bash); fi
 
 notifications:
   email: false
