@@ -80,12 +80,12 @@ Cake\Core\Configure::write('Session', [
 ]);
 
 // Ensure default test connection is defined
-if (!getenv('db_dsn')) {
-    putenv('db_dsn=sqlite:///:memory:');
+if (!getenv('DB_URL')) {
+    putenv('DB_URL=sqlite:///:memory:');
 }
 
 Cake\Datasource\ConnectionManager::setConfig('test', [
-    'url' => getenv('db_dsn'),
+    'url' => getenv('DB_URL'),
     'timezone' => 'UTC'
 ]);
 

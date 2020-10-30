@@ -1,28 +1,28 @@
 <phpunit
-	colors="true"
-	processIsolation="false"
-	stopOnFailure="false"
-	bootstrap="./tests/bootstrap.php">
+    colors="true"
+    processIsolation="false"
+    stopOnFailure="false"
+    bootstrap="./tests/bootstrap.php">
 
-	<testsuites>
-		<testsuite name="Crud">
-			<directory>./tests/</directory>
-		</testsuite>
-	</testsuites>
+    <testsuites>
+        <testsuite name="Crud">
+            <directory>./tests/</directory>
+        </testsuite>
+    </testsuites>
 
-	<listeners>
-		<listener class="\Cake\TestSuite\Fixture\FixtureInjector">
-			<arguments>
-				<object class="\Cake\TestSuite\Fixture\FixtureManager" />
-			</arguments>
-		</listener>
-	</listeners>
+    <listeners>
+        <listener class="\Cake\TestSuite\Fixture\FixtureInjector">
+            <arguments>
+                <object class="\Cake\TestSuite\Fixture\FixtureManager" />
+            </arguments>
+        </listener>
+    </listeners>
 
-	<filter>
+    <filter>
         <whitelist>
             <directory suffix=".php">./src/</directory>
             <directory suffix=".ctp">./src/</directory>
         </whitelist>
-	</filter>
+    </filter>
 
 </phpunit>
