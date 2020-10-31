@@ -66,7 +66,7 @@ trait ControllerTrait
         if ($this->mappedComponent) {
             $this->response = $this->mappedComponent->execute(
                 $this->request->getParam('action'),
-                $args
+                array_values($this->getRequest()->getParam('pass'))
             );
 
             return;
