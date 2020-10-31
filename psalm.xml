@@ -14,6 +14,10 @@
         </ignoreFiles>
     </projectFiles>
 
+    <universalObjectCrates>
+        <class name="Crud\Event\Subject" />
+    </universalObjectCrates>
+
     <issueHandlers>
         <MissingClosureReturnType errorLevel="info" />
 
@@ -23,10 +27,6 @@
 
         <DocblockTypeContradiction errorLevel="info" />
         <RedundantConditionGivenDocblockType errorLevel="info" />
-
-        <UndefinedPropertyFetch errorLevel="info" />
-        <UndefinedThisPropertyFetch errorLevel="info" />
-        <UndefinedPropertyAssignment errorLevel="info" />
 
         <UnsafeInstantiation errorLevel="info" />
     </issueHandlers>

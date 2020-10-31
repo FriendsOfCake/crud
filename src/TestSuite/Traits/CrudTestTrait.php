@@ -39,9 +39,11 @@ trait CrudTestTrait
     protected function _subscribeToEvents(?Controller $controller = null): void
     {
         if ($controller === null) {
+            /** @psalm-suppress UndefinedThisPropertyFetch */
             $controller = $this->controller;
         }
 
+        /** @psalm-suppress UndefinedMagicPropertyFetch */
         $controller->Crud->on('beforeRender', function ($event): void {
             $this->_subject = $event->getSubject();
         });
