@@ -1,0 +1,88 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  testsuite:
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['7.2', '7.4']
+        db-type: [sqlite, mysql, pgsql]
+    name: PHP ${{ matrix.php-version }} & ${{ matrix.db-type }}
+
+    services:
+      postgres:
+        image: postgres
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_PASSWORD: postgres
+
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
+
+    - name: Setup Service
+      if: matrix.db-type == 'mysql'
+      run: |
+        sudo service mysql start
+        mysql -h 127.0.0.1 -u root -proot -e 'CREATE DATABASE cakephp;'
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v1
+      with:
+        php-version: ${{ matrix.php-version }}
+        extension-csv: mbstring, intl, pdo_${{ matrix.db-type }}
+        coverage: pcov
+        pecl: false
+
+    - name: Composer install
+      run: composer install
+
+    - name: Run PHPUnit
+      run: |
+        if [[ ${{ matrix.db-type }} == 'sqlite' ]]; then export DB_URL='sqlite:///:memory:'; fi
+        if [[ ${{ matrix.db-type }} == 'mysql' ]]; then export DB_URL='mysql://root:root@127.0.0.1/cakephp'; fi
+        if [[ ${{ matrix.db-type }} == 'pgsql' ]]; then export DB_URL='postgres://postgres:postgres@127.0.0.1/postgres'; fi
+
+        if [[ ${{ matrix.php-version }} == '7.2' && ${{ matrix.db-type }} == 'sqlite' ]]; then
+          vendor/bin/phpunit --coverage-clover=coverage.xml
+        else
+          vendor/bin/phpunit
+        fi
+
+    - name: Code Coverage Report
+      if: success() && matrix.php-version == '7.2' && matrix.db-type == 'sqlite'
+      uses: codecov/codecov-action@v1
+
+  cs-stan:
+    name: Coding Standard & Static Analysis
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v1
+      with:
+        php-version: '7.4'
+        extension-csv: mbstring, intl
+        coverage: none
+        pecl: false
+
+    - name: Composer Install
+      run: composer require --dev cakephp/cakephp-codesniffer:^4.1 psalm/phar:^3.18 phpstan/phpstan:^0.12
+
+    - name: Run phpcs
+      run: vendor/bin/phpcs --report=checkstyle --standard=vendor/cakephp/cakephp-codesniffer/CakePHP src/ tests/
+
+    - name: Run psalm
+      run: vendor/bin/psalm.phar --output-format=github
+
+    - name: Run phpstan
+      run: vendor/bin/phpstan.phar analyse --error-format=github
