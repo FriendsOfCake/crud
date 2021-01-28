@@ -154,6 +154,34 @@ Response format
 
 The default response format for both XML and JSON has two root keys, ``success`` and ``data``. It's possible to add
 your own root keys simply by using ``_serialize`` on the view var.
+For example you would like to add variable ``my_extra_data`` you have to add it to the configuration of the action like, this:
+
+.. code-block:: php
+
+class MyAction extends BaseAction 
+{
+
+  protected $_defaultConfig = [
+    'serialize' => [
+      'my_extra_data'
+    ],
+    // other stuff
+  ];
+  
+  protected function handle()
+  {
+    // do other stuff here
+    $this->_controller()->set('my_extra_data', 'This is my extra data I want to add to response');
+  }
+ 
+ The response will then look like:
+ 
+ .. code-block:: json
+ {
+  "success" : true,
+  "data" : {},
+  "my_extra_key" : "This is my extra data I want to add to response"
+ 
 
 JSON response
 ^^^^^^^^^^^^^
