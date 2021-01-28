@@ -158,21 +158,22 @@ For example you would like to add variable ``my_extra_data`` you have to add it 
 
 .. code-block:: php
 
-class MyAction extends BaseAction 
-{
-
-  protected $_defaultConfig = [
-    'serialize' => [
-      'my_extra_data'
-    ],
-    // other stuff
-  ];
-  
-  protected function handle()
+  <?php
+  class MyAction extends BaseAction 
   {
-    // do other stuff here
-    $this->_controller()->set('my_extra_data', 'This is my extra data I want to add to response');
-  }
+
+    protected $_defaultConfig = [
+      'serialize' => [
+        'my_extra_data'
+      ],
+      // other stuff
+    ];
+
+    protected function handle()
+    {
+      // do other stuff here
+      $this->_controller()->set('my_extra_data', 'This is my extra data I want to add to response');
+    }
  
  The response will then look like:
  
