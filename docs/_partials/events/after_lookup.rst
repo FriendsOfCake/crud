@@ -12,7 +12,7 @@ Modify the Result
 
   public function lookup()
   {
-      $this->Crud->on('afterLookup', function(\Cake\Event\Event $event) {
+      $this->Crud->on('afterLookup', function(\Cake\Event\EventInterface $event) {
           foreach ($event->getSubject()->entities as $entity) {
               // $entity is an entity
           }

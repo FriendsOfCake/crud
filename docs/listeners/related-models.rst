@@ -129,8 +129,8 @@ Example
 .. code-block:: php
 
     <?php
-    class DemoController extends AppController {
-
+    class DemoController extends AppController
+    {
         public function beforeFilter(\Cake\Event\EventInterface $event) {
             parent::beforeFilter($event);
 

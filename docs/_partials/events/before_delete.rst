@@ -18,7 +18,7 @@ Stop Delete
 
   public function delete($id)
   {
-      $this->Crud->on('beforeDelete', function(\Cake\Event\Event $event) {
+      $this->Crud->on('beforeDelete', function(\Cake\Event\EventInterface $event) {
           // Stop the delete event, the entity will not be deleted
           if ($event->getSubject()->entity->author !== 'admin') {
               $event->stopPropagation();
