@@ -11,7 +11,7 @@ boolean field for a group of database records.
 
   class PostsController extends AppController
   {
-      public function initialize()
+      public function initialize(): void
       {
           parent::initialize();
           $this->Crud->mapAction('toggleActive', [

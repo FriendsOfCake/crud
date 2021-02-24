@@ -18,7 +18,7 @@ it available for all your controllers, application wide.
     <?php
     class AppController extends \Cake\Controller\Controller {
 
-        public function initialize()
+        public function initialize(): void
         {
             $this->loadComponent('RequestHandler');
             $this->loadComponent('Crud.Crud', [
@@ -37,14 +37,13 @@ availability of the listener to specific controllers and actions.
 .. code-block:: php
 
     <?php
-    class SamplesController extends AppController {
-
-        public function beforeFilter(\Cake\Event\Event $event)
+    class SamplesController extends AppController
+    {
+        public function beforeFilter(\Cake\Event\EventInterface $event)
         {
             $this->Crud->addListener('Crud.Api'); // Required
             $this->Crud->addListener('Crud.ApiPagination');
         }
-
     }
 
 Output
@@ -73,14 +72,14 @@ Configuration
 -------------
 
 Configure this listener by setting the
-`CakePHP Pagination <http://book.cakephp.org/3.0/en/controllers/components/pagination.html>`_ options directly to the
+`CakePHP Pagination <http://book.cakephp.org/4/en/controllers/components/pagination.html>`_ options directly to the
 query object.
 
 .. code-block:: php
 
     public function index()
     {
-        $this->Crud->on('beforePaginate', function (\Cake\Event\Event $event) {
+        $this->Crud->on('beforePaginate', function (\Cake\Event\EventInterface $event) {
             $event->getSubject()->query->contain([
                 'Comments' => function ($q) {
                     return $q

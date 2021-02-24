@@ -16,14 +16,14 @@ the ``Crud.beforeFind`` event to the ``_beforeFind()`` method in the controller.
 
   class BlogsController extends AppController {
 
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         return parent::implementedEvents() + [
             'Crud.beforeFind' => '_beforeFind'
         ];
     }
 
-    public function _beforeFind(\Cake\Event\Event $event, \Cake\ORM\Query $query)
+    public function _beforeFind(\Cake\Event\EventInterface $event, \Cake\ORM\Query $query)
     {
 
     }
@@ -45,7 +45,7 @@ Creating your own listener class is very similar to using a controller as a list
 
   class MyListener extends BaseListener
   {
-      public function implementedEvents()
+      public function implementedEvents(): array
       {
           return [
               'Crud.beforeFind' => '_beforeFind'

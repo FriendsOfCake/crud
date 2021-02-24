@@ -14,6 +14,8 @@ A default custom index action might be as simple as the following:
 .. code-block:: phpinline
 
     <?php
+    declare(strict_types=1);
+
     namespace App\Crud\Action;
 
     class MyIndexAction extends \Crud\Action\BaseAction
@@ -39,7 +41,7 @@ A default custom index action might be as simple as the following:
                 ]
             ]
         ];
-    
+
         /**
         * Generic handler for all HTTP verbs
         *
@@ -50,7 +52,6 @@ A default custom index action might be as simple as the following:
             $query = $this->_table()->find($this->findMethod());
             $items = $this->_controller()->paginate($query);
         }
-
     }
 
 .. note::
@@ -76,10 +77,9 @@ Crud component configuration.
 
   class AppController extends \Cake\Controller\Controller
   {
-
       use \Crud\Controller\ControllerTrait;
 
-      public function initialize()
+      public function initialize(): void
       {
           parent::initialize();
 
@@ -89,11 +89,12 @@ Crud component configuration.
               ]
           ]);
       }
+  }
 
 .. note::
 
   Ensure that you escape your namespace when loading your own action classes.
-  
+
 Using custom named controller actions
 -------------------------------------
 
@@ -103,10 +104,9 @@ When using non CRUD named controller actions, like ``UsersController::drinkbeer(
 
   class UsersController extends \Cake\Controller\Controller
   {
-
       use \Crud\Controller\ControllerTrait;
 
-      public function initialize()
+      public function initialize(): void
       {
           parent::initialize();
 
@@ -116,8 +116,8 @@ When using non CRUD named controller actions, like ``UsersController::drinkbeer(
               ]
           ]);
       }
-      
+
       public function drinkbeer() {
         $this->Crud->execute();
       }
-  
+  }

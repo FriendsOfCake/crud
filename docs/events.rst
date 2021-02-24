@@ -28,12 +28,12 @@ automatically.
   class BlogsController extends AppController
   {
 
-      public function implementedEvents()
+      public function implementedEvents(): array
       {
           return parent::implementedEvents() + ['Crud.beforeFind' => '_beforeFind'];
       }
 
-      public function _beforeFind(\Cake\Event\Event $event)
+      public function _beforeFind(\Cake\Event\EventInterface $event)
       {
 
       }
@@ -58,7 +58,7 @@ can be used
 
   public function view($id)
   {
-    $this->Crud->on('beforeFind', function(\Cake\Event\Event $event) {
+    $this->Crud->on('beforeFind', function(\Cake\Event\EventInterface $event) {
         // Will only execute for the view() action
     });
 
@@ -86,7 +86,7 @@ The benefit of the controller method is that you can easily share it between two
       return $this->Crud->execute();
   }
 
-  public function _beforeFind(\Cake\Event\Event $event)
+  public function _beforeFind(\Cake\Event\EventInterface $event)
   {
       // Will execute for both view() and admin_view()
   }

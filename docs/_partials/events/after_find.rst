@@ -19,7 +19,7 @@ Logging the Found Item
 
   public function delete($id)
   {
-      $this->Crud->on('afterFind', function(\Cake\Event\Event $event) {
+      $this->Crud->on('afterFind', function(\Cake\Event\EventInterface $event) {
           $this->log("Found item: " . $event->getSubject()->entity->id . " in the database");
       });
 

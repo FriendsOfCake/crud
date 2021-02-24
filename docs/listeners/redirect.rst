@@ -12,9 +12,10 @@ you want to attach it only to specific controllers and actions:
 .. code-block:: php
 
   <?php
-  class SamplesController extends AppController {
-
-      public function beforeFilter(\Cake\Event\Event $event) {
+  class SamplesController extends AppController
+  {
+      public function beforeFilter(\Cake\Event\EventInterface $event)
+      {
           $this->Crud->addListener('Crud.Redirect');
 
           parent::beforeFilter($event);
@@ -86,9 +87,10 @@ The closure takes two arguments:
 .. code-block:: php
 
   <?php
-  class SamplesController extends AppController {
-
-    public function beforeFilter(\Cake\Event\Event $event) {
+  class SamplesController extends AppController
+  {
+    public function beforeFilter(\Cake\Event\EventInterface $event)
+    {
       $listener = $this->Crud->listener('Redirect');
       $listener->reader($name, Closure $closure);
 
@@ -143,8 +145,7 @@ It's very simple to modify existing or add your own redirect rules:
   <?php
   class SamplesController extends AppController
   {
-
-    public function beforeFilter(\Cake\Event\Event $event)
+    public function beforeFilter(\Cake\Event\EventInterface $event)
     {
       // Get all the redirect rules
       $rules = $this->Crud->action()->redirectConfig();

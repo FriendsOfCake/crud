@@ -27,9 +27,9 @@ you want to attach it only to specific controllers and actions.
 .. code-block:: php
 
   <?php
-  class SamplesController extends AppController {
-
-    public function beforeFilter(\Cake\Event\Event $event) {
+  class SamplesController extends AppController
+  {
+    public function beforeFilter(\Cake\Event\EventInterface $event) {
         $this->Crud->addListener('Crud.Search', [
             // Events to listen for and apply search finder to query.
             'enabled' => [
@@ -50,9 +50,9 @@ attach it to all controllers, application wide.
 .. code-block:: php
 
   <?php
-  class DemoController extends AppController {
-
-      public function initialize()
+  class DemoController extends AppController
+  {
+      public function initialize(): void
       {
           $this->loadComponent('Crud.Crud', [
               'actions' => [

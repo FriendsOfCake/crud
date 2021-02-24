@@ -10,7 +10,7 @@ Add Conditions
 
   public function index()
   {
-      $this->Crud->on('beforePaginate', function(\Cake\Event\Event $event) {
+      $this->Crud->on('beforePaginate', function(\Cake\Event\EventInterface $event) {
           $this->paginate['conditions']['is_active'] = true;
       });
 
