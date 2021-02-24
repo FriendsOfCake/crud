@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['7.2', '7.4']
+        php-version: ['7.2', '7.4', '8.0']
         db-type: [sqlite, mysql, pgsql]
     name: PHP ${{ matrix.php-version }} & ${{ matrix.db-type }}
 
@@ -32,10 +32,10 @@ jobs:
         mysql -h 127.0.0.1 -u root -proot -e 'CREATE DATABASE cakephp;'
 
     - name: Setup PHP
-      uses: shivammathur/setup-php@v1
+      uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php-version }}
-        extension-csv: mbstring, intl, pdo_${{ matrix.db-type }}
+        extensions: mbstring, intl, pdo_${{ matrix.db-type }}
         coverage: pcov
         pecl: false
 
@@ -68,10 +68,10 @@ jobs:
         fetch-depth: 1
 
     - name: Setup PHP
-      uses: shivammathur/setup-php@v1
+      uses: shivammathur/setup-php@v2
       with:
         php-version: '7.4'
-        extension-csv: mbstring, intl
+        extensios: mbstring, intl
         coverage: none
         pecl: false
 
@@ -82,7 +82,9 @@ jobs:
       run: vendor/bin/phpcs --report=checkstyle --standard=vendor/cakephp/cakephp-codesniffer/CakePHP src/ tests/
 
     - name: Run psalm
+      if: failure() || success()
       run: vendor/bin/psalm.phar --output-format=github
 
     - name: Run phpstan
+      if: failure() || success()
       run: vendor/bin/phpstan.phar analyse --error-format=github
