@@ -59,8 +59,8 @@ class ExceptionRendererTest extends TestCase
             'url' => $Controller->getRequest()->getRequestTarget(),
             'message' => 'Hello World',
             'exception' => [
-                'class' => 'Cake\Core\Exception\Exception',
-                'code' => 500,
+                'class' => 'Cake\Core\Exception\CakeException',
+                'code' => 0,
                 'message' => 'Hello World',
             ],
         ];
@@ -135,8 +135,8 @@ class ExceptionRendererTest extends TestCase
             'url' => $Controller->getRequest()->getRequestTarget(),
             'message' => 'Hello World',
             'exception' => [
-                'class' => 'Cake\Core\Exception\Exception',
-                'code' => 500,
+                'class' => 'Cake\Core\Exception\CakeException',
+                'code' => 0,
                 'message' => 'Hello World',
             ],
         ];
@@ -205,8 +205,8 @@ class ExceptionRendererTest extends TestCase
             'url' => $Controller->getRequest()->getRequestTarget(),
             'message' => 'Hello World',
             'exception' => [
-                'class' => 'Cake\Core\Exception\Exception',
-                'code' => 500,
+                'class' => 'Cake\Core\Exception\CakeException',
+                'code' => 0,
                 'message' => 'Hello World',
             ],
         ];
@@ -269,8 +269,8 @@ class ExceptionRendererTest extends TestCase
             'url' => $Controller->getRequest()->getRequestTarget(),
             'message' => 'Hello World',
             'exception' => [
-                'class' => 'Cake\Core\Exception\Exception',
-                'code' => 500,
+                'class' => 'Cake\Core\Exception\CakeException',
+                'code' => 0,
                 'message' => 'Hello World',
             ],
         ];
