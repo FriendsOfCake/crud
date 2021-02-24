@@ -46,7 +46,6 @@ To enable Crud across your whole application add the trait to your ``src/Control
     class AppController extends \Cake\Controller\Controller
     {
         use \Crud\Controller\ControllerTrait;
-
     }
 
 .. note::
@@ -66,7 +65,7 @@ plugin to scaffold all your controllers index actions.
   {
       use \Crud\Controller\ControllerTrait;
 
-      public function initialize()
+      public function initialize(): void
       {
           parent::initialize();
 

@@ -9,7 +9,7 @@ Introduction
 
   The ``API listener`` depends on the ``RequestHandler`` to be loaded **before** ``Crud``.
 
-`Please also see the CakePHP documentation on JSON and XML views <http://book.cakephp.org/3.0/en/views/json-and-xml-views.html>`_
+`Please also see the CakePHP documentation on JSON and XML views <http://book.cakephp.org/4/en/views/json-and-xml-views.html>`_
 
 Setup
 -----
@@ -38,7 +38,8 @@ specific controllers and actions.
   <?php
   class SamplesController extends AppController {
 
-    public function beforeFilter(\Cake\Event\Event $event) {
+    public function beforeFilter(\Cake\Event\EventInterface $event)
+    {
       parent::beforeFilter($event);
       $this->Crud->addListener('Crud.Api');
     }
@@ -51,7 +52,7 @@ Attach it using components array, this is recommended if you want to attach it t
   <?php
   class AppController extends Controller {
 
-    public function initialize()
+    public function initialize(): void
     {
         $this->loadComponent('RequestHandler');
         $this->loadComponent('Crud.Crud', [
@@ -108,10 +109,10 @@ class and enabling it with the ``exceptionRenderer`` configuration option.
   <?php
   class AppController extends Controller {
 
-    public function initialize()
+    public function initialize(): void
     {
       parent::initialize();
-      $this->Crud->config(['listeners.api.exceptionRenderer' => 'App\Error\ExceptionRenderer']);
+      $this->Crud->setConfig(['listeners.api.exceptionRenderer' => 'App\Error\ExceptionRenderer']);
     }
   }
 
@@ -247,7 +248,7 @@ The ``success`` return data can be customized by setting the ``api.success.data.
 .. code-block:: phpinline
 
   //In your Controller/Action
-  $this->Crud->action()->config('api.success.data.entity', [
+  $this->Crud->action()->setConfig('api.success.data.entity', [
       'id', //Extract the `id` value from the entity and place it into the `id` key in the return data.
       'status' => 'status_value' //Extract the `status_value` value from the entity and place it into the `status` key in the return data.
   ]);

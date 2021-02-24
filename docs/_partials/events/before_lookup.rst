@@ -10,7 +10,7 @@ Add Conditions
 
   public function lookup()
   {
-      $this->Crud->on('beforeLookup', function(\Cake\Event\Event $event) {
+      $this->Crud->on('beforeLookup', function(\Cake\Event\EventInterface $event) {
           $this->paginate['conditions']['is_active'] = true;
       });
 

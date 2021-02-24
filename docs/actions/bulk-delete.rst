@@ -10,7 +10,7 @@ You can use the ``Bulk\DeleteAction`` class to delete a group of database record
 
   class PostsController extends AppController
   {
-      public function initialize()
+      public function initialize(): void
       {
           parent::initialize();
           $this->Crud->mapAction('deleteAll', 'Crud.Bulk/Delete');

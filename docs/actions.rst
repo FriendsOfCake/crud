@@ -89,8 +89,8 @@ The real beauty of Crud is the events and the flexibility they provide.
 
 All calls to ``_trigger()`` emit an event, that you as a developer can listen to and inject your own application logic.
 These events are in no way magical, they are simply normal
-`CakePHP events <http://book.cakephp.org/3.0/en/core-libraries/events.html>`_, dispatched like all
-other `events in CakePHP <http://book.cakephp.org/3.0/en/core-libraries/events.html>`_.
+`CakePHP events <http://book.cakephp.org/4/en/core-libraries/events.html>`_, dispatched like all
+other `events in CakePHP <http://book.cakephp.org/4/en/core-libraries/events.html>`_.
 
 You can for example listen for the ``beforePaginate`` event and add conditions to your pagination query, just with a
 few lines of code. Those few lines of code is what makes your application unique. The rest of the code you would

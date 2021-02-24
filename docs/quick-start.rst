@@ -19,13 +19,15 @@ we do this by enabling Crud in the ``AppController`` with the ``actions`` option
 
 .. code-block:: php
 
+    declare(strict_types=1);
+
     namespace App\Controller;
 
     class AppController extends \Cake\Controller\Controller
     {
         use \Crud\Controller\ControllerTrait;
 
-        public function initialize()
+        public function initialize(): void
         {
             parent::initialize();
 
@@ -59,7 +61,7 @@ So, our new Blog needs a Posts controller to allow us to create, read, update an
 This is all the code we need in the ``PostsController`` as Crud will scaffold the controller actions for us.
 
 If you are not using `Crud-View <https://github.com/FriendsOfCake/crud-view>`_ then you will have
-to `bake your templates <http://book.cakephp.org/3.0/en/bake/usage.html>`_.
+to `bake your templates <http://book.cakephp.org/4/en/bake/usage.html>`_.
 
 .. code-block:: sh
 

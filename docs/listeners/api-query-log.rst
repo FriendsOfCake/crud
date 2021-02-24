@@ -20,13 +20,13 @@ you want to attach it only to specific controllers and actions
 .. code-block:: php
 
     <?php
-    class SamplesController extends AppController {
-
-        public function beforeFilter(\Cake\Event\Event $event) {
+    class SamplesController extends AppController
+    {
+        public function beforeFilter(\Cake\Event\EventInterface $event)
+        {
             $this->Crud->addListener('Crud.Api'); // Required
             $this->Crud->addListener('Crud.ApiQueryLog');
         }
-
     }
 
 Attach it in :code:`AppController::initialize()`, this is recommended if you want to
@@ -36,9 +36,9 @@ attach it to all controllers, application wide
 .. code-block:: php
 
     <?php
-    class AppController extends \Cake\Controller\Controller {
-
-        public function initialize()
+    class AppController extends \Cake\Controller\Controller
+    {
+        public function initialize(): void
         {
             $this->loadComponent('RequestHandler');
             $this->loadComponent('Crud.Crud', [

@@ -14,7 +14,7 @@ now begin the actual configuration of Crud.
   class AppController extends \Cake\Controller\Controller
   {
 
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
 
@@ -38,7 +38,7 @@ An example configuration for handling index actions looks like this.
 
     use \Crud\Controller\ControllerTrait;
 
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
 
@@ -57,15 +57,15 @@ An example of on the fly enabling an Crud action:
   class AppController extends \Cake\Controller\Controller
   {
 
-    public function beforeFilter(\Cake\Event\Event $event)
+    public function beforeFilter(\Cake\Event\EventInterface $event)
     {
         $this->Crud->mapAction('myIndex', 'Crud.Index');
     }
-    
+
     public function myIndex()
     {
         // intercept events here
-        
+
         return $this->Crud->execute();
     }
   }
@@ -88,7 +88,7 @@ Action configuration
   Each :doc:`Crud Action<actions>` can have a different set of configuration
   settings, please see their individual documentation pages for more information.
 
-A more verbose example now, where we'll change the view template that Crud will use for index actions to be ``my_index.ctp``
+A more verbose example now, where we'll change the view template that Crud will use for index actions to be ``my_index.php``
 
 .. code-block:: phpinline
 
@@ -97,7 +97,7 @@ A more verbose example now, where we'll change the view template that Crud will 
 
     use \Crud\Controller\ControllerTrait;
 
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
 
@@ -119,7 +119,7 @@ An example of on the fly enabling a Crud action with configuration
   class AppController extends \Cake\Controller\Controller
   {
 
-    public function beforeFilter(\Cake\Event\Event $event)
+    public function beforeFilter(\Cake\Event\EventInterface $event)
     {
         $this->Crud->mapAction('index', [
           'className' => 'Crud.Index',
@@ -164,7 +164,7 @@ specific action in our ``PostsController``.
   class PostsController extends AppController
   {
 
-      public function beforeFilter(\Cake\Event\Event $event)
+      public function beforeFilter(\Cake\Event\EventInterface $event)
       {
           parent::beforeFilter($event);
 
@@ -236,7 +236,7 @@ The easiest way to achieve this is to create an ``AppController`` for the prefix
 extend from that one. Then you can configure Crud in your prefixes ``AppController``.
 
 Let's look at an example, using an ``api`` prefix. For this example, we'll assume your
-`prefix routing <http://book.cakephp.org/3.0/en/development/routing.html#prefix-routing>`_ is already configured.
+`prefix routing <http://book.cakephp.org/4/en/development/routing.html#prefix-routing>`_ is already configured.
 
 First step is to create your new ``ApiAppController`` which should be in ``src/Controller/Api/``.
 
@@ -246,7 +246,7 @@ First step is to create your new ``ApiAppController`` which should be in ``src/C
 
   class ApiAppController extends Controller
   {
-      public function initialize()
+      public function initialize(): void
       {
           $this->loadComponent('Crud.Crud', [
               'actions' => [

@@ -9,7 +9,7 @@ class Example extends \Crud\Listener\BaseListener
      *
      * @return array
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         return [
             'Crud.beforeRender' => ['callable' => 'beforeRender']
@@ -19,11 +19,11 @@ class Example extends \Crud\Listener\BaseListener
     /**
      * Executed when Crud.beforeRender is emitted.
      *
-     * @param \Cake\Event\Event $event Event instance
+     * @param \Cake\Event\EventInterface $event Event instance
      *
      * @return void
      */
-    public function beforeRender(\Cake\Event\Event $event)
+    public function beforeRender(\Cake\Event\EventInterface $event)
     {
         $this->_response()->header('X-Powered-By', 'CRUD 4.0');
     }

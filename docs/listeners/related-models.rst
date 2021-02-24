@@ -29,7 +29,7 @@ Before you're able to configure your ``relatedModels`` you need to load the list
   <?php
   class AppController extends Controller {
 
-    public function initialize()
+    public function initialize(): void
     {
         parent::initialize();
         $this->Crud->addListener('relatedModels', 'Crud.RelatedModels');
@@ -44,9 +44,9 @@ You can enable and disable which model relations you want to have automatically 
 .. code-block:: php
 
     <?php
-    class DemoController extends AppController {
-
-        public function initialize()
+    class DemoController extends AppController
+    {
+        public function initialize(): void
         {
             $this->loadComponent('Crud.Crud', [
                 'actions' => [
@@ -90,7 +90,7 @@ It’s possible to dynamically reconfigure the relatedModels listener
     <?php
     // This can be changed in beforeFilter and the controller action
 
-    public function beforeFilter(\Cake\Event\Event $event)
+    public function beforeFilter(\Cake\Event\EventInterface $event)
     {
         // Automatically executes find('list') on the Users ($users) and Tags ($tags) tables
         $this->Crud->listener('relatedModels')->relatedModels(['Users', 'Tags'], 'your_action');
@@ -131,10 +131,10 @@ Example
     <?php
     class DemoController extends AppController {
 
-        public function beforeFilter(\Cake\Event\Event $event) {
+        public function beforeFilter(\Cake\Event\EventInterface $event) {
             parent::beforeFilter($event);
 
-            $this->Crud->on('relatedModel', function(\Cake\Event\Event $event) {
+            $this->Crud->on('relatedModel', function(\Cake\Event\EventInterface $event) {
                 if ($event->getSubject()->association->name() === 'Authors') {
                     $event->getSubject()->query->limit(3);
                     $event->getSubject()->query->where(['is_active' => true]);
