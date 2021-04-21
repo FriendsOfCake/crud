@@ -52,6 +52,27 @@ trait ControllerTrait
     }
 
     /**
+     * Return true for a mapped action so that AuthComponent doesn't skip
+     * authentication / authorization for that action.
+     *
+     * @param string $action Action name
+     * @return bool True is action is mapped and enabled.
+     */
+    public function isAction(string $action): bool
+    {
+        $isAction = parent::isAction($action);
+        if ($isAction) {
+            return true;
+        }
+
+        if ($this->_isActionMapped()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Dispatches the controller action.
      *
      * If a controller method with required name does not exist we attempt to execute Crud action.
