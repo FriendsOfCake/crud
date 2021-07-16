@@ -155,6 +155,45 @@ Response format
 
 The default response format for both XML and JSON has two root keys, ``success`` and ``data``. It's possible to add
 your own root keys simply by using ``_serialize`` on the view var.
+For example you would like to add variable ``my_extra_data`` you have to add it to the configuration of the action like, this:
+
+.. code-block:: php
+
+  class SomeController extends AppController {
+
+    public function beforeFilter(Event $event) {
+          $this->Crud->setConfig([
+                'serialize' => [
+                    'my_extra_data'
+                ],
+                'api' => [
+                    'success' => [
+                        'data' => [
+                            'entity' => [],
+                            'my_extra_data'
+                        ]
+                    ]
+                ]
+            ]);
+      }
+  }
+ 
+As an alternative use it in a controller action:
+ 
+.. code-block:: php
+
+  $this->set(compact('aggregation')); 
+  $this->Crud->action()->setConfig('serialize.aggregation', 'aggregation');
+ 
+The response will then look like:
+ 
+.. code-block:: json
+ {
+    "success" : true,
+    "data" : {},
+    "my_extra_key" : "This is my extra data I want to add to response"
+  }
+ 
 
 JSON response
 ^^^^^^^^^^^^^
