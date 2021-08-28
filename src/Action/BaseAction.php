@@ -11,6 +11,7 @@ use Cake\Utility\Text;
 use Crud\Core\BaseObject;
 use Crud\Event\Subject;
 use Exception;
+use RuntimeException;
 
 /**
  * Base Crud class
@@ -188,6 +189,10 @@ abstract class BaseAction extends BaseObject
         $event = $this->_trigger('setFlash', $subject);
         if ($event->isStopped()) {
             return;
+        }
+
+        if (!isset($this->_controller()->Flash)) {
+            throw new RuntimeException('FlashComponent not loaded in controller.');
         }
 
         $this->_controller()->Flash->set($subject->text, [
