@@ -37,7 +37,6 @@ jobs:
         php-version: ${{ matrix.php-version }}
         extensions: mbstring, intl, pdo_${{ matrix.db-type }}
         coverage: pcov
-        pecl: false
 
     - name: Composer install
       run: composer install
@@ -71,9 +70,8 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: '7.4'
-        extensios: mbstring, intl
+        extensions: mbstring, intl
         coverage: none
-        pecl: false
 
     - name: Composer Install
       run: composer require --dev cakephp/cakephp-codesniffer:^4.1 psalm/phar:^3.18 phpstan/phpstan:^0.12
