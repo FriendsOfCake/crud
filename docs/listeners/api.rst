@@ -94,37 +94,21 @@ won't do anything at all.
 
 All its callbacks will simply return ``NULL`` and don't get in your way.
 
-Exception handler
------------------
+Exception renderer
+------------------
 
-The Api listener overrides the ``Exception.renderer`` for ``api`` requests,
-so in case of an error, a standardized error will be returned, in either
-``json`` or ``xml`` - according to the API request type.
+In case of an error, in order to get a standardized response in either
+``json`` or ``xml`` - according to the API request type, for `api` requests,
+the default CakePHP exception renderer needs to be overridden.
 
-Create a custom exception renderer by extending the Crud's ``ExceptionRenderer``
-class and enabling it with the ``exceptionRenderer`` configuration option.
-
-.. code-block:: php
-
-  <?php
-  class AppController extends Controller {
-
-    public function initialize(): void
-    {
-      parent::initialize();
-      $this->Crud->setConfig(['listeners.api.exceptionRenderer' => 'App\Error\ExceptionRenderer']);
-    }
-  }
-
-**Note:** However if you are using CakePHP 3.3+'s PSR7 middleware feature the ``exceptionRenderer``
-config won't be used and instead you will have to set the ``Error.exceptionRenderer``
-config in ``config/app.php`` to ``'Crud\Error\ExceptionRenderer'`` as following:
+Set the ``Error.exceptionRenderer`` config in ``config/app.php`` to 
+``\Crud\Error\ExceptionRenderer::class`` as following:
 
 .. code-block:: php
 
     'Error' => [
         'errorLevel' => E_ALL,
-        'exceptionRenderer' => 'Crud\Error\ExceptionRenderer',
+        'exceptionRenderer' => \Crud\Error\ExceptionRenderer::class,
         'skipLog' => [],
         'log' => true,
         'trace' => true,
