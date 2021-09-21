@@ -138,7 +138,7 @@ Response format
 ---------------
 
 The default response format for both XML and JSON has two root keys, ``success`` and ``data``. It's possible to add
-your own root keys simply by using ``_serialize`` on the view var.
+your own root keys by using the ``serialize`` view builder option.
 
 JSON response
 ^^^^^^^^^^^^^
