@@ -52,7 +52,7 @@ class DeleteActionTest extends IntegrationTestCase
             ['priority' => 11],
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
-                    ->setMethods(['set'])
+                    ->onlyMethods(['set'])
                     ->disableOriginalConstructor()
                     ->getMock();
 
@@ -102,7 +102,7 @@ class DeleteActionTest extends IntegrationTestCase
             ['priority' => 11],
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
-                    ->setMethods(['set'])
+                    ->onlyMethods(['set'])
                     ->disableOriginalConstructor()
                     ->getMock();
 
@@ -156,7 +156,7 @@ class DeleteActionTest extends IntegrationTestCase
             ['priority' => 11],
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
-                    ->setMethods(['set'])
+                    ->onlyMethods(['set'])
                     ->disableOriginalConstructor()
                     ->getMock();
 

@@ -10,7 +10,6 @@ use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
-use Cake\ORM\TableRegistry;
 use Crud\Controller\Component\CrudComponent;
 use Crud\Test\App\Controller\Component\TestCrudComponent;
 use Crud\Test\App\Controller\CrudExamplesController;
@@ -45,17 +44,17 @@ class CrudComponentTest extends TestCase
 
         EventManager::instance(new TestCrudEventManager());
 
-        $this->model = TableRegistry::get('CrudExamples');
+        $this->model = $this->getTableLocator()->get('CrudExamples');
 
         $this->request = $this->getMockBuilder(ServerRequest::class)
-            ->setMethods(['is', 'getMethod'])
+            ->onlyMethods(['is', 'getMethod'])
             ->getMock();
 
         $this->request->expects($this->any())->method('is')->will($this->returnValue(true));
 
         $response = new Response();
         $this->controller = $this->getMockBuilder(CrudExamplesController::class)
-            ->setMethods(['header', 'redirect', 'render', '_stop'])
+            ->onlyMethods(['redirect', 'render'])
             ->setConstructorArgs([$this->request, $response, 'CrudExamples', EventManager::instance()])
             ->getMock();
 
@@ -110,7 +109,7 @@ class CrudComponentTest extends TestCase
             ],
         ];
         $Crud = $this->getMockBuilder(CrudComponent::class)
-            ->setMethods(['_loadListeners', 'trigger'])
+            ->onlyMethods(['_loadListeners', 'trigger'])
             ->setConstructorArgs([$this->Registry, $config])
             ->getMock();
         $Crud
@@ -163,7 +162,7 @@ class CrudComponentTest extends TestCase
         $config = ['actions' => ['Crud.Index']];
 
         $Crud = $this->getMockBuilder(CrudComponent::class)
-            ->setMethods(['execute'])
+            ->onlyMethods(['execute'])
             ->setConstructorArgs([$this->Registry, $config])
             ->getMock();
         $Crud

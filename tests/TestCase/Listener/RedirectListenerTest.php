@@ -26,7 +26,7 @@ class RedirectListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(RedirectListener::class)
-            ->setMethods(null)
+            ->onlyMethods([])
             ->disableoriginalConstructor()
             ->getMock();
 
@@ -46,7 +46,7 @@ class RedirectListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(RedirectListener::class)
-            ->setMethods(null)
+            ->onlyMethods([])
             ->disableoriginalConstructor()
             ->getMock();
 
@@ -83,7 +83,7 @@ class RedirectListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(RedirectListener::class)
-            ->setMethods(null)
+            ->onlyMethods([])
             ->disableoriginalConstructor()
             ->getMock();
 
@@ -104,7 +104,7 @@ class RedirectListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(RedirectListener::class)
-            ->setMethods(null)
+            ->onlyMethods([])
             ->disableoriginalConstructor()
             ->getMock();
 
@@ -124,7 +124,7 @@ class RedirectListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(RedirectListener::class)
-            ->setMethods(null)
+            ->onlyMethods([])
             ->disableoriginalConstructor()
             ->getMock();
 
@@ -149,7 +149,7 @@ class RedirectListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(RedirectListener::class)
-            ->setMethods(['_request'])
+            ->onlyMethods(['_request'])
             ->disableoriginalConstructor()
             ->getMock();
 
@@ -177,7 +177,7 @@ class RedirectListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(RedirectListener::class)
-            ->setMethods(['_request'])
+            ->onlyMethods(['_request'])
             ->disableoriginalConstructor()
             ->getMock();
 
@@ -205,7 +205,7 @@ class RedirectListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(RedirectListener::class)
-            ->setMethods(['_request'])
+            ->onlyMethods(['_request'])
             ->disableoriginalConstructor()
             ->getMock();
 
@@ -233,7 +233,7 @@ class RedirectListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(RedirectListener::class)
-            ->setMethods(null)
+            ->onlyMethods([])
             ->disableoriginalConstructor()
             ->getMock();
 
@@ -242,7 +242,7 @@ class RedirectListenerTest extends TestCase
         $subject = new Subject();
         $subject->entity = $this
             ->getMockBuilder(Entity::class)
-            ->setMethods(['get'])
+            ->onlyMethods(['get'])
             ->disableoriginalConstructor()
             ->getMock();
         $subject->entity
@@ -265,7 +265,7 @@ class RedirectListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(RedirectListener::class)
-            ->setMethods(null)
+            ->onlyMethods([])
             ->disableoriginalConstructor()
             ->getMock();
 
@@ -292,13 +292,13 @@ class RedirectListenerTest extends TestCase
     {
         $action = $this
             ->getMockBuilder(BaseAction::class)
-            ->setMethods(null)
+            ->onlyMethods([])
             ->disableoriginalConstructor()
             ->getMock();
 
         $listener = $this
             ->getMockBuilder(RedirectListener::class)
-            ->setMethods(['_action', '_getKey'])
+            ->onlyMethods(['_action', '_getKey'])
             ->disableoriginalConstructor()
             ->getMock();
         $listener
@@ -324,7 +324,7 @@ class RedirectListenerTest extends TestCase
     {
         $action = $this
             ->getMockBuilder(BaseAction::class)
-            ->setMethods(null)
+            ->onlyMethods([])
             ->disableoriginalConstructor()
             ->getMock();
 
@@ -334,7 +334,7 @@ class RedirectListenerTest extends TestCase
 
         $listener = $this
             ->getMockBuilder(RedirectListener::class)
-            ->setMethods(['_action', '_getKey', '_getUrl'])
+            ->onlyMethods(['_action', '_getKey', '_getUrl'])
             ->disableoriginalConstructor()
             ->getMock();
         $listener
@@ -363,7 +363,7 @@ class RedirectListenerTest extends TestCase
     {
         $action = $this
             ->getMockBuilder(BaseAction::class)
-            ->setMethods(null)
+            ->onlyMethods([])
             ->disableoriginalConstructor()
             ->getMock();
 
@@ -377,7 +377,7 @@ class RedirectListenerTest extends TestCase
 
         $listener = $this
             ->getMockBuilder(RedirectListener::class)
-            ->setMethods(['_action', '_getKey', '_getUrl'])
+            ->onlyMethods(['_action', '_getKey', '_getUrl'])
             ->disableoriginalConstructor()
             ->getMock();
         $listener
@@ -461,7 +461,7 @@ class RedirectListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(RedirectListener::class)
-            ->setMethods(['_request'])
+            ->onlyMethods(['_request'])
             ->disableoriginalConstructor()
             ->getMock();
 
