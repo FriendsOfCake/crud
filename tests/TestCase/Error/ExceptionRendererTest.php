@@ -28,13 +28,11 @@ class ExceptionRendererTest extends TestCase
         $Exception = new Exception('Hello World');
 
         $Controller = $this->getMockBuilder(Controller::class)
-            ->setMethods(['render'])
+            ->onlyMethods(['render'])
             ->getMock();
-        $Controller->request = new ServerRequest();
-        $Controller->response = new Response();
 
         $Renderer = $this->getMockBuilder(ExceptionRenderer::class)
-            ->setMethods(['_getController'])
+            ->onlyMethods(['_getController'])
             ->disableOriginalConstructor()
             ->getMock();
         $Renderer
@@ -92,7 +90,7 @@ class ExceptionRendererTest extends TestCase
         $Exception = new Exception('Hello World');
 
         $QueryLogger = $this->getMockBuilder(QueryLogger::class)
-            ->setMethods(['getLogs'])
+            ->onlyMethods(['getLogs'])
             ->getMock();
         $currentLogger = ConnectionManager::get('test')->getLogger();
         ConnectionManager::get('test')->setLogger($QueryLogger);
@@ -104,13 +102,13 @@ class ExceptionRendererTest extends TestCase
             ->will($this->returnValue(['query']));
 
         $Controller = $this->getMockBuilder(Controller::class)
-            ->setMethods(['render'])
+            ->onlyMethods(['render'])
             ->getMock();
         $Controller->request = new ServerRequest();
         $Controller->response = new Response();
 
         $Renderer = $this->getMockBuilder(ExceptionRenderer::class)
-            ->setMethods(['_getController'])
+            ->onlyMethods(['_getController'])
             ->disableOriginalConstructor()
             ->getMock();
         $Renderer
@@ -174,13 +172,13 @@ class ExceptionRendererTest extends TestCase
         $Exception = new Exception('Hello World');
 
         $Controller = $this->getMockBuilder(Controller::class)
-            ->setMethods(['render'])
+            ->onlyMethods(['render'])
             ->getMock();
         $Controller->request = new ServerRequest();
         $Controller->response = new Response();
 
         $Renderer = $this->getMockBuilder(ExceptionRenderer::class)
-            ->setMethods(['_getController'])
+            ->onlyMethods(['_getController'])
             ->disableOriginalConstructor()
             ->getMock();
         $Renderer
@@ -236,15 +234,11 @@ class ExceptionRendererTest extends TestCase
         $Exception = new Exception('Hello World');
 
         $Controller = $this->getMockBuilder(Controller::class)
-            ->setMethods(['render'])
-            ->getMock();
-        $Controller->request = new ServerRequest();
-        $Controller->response = $this->getMockBuilder(Response::class)
-            ->setMethods(['send'])
+            ->onlyMethods(['render'])
             ->getMock();
 
         $Renderer = $this->getMockBuilder(ExceptionRenderer::class)
-            ->setMethods(['_getController'])
+            ->onlyMethods(['_getController'])
             ->disableOriginalConstructor()
             ->getMock();
         $Renderer
@@ -303,14 +297,11 @@ class ExceptionRendererTest extends TestCase
         $NestedException = new Exception('Generic Exception Description');
 
         $Controller = $this->getMockBuilder(Controller::class)
-            ->setMethods(['render'])
-            ->getMock();
-        $Controller->request = new ServerRequest();
-        $Controller->response = $this->getMockBuilder(Response::class)
+            ->onlyMethods(['render'])
             ->getMock();
 
         $Renderer = $this->getMockBuilder(ExceptionRenderer::class)
-            ->setMethods(['_getController'])
+            ->onlyMethods(['_getController'])
             ->disableOriginalConstructor()
             ->getMock();
         $Renderer
@@ -369,13 +360,13 @@ class ExceptionRendererTest extends TestCase
         $Exception = new ValidationException($entity);
 
         $Controller = $this->getMockBuilder(Controller::class)
-            ->setMethods(['render'])
+            ->onlyMethods(['render'])
             ->getMock();
         $Controller->request = new ServerRequest();
         $Controller->response = new Response();
 
         $Renderer = $this->getMockBuilder(ExceptionRenderer::class)
-            ->setMethods(['_getController'])
+            ->onlyMethods(['_getController'])
             ->disableOriginalConstructor()
             ->getMock();
         $Renderer
@@ -410,14 +401,13 @@ class ExceptionRendererTest extends TestCase
 
         $Exception = new ValidationException($entity);
 
+        /** @var \Cake\Controller\Controller&\PHPUnit\Framework\MockObject\MockObject $Controller */
         $Controller = $this->getMockBuilder(Controller::class)
-            ->setMethods(['render'])
+            ->onlyMethods(['render'])
             ->getMock();
-        $Controller->request = new ServerRequest();
-        $Controller->response = new Response();
 
         $Renderer = $this->getMockBuilder(ExceptionRenderer::class)
-            ->setMethods(['_getController'])
+            ->onlyMethods(['_getController'])
             ->disableOriginalConstructor()
             ->getMock();
         $Renderer
@@ -463,13 +453,11 @@ class ExceptionRendererTest extends TestCase
         $Exception = new ValidationException($entity);
 
         $Controller = $this->getMockBuilder(Controller::class)
-            ->setMethods(['render'])
+            ->onlyMethods(['render'])
             ->getMock();
-        $Controller->request = new ServerRequest();
-        $Controller->response = new Response();
 
         $Renderer = $this->getMockBuilder(ExceptionRenderer::class)
-            ->setMethods(['_getController'])
+            ->onlyMethods(['_getController'])
             ->disableOriginalConstructor()
             ->getMock();
         $Renderer

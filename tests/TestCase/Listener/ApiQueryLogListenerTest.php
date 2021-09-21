@@ -42,7 +42,7 @@ class ApiQueryLogListenerTest extends TestCase
         $Instance = $this
             ->getMockBuilder(ApiQueryLogListener::class)
             ->disableOriginalConstructor()
-            ->setMethods(['_checkRequestType'])
+            ->onlyMethods(['_checkRequestType'])
             ->getMock();
         $Instance
             ->expects($this->once())
@@ -69,7 +69,7 @@ class ApiQueryLogListenerTest extends TestCase
         $Instance = $this
             ->getMockBuilder(ApiQueryLogListener::class)
             ->disableOriginalConstructor()
-            ->setMethods(['_checkRequestType'])
+            ->onlyMethods(['_checkRequestType'])
             ->getMock();
         $Instance
             ->expects($this->once())
@@ -96,7 +96,7 @@ class ApiQueryLogListenerTest extends TestCase
         $Instance = $this
             ->getMockBuilder(ApiQueryLogListener::class)
             ->disableOriginalConstructor()
-            ->setMethods(['_getQueryLogs'])
+            ->onlyMethods(['_getQueryLogs'])
             ->getMock();
         $Instance
             ->expects($this->never())
@@ -119,7 +119,7 @@ class ApiQueryLogListenerTest extends TestCase
         $Action = $this
             ->getMockBuilder(BaseAction::class)
             ->disableOriginalConstructor()
-            ->setMethods(['setConfig'])
+            ->onlyMethods(['setConfig'])
             ->getMock();
         $Action
             ->expects($this->once())
@@ -129,7 +129,7 @@ class ApiQueryLogListenerTest extends TestCase
         $Controller = $this
             ->getMockBuilder(Controller::class)
             ->disableOriginalConstructor()
-            ->setMethods(['set'])
+            ->onlyMethods(['set'])
             ->getMock();
         $Controller
             ->expects($this->once())
@@ -139,7 +139,7 @@ class ApiQueryLogListenerTest extends TestCase
         $Instance = $this
             ->getMockBuilder(ApiQueryLogListener::class)
             ->disableOriginalConstructor()
-            ->setMethods(['_getQueryLogs', '_action', '_controller'])
+            ->onlyMethods(['_getQueryLogs', '_action', '_controller'])
             ->getMock();
         $Instance
             ->expects($this->once())
@@ -172,7 +172,7 @@ class ApiQueryLogListenerTest extends TestCase
         $DefaultSource = $this
             ->getMockBuilder(Connection::class)
             ->disableOriginalConstructor()
-            ->setMethods([$methodName, 'setLogger'])
+            ->onlyMethods([$methodName, 'setLogger'])
             ->getMock();
         $DefaultSource
             ->expects($this->once())
@@ -186,7 +186,7 @@ class ApiQueryLogListenerTest extends TestCase
         $Instance = $this
             ->getMockBuilder(ApiQueryLogListener::class)
             ->disableOriginalConstructor()
-            ->setMethods(['_getSources', '_getSource'])
+            ->onlyMethods(['_getSources', '_getSource'])
             ->getMock();
         $Instance
             ->expects($this->once())
@@ -216,7 +216,7 @@ class ApiQueryLogListenerTest extends TestCase
         $DefaultSource = $this
             ->getMockBuilder(Connection::class)
             ->disableOriginalConstructor()
-            ->setMethods([$methodName, 'setLogger'])
+            ->onlyMethods([$methodName, 'setLogger'])
             ->getMock();
         $DefaultSource
             ->expects($this->once())
@@ -230,7 +230,7 @@ class ApiQueryLogListenerTest extends TestCase
         $TestSource = $this
             ->getMockBuilder(Connection::class)
             ->disableOriginalConstructor()
-            ->setMethods([$methodName, 'setLogger'])
+            ->onlyMethods([$methodName, 'setLogger'])
             ->getMock();
         $TestSource
             ->expects($this->once())
@@ -244,7 +244,7 @@ class ApiQueryLogListenerTest extends TestCase
         $Instance = $this
             ->getMockBuilder(ApiQueryLogListener::class)
             ->disableOriginalConstructor()
-            ->setMethods(['_getSources', '_getSource'])
+            ->onlyMethods(['_getSources', '_getSource'])
             ->getMock();
         $Instance
             ->expects($this->never())

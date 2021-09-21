@@ -10,7 +10,6 @@ use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\ORM\BehaviorRegistry;
 use Cake\ORM\Table;
-use Cake\ORM\TableRegistry;
 use Crud\Event\Subject;
 use Crud\Listener\SearchListener;
 use Crud\TestSuite\TestCase;
@@ -28,7 +27,7 @@ class SearchListenerTest extends TestCase
     {
         $this->removePlugins(['Search']);
 
-        TableRegistry::clear();
+        $this->getTableLocator()->clear();
     }
 
     /**
@@ -40,7 +39,7 @@ class SearchListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(SearchListener::class)
-            ->setMethods(null)
+            ->onlyMethods([])
             ->disableoriginalConstructor()
             ->getMock();
 
@@ -74,14 +73,15 @@ class SearchListenerTest extends TestCase
             ->will($this->returnValue(false));
 
         $tableMock = $this->getMockBuilder(Table::class)
-            ->setMockClassName('SearchTables')
-            ->setMethods(['behaviors', 'filterParams'])
+            ->setMockClassName('SearchesTable')
+            ->onlyMethods(['behaviors'])
+            ->addMethods(['filterParams'])
             ->getMock();
         $tableMock->expects($this->any())
             ->method('behaviors')
             ->will($this->returnValue($behaviorRegistryMock));
 
-        TableRegistry::set('Search', $tableMock);
+        $this->getTableLocator()->set('Search', $tableMock);
 
         $queryMock = $this->getMockBuilder(\Cake\ORM\Query::class)
             ->disableOriginalConstructor()
@@ -123,7 +123,7 @@ class SearchListenerTest extends TestCase
 
         $behaviorRegistryMock = $this->getMockBuilder(BehaviorRegistry::class)
             ->setMockClassName('BehaviorRegistry')
-            ->setMethods(['has'])
+            ->onlyMethods(['has'])
             ->getMock();
         $behaviorRegistryMock->expects($this->once())
             ->method('has')
@@ -131,13 +131,13 @@ class SearchListenerTest extends TestCase
 
         $tableMock = $this->getMockBuilder(Table::class)
             ->setMockClassName('SearchTables')
-            ->setMethods(['behaviors'])
+            ->onlyMethods(['behaviors'])
             ->getMock();
         $tableMock->expects($this->any())
             ->method('behaviors')
             ->will($this->returnValue($behaviorRegistryMock));
 
-        TableRegistry::set('Search', $tableMock);
+        $this->getTableLocator()->set('Search', $tableMock);
 
         $queryMock = $this->getMockBuilder(\Cake\ORM\Query::class)
             ->disableOriginalConstructor()

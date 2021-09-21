@@ -35,7 +35,7 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->setMethods(['setupDetectors', '_checkRequestType'])
+            ->onlyMethods(['setupDetectors', '_checkRequestType'])
             ->disableOriginalConstructor()
             ->getMock();
         $listener
@@ -67,7 +67,7 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->setMethods(['setupDetectors', '_checkRequestType'])
+            ->onlyMethods(['setupDetectors', '_checkRequestType'])
             ->disableOriginalConstructor()
             ->getMock();
         $listener
@@ -93,7 +93,7 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->setMethods(['_checkRequestMethods'])
+            ->onlyMethods(['_checkRequestMethods'])
             ->disableOriginalConstructor()
             ->getMock();
         $listener
@@ -113,12 +113,12 @@ class ApiListenerTest extends TestCase
         $action = $this
             ->getMockBuilder(IndexAction::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getConfig'])
+            ->onlyMethods(['getConfig'])
             ->getMock();
 
         $response = $this
             ->getMockBuilder(Response::class)
-            ->setMethods(['withStatus'])
+            ->onlyMethods(['withStatus'])
             ->getMock();
 
         $subject = $this
@@ -131,7 +131,7 @@ class ApiListenerTest extends TestCase
         $listener = $this
             ->getMockBuilder(ApiListener::class)
             ->disableOriginalConstructor()
-            ->setMethods(['_action', 'render'])
+            ->onlyMethods(['_action', 'render'])
             ->getMock();
         $listener
             ->expects($this->nextCounter($listener))
@@ -165,12 +165,12 @@ class ApiListenerTest extends TestCase
         $action = $this
             ->getMockBuilder(DeleteAction::class)
             ->disableOriginalConstructor()
-            ->setMethods(['handle'])
+            ->onlyMethods(['handle'])
             ->getMock();
 
         $response = $this
             ->getMockBuilder(Response::class)
-            ->setMethods(['withStatus'])
+            ->onlyMethods(['withStatus'])
             ->getMock();
 
         $subject = $this
@@ -183,7 +183,7 @@ class ApiListenerTest extends TestCase
         $listener = $this
             ->getMockBuilder(ApiListener::class)
             ->disableOriginalConstructor()
-            ->setMethods(['_action', 'render'])
+            ->onlyMethods(['_action', 'render'])
             ->getMock();
         $listener
             ->expects($this->nextCounter($listener))
@@ -214,12 +214,12 @@ class ApiListenerTest extends TestCase
         $action = $this
             ->getMockBuilder(ViewAction::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getConfig'])
+            ->onlyMethods(['getConfig'])
             ->getMock();
 
         $response = $this
             ->getMockBuilder(Response::class)
-            ->setMethods(['withStatus'])
+            ->onlyMethods(['withStatus'])
             ->getMock();
 
         $subject = $this
@@ -232,7 +232,7 @@ class ApiListenerTest extends TestCase
         $listener = $this
             ->getMockBuilder(ApiListener::class)
             ->disableOriginalConstructor()
-            ->setMethods(['_action', 'render'])
+            ->onlyMethods(['_action', 'render'])
             ->getMock();
         $listener
             ->expects($this->nextCounter($listener))
@@ -266,7 +266,7 @@ class ApiListenerTest extends TestCase
         $action = $this
             ->getMockBuilder(IndexAction::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getConfig'])
+            ->onlyMethods(['getConfig'])
             ->getMock();
 
         $subject = $this->getMockBuilder(Subject::class)
@@ -280,7 +280,7 @@ class ApiListenerTest extends TestCase
         $listener = $this
             ->getMockBuilder(ApiListener::class)
             ->disableOriginalConstructor()
-            ->setMethods(['_action', 'render', '_exceptionResponse'])
+            ->onlyMethods(['_action', 'render', '_exceptionResponse'])
             ->getMock();
         $listener
             ->expects($this->nextCounter($listener))
@@ -313,7 +313,7 @@ class ApiListenerTest extends TestCase
         $listener = $this
             ->getMockBuilder(ApiListener::class)
             ->disableOriginalConstructor()
-            ->setMethods(null)
+            ->onlyMethods([])
             ->getMock();
 
         $expected = [
@@ -419,7 +419,7 @@ class ApiListenerTest extends TestCase
         $listener = $this
             ->getMockBuilder(ApiListener::class)
             ->disableOriginalConstructor()
-            ->setMethods(null)
+            ->onlyMethods([])
             ->getMock();
 
         $event = new Event('Crud.Exception', new Subject());
@@ -427,13 +427,13 @@ class ApiListenerTest extends TestCase
         if (isset($apiConfig['type']) && $apiConfig['type'] === 'validate') {
             $event->getSubject()->set([
                 'entity' => $this->getMockBuilder(Entity::class)
-                    ->setMethods(['errors'])
+                    ->onlyMethods(['getErrors'])
                     ->getMock(),
             ]);
 
             $event->getSubject()->entity
                 ->expects($this->any())
-                ->method('errors')
+                ->method('getErrors')
                 ->will($this->returnValue($validationErrors));
         }
 
@@ -452,19 +452,19 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->setMethods(['_action', '_controller'])
+            ->onlyMethods(['_action', '_controller'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $controller = $this
             ->getMockBuilder(Controller::class)
-            ->setMethods(['set'])
+            ->onlyMethods(['set'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $action = $this
             ->getMockBuilder(IndexAction::class)
-            ->setMethods(['config', 'viewVar'])
+            ->onlyMethods(['viewVar'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -516,19 +516,19 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->setMethods(['_action', '_controller'])
+            ->onlyMethods(['_action', '_controller'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $action = $this
             ->getMockBuilder($action)
-            ->setMethods(['setConfig', 'getConfig', 'viewVar'])
+            ->onlyMethods(['setConfig', 'getConfig', 'viewVar'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $controller = $this
             ->getMockBuilder(Controller::class)
-            ->setMethods(['set'])
+            ->onlyMethods(['set'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -577,13 +577,13 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->setMethods(['_action', '_controller'])
+            ->onlyMethods(['_action', '_controller'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $controller = $this
             ->getMockBuilder(Controller::class)
-            ->setMethods(['set'])
+            ->onlyMethods(['set'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -591,7 +591,7 @@ class ApiListenerTest extends TestCase
 
         $action = $this
             ->getMockBuilder(IndexAction::class)
-            ->setMethods(['config', 'viewVar'])
+            ->onlyMethods(['viewVar'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -628,19 +628,19 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->setMethods(['_action', '_controller'])
+            ->onlyMethods(['_action', '_controller'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $controller = $this
             ->getMockBuilder(Controller::class)
-            ->setMethods(['set'])
+            ->onlyMethods(['set'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $action = $this
             ->getMockBuilder(IndexAction::class)
-            ->setMethods(['config', 'viewVar'])
+            ->onlyMethods(['viewVar'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -676,19 +676,19 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->setMethods(['_action', '_controller'])
+            ->onlyMethods(['_action', '_controller'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $controller = $this
             ->getMockBuilder(BlogsController::class)
-            ->setMethods(['set', 'getName'])
+            ->onlyMethods(['set', 'getName'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $action = $this
             ->getMockBuilder(AddAction::class)
-            ->setMethods(['config', 'scope', '_controller'])
+            ->onlyMethods(['scope', '_controller'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -730,7 +730,7 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->setMethods(['_controller'])
+            ->onlyMethods(['_controller'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -738,7 +738,7 @@ class ApiListenerTest extends TestCase
 
         $controller = $this
             ->getMockBuilder(Controller::class)
-            ->setMethods(['set'])
+            ->onlyMethods(['set'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -765,19 +765,19 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->setMethods(['_controller', '_action'])
+            ->onlyMethods(['_controller', '_action'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $controller = $this
             ->getMockBuilder(Controller::class)
-            ->setMethods(['set'])
+            ->onlyMethods(['set'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $action = $this
             ->getMockBuilder(BaseAction::class)
-            ->setMethods(['getConfig'])
+            ->onlyMethods(['getConfig'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -817,19 +817,19 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->setMethods(['_controller', '_action'])
+            ->onlyMethods(['_controller', '_action'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $controller = $this
             ->getMockBuilder(Controller::class)
-            ->setMethods(['set'])
+            ->onlyMethods(['set'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $action = $this
             ->getMockBuilder(BaseAction::class)
-            ->setMethods(['getConfig'])
+            ->onlyMethods(['getConfig'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -874,19 +874,19 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->setMethods(['_controller', '_action'])
+            ->onlyMethods(['_controller', '_action'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $controller = $this
             ->getMockBuilder(Controller::class)
-            ->setMethods(['set'])
+            ->onlyMethods(['set'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $action = $this
             ->getMockBuilder(BaseAction::class)
-            ->setMethods(['getConfig'])
+            ->onlyMethods(['getConfig'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -926,19 +926,19 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->setMethods(['_controller', '_action'])
+            ->onlyMethods(['_controller', '_action'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $controller = $this
             ->getMockBuilder(Controller::class)
-            ->setMethods(['set'])
+            ->onlyMethods(['set'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $action = $this
             ->getMockBuilder(BaseAction::class)
-            ->setMethods(['getConfig'])
+            ->onlyMethods(['getConfig'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -978,7 +978,7 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->setMethods(['_controller'])
+            ->onlyMethods(['_controller'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -986,7 +986,7 @@ class ApiListenerTest extends TestCase
 
         $controller = $this
             ->getMockBuilder(Controller::class)
-            ->setMethods(['set'])
+            ->onlyMethods(['set'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -1024,7 +1024,7 @@ class ApiListenerTest extends TestCase
 
         $apiListener = $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->setMethods(null)
+            ->onlyMethods([])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -1054,7 +1054,7 @@ class ApiListenerTest extends TestCase
 
         $apiListener = $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->setMethods(null)
+            ->onlyMethods([])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -1105,7 +1105,7 @@ class ApiListenerTest extends TestCase
         $listener = $this
             ->getMockBuilder(ApiListener::class)
             ->disableOriginalConstructor()
-            ->setMethods(null)
+            ->onlyMethods([])
             ->getMock();
 
         $this->setReflectionClassInstance($listener);
@@ -1126,13 +1126,13 @@ class ApiListenerTest extends TestCase
 
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->setMethods(['_request', 'config'])
+            ->onlyMethods(['_request', 'config'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $request = $this
             ->getMockBuilder(ServerRequest::class)
-            ->setMethods(['addDetector'])
+            ->onlyMethods(['addDetector'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -1178,13 +1178,13 @@ class ApiListenerTest extends TestCase
 
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->setMethods(['_request', 'getConfig'])
+            ->onlyMethods(['_request', 'getConfig'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $request = $this
             ->getMockBuilder(ServerRequest::class)
-            ->setMethods(['_acceptHeaderDetector'])
+            ->onlyMethods(['_acceptHeaderDetector'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -1297,19 +1297,19 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->setMethods(['_action', '_request'])
+            ->onlyMethods(['_action', '_request'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $action = $this
             ->getMockBuilder(IndexAction::class)
-            ->setMethods(['getConfig'])
+            ->onlyMethods(['getConfig'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $request = $this
             ->getMockBuilder(ServerRequest::class)
-            ->setMethods(['is'])
+            ->onlyMethods(['is'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -1363,7 +1363,7 @@ class ApiListenerTest extends TestCase
         $apiListener = $this
             ->getMockBuilder(ApiListener::class)
             ->disableOriginalConstructor()
-            ->setMethods(null)
+            ->onlyMethods([])
             ->getMock();
 
         $result = $apiListener->viewClass('json', 'Sample.ViewClass');
@@ -1385,7 +1385,7 @@ class ApiListenerTest extends TestCase
         $apiListener = $this
             ->getMockBuilder(ApiListener::class)
             ->disableOriginalConstructor()
-            ->setMethods(null)
+            ->onlyMethods([])
             ->getMock();
 
         $result = $apiListener->getConfig('viewClasses');
@@ -1405,12 +1405,12 @@ class ApiListenerTest extends TestCase
     {
         $controller = $this
             ->getMockBuilder(Controller::class)
-            ->setMethods(['foobar'])
+            ->addMethods(['foobar'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $controller->RequestHandler = $this->getMockBuilder(RequestHandlerComponent::class)
-            ->setMethods(['setConfig'])
+            ->onlyMethods(['setConfig'])
             ->disableOriginalConstructor()
             ->getMock();
         $controller->RequestHandler
@@ -1424,7 +1424,7 @@ class ApiListenerTest extends TestCase
 
         $apiListener = $this->getMockBuilder(ApiListener::class)
             ->disableOriginalConstructor()
-            ->setMethods(['_controller'])
+            ->onlyMethods(['_controller'])
             ->getMock();
 
         $apiListener

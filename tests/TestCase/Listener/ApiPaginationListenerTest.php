@@ -26,7 +26,7 @@ class ApiPaginationListenerTest extends TestCase
         $Instance = $this
             ->getMockBuilder(ApiPaginationListener::class)
             ->disableOriginalConstructor()
-            ->setMethods(['_checkRequestType'])
+            ->onlyMethods(['_checkRequestType'])
             ->getMock();
         $Instance
             ->expects($this->once())
@@ -50,20 +50,20 @@ class ApiPaginationListenerTest extends TestCase
     {
         $Request = $this
             ->getMockBuilder(ServerRequest::class)
-            ->setMethods(null)
+            ->onlyMethods([])
             ->getMock();
         $Request = $Request->withAttribute('paging', ['MyModel' => []]);
 
         $Controller = $this
             ->getMockBuilder(Controller::class)
             ->disableOriginalConstructor()
-            ->setMethods(null)
+            ->onlyMethods([])
             ->getMock();
 
         $Instance = $this
             ->getMockBuilder(ApiPaginationListener::class)
             ->disableOriginalConstructor()
-            ->setMethods(['_request'])
+            ->onlyMethods(['_request'])
             ->getMock();
         $Instance
             ->expects($this->once())
@@ -85,13 +85,13 @@ class ApiPaginationListenerTest extends TestCase
     {
         $Request = $this
             ->getMockBuilder(ServerRequest::class)
-            ->setMethods(null)
+            ->onlyMethods([])
             ->getMock();
 
         $Instance = $this
             ->getMockBuilder(ApiPaginationListener::class)
             ->disableOriginalConstructor()
-            ->setMethods(['_request', '_controller'])
+            ->onlyMethods(['_request', '_controller'])
             ->getMock();
         $Instance
             ->expects($this->once())
@@ -116,7 +116,7 @@ class ApiPaginationListenerTest extends TestCase
     {
         $Request = $this
             ->getMockBuilder(ServerRequest::class)
-            ->setMethods(null)
+            ->onlyMethods([])
             ->getMock();
         $Request = $Request->withAttribute('paging', [
             'MyModel' => [
@@ -141,7 +141,7 @@ class ApiPaginationListenerTest extends TestCase
         $Controller = $this
             ->getMockBuilder(Controller::class)
             ->disableOriginalConstructor()
-            ->setMethods(['set'])
+            ->onlyMethods(['set'])
             ->getMock();
         $Controller
             ->expects($this->once())
@@ -151,7 +151,7 @@ class ApiPaginationListenerTest extends TestCase
         $Action = $this
             ->getMockBuilder(BaseAction::class)
             ->disableOriginalConstructor()
-            ->setMethods(['setConfig'])
+            ->onlyMethods(['setConfig'])
             ->getMock();
         $Action
             ->expects($this->once())
@@ -161,7 +161,7 @@ class ApiPaginationListenerTest extends TestCase
         $Instance = $this
             ->getMockBuilder(ApiPaginationListener::class)
             ->disableOriginalConstructor()
-            ->setMethods(['_request', '_controller', '_action'])
+            ->onlyMethods(['_request', '_controller', '_action'])
             ->getMock();
         $Instance
             ->expects($this->once())
@@ -190,7 +190,7 @@ class ApiPaginationListenerTest extends TestCase
     {
         $Request = $this
             ->getMockBuilder(ServerRequest::class)
-            ->setMethods(null)
+            ->onlyMethods([])
             ->getMock();
         $Request = $Request->withAttribute('paging', [
             'MyModel' => [
@@ -215,7 +215,7 @@ class ApiPaginationListenerTest extends TestCase
         $Controller = $this
             ->getMockBuilder(Controller::class)
             ->disableOriginalConstructor()
-            ->setMethods(['set'])
+            ->onlyMethods(['set'])
             ->getMock();
         $Controller
             ->expects($this->once())
@@ -225,7 +225,7 @@ class ApiPaginationListenerTest extends TestCase
         $Action = $this
             ->getMockBuilder(BaseAction::class)
             ->disableOriginalConstructor()
-            ->setMethods(['setConfig'])
+            ->onlyMethods(['setConfig'])
             ->getMock();
         $Action
             ->expects($this->once())
@@ -235,7 +235,7 @@ class ApiPaginationListenerTest extends TestCase
         $Instance = $this
             ->getMockBuilder(ApiPaginationListener::class)
             ->disableOriginalConstructor()
-            ->setMethods(['_request', '_controller', '_action'])
+            ->onlyMethods(['_request', '_controller', '_action'])
             ->getMock();
         $Instance
             ->expects($this->once())
@@ -264,7 +264,7 @@ class ApiPaginationListenerTest extends TestCase
     {
         $Request = $this
             ->getMockBuilder(ServerRequest::class)
-            ->setMethods(null)
+            ->onlyMethods([])
             ->getMock();
         $Request = $Request->withAttribute('paging', [
             'MyModel' => [
@@ -289,7 +289,7 @@ class ApiPaginationListenerTest extends TestCase
         $Controller = $this
             ->getMockBuilder(Controller::class)
             ->disableOriginalConstructor()
-            ->setMethods(['set'])
+            ->onlyMethods(['set'])
             ->getMock();
         $Controller
             ->expects($this->once())
@@ -299,13 +299,13 @@ class ApiPaginationListenerTest extends TestCase
         $Action = $this
             ->getMockBuilder(BaseAction::class)
             ->disableOriginalConstructor()
-            ->setMethods(null)
+            ->onlyMethods([])
             ->getMock();
 
         $Instance = $this
             ->getMockBuilder(ApiPaginationListener::class)
             ->disableOriginalConstructor()
-            ->setMethods(['_request', '_controller', '_action'])
+            ->onlyMethods(['_request', '_controller', '_action'])
             ->getMock();
         $Instance
             ->expects($this->once())
