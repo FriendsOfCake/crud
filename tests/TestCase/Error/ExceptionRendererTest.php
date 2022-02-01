@@ -63,6 +63,11 @@ class ExceptionRendererTest extends TestCase
             ],
         ];
 
+        if (version_compare(Configure::version(), '4.2.0', '<')) {
+            $expected['exception']['class'] = 'Cake\Core\Exception\Exception';
+            $expected['exception']['code'] = 500;
+        }
+
         $actual = $viewVars['data'];
         unset($actual['trace'], $actual['file'], $actual['line']);
         $this->assertEquals($expected, $actual);
@@ -139,6 +144,11 @@ class ExceptionRendererTest extends TestCase
             ],
         ];
 
+        if (version_compare(Configure::version(), '4.2.0', '<')) {
+            $expected['exception']['class'] = 'Cake\Core\Exception\Exception';
+            $expected['exception']['code'] = 500;
+        }
+
         $actual = $viewVars['data'];
         $queryLog = $viewVars['queryLog'];
 
@@ -209,6 +219,11 @@ class ExceptionRendererTest extends TestCase
             ],
         ];
 
+        if (version_compare(Configure::version(), '4.2.0', '<')) {
+            $expected['exception']['class'] = 'Cake\Core\Exception\Exception';
+            $expected['exception']['code'] = 500;
+        }
+
         $actual = $viewVars['data'];
         unset($actual['trace'], $actual['file'], $actual['line']);
         $this->assertEquals($expected, $actual);
@@ -268,6 +283,11 @@ class ExceptionRendererTest extends TestCase
                 'message' => 'Hello World',
             ],
         ];
+
+        if (version_compare(Configure::version(), '4.2.0', '<')) {
+            $expected['exception']['class'] = 'Cake\Core\Exception\Exception';
+            $expected['exception']['code'] = 500;
+        }
 
         $actual = $viewVars['data'];
         unset($actual['trace'], $actual['file'], $actual['line']);

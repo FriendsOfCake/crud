@@ -61,7 +61,10 @@ trait FindMethodTrait
 
         [$finder, $options] = $this->_extractFinder();
         $query = $repository->find($finder, $options);
-        /** @psalm-suppress PossiblyInvalidArgument */
+        /**
+         * @psalm-suppress PossiblyInvalidArgument
+         * @psalm-suppress InvalidArrayOffset
+         */
         $query->where([current($query->aliasField($repository->getPrimaryKey())) => $id]);
 
         $subject->set([

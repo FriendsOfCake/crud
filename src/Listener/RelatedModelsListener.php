@@ -21,7 +21,7 @@ class RelatedModelsListener extends BaseListener
     /**
      * Returns a list of events this listener is interested in.
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function implementedEvents(): array
     {

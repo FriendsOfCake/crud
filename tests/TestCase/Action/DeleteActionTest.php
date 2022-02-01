@@ -70,16 +70,17 @@ class DeleteActionTest extends IntegrationTestCase
 
                 $this->_subscribeToEvents($this->_controller);
 
-                $this->_controller->Blogs = $this->getMockForModel(
+                $blogs = $this->getMockForModel(
                     $this->tableClass,
                     ['delete'],
                     ['alias' => 'Blogs', 'table' => 'blogs']
                 );
-
-                $this->_controller->Blogs
+                $blogs
                     ->expects($this->once())
                     ->method('delete')
                     ->will($this->returnValue(true));
+
+                $this->getTableLocator()->set('Blogs', $blogs);
             }
         );
 
@@ -124,15 +125,16 @@ class DeleteActionTest extends IntegrationTestCase
                     $event->stopPropagation();
                 });
 
-                $this->_controller->Blogs = $this->getMockForModel(
+                $blogs = $this->getMockForModel(
                     $this->tableClass,
                     ['delete'],
                     ['alias' => 'Blogs', 'table' => 'blogs']
                 );
-
-                $this->_controller->Blogs
+                $blogs
                     ->expects($this->never())
                     ->method('delete');
+
+                $this->getTableLocator()->set('Blogs', $blogs);
             }
         );
 
@@ -178,16 +180,17 @@ class DeleteActionTest extends IntegrationTestCase
                     $event->stopPropagation();
                 });
 
-                $this->_controller->Blogs = $this->getMockForModel(
+                $blogs = $this->getMockForModel(
                     $this->tableClass,
                     ['delete'],
                     ['alias' => 'Blogs', 'table' => 'blogs']
                 );
-
-                $this->_controller->Blogs
+                $blogs
                     ->expects($this->once())
                     ->method('delete')
                     ->will($this->returnValue(true));
+
+                $this->getTableLocator()->set('Blogs', $blogs);
             }
         );
 

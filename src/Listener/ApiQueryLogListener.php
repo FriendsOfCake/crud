@@ -37,7 +37,7 @@ class ApiQueryLogListener extends BaseListener
      *
      * We attach at priority 10 so normal bound events can run before us
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function implementedEvents(): array
     {
@@ -65,6 +65,7 @@ class ApiQueryLogListener extends BaseListener
             try {
                 $connection = $this->_getSource($connectionName);
                 $connection->enableQueryLogging(true);
+                /** @psalm-suppress InternalMethod */
                 $connection->setLogger(new QueryLogger());
             } catch (MissingDatasourceConfigException $e) {
                 //Safe to ignore this :-)

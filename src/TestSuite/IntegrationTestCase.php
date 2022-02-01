@@ -49,7 +49,9 @@ abstract class IntegrationTestCase extends TestCase
 
         Router::extensions('json');
 
-        Router::connect('/:controller', ['action' => 'index'], ['routeClass' => 'DashedRoute']);
-        Router::connect('/:controller/:action/*', [], ['routeClass' => 'DashedRoute']);
+        $routeBuilder = Router::createRouteBuilder('/');
+
+        $routeBuilder->connect('/{controller}', ['action' => 'index'], ['routeClass' => 'DashedRoute']);
+        $routeBuilder->connect('/{controller}/{action}/*', [], ['routeClass' => 'DashedRoute']);
     }
 }
