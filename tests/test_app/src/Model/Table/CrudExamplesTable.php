@@ -14,14 +14,7 @@ use Cake\ORM\Table;
  */
 class CrudExamplesTable extends Table
 {
-    public $alias = 'CrudExamples';
-
-    public $findMethods = [
-        'published' => true,
-        'unpublished' => true,
-        'firstPublished' => true,
-        'firstUnpublished' => true,
-    ];
+    protected $_alias = 'CrudExamples';
 
     /**
      * [initialize description]

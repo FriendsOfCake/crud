@@ -14,6 +14,10 @@
         </ignoreFiles>
     </projectFiles>
 
+    <stubs>
+        <file name="src/Error/Exception/CrudException.php" preloadClasses="true" />
+    </stubs>
+
     <universalObjectCrates>
         <class name="Crud\Event\Subject" />
     </universalObjectCrates>

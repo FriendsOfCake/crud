@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Crud\Test\TestCase\Action;
 
 use Cake\Controller\Component\FlashComponent;
+use Cake\Core\Configure;
 use Crud\TestSuite\IntegrationTestCase;
 
 /**
@@ -167,16 +168,17 @@ class EditActionTest extends IntegrationTestCase
 
                 $this->_subscribeToEvents($this->_controller);
 
-                $this->_controller->Blogs = $this->getMockForModel(
+                $blogs = $this->getMockForModel(
                     $this->tableClass,
                     ['save'],
                     ['alias' => 'Blogs', 'table' => 'blogs']
                 );
-
-                $this->_controller->Blogs
+                $blogs
                     ->expects($this->once())
                     ->method('save')
                     ->will($this->returnValue(false));
+
+                $this->getTableLocator()->set('Blogs', $blogs);
             }
         );
 
@@ -242,7 +244,11 @@ class EditActionTest extends IntegrationTestCase
         $this->assertFalse($this->_subject->success);
         $this->assertFalse($this->_subject->created);
 
-        $expected = '<div class="error-message">Name need to be at least 10 characters long</div>';
+        if (version_compare(Configure::version(), '4.3.0', '>=')) {
+            $expected = '<div class="error-message" id="name-error">Name need to be at least 10 characters long</div>';
+        } else {
+            $expected = '<div class="error-message">Name need to be at least 10 characters long</div>';
+        }
         $this->assertStringContainsString(
             $expected,
             (string)$this->_response->getBody(),

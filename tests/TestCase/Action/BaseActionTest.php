@@ -46,9 +46,9 @@ class BaseActionTest extends TestCase
             ->addMethods(['foobar'])
             ->getMock();
         $this->Controller->Crud = $this->Crud;
-        $this->Controller->modelClass = 'CrudExamples';
-        $this->Controller->CrudExamples = $this->getTableLocator()->get('Crud.CrudExamples');
-        $this->Controller->CrudExamples->setAlias('MyModel');
+        $this->Controller->defaultTable = 'CrudExamples';
+
+        $this->getTableLocator()->get('CrudExamples')->setAlias('MyModel');
 
         $this->actionClassName = $this->getMockBuilder(BaseAction::class)
             ->addMethods(['_handle'])

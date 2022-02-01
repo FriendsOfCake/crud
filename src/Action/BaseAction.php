@@ -314,7 +314,7 @@ abstract class BaseAction extends BaseObject
     /**
      * Additional auxiliary events emitted if certain traits are loaded
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function implementedEvents(): array
     {

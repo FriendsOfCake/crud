@@ -1,5 +1,6 @@
 <?php
 
+use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Filesystem\Folder;
 
@@ -49,11 +50,6 @@ Cake\Core\Configure::write('App', [
 ]);
 Cake\Core\Configure::write('debug', true);
 
-$TMP = new Folder(TMP);
-$TMP->create(TMP . 'cache/models', 0777);
-$TMP->create(TMP . 'cache/persistent', 0777);
-$TMP->create(TMP . 'cache/views', 0777);
-
 $cache = [
     'default' => [
         'engine' => 'File'
@@ -90,3 +86,8 @@ Cake\Datasource\ConnectionManager::setConfig('test', [
 ]);
 
 Plugin::getCollection()->add(new \Crud\Plugin());
+
+Configure::write(
+    'Error.ignoredDeprecationPaths',
+    ['vendor/cakephp/cakephp/src/TestSuite/Fixture/FixtureInjector.php']
+);

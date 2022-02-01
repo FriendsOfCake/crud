@@ -8,9 +8,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['7.2', '7.4', '8.0']
+        php-version: ['7.4', '8.0']
         db-type: [sqlite, mysql, pgsql]
-    name: PHP ${{ matrix.php-version }} & ${{ matrix.db-type }}
+        prefer-lowest: ['']
+        include:
+          - php-version: '7.2'
+            db-type: 'mysql'
+            prefer-lowest: 'prefer-lowest'
+          - php-version: '8.1'
+            db-type: 'mysql'
 
     services:
       postgres:
@@ -21,9 +27,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
 
     steps:
-    - uses: actions/checkout@v1
-      with:
-        fetch-depth: 1
+    - uses: actions/checkout@v2
 
     - name: Setup Service
       if: matrix.db-type == 'mysql'
@@ -39,7 +43,12 @@ jobs:
         coverage: pcov
 
     - name: Composer install
-      run: composer install
+      run: |
+        if ${{ matrix.prefer-lowest == 'prefer-lowest' }}; then
+          composer update --prefer-lowest --prefer-stable
+        else
+          composer update
+        fi
 
     - name: Run PHPUnit
       run: |
@@ -47,24 +56,22 @@ jobs:
         if [[ ${{ matrix.db-type }} == 'mysql' ]]; then export DB_URL='mysql://root:root@127.0.0.1/cakephp'; fi
         if [[ ${{ matrix.db-type }} == 'pgsql' ]]; then export DB_URL='postgres://postgres:postgres@127.0.0.1/postgres'; fi
 
-        if [[ ${{ matrix.php-version }} == '7.2' && ${{ matrix.db-type }} == 'sqlite' ]]; then
+        if [[ ${{ matrix.php-version }} == '7.4' && ${{ matrix.db-type }} == 'sqlite' ]]; then
           vendor/bin/phpunit --coverage-clover=coverage.xml
         else
           vendor/bin/phpunit
         fi
 
     - name: Code Coverage Report
-      if: success() && matrix.php-version == '7.2' && matrix.db-type == 'sqlite'
-      uses: codecov/codecov-action@v1
+      if: success() && matrix.php-version == '7.4' && matrix.db-type == 'sqlite'
+      uses: codecov/codecov-action@v2
 
   cs-stan:
     name: Coding Standard & Static Analysis
     runs-on: ubuntu-18.04
 
     steps:
-    - uses: actions/checkout@v1
-      with:
-        fetch-depth: 1
+    - uses: actions/checkout@v2
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
@@ -74,7 +81,7 @@ jobs:
         coverage: none
 
     - name: Composer Install
-      run: composer require --dev cakephp/cakephp-codesniffer:^4.1 psalm/phar:^3.18 phpstan/phpstan:^0.12
+      run: composer require --dev cakephp/cakephp-codesniffer:^4.1 psalm/phar:~4.19 phpstan/phpstan:~1.4
 
     - name: Run phpcs
       run: vendor/bin/phpcs --report=checkstyle --standard=vendor/cakephp/cakephp-codesniffer/CakePHP src/ tests/

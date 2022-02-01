@@ -57,6 +57,7 @@ class CrudComponentTest extends TestCase
             ->onlyMethods(['redirect', 'render'])
             ->setConstructorArgs([$this->request, $response, 'CrudExamples', EventManager::instance()])
             ->getMock();
+        $this->controller->defaultTable = 'CrudExamples';
 
         $this->Registry = $this->controller->components();
 

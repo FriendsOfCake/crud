@@ -29,7 +29,7 @@ abstract class BaseListener extends BaseObject implements EventListenerInterface
      * - invalidId : Called if the ID format validation failed
      * - setFlash : Called before any FlashComponent::set()
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function implementedEvents(): array
     {

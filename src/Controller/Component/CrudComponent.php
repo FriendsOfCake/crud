@@ -108,7 +108,7 @@ class CrudComponent extends Component
      *
      * `eventLogging` boolean to determine whether the class should log triggered events.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected $_defaultConfig = [
         'actions' => [],
@@ -611,13 +611,12 @@ class CrudComponent extends Component
     /**
      * Sets the model class to be used during the action execution.
      *
-     * @param string $modelName The name of the model to load.
+     * @param string $modelName The name of the model to use.
      * @return void
      */
     public function useModel(string $modelName): void
     {
-        $this->_controller->loadModel($modelName);
-        [, $this->_modelName] = pluginSplit($modelName);
+        $this->_modelName = $modelName;
     }
 
     /**
@@ -627,7 +626,15 @@ class CrudComponent extends Component
      */
     public function table(): Table
     {
-        return $this->_controller->{$this->_modelName};
+        if (method_exists($this->_controller, 'fetchTable')) {
+            return $this->_controller->fetchTable($this->_modelName);
+        }
+
+        /**
+         * @var \Cake\ORM\Table
+         * @psalm-suppress DeprecatedMethod
+         */
+        return $this->_controller->loadModel($this->_modelName);
     }
 
     /**

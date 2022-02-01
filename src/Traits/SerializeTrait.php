@@ -20,6 +20,6 @@ trait SerializeTrait
             return (array)$this->getConfig('serialize');
         }
 
-        return $this->setConfig('serialize', (array)$keys);
+        return $this->setConfig('serialize', $keys);
     }
 }

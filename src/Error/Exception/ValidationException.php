@@ -37,7 +37,7 @@ class ValidationException extends BadRequestException
      */
     public function __construct(EntityInterface $entity, int $code = 422, ?Throwable $previous = null)
     {
-        $this->_validationErrors = array_filter((array)$entity->getErrors());
+        $this->_validationErrors = array_filter($entity->getErrors());
         $flat = Hash::flatten($this->_validationErrors);
 
         $errorCount = $this->_validationErrorCount = count($flat);

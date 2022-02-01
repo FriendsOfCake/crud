@@ -127,10 +127,17 @@ trait ProxyTrait
      */
     protected function _table()
     {
+        $modelType = $this->getConfig('modelFactory');
+
+        if (!$modelType && method_exists($this->_controller(), 'fetchTable')) {
+            return $this->_controller()->fetchTable();
+        }
+
+        /** @psalm-suppress DeprecatedMethod */
         return $this->_controller()
             ->loadModel(
                 null,
-                $this->getConfig('modelFactory') ?: $this->_controller()->getModelType()
+                $modelType ?: $this->_controller()->getModelType()
             );
     }
 
