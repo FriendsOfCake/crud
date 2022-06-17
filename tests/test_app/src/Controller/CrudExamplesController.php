@@ -10,7 +10,7 @@ class CrudExamplesController extends Controller
 {
     use ControllerTrait;
 
-    public $modelClass = 'CrudExamples';
+    public ?string $defaultTable = 'CrudExamples';
 
     public static $componentsArray = [
         'Crud.Crud' => [
@@ -24,7 +24,7 @@ class CrudExamplesController extends Controller
         ],
     ];
 
-    public $paginate = [
+    public array $paginate = [
         'limit' => 1000,
     ];
 

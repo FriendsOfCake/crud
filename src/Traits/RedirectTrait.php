@@ -25,11 +25,11 @@ trait RedirectTrait
      *  - key  : the key to read inside the reader
      *  - url  : the URL to redirect to
      *
-     * @param null|string $name Name of the redirection rule
-     * @param null|array $config Redirection configuration
+     * @param string|null $name Name of the redirection rule
+     * @param array|null $config Redirection configuration
      * @return mixed
      */
-    public function redirectConfig(?string $name = null, ?array $config = null)
+    public function redirectConfig(?string $name = null, ?array $config = null): mixed
     {
         if ($name === null && $config === null) {
             return $this->getConfig('redirect');
@@ -47,10 +47,10 @@ trait RedirectTrait
     /**
      * Returns the redirect_url for this request, with a fallback to the referring page
      *
-     * @param string|null $default Default URL to use redirect_url is not found in request or data
-     * @return mixed
+     * @param array|string|null $default Default URL to use redirect_url is not found in request or data
+     * @return array|string
      */
-    protected function _refererRedirectUrl(?string $default = null)
+    protected function _refererRedirectUrl(array|string|null $default = null): array|string
     {
         $controller = $this->_controller();
 
@@ -60,10 +60,10 @@ trait RedirectTrait
     /**
      * Returns the _redirect_url for this request.
      *
-     * @param string|array|null $default Default URL to use if _redirect_url if not found in request or data.
-     * @return mixed
+     * @param array|string|null $default Default URL to use if _redirect_url if not found in request or data.
+     * @return array|string
      */
-    protected function _redirectUrl($default = null)
+    protected function _redirectUrl(array|string|null $default = null): array|string
     {
         $request = $this->_request();
 
@@ -87,11 +87,11 @@ trait RedirectTrait
      * Called for all redirects inside CRUD
      *
      * @param \Crud\Event\Subject $subject Event subject
-     * @param string|array|null $url URL
+     * @param array|string|null $url URL
      * @param int $status Status code
      * @return \Cake\Http\Response|null
      */
-    protected function _redirect(Subject $subject, $url = null, int $status = 302): ?Response
+    protected function _redirect(Subject $subject, string|array|null $url = null, int $status = 302): ?Response
     {
         $url = $this->_redirectUrl($url);
 

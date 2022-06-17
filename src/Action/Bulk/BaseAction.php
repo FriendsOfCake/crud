@@ -28,7 +28,7 @@ abstract class BaseAction extends CrudBaseAction
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'enabled' => true,
         'scope' => 'bulk',
         'findMethod' => 'all',

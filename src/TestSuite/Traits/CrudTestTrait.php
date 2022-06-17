@@ -5,7 +5,7 @@ namespace Crud\TestSuite\Traits;
 
 use Cake\Controller\Controller;
 use Cake\Datasource\ConnectionManager;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\ORM\Table;
 use Crud\Event\Subject;
 use Exception;
@@ -23,7 +23,7 @@ trait CrudTestTrait
      *
      * @var \Crud\Event\Subject
      */
-    protected $_subject;
+    protected Subject $_subject;
 
     /**
      * Subscribe to Crud.beforeRender and Crud.beforeRedirect events
@@ -64,7 +64,7 @@ trait CrudTestTrait
      * @psalm-param class-string $class
      * @psalm-suppress InvalidReturnType
      */
-    public function getModel(string $class, $methods, string $alias, string $table): Table
+    public function getModel(string $class, mixed $methods, string $alias, string $table): Table
     {
         /** @psalm-suppress DeprecatedMethod */
         $mock = $this->getMockBuilder($class)
@@ -84,17 +84,17 @@ trait CrudTestTrait
      * automatically before comparison
      *
      * @param array $expected An array of CRUD events we expected to be fired
-     * @param array|null $actual Can be an Event class, Crud subject or array with event names
+     * @param \Cake\Event\EventInterface|array|null $actual Can be an Event class, Crud subject or array with event names
      * @return void
      * @throws \Exception
      */
-    public function assertEvents(array $expected, ?array $actual = null): void
+    public function assertEvents(array $expected, EventInterface|array|null $actual = null): void
     {
         if ($actual === null) {
             $actual = $this->_subject;
         }
 
-        if ($actual instanceof Event) {
+        if ($actual instanceof EventInterface) {
             $actual = $actual->getSubject()->getEvents();
         }
 

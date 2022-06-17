@@ -19,14 +19,14 @@ class ValidationException extends BadRequestException
      *
      * @var array
      */
-    protected $_validationErrors = [];
+    protected array $_validationErrors = [];
 
     /**
      * How many validation errors are there?
      *
      * @var int
      */
-    protected $_validationErrorCount = 0;
+    protected int $_validationErrorCount = 0;
 
     /**
      * Constructor

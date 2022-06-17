@@ -10,6 +10,8 @@ use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Utility\Hash;
 use Cake\Utility\Text;
+use Cake\View\JsonView;
+use Cake\View\XmlView;
 use Crud\Event\Subject;
 
 /**
@@ -28,10 +30,10 @@ class ApiListener extends BaseListener
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'viewClasses' => [
-            'json' => 'Json',
-            'xml' => 'Xml',
+            'json' => JsonView::class,
+            'xml' => XmlView::class,
         ],
         'detectors' => [
             'json' => ['accept' => ['application/json'], 'param' => '_ext', 'value' => 'json'],
@@ -329,10 +331,7 @@ class ApiListener extends BaseListener
      */
     public function injectViewClasses(): void
     {
-        $controller = $this->_controller();
-        foreach ($this->getConfig('viewClasses') as $type => $class) {
-            $controller->RequestHandler->setConfig('viewClassMap', [$type => $class]);
-        }
+        $this->_controller()->setViewClasses($this->getConfig('viewClasses'));
     }
 
     /**
@@ -349,7 +348,7 @@ class ApiListener extends BaseListener
      * @param string|null $class Class name
      * @return mixed
      */
-    public function viewClass(string $type, ?string $class = null)
+    public function viewClass(string $type, ?string $class = null): mixed
     {
         if ($class === null) {
             return $this->getConfig('viewClasses.' . $type);

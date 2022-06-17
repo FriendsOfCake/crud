@@ -30,7 +30,7 @@ class DeleteAction extends BaseAction
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'enabled' => true,
         'scope' => 'entity',
         'findMethod' => 'all',
@@ -56,10 +56,10 @@ class DeleteAction extends BaseAction
     /**
      * HTTP POST handler
      *
-     * @param string|null $id Record id
+     * @param string|int|null $id Record id
      * @return \Cake\Http\Response|null
      */
-    protected function _post(?string $id = null): ?Response
+    protected function _post(string|int|null $id = null): ?Response
     {
         $subject = $this->_subject();
         $subject->set(['id' => $id]);
@@ -84,10 +84,10 @@ class DeleteAction extends BaseAction
     /**
      * HTTP DELETE handler
      *
-     * @param string|null $id Record id
+     * @param string|int|null $id Record id
      * @return \Cake\Http\Response|null
      */
-    protected function _delete(?string $id = null): ?Response
+    protected function _delete(string|int|null $id = null): ?Response
     {
         return $this->_post($id);
     }

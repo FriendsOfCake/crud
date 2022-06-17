@@ -9,12 +9,12 @@ use Cake\Event\EventManager;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\ORM\BehaviorRegistry;
+use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Crud\Event\Subject;
 use Crud\Listener\SearchListener;
 use Crud\TestSuite\TestCase;
 use Muffin\Webservice\Model\EndpointRegistry;
-use Muffin\Webservice\Query;
 use RuntimeException;
 
 /**
@@ -23,6 +23,13 @@ use RuntimeException;
  */
 class SearchListenerTest extends TestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->skipIf(!class_exists('\Search\SearchPlugin'), 'Search plugin is not loaded');
+    }
+
     public function tearDown(): void
     {
         $this->removePlugins(['Search']);
@@ -61,9 +68,8 @@ class SearchListenerTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $request = new ServerRequest();
-        $response = new Response();
         $eventManager = new EventManager();
-        $controller = new Controller($request, $response, 'Search', $eventManager);
+        $controller = new Controller($request, 'Search', $eventManager);
 
         $behaviorRegistryMock = $this->getMockBuilder(BehaviorRegistry::class)
             ->setMockClassName('BehaviorRegistry')
@@ -83,7 +89,7 @@ class SearchListenerTest extends TestCase
 
         $this->getTableLocator()->set('Search', $tableMock);
 
-        $queryMock = $this->getMockBuilder(\Cake\ORM\Query::class)
+        $queryMock = $this->getMockBuilder(Query::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -139,7 +145,7 @@ class SearchListenerTest extends TestCase
 
         $this->getTableLocator()->set('Search', $tableMock);
 
-        $queryMock = $this->getMockBuilder(\Cake\ORM\Query::class)
+        $queryMock = $this->getMockBuilder(Query::class)
             ->disableOriginalConstructor()
             ->getMock();
         $queryMock->expects($this->once())

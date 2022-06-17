@@ -3,12 +3,13 @@ declare(strict_types=1);
 
 namespace Crud\Test\TestCase\Listener;
 
-use Cake\Controller\Component\RequestHandlerComponent;
 use Cake\Controller\Controller;
 use Cake\Event\Event;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\ORM\Entity;
+use Cake\View\JsonView;
+use Cake\View\XmlView;
 use Crud\Action\AddAction;
 use Crud\Action\BaseAction;
 use Crud\Action\DeleteAction;
@@ -39,10 +40,10 @@ class ApiListenerTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $listener
-            ->expects($this->nextCounter($listener))
+            ->expects($this->once())
             ->method('setupDetectors');
         $listener
-            ->expects($this->nextCounter($listener))
+            ->expects($this->once())
             ->method('_checkRequestType')
             ->with('api')
             ->will($this->returnValue(true));
@@ -71,10 +72,10 @@ class ApiListenerTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $listener
-            ->expects($this->nextCounter($listener))
+            ->expects($this->once())
             ->method('setupDetectors');
         $listener
-            ->expects($this->nextCounter($listener))
+            ->expects($this->once())
             ->method('_checkRequestType')
             ->with('api')
             ->will($this->returnValue(false));
@@ -97,7 +98,7 @@ class ApiListenerTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $listener
-            ->expects($this->nextCounter($listener))
+            ->expects($this->once())
             ->method('_checkRequestMethods');
 
         $listener->beforeHandle(new Event('Crud.beforeHandle'));
@@ -134,22 +135,22 @@ class ApiListenerTest extends TestCase
             ->onlyMethods(['_action', 'render'])
             ->getMock();
         $listener
-            ->expects($this->nextCounter($listener))
+            ->expects($this->once())
             ->method('_action')
             ->with()
             ->will($this->returnValue($action));
         $action
-            ->expects($this->nextCounter($action))
+            ->expects($this->once())
             ->method('getConfig')
             ->with('api.success')
             ->will($this->returnValue(['code' => 200]));
         $listener
-            ->expects($this->nextCounter($listener))
+            ->expects($this->once())
             ->method('render')
             ->with($subject)
             ->will($this->returnValue($response));
         $response
-            ->expects($this->nextCounter($response))
+            ->expects($this->once())
             ->method('withStatus')
             ->with(200);
 
@@ -186,17 +187,17 @@ class ApiListenerTest extends TestCase
             ->onlyMethods(['_action', 'render'])
             ->getMock();
         $listener
-            ->expects($this->nextCounter($listener))
+            ->expects($this->once())
             ->method('_action')
             ->with()
             ->will($this->returnValue($action));
         $listener
-            ->expects($this->nextCounter($listener))
+            ->expects($this->once())
             ->method('render')
             ->with($subject)
             ->will($this->returnValue($response));
         $response
-            ->expects($this->nextCounter($response))
+            ->expects($this->once())
             ->method('withStatus')
             ->with(400);
 
@@ -235,17 +236,17 @@ class ApiListenerTest extends TestCase
             ->onlyMethods(['_action', 'render'])
             ->getMock();
         $listener
-            ->expects($this->nextCounter($listener))
+            ->expects($this->once())
             ->method('_action')
             ->with()
             ->will($this->returnValue($action));
         $action
-            ->expects($this->nextCounter($action))
+            ->expects($this->once())
             ->method('getConfig')
             ->with('api.success')
             ->will($this->returnValue(null));
         $listener
-            ->expects($this->nextCounter($listener))
+            ->expects($this->once())
             ->method('render')
             ->with($subject)
             ->will($this->returnValue($response));
@@ -275,25 +276,23 @@ class ApiListenerTest extends TestCase
 
         $event = new Event('Crud.afterSave', $subject);
 
-        $i = 0;
-
         $listener = $this
             ->getMockBuilder(ApiListener::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['_action', 'render', '_exceptionResponse'])
             ->getMock();
         $listener
-            ->expects($this->nextCounter($listener))
+            ->expects($this->once())
             ->method('_action')
             ->with()
             ->will($this->returnValue($action));
         $action
-            ->expects($this->nextCounter($action))
+            ->expects($this->once())
             ->method('getConfig')
             ->with('api.success')
             ->will($this->returnValue(['exception' => ['SomethingExceptional']]));
         $listener
-            ->expects($this->nextCounter($listener))
+            ->expects($this->once())
             ->method('_exceptionResponse')
             ->with($event, ['SomethingExceptional']);
         $listener
@@ -318,8 +317,8 @@ class ApiListenerTest extends TestCase
 
         $expected = [
             'viewClasses' => [
-                'json' => 'Json',
-                'xml' => 'Xml',
+                'json' => JsonView::class,
+                'xml' => XmlView::class,
             ],
             'detectors' => [
                 'json' => ['accept' => ['application/json'], 'param' => '_ext', 'value' => 'json'],
@@ -353,8 +352,8 @@ class ApiListenerTest extends TestCase
             ],
 
             'change exception class' => [
-                ['class' => '\Cake\Core\Exception\Exception'],
-                '\Cake\Core\Exception\Exception',
+                ['class' => '\Cake\Core\Exception\CakeException'],
+                '\Cake\Core\Exception\CakeException',
                 'Unknown error',
                 0,
             ],
@@ -468,17 +467,16 @@ class ApiListenerTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $i = 0;
         $listener
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('_controller')
             ->will($this->returnValue($controller));
         $listener
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('_action')
             ->will($this->returnValue($action));
         $action
-            ->expects($this->at(0))
+            ->expects($this->once())
             ->method('viewVar')
             ->will($this->returnValue('items'));
 
@@ -532,22 +530,20 @@ class ApiListenerTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $i = 0;
         $listener
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('_controller')
             ->will($this->returnValue($controller));
         $listener
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('_action')
             ->will($this->returnValue($action));
-        $i = 0;
         $action
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('setConfig')
             ->with('serialize', ['something']);
         $action
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('viewVar')
             ->will($this->returnValue(null));
         $action
@@ -595,9 +591,8 @@ class ApiListenerTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $i = 0;
         $listener
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('_controller')
             ->will($this->returnValue($controller));
         $listener
@@ -644,17 +639,16 @@ class ApiListenerTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $i = 0;
         $listener
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('_controller')
             ->will($this->returnValue($controller));
         $listener
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('_action')
             ->will($this->returnValue($action));
         $action
-            ->expects($this->at(0))
+            ->expects($this->once())
             ->method('viewVar')
             ->will($this->returnValue('helloWorld'));
 
@@ -692,13 +686,12 @@ class ApiListenerTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $i = 0;
         $listener
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('_controller')
             ->will($this->returnValue($controller));
         $listener
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('_action')
             ->will($this->returnValue($action));
         $controller
@@ -742,9 +735,8 @@ class ApiListenerTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $i = 0;
         $listener
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('_controller')
             ->will($this->returnValue($controller));
         $controller
@@ -785,17 +777,16 @@ class ApiListenerTest extends TestCase
 
         $config = [];
 
-        $i = 0;
         $listener
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('_controller')
             ->will($this->returnValue($controller));
         $listener
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('_action')
             ->will($this->returnValue($action));
         $action
-            ->expects($this->at(0))
+            ->expects($this->once())
             ->method('getConfig')
             ->with('api.success')
             ->will($this->returnValue($config));
@@ -842,17 +833,16 @@ class ApiListenerTest extends TestCase
             ],
         ]];
 
-        $i = 0;
         $listener
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('_controller')
             ->will($this->returnValue($controller));
         $listener
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('_action')
             ->will($this->returnValue($action));
         $action
-            ->expects($this->at(0))
+            ->expects($this->once())
             ->method('getConfig')
             ->with('api.success')
             ->will($this->returnValue($config));
@@ -894,17 +884,16 @@ class ApiListenerTest extends TestCase
 
         $config = ['data' => ['raw' => ['{modelClass}.id' => 1]]];
 
-        $i = 0;
         $listener
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('_controller')
             ->will($this->returnValue($controller));
         $listener
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('_action')
             ->will($this->returnValue($action));
         $action
-            ->expects($this->at(0))
+            ->expects($this->once())
             ->method('getConfig')
             ->with('api.success')
             ->will($this->returnValue($config));
@@ -946,17 +935,16 @@ class ApiListenerTest extends TestCase
 
         $config = [];
 
-        $i = 0;
         $listener
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('_controller')
             ->will($this->returnValue($controller));
         $listener
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('_action')
             ->will($this->returnValue($action));
         $action
-            ->expects($this->at(0))
+            ->expects($this->once())
             ->method('getConfig')
             ->with('api.error')
             ->will($this->returnValue($config));
@@ -992,9 +980,8 @@ class ApiListenerTest extends TestCase
 
         $controller->viewBuilder()->setVar('success', true);
 
-        $i = 0;
         $listener
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('_controller')
             ->will($this->returnValue($controller));
         $controller
@@ -1114,61 +1101,11 @@ class ApiListenerTest extends TestCase
     }
 
     /**
-     * testSetupDetectors
+     * testSetupDetectorsIntegration
      *
      * @return void
      */
-    public function testSetupDetectors()
-    {
-        $this->skipIf(true);
-
-        $detectors = ['xml' => [], 'json' => []];
-
-        $listener = $this
-            ->getMockBuilder(ApiListener::class)
-            ->onlyMethods(['_request', 'config'])
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $request = $this
-            ->getMockBuilder(ServerRequest::class)
-            ->onlyMethods(['addDetector'])
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $i = 0;
-        $listener
-            ->expects($this->at($i++))
-            ->method('_request')
-            ->will($this->returnValue($request));
-        $listener
-            ->expects($this->at($i++))
-            ->method('config')
-            ->with('detectors')
-            ->will($this->returnValue($detectors));
-
-        $r = 0;
-        foreach ($detectors as $name => $config) {
-            $request
-                ->expects($this->at($r++))
-                ->method('addDetector')
-                ->with($name);
-        }
-
-        $request
-            ->expects($this->at($r++))
-            ->method('addDetector')
-            ->with('api');
-
-        $listener->setupDetectors();
-    }
-
-    /**
-     * testSetupDetectorsIntigration
-     *
-     * @return void
-     */
-    public function testSetupDetectorsIntigration()
+    public function testSetupDetectorsIntegration()
     {
         $detectors = [
             'json' => ['accept' => ['application/json'], 'param' => '_ext', 'value' => 'json'],
@@ -1182,19 +1119,15 @@ class ApiListenerTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $request = $this
-            ->getMockBuilder(ServerRequest::class)
-            ->onlyMethods(['_acceptHeaderDetector'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $request = new ServerRequest();
+        $request = $request->withAddedHeader('accept', 'application/vnd.api+json');
 
-        $i = 0;
         $listener
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('_request')
             ->will($this->returnValue($request));
         $listener
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('getConfig')
             ->with('detectors')
             ->will($this->returnValue($detectors));
@@ -1213,47 +1146,18 @@ class ApiListenerTest extends TestCase
             }
         }
 
-        $request = $request->withParam('_ext', null);
+        $this->assertTrue($request->is('jsonapi'));
+
+        $request = $request->withParam('_ext', null)->withoutHeader('accept');
+
         $request->clearDetectorCache();
+        $this->assertFalse($request->is('jsonapi'));
 
-        // Test with "accepts"
-        $r = 0;
-        foreach ($detectors as $name => $configuration) {
-            $request
-                ->expects($this->at($r++))
-                ->method('_acceptHeaderDetector')
-                ->with($configuration)
-                ->will($this->returnValue(true));
-        }
-
-        foreach ($detectors as $name => $config) {
-            $request->clearDetectorCache();
-            $this->assertTrue($request->is($name));
-        }
-
-        $request = $request->withParam('_ext', 'xml');
         $request->clearDetectorCache();
-
-        $this->assertTrue(
-            $request->is('api'),
-            'A request with xml extensions should be considered an api request'
-        );
-
-        $request = $request->withParam('_ext', null);
-        $request->clearDetectorCache();
-
         $this->assertFalse(
             $request->is('api'),
             'A request with no extensions should not be considered an api request'
         );
-
-        //Ensure that no set extension will not result in a true
-        $request->clearDetectorCache();
-        $request->expects($this->any())
-            ->method('_acceptHeaderDetector')
-            ->will($this->returnValue(false));
-
-        $this->assertFalse($request->is('jsonapi'), 'A request with no extensions should not be considered an jsonapi request');
     }
 
     /**
@@ -1314,29 +1218,31 @@ class ApiListenerTest extends TestCase
             ->getMock();
 
         $listener
-            ->expects($this->at(0))
+            ->expects($this->once())
             ->method('_action')
             ->will($this->returnValue($action));
         $action
-            ->expects($this->at(0))
+            ->expects($this->once())
             ->method('getConfig')
             ->with('api')
             ->will($this->returnValue($apiConfig));
 
         if (!empty($apiConfig['methods'])) {
             $listener
-                ->expects($this->at(1))
+                ->expects($this->once())
                 ->method('_request')
                 ->will($this->returnValue($request));
 
-            $r = 0;
+            $withs = $returns = [];
             foreach ($requestMethods as $method => $bool) {
-                $request
-                    ->expects($this->at($r++))
-                    ->method('is')
-                    ->with($method)
-                    ->will($this->returnValue($bool));
+                $withs[] = [$method];
+                $returns[] = $bool;
             }
+            $request
+                ->expects($this->exactly(count($withs)))
+                ->method('is')
+                ->withConsecutive(...$withs)
+                ->willReturnOnConsecutiveCalls(...$returns);
         } else {
             $listener
                 ->expects($this->never())
@@ -1390,8 +1296,8 @@ class ApiListenerTest extends TestCase
 
         $result = $apiListener->getConfig('viewClasses');
         $expected = [
-            'json' => 'Json',
-            'xml' => 'Xml',
+            'json' => JsonView::class,
+            'xml' => XmlView::class,
         ];
         $this->assertEquals($expected, $result, 'The default viewClasses setting has changed');
     }
@@ -1405,22 +1311,13 @@ class ApiListenerTest extends TestCase
     {
         $controller = $this
             ->getMockBuilder(Controller::class)
-            ->addMethods(['foobar'])
+            ->addMethods(['foobar', 'setViewClasses'])
             ->disableOriginalConstructor()
             ->getMock();
-
-        $controller->RequestHandler = $this->getMockBuilder(RequestHandlerComponent::class)
-            ->onlyMethods(['setConfig'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $controller->RequestHandler
-            ->expects($this->at(0))
-            ->method('setConfig')
-            ->with('viewClassMap', ['json' => 'Json']);
-        $controller->RequestHandler
-            ->expects($this->at(1))
-            ->method('setConfig')
-            ->with('viewClassMap', ['xml' => 'Xml']);
+        $controller
+            ->expects($this->once())
+            ->method('setViewClasses')
+            ->with(['json' => JsonView::class, 'xml' => XmlView::class]);
 
         $apiListener = $this->getMockBuilder(ApiListener::class)
             ->disableOriginalConstructor()

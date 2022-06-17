@@ -22,14 +22,21 @@ trait ControllerTrait
      *
      * @var array
      */
-    protected $dispatchComponents = ['Crud' => true];
+    protected array $dispatchComponents = ['Crud' => true];
 
     /**
      * Reference to component which should handle the mapped action.
      *
-     * @var \Controller\Component\CrudComponent|null
+     * @var \Controller\Component\Component|null
      */
-    protected $mappedComponent;
+    protected ?Component $mappedComponent;
+
+    /**
+     * View classes map for content type negotiation.
+     *
+     * @var array
+     */
+    protected array $viewClasses = [];
 
     /**
      * Get the closure for action to be invoked by ControllerFactory.
@@ -44,7 +51,7 @@ trait ControllerTrait
         } catch (MissingActionException $e) {
             $this->mappedComponent = $this->_isActionMapped();
             if ($this->mappedComponent) {
-                return Closure::fromCallable([$this->mappedComponent, 'execute']);
+                return $this->mappedComponent->execute(...);
             }
         }
 
@@ -73,6 +80,33 @@ trait ControllerTrait
         }
 
         parent::invokeAction($action, $args);
+    }
+
+    /**
+     * Set view classes map for content negotiation.
+     *
+     * @param array $map
+     * @return void
+     */
+    public function setViewClasses(array $map): void
+    {
+        $this->viewClasses = $map;
+    }
+
+    /**
+     * Get the View classes this controller can perform content negotiation with.
+     *
+     * Each view class must implement the `getContentType()` hook method
+     * to participate in negotiation.
+     *
+     * This overrides the Controller::viewClasses() of core.
+     *
+     * @see Cake\Http\ContentTypeNegotiation
+     * @return array<string>
+     */
+    public function viewClasses(): array
+    {
+        return $this->viewClasses;
     }
 
     /**

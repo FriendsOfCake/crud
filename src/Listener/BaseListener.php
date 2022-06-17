@@ -76,7 +76,7 @@ abstract class BaseListener extends BaseObject implements EventListenerInterface
      * using the "name" configuration property
      *
      * @param string|null $value Value
-     * @return string|$this
+     * @return $this|string
      */
     public function resourceName(?string $value = null)
     {

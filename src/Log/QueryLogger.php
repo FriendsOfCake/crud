@@ -3,14 +3,17 @@ declare(strict_types=1);
 
 namespace Crud\Log;
 
-class QueryLogger extends \Cake\Database\Log\QueryLogger
+use Cake\Database\Log\QueryLogger as CakeQueryLogger;
+use Stringable;
+
+class QueryLogger extends CakeQueryLogger
 {
     /**
      * Logs
      *
      * @var array
      */
-    protected $_logs = [];
+    protected array $_logs = [];
 
     /**
      * Get logs
@@ -25,7 +28,7 @@ class QueryLogger extends \Cake\Database\Log\QueryLogger
     /**
      * @inheritDoc
      */
-    public function log($level, $message, array $context = [])
+    public function log($level, string|Stringable $message, array $context = []): void
     {
         $this->_logs[] = (string)$context['query'];
 

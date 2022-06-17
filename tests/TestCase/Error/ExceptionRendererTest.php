@@ -5,9 +5,8 @@ namespace Crud\Test\TestCase\Error;
 
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
-use Cake\Core\Exception\Exception;
+use Cake\Core\Exception\CakeException;
 use Cake\Datasource\ConnectionManager;
-use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\ORM\Entity;
 use Cake\TestSuite\TestCase;
@@ -25,10 +24,11 @@ class ExceptionRendererTest extends TestCase
 
     public function testNormalExceptionRendering()
     {
-        $Exception = new Exception('Hello World');
+        $Exception = new CakeException('Hello World');
 
         $Controller = $this->getMockBuilder(Controller::class)
             ->onlyMethods(['render'])
+            ->setConstructorArgs([new ServerRequest()])
             ->getMock();
 
         $Renderer = $this->getMockBuilder(ExceptionRenderer::class)
@@ -62,11 +62,6 @@ class ExceptionRendererTest extends TestCase
                 'message' => 'Hello World',
             ],
         ];
-
-        if (version_compare(Configure::version(), '4.2.0', '<')) {
-            $expected['exception']['class'] = 'Cake\Core\Exception\Exception';
-            $expected['exception']['code'] = 500;
-        }
 
         $actual = $viewVars['data'];
         unset($actual['trace'], $actual['file'], $actual['line']);
@@ -92,13 +87,13 @@ class ExceptionRendererTest extends TestCase
 
     public function testNormalExceptionRenderingQueryLog()
     {
-        $Exception = new Exception('Hello World');
+        $Exception = new CakeException('Hello World');
 
         $QueryLogger = $this->getMockBuilder(QueryLogger::class)
             ->onlyMethods(['getLogs'])
             ->getMock();
-        $currentLogger = ConnectionManager::get('test')->getLogger();
-        ConnectionManager::get('test')->setLogger($QueryLogger);
+        $currentLogger = ConnectionManager::get('test')->getDriver()->getLogger();
+        ConnectionManager::get('test')->getDriver()->setLogger($QueryLogger);
 
         $QueryLogger
             ->expects($this->once())
@@ -108,9 +103,8 @@ class ExceptionRendererTest extends TestCase
 
         $Controller = $this->getMockBuilder(Controller::class)
             ->onlyMethods(['render'])
+            ->setConstructorArgs([new ServerRequest()])
             ->getMock();
-        $Controller->request = new ServerRequest();
-        $Controller->response = new Response();
 
         $Renderer = $this->getMockBuilder(ExceptionRenderer::class)
             ->onlyMethods(['_getController'])
@@ -143,11 +137,6 @@ class ExceptionRendererTest extends TestCase
                 'message' => 'Hello World',
             ],
         ];
-
-        if (version_compare(Configure::version(), '4.2.0', '<')) {
-            $expected['exception']['class'] = 'Cake\Core\Exception\Exception';
-            $expected['exception']['code'] = 500;
-        }
 
         $actual = $viewVars['data'];
         $queryLog = $viewVars['queryLog'];
@@ -174,18 +163,19 @@ class ExceptionRendererTest extends TestCase
         $this->assertTrue(isset($viewVars['error']));
         $this->assertSame($Exception, $viewVars['error']);
 
-        ConnectionManager::get('test')->setLogger($currentLogger);
+        if ($currentLogger) {
+            ConnectionManager::get('test')->getDriver()->setLogger($currentLogger);
+        }
     }
 
     public function testNormalNestedExceptionRendering()
     {
-        $Exception = new Exception('Hello World');
+        $Exception = new CakeException('Hello World');
 
         $Controller = $this->getMockBuilder(Controller::class)
             ->onlyMethods(['render'])
+            ->setConstructorArgs([new ServerRequest()])
             ->getMock();
-        $Controller->request = new ServerRequest();
-        $Controller->response = new Response();
 
         $Renderer = $this->getMockBuilder(ExceptionRenderer::class)
             ->onlyMethods(['_getController'])
@@ -218,11 +208,6 @@ class ExceptionRendererTest extends TestCase
                 'message' => 'Hello World',
             ],
         ];
-
-        if (version_compare(Configure::version(), '4.2.0', '<')) {
-            $expected['exception']['class'] = 'Cake\Core\Exception\Exception';
-            $expected['exception']['code'] = 500;
-        }
 
         $actual = $viewVars['data'];
         unset($actual['trace'], $actual['file'], $actual['line']);
@@ -246,10 +231,11 @@ class ExceptionRendererTest extends TestCase
 
     public function testMissingViewExceptionDuringRendering()
     {
-        $Exception = new Exception('Hello World');
+        $Exception = new CakeException('Hello World');
 
         $Controller = $this->getMockBuilder(Controller::class)
             ->onlyMethods(['render'])
+            ->setConstructorArgs([new ServerRequest()])
             ->getMock();
 
         $Renderer = $this->getMockBuilder(ExceptionRenderer::class)
@@ -284,11 +270,6 @@ class ExceptionRendererTest extends TestCase
             ],
         ];
 
-        if (version_compare(Configure::version(), '4.2.0', '<')) {
-            $expected['exception']['class'] = 'Cake\Core\Exception\Exception';
-            $expected['exception']['code'] = 500;
-        }
-
         $actual = $viewVars['data'];
         unset($actual['trace'], $actual['file'], $actual['line']);
         $this->assertEquals($expected, $actual);
@@ -311,13 +292,11 @@ class ExceptionRendererTest extends TestCase
 
     public function testGenericExceptionDuringRendering()
     {
-        $this->markTestSkipped();
-
-        $Exception = new Exception('Hello World');
-        $NestedException = new Exception('Generic Exception Description');
+        $Exception = new CakeException('Hello World');
 
         $Controller = $this->getMockBuilder(Controller::class)
             ->onlyMethods(['render'])
+            ->setConstructorArgs([new ServerRequest()])
             ->getMock();
 
         $Renderer = $this->getMockBuilder(ExceptionRenderer::class)
@@ -336,22 +315,23 @@ class ExceptionRendererTest extends TestCase
         $serialize = $Controller->viewBuilder()->getOption('serialize');
 
         $this->assertNotEmpty($serialize);
-        $this->assertEquals(['success', 'data'], $serialize);
+        $this->assertEquals(['success', 'data', 'queryLog'], $serialize);
 
         $viewVars = $Controller->viewBuilder()->getVars();
+        // dd($viewVars);
 
         $expected = [
             'code' => 500,
             'url' => $Controller->getRequest()->getRequestTarget(),
             'message' => 'Hello World',
             'exception' => [
-                'class' => 'Cake\Core\Exception\Exception',
-                'code' => 500,
+                'class' => 'Cake\Core\Exception\CakeException',
+                'code' => 0,
                 'message' => 'Hello World',
             ],
         ];
         $actual = $viewVars['data'];
-        unset($actual['trace']);
+        unset($actual['trace'], $actual['file'], $actual['line']);
         $this->assertEquals($expected, $actual);
 
         $this->assertTrue(isset($viewVars['success']));
@@ -364,10 +344,10 @@ class ExceptionRendererTest extends TestCase
         $this->assertSame($Controller->getRequest()->getRequestTarget(), $viewVars['url']);
 
         $this->assertTrue(isset($viewVars['message']));
-        $this->assertSame('Generic Exception Description', $viewVars['message']);
+        $this->assertSame('Hello World', $viewVars['message']);
 
         $this->assertTrue(isset($viewVars['error']));
-        $this->assertSame($NestedException, $viewVars['error']);
+        $this->assertSame($Exception, $viewVars['error']);
     }
 
     public function testValidationErrorSingleKnownError()
@@ -381,9 +361,8 @@ class ExceptionRendererTest extends TestCase
 
         $Controller = $this->getMockBuilder(Controller::class)
             ->onlyMethods(['render'])
+            ->setConstructorArgs([new ServerRequest()])
             ->getMock();
-        $Controller->request = new ServerRequest();
-        $Controller->response = new Response();
 
         $Renderer = $this->getMockBuilder(ExceptionRenderer::class)
             ->onlyMethods(['_getController'])
@@ -424,6 +403,7 @@ class ExceptionRendererTest extends TestCase
         /** @var \Cake\Controller\Controller&\PHPUnit\Framework\MockObject\MockObject $Controller */
         $Controller = $this->getMockBuilder(Controller::class)
             ->onlyMethods(['render'])
+            ->setConstructorArgs([new ServerRequest()])
             ->getMock();
 
         $Renderer = $this->getMockBuilder(ExceptionRenderer::class)
@@ -474,6 +454,7 @@ class ExceptionRendererTest extends TestCase
 
         $Controller = $this->getMockBuilder(Controller::class)
             ->onlyMethods(['render'])
+            ->setConstructorArgs([new ServerRequest()])
             ->getMock();
 
         $Renderer = $this->getMockBuilder(ExceptionRenderer::class)

@@ -6,6 +6,7 @@ namespace Crud\Error;
 use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
 use Cake\Error\Debugger;
+use Cake\Error\Renderer\WebExceptionRenderer;
 use Cake\Http\Response;
 use Crud\Error\Exception\ValidationException;
 use Exception;
@@ -16,7 +17,7 @@ use Exception;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class ExceptionRenderer extends \Cake\Error\ExceptionRenderer
+class ExceptionRenderer extends WebExceptionRenderer
 {
     /**
      * Renders validation errors and sends a 422 error code
@@ -129,8 +130,8 @@ class ExceptionRenderer extends \Cake\Error\ExceptionRenderer
         $queryLog = [];
         $sources = ConnectionManager::configured();
         foreach ($sources as $source) {
-            $logger = ConnectionManager::get($source)->getLogger();
-            if (method_exists($logger, 'getLogs')) {
+            $logger = ConnectionManager::get($source)->getDriver()->getLogger();
+            if ($logger && method_exists($logger, 'getLogs')) {
                 $queryLog[$source] = $logger->getLogs();
             }
         }

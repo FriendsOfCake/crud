@@ -43,7 +43,7 @@ class AddAction extends BaseAction
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'enabled' => true,
         'scope' => 'entity',
         'inflection' => 'singular',
@@ -112,9 +112,9 @@ class AddAction extends BaseAction
     /**
      * HTTP POST handler
      *
-     * @return \Cake\Http\Response|void
+     * @return \Cake\Http\Response|null
      */
-    protected function _post()
+    protected function _post(): ?Response
     {
         $subject = $this->_subject([
             'entity' => $this->_entity($this->_request()->getData(), $this->saveOptions()),
@@ -133,6 +133,8 @@ class AddAction extends BaseAction
         }
 
         $this->_error($subject);
+
+        return null;
     }
 
     /**
@@ -140,7 +142,7 @@ class AddAction extends BaseAction
      *
      * @return \Cake\Http\Response|null
      */
-    protected function _put()
+    protected function _put(): ?Response
     {
         return $this->_post();
     }

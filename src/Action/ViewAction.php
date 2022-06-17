@@ -33,7 +33,7 @@ class ViewAction extends BaseAction
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'enabled' => true,
         'scope' => 'entity',
         'findMethod' => 'all',
@@ -45,10 +45,10 @@ class ViewAction extends BaseAction
     /**
      * Generic HTTP handler
      *
-     * @param string|null $id Record id
+     * @param string|int|null $id Record id
      * @return void
      */
-    protected function _handle(?string $id = null): void
+    protected function _handle(string|int|null $id = null): void
     {
         $subject = $this->_subject();
         $subject->set(['id' => $id]);

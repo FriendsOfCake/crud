@@ -14,7 +14,7 @@ use Cake\ORM\Table;
  */
 class CrudExamplesTable extends Table
 {
-    protected $_alias = 'CrudExamples';
+    protected ?string $_alias = 'CrudExamples';
 
     /**
      * [initialize description]

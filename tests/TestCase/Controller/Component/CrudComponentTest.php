@@ -8,7 +8,6 @@ use Cake\Event\EventManager;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\Http\Exception\NotFoundException;
-use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Crud\Controller\Component\CrudComponent;
 use Crud\Test\App\Controller\Component\TestCrudComponent;
@@ -29,7 +28,7 @@ class CrudComponentTest extends TestCase
      * Use the core posts fixture to have something to work on.
      * What fixture is used is almost irrelevant, was chosen as it is simple
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'core.Posts',
     ];
 
@@ -48,14 +47,14 @@ class CrudComponentTest extends TestCase
 
         $this->request = $this->getMockBuilder(ServerRequest::class)
             ->onlyMethods(['is', 'getMethod'])
-            ->getMock();
+            ->getMock()
+            ->withParam('action', 'index');
 
         $this->request->expects($this->any())->method('is')->will($this->returnValue(true));
 
-        $response = new Response();
         $this->controller = $this->getMockBuilder(CrudExamplesController::class)
             ->onlyMethods(['redirect', 'render'])
-            ->setConstructorArgs([$this->request, $response, 'CrudExamples', EventManager::instance()])
+            ->setConstructorArgs([$this->request, 'CrudExamples', EventManager::instance()])
             ->getMock();
         $this->controller->defaultTable = 'CrudExamples';
 
@@ -237,7 +236,7 @@ class CrudComponentTest extends TestCase
             ->method('render');
 
         $this->Crud->view('view', 'cupcakes');
-        $this->Crud->execute('view', [1]);
+        $this->Crud->execute('view', ['1']);
     }
 
     /**
@@ -406,12 +405,8 @@ class CrudComponentTest extends TestCase
      */
     public function testSetModelPropertiesDefault()
     {
-        $this->markTestSkipped(
-            'Tests still not updated.'
-        );
-
         $this->Crud->setAction('index');
-        $this->assertSame('CrudExamples', $this->Crud->getModelName());
+        $this->assertNull($this->Crud->getModelName());
     }
 
     /**
@@ -701,10 +696,6 @@ class CrudComponentTest extends TestCase
      */
     public function testFindMethodMultipleActions()
     {
-        $this->markTestSkipped(
-            'Tests still not updated.'
-        );
-
         $this->Crud->findMethod(['index' => 'my_all', 'view' => 'my_view']);
 
         $expected = 'my_all';

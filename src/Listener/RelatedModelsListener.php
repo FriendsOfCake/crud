@@ -77,8 +77,8 @@ class RelatedModelsListener extends BaseListener
      * Find and publish all related models to the view
      * for an action
      *
-     * @param null|string $action If NULL the current action will be used
-     * @param null|\Cake\Datasource\EntityInterface $entity The optional entity for which we we trying to find related
+     * @param string|null $action If NULL the current action will be used
+     * @param \Cake\Datasource\EntityInterface|null $entity The optional entity for which we we trying to find related
      * @return void
      */
     public function publishRelatedModels(?string $action = null, ?EntityInterface $entity = null): void
@@ -171,7 +171,7 @@ class RelatedModelsListener extends BaseListener
      * @param string|null $action The action to configure
      * @return mixed
      */
-    public function relatedModels($related = null, ?string $action = null)
+    public function relatedModels(mixed $related = null, ?string $action = null): mixed
     {
         if ($related === null) {
             return $this->_action($action)->getConfig('relatedModels');

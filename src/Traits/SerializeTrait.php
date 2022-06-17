@@ -11,10 +11,10 @@ trait SerializeTrait
      * If `$keys` is NULL the current configuration is returned
      * else the `$serialize` configuration is changed.
      *
-     * @param null|array $keys Keys to serialize
+     * @param array|null $keys Keys to serialize
      * @return mixed
      */
-    public function serialize(?array $keys = null)
+    public function serialize(?array $keys = null): mixed
     {
         if ($keys === null) {
             return (array)$this->getConfig('serialize');
