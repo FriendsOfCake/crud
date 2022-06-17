@@ -26,14 +26,14 @@ abstract class BaseAction extends BaseObject
      *
      * @var bool
      */
-    protected $_responding = false;
+    protected bool $_responding = false;
 
     /**
      * Default configuration
      *
      * @var array
      */
-    protected $_defaultConfig = [];
+    protected array $_defaultConfig = [];
 
     /**
      * Handle callback
@@ -48,27 +48,26 @@ abstract class BaseAction extends BaseObject
      * @return mixed
      * @throws \Cake\Http\Exception\NotImplementedException if the action can't handle the request
      */
-    public function handle(array $args = [])
+    public function handle(array $args = []): mixed
     {
         if (!$this->enabled()) {
             return false;
         }
 
-        $method = '_' . strtolower($this->_request()->getMethod());
+        $methods = [
+            '_' . strtolower($this->_request()->getMethod()),
+            '_handle',
+        ];
 
-        if (method_exists($this, $method)) {
-            $this->_responding = true;
-            $this->_controller()->getEventManager()->on($this);
+        foreach ($methods as $method) {
+            if (method_exists($this, $method)) {
+                $this->_responding = true;
+                $this->_controller()->getEventManager()->on($this);
 
-            return call_user_func_array([$this, $method], $args);
-        }
+                $closure = $this->$method(...);
 
-        if (method_exists($this, '_handle')) {
-            $this->_responding = true;
-            $this->_controller()->getEventManager()->on($this);
-
-            /** @psalm-suppress InvalidArgument */
-            return call_user_func_array([$this, '_handle'], $args);
+                return $closure(...$args);
+            }
         }
 
         throw new NotImplementedException(sprintf(
@@ -219,11 +218,11 @@ abstract class BaseAction extends BaseObject
      *  - key  : the key to read inside the reader
      *  - url  : the URL to redirect to
      *
-     * @param null|string $name Name of the redirection rule
-     * @param null|array $config Redirection configuration
+     * @param string|null $name Name of the redirection rule
+     * @param array|null $config Redirection configuration
      * @return mixed
      */
-    public function redirectConfig(?string $name = null, ?array $config = null)
+    public function redirectConfig(?string $name = null, ?array $config = null): mixed
     {
         if ($name === null && $config === null) {
             return $this->getConfig('redirect');
@@ -274,7 +273,7 @@ abstract class BaseAction extends BaseObject
      * using the "name" configuration property
      *
      * @param string $value Name to set
-     * @return string|$this
+     * @return $this|string
      */
     public function resourceName(?string $value = null)
     {

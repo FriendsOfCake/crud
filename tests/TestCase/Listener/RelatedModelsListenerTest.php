@@ -21,7 +21,7 @@ use Crud\TestSuite\TestCase;
  */
 class RelatedModelsListenerTest extends TestCase
 {
-    protected $fixtures = ['core.NumberTrees'];
+    protected array $fixtures = ['core.NumberTrees'];
 
     /**
      * testModels

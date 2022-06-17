@@ -17,7 +17,7 @@ trait ViewTrait
      * @param mixed $view View name
      * @return mixed
      */
-    public function view($view = null)
+    public function view(mixed $view = null): mixed
     {
         if (empty($view)) {
             return $this->getConfig('view') ?: $this->_request()->getParam('action');

@@ -1,8 +1,8 @@
 <?php
+declare(strict_types=1);
 
-use Cake\Core\Configure;
 use Cake\Core\Plugin;
-use Cake\Filesystem\Folder;
+use Cake\TestSuite\Fixture\SchemaLoader;
 
 // @codingStandardsIgnoreFile
 
@@ -87,7 +87,8 @@ Cake\Datasource\ConnectionManager::setConfig('test', [
 
 Plugin::getCollection()->add(new \Crud\Plugin());
 
-Configure::write(
-    'Error.ignoredDeprecationPaths',
-    ['vendor/cakephp/cakephp/src/TestSuite/Fixture/FixtureInjector.php']
-);
+// Create test database schema
+if (env('FIXTURE_SCHEMA_METADATA')) {
+    $loader = new SchemaLoader();
+    $loader->loadInternalFile(env('FIXTURE_SCHEMA_METADATA'));
+}

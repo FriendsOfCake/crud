@@ -10,9 +10,11 @@ use Cake\Core\App;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventInterface;
+use Cake\Event\EventManagerInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\Http\Exception\NotFoundException;
+use Cake\Http\ServerRequest;
 use Cake\ORM\Table;
 use Cake\Utility\Inflector;
 use Crud\Action\BaseAction;
@@ -40,57 +42,57 @@ class CrudComponent extends Component
      *
      * @var string
      */
-    protected $_action;
+    protected string $_action;
 
     /**
      * Reference to the current controller.
      *
      * @var \Cake\Controller\Controller
      */
-    protected $_controller;
+    protected Controller $_controller;
 
     /**
      * Reference to the current request.
      *
      * @var \Cake\Http\ServerRequest
      */
-    protected $_request;
+    protected ServerRequest $_request;
 
     /**
      * A flat array of the events triggered.
      *
      * @var array
      */
-    protected $_eventLog = [];
+    protected array $_eventLog = [];
 
     /**
      * Reference to the current event manager.
      *
      * @var \Cake\Event\EventManagerInterface
      */
-    protected $_eventManager;
+    protected EventManagerInterface $_eventManager;
 
     /**
-     * Cached property for Controller::$modelClass. This is
+     * Cached property for Controller::$defaultTable. This is
      * the model name of the current model.
      *
-     * @var string
+     * @var string|null
      */
-    protected $_modelName;
+    protected ?string $_modelName = null;
 
     /**
      * List of listener objects attached to Crud.
      *
-     * @var \Crud\Listener\BaseListener[]
+     * @var array<\Crud\Listener\BaseListener>
      */
-    protected $_listenerInstances = [];
+    protected array $_listenerInstances = [];
 
     /**
      * List of crud actions.
      *
-     * @var \Crud\Action\BaseAction[]
+     * @var array<\Crud\Action\BaseAction>
      */
-    protected $_actionInstances = [];
+    protected array $_actionInstances = [];
 
     /**
      * Components settings.
@@ -110,7 +112,7 @@ class CrudComponent extends Component
      *
      * @var array<string, mixed>
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'actions' => [],
         'eventPrefix' => 'Crud',
         'listeners' => [],
@@ -285,12 +287,12 @@ class CrudComponent extends Component
     /**
      * Enable one or multiple CRUD actions.
      *
-     * @param string|array $actions The action to enable.
+     * @param array|string $actions The action to enable.
      * @return void
      * @throws \Crud\Error\Exception\ActionNotConfiguredException
      * @throws \Crud\Error\Exception\MissingActionException
      */
-    public function enable($actions): void
+    public function enable(array|string $actions): void
     {
         foreach ((array)$actions as $action) {
             $this->action($action)->enable();
@@ -300,12 +302,12 @@ class CrudComponent extends Component
     /**
      * Disable one or multiple CRUD actions.
      *
-     * @param string|array $actions The action to disable.
+     * @param array|string $actions The action to disable.
      * @return void
      * @throws \Crud\Error\Exception\ActionNotConfiguredException
      * @throws \Crud\Error\Exception\MissingActionException
      */
-    public function disable($actions): void
+    public function disable(array|string $actions): void
     {
         foreach ((array)$actions as $action) {
             $this->action($action)->disable();
@@ -317,13 +319,13 @@ class CrudComponent extends Component
      *
      * To map multiple action views in one go pass an array as first argument and no second argument.
      *
-     * @param string|array $action Action or array of actions
+     * @param array|string $action Action or array of actions
      * @param string|null $view View name
      * @return void
      * @throws \Crud\Error\Exception\ActionNotConfiguredException
      * @throws \Crud\Error\Exception\MissingActionException
      */
-    public function view($action, ?string $view = null): void
+    public function view(array|string $action, ?string $view = null): void
     {
         if (is_array($action)) {
             foreach ($action as $realAction => $realView) {
@@ -343,13 +345,13 @@ class CrudComponent extends Component
      *
      * To map multiple action viewVars in one go pass an array as first argument and no second argument.
      *
-     * @param string|array $action Action or array of actions.
+     * @param array|string $action Action or array of actions.
      * @param string|null $viewVar View var name.
      * @return void
      * @throws \Crud\Error\Exception\ActionNotConfiguredException
      * @throws \Crud\Error\Exception\MissingActionException
      */
-    public function viewVar($action, ?string $viewVar = null): void
+    public function viewVar(array|string $action, ?string $viewVar = null): void
     {
         if (is_array($action)) {
             foreach ($action as $realAction => $realViewVar) {
@@ -369,13 +371,13 @@ class CrudComponent extends Component
      *
      * To map multiple findMethods in one go pass an array as first argument and no second argument.
      *
-     * @param string|array $action Action or array of actions.
+     * @param array|string $action Action or array of actions.
      * @param string|null $method Find method name
      * @return void
      * @throws \Crud\Error\Exception\ActionNotConfiguredException
      * @throws \Crud\Error\Exception\MissingActionException
      */
-    public function findMethod($action, ?string $method = null): void
+    public function findMethod(array|string $action, ?string $method = null): void
     {
         if (is_array($action)) {
             foreach ($action as $realAction => $realMethod) {
@@ -394,13 +396,13 @@ class CrudComponent extends Component
      * Map action to an internal request type.
      *
      * @param string $action The Controller action to provide an implementation for.
-     * @param string|array $config Config array or class name like Crud.Index.
+     * @param array|string $config Config array or class name like Crud.Index.
      * @param bool $enable Should the mapping be enabled right away?
      * @return void
      * @throws \Crud\Error\Exception\ActionNotConfiguredException
      * @throws \Crud\Error\Exception\MissingActionException
      */
-    public function mapAction(string $action, $config = [], bool $enable = true): void
+    public function mapAction(string $action, array|string $config = [], bool $enable = true): void
     {
         if (is_string($config)) {
             $config = ['className' => $config];
@@ -439,12 +441,12 @@ class CrudComponent extends Component
     /**
      * Attaches an event listener function to the controller for Crud Events.
      *
-     * @param string|array $events Name of the Crud Event you want to attach to controller.
+     * @param array|string $events Name of the Crud Event you want to attach to controller.
      * @param callable $callback Callable method or closure to be executed on event.
      * @param array $options Used to set the `priority` and `passParams` flags to the listener.
      * @return void
      */
-    public function on($events, callable $callback, array $options = []): void
+    public function on(array|string $events, callable $callback, array $options = []): void
     {
         foreach ((array)$events as $event) {
             if (!strpos($event, '.')) {
@@ -535,7 +537,7 @@ class CrudComponent extends Component
      * @throws \Exception if any event listener return a CakeResponse object.
      * @return \Cake\Event\EventInterface
      */
-    public function trigger(string $eventName, $data = null): EventInterface
+    public function trigger(string $eventName, Subject|array|null $data = null): EventInterface
     {
         $eventName = $this->_config['eventPrefix'] . '.' . $eventName;
 
@@ -574,13 +576,13 @@ class CrudComponent extends Component
      * Set or get defaults for listeners and actions.
      *
      * @param string $type Can be anything, but 'listeners' or 'actions' is currently only used.
-     * @param string|array $name The name of the $type - e.g. 'api', 'relatedModels'
+     * @param array|string $name The name of the $type - e.g. 'api', 'relatedModels'
      *  or an array ('api', 'relatedModels'). If $name is an array, the $config will be applied
      *  to each entry in the $name array.
      * @param mixed $config If NULL, the defaults is returned, else the defaults are changed.
      * @return mixed
      */
-    public function defaults(string $type, $name, $config = null)
+    public function defaults(string $type, array|string $name, mixed $config = null): mixed
     {
         if ($config !== null) {
             if (!is_array($name)) {
@@ -626,15 +628,7 @@ class CrudComponent extends Component
      */
     public function table(): Table
     {
-        if (method_exists($this->_controller, 'fetchTable')) {
-            return $this->_controller->fetchTable($this->_modelName);
-        }
-
-        /**
-         * @var \Cake\ORM\Table
-         * @psalm-suppress DeprecatedMethod
-         */
-        return $this->_controller->loadModel($this->_modelName);
+        return $this->_controller->fetchTable($this->_modelName);
     }
 
     /**

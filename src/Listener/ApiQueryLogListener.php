@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Crud\Listener;
 
 use Cake\Core\Configure;
+use Cake\Datasource\ConnectionInterface;
 use Cake\Datasource\ConnectionManager;
 use Cake\Datasource\Exception\MissingDatasourceConfigException;
 use Cake\Event\EventInterface;
@@ -27,7 +28,7 @@ class ApiQueryLogListener extends BaseListener
      *
      * `connections` List of connection names to log. Empty means all defined connections.
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'connections' => [],
     ];
 
@@ -64,9 +65,7 @@ class ApiQueryLogListener extends BaseListener
         foreach ($connections as $connectionName) {
             try {
                 $connection = $this->_getSource($connectionName);
-                $connection->enableQueryLogging(true);
-                /** @psalm-suppress InternalMethod */
-                $connection->setLogger(new QueryLogger());
+                $connection->getDriver()->setLogger(new QueryLogger());
             } catch (MissingDatasourceConfigException $e) {
                 //Safe to ignore this :-)
             }
@@ -100,7 +99,7 @@ class ApiQueryLogListener extends BaseListener
 
         $queryLog = [];
         foreach ($sources as $source) {
-            $logger = $this->_getSource($source)->getLogger();
+            $logger = $this->_getSource($source)->getDriver()->getLogger();
             if (method_exists($logger, 'getLogs')) {
                 $queryLog[$source] = $logger->getLogs();
             }
@@ -137,7 +136,7 @@ class ApiQueryLogListener extends BaseListener
      * @return \Cake\Datasource\ConnectionInterface
      * @codeCoverageIgnore
      */
-    protected function _getSource(string $source)
+    protected function _getSource(string $source): ConnectionInterface
     {
         return ConnectionManager::get($source);
     }

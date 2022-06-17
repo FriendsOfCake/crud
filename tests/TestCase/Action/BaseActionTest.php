@@ -11,7 +11,6 @@ use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Exception\NotImplementedException;
-use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Crud\Action\BaseAction;
 use Crud\Controller\Component\CrudComponent;
@@ -25,17 +24,18 @@ use Exception;
  */
 class BaseActionTest extends TestCase
 {
+    protected ServerRequest $Request;
+
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->Request = $this->getMockBuilder(ServerRequest::class)
-            ->getMock();
+        $this->Request = (new ServerRequest())
+            ->withParam('action', 'index');
         $this->Controller = $this->getMockBuilder(Controller::class)
             ->onlyMethods(['set'])
             ->setConstructorArgs([
                 $this->Request,
-                new Response(),
                 'CrudExamples',
                 EventManager::instance(),
             ])
@@ -46,7 +46,6 @@ class BaseActionTest extends TestCase
             ->addMethods(['foobar'])
             ->getMock();
         $this->Controller->Crud = $this->Crud;
-        $this->Controller->defaultTable = 'CrudExamples';
 
         $this->getTableLocator()->get('CrudExamples')->setAlias('MyModel');
 
@@ -188,14 +187,12 @@ class BaseActionTest extends TestCase
      */
     public function testDisable()
     {
-        $i = 0;
-
         $Action = $this->getMockBuilder(BaseAction::class)
             ->onlyMethods(['setConfig'])
             ->setConstructorArgs([$this->Controller])
             ->getMock();
         $Action
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('setConfig', 'enabled was not changed to false by config()')
             ->with('enabled', false);
 
@@ -219,7 +216,7 @@ class BaseActionTest extends TestCase
             ->setConstructorArgs([$this->Controller])
             ->getMock();
         $Action
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('setConfig', 'enabled was not changed to false by config()')
             ->with('enabled', true);
 
@@ -532,18 +529,17 @@ class BaseActionTest extends TestCase
             ->method('getMethod')
             ->will($this->returnValue('GET'));
 
-        $i = 0;
         $Action
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('getConfig')
             ->with('enabled')
             ->will($this->returnValue(true));
         $Action
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('_request')
             ->will($this->returnValue($Request));
         $Action
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('_get');
 
         $Action->handle();
@@ -565,9 +561,8 @@ class BaseActionTest extends TestCase
             ->setConstructorArgs([$this->Controller])
             ->getMock();
 
-        $i = 0;
         $Action
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('getConfig')
             ->with('enabled')
             ->will($this->returnValue(false));
@@ -602,14 +597,13 @@ class BaseActionTest extends TestCase
             ->method('getMethod')
             ->will($this->returnValue('GET'));
 
-        $i = 0;
         $Action
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('getConfig')
             ->with('enabled')
             ->will($this->returnValue(true));
         $Action
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('_request')
             ->will($this->returnValue($Request));
         $Action
@@ -644,14 +638,13 @@ class BaseActionTest extends TestCase
             ->method('getMethod')
             ->will($this->returnValue('GET'));
 
-        $i = 0;
         $Action
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('getConfig')
             ->with('enabled')
             ->will($this->returnValue(true));
         $Action
-            ->expects($this->at($i++))
+            ->expects($this->once())
             ->method('_request')
             ->will($this->returnValue($Request));
 

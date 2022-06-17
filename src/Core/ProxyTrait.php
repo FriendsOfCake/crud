@@ -9,6 +9,7 @@ use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Http\Session;
+use Cake\ORM\Table;
 use Crud\Action\BaseAction;
 use Crud\Controller\Component\CrudComponent;
 use Crud\Event\Subject;
@@ -19,7 +20,7 @@ trait ProxyTrait
     /**
      * @var \Cake\Datasource\EntityInterface|null
      */
-    protected $_entity;
+    protected ?EntityInterface $_entity = null;
 
     /**
      * Proxy method for `$this->_crud()->action()`
@@ -125,20 +126,9 @@ trait ProxyTrait
      * @return \Cake\ORM\Table
      * @psalm-suppress MoreSpecificReturnType
      */
-    protected function _table()
+    protected function _table(): Table
     {
-        $modelType = $this->getConfig('modelFactory');
-
-        if (!$modelType && method_exists($this->_controller(), 'fetchTable')) {
-            return $this->_controller()->fetchTable();
-        }
-
-        /** @psalm-suppress DeprecatedMethod */
-        return $this->_controller()
-            ->loadModel(
-                null,
-                $modelType ?: $this->_controller()->getModelType()
-            );
+        return $this->_crud()->table();
     }
 
     /**
@@ -169,7 +159,7 @@ trait ProxyTrait
     }
 
     /**
-     * Proxy method for `$this->_container->_crud`
+     * Proxy method for `$this->_controller->Crud`
      *
      * @return \Crud\Controller\Component\CrudComponent
      */

@@ -6,6 +6,7 @@ namespace Crud\TestSuite;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Event\EventManager;
+use Cake\Event\EventManagerInterface;
 use Cake\Routing\Router;
 use Cake\TestSuite\IntegrationTestTrait;
 use Crud\TestSuite\Traits\CrudTestTrait;
@@ -26,7 +27,7 @@ abstract class IntegrationTestCase extends TestCase
     /**
      * @var \Cake\Event\EventManagerInterface
      */
-    protected $_eventManager;
+    protected EventManagerInterface $_eventManager;
 
     /**
      * [setUp description]

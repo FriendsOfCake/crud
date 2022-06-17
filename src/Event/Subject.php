@@ -20,7 +20,7 @@ class Subject
      *
      * @var array
      */
-    protected $_events = [];
+    protected array $_events = [];
 
     /**
      * Constructor
@@ -69,7 +69,7 @@ class Subject
      * Set a list of key / values for this object
      *
      * @param array $fields Fields
-     * @return \Crud\Event\Subject
+     * @return $this
      */
     public function set(array $fields)
     {
@@ -93,7 +93,7 @@ class Subject
      * @return bool
      * @throws \Exception In case of invalid mode
      */
-    public function shouldProcess(string $mode, $actions = []): bool
+    public function shouldProcess(string $mode, mixed $actions = []): bool
     {
         if (is_string($actions)) {
             $actions = [$actions];

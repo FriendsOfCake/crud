@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="4.x-dev@">
-  <file src="src/Error/ExceptionRenderer.php">
-    <DeprecatedClass occurrences="2">
-      <code>\Cake\Error\ExceptionRenderer</code>
-      <code>parent::_outputMessage($template)</code>
-    </DeprecatedClass>
-  </file>
   <file src="src/Listener/ApiListener.php">
-    <DeprecatedClass occurrences="1">
-      <code>$controller-&gt;RequestHandler-&gt;setConfig('viewClassMap', [$type =&gt; $class])</code>
-    </DeprecatedClass>
+    <UndefinedMethod occurrences="1">
+      <code>setViewClasses</code>
+    </UndefinedMethod>
+  </file>
+  <file src="src/Listener/ApiQueryLogListener.php">
+    <InternalMethod occurrences="1">
+      <code>new QueryLogger()</code>
+    </InternalMethod>
   </file>
   <file src="src/Log/QueryLogger.php">
     <InternalClass occurrences="2">
-      <code>\Cake\Database\Log\QueryLogger</code>
+      <code>CakeQueryLogger</code>
       <code>parent::log($level, $message, $context)</code>
     </InternalClass>
     <InternalMethod occurrences="1">

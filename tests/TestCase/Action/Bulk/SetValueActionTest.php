@@ -17,7 +17,7 @@ class SetValueActionTest extends IntegrationTestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.Crud.Blogs',
         'plugin.Crud.Users',
     ];
@@ -27,7 +27,7 @@ class SetValueActionTest extends IntegrationTestCase
      *
      * @var string
      */
-    public $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
+    public string $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
 
     /**
      * Data provider with all HTTP verbs
@@ -56,7 +56,7 @@ class SetValueActionTest extends IntegrationTestCase
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->disableOriginalConstructor()
+                    ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
                 $this->_controller->Flash
@@ -100,7 +100,7 @@ class SetValueActionTest extends IntegrationTestCase
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->disableOriginalConstructor()
+                    ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
                 $this->_controller->Flash
@@ -148,7 +148,7 @@ class SetValueActionTest extends IntegrationTestCase
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->disableOriginalConstructor()
+                    ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
                 $this->_controller->Flash
@@ -190,6 +190,11 @@ class SetValueActionTest extends IntegrationTestCase
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
+                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
+                    ->onlyMethods(['set'])
+                    ->setConstructorArgs([$this->_controller->components()])
+                    ->getMock();
+
                 $this->_subscribeToEvents($this->_controller);
                 $this->_controller->Crud->action('deactivateAll')
                     ->findMethod(['withCustomOptions' => ['foo' => 'bar']]);
