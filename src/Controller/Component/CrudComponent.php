@@ -430,8 +430,7 @@ class CrudComponent extends Component
         }
 
         $action = Inflector::variable($action);
-        $test = $this->getConfig('actions.' . $action);
-        if (empty($test)) {
+        if (!$this->getConfig('actions.' . $action)) {
             return false;
         }
 

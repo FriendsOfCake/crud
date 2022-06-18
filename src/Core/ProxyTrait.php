@@ -166,10 +166,6 @@ trait ProxyTrait
     protected function _crud(): CrudComponent
     {
         /** @psalm-suppress UndefinedMagicPropertyFetch */
-        if (!$this->_controller->Crud) {
-            return $this->_controller->components()->load('Crud.Crud');
-        }
-
         return $this->_controller->Crud;
     }
 }
