@@ -44,7 +44,12 @@ trait ControllerTrait
         } catch (MissingActionException $e) {
             $this->mappedComponent = $this->_isActionMapped();
             if ($this->mappedComponent) {
-                return Closure::fromCallable([$this->mappedComponent, 'execute']);
+                return function () {
+                    // Dummy closure without arguments.
+                    // This is to prevent the ControllerFactory from trying to type cast the method args.
+                    // invokeAction() below simply ignores the $action argument for Crud mapped actions
+                    // and calls CrudComponent::execute() directly.
+                };
             }
         }
 
