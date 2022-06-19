@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="3.7.2@d9cae720c1af31db9ba27c2bc1fcf9b0dd092fb0">
+<files psalm-version="4.x-dev@">
+  <file src="src/Error/ExceptionRenderer.php">
+    <DeprecatedClass occurrences="2">
+      <code>\Cake\Error\ExceptionRenderer</code>
+      <code>parent::_outputMessage($template)</code>
+    </DeprecatedClass>
+  </file>
+  <file src="src/Listener/ApiListener.php">
+    <DeprecatedClass occurrences="1">
+      <code>$controller-&gt;RequestHandler-&gt;setConfig('viewClassMap', [$type =&gt; $class])</code>
+    </DeprecatedClass>
+  </file>
   <file src="src/Log/QueryLogger.php">
     <InternalClass occurrences="2">
       <code>\Cake\Database\Log\QueryLogger</code>
