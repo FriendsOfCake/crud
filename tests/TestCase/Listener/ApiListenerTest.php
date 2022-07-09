@@ -323,7 +323,12 @@ class ApiListenerTest extends TestCase
             ],
             'detectors' => [
                 'json' => ['accept' => ['application/json'], 'param' => '_ext', 'value' => 'json'],
-                'xml' => ['accept' => ['application/xml', 'text/xml'], 'param' => '_ext', 'value' => 'xml'],
+                'xml' => [
+                    'accept' => ['application/xml', 'text/xml'],
+                    'exclude' => ['text/html'],
+                    'param' => '_ext',
+                    'value' => 'xml',
+                ],
             ],
             'exception' => [
                 'type' => 'default',
@@ -1172,7 +1177,12 @@ class ApiListenerTest extends TestCase
     {
         $detectors = [
             'json' => ['accept' => ['application/json'], 'param' => '_ext', 'value' => 'json'],
-            'xml' => ['accept' => ['application/xml', 'text/xml'], 'param' => '_ext', 'value' => 'xml'],
+            'xml' => [
+                'accept' => ['application/xml', 'text/xml'],
+                'exclude' => ['text/html'],
+                'param' => '_ext',
+                'value' => 'xml',
+            ],
             'jsonapi' => ['accept' => ['application/vnd.api+json']],
         ];
 
