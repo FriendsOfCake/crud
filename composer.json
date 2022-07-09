@@ -68,5 +68,11 @@
         "issues": "https://github.com/FriendsOfCake/crud/issues",
         "wiki": "http://crud.readthedocs.org/en/latest/",
         "irc": "irc://irc.freenode.org/friendsofcake"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     }
 }
