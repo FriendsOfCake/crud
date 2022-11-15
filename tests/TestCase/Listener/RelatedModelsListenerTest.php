@@ -9,7 +9,7 @@ use Cake\Event\Event;
 use Cake\ORM\Association;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\AssociationCollection;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use Crud\Event\Subject;
 use Crud\Listener\RelatedModelsListener;
@@ -304,11 +304,7 @@ class RelatedModelsListenerTest extends TestCase
             ->method('models')
             ->will($this->returnValue(['Users' => 'manyToOne']));
 
-        $db = $this->getMockBuilder(Connection::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $query = new Query($db, $table);
+        $query = new SelectQuery($table);
         $subject = new Subject(['query' => $query]);
         $event = new Event('beforePaginate', $subject);
 

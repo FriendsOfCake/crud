@@ -9,7 +9,7 @@ use Cake\Event\EventManager;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\ORM\BehaviorRegistry;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use Crud\Event\Subject;
 use Crud\Listener\SearchListener;
@@ -89,7 +89,7 @@ class SearchListenerTest extends TestCase
 
         $this->getTableLocator()->set('Search', $tableMock);
 
-        $queryMock = $this->getMockBuilder(Query::class)
+        $queryMock = $this->getMockBuilder(SelectQuery::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -145,7 +145,7 @@ class SearchListenerTest extends TestCase
 
         $this->getTableLocator()->set('Search', $tableMock);
 
-        $queryMock = $this->getMockBuilder(Query::class)
+        $queryMock = $this->getMockBuilder(SelectQuery::class)
             ->disableOriginalConstructor()
             ->getMock();
         $queryMock->expects($this->once())

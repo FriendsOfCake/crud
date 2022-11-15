@@ -41,10 +41,10 @@ class AddActionTest extends IntegrationTestCase
         $expected = '<legend>New Blog</legend>';
         $this->assertStringContainsString($expected, $result, 'legend do not match the expected value');
 
-        $expected = '<input type="hidden" name="id" id="id"/>';
+        $expected = '<input type="hidden" name="id" id="id">';
         $this->assertStringContainsString($expected, $result, '"id" do not match the expected value');
 
-        $expected = '<input type="text" name="name" id="name" maxlength="255"/>';
+        $expected = '<input type="text" name="name" id="name" maxlength="255">';
         $this->assertStringContainsString($expected, $result, '"name" do not match the expected value');
 
         $expected = '<textarea name="body" id="body" rows="5"></textarea>';
@@ -66,10 +66,10 @@ class AddActionTest extends IntegrationTestCase
         $expected = '<legend>New Blog</legend>';
         $this->assertStringContainsString($expected, $result, 'legend do not match the expected value');
 
-        $expected = '<input type="hidden" name="id" id="id"/>';
+        $expected = '<input type="hidden" name="id" id="id">';
         $this->assertStringContainsString($expected, $result, '"id" do not match the expected value');
 
-        $expected = '<input type="text" name="name" id="name" value="test" maxlength="255"/>';
+        $expected = '<input type="text" name="name" id="name" value="test" maxlength="255">';
         $this->assertStringContainsString($expected, $result, '"name" do not match the expected value');
 
         $expected = '<textarea name="body" id="body" rows="5"></textarea>';

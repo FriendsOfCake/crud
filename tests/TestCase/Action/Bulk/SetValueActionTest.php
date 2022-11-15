@@ -178,36 +178,4 @@ class SetValueActionTest extends IntegrationTestCase
         $this->assertTrue($this->_subject->success);
         $this->assertRedirect('/users');
     }
-
-    /**
-     * Test custom finder with options
-     *
-     * @return void
-     */
-    public function testPostWithCustomFinder()
-    {
-        $this->_eventManager->on(
-            'Controller.initialize',
-            ['priority' => 11],
-            function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
-                    ->onlyMethods(['set'])
-                    ->setConstructorArgs([$this->_controller->components()])
-                    ->getMock();
-
-                $this->_subscribeToEvents($this->_controller);
-                $this->_controller->Crud->action('deactivateAll')
-                    ->findMethod(['withCustomOptions' => ['foo' => 'bar']]);
-            }
-        );
-
-        $this->post('/blogs/deactivateAll', [
-            'id' => [
-                1,
-                2,
-            ],
-        ]);
-
-        $this->assertSame(['foo' => 'bar'], $this->_controller->Blogs->customOptions);
-    }
 }
