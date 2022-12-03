@@ -54,30 +54,6 @@ trait CrudTestTrait
     }
 
     /**
-     * Get a "model" (Table) instance
-     *
-     * @param string $class Full table class name
-     * @param mixed $methods Methods to mock
-     * @param string $alias Table alias / name
-     * @param string $table Table name in the database
-     * @return \Cake\ORM\Table
-     * @psalm-param class-string $class
-     * @psalm-suppress InvalidReturnType
-     */
-    public function getModel(string $class, mixed $methods, string $alias, string $table): Table
-    {
-        /** @psalm-suppress DeprecatedMethod */
-        $mock = $this->getMockBuilder($class)
-            ->setMethods($methods)
-            ->setConstructorArgs([['alias' => $alias, 'table' => $table]])
-            ->getMock();
-        /** @psalm-suppress UndefinedInterfaceMethod */
-        $mock->setConnection(ConnectionManager::get('test'));
-
-        return $mock;
-    }
-
-    /**
      * Assert these CRUD events was emitted during the life cycle
      *
      * The `$expected` list do not need to prefix events with `Crud.` - this is done
