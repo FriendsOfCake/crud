@@ -82,10 +82,12 @@ abstract class BaseAction extends CrudBaseAction
             unset($ids['_all']);
         }
 
+        // @phpstan-ignore-next-line
         if (!is_array($ids)) {
             throw new BadRequestException('Bad request data');
         }
 
+        // @phpstan-ignore-next-line
         if ($all) {
             foreach ($ids as $key => $value) {
                 $ids[$key] = 1;

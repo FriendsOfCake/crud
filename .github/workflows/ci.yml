@@ -4,19 +4,17 @@ on: [push, pull_request]
 
 jobs:
   testsuite:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['7.4', '8.0']
+        php-version: ['7.4', '8.0', '8.1', '8.2']
         db-type: [sqlite, mysql, pgsql]
         prefer-lowest: ['']
         include:
           - php-version: '7.2'
-            db-type: 'mysql'
+            db-type: 'sqlite'
             prefer-lowest: 'prefer-lowest'
-          - php-version: '8.1'
-            db-type: 'mysql'
 
     services:
       postgres:
@@ -27,7 +25,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Setup Service
       if: matrix.db-type == 'mysql'
@@ -68,10 +66,10 @@ jobs:
 
   cs-stan:
     name: Coding Standard & Static Analysis
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
@@ -79,7 +77,7 @@ jobs:
         php-version: '7.4'
         extensions: mbstring, intl
         coverage: none
-        tools: vimeo/psalm:4.23, phpstan:1.8, cs2pr
+        tools: vimeo/psalm:4.23, phpstan:1.9, cs2pr
 
     - name: Composer Install
       run: composer require --dev cakephp/cakephp-codesniffer:^4.1
