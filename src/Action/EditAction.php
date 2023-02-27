@@ -152,7 +152,7 @@ class EditAction extends BaseAction
      * @param mixed $id Record id
      * @return \Cake\Http\Response|void
      */
-    protected function _patch($id = null)
+    protected function _patch(?string $id = null)
     {
         return $this->_put($id);
     }
