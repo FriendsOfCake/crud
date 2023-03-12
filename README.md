@@ -1,4 +1,4 @@
-[![Build Status](https://img.shields.io/github/workflow/status/FriendsOfCake/crud/CI/master?style=flat-square)](https://github.com/FriendsOfCake/crud/actions?query=workflow%3ACI+branch%3Amaster)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/FriendsOfCake/crud/ci.yml?branch=master&style=flat-square)](https://github.com/FriendsOfCake/crud/actions?query=workflow%3ACI+branch%3Amaster)
 [![Coverage Status](https://img.shields.io/codecov/c/github/FriendsOfCake/crud.svg?style=flat-square)](https://codecov.io/github/FriendsOfCake/crud)
 [![Total Downloads](https://img.shields.io/packagist/dt/FriendsOfCake/crud.svg?style=flat-square)](https://packagist.org/packages/FriendsOfCake/crud)
 [![Latest Stable Version](https://img.shields.io/packagist/v/FriendsOfCake/crud.svg?style=flat-square)](https://packagist.org/packages/FriendsOfCake/crud)
