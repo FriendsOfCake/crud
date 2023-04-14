@@ -78,7 +78,7 @@ class ApiListener extends BaseListener
      *
      * Called before the crud action is executed
      *
-     * @param \Cake\Event\EventInterface $event Event
+     * @param \Cake\Event\EventInterface<\Crud\Event\Subject> $event Event
      * @return void
      */
     public function beforeHandle(EventInterface $event): void
@@ -89,7 +89,7 @@ class ApiListener extends BaseListener
     /**
      * Handle response
      *
-     * @param \Cake\Event\EventInterface $event Event
+     * @param \Cake\Event\EventInterface<\Crud\Event\Subject> $event Event
      * @return \Cake\Http\Response|null
      * @throws \Exception
      */
@@ -142,7 +142,7 @@ class ApiListener extends BaseListener
     /**
      * Throw an exception based on API configuration
      *
-     * @param \Cake\Event\EventInterface $Event Event
+     * @param \Cake\Event\EventInterface<\Crud\Event\Subject> $Event Event
      * @param array $exceptionConfig Exception config
      * @return void
      * @throws \Exception
@@ -362,7 +362,7 @@ class ApiListener extends BaseListener
      *
      * An API request doesn't need flash messages - so stop them being processed
      *
-     * @param \Cake\Event\EventInterface $event Event
+     * @param \Cake\Event\EventInterface<\Crud\Event\Subject> $event Event
      * @return void
      */
     public function setFlash(EventInterface $event): void

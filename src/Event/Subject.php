@@ -81,6 +81,17 @@ class Subject
     }
 
     /**
+     * Get a value.
+     *
+     * @param string $field Field name.
+     * @return mixed
+     */
+    public function get(string $field): mixed
+    {
+        return $this->{$field};
+    }
+
+    /**
      * Check if the called action is white listed or blacklisted
      * depending on the mode
      *

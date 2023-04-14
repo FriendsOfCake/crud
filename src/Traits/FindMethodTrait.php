@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Crud\Traits;
 
 use Cake\Datasource\EntityInterface;
+use Cake\ORM\Table;
 use Crud\Event\Subject;
 
 trait FindMethodTrait
@@ -57,7 +58,8 @@ trait FindMethodTrait
      */
     protected function _findRecord(string|int|null $id, Subject $subject): EntityInterface
     {
-        $repository = $this->_table();
+        $repository = $this->_model();
+        assert($repository instanceof Table);
 
         [$finder, $options] = $this->_extractFinder();
         $query = $repository->find($finder, $options);

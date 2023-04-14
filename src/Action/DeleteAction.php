@@ -72,7 +72,7 @@ class DeleteAction extends BaseAction
         }
 
         $method = $this->getConfig('deleteMethod');
-        if ($this->_table()->$method($entity)) {
+        if ($this->_model()->$method($entity)) {
             $this->_success($subject);
         } else {
             $this->_error($subject);

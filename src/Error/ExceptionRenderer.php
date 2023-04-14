@@ -10,6 +10,7 @@ use Cake\Error\Renderer\WebExceptionRenderer;
 use Cake\Http\Response;
 use Crud\Error\Exception\ValidationException;
 use Exception;
+use function Cake\Core\h;
 
 /**
  * Exception renderer for ApiListener

@@ -12,6 +12,7 @@ use Crud\Core\BaseObject;
 use Crud\Event\Subject;
 use Exception;
 use RuntimeException;
+use function Cake\I18n\__d;
 
 /**
  * Base Crud class
@@ -252,7 +253,7 @@ abstract class BaseAction extends BaseObject
     /**
      * Set "success" variable for view.
      *
-     * @param \Cake\Event\EventInterface $event Event
+     * @param \Cake\Event\EventInterface<\Crud\Event\Subject> $event Event
      * @return bool|null
      */
     public function publishSuccess(EventInterface $event): ?bool
@@ -303,11 +304,11 @@ abstract class BaseAction extends BaseObject
 
         if ($inflectionType === 'singular') {
             return strtolower(Inflector::humanize(
-                Inflector::singularize(Inflector::underscore($this->_table()->getAlias()))
+                Inflector::singularize(Inflector::underscore($this->_model()->getAlias()))
             ));
         }
 
-        return strtolower(Inflector::humanize(Inflector::underscore($this->_table()->getAlias())));
+        return strtolower(Inflector::humanize(Inflector::underscore($this->_model()->getAlias())));
     }
 
     /**

@@ -117,14 +117,14 @@ class EditAction extends BaseAction
         $subject = $this->_subject();
         $subject->set(['id' => $id]);
 
-        $entity = $this->_table()->patchEntity(
+        $entity = $this->_model()->patchEntity(
             $this->_findRecord($id, $subject),
             $this->_request()->getData(),
             $this->saveOptions()
         );
 
         $this->_trigger('beforeSave', $subject);
-        if (call_user_func([$this->_table(), $this->saveMethod()], $entity, $this->saveOptions())) {
+        if (call_user_func([$this->_model(), $this->saveMethod()], $entity, $this->saveOptions())) {
             return $this->_success($subject);
         }
 

@@ -8,6 +8,7 @@ use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
 use Cake\Core\App;
 use Cake\Datasource\EntityInterface;
+use Cake\Datasource\RepositoryInterface;
 use Cake\Event\Event;
 use Cake\Event\EventInterface;
 use Cake\Event\EventManagerInterface;
@@ -26,6 +27,7 @@ use Crud\Error\Exception\MissingListenerException;
 use Crud\Event\Subject;
 use Crud\Listener\BaseListener;
 use Psr\Http\Message\ResponseInterface;
+use function Cake\Core\pluginSplit;
 
 /**
  * Crud component
@@ -73,8 +75,7 @@ class CrudComponent extends Component
     protected EventManagerInterface $_eventManager;
 
     /**
-     * Cached property for Controller::$defaultTable. This is
-     * the model name of the current model.
+     * This is the model name of the current model.
      *
      * @var string|null
      */
@@ -140,7 +141,7 @@ class CrudComponent extends Component
     /**
      * Constructor
      *
-     * @param \Cake\Controller\ComponentRegistry $collection A ComponentCollection this component
+     * @param \Cake\Controller\ComponentRegistry<\Cake\Controller\Controller> $collection A ComponentCollection this component
      *   can use to lazy load its components.
      * @param array $config Array of configuration settings.
      */
@@ -198,7 +199,7 @@ class CrudComponent extends Component
     /**
      * Loads listeners
      *
-     * @param \Cake\Event\EventInterface $event Event instance
+     * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event Event instance
      * @return void
      * @throws \Exception
      */
@@ -211,7 +212,7 @@ class CrudComponent extends Component
     /**
      * Called after the Controller::beforeFilter() and before the controller action.
      *
-     * @param \Cake\Event\EventInterface $event Event instance
+     * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event Event instance
      * @return void
      * @throws \Exception
      */
@@ -534,7 +535,7 @@ class CrudComponent extends Component
      * @param string $eventName Event name
      * @param \Crud\Event\Subject|array|null $data Event subject / data
      * @throws \Exception if any event listener return a CakeResponse object.
-     * @return \Cake\Event\EventInterface
+     * @return \Cake\Event\EventInterface<\Crud\Event\Subject>
      */
     public function trigger(string $eventName, Subject|array|null $data = null): EventInterface
     {
@@ -621,12 +622,16 @@ class CrudComponent extends Component
     }
 
     /**
-     * Returns controller's table instance.
+     * Returns controller's model instance.
      *
-     * @return \Cake\ORM\Table
+     * @return \Cake\Datasource\RepositoryInterface
      */
-    public function table(): Table
+    public function model(): RepositoryInterface
     {
+        if (method_exists($this->_controller, 'fetchModel')) {
+            return $this->_controller->fetchModel($this->_modelName);
+        }
+
         return $this->_controller->fetchTable($this->_modelName);
     }
 
@@ -638,7 +643,7 @@ class CrudComponent extends Component
      */
     public function entity(array $data = []): EntityInterface
     {
-        return $this->table()->newEntity($data);
+        return $this->model()->newEntity($data);
     }
 
     /**

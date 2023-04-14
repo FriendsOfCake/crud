@@ -18,13 +18,6 @@ use Closure;
 trait ControllerTrait
 {
     /**
-     * View classes map for content type negotiation.
-     *
-     * @var array
-     */
-    protected array $viewClasses = [];
-
-    /**
      * Whether current action is mapped to a Crud action.
      *
      * @var bool

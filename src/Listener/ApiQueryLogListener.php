@@ -55,7 +55,7 @@ class ApiQueryLogListener extends BaseListener
     /**
      * Setup logging for all connections
      *
-     * @param \Cake\Event\EventInterface $event Event
+     * @param \Cake\Event\EventInterface<\Crud\Event\Subject> $event Event
      * @return void
      */
     public function setupLogging(EventInterface $event): void
@@ -75,7 +75,7 @@ class ApiQueryLogListener extends BaseListener
     /**
      * Appends the query log to the JSON or XML output
      *
-     * @param \Cake\Event\EventInterface $event Event
+     * @param \Cake\Event\EventInterface<\Crud\Event\Subject> $event Event
      * @return void
      */
     public function beforeRender(EventInterface $event): void
