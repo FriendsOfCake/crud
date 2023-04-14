@@ -16,7 +16,6 @@ use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Http\ServerRequest;
-use Cake\ORM\Table;
 use Cake\Utility\Inflector;
 use Crud\Action\BaseAction;
 use Crud\Error\Exception\ActionNotConfiguredException;

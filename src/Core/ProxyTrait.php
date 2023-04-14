@@ -10,7 +10,6 @@ use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Http\Session;
-use Cake\ORM\Table;
 use Crud\Action\BaseAction;
 use Crud\Controller\Component\CrudComponent;
 use Crud\Event\Subject;

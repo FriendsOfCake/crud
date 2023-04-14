@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Crud\Test\TestCase\Listener;
 
-use Cake\Database\Connection;
 use Cake\Database\Schema\TableSchema;
 use Cake\Event\Event;
 use Cake\ORM\Association;
@@ -124,7 +123,7 @@ class RelatedModelsListenerTest extends TestCase
             ->method('getAssociatedByType')
             ->with(['oneToOne', 'manyToMany', 'manyToOne']);
 
-        $result = $listener->models();
+        $listener->models();
     }
 
     /**

@@ -209,8 +209,6 @@ class BaseActionTest extends TestCase
      */
     public function testEnable()
     {
-        $i = 0;
-
         $Action = $this->getMockBuilder(BaseAction::class)
             ->onlyMethods(['setConfig'])
             ->setConstructorArgs([$this->Controller])

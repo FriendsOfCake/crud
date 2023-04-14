@@ -254,7 +254,7 @@ class ApiListenerTest extends TestCase
             ->expects($this->never())
             ->method('withStatus');
 
-        $response = $listener->respond($event);
+        $listener->respond($event);
     }
 
     /**
@@ -796,7 +796,7 @@ class ApiListenerTest extends TestCase
             ->with('data', []);
 
         $this->setReflectionClassInstance($listener);
-        $result = $this->callProtectedMethod('_ensureData', [$subject], $listener);
+        $this->callProtectedMethod('_ensureData', [$subject], $listener);
     }
 
     /**
@@ -852,7 +852,7 @@ class ApiListenerTest extends TestCase
             ->with('data', ['modelClass' => 'MyModel', 'MyModel' => ['id' => 1]]);
 
         $this->setReflectionClassInstance($listener);
-        $result = $this->callProtectedMethod('_ensureData', [$subject], $listener);
+        $this->callProtectedMethod('_ensureData', [$subject], $listener);
     }
 
     /**
@@ -903,7 +903,7 @@ class ApiListenerTest extends TestCase
             ->with('data', ['MyModel' => ['id' => 1]]);
 
         $this->setReflectionClassInstance($listener);
-        $result = $this->callProtectedMethod('_ensureData', [$subject], $listener);
+        $this->callProtectedMethod('_ensureData', [$subject], $listener);
     }
 
     /**
@@ -954,7 +954,7 @@ class ApiListenerTest extends TestCase
             ->with('data', []);
 
         $this->setReflectionClassInstance($listener);
-        $result = $this->callProtectedMethod('_ensureData', [$subject], $listener);
+        $this->callProtectedMethod('_ensureData', [$subject], $listener);
     }
 
     /**
