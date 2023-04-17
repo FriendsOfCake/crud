@@ -97,7 +97,7 @@ class LookupActionTest extends IntegrationTestCase
             '3rd post' => '3',
         ];
 
-        $this->get('/blogs/lookup.json?keyField=name&valueField=id');
+        $this->get('/blogs/lookup.json?key_field=name&value_field=id');
         $this->assertEvents(['beforeLookup', 'afterLookup', 'beforeRender']);
         $this->assertNotNull($this->viewVariable('viewVar'));
         $this->assertNotNull($this->viewVariable('blogs'));
