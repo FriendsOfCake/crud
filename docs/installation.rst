@@ -79,4 +79,8 @@ plugin to scaffold all your controllers index actions.
       }
   }
 
+For controllers like ``ErrorController`` where you usually don't call ``parent::initialize()``
+you can avoid errors due to ``CrudComponent`` not being loaded by adding
+``$this->dispatchComponents['Crud'] = false`` in the controller's ``initialize()`` method.
+
 Further configuration options are detailed on the :doc:`configuration page</configuration>`.

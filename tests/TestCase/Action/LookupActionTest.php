@@ -77,6 +77,35 @@ class LookupActionTest extends IntegrationTestCase
     }
 
     /**
+     * Test changing the key field and value field
+     *
+     * @return void
+     */
+    public function testGetWithCustomKeyValueFields()
+    {
+        $this->_eventManager->on(
+            'Controller.initialize',
+            ['priority' => 11],
+            function () {
+                $this->_subscribeToEvents($this->_controller);
+            }
+        );
+
+        $expected = [
+            '1st post' => '1',
+            '2nd post' => '2',
+            '3rd post' => '3',
+        ];
+
+        $this->get('/blogs/lookup.json?key_field=name&value_field=id');
+        $this->assertEvents(['beforeLookup', 'afterLookup', 'beforeRender']);
+        $this->assertNotNull($this->viewVariable('viewVar'));
+        $this->assertNotNull($this->viewVariable('blogs'));
+        $this->assertNotNull($this->viewVariable('success'));
+        $this->assertEquals($expected, $this->viewVariable('blogs')->toArray());
+    }
+
+    /**
      * Tests that the beforeLookup can be used to modify the query
      *
      * @return void

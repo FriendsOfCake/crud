@@ -89,9 +89,7 @@ abstract class BaseAction extends CrudBaseAction
             $ids = array_keys($ids);
         }
 
-        $ids = array_filter($ids);
-
-        return array_values($ids);
+        return array_values(array_filter($ids));
     }
 
     /**
