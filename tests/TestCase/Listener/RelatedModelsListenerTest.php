@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Crud\Test\TestCase\Listener;
 
-use Cake\Database\Connection;
 use Cake\Database\Schema\TableSchema;
 use Cake\Event\Event;
 use Cake\ORM\Association;
@@ -124,7 +123,7 @@ class RelatedModelsListenerTest extends TestCase
             ->method('getAssociatedByType')
             ->with(['oneToOne', 'manyToMany', 'manyToOne']);
 
-        $result = $listener->models();
+        $listener->models();
     }
 
     /**
@@ -139,7 +138,7 @@ class RelatedModelsListenerTest extends TestCase
         $listener = $this
             ->getMockBuilder(RelatedModelsListener::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['relatedModels', '_table'])
+            ->onlyMethods(['relatedModels', '_model'])
             ->getMock();
         $table = $this
             ->getMockBuilder(Table::class)
@@ -159,7 +158,7 @@ class RelatedModelsListenerTest extends TestCase
 
         $listener
             ->expects($this->once())
-            ->method('_table')
+            ->method('_model')
             ->withAnyParameters()
             ->will($this->returnValue($table));
         $table
@@ -202,7 +201,7 @@ class RelatedModelsListenerTest extends TestCase
         $listener = $this
             ->getMockBuilder(RelatedModelsListener::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['relatedModels', '_table'])
+            ->onlyMethods(['relatedModels', '_model'])
             ->getMock();
         $table = $this
             ->getMockBuilder(Table::class)
@@ -222,7 +221,7 @@ class RelatedModelsListenerTest extends TestCase
 
         $listener
             ->expects($this->once())
-            ->method('_table')
+            ->method('_model')
             ->withAnyParameters()
             ->will($this->returnValue($table));
         $table

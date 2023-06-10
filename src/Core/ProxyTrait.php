@@ -5,11 +5,11 @@ namespace Crud\Core;
 
 use Cake\Controller\Controller;
 use Cake\Datasource\EntityInterface;
+use Cake\Datasource\RepositoryInterface;
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Http\Session;
-use Cake\ORM\Table;
 use Crud\Action\BaseAction;
 use Crud\Controller\Component\CrudComponent;
 use Crud\Event\Subject;
@@ -43,7 +43,7 @@ trait ProxyTrait
      *
      * @param string $eventName Event name
      * @param \Crud\Event\Subject|null $data Event data
-     * @return \Cake\Event\EventInterface
+     * @return \Cake\Event\EventInterface<\Crud\Event\Subject>
      * @throws \Exception
      * @codeCoverageIgnore
      */
@@ -121,14 +121,14 @@ trait ProxyTrait
     }
 
     /**
-     * Get a table instance
+     * Get the model instance
      *
-     * @return \Cake\ORM\Table
+     * @return \Cake\Datasource\RepositoryInterface
      * @psalm-suppress MoreSpecificReturnType
      */
-    protected function _table(): Table
+    protected function _model(): RepositoryInterface
     {
-        return $this->_crud()->table();
+        return $this->_crud()->model();
     }
 
     /**
@@ -144,7 +144,7 @@ trait ProxyTrait
             return $this->_entity;
         }
 
-        return $this->_table()->newEntity($data, $options);
+        return $this->_model()->newEntity($data, $options);
     }
 
     /**

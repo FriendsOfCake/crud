@@ -56,7 +56,6 @@ class CrudComponentTest extends TestCase
             ->onlyMethods(['redirect', 'render'])
             ->setConstructorArgs([$this->request, 'CrudExamples', EventManager::instance()])
             ->getMock();
-        $this->controller->defaultTable = 'CrudExamples';
 
         $this->Registry = $this->controller->components();
 
@@ -869,7 +868,7 @@ class CrudComponentTest extends TestCase
         $class = $this->getMockClass('Model');
         $this->Crud->useModel($class);
 
-        $this->assertEquals($class, $this->Crud->table()->getAlias());
+        $this->assertEquals($class, $this->Crud->model()->getAlias());
     }
 
     /**

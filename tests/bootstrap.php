@@ -88,7 +88,7 @@ Cake\Datasource\ConnectionManager::setConfig('test', [
 Plugin::getCollection()->add(new CrudPlugin());
 
 // Create test database schema
-if (env('FIXTURE_SCHEMA_METADATA')) {
+if (getenv('FIXTURE_SCHEMA_METADATA')) {
     $loader = new SchemaLoader();
-    $loader->loadInternalFile(env('FIXTURE_SCHEMA_METADATA'));
+    $loader->loadInternalFile(getenv('FIXTURE_SCHEMA_METADATA'));
 }

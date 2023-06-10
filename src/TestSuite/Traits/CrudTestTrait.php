@@ -4,9 +4,7 @@ declare(strict_types=1);
 namespace Crud\TestSuite\Traits;
 
 use Cake\Controller\Controller;
-use Cake\Datasource\ConnectionManager;
 use Cake\Event\EventInterface;
-use Cake\ORM\Table;
 use Crud\Event\Subject;
 use Exception;
 

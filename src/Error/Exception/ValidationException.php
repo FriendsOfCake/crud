@@ -7,6 +7,7 @@ use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Utility\Hash;
 use Throwable;
+use function Cake\I18n\__dn;
 
 /**
  * Exception containing validation errors from the model. Useful for API

@@ -10,7 +10,7 @@ class CrudExamplesController extends Controller
 {
     use ControllerTrait;
 
-    public ?string $defaultTable = 'CrudExamples';
+    protected ?string $modelClass = 'CrudExamples';
 
     public static $componentsArray = [
         'Crud.Crud' => [

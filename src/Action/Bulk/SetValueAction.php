@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace Crud\Action\Bulk;
 
 use Cake\Controller\Controller;
+use Cake\Database\Query;
 use Cake\Http\Response;
 use Cake\ORM\Query\UpdateQuery;
 use Crud\Error\Exception\ActionNotConfiguredException;
-use Cake\Database\Query;
 
 /**
  * Handles Bulk 'SetValue' Crud actions

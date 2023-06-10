@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Crud\Listener;
 
 use Cake\Event\EventInterface;
+use Cake\ORM\Table;
 use RuntimeException;
 
 class SearchListener extends BaseListener
@@ -38,7 +39,7 @@ class SearchListener extends BaseListener
     /**
      * Inject search conditions into the query object.
      *
-     * @param \Cake\Event\EventInterface $event Event
+     * @param \Cake\Event\EventInterface<\Crud\Event\Subject> $event Event
      * @return void
      */
     public function injectSearch(EventInterface $event): void
@@ -47,7 +48,9 @@ class SearchListener extends BaseListener
             return;
         }
 
-        $repository = $this->_table();
+        $repository = $this->_model();
+        assert($repository instanceof Table);
+
         if (!$repository->behaviors()->has('Search')) {
             throw new RuntimeException(sprintf(
                 'Missing Search.Search behavior on %s',

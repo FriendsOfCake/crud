@@ -6,6 +6,7 @@ namespace Crud\Action\Bulk;
 use Cake\Database\Query;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Response;
+use Cake\ORM\Table;
 use Cake\Utility\Hash;
 use Crud\Action\BaseAction as CrudBaseAction;
 use Crud\Event\Subject;
@@ -100,10 +101,11 @@ abstract class BaseAction extends CrudBaseAction
      */
     protected function _constructSubject(array $ids): Subject
     {
-        $repository = $this->_table();
+        $repository = $this->_model();
+        assert($repository instanceof Table);
 
         $method = strtolower($this->getConfig('queryType')) . 'Query';
-        $primaryKey = $this->_table()->getPrimaryKey();
+        $primaryKey = $repository->getPrimaryKey();
 
         $query = $repository->{$method}()
             ->where(fn ($exp) => $exp->in($primaryKey, $ids));

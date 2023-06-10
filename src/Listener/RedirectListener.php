@@ -103,7 +103,7 @@ class RedirectListener extends BaseListener
      * If a special redirect key is provided, change the
      * redirection URL target
      *
-     * @param \Cake\Event\EventInterface $event Event
+     * @param \Cake\Event\EventInterface<\Crud\Event\Subject> $event Event
      * @return void
      * @throws \Exception
      */

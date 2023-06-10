@@ -13,7 +13,7 @@ trait ViewVarTrait
      * Publish the viewVar so people can do $$viewVar and end up
      * wit the entity in the view
      *
-     * @param \Cake\Event\EventInterface $event Event
+     * @param \Cake\Event\EventInterface<\Crud\Event\Subject> $event Event
      * @return void
      * @throws \Exception
      */
@@ -73,7 +73,7 @@ trait ViewVarTrait
      * Derive the viewVar value based on the scope of the action
      * as well as the Event being handled
      *
-     * @param \Cake\Event\EventInterface $event Event
+     * @param \Cake\Event\EventInterface<\Crud\Event\Subject> $event Event
      * @return mixed
      * @throws \Exception
      */
