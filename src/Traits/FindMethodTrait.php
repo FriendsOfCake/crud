@@ -62,7 +62,7 @@ trait FindMethodTrait
         assert($repository instanceof Table);
 
         [$finder, $options] = $this->_extractFinder();
-        $query = $repository->find($finder, $options);
+        $query = $repository->find($finder, ...$options);
         /**
          * @psalm-suppress PossiblyInvalidArgument
          * @psalm-suppress InvalidArrayOffset

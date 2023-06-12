@@ -42,7 +42,7 @@ class LookupAction extends BaseAction
     {
         [$finder, $options] = $this->_extractFinder();
         $options = array_merge($options, $this->_getFindConfig());
-        $query = $this->_model()->find($finder, $options);
+        $query = $this->_model()->find($finder, ...$options);
         $subject = $this->_subject(['success' => true, 'query' => $query]);
 
         $this->_trigger('beforeLookup', $subject);

@@ -333,7 +333,7 @@ class AddActionTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function apiGetHttpMethodProvider()
+    public static function apiGetHttpMethodProvider()
     {
         return [
             ['get'],
@@ -365,7 +365,7 @@ class AddActionTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function apiUpdateHttpMethodProvider()
+    public static function apiUpdateHttpMethodProvider()
     {
         return [
             ['put'],

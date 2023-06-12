@@ -3,12 +3,15 @@ declare(strict_types=1);
 
 namespace Crud\TestCase\Controller\Crud;
 
+use Cake\Controller\ComponentRegistry;
+use Cake\Controller\Controller;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Http\ServerRequest;
+use Cake\ORM\Table;
 use Crud\Controller\Component\CrudComponent;
 use Crud\Test\App\Controller\Component\TestCrudComponent;
 use Crud\Test\App\Controller\CrudExamplesController;
@@ -31,6 +34,12 @@ class CrudComponentTest extends TestCase
     protected array $fixtures = [
         'core.Posts',
     ];
+
+    protected Table $model;
+    protected ServerRequest $request;
+    protected Controller $controller;
+    protected ComponentRegistry $Registry;
+    protected CrudComponent $Crud;
 
     /**
      * setUp
@@ -865,10 +874,13 @@ class CrudComponentTest extends TestCase
         $this->Crud = new CrudComponent($this->Registry, ['actions' => ['Crud.Index']]);
         $this->Crud->beforeFilter(new Event('Controller.beforeFilter'));
         $this->controller->Crud = $this->Crud;
-        $class = $this->getMockClass('Model');
-        $this->Crud->useModel($class);
+        $this->controller->getTableLocator()->set('MyModel', new Table([
+            'table' => 'posts',
+            'alias' => 'MyModel',
+        ]));
+        $this->Crud->useModel('MyModel');
 
-        $this->assertEquals($class, $this->Crud->model()->getAlias());
+        $this->assertEquals('MyModel', $this->Crud->model()->getAlias());
     }
 
     /**
