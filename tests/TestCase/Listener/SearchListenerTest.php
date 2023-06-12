@@ -16,7 +16,6 @@ use Crud\Listener\SearchListener;
 use Crud\TestSuite\TestCase;
 use Muffin\Webservice\Model\EndpointRegistry;
 use RuntimeException;
-use Search\Model\Behavior\SearchBehavior;
 
 /**
  * Licensed under The MIT License
