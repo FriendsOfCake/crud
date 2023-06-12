@@ -23,7 +23,7 @@ class IndexActionTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function allHttpMethodProvider()
+    public static function allHttpMethodProvider()
     {
         return [
             ['get'],

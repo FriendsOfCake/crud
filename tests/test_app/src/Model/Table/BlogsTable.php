@@ -8,16 +8,16 @@ use Cake\ORM\Table;
 
 class BlogsTable extends Table
 {
-    public $customOptions;
+    public array $customOptions;
 
     /**
      * findWithCustomOptions
      *
      * @param \Cake\ORM\Query\SelectQuery $query
-     * @param array $options
+     * @param mixed ...$options
      * @return \Cake\ORM\Query\SelectQuery
      */
-    public function findWithCustomOptions(SelectQuery $query, array $options)
+    public function findWithCustomOptions(SelectQuery $query, mixed ...$options)
     {
         $this->customOptions = $options;
 

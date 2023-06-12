@@ -31,7 +31,7 @@ class DeleteActionTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function allHttpMethodProvider()
+    public static function allHttpMethodProvider()
     {
         return [
             ['post'],

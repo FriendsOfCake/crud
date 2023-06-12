@@ -346,7 +346,7 @@ class ApiListenerTest extends TestCase
      *
      * @return array
      */
-    public function dataExceptionResponse()
+    public static function dataExceptionResponse()
     {
         return [
             'default configuration' => [
@@ -499,7 +499,7 @@ class ApiListenerTest extends TestCase
      *
      * @return array
      */
-    public function dataSerializeTraitActions()
+    public static function dataSerializeTraitActions()
     {
         return [
             'View Action' => ['\Crud\Action\ViewAction'],
@@ -1063,7 +1063,7 @@ class ApiListenerTest extends TestCase
      *
      * @return array
      */
-    public function dataExpandPath()
+    public static function dataExpandPath()
     {
         return [
             'simple string' => [
@@ -1175,7 +1175,7 @@ class ApiListenerTest extends TestCase
      *
      * @return array
      */
-    public function dataCheckRequestMethods()
+    public static function dataCheckRequestMethods()
     {
         return [
             'defaults' => [
@@ -1251,7 +1251,7 @@ class ApiListenerTest extends TestCase
             $request
                 ->expects($this->exactly(count($withs)))
                 ->method('is')
-                ->withConsecutive(...$withs)
+                ->with(...self::withConsecutive(...$withs))
                 ->willReturnOnConsecutiveCalls(...$returns);
         } else {
             $listener

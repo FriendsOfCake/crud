@@ -1,12 +1,14 @@
 <?php
 declare(strict_types=1);
 
+use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
+use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\Fixture\SchemaLoader;
 use Crud\CrudPlugin;
 
-$findRoot = function (): string {
+$findRoot = function () {
     $root = dirname(__DIR__);
     if (is_dir($root . '/vendor/cakephp/cakephp')) {
         return $root;
@@ -70,8 +72,8 @@ $cache = [
     ],
 ];
 
-Cake\Cache\Cache::setConfig($cache);
-Cake\Core\Configure::write('Session', [
+Cache::setConfig($cache);
+Configure::write('Session', [
     'defaults' => 'php',
 ]);
 
@@ -80,7 +82,7 @@ if (!getenv('DB_URL')) {
     putenv('DB_URL=sqlite:///:memory:');
 }
 
-Cake\Datasource\ConnectionManager::setConfig('test', [
+ConnectionManager::setConfig('test', [
     'url' => getenv('DB_URL'),
     'timezone' => 'UTC',
 ]);

@@ -245,7 +245,7 @@ class ApiQueryLogListenerTest extends TestCase
         $Instance
             ->expects($this->exactly(2))
             ->method('_getSource')
-            ->withConsecutive(['default'], ['test'])
+            ->with(...self::withConsecutive(['default'], ['test']))
             ->willReturnOnConsecutiveCalls($this->returnValue($DefaultSource), $this->returnValue($TestSource));
 
         $Instance->setConfig('connections', ['default', 'test']);

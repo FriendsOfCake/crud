@@ -58,9 +58,10 @@ class SearchListener extends BaseListener
             ));
         }
 
-        $filterParams = ['search' => $this->_request()->getQuery()];
-        $filterParams['collection'] = $this->getConfig('collection');
-
-        $event->getSubject()->query->find('search', $filterParams);
+        $event->getSubject()->query->find(
+            'search',
+            search: $this->_request()->getQuery(),
+            collection: $this->getConfig('collection')
+        );
     }
 }
