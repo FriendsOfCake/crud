@@ -11,7 +11,6 @@ use Cake\Routing\Router;
 use Cake\TestSuite\IntegrationTestTrait;
 use Crud\TestSuite\Traits\CrudTestTrait;
 use FriendsOfCake\TestUtilities\AccessibilityHelperTrait;
-use FriendsOfCake\TestUtilities\CounterHelperTrait;
 
 /**
  * Licensed under The MIT License
@@ -20,7 +19,6 @@ use FriendsOfCake\TestUtilities\CounterHelperTrait;
 abstract class IntegrationTestCase extends TestCase
 {
     use AccessibilityHelperTrait;
-    use CounterHelperTrait;
     use CrudTestTrait;
     use IntegrationTestTrait;
 

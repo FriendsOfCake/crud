@@ -6,7 +6,6 @@ namespace Crud\TestSuite;
 use Cake\TestSuite\TestCase as CakeTestCase;
 use Crud\TestSuite\Traits\CrudTestTrait;
 use FriendsOfCake\TestUtilities\AccessibilityHelperTrait;
-use FriendsOfCake\TestUtilities\CounterHelperTrait;
 
 /**
  * Licensed under The MIT License
@@ -15,7 +14,6 @@ use FriendsOfCake\TestUtilities\CounterHelperTrait;
 abstract class TestCase extends CakeTestCase
 {
     use AccessibilityHelperTrait;
-    use CounterHelperTrait;
     use CrudTestTrait;
 
     /**
