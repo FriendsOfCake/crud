@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace Crud\Test\TestCase\Listener;
 
+use ArrayIterator;
 use Cake\Controller\Controller;
+use Cake\Datasource\Paging\PaginatedResultSet;
 use Cake\Event\Event;
 use Cake\Http\ServerRequest;
 use Crud\Action\BaseAction;
@@ -48,62 +50,71 @@ class ApiPaginationListenerTest extends TestCase
      */
     public function testBeforeRenderNoPaginationData()
     {
-        $Request = $this
-            ->getMockBuilder(ServerRequest::class)
-            ->onlyMethods([])
-            ->getMock();
-        $Request = $Request->withAttribute('paging', ['MyModel' => []]);
-
         $Controller = $this
             ->getMockBuilder(Controller::class)
             ->disableOriginalConstructor()
             ->onlyMethods([])
             ->getMock();
 
-        $Instance = $this
-            ->getMockBuilder(ApiPaginationListener::class)
+        $Action = $this
+            ->getMockBuilder(BaseAction::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['_request'])
-            ->getMock();
-        $Instance
-            ->expects($this->once())
-            ->method('_request')
-            ->will($this->returnValue($Request));
-
-        $Controller->modelClass = 'MyModel';
-
-        $Instance->beforeRender(new Event('something'));
-    }
-
-    /**
-     * Test that API requests do not get processed
-     * if there if pagination data is NULL
-     *
-     * @return void
-     */
-    public function testBeforeRenderPaginationDataIsNull()
-    {
-        $Request = $this
-            ->getMockBuilder(ServerRequest::class)
             ->onlyMethods([])
             ->getMock();
 
         $Instance = $this
             ->getMockBuilder(ApiPaginationListener::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['_request', '_controller'])
+            ->onlyMethods(['_request', '_action', '_controller'])
             ->getMock();
         $Instance
             ->expects($this->once())
-            ->method('_request')
-            ->will($this->returnValue($Request));
+            ->method('_action')
+            ->will($this->returnValue($Action));
         $Instance
-            ->expects($this->never())
-            ->method('_controller');
-
-        $Request = $Request->withAttribute('paging', null);
+            ->expects($this->once())
+            ->method('_controller')
+            ->will($this->returnValue($Controller));
 
         $Instance->beforeRender(new Event('something'));
+
+        $this->assertNull($Controller->viewBuilder()->getVar('pagination'));
+    }
+
+    /**
+     * Test that API requests do not get processed
+     * if there if the view var is not a PaginatedInterface instance.
+     *
+     * @return void
+     */
+    public function testBeforeRenderViewVarNotPaginatedInterface()
+    {
+        $Controller = new Controller(new ServerRequest(), 'MyModel');
+        $Controller->set('data', []);
+
+        $Action = $this
+            ->getMockBuilder(BaseAction::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods([])
+            ->getMock();
+
+        $Instance = $this
+            ->getMockBuilder(ApiPaginationListener::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['_request', '_action', '_controller'])
+            ->getMock();
+        $Instance
+            ->expects($this->once())
+            ->method('_controller')
+            ->willReturn($Controller);
+        $Instance
+            ->expects($this->once())
+            ->method('_action')
+            ->will($this->returnValue($Action));
+
+        $Instance->beforeRender(new Event('something'));
+
+        $this->assertNull($Controller->viewBuilder()->getVar('pagination'));
     }
 
     /**
@@ -114,39 +125,22 @@ class ApiPaginationListenerTest extends TestCase
      */
     public function testBeforeRenderWithPaginationData()
     {
-        $Request = $this
-            ->getMockBuilder(ServerRequest::class)
-            ->onlyMethods([])
-            ->getMock();
-        $Request = $Request->withAttribute('paging', [
-            'MyModel' => [
-                'pageCount' => 10,
-                'page' => 2,
-                'nextPage' => true,
-                'prevPage' => true,
-                'count' => 100,
-                'limit' => 10,
-            ],
-        ]);
+        $Request = new ServerRequest();
+        $paginatedResultset = new PaginatedResultSet(
+            new ArrayIterator([]),
+            [
+                'pageCount' => 5,
+                'currentPage' => 2,
+                'hasNextPage' => true,
+                'hasPrevPage' => true,
+                'totalCount' => 50,
+                'perPage' => 10,
+                'count' => 10,
+            ]
+        );
 
-        $expected = [
-            'page_count' => 10,
-            'current_page' => 2,
-            'has_next_page' => true,
-            'has_prev_page' => true,
-            'count' => 100,
-            'limit' => 10,
-        ];
-
-        $Controller = $this
-            ->getMockBuilder(Controller::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['set'])
-            ->getMock();
-        $Controller
-            ->expects($this->once())
-            ->method('set')
-            ->with('pagination', $expected);
+        $Controller = new Controller($Request, 'MyModel');
+        $Controller->set('data', $paginatedResultset);
 
         $Action = $this
             ->getMockBuilder(BaseAction::class)
@@ -164,166 +158,25 @@ class ApiPaginationListenerTest extends TestCase
             ->onlyMethods(['_request', '_controller', '_action'])
             ->getMock();
         $Instance
-            ->expects($this->once())
-            ->method('_request')
-            ->will($this->returnValue($Request));
-        $Instance
-            ->expects($this->once())
+            ->expects($this->any())
             ->method('_controller')
             ->will($this->returnValue($Controller));
         $Instance
-            ->expects($this->once())
+            ->expects($this->any())
             ->method('_action')
             ->will($this->returnValue($Action));
 
-        $Controller->modelClass = 'MyModel';
-
         $Instance->beforeRender(new Event('something'));
-    }
-
-    /**
-     * Test with pagination data for plugin model
-     *
-     * @return void
-     */
-    public function testBeforeRenderWithPaginationDataForPluginModel()
-    {
-        $Request = $this
-            ->getMockBuilder(ServerRequest::class)
-            ->onlyMethods([])
-            ->getMock();
-        $Request = $Request->withAttribute('paging', [
-            'MyModel' => [
-                'pageCount' => 10,
-                'page' => 2,
-                'nextPage' => true,
-                'prevPage' => true,
-                'count' => 100,
-                'limit' => 10,
-            ],
-        ]);
 
         $expected = [
-            'page_count' => 10,
+            'page_count' => 5,
             'current_page' => 2,
             'has_next_page' => true,
             'has_prev_page' => true,
-            'count' => 100,
-            'limit' => 10,
+            'total_count' => 50,
+            'count' => 10,
+            'per_page' => 10,
         ];
-
-        $Controller = $this
-            ->getMockBuilder(Controller::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['set'])
-            ->getMock();
-        $Controller
-            ->expects($this->once())
-            ->method('set')
-            ->with('pagination', $expected);
-
-        $Action = $this
-            ->getMockBuilder(BaseAction::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['setConfig'])
-            ->getMock();
-        $Action
-            ->expects($this->once())
-            ->method('setConfig')
-            ->with('serialize.pagination', 'pagination');
-
-        $Instance = $this
-            ->getMockBuilder(ApiPaginationListener::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['_request', '_controller', '_action'])
-            ->getMock();
-        $Instance
-            ->expects($this->once())
-            ->method('_request')
-            ->will($this->returnValue($Request));
-        $Instance
-            ->expects($this->once())
-            ->method('_controller')
-            ->will($this->returnValue($Controller));
-        $Instance
-            ->expects($this->once())
-            ->method('_action')
-            ->will($this->returnValue($Action));
-
-        $Controller->modelClass = 'MyPlugin.MyModel';
-
-        $Instance->beforeRender(new Event('something'));
-    }
-
-    /**
-     * Test if the pagination is set to be serialized in the beforeRender event
-     *
-     * @return void
-     */
-    public function testBeforeRenderMakeSurePaginationDataIsSetToBeSerialized()
-    {
-        $Request = $this
-            ->getMockBuilder(ServerRequest::class)
-            ->onlyMethods([])
-            ->getMock();
-        $Request = $Request->withAttribute('paging', [
-            'MyModel' => [
-                'pageCount' => 10,
-                'page' => 2,
-                'nextPage' => true,
-                'prevPage' => true,
-                'count' => 100,
-                'limit' => 10,
-            ],
-        ]);
-
-        $expected = [
-            'page_count' => 10,
-            'current_page' => 2,
-            'has_next_page' => true,
-            'has_prev_page' => true,
-            'count' => 100,
-            'limit' => 10,
-        ];
-
-        $Controller = $this
-            ->getMockBuilder(Controller::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['set'])
-            ->getMock();
-        $Controller
-            ->expects($this->once())
-            ->method('set')
-            ->with('pagination', $expected);
-
-        $Action = $this
-            ->getMockBuilder(BaseAction::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods([])
-            ->getMock();
-
-        $Instance = $this
-            ->getMockBuilder(ApiPaginationListener::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['_request', '_controller', '_action'])
-            ->getMock();
-        $Instance
-            ->expects($this->once())
-            ->method('_request')
-            ->will($this->returnValue($Request));
-        $Instance
-            ->expects($this->once())
-            ->method('_controller')
-            ->will($this->returnValue($Controller));
-        $Instance
-            ->expects($this->once())
-            ->method('_action')
-            ->will($this->returnValue($Action));
-
-        $Controller->modelClass = 'MyModel';
-
-        $Instance->beforeRender(new Event('something'));
-
-        $this->assertSame('pagination', $Action->getConfig('serialize.pagination'));
+        $this->assertEquals($expected, $Controller->viewBuilder()->getVar('pagination'));
     }
 }

@@ -60,9 +60,11 @@ below:
 
 		],
 		"pagination":{
-			"page_count": 13,
+			"page_count": 5,
 			"current_page": 1,
-			"count": 25,
+			"count": 10,
+			"total_count": 45,
+			"page_page": 10,
 			"has_prev_page": false,
 			"has_next_page": true
 		}

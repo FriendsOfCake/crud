@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Crud\Listener;
 
+use Cake\Datasource\Paging\PaginatedInterface;
 use Cake\Event\EventInterface;
 
 /**
@@ -41,23 +42,27 @@ class ApiPaginationListener extends BaseListener
      */
     public function beforeRender(EventInterface $event): void
     {
-        $paging = $this->_request()->getAttribute('paging');
-        if (empty($paging)) {
-            return;
+        $viewVar = 'data';
+
+        $action = $this->_action();
+        if (method_exists($action, 'viewVar')) {
+            $viewVar = $action->viewVar();
         }
 
-        $pagination = current($paging);
-        if (empty($pagination)) {
+        $paginatedResultset = $this->_controller()->viewBuilder()->getVar($viewVar);
+
+        if (!$paginatedResultset instanceof PaginatedInterface) {
             return;
         }
 
         $paginationResponse = [
-            'page_count' => $pagination['pageCount'],
-            'current_page' => $pagination['page'],
-            'has_next_page' => $pagination['nextPage'],
-            'has_prev_page' => $pagination['prevPage'],
-            'count' => $pagination['count'],
-            'limit' => $pagination['limit'],
+            'page_count' => $paginatedResultset->pageCount(),
+            'current_page' => $paginatedResultset->currentPage(),
+            'has_next_page' => $paginatedResultset->hasNextPage(),
+            'has_prev_page' => $paginatedResultset->hasPrevPage(),
+            'count' => $paginatedResultset->count(),
+            'total_count' => $paginatedResultset->totalCount(),
+            'per_page' => $paginatedResultset->perPage(),
         ];
 
         $this->_controller()->set('pagination', $paginationResponse);
