@@ -7,6 +7,7 @@ use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Utility\Hash;
 use Throwable;
+use function Cake\I18n\__dn;
 
 /**
  * Exception containing validation errors from the model. Useful for API
@@ -19,14 +20,14 @@ class ValidationException extends BadRequestException
      *
      * @var array
      */
-    protected $_validationErrors = [];
+    protected array $_validationErrors = [];
 
     /**
      * How many validation errors are there?
      *
      * @var int
      */
-    protected $_validationErrorCount = 0;
+    protected int $_validationErrorCount = 0;
 
     /**
      * Constructor

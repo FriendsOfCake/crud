@@ -29,7 +29,7 @@ class IndexAction extends BaseAction
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'enabled' => true,
         'scope' => 'table',
         'findMethod' => 'all',
@@ -54,17 +54,19 @@ class IndexAction extends BaseAction
     protected function _handle(): ?Response
     {
         [$finder, $options] = $this->_extractFinder();
-        $query = $this->_table()->find($finder, $options);
+        $query = $this->_model()->find($finder, ...$options);
         $subject = $this->_subject(['success' => true, 'query' => $query]);
 
         $this->_trigger('beforePaginate', $subject);
         try {
             $items = $this->_controller()->paginate($subject->query);
         } catch (NotFoundException $e) {
-            $pagingParams = $this->_request()->getAttribute('paging');
+            /** @var \Cake\Core\Exception\CakeException $previous */
+            $previous = $e->getPrevious();
+            $pagingParams = $previous->getAttributes()['pagingParams'];
 
             $url = Router::reverseToArray($this->_request());
-            $url['?']['page'] = $pagingParams[$this->_table()->getAlias()]['pageCount'];
+            $url['?']['page'] = $pagingParams['pageCount'];
 
             return $this->_controller()->redirect($url);
         }

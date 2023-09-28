@@ -22,7 +22,7 @@ class RedirectListener extends BaseListener
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'readers' => [],
     ];
 
@@ -88,7 +88,7 @@ class RedirectListener extends BaseListener
      * @param mixed $reader Reader
      * @return mixed
      */
-    public function reader(string $key, $reader = null)
+    public function reader(string $key, mixed $reader = null): mixed
     {
         if ($reader === null) {
             return $this->getConfig('readers.' . $key);
@@ -103,7 +103,7 @@ class RedirectListener extends BaseListener
      * If a special redirect key is provided, change the
      * redirection URL target
      *
-     * @param \Cake\Event\EventInterface $event Event
+     * @param \Cake\Event\EventInterface<\Crud\Event\Subject> $event Event
      * @return void
      * @throws \Exception
      */
@@ -165,7 +165,7 @@ class RedirectListener extends BaseListener
      * @return mixed
      * @throws \Exception if the reader is invalid
      */
-    protected function _getKey(Subject $subject, string $reader, string $key)
+    protected function _getKey(Subject $subject, string $reader, string $key): mixed
     {
         $callable = $this->reader($reader);
 

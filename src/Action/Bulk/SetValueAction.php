@@ -4,8 +4,9 @@ declare(strict_types=1);
 namespace Crud\Action\Bulk;
 
 use Cake\Controller\Controller;
+use Cake\Database\Query;
 use Cake\Http\Response;
-use Cake\ORM\Query;
+use Cake\ORM\Query\UpdateQuery;
 use Crud\Error\Exception\ActionNotConfiguredException;
 
 /**
@@ -57,17 +58,15 @@ class SetValueAction extends BaseAction
     /**
      * Handle a bulk value set
      *
-     * @param \Cake\ORM\Query $query The query to act upon
+     * @param \Cake\Database\Query $query The query to act upon
      * @return bool
      */
     protected function _bulk(Query $query): bool
     {
-        $field = $this->getConfig('field');
-        $value = $this->getConfig('value');
-        $query->update()->set([$field => $value]);
-        $statement = $query->execute();
-        $statement->closeCursor();
+        assert($query instanceof UpdateQuery);
 
-        return (bool)$statement->rowCount();
+        $query->set([$this->getConfig('field') => $this->getConfig('value')]);
+
+        return (bool)$query->rowCountAndClose();
     }
 }

@@ -13,6 +13,7 @@ use Exception;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
+// phpcs:ignore
 #[\AllowDynamicProperties]
 class Subject
 {
@@ -21,7 +22,7 @@ class Subject
      *
      * @var array
      */
-    protected $_events = [];
+    protected array $_events = [];
 
     /**
      * Constructor
@@ -70,7 +71,7 @@ class Subject
      * Set a list of key / values for this object
      *
      * @param array $fields Fields
-     * @return \Crud\Event\Subject
+     * @return $this
      */
     public function set(array $fields)
     {
@@ -79,6 +80,17 @@ class Subject
         }
 
         return $this;
+    }
+
+    /**
+     * Get a value.
+     *
+     * @param string $field Field name.
+     * @return mixed
+     */
+    public function get(string $field): mixed
+    {
+        return $this->{$field};
     }
 
     /**
@@ -94,7 +106,7 @@ class Subject
      * @return bool
      * @throws \Exception In case of invalid mode
      */
-    public function shouldProcess(string $mode, $actions = []): bool
+    public function shouldProcess(string $mode, mixed $actions = []): bool
     {
         if (is_string($actions)) {
             $actions = [$actions];

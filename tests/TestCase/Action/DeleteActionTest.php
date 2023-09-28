@@ -17,21 +17,21 @@ class DeleteActionTest extends IntegrationTestCase
      *
      * @var array
      */
-    protected $fixtures = ['plugin.Crud.Blogs'];
+    protected array $fixtures = ['plugin.Crud.Blogs'];
 
     /**
      * Table class to mock on
      *
      * @var string
      */
-    public $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
+    public string $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
 
     /**
      * Data provider with HTTP verbs
      *
      * @return array
      */
-    public function allHttpMethodProvider()
+    public static function allHttpMethodProvider()
     {
         return [
             ['post'],
@@ -53,7 +53,7 @@ class DeleteActionTest extends IntegrationTestCase
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->disableOriginalConstructor()
+                    ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
                 $this->_controller->Flash
@@ -104,7 +104,7 @@ class DeleteActionTest extends IntegrationTestCase
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->disableOriginalConstructor()
+                    ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
                 $this->_controller->Flash
@@ -159,7 +159,7 @@ class DeleteActionTest extends IntegrationTestCase
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->disableOriginalConstructor()
+                    ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
                 $this->_controller->Flash

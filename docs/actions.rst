@@ -50,7 +50,7 @@ namespace your action class accordingly.
 .. literalinclude:: _code/action_index.php
 	 :language: php
 	 :linenos:
-	 :emphasize-lines: 2-4, 25-27
+	 :emphasize-lines: 2-4
 
 Request Methods
 ---------------
@@ -66,7 +66,7 @@ executed.
 .. literalinclude:: _code/action_index.php
 	 :language: php
 	 :linenos:
-	 :emphasize-lines: 6-11,25
+	 :emphasize-lines: 6-10
 
 You can treat the ``_handle()`` method as a catch-all, if your crud action
 wants to process all possible HTTP verbs.
@@ -83,14 +83,14 @@ Events & Subject
 ----------------
 
 All Crud actions emit a range of events, and all of these events always contain a Crud Subject. The Crud Subject can
-change its state between emitted events. This object is a simple ``StdClass`` which contains the current state of the Crud request.
+change its state between emitted events. This object is a ``Crud\Event\Subject`` instance which contains the current state of the Crud request.
 
 The real beauty of Crud is the events and the flexibility they provide.
 
 All calls to ``_trigger()`` emit an event, that you as a developer can listen to and inject your own application logic.
 These events are in no way magical, they are simply normal
-`CakePHP events <http://book.cakephp.org/4/en/core-libraries/events.html>`_, dispatched like all
-other `events in CakePHP <http://book.cakephp.org/4/en/core-libraries/events.html>`_.
+`CakePHP events <http://book.cakephp.org/5/en/core-libraries/events.html>`_, dispatched like all
+other `events in CakePHP <http://book.cakephp.org/5/en/core-libraries/events.html>`_.
 
 You can for example listen for the ``beforePaginate`` event and add conditions to your pagination query, just with a
 few lines of code. Those few lines of code is what makes your application unique. The rest of the code you would
@@ -99,20 +99,15 @@ normally have is simply repeated boiler plate code.
 .. literalinclude:: _code/action_index.php
 	 :language: php
 	 :linenos:
-	 :emphasize-lines: 12-15,19,21,24
+	 :emphasize-lines: 60,76-77
 
 Boilerplate
 -----------
 
 Only the code that you would normally have in your controller is left now.
 
-While these 3 lines seem simple, and the whole Crud implementation a bit overkill at first, the true power of this setup
+While the whole Crud implementation might seem a bit overkill at first, the true power of this setup
 will be clear when your application grows and the requirements increase.
-
-.. literalinclude:: _code/action_index.php
-	 :language: php
-	 :linenos:
-	 :emphasize-lines: 17,18,23
 
 For example :doc:`adding an API layer<api>` to your application later in time will be easy because you don't need to edit
 all your applications many controllers.

@@ -5,6 +5,7 @@ namespace Crud\Core;
 
 use Cake\Controller\Controller;
 use Cake\Datasource\EntityInterface;
+use Cake\Datasource\RepositoryInterface;
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
@@ -19,7 +20,7 @@ trait ProxyTrait
     /**
      * @var \Cake\Datasource\EntityInterface|null
      */
-    protected $_entity;
+    protected ?EntityInterface $_entity = null;
 
     /**
      * Proxy method for `$this->_crud()->action()`
@@ -42,7 +43,7 @@ trait ProxyTrait
      *
      * @param string $eventName Event name
      * @param \Crud\Event\Subject|null $data Event data
-     * @return \Cake\Event\EventInterface
+     * @return \Cake\Event\EventInterface<\Crud\Event\Subject>
      * @throws \Exception
      * @codeCoverageIgnore
      */
@@ -120,25 +121,14 @@ trait ProxyTrait
     }
 
     /**
-     * Get a table instance
+     * Get the model instance
      *
-     * @return \Cake\ORM\Table
+     * @return \Cake\Datasource\RepositoryInterface
      * @psalm-suppress MoreSpecificReturnType
      */
-    protected function _table()
+    protected function _model(): RepositoryInterface
     {
-        $modelType = $this->getConfig('modelFactory');
-
-        if (!$modelType && method_exists($this->_controller(), 'fetchTable')) {
-            return $this->_controller()->fetchTable();
-        }
-
-        /** @psalm-suppress DeprecatedMethod */
-        return $this->_controller()
-            ->loadModel(
-                null,
-                $modelType ?: $this->_controller()->getModelType()
-            );
+        return $this->_crud()->model();
     }
 
     /**
@@ -154,7 +144,7 @@ trait ProxyTrait
             return $this->_entity;
         }
 
-        return $this->_table()->newEntity($data, $options);
+        return $this->_model()->newEntity($data, $options);
     }
 
     /**
@@ -169,17 +159,13 @@ trait ProxyTrait
     }
 
     /**
-     * Proxy method for `$this->_container->_crud`
+     * Proxy method for `$this->_controller->Crud`
      *
      * @return \Crud\Controller\Component\CrudComponent
      */
     protected function _crud(): CrudComponent
     {
         /** @psalm-suppress UndefinedMagicPropertyFetch */
-        if (!$this->_controller->Crud) {
-            return $this->_controller->components()->load('Crud.Crud');
-        }
-
         return $this->_controller->Crud;
     }
 }

@@ -17,7 +17,7 @@ class SetValueActionTest extends IntegrationTestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.Crud.Blogs',
         'plugin.Crud.Users',
     ];
@@ -27,14 +27,14 @@ class SetValueActionTest extends IntegrationTestCase
      *
      * @var string
      */
-    public $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
+    public string $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
 
     /**
      * Data provider with all HTTP verbs
      *
      * @return array
      */
-    public function allHttpMethodProvider()
+    public static function allHttpMethodProvider()
     {
         return [
             ['post'],
@@ -56,7 +56,7 @@ class SetValueActionTest extends IntegrationTestCase
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->disableOriginalConstructor()
+                    ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
                 $this->_controller->Flash
@@ -100,7 +100,7 @@ class SetValueActionTest extends IntegrationTestCase
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->disableOriginalConstructor()
+                    ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
                 $this->_controller->Flash
@@ -148,7 +148,7 @@ class SetValueActionTest extends IntegrationTestCase
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->disableOriginalConstructor()
+                    ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
                 $this->_controller->Flash
@@ -177,32 +177,5 @@ class SetValueActionTest extends IntegrationTestCase
         $this->assertEvents(['beforeBulk', 'afterBulk', 'setFlash', 'beforeRedirect']);
         $this->assertTrue($this->_subject->success);
         $this->assertRedirect('/users');
-    }
-
-    /**
-     * Test custom finder with options
-     *
-     * @return void
-     */
-    public function testPostWithCustomFinder()
-    {
-        $this->_eventManager->on(
-            'Controller.initialize',
-            ['priority' => 11],
-            function ($event) {
-                $this->_subscribeToEvents($this->_controller);
-                $this->_controller->Crud->action('deactivateAll')
-                    ->findMethod(['withCustomOptions' => ['foo' => 'bar']]);
-            }
-        );
-
-        $this->post('/blogs/deactivateAll', [
-            'id' => [
-                1,
-                2,
-            ],
-        ]);
-
-        $this->assertSame(['foo' => 'bar'], $this->_controller->Blogs->customOptions);
     }
 }

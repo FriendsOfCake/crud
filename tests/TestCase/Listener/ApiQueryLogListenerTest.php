@@ -6,7 +6,9 @@ namespace Crud\Test\TestCase\Listener;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Database\Connection;
+use Cake\Database\Driver;
 use Cake\Event\Event;
+use Cake\Http\ServerRequest;
 use Crud\Action\BaseAction;
 use Crud\Listener\ApiQueryLogListener;
 use Crud\Log\QueryLogger;
@@ -23,6 +25,7 @@ class ApiQueryLogListenerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+
         $this->_debug = Configure::read('debug');
     }
 
@@ -164,24 +167,22 @@ class ApiQueryLogListenerTest extends TestCase
      */
     public function testSetupLogging()
     {
-        $methodName = 'enableQueryLogging';
-        if (version_compare(Configure::version(), '3.7.0RC', '<')) {
-            $methodName = 'logQueries';
-        }
-
-        $DefaultSource = $this
-            ->getMockBuilder(Connection::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods([$methodName, 'setLogger'])
+        $driver = $this
+            ->getMockBuilder(Driver::class)
             ->getMock();
-        $DefaultSource
-            ->expects($this->once())
-            ->method($methodName)
-            ->with(true);
-        $DefaultSource
+        $driver
             ->expects($this->once())
             ->method('setLogger')
             ->with($this->isInstanceOf(QueryLogger::class));
+        $driver
+            ->expects($this->any())
+            ->method('enabled')
+            ->willReturn(true);
+
+        $DefaultSource = new Connection([
+            'name' => 'default',
+            'driver' => $driver,
+        ]);
 
         $Instance = $this
             ->getMockBuilder(ApiQueryLogListener::class)
@@ -208,38 +209,29 @@ class ApiQueryLogListenerTest extends TestCase
      */
     public function testSetupLoggingConfiguredSources()
     {
-        $methodName = 'enableQueryLogging';
-        if (version_compare(Configure::version(), '3.7.0RC', '<')) {
-            $methodName = 'logQueries';
-        }
-
-        $DefaultSource = $this
-            ->getMockBuilder(Connection::class)
+        $driver = $this->getMockBuilder(Driver::class)
             ->disableOriginalConstructor()
-            ->onlyMethods([$methodName, 'setLogger'])
             ->getMock();
-        $DefaultSource
-            ->expects($this->once())
-            ->method($methodName)
-            ->with(true);
-        $DefaultSource
-            ->expects($this->once())
-            ->method('setLogger')
-            ->with($this->isInstanceOf(QueryLogger::class));
-
-        $TestSource = $this
-            ->getMockBuilder(Connection::class)
+        $driver
+            ->expects($this->any())
+            ->method('enabled')
+            ->willReturn(true);
+        $driver2 = $this->getMockBuilder(Driver::class)
             ->disableOriginalConstructor()
-            ->onlyMethods([$methodName, 'setLogger'])
             ->getMock();
-        $TestSource
-            ->expects($this->once())
-            ->method($methodName)
-            ->with(true);
-        $TestSource
-            ->expects($this->once())
-            ->method('setLogger')
-            ->with($this->isInstanceOf(QueryLogger::class));
+        $driver2
+            ->expects($this->any())
+            ->method('enabled')
+            ->willReturn(true);
+
+        $DefaultSource = new Connection([
+            'name' => 'default',
+            'driver' => $driver,
+        ]);
+        $TestSource = new Connection([
+            'name' => 'test',
+            'driver' => $driver2,
+        ]);
 
         $Instance = $this
             ->getMockBuilder(ApiQueryLogListener::class)
@@ -251,16 +243,10 @@ class ApiQueryLogListenerTest extends TestCase
             ->method('_getSources');
 
         $Instance
-            ->expects($this->at(0))
+            ->expects($this->exactly(2))
             ->method('_getSource')
-            ->with('default')
-            ->will($this->returnValue($DefaultSource));
-
-        $Instance
-            ->expects($this->at(1))
-            ->method('_getSource')
-            ->with('test')
-            ->will($this->returnValue($TestSource));
+            ->with(...self::withConsecutive(['default'], ['test']))
+            ->willReturnOnConsecutiveCalls($this->returnValue($DefaultSource), $this->returnValue($TestSource));
 
         $Instance->setConfig('connections', ['default', 'test']);
         $Instance->setupLogging(new Event('something'));
@@ -273,7 +259,7 @@ class ApiQueryLogListenerTest extends TestCase
      */
     public function testProtectedGetQueryLogs()
     {
-        $listener = new ApiQueryLogListener(new Controller());
+        $listener = new ApiQueryLogListener(new Controller(new ServerRequest()));
         $listener->setupLogging(new Event('something'));
         $this->setReflectionClassInstance($listener);
 
@@ -291,7 +277,7 @@ class ApiQueryLogListenerTest extends TestCase
      */
     public function testPublicGetQueryLogs()
     {
-        $listener = new ApiQueryLogListener(new Controller());
+        $listener = new ApiQueryLogListener(new Controller(new ServerRequest()));
         $listener->setupLogging(new Event('something'));
 
         $expected = [

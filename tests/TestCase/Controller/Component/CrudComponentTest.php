@@ -3,13 +3,15 @@ declare(strict_types=1);
 
 namespace Crud\TestCase\Controller\Crud;
 
+use Cake\Controller\ComponentRegistry;
+use Cake\Controller\Controller;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\Http\Exception\NotFoundException;
-use Cake\Http\Response;
 use Cake\Http\ServerRequest;
+use Cake\ORM\Table;
 use Crud\Controller\Component\CrudComponent;
 use Crud\Test\App\Controller\Component\TestCrudComponent;
 use Crud\Test\App\Controller\CrudExamplesController;
@@ -29,9 +31,15 @@ class CrudComponentTest extends TestCase
      * Use the core posts fixture to have something to work on.
      * What fixture is used is almost irrelevant, was chosen as it is simple
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'core.Posts',
     ];
+
+    protected Table $model;
+    protected ServerRequest $request;
+    protected Controller $controller;
+    protected ComponentRegistry $Registry;
+    protected CrudComponent $Crud;
 
     /**
      * setUp
@@ -48,16 +56,15 @@ class CrudComponentTest extends TestCase
 
         $this->request = $this->getMockBuilder(ServerRequest::class)
             ->onlyMethods(['is', 'getMethod'])
-            ->getMock();
+            ->getMock()
+            ->withParam('action', 'index');
 
         $this->request->expects($this->any())->method('is')->will($this->returnValue(true));
 
-        $response = new Response();
         $this->controller = $this->getMockBuilder(CrudExamplesController::class)
             ->onlyMethods(['redirect', 'render'])
-            ->setConstructorArgs([$this->request, $response, 'CrudExamples', EventManager::instance()])
+            ->setConstructorArgs([$this->request, 'CrudExamples', EventManager::instance()])
             ->getMock();
-        $this->controller->defaultTable = 'CrudExamples';
 
         $this->Registry = $this->controller->components();
 
@@ -237,7 +244,7 @@ class CrudComponentTest extends TestCase
             ->method('render');
 
         $this->Crud->view('view', 'cupcakes');
-        $this->Crud->execute('view', [1]);
+        $this->Crud->execute('view', ['1']);
     }
 
     /**
@@ -406,12 +413,8 @@ class CrudComponentTest extends TestCase
      */
     public function testSetModelPropertiesDefault()
     {
-        $this->markTestSkipped(
-            'Tests still not updated.'
-        );
-
         $this->Crud->setAction('index');
-        $this->assertSame('CrudExamples', $this->Crud->getModelName());
+        $this->assertNull($this->Crud->getModelName());
     }
 
     /**
@@ -701,10 +704,6 @@ class CrudComponentTest extends TestCase
      */
     public function testFindMethodMultipleActions()
     {
-        $this->markTestSkipped(
-            'Tests still not updated.'
-        );
-
         $this->Crud->findMethod(['index' => 'my_all', 'view' => 'my_view']);
 
         $expected = 'my_all';
@@ -875,10 +874,13 @@ class CrudComponentTest extends TestCase
         $this->Crud = new CrudComponent($this->Registry, ['actions' => ['Crud.Index']]);
         $this->Crud->beforeFilter(new Event('Controller.beforeFilter'));
         $this->controller->Crud = $this->Crud;
-        $class = $this->getMockClass('Model');
-        $this->Crud->useModel($class);
+        $this->controller->getTableLocator()->set('MyModel', new Table([
+            'table' => 'posts',
+            'alias' => 'MyModel',
+        ]));
+        $this->Crud->useModel('MyModel');
 
-        $this->assertEquals($class, $this->Crud->table()->getAlias());
+        $this->assertEquals('MyModel', $this->Crud->model()->getAlias());
     }
 
     /**

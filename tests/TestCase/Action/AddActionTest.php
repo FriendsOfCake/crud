@@ -19,14 +19,14 @@ class AddActionTest extends IntegrationTestCase
      *
      * @var array
      */
-    protected $fixtures = ['plugin.Crud.Blogs'];
+    protected array $fixtures = ['plugin.Crud.Blogs'];
 
     /**
      * Table class to mock on
      *
      * @var string
      */
-    public $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
+    public string $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
 
     /**
      * Test the normal HTTP GET flow of _get
@@ -41,10 +41,10 @@ class AddActionTest extends IntegrationTestCase
         $expected = '<legend>New Blog</legend>';
         $this->assertStringContainsString($expected, $result, 'legend do not match the expected value');
 
-        $expected = '<input type="hidden" name="id" id="id"/>';
+        $expected = '<input type="hidden" name="id" id="id">';
         $this->assertStringContainsString($expected, $result, '"id" do not match the expected value');
 
-        $expected = '<input type="text" name="name" id="name" maxlength="255"/>';
+        $expected = '<input type="text" name="name" id="name" maxlength="255">';
         $this->assertStringContainsString($expected, $result, '"name" do not match the expected value');
 
         $expected = '<textarea name="body" id="body" rows="5"></textarea>';
@@ -66,10 +66,10 @@ class AddActionTest extends IntegrationTestCase
         $expected = '<legend>New Blog</legend>';
         $this->assertStringContainsString($expected, $result, 'legend do not match the expected value');
 
-        $expected = '<input type="hidden" name="id" id="id"/>';
+        $expected = '<input type="hidden" name="id" id="id">';
         $this->assertStringContainsString($expected, $result, '"id" do not match the expected value');
 
-        $expected = '<input type="text" name="name" id="name" value="test" maxlength="255"/>';
+        $expected = '<input type="text" name="name" id="name" value="test" maxlength="255">';
         $this->assertStringContainsString($expected, $result, '"name" do not match the expected value');
 
         $expected = '<textarea name="body" id="body" rows="5"></textarea>';
@@ -89,7 +89,7 @@ class AddActionTest extends IntegrationTestCase
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->disableOriginalConstructor()
+                    ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
                 $this->_controller->Flash
@@ -134,7 +134,7 @@ class AddActionTest extends IntegrationTestCase
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->disableOriginalConstructor()
+                    ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
                 $this->_controller->Flash
@@ -179,7 +179,7 @@ class AddActionTest extends IntegrationTestCase
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->disableOriginalConstructor()
+                    ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
                 $this->_controller->Flash
@@ -223,7 +223,7 @@ class AddActionTest extends IntegrationTestCase
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->disableOriginalConstructor()
+                    ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
                 $this->_controller->Flash
@@ -277,7 +277,7 @@ class AddActionTest extends IntegrationTestCase
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->disableOriginalConstructor()
+                    ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
                 $this->_controller->Flash
@@ -333,7 +333,7 @@ class AddActionTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function apiGetHttpMethodProvider()
+    public static function apiGetHttpMethodProvider()
     {
         return [
             ['get'],
@@ -365,7 +365,7 @@ class AddActionTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function apiUpdateHttpMethodProvider()
+    public static function apiUpdateHttpMethodProvider()
     {
         return [
             ['put'],
@@ -388,7 +388,7 @@ class AddActionTest extends IntegrationTestCase
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->disableOriginalConstructor()
+                    ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
                 $this->_controller->Flash
@@ -433,7 +433,7 @@ class AddActionTest extends IntegrationTestCase
 
                 $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->disableOriginalConstructor()
+                    ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
                 $this->_controller->Flash
@@ -485,7 +485,7 @@ class AddActionTest extends IntegrationTestCase
 
                 $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->disableOriginalConstructor()
+                    ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
                 $this->_controller->Flash
@@ -531,7 +531,7 @@ class AddActionTest extends IntegrationTestCase
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->disableOriginalConstructor()
+                    ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
                 $this->_controller->Flash
@@ -581,7 +581,7 @@ class AddActionTest extends IntegrationTestCase
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->disableOriginalConstructor()
+                    ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
                 $this->_controller->Flash

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Crud\Action;
 
+use Cake\ORM\Table;
 use Crud\Traits\FindMethodTrait;
 use Crud\Traits\SerializeTrait;
 use Crud\Traits\ViewTrait;
@@ -26,7 +27,7 @@ class LookupAction extends BaseAction
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'enabled' => true,
         'scope' => 'table',
         'findMethod' => 'list',
@@ -41,7 +42,7 @@ class LookupAction extends BaseAction
     {
         [$finder, $options] = $this->_extractFinder();
         $options = array_merge($options, $this->_getFindConfig());
-        $query = $this->_table()->find($finder, $options);
+        $query = $this->_model()->find($finder, ...$options);
         $subject = $this->_subject(['success' => true, 'query' => $query]);
 
         $this->_trigger('beforeLookup', $subject);
@@ -59,8 +60,10 @@ class LookupAction extends BaseAction
     protected function _getFindConfig(): array
     {
         $request = $this->_request();
+        $model = $this->_model();
+        assert($model instanceof Table);
 
-        $columns = $this->_table()->getSchema()->columns();
+        $columns = $model->getSchema()->columns();
         $config = (array)$this->getConfig('findConfig');
 
         $idField = $request->getQuery('key_field') ?: $request->getQuery('id');

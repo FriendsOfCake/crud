@@ -13,14 +13,14 @@ trait ViewVarTrait
      * Publish the viewVar so people can do $$viewVar and end up
      * wit the entity in the view
      *
-     * @param \Cake\Event\EventInterface $event Event
-     * @return false|null
+     * @param \Cake\Event\EventInterface<\Crud\Event\Subject> $event Event
+     * @return void
      * @throws \Exception
      */
-    public function publishViewVar(EventInterface $event)
+    public function publishViewVar(EventInterface $event): void
     {
         if (!$this->responding()) {
-            return false;
+            return;
         }
 
         $viewVar = $this->viewVar();
@@ -38,7 +38,7 @@ trait ViewVarTrait
      * @return mixed
      * @throws \Exception
      */
-    public function viewVar($name = null)
+    public function viewVar(mixed $name = null): mixed
     {
         if (empty($name)) {
             return $this->getConfig('viewVar') ?: $this->_deriveViewVar();
@@ -73,11 +73,11 @@ trait ViewVarTrait
      * Derive the viewVar value based on the scope of the action
      * as well as the Event being handled
      *
-     * @param \Cake\Event\EventInterface $event Event
+     * @param \Cake\Event\EventInterface<\Crud\Event\Subject> $event Event
      * @return mixed
      * @throws \Exception
      */
-    protected function _deriveViewValue(EventInterface $event)
+    protected function _deriveViewValue(EventInterface $event): mixed
     {
         $key = $this->_action()->subjectEntityKey();
 

@@ -5,8 +5,9 @@ namespace Crud\Action\Bulk;
 
 use Cake\Controller\Controller;
 use Cake\Database\Expression\QueryExpression;
+use Cake\Database\Query;
 use Cake\Http\Response;
-use Cake\ORM\Query;
+use Cake\ORM\Query\UpdateQuery;
 use Crud\Error\Exception\ActionNotConfiguredException;
 
 /**
@@ -57,17 +58,18 @@ class ToggleAction extends BaseAction
     /**
      * Handle a bulk toggle
      *
-     * @param \Cake\ORM\Query $query The query to act upon
+     * @param \Cake\Database\Query $query The query to act upon
      * @return bool
      */
     protected function _bulk(Query $query): bool
     {
+        assert($query instanceof UpdateQuery);
+
         $field = $this->getConfig('field');
         $expression = [new QueryExpression(sprintf('%1$s= NOT %1$s', $field))];
-        $query->update()->set($expression);
-        $statement = $query->execute();
-        $statement->closeCursor();
 
-        return (bool)$statement->rowCount();
+        $query->set($expression);
+
+        return (bool)$query->rowCountAndClose();
     }
 }

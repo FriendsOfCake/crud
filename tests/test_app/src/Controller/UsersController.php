@@ -10,11 +10,10 @@ class UsersController extends Controller
 {
     use ControllerTrait;
 
-    public $paginate = ['limit' => 3];
+    public array $paginate = ['limit' => 3];
 
     public function initialize(): void
     {
-        $this->loadComponent('RequestHandler');
         $this->loadComponent('Flash');
         $this->loadComponent('Crud.Crud', [
             'actions' => [

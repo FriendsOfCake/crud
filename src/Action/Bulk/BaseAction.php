@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace Crud\Action\Bulk;
 
+use Cake\Database\Query;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Response;
-use Cake\ORM\Query;
+use Cake\ORM\Table;
 use Cake\Utility\Hash;
 use Crud\Action\BaseAction as CrudBaseAction;
 use Crud\Event\Subject;
@@ -28,11 +29,10 @@ abstract class BaseAction extends CrudBaseAction
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'enabled' => true,
         'scope' => 'bulk',
-        'findMethod' => 'all',
-        'findConfig' => [],
+        'queryType' => Query::TYPE_UPDATE,
         'messages' => [
             'success' => [
                 'text' => 'Bulk action successfully completed',
@@ -76,18 +76,13 @@ abstract class BaseAction extends CrudBaseAction
     {
         $ids = $this->_controller()->getRequest()->getData('id');
 
-        $all = false;
-        if (is_array($ids)) {
-            $all = Hash::get($ids, '_all', false);
-            unset($ids['_all']);
-        }
-
-        // @phpstan-ignore-next-line
         if (!is_array($ids)) {
             throw new BadRequestException('Bad request data');
         }
 
-        // @phpstan-ignore-next-line
+        $all = Hash::get($ids, '_all', false);
+        unset($ids['_all']);
+
         if ($all) {
             foreach ($ids as $key => $value) {
                 $ids[$key] = 1;
@@ -95,9 +90,7 @@ abstract class BaseAction extends CrudBaseAction
             $ids = array_keys($ids);
         }
 
-        $ids = array_filter($ids);
-
-        return array_values($ids);
+        return array_values(array_filter($ids));
     }
 
     /**
@@ -108,11 +101,14 @@ abstract class BaseAction extends CrudBaseAction
      */
     protected function _constructSubject(array $ids): Subject
     {
-        $repository = $this->_table();
+        $repository = $this->_model();
+        assert($repository instanceof Table);
 
-        [$finder, $options] = $this->_extractFinder();
-        $options = array_merge($options, $this->_getFindConfig($ids));
-        $query = $repository->find($finder, $options);
+        $method = strtolower($this->getConfig('queryType')) . 'Query';
+        $primaryKey = $repository->getPrimaryKey();
+
+        $query = $repository->{$method}()
+            ->where(fn ($exp) => $exp->in($primaryKey, $ids));
 
         $subject = $this->_subject();
         $subject->set([
@@ -122,28 +118,6 @@ abstract class BaseAction extends CrudBaseAction
         ]);
 
         return $subject;
-    }
-
-    /**
-     * Get the query configuration
-     *
-     * @param array $ids An array of ids to retrieve
-     * @return array
-     */
-    protected function _getFindConfig(array $ids): array
-    {
-        $config = (array)$this->getConfig('findConfig');
-        if (!empty($config)) {
-            return $config;
-        }
-
-        $primaryKey = $this->_table()->getPrimaryKey();
-        $config['conditions'] = [];
-        $config['conditions'][] = function ($exp) use ($primaryKey, $ids) {
-            return $exp->in($primaryKey, $ids);
-        };
-
-        return $config;
     }
 
     /**
@@ -189,9 +163,9 @@ abstract class BaseAction extends CrudBaseAction
     }
 
     /**
-     * Handle a bulk event
+     * Handle a bulk event.
      *
-     * @param \Cake\ORM\Query $query The query to act upon
+     * @param \Cake\Database\Query $query The query to act upon
      * @return bool
      */
     abstract protected function _bulk(Query $query): bool;

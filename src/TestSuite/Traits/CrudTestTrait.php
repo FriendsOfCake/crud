@@ -4,9 +4,7 @@ declare(strict_types=1);
 namespace Crud\TestSuite\Traits;
 
 use Cake\Controller\Controller;
-use Cake\Datasource\ConnectionManager;
-use Cake\Event\Event;
-use Cake\ORM\Table;
+use Cake\Event\EventInterface;
 use Crud\Event\Subject;
 use Exception;
 
@@ -23,7 +21,7 @@ trait CrudTestTrait
      *
      * @var \Crud\Event\Subject
      */
-    protected $_subject;
+    protected Subject $_subject;
 
     /**
      * Subscribe to Crud.beforeRender and Crud.beforeRedirect events
@@ -54,47 +52,23 @@ trait CrudTestTrait
     }
 
     /**
-     * Get a "model" (Table) instance
-     *
-     * @param string $class Full table class name
-     * @param mixed $methods Methods to mock
-     * @param string $alias Table alias / name
-     * @param string $table Table name in the database
-     * @return \Cake\ORM\Table
-     * @psalm-param class-string $class
-     * @psalm-suppress InvalidReturnType
-     */
-    public function getModel(string $class, $methods, string $alias, string $table): Table
-    {
-        /** @psalm-suppress DeprecatedMethod */
-        $mock = $this->getMockBuilder($class)
-            ->setMethods($methods)
-            ->setConstructorArgs([['alias' => $alias, 'table' => $table]])
-            ->getMock();
-        /** @psalm-suppress UndefinedInterfaceMethod */
-        $mock->setConnection(ConnectionManager::get('test'));
-
-        return $mock;
-    }
-
-    /**
      * Assert these CRUD events was emitted during the life cycle
      *
      * The `$expected` list do not need to prefix events with `Crud.` - this is done
      * automatically before comparison
      *
      * @param array $expected An array of CRUD events we expected to be fired
-     * @param array|null $actual Can be an Event class, Crud subject or array with event names
+     * @param \Cake\Event\EventInterface|array|null $actual Can be an Event class, Crud subject or array with event names
      * @return void
      * @throws \Exception
      */
-    public function assertEvents(array $expected, ?array $actual = null): void
+    public function assertEvents(array $expected, EventInterface|array|null $actual = null): void
     {
         if ($actual === null) {
             $actual = $this->_subject;
         }
 
-        if ($actual instanceof Event) {
+        if ($actual instanceof EventInterface) {
             $actual = $actual->getSubject()->getEvents();
         }
 

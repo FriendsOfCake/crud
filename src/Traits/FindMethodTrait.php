@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Crud\Traits;
 
 use Cake\Datasource\EntityInterface;
+use Cake\ORM\Table;
 use Crud\Event\Subject;
 
 trait FindMethodTrait
@@ -14,11 +15,11 @@ trait FindMethodTrait
      * If `$method` is NULL the current value is returned
      * else the `findMethod` is changed
      *
-     * @param string|array|null $method Method name as string or array where
+     * @param array|string|null $method Method name as string or array where
      * key is finder name and value is find options.
-     * @return string|array|$this
+     * @return $this|array|string
      */
-    public function findMethod($method = null)
+    public function findMethod(string|array|null $method = null)
     {
         if ($method === null) {
             return $this->getConfig('findMethod');
@@ -50,17 +51,18 @@ trait FindMethodTrait
     /**
      * Find a record from the ID
      *
-     * @param string|null $id Record id
+     * @param string|int|null $id Record id
      * @param \Crud\Event\Subject $subject Event subject
      * @return \Cake\Datasource\EntityInterface
      * @throws \Exception
      */
-    protected function _findRecord(?string $id, Subject $subject): EntityInterface
+    protected function _findRecord(string|int|null $id, Subject $subject): EntityInterface
     {
-        $repository = $this->_table();
+        $repository = $this->_model();
+        assert($repository instanceof Table);
 
         [$finder, $options] = $this->_extractFinder();
-        $query = $repository->find($finder, $options);
+        $query = $repository->find($finder, ...$options);
         /**
          * @psalm-suppress PossiblyInvalidArgument
          * @psalm-suppress InvalidArrayOffset
@@ -88,12 +90,12 @@ trait FindMethodTrait
     /**
      * Throw exception if a record is not found
      *
-     * @param string|null $id Record id
+     * @param string|int|null $id Record id
      * @param \Crud\Event\Subject $subject Event subject
      * @return void
      * @throws \Exception
      */
-    protected function _notFound(?string $id, Subject $subject): void
+    protected function _notFound(string|int|null $id, Subject $subject): void
     {
         $subject->set(['success' => false]);
         $this->_trigger('recordNotFound', $subject);

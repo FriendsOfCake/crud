@@ -2,12 +2,6 @@
 Installation
 ************
 
-Requirements
-============
-
-* CakePHP 3.2+
-* PHP 5.5.9+
-
 Using composer
 ==============
 
@@ -28,14 +22,14 @@ Run the following command
 
 	bin/cake plugin load Crud
 
-Depending on your CakePHP version your ``src/Application.php`` or ``config/bootstrap.php``
+Depending on your CakePHP version your ``src/Application.php`` or ``config/plugins.php``
 will be modified to load the plugin.
 
 Configuring the controller
 ==========================
 
-The Crud plugin provides a trait which will catch a MissingActionException and then step in to provide scaffold actions
-to the controllers.
+The Crud plugin provides a trait which will catch a ``MissingActionException`` and
+then step in to provide scaffold actions to the controllers.
 
 To enable Crud across your whole application add the trait to your ``src/Controller/AppController.php``
 
@@ -53,7 +47,7 @@ To enable Crud across your whole application add the trait to your ``src/Control
     To have Crud just scaffold a single controller you can just add the ``ControllerTrait`` to that specific controller.
 
 Adding the ``ControllerTrait`` itself do not enable anything Crud, but simply installs the code to handle
-the ``\Cake\Error\MissingActionException`` exception so you don't have to implement an action in your controller
+the ``\Cake\Controller\Exception\MissingActionException`` exception so you don't have to implement an action in your controller
 for Crud to work.
 
 The next step is to load the Crud component in your controller. A basic example is as follows, and will enable the Crud
@@ -78,9 +72,5 @@ plugin to scaffold all your controllers index actions.
           // Other application wide controller setup
       }
   }
-
-For controllers like ``ErrorController`` where you usually don't call ``parent::initialize()``
-you can avoid errors due to ``CrudComponent`` not being loaded by adding
-``$this->dispatchComponents['Crud'] = false`` in the controller's ``initialize()`` method.
 
 Further configuration options are detailed on the :doc:`configuration page</configuration>`.

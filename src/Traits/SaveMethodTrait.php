@@ -14,7 +14,7 @@ trait SaveMethodTrait
      * @param mixed $method Method name
      * @return mixed
      */
-    public function saveMethod($method = null)
+    public function saveMethod(mixed $method = null): mixed
     {
         if ($method === null) {
             return $this->getConfig('saveMethod');
@@ -34,7 +34,7 @@ trait SaveMethodTrait
      * @param mixed $config Configuration array
      * @return mixed
      */
-    public function saveOptions($config = null)
+    public function saveOptions(mixed $config = null): mixed
     {
         if ($config === null) {
             return $this->getConfig('saveOptions');

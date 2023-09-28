@@ -18,14 +18,14 @@ class EditActionTest extends IntegrationTestCase
      *
      * @var array
      */
-    protected $fixtures = ['plugin.Crud.Blogs'];
+    protected array $fixtures = ['plugin.Crud.Blogs'];
 
     /**
      * Table class to mock on
      *
      * @var string
      */
-    public $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
+    public string $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
 
     /**
      * Test the normal HTTP GET flow of _get
@@ -40,10 +40,10 @@ class EditActionTest extends IntegrationTestCase
         $expected = '<legend>Edit Blog</legend>';
         $this->assertStringContainsString($expected, $result, 'legend do not match the expected value');
 
-        $expected = '<input type="hidden" name="id" id="id" value="1"/>';
+        $expected = '<input type="hidden" name="id" id="id" value="1">';
         $this->assertStringContainsString($expected, $result, '"id" do not match the expected value');
 
-        $expected = '<input type="text" name="name" id="name" value="1st post" maxlength="255"/>';
+        $expected = '<input type="text" name="name" id="name" value="1st post" maxlength="255">';
         $this->assertStringContainsString($expected, $result, '"name" do not match the expected value');
 
         $expected = '<textarea name="body" id="body" rows="5">1st post body</textarea>';
@@ -65,10 +65,10 @@ class EditActionTest extends IntegrationTestCase
         $expected = '<legend>Edit Blog</legend>';
         $this->assertStringContainsString($expected, $result, 'legend do not match the expected value');
 
-        $expected = '<input type="hidden" name="id" id="id" value="1"/>';
+        $expected = '<input type="hidden" name="id" id="id" value="1">';
         $this->assertStringContainsString($expected, $result, '"id" do not match the expected value');
 
-        $expected = '<input type="text" name="name" id="name" value="1st post" maxlength="255"/>';
+        $expected = '<input type="text" name="name" id="name" value="1st post" maxlength="255">';
         $this->assertStringContainsString($expected, $result, '"name" do not match the expected value');
 
         $expected = '<textarea name="body" id="body" rows="5">1st post body</textarea>';
@@ -108,7 +108,7 @@ class EditActionTest extends IntegrationTestCase
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->disableOriginalConstructor()
+                    ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
                 $this->_controller->Flash
@@ -151,7 +151,7 @@ class EditActionTest extends IntegrationTestCase
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->disableOriginalConstructor()
+                    ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
                 $this->_controller->Flash
@@ -205,7 +205,7 @@ class EditActionTest extends IntegrationTestCase
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->disableOriginalConstructor()
+                    ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
                 $this->_controller->Flash
@@ -269,7 +269,7 @@ class EditActionTest extends IntegrationTestCase
             function ($event) {
                 $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->disableOriginalConstructor()
+                    ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
                 $this->_controller->Flash

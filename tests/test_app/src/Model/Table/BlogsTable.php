@@ -3,21 +3,21 @@ declare(strict_types=1);
 
 namespace Crud\Test\App\Model\Table;
 
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 
 class BlogsTable extends Table
 {
-    public $customOptions;
+    public array $customOptions;
 
     /**
      * findWithCustomOptions
      *
-     * @param Query $query
-     * @param array $options
-     * @return void
+     * @param \Cake\ORM\Query\SelectQuery $query
+     * @param mixed ...$options
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    public function findWithCustomOptions(Query $query, array $options)
+    public function findWithCustomOptions(SelectQuery $query, mixed ...$options)
     {
         $this->customOptions = $options;
 

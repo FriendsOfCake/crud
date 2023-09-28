@@ -6,8 +6,10 @@ namespace Crud\Listener;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Association;
+use Cake\ORM\Table;
 use Cake\Utility\Inflector;
 use RuntimeException;
+use function Cake\Core\pluginSplit;
 
 /**
  * Implements beforeRender event listener to set related models' lists to
@@ -34,7 +36,7 @@ class RelatedModelsListener extends BaseListener
     /**
      * Automatically parse and contain related table classes
      *
-     * @param \Cake\Event\EventInterface $event Before paginate event
+     * @param \Cake\Event\EventInterface<\Crud\Event\Subject> $event Before paginate event
      * @return void
      */
     public function beforePaginate(EventInterface $event): void
@@ -60,7 +62,7 @@ class RelatedModelsListener extends BaseListener
     /**
      * Fetches related models' list and sets them to a variable for the view
      *
-     * @param \Cake\Event\EventInterface $event Event
+     * @param \Cake\Event\EventInterface<\Crud\Event\Subject> $event Event
      * @return void
      * @codeCoverageIgnore
      */
@@ -77,8 +79,8 @@ class RelatedModelsListener extends BaseListener
      * Find and publish all related models to the view
      * for an action
      *
-     * @param null|string $action If NULL the current action will be used
-     * @param null|\Cake\Datasource\EntityInterface $entity The optional entity for which we we trying to find related
+     * @param string|null $action If NULL the current action will be used
+     * @param \Cake\Datasource\EntityInterface|null $entity The optional entity for which we we trying to find related
      * @return void
      */
     public function publishRelatedModels(?string $action = null, ?EntityInterface $entity = null): void
@@ -99,7 +101,7 @@ class RelatedModelsListener extends BaseListener
             }
 
             $finder = $this->finder($association);
-            $query = $association->find($finder, $this->_findOptions($association));
+            $query = $association->find($finder, ...$this->_findOptions($association));
             $subject = $this->_subject(compact('name', 'viewVar', 'query', 'association', 'entity'));
             $event = $this->_trigger('relatedModel', $subject);
 
@@ -171,7 +173,7 @@ class RelatedModelsListener extends BaseListener
      * @param string|null $action The action to configure
      * @return mixed
      */
-    public function relatedModels($related = null, ?string $action = null)
+    public function relatedModels(mixed $related = null, ?string $action = null): mixed
     {
         if ($related === null) {
             return $this->_action($action)->getConfig('relatedModels');
@@ -191,7 +193,9 @@ class RelatedModelsListener extends BaseListener
     {
         $return = [];
 
-        $table = $this->_table();
+        $table = $this->_model();
+        assert($table instanceof Table);
+
         foreach ($table->associations()->keys() as $association) {
             /** @var \Cake\ORM\Association $associationClass */
             $associationClass = $table->associations()->get($association);
@@ -217,7 +221,8 @@ class RelatedModelsListener extends BaseListener
     {
         $return = [];
 
-        $table = $this->_table();
+        $table = $this->_model();
+        assert($table instanceof Table);
         foreach ($names as $association) {
             $associationClass = $table->associations()->get($association);
             if (!$associationClass) {

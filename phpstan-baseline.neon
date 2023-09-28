@@ -1,14 +1,9 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method Crud\\\\Action\\\\AddAction\\:\\:publishViewVar\\(\\) should return false\\|null but return statement is missing\\.$#"
-			count: 1
-			path: src/Action/AddAction.php
-
-		-
-			message: "#^Method Crud\\\\Action\\\\EditAction\\:\\:publishViewVar\\(\\) should return false\\|null but return statement is missing\\.$#"
-			count: 1
-			path: src/Action/EditAction.php
+			message: "#^Call to an undefined method Crud\\\\Action\\\\BaseAction\\:\\:findMethod\\(\\)\\.$#"
+			count: 2
+			path: src/Controller/Component/CrudComponent.php
 
 		-
 			message: "#^Call to an undefined method Crud\\\\Action\\\\BaseAction\\:\\:view\\(\\)\\.$#"
@@ -21,37 +16,11 @@ parameters:
 			path: src/Controller/Component/CrudComponent.php
 
 		-
-			message: "#^Call to an undefined method Crud\\\\Action\\\\BaseAction\\:\\:findMethod\\(\\)\\.$#"
-			count: 2
-			path: src/Controller/Component/CrudComponent.php
-
-		-
-			message: "#^Method Crud\\\\Core\\\\BaseObject\\:\\:_table\\(\\) should return Cake\\\\ORM\\\\Table but returns Cake\\\\Datasource\\\\RepositoryInterface\\.$#"
-			count: 1
-			path: src/Core/BaseObject.php
-
-		-
 			message: "#^Access to an undefined property Cake\\\\Controller\\\\Controller\\:\\:\\$Crud\\.$#"
 			count: 1
 			path: src/Core/BaseObject.php
 
 		-
-			message: "#^Method Crud\\\\Core\\\\BaseObject\\:\\:_crud\\(\\) should return Crud\\\\Controller\\\\Component\\\\CrudComponent but returns Cake\\\\Controller\\\\Component\\.$#"
+			message: "#^Call to an undefined method Cake\\\\Controller\\\\Controller\\:\\:setViewClasses\\(\\)\\.$#"
 			count: 1
-			path: src/Core/BaseObject.php
-
-		-
-			message: "#^Method Crud\\\\Action\\\\IndexAction\\:\\:publishViewVar\\(\\) should return false\\|null but return statement is missing\\.$#"
-			count: 1
-			path: src/Action/IndexAction.php
-
-		-
-			message: "#^Method Crud\\\\Action\\\\LookupAction\\:\\:publishViewVar\\(\\) should return false\\|null but return statement is missing\\.$#"
-			count: 1
-			path: src/Action/LookupAction.php
-
-		-
-			message: "#^Method Crud\\\\Action\\\\ViewAction\\:\\:publishViewVar\\(\\) should return false\\|null but return statement is missing\\.$#"
-			count: 1
-			path: src/Action/ViewAction.php
-
+			path: src/Listener/ApiListener.php

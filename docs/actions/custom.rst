@@ -18,14 +18,16 @@ A default custom index action might be as simple as the following:
 
     namespace App\Crud\Action;
 
-    class MyIndexAction extends \Crud\Action\BaseAction
+    use Crud\Action\BaseAction;
+
+    class MyIndexAction extends BaseAction
     {
         /**
          * Default settings
          *
-         * @var array
+         * @var array<string, mixed>
          */
-        protected $_defaultConfig = [
+        protected array $_defaultConfig = [
             'enabled' => true,
             'scope' => 'table',
             'findMethod' => 'all',
@@ -47,7 +49,7 @@ A default custom index action might be as simple as the following:
         *
         * @return void
         */
-        protected function _handle()
+        protected function _handle(): void
         {
             $query = $this->_table()->find($this->findMethod());
             $items = $this->_controller()->paginate($query);

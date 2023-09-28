@@ -47,7 +47,7 @@ class EditAction extends BaseAction
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'enabled' => true,
         'scope' => 'entity',
         'findMethod' => 'all',
@@ -93,11 +93,11 @@ class EditAction extends BaseAction
     /**
      * HTTP GET handler
      *
-     * @param string|null $id Record id
+     * @param string|int|null $id Record id
      * @return void
      * @throws \Cake\Http\Exception\NotFoundException If record not found
      */
-    protected function _get(?string $id = null): void
+    protected function _get(string|int|null $id = null): void
     {
         $subject = $this->_subject();
         $subject->set(['id' => $id]);
@@ -109,26 +109,28 @@ class EditAction extends BaseAction
     /**
      * HTTP PUT handler
      *
-     * @param string|null $id Record id
-     * @return \Cake\Http\Response|void
+     * @param string|int|null $id Record id
+     * @return \Cake\Http\Response|null
      */
-    protected function _put(?string $id = null)
+    protected function _put(string|int|null $id = null): ?Response
     {
         $subject = $this->_subject();
         $subject->set(['id' => $id]);
 
-        $entity = $this->_table()->patchEntity(
+        $entity = $this->_model()->patchEntity(
             $this->_findRecord($id, $subject),
             $this->_request()->getData(),
             $this->saveOptions()
         );
 
         $this->_trigger('beforeSave', $subject);
-        if (call_user_func([$this->_table(), $this->saveMethod()], $entity, $this->saveOptions())) {
+        if (call_user_func([$this->_model(), $this->saveMethod()], $entity, $this->saveOptions())) {
             return $this->_success($subject);
         }
 
         $this->_error($subject);
+
+        return null;
     }
 
     /**
@@ -136,10 +138,10 @@ class EditAction extends BaseAction
      *
      * Thin proxy for _put
      *
-     * @param string|null $id Record id
-     * @return \Cake\Http\Response|void
+     * @param string|int|null $id Record id
+     * @return \Cake\Http\Response|null
      */
-    protected function _post(?string $id = null)
+    protected function _post(string|int|null $id = null): ?Response
     {
         return $this->_put($id);
     }
@@ -149,10 +151,10 @@ class EditAction extends BaseAction
      *
      * Thin proxy for _put
      *
-     * @param string|null $id Record id
-     * @return \Cake\Http\Response|void
+     * @param string|int|null $id Record id
+     * @return \Cake\Http\Response|null
      */
-    protected function _patch(?string $id = null)
+    protected function _patch(string|int|null $id = null): ?Response
     {
         return $this->_put($id);
     }

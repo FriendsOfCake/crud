@@ -10,6 +10,8 @@ use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Utility\Hash;
 use Cake\Utility\Text;
+use Cake\View\JsonView;
+use Cake\View\XmlView;
 use Crud\Event\Subject;
 
 /**
@@ -28,10 +30,10 @@ class ApiListener extends BaseListener
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'viewClasses' => [
-            'json' => 'Json',
-            'xml' => 'Xml',
+            'json' => JsonView::class,
+            'xml' => XmlView::class,
         ],
         'detectors' => [
             'json' => ['accept' => ['application/json'], 'param' => '_ext', 'value' => 'json'],
@@ -81,7 +83,7 @@ class ApiListener extends BaseListener
      *
      * Called before the crud action is executed
      *
-     * @param \Cake\Event\EventInterface $event Event
+     * @param \Cake\Event\EventInterface<\Crud\Event\Subject> $event Event
      * @return void
      */
     public function beforeHandle(EventInterface $event): void
@@ -92,7 +94,7 @@ class ApiListener extends BaseListener
     /**
      * Handle response
      *
-     * @param \Cake\Event\EventInterface $event Event
+     * @param \Cake\Event\EventInterface<\Crud\Event\Subject> $event Event
      * @return \Cake\Http\Response|null
      * @throws \Exception
      */
@@ -145,7 +147,7 @@ class ApiListener extends BaseListener
     /**
      * Throw an exception based on API configuration
      *
-     * @param \Cake\Event\EventInterface $Event Event
+     * @param \Cake\Event\EventInterface<\Crud\Event\Subject> $Event Event
      * @param array $exceptionConfig Exception config
      * @return void
      * @throws \Exception
@@ -334,10 +336,7 @@ class ApiListener extends BaseListener
      */
     public function injectViewClasses(): void
     {
-        $controller = $this->_controller();
-        foreach ($this->getConfig('viewClasses') as $type => $class) {
-            $controller->RequestHandler->setConfig('viewClassMap', [$type => $class]);
-        }
+        $this->_controller()->setViewClasses($this->getConfig('viewClasses'));
     }
 
     /**
@@ -354,7 +353,7 @@ class ApiListener extends BaseListener
      * @param string|null $class Class name
      * @return mixed
      */
-    public function viewClass(string $type, ?string $class = null)
+    public function viewClass(string $type, ?string $class = null): mixed
     {
         if ($class === null) {
             return $this->getConfig('viewClasses.' . $type);
@@ -368,7 +367,7 @@ class ApiListener extends BaseListener
      *
      * An API request doesn't need flash messages - so stop them being processed
      *
-     * @param \Cake\Event\EventInterface $event Event
+     * @param \Cake\Event\EventInterface<\Crud\Event\Subject> $event Event
      * @return void
      */
     public function setFlash(EventInterface $event): void

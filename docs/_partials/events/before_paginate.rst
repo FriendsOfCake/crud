@@ -11,7 +11,7 @@ Add Conditions
   public function index()
   {
       $this->Crud->on('beforePaginate', function(\Cake\Event\EventInterface $event) {
-          $this->paginate['conditions']['is_active'] = true;
+          $event->getSubject()->query->where(['is_active' => true]);
       });
 
       return $this->Crud->execute();

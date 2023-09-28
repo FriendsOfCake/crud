@@ -16,7 +16,7 @@ The Anatomy Of A Listener
 =========================
 
 The listener system is simply the
-`Events System <http://book.cakephp.org/4/en/core-libraries/events.html>`_ from
+`Events System <http://book.cakephp.org/5/en/core-libraries/events.html>`_ from
 CakePHP, and all the official documentation and usage also applies to Crud.
 
 The Crud event system uses two methods ``trigger()`` and ``on()`` to interface
@@ -47,7 +47,7 @@ as an action creator.
 Implemented Events
 ------------------
 
-As documented in the `CakePHP Events System <http://book.cakephp.org/4/en/core-libraries/events.html>`_
+As documented in the `CakePHP Events System <http://book.cakephp.org/5/en/core-libraries/events.html>`_
 all listeners must contain a ``implementedEvents`` method.
 
 In this example, we simply request that ``beforeRender`` in our class is executed

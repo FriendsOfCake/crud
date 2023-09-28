@@ -4,7 +4,8 @@ declare(strict_types=1);
 namespace Crud\Action\Bulk;
 
 use Cake\Controller\Controller;
-use Cake\ORM\Query;
+use Cake\Database\Query;
+use Cake\ORM\Query\DeleteQuery;
 
 /**
  * Handles Bulk 'Delete' Crud actions
@@ -23,6 +24,8 @@ class DeleteAction extends BaseAction
      */
     public function __construct(Controller $Controller, array $config = [])
     {
+        $this->_defaultConfig['queryType'] = Query::TYPE_DELETE;
+
         $this->_defaultConfig['messages'] = [
             'success' => [
                 'text' => 'Delete completed successfully',
@@ -38,15 +41,13 @@ class DeleteAction extends BaseAction
     /**
      * Handle a bulk delete
      *
-     * @param \Cake\ORM\Query $query The query to act upon
+     * @param \Cake\Database\Query $query The query to act upon
      * @return bool
      */
     protected function _bulk(Query $query): bool
     {
-        $query = $query->delete();
-        $statement = $query->execute();
-        $statement->closeCursor();
+        assert($query instanceof DeleteQuery);
 
-        return (bool)$statement->rowCount();
+        return (bool)$query->rowCountAndClose();
     }
 }

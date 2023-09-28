@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Crud\Controller;
 
-use Cake\Controller\Component;
 use Cake\Controller\Exception\MissingActionException;
 use Closure;
 
@@ -13,23 +12,17 @@ use Closure;
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
+ *
+ * @property \Crud\Controller\Component\CrudComponent $Crud
  */
 trait ControllerTrait
 {
     /**
-     * List of components that are capable of dispatching an action that is
-     * not already implemented
+     * Whether current action is mapped to a Crud action.
      *
-     * @var array
+     * @var bool
      */
-    protected $dispatchComponents = ['Crud' => true];
-
-    /**
-     * Reference to component which should handle the mapped action.
-     *
-     * @var \Controller\Component\CrudComponent|null
-     */
-    protected $mappedComponent;
+    protected bool $mappedAction = false;
 
     /**
      * Get the closure for action to be invoked by ControllerFactory.
@@ -42,9 +35,10 @@ trait ControllerTrait
         try {
             return parent::getAction();
         } catch (MissingActionException $e) {
-            $this->mappedComponent = $this->_isActionMapped();
-            if ($this->mappedComponent) {
-                return function () {
+            $this->mappedAction = $this->Crud->isActionMapped($this->request->getParam('action'));
+
+            if ($this->mappedAction) {
+                return function (): void {
                     // Dummy closure without arguments.
                     // This is to prevent the ControllerFactory from trying to type cast the method args.
                     // invokeAction() below simply ignores the $action argument for Crud mapped actions
@@ -59,17 +53,16 @@ trait ControllerTrait
     /**
      * Dispatches the controller action.
      *
-     * If a controller method with required name does not exist we attempt to execute Crud action.
+     * If the action is mapped to a Crud action we execute it.
      *
      * @param \Closure $action The action closure.
      * @param array $args The arguments to be passed when invoking action.
      * @return void
-     * @throws \UnexpectedValueException If return value of action is not `null` or `ResponseInterface` instance.
      */
     public function invokeAction(Closure $action, array $args): void
     {
-        if ($this->mappedComponent) {
-            $this->response = $this->mappedComponent->execute(
+        if ($this->mappedAction) {
+            $this->response = $this->Crud->execute(
                 $this->request->getParam('action'),
                 array_values($this->getRequest()->getParam('pass'))
             );
@@ -81,37 +74,29 @@ trait ControllerTrait
     }
 
     /**
-     * Check if an action can be dispatched using CRUD.
+     * Set view classes map for content negotiation.
      *
-     * @return \Cake\Controller\Component|null The component instance if action is
-     *  mapped else `null`.
+     * @param array<string, class-string<\Cake\View\View>> $map View class map.
+     * @return void
      */
-    protected function _isActionMapped(): ?Component
+    public function setViewClasses(array $map): void
     {
-        foreach ($this->dispatchComponents as $component => $enabled) {
-            if (empty($enabled)) {
-                continue;
-            }
+        $this->viewClasses = $map;
+    }
 
-            // Skip if isActionMapped isn't defined in the Component
-            if (!method_exists($this->{$component}, 'isActionMapped')) {
-                continue;
-            }
-
-            // Skip if the action isn't mapped
-            if (!$this->{$component}->isActionMapped()) {
-                continue;
-            }
-
-            // Skip if execute isn't defined in the Component
-            if (!method_exists($this->{$component}, 'execute')) {
-                continue;
-            }
-
-            // Return the component instance.
-            return $this->{$component};
-        }
-
-        return null;
+    /**
+     * Get the View classes this controller can perform content negotiation with.
+     *
+     * Each view class must implement the `getContentType()` hook method
+     * to participate in negotiation.
+     *
+     * This overrides the Controller::viewClasses() of core.
+     *
+     * @see Cake\Http\ContentTypeNegotiation
+     * @return array<string, class-string<\Cake\View\View>>
+     */
+    public function viewClasses(): array
+    {
+        return $this->viewClasses;
     }
 }

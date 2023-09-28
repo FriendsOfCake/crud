@@ -405,7 +405,7 @@ class RedirectListenerTest extends TestCase
      *
      * @return array
      */
-    public function dataProviderGetUrl()
+    public static function dataProviderGetUrl()
     {
         $Request = new ServerRequest();
         $Request = $Request->withParam('action', 'index')
