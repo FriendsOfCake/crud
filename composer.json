@@ -39,11 +39,11 @@
         }
     ],
     "require": {
-        "cakephp/cakephp": "5.x-dev"
+        "cakephp/cakephp": "^5.0"
     },
     "require-dev": {
-        "friendsofcake/cakephp-test-utilities": "dev-cake-5.x",
-        "friendsofcake/search": "dev-cake-5",
+        "friendsofcake/cakephp-test-utilities": "^3.0",
+        "friendsofcake/search": "^7.0",
         "phpunit/phpunit": "^10.1"
     },
     "autoload": {
@@ -74,7 +74,5 @@
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    }
 }
