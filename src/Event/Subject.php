@@ -13,6 +13,7 @@ use Exception;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
+// phpcs:ignore
 #[\AllowDynamicProperties]
 class Subject
 {

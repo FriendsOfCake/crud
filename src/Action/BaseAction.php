@@ -154,6 +154,7 @@ abstract class BaseAction extends BaseObject
             throw new Exception(sprintf('Invalid message config for "%s" no text key found', $type));
         }
 
+        /** @psalm-suppress PossiblyInvalidArgument */
         $config['params']['original'] = ucfirst(str_replace('{name}', $config['name'], $config['text']));
 
         $domain = $this->getConfig('messages.domain');
