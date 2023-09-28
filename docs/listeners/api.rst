@@ -9,7 +9,7 @@ Introduction
 
   The ``API listener`` depends on the ``RequestHandler`` to be loaded **before** ``Crud``.
 
-`Please also see the CakePHP documentation on JSON and XML views <http://book.cakephp.org/4/en/views/json-and-xml-views.html>`_
+`Please also see the CakePHP documentation on JSON and XML views <http://book.cakephp.org/5/en/views/json-and-xml-views.html>`_
 
 Setup
 -----
@@ -17,15 +17,8 @@ Setup
 Routing
 ^^^^^^^
 
-You need to tell the ``Router`` to parse extensions else it won't be able toprocess and render ``json`` and ``xml``
+You need to tell the ``Router`` to `parse extensions <https://book.cakephp.org/5/en/development/routing.html#routing-file-extensions>`_ else it won't be able to process and render ``json`` and ``xml``
 URL extension.
-
-.. code-block:: phpinline
-
-  // config/routes.php
-  Router::extensions(['json', 'xml']);
-
-Ensure this statement is used before connecting any routes, and is in the routing global scope.
 
 Controller
 ^^^^^^^^^^
@@ -101,7 +94,7 @@ In case of an error, in order to get a standardized response in either
 ``json`` or ``xml`` - according to the API request type, for `api` requests,
 the default CakePHP exception renderer needs to be overridden.
 
-Set the ``Error.exceptionRenderer`` config in ``config/app.php`` to 
+Set the ``Error.exceptionRenderer`` config in ``config/app.php`` to
 ``\Crud\Error\ExceptionRenderer::class`` as following:
 
 .. code-block:: php

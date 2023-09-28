@@ -236,7 +236,7 @@ The easiest way to achieve this is to create an ``AppController`` for the prefix
 extend from that one. Then you can configure Crud in your prefixes ``AppController``.
 
 Let's look at an example, using an ``api`` prefix. For this example, we'll assume your
-`prefix routing <http://book.cakephp.org/4/en/development/routing.html#prefix-routing>`_ is already configured.
+`prefix routing <http://book.cakephp.org/5/en/development/routing.html#prefix-routing>`_ is already configured.
 
 First step is to create your new ``ApiAppController`` which should be in ``src/Controller/Api/``.
 

@@ -39,11 +39,11 @@ If you happen to stumble upon a bug, please `feel free to create a pull request 
 Features
 ========
 
-If you have a good idea for a Crud feature, `please join us in #friendsofcake channel on Slack <https://cakesf.herokuapp.com/>`_ and let's discuss it.
+If you have a good idea for a Crud feature, `please join us in #friendsofcake channel on Slack <https://slack-invite.cakephp.org//>`_ and let's discuss it.
 Opening a `pull request <https://github.com/FriendsOfCake/crud/pulls>`_ is always more than welcome, and a great way to start a discussion.
 Please check our `contribution guidelines <https://github.com/FriendsOfCake/crud/blob/master/CONTRIBUTING.md>`_.
 
 Support / Questions
 ===================
 
-You can `join us CakePHP's #support channel <https://cakesf.herokuapp.com/>`_ on Slack for any support or questions.
+You can `join us CakePHP's #support channel <https://slack-invite.cakephp.org//>`_ on Slack for any support or questions.

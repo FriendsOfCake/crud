@@ -3,27 +3,36 @@ namespace Crud\Action;
 
 class Index extends BaseAction
 {
-
     /**
      * Generic handler for all HTTP verbs
      *
-     * @return void
+     * @return \Cake\Http\Response|null
      */
-    protected function _handle()
+    protected function _handle(): ?Response
     {
-        $subject = $this->_subject();
-        $subject->set(['success' => true, 'viewVar' => $this->viewVar()]);
+        [$finder, $options] = $this->_extractFinder();
+        $query = $this->_model()->find($finder, ...$options);
+        $subject = $this->_subject(['success' => true, 'query' => $query]);
 
         $this->_trigger('beforePaginate', $subject);
+        try {
+            $items = $this->_controller()->paginate($subject->query);
+        } catch (NotFoundException $e) {
+            /** @var \Cake\Core\Exception\CakeException $previous */
+            $previous = $e->getPrevious();
+            $pagingParams = $previous->getAttributes()['pagingParams'];
 
-        $controller = $this->_controller();
-        $items = $controller->paginate();
-        $subject->set(['items' => $items]);
+            $url = Router::reverseToArray($this->_request());
+            $url['?']['page'] = $pagingParams['pageCount'];
+
+            return $this->_controller()->redirect($url);
+        }
+
+        $subject->set(['entities' => $items]);
 
         $this->_trigger('afterPaginate', $subject);
-
-        $controller->set(['success' => $subject->success, $subject->viewVar => $subject->items]);
         $this->_trigger('beforeRender', $subject);
-    }
 
+        return null;
+    }
 }
