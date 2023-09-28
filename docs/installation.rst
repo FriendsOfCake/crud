@@ -22,7 +22,7 @@ Run the following command
 
 	bin/cake plugin load Crud
 
-Depending on your CakePHP version your ``src/Application.php`` or ``config/bootstrap.php``
+Depending on your CakePHP version your ``src/Application.php`` or ``config/plugins.php``
 will be modified to load the plugin.
 
 Configuring the controller
