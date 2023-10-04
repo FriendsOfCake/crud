@@ -192,7 +192,7 @@ abstract class BaseAction extends BaseObject
             return;
         }
 
-        if (!isset($this->_controller()->Flash)) {
+        if (!$this->_controller()->components()->has('Flash')) {
             throw new RuntimeException('FlashComponent not loaded in controller.');
         }
 

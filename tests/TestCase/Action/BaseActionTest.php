@@ -252,11 +252,11 @@ class BaseActionTest extends TestCase
             ->with('setFlash', $Subject)
             ->will($this->returnValue(new Event('Crud.setFlash')));
 
-        $this->Controller->Flash = $this->getMockBuilder(FlashComponent::class)
+        $flash = $this->getMockBuilder(FlashComponent::class)
             ->onlyMethods(['set'])
             ->setConstructorArgs([$this->Registry])
             ->getMock();
-        $this->Controller->Flash
+        $flash
             ->expects($this->once())
             ->method('set')
             ->with(
@@ -267,6 +267,7 @@ class BaseActionTest extends TestCase
                     'key' => $data['key'],
                 ]
             );
+        $this->Controller->components()->set('Flash', $flash);
 
         $this->ActionClass->setConfig('name', 'test');
         $this->ActionClass->setConfig('messages', [
