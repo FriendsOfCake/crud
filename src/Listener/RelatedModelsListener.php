@@ -118,6 +118,12 @@ class RelatedModelsListener extends BaseListener
      */
     protected function _findOptions(Association $association): array
     {
+        if ($association instanceof Association\BelongsToMany) {
+            return [
+                'keyField' => $association->getPrimaryKey(),
+            ];
+        }
+
         return [
             'keyField' => $association->getBindingKey(),
         ];
