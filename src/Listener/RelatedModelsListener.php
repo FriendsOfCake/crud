@@ -6,6 +6,7 @@ namespace Crud\Listener;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Association;
+use Cake\ORM\Association\BelongsToMany;
 use Cake\Utility\Inflector;
 use RuntimeException;
 
@@ -118,7 +119,7 @@ class RelatedModelsListener extends BaseListener
      */
     protected function _findOptions(Association $association): array
     {
-        if ($association instanceof Association\BelongsToMany) {
+        if ($association instanceof BelongsToMany) {
             return [
                 'keyField' => $association->getPrimaryKey(),
             ];
