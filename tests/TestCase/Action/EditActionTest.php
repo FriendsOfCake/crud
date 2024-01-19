@@ -18,7 +18,7 @@ class EditActionTest extends IntegrationTestCase
      *
      * @var array
      */
-    protected $fixtures = ['plugin.Crud.Blogs'];
+    protected $fixtures = ['plugin.Crud.Blogs', 'plugin.Crud.Users'];
 
     /**
      * Table class to mock on
