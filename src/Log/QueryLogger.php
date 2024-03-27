@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Crud\Log;
 
+use Cake\Database\Log\LoggedQuery;
 use Cake\Database\Log\QueryLogger as CakeQueryLogger;
 use Stringable;
 
@@ -30,7 +31,11 @@ class QueryLogger extends CakeQueryLogger
      */
     public function log($level, string|Stringable $message, array $context = []): void
     {
-        $this->_logs[] = (string)$context['query'];
+        if ($context['query'] instanceof LoggedQuery) {
+            $this->_logs[] = $context['query']->jsonSerialize();
+        } else {
+            $this->_logs[] = (string)$context['query'];
+        }
 
         parent::log($level, $message, $context);
     }
