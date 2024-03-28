@@ -233,7 +233,7 @@ class CrudComponent extends Component
     {
         $this->_loadListeners();
 
-        $this->_action = $controllerAction ?: $this->_action;
+        $this->_action = $controllerAction ?? $this->_action;
 
         $action = $this->_action;
         if (empty($args)) {
@@ -275,7 +275,7 @@ class CrudComponent extends Component
      */
     public function action(?string $name = null): BaseAction
     {
-        if (empty($name)) {
+        if ($name === null) {
             $name = $this->_action;
         }
 
@@ -425,7 +425,7 @@ class CrudComponent extends Component
      */
     public function isActionMapped(?string $action = null): bool
     {
-        if (empty($action)) {
+        if ($action === null) {
             $action = $this->_action;
         }
 
@@ -448,7 +448,7 @@ class CrudComponent extends Component
     public function on(array|string $events, callable $callback, array $options = []): void
     {
         foreach ((array)$events as $event) {
-            if (!strpos($event, '.')) {
+            if (!str_contains($event, '.')) {
                 $event = $this->_config['eventPrefix'] . '.' . $event;
             }
 
