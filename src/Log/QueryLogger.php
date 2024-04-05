@@ -31,12 +31,7 @@ class QueryLogger extends CakeQueryLogger
      */
     public function log($level, string|Stringable $message, array $context = []): void
     {
-        if ($context['query'] instanceof LoggedQuery) {
-            /** @psalm-suppress InternalMethod **/
-            $this->_logs[] = $context['query']->jsonSerialize();
-        } else {
-            $this->_logs[] = (string)$context['query'];
-        }
+        $this->_logs[] = $context['query'];
 
         parent::log($level, $message, $context);
     }
