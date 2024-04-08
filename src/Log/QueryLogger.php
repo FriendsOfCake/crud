@@ -30,7 +30,7 @@ class QueryLogger extends CakeQueryLogger
      */
     public function log($level, string|Stringable $message, array $context = []): void
     {
-        $this->_logs[] = (string)$context['query'];
+        $this->_logs[] = $context['query'];
 
         parent::log($level, $message, $context);
     }
