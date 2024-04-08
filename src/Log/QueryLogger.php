@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Crud\Log;
 
-use Cake\Database\Log\LoggedQuery;
 use Cake\Database\Log\QueryLogger as CakeQueryLogger;
 use Stringable;
 
