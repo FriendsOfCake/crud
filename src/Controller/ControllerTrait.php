@@ -83,20 +83,4 @@ trait ControllerTrait
     {
         $this->viewClasses = $map;
     }
-
-    /**
-     * Get the View classes this controller can perform content negotiation with.
-     *
-     * Each view class must implement the `getContentType()` hook method
-     * to participate in negotiation.
-     *
-     * This overrides the Controller::viewClasses() of core.
-     *
-     * @see Cake\Http\ContentTypeNegotiation
-     * @return array<string, class-string<\Cake\View\View>>
-     */
-    public function viewClasses(): array
-    {
-        return $this->viewClasses;
-    }
 }
