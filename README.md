@@ -5,9 +5,7 @@
 
 # Installation
 
-```
-composer require friendsofcake/crud
-```
+https://crud.readthedocs.io/en/latest/installation.html
 
 # Introduction
 
