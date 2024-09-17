@@ -13,6 +13,8 @@ use Exception;
  */
 class SubjectTest extends TestCase
 {
+    protected Subject $Subject;
+
     public function setup(): void
     {
         parent::setup();

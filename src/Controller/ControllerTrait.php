@@ -78,6 +78,7 @@ trait ControllerTrait
      *
      * @param array<string, class-string<\Cake\View\View>> $map View class map.
      * @return void
+     * @deprecated 7.1.0 Use addViewClasses() instead.
      */
     public function setViewClasses(array $map): void
     {

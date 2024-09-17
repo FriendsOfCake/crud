@@ -5,6 +5,7 @@ namespace Crud\Test\TestCase\Action;
 
 use Cake\Controller\Component\FlashComponent;
 use Crud\TestSuite\IntegrationTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Licensed under The MIT License
@@ -42,21 +43,21 @@ class DeleteActionTest extends IntegrationTestCase
     /**
      * Test the normal HTTP flow for HTTP verbs
      *
-     * @dataProvider allHttpMethodProvider
      * @return void
      */
+    #[DataProvider('allHttpMethodProvider')]
     public function testAllRequestMethods($method)
     {
         $this->_eventManager->on(
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
+                $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
                     ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
-                $this->_controller->Flash
+                $component
                     ->expects($this->once())
                     ->method('set')
                     ->with(
@@ -68,6 +69,8 @@ class DeleteActionTest extends IntegrationTestCase
                         ]
                     );
 
+                $this->_controller->components()->set('Flash', $component);
+
                 $this->_subscribeToEvents($this->_controller);
 
                 $blogs = $this->getMockForModel(
@@ -78,7 +81,7 @@ class DeleteActionTest extends IntegrationTestCase
                 $blogs
                     ->expects($this->once())
                     ->method('delete')
-                    ->will($this->returnValue(true));
+                    ->willReturn(true);
 
                 $this->getTableLocator()->set('Blogs', $blogs);
             }
@@ -102,12 +105,12 @@ class DeleteActionTest extends IntegrationTestCase
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
+                $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
                     ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
-                $this->_controller->Flash
+                $component
                     ->expects($this->once())
                     ->method('set')
                     ->with(
@@ -118,6 +121,8 @@ class DeleteActionTest extends IntegrationTestCase
                             'key' => 'flash',
                         ]
                     );
+
+                $this->_controller->components()->set('Flash', $component);
 
                 $this->_subscribeToEvents($this->_controller);
 
@@ -148,21 +153,21 @@ class DeleteActionTest extends IntegrationTestCase
     /**
      * Test the flow when the beforeRedirect event is stopped (no redirection)
      *
-     * @dataProvider allHttpMethodProvider
      * @return void
      */
+    #[DataProvider('allHttpMethodProvider')]
     public function testStopBeforeRedirect()
     {
         $this->_eventManager->on(
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
+                $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
                     ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
-                $this->_controller->Flash
+                $component
                     ->expects($this->once())
                     ->method('set')
                     ->with(
@@ -173,6 +178,8 @@ class DeleteActionTest extends IntegrationTestCase
                             'key' => 'flash',
                         ]
                     );
+
+                $this->_controller->components()->set('Flash', $component);
 
                 $this->_subscribeToEvents($this->_controller);
 
@@ -188,7 +195,7 @@ class DeleteActionTest extends IntegrationTestCase
                 $blogs
                     ->expects($this->once())
                     ->method('delete')
-                    ->will($this->returnValue(true));
+                    ->willReturn(true);
 
                 $this->getTableLocator()->set('Blogs', $blogs);
             }

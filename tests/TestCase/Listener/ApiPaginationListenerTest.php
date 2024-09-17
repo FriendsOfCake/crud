@@ -33,7 +33,7 @@ class ApiPaginationListenerTest extends TestCase
         $Instance
             ->expects($this->once())
             ->method('_checkRequestType')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $result = $Instance->implementedEvents();
         $expected = [
@@ -70,11 +70,11 @@ class ApiPaginationListenerTest extends TestCase
         $Instance
             ->expects($this->once())
             ->method('_action')
-            ->will($this->returnValue($Action));
+            ->willReturn($Action);
         $Instance
             ->expects($this->once())
             ->method('_controller')
-            ->will($this->returnValue($Controller));
+            ->willReturn($Controller);
 
         $Instance->beforeRender(new Event('something'));
 
@@ -110,7 +110,7 @@ class ApiPaginationListenerTest extends TestCase
         $Instance
             ->expects($this->once())
             ->method('_action')
-            ->will($this->returnValue($Action));
+            ->willReturn($Action);
 
         $Instance->beforeRender(new Event('something'));
 
@@ -160,11 +160,11 @@ class ApiPaginationListenerTest extends TestCase
         $Instance
             ->expects($this->any())
             ->method('_controller')
-            ->will($this->returnValue($Controller));
+            ->willReturn($Controller);
         $Instance
             ->expects($this->any())
             ->method('_action')
-            ->will($this->returnValue($Action));
+            ->willReturn($Action);
 
         $Instance->beforeRender(new Event('something'));
 

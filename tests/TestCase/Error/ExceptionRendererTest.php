@@ -39,7 +39,7 @@ class ExceptionRendererTest extends TestCase
             ->expects($this->once())
             ->method('_getController')
             ->with()
-            ->will($this->returnValue($Controller));
+            ->willReturn($Controller);
 
         $Renderer->__construct($Exception);
         $Renderer->render();
@@ -99,7 +99,7 @@ class ExceptionRendererTest extends TestCase
             ->expects($this->once())
             ->method('getLogs')
             ->with()
-            ->will($this->returnValue(['query']));
+            ->willReturn(['query']);
 
         $Controller = $this->getMockBuilder(Controller::class)
             ->onlyMethods(['render'])
@@ -114,7 +114,7 @@ class ExceptionRendererTest extends TestCase
             ->expects($this->once())
             ->method('_getController')
             ->with()
-            ->will($this->returnValue($Controller));
+            ->willReturn($Controller);
 
         $Renderer->__construct($Exception);
         $Renderer->render();
@@ -185,7 +185,7 @@ class ExceptionRendererTest extends TestCase
             ->expects($this->once())
             ->method('_getController')
             ->with()
-            ->will($this->returnValue($Controller));
+            ->willReturn($Controller);
 
         $Renderer->__construct($Exception);
         $Renderer->render();
@@ -246,7 +246,7 @@ class ExceptionRendererTest extends TestCase
             ->expects($this->once())
             ->method('_getController')
             ->with()
-            ->will($this->returnValue($Controller));
+            ->willReturn($Controller);
 
         $Renderer->__construct($Exception);
         $Renderer->render();
@@ -307,7 +307,7 @@ class ExceptionRendererTest extends TestCase
             ->expects($this->once())
             ->method('_getController')
             ->with()
-            ->will($this->returnValue($Controller));
+            ->willReturn($Controller);
 
         $Renderer->__construct($Exception);
         $Renderer->render();
@@ -372,7 +372,7 @@ class ExceptionRendererTest extends TestCase
             ->expects($this->once())
             ->method('_getController')
             ->with()
-            ->will($this->returnValue($Controller));
+            ->willReturn($Controller);
 
         $Renderer->__construct($Exception);
         $Renderer->render();
@@ -414,7 +414,7 @@ class ExceptionRendererTest extends TestCase
             ->expects($this->once())
             ->method('_getController')
             ->with()
-            ->will($this->returnValue($Controller));
+            ->willReturn($Controller);
 
         $Renderer->__construct($Exception);
         $Renderer->render();
@@ -465,7 +465,7 @@ class ExceptionRendererTest extends TestCase
             ->expects($this->once())
             ->method('_getController')
             ->with()
-            ->will($this->returnValue($Controller));
+            ->willReturn($Controller);
 
         $Renderer->__construct($Exception);
         $Renderer->render();

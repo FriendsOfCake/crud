@@ -60,7 +60,7 @@ abstract class BaseObject implements EventListenerInterface
     /**
      * Convenient method for Request::is
      *
-     * @param array|string $method Method(s) to check for
+     * @param list<string>|string $method Method(s) to check for
      * @return bool
      */
     protected function _checkRequestType(array|string $method): bool

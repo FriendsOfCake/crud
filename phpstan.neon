@@ -5,11 +5,7 @@ parameters:
 	level: 6
 	paths:
 		- src
-	checkMissingIterableValueType: false
-	checkGenericClassInNonGenericObjectType: false
 	excludePaths:
 		- */src/TestSuite/*
 	universalObjectCratesClasses:
 		- Crud\Event\Subject
-	bootstrapFiles:
-		- vendor/cakephp/cakephp/src/Core/Exception/CakeException.php

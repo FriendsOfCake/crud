@@ -39,7 +39,7 @@ class RelatedModelsListenerTest extends TestCase
             ->expects($this->once())
             ->method('relatedModels')
             ->with(null, null)
-            ->will($this->returnValue(null));
+            ->willReturn(null);
 
         $result = $listener->models();
         $expected = [];
@@ -65,7 +65,7 @@ class RelatedModelsListenerTest extends TestCase
             ->expects($this->once())
             ->method('relatedModels')
             ->with(null, null)
-            ->will($this->returnValue([]));
+            ->willReturn([]);
 
         $result = $listener->models();
         $expected = [];
@@ -90,7 +90,7 @@ class RelatedModelsListenerTest extends TestCase
             ->expects($this->once())
             ->method('relatedModels')
             ->with(null)
-            ->will($this->returnValue(['posts']));
+            ->willReturn(['posts']);
         $listener
             ->expects($this->once())
             ->method('getAssociatedByName')
@@ -117,7 +117,7 @@ class RelatedModelsListenerTest extends TestCase
             ->expects($this->once())
             ->method('relatedModels')
             ->with(null, null)
-            ->will($this->returnValue(true));
+            ->willReturn(true);
         $listener
             ->expects($this->once())
             ->method('getAssociatedByType')
@@ -160,28 +160,28 @@ class RelatedModelsListenerTest extends TestCase
             ->expects($this->once())
             ->method('_model')
             ->withAnyParameters()
-            ->will($this->returnValue($table));
+            ->willReturn($table);
         $table
             ->expects($this->atLeastOnce())
             ->method('associations')
-            ->will($this->returnValue($associationCollection));
+            ->willReturn($associationCollection);
         $associationCollection
             ->expects($this->once())
             ->method('keys')
-            ->will($this->returnValue(['posts']));
+            ->willReturn(['posts']);
         $associationCollection
             ->expects($this->once())
             ->method('get')
             ->with('posts')
-            ->will($this->returnValue($association));
+            ->willReturn($association);
         $association
             ->expects($this->once())
             ->method('getName')
-            ->will($this->returnValue('Posts'));
+            ->willReturn('Posts');
         $association
             ->expects($this->once())
             ->method('type')
-            ->will($this->returnValue('oneToOne'));
+            ->willReturn('oneToOne');
 
         $expected = ['Posts' => $association];
         $result = $listener->getAssociatedByType(['oneToOne', 'manyToMany', 'manyToOne']);
@@ -223,20 +223,20 @@ class RelatedModelsListenerTest extends TestCase
             ->expects($this->once())
             ->method('_model')
             ->withAnyParameters()
-            ->will($this->returnValue($table));
+            ->willReturn($table);
         $table
             ->expects($this->once())
             ->method('associations')
-            ->will($this->returnValue($associationCollection));
+            ->willReturn($associationCollection);
         $associationCollection
             ->expects($this->once())
             ->method('get')
             ->with('posts')
-            ->will($this->returnValue($association));
+            ->willReturn($association);
         $association
             ->expects($this->once())
             ->method('getName')
-            ->will($this->returnValue('Posts'));
+            ->willReturn('Posts');
 
         $expected = ['Posts' => $association];
         $result = $listener->getAssociatedByName(['posts']);
@@ -263,7 +263,7 @@ class RelatedModelsListenerTest extends TestCase
         $association
             ->expects($this->any())
             ->method('getTarget')
-            ->will($this->returnValue($model));
+            ->willReturn($model);
 
         $listener = $this
             ->getMockBuilder(RelatedModelsListener::class)
@@ -296,12 +296,12 @@ class RelatedModelsListenerTest extends TestCase
         $table
             ->expects($this->any())
             ->method('getSchema')
-            ->will($this->returnValue(new TableSchema('Users')));
+            ->willReturn(new TableSchema('Users'));
 
         $listener
             ->expects($this->once())
             ->method('models')
-            ->will($this->returnValue(['Users' => 'manyToOne']));
+            ->willReturn(['Users' => 'manyToOne']);
 
         $query = new SelectQuery($table);
         $subject = new Subject(['query' => $query]);

@@ -10,6 +10,7 @@ use Crud\Action\BaseAction;
 use Crud\Event\Subject;
 use Crud\Listener\RedirectListener;
 use Crud\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Licensed under The MIT License
@@ -158,7 +159,7 @@ class RedirectListenerTest extends TestCase
         $subject = new Subject();
         $request = (new ServerRequest())->withParam('action', 'index');
 
-        $listener->expects($this->any())->method('_request')->will($this->returnValue($request));
+        $listener->expects($this->any())->method('_request')->willReturn($request);
 
         $reader = $listener->reader('request.key');
         $result = $reader($subject, 'action');
@@ -186,7 +187,7 @@ class RedirectListenerTest extends TestCase
         $subject = new Subject();
         $request = (new ServerRequest())->withData('hello', 'world');
 
-        $listener->expects($this->any())->method('_request')->will($this->returnValue($request));
+        $listener->expects($this->any())->method('_request')->willReturn($request);
 
         $reader = $listener->reader('request.data');
         $result = $reader($subject, 'hello');
@@ -214,7 +215,7 @@ class RedirectListenerTest extends TestCase
         $subject = new Subject();
         $request = (new ServerRequest())->withQueryParams(['hello' => 'world']);
 
-        $listener->expects($this->any())->method('_request')->will($this->returnValue($request));
+        $listener->expects($this->any())->method('_request')->willReturn($request);
 
         $reader = $listener->reader('request.query');
         $result = $reader($subject, 'hello');
@@ -249,7 +250,7 @@ class RedirectListenerTest extends TestCase
             ->expects($this->once())
             ->method('get')
             ->with('slug')
-            ->will($this->returnValue('ok-slug-is-ok'));
+            ->willReturn('ok-slug-is-ok');
 
         $reader = $listener->reader('entity.field');
         $result = $reader($subject, 'slug');
@@ -304,7 +305,7 @@ class RedirectListenerTest extends TestCase
         $listener
             ->expects($this->once())
             ->method('_action')
-            ->will($this->returnValue($action));
+            ->willReturn($action);
         $listener
             ->expects($this->never())
             ->method('_getKey');
@@ -340,12 +341,12 @@ class RedirectListenerTest extends TestCase
         $listener
             ->expects($this->once())
             ->method('_action')
-            ->will($this->returnValue($action));
+            ->willReturn($action);
         $listener
             ->expects($this->once())
             ->method('_getKey')
             ->with($subject, 'request.key', 'hello')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
         $listener
             ->expects($this->never())
             ->method('_getUrl');
@@ -383,17 +384,17 @@ class RedirectListenerTest extends TestCase
         $listener
             ->expects($this->once())
             ->method('_action')
-            ->will($this->returnValue($action));
+            ->willReturn($action);
         $listener
             ->expects($this->once())
             ->method('_getKey')
             ->with($subject, 'request.key', 'hello')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
         $listener
             ->expects($this->once())
             ->method('_getUrl')
             ->with($subject, ['action' => 'index'])
-            ->will($this->returnValue(['action' => 'index']));
+            ->willReturn(['action' => 'index']);
 
         $listener->beforeRedirect(new Event('Crud.beforeRedirect', $subject));
 
@@ -454,9 +455,9 @@ class RedirectListenerTest extends TestCase
     /**
      * Test _getUrl
      *
-     * @dataProvider dataProviderGetUrl
      * @return void
      */
+    #[DataProvider('dataProviderGetUrl')]
     public function testGetUrl(Subject $subject, $url, $expected)
     {
         $listener = $this
@@ -475,7 +476,7 @@ class RedirectListenerTest extends TestCase
             ->expects($this->any())
             ->method('_request')
             ->with()
-            ->will($this->returnValue($request));
+            ->willReturn($request);
         $listener->setup();
 
         $this->setReflectionClassInstance($listener);
