@@ -51,7 +51,7 @@ class ApiQueryLogListenerTest extends TestCase
             ->expects($this->once())
             ->method('_checkRequestType')
             ->with('api')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $result = $Instance->implementedEvents();
         $expected = [
@@ -78,7 +78,7 @@ class ApiQueryLogListenerTest extends TestCase
             ->expects($this->once())
             ->method('_checkRequestType')
             ->with('api')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $result = $Instance->implementedEvents();
         $expected = [];
@@ -147,15 +147,15 @@ class ApiQueryLogListenerTest extends TestCase
         $Instance
             ->expects($this->once())
             ->method('_action')
-            ->will($this->returnValue($Action));
+            ->willReturn($Action);
         $Instance
             ->expects($this->once())
             ->method('_controller')
-            ->will($this->returnValue($Controller));
+            ->willReturn($Controller);
         $Instance
             ->expects($this->once())
             ->method('_getQueryLogs')
-            ->will($this->returnValue([]));
+            ->willReturn([]);
 
         $Instance->beforeRender(new Event('something'));
     }
@@ -192,12 +192,12 @@ class ApiQueryLogListenerTest extends TestCase
         $Instance
             ->expects($this->once())
             ->method('_getSources')
-            ->will($this->returnValue(['default']));
+            ->willReturn(['default']);
         $Instance
             ->expects($this->any())
             ->method('_getSource')
             ->with('default')
-            ->will($this->returnValue($DefaultSource));
+            ->willReturn($DefaultSource);
 
         $Instance->setupLogging(new Event('something'));
     }
@@ -246,7 +246,7 @@ class ApiQueryLogListenerTest extends TestCase
             ->expects($this->exactly(2))
             ->method('_getSource')
             ->with(...self::withConsecutive(['default'], ['test']))
-            ->willReturnOnConsecutiveCalls($this->returnValue($DefaultSource), $this->returnValue($TestSource));
+            ->willReturnOnConsecutiveCalls($DefaultSource, $TestSource);
 
         $Instance->setConfig('connections', ['default', 'test']);
         $Instance->setupLogging(new Event('something'));

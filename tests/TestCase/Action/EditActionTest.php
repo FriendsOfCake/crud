@@ -106,12 +106,12 @@ class EditActionTest extends IntegrationTestCase
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
+                $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
                     ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
-                $this->_controller->Flash
+                $component
                     ->expects($this->once())
                     ->method('set')
                     ->with(
@@ -122,6 +122,8 @@ class EditActionTest extends IntegrationTestCase
                             'key' => 'flash',
                         ]
                     );
+
+                $this->_controller->components()->set('Flash', $component);
 
                 $this->_subscribeToEvents($this->_controller);
             }
@@ -149,12 +151,12 @@ class EditActionTest extends IntegrationTestCase
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
+                $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
                     ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
-                $this->_controller->Flash
+                $component
                     ->expects($this->once())
                     ->method('set')
                     ->with(
@@ -166,6 +168,8 @@ class EditActionTest extends IntegrationTestCase
                         ]
                     );
 
+                $this->_controller->components()->set('Flash', $component);
+
                 $this->_subscribeToEvents($this->_controller);
 
                 $blogs = $this->getMockForModel(
@@ -176,7 +180,7 @@ class EditActionTest extends IntegrationTestCase
                 $blogs
                     ->expects($this->once())
                     ->method('save')
-                    ->will($this->returnValue(false));
+                    ->willReturn(false);
 
                 $this->getTableLocator()->set('Blogs', $blogs);
             }
@@ -203,12 +207,12 @@ class EditActionTest extends IntegrationTestCase
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
+                $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
                     ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
-                $this->_controller->Flash
+                $component
                     ->expects($this->once())
                     ->method('set')
                     ->with(
@@ -219,6 +223,8 @@ class EditActionTest extends IntegrationTestCase
                             'key' => 'flash',
                         ]
                     );
+
+                $this->_controller->components()->set('Flash', $component);
 
                 $this->_subscribeToEvents($this->_controller);
 
@@ -267,12 +273,12 @@ class EditActionTest extends IntegrationTestCase
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
+                $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
                     ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
-                $this->_controller->Flash
+                $component
                     ->expects($this->once())
                     ->method('set')
                     ->with(
@@ -283,6 +289,8 @@ class EditActionTest extends IntegrationTestCase
                             'key' => 'flash',
                         ]
                     );
+
+                $this->_controller->components()->set('Flash', $component);
 
                 $this->_subscribeToEvents($this->_controller);
             }

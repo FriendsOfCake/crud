@@ -77,7 +77,7 @@ class SearchListenerTest extends TestCase
             ->getMock();
         $behaviorRegistryMock->expects($this->once())
             ->method('has')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $tableMock = $this->getMockBuilder(Table::class)
             ->setMockClassName('SearchesTable')
@@ -85,7 +85,7 @@ class SearchListenerTest extends TestCase
             ->getMock();
         $tableMock->expects($this->any())
             ->method('behaviors')
-            ->will($this->returnValue($behaviorRegistryMock));
+            ->willReturn($behaviorRegistryMock);
 
         $this->getTableLocator()->set('Search', $tableMock);
 
@@ -135,7 +135,7 @@ class SearchListenerTest extends TestCase
             ->getMock();
         $behaviorRegistryMock->expects($this->once())
             ->method('has')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $tableMock = $this->getMockBuilder(Table::class)
             ->setMockClassName('SearchTables')
@@ -143,7 +143,7 @@ class SearchListenerTest extends TestCase
             ->getMock();
         $tableMock->expects($this->any())
             ->method('behaviors')
-            ->will($this->returnValue($behaviorRegistryMock));
+            ->willReturn($behaviorRegistryMock);
 
         $this->getTableLocator()->set('Search', $tableMock);
 
@@ -209,7 +209,7 @@ class SearchListenerTest extends TestCase
         $queryMock->expects($this->once())
             ->method('find')
             ->with('search', $params)
-            ->will($this->returnValue($queryMock));
+            ->willReturn($queryMock);
 
         $subject = new Subject();
         $subject->query = $queryMock;

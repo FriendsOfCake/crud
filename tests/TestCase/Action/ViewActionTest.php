@@ -36,9 +36,9 @@ class ViewActionTest extends IntegrationTestCase
     /**
      * Test the normal HTTP flow for all HTTP verbs
      *
-     * @dataProvider allHttpMethodProvider
      * @return void
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('allHttpMethodProvider')]
     public function testGet($method)
     {
         $this->_eventManager->on(

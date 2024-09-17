@@ -336,7 +336,7 @@ class ApiListener extends BaseListener
      */
     public function injectViewClasses(): void
     {
-        $this->_controller()->setViewClasses($this->getConfig('viewClasses'));
+        $this->_controller()->addViewClasses($this->getConfig('viewClasses'));
     }
 
     /**

@@ -87,12 +87,12 @@ class AddActionTest extends IntegrationTestCase
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
+                $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
                     ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
-                $this->_controller->Flash
+                $component
                     ->expects($this->once())
                     ->method('set')
                     ->with(
@@ -103,6 +103,8 @@ class AddActionTest extends IntegrationTestCase
                             'key' => 'flash',
                         ]
                     );
+
+                $this->_controller->components()->set('Flash', $component);
 
                 $this->_subscribeToEvents($this->_controller);
             }
@@ -132,12 +134,12 @@ class AddActionTest extends IntegrationTestCase
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
+                $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
                     ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
-                $this->_controller->Flash
+                $component
                     ->expects($this->once())
                     ->method('set')
                     ->with(
@@ -148,6 +150,8 @@ class AddActionTest extends IntegrationTestCase
                             'key' => 'flash',
                         ]
                     );
+
+                $this->_controller->components()->set('Flash', $component);
 
                 $this->_subscribeToEvents($this->_controller);
             }
@@ -177,12 +181,12 @@ class AddActionTest extends IntegrationTestCase
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
+                $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
                     ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
-                $this->_controller->Flash
+                $component
                     ->expects($this->once())
                     ->method('set')
                     ->with(
@@ -193,6 +197,8 @@ class AddActionTest extends IntegrationTestCase
                             'key' => 'flash',
                         ]
                     );
+
+                $this->_controller->components()->set('Flash', $component);
 
                 $this->_subscribeToEvents($this->_controller);
             }
@@ -221,12 +227,12 @@ class AddActionTest extends IntegrationTestCase
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
+                $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
                     ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
-                $this->_controller->Flash
+                $component
                     ->expects($this->once())
                     ->method('set')
                     ->with(
@@ -238,6 +244,8 @@ class AddActionTest extends IntegrationTestCase
                         ]
                     );
 
+                $this->_controller->components()->set('Flash', $component);
+
                 $this->_subscribeToEvents($this->_controller);
 
                 $blogs = $this->getMockForModel(
@@ -248,7 +256,7 @@ class AddActionTest extends IntegrationTestCase
                 $blogs
                     ->expects($this->once())
                     ->method('save')
-                    ->will($this->returnValue(false));
+                    ->willReturn(false);
 
                 $this->getTableLocator()->set('Blogs', $blogs);
             }
@@ -275,12 +283,12 @@ class AddActionTest extends IntegrationTestCase
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
+                $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
                     ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
-                $this->_controller->Flash
+                $component
                     ->expects($this->once())
                     ->method('set')
                     ->with(
@@ -291,6 +299,8 @@ class AddActionTest extends IntegrationTestCase
                             'key' => 'flash',
                         ]
                     );
+
+                $this->_controller->components()->set('Flash', $component);
 
                 $this->_subscribeToEvents($this->_controller);
 
@@ -344,10 +354,10 @@ class AddActionTest extends IntegrationTestCase
     /**
      * Test HTTP & DELETE verbs using API Listener
      *
-     * @dataProvider apiGetHttpMethodProvider
      * @param  string $method
      * @return void
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('apiGetHttpMethodProvider')]
     public function testApiGet($method)
     {
         Router::createRouteBuilder('/')
@@ -376,24 +386,26 @@ class AddActionTest extends IntegrationTestCase
     /**
      * Test POST & PUT verbs using API Listener
      *
-     * @dataProvider apiUpdateHttpMethodProvider
      * @param  string $method
      * @return void
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('apiUpdateHttpMethodProvider')]
     public function testApiCreate($method)
     {
         $this->_eventManager->on(
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
+                $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
                     ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
-                $this->_controller->Flash
+                $component
                     ->expects($this->never())
                     ->method('set');
+
+                $this->_controller->components()->set('Flash', $component);
 
                 $this->_subscribeToEvents($this->_controller);
 
@@ -417,10 +429,10 @@ class AddActionTest extends IntegrationTestCase
      * Test POST & PUT verbs using API Listener
      * with data validation error
      *
-     * @dataProvider apiUpdateHttpMethodProvider
      * @param  string $method
      * @return void
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('apiUpdateHttpMethodProvider')]
     public function testApiCreateError($method)
     {
         $this->_eventManager->on(
@@ -431,14 +443,16 @@ class AddActionTest extends IntegrationTestCase
                     return;
                 }
 
-                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
+                $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
                     ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
-                $this->_controller->Flash
+                $component
                     ->expects($this->never())
                     ->method('set');
+
+                $this->_controller->components()->set('Flash', $component);
 
                 $this->_subscribeToEvents($this->_controller);
 
@@ -469,10 +483,10 @@ class AddActionTest extends IntegrationTestCase
      * Test POST & PUT verbs using API Listener
      * with data validation errors
      *
-     * @dataProvider apiUpdateHttpMethodProvider
      * @param  string $method
      * @return void
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('apiUpdateHttpMethodProvider')]
     public function testApiCreateErrors($method)
     {
         $this->_eventManager->on(
@@ -483,14 +497,16 @@ class AddActionTest extends IntegrationTestCase
                     return;
                 }
 
-                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
+                $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
                     ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
-                $this->_controller->Flash
+                $component
                     ->expects($this->never())
                     ->method('set');
+
+                $this->_controller->components()->set('Flash', $component);
 
                 $this->_subscribeToEvents($this->_controller);
 
@@ -529,12 +545,12 @@ class AddActionTest extends IntegrationTestCase
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
+                $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
                     ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
-                $this->_controller->Flash
+                $component
                     ->expects($this->once())
                     ->method('set')
                     ->with(
@@ -546,17 +562,21 @@ class AddActionTest extends IntegrationTestCase
                         ]
                     );
 
+                $this->_controller->components()->set('Flash', $component);
+
                 $this->_subscribeToEvents($this->_controller);
 
                 $this->_controller->Crud->on('beforeSave', function ($event) {
                     $event->stopPropagation();
                 });
 
-                $this->_controller->Blogs = $this->getMockForModel(
+                $model = $this->getMockForModel(
                     $this->tableClass,
                     [],
                     ['alias' => 'Blogs', 'table' => 'blogs']
                 );
+
+                $this->getTableLocator()->set('Blogs', $model);
             }
         );
 
@@ -579,12 +599,12 @@ class AddActionTest extends IntegrationTestCase
             'Controller.initialize',
             ['priority' => 11],
             function ($event) {
-                $this->_controller->Flash = $this->getMockBuilder(FlashComponent::class)
+                $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
                     ->setConstructorArgs([$this->_controller->components()])
                     ->getMock();
 
-                $this->_controller->Flash
+                $component
                     ->expects($this->once())
                     ->method('set')
                     ->with(
@@ -596,6 +616,8 @@ class AddActionTest extends IntegrationTestCase
                         ]
                     );
 
+                $this->_controller->components()->set('Flash', $component);
+
                 $this->_subscribeToEvents($this->_controller);
 
                 $this->_controller->Crud->on('beforeSave', function ($event) {
@@ -603,11 +625,13 @@ class AddActionTest extends IntegrationTestCase
                     $event->getSubject()->success = true; // assert this
                 });
 
-                $this->_controller->Blogs = $this->getMockForModel(
+                $model = $this->getMockForModel(
                     $this->tableClass,
                     [],
                     ['alias' => 'Blogs', 'table' => 'blogs']
                 );
+
+                $this->getTableLocator()->set('Blogs', $model);
             }
         );
 

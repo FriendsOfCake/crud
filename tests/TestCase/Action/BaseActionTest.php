@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Crud\TestCase\Action;
 
 use Cake\Controller\Component\FlashComponent;
+use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
@@ -15,6 +16,8 @@ use Cake\Http\ServerRequest;
 use Crud\Action\BaseAction;
 use Crud\Controller\Component\CrudComponent;
 use Crud\Event\Subject;
+use Crud\Test\App\Action\TestAction;
+use Crud\Test\App\Action\TestGetAction;
 use Crud\TestSuite\TestCase;
 use Exception;
 
@@ -25,6 +28,11 @@ use Exception;
 class BaseActionTest extends TestCase
 {
     protected ServerRequest $Request;
+    protected Controller $Controller;
+    protected CrudComponent $Crud;
+    protected ComponentRegistry $Registry;
+    protected $actionClassName;
+    protected BaseAction $ActionClass;
 
     public function setUp(): void
     {
@@ -41,16 +49,13 @@ class BaseActionTest extends TestCase
             ])
             ->getMock();
         $this->Registry = $this->Controller->components();
-        $this->Crud = $this->getMockBuilder(CrudComponent::class)
-            ->setConstructorArgs([$this->Registry])
-            ->addMethods(['foobar'])
-            ->getMock();
-        $this->Controller->Crud = $this->Crud;
+        $this->Crud = new CrudComponent($this->Registry);
+        $this->Controller->components()->set('Crud', $this->Crud);
 
         $this->getTableLocator()->get('CrudExamples')->setAlias('MyModel');
 
-        $this->actionClassName = $this->getMockBuilder(BaseAction::class)
-            ->addMethods(['_handle'])
+        $this->actionClassName = $this->getMockBuilder(TestAction::class)
+            ->onlyMethods(['_handle'])
             ->disableOriginalConstructor()
             ->getMock();
         $this->ActionClass = new $this->actionClassName($this->Controller);
@@ -148,22 +153,21 @@ class BaseActionTest extends TestCase
         $Request
             ->expects($this->once())
             ->method('getMethod')
-            ->will($this->returnValue('GET'));
+            ->willReturn('GET');
 
-        $Action = $this->getMockBuilder(BaseAction::class)
-            ->onlyMethods(['_request'])
-            ->addMethods(['_get'])
+        $Action = $this->getMockBuilder(TestAction::class)
+            ->onlyMethods(['_request', '_handle'])
             ->setConstructorArgs([$this->Controller])
             ->getMock();
         $Action
             ->expects($this->any())
             ->method('_request')
             ->with()
-            ->will($this->returnValue($Request));
+            ->willReturn($Request);
         $Action
             ->expects($this->once())
-            ->method('_get', '_handle was never called on a enabled action')
-            ->will($this->returnValue(true));
+            ->method('_handle')
+            ->willReturn(true);
 
         $this->_configureAction($Action);
         $Action->setConfig('action', 'add');
@@ -193,7 +197,7 @@ class BaseActionTest extends TestCase
             ->getMock();
         $Action
             ->expects($this->once())
-            ->method('setConfig', 'enabled was not changed to false by config()')
+            ->method('setConfig')
             ->with('enabled', false);
 
         $Action->disable();
@@ -215,7 +219,7 @@ class BaseActionTest extends TestCase
             ->getMock();
         $Action
             ->expects($this->once())
-            ->method('setConfig', 'enabled was not changed to false by config()')
+            ->method('setConfig')
             ->with('enabled', true);
 
         $Action->enable();
@@ -242,15 +246,17 @@ class BaseActionTest extends TestCase
 
         $Subject = new Subject();
 
-        $this->Controller->Crud = $this->getMockBuilder(CrudComponent::class)
+        $component = $this->getMockBuilder(CrudComponent::class)
             ->onlyMethods(['trigger'])
             ->setConstructorArgs([$this->Registry])
             ->getMock();
-        $this->Controller->Crud
+        $component
             ->expects($this->once())
             ->method('trigger')
             ->with('setFlash', $Subject)
-            ->will($this->returnValue(new Event('Crud.setFlash')));
+            ->willReturn(new Event('Crud.setFlash'));
+
+        $this->Controller->components()->set('Crud', $component);
 
         $flash = $this->getMockBuilder(FlashComponent::class)
             ->onlyMethods(['set'])
@@ -514,9 +520,8 @@ class BaseActionTest extends TestCase
      */
     public function testHandle()
     {
-        $Action = $this->getMockBuilder(BaseAction::class)
-            ->onlyMethods(['_request', 'getConfig'])
-            ->addMethods(['_get'])
+        $Action = $this->getMockBuilder(TestGetAction::class)
+            ->onlyMethods(['_request', 'getConfig', '_get'])
             ->setConstructorArgs([$this->Controller])
             ->getMock();
 
@@ -526,17 +531,17 @@ class BaseActionTest extends TestCase
         $Request
             ->expects($this->once())
             ->method('getMethod')
-            ->will($this->returnValue('GET'));
+            ->willReturn('GET');
 
         $Action
             ->expects($this->once())
             ->method('getConfig')
             ->with('enabled')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
         $Action
             ->expects($this->once())
             ->method('_request')
-            ->will($this->returnValue($Request));
+            ->willReturn($Request);
         $Action
             ->expects($this->once())
             ->method('_get');
@@ -554,9 +559,8 @@ class BaseActionTest extends TestCase
      */
     public function testHandleDisabled()
     {
-        $Action = $this->getMockBuilder(BaseAction::class)
-            ->onlyMethods(['getConfig'])
-            ->addMethods(['_handle', '_get'])
+        $Action = $this->getMockBuilder(TestAction::class)
+            ->onlyMethods(['getConfig', '_handle'])
             ->setConstructorArgs([$this->Controller])
             ->getMock();
 
@@ -564,7 +568,7 @@ class BaseActionTest extends TestCase
             ->expects($this->once())
             ->method('getConfig')
             ->with('enabled')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
         $Action
             ->expects($this->never())
             ->method('_handle');
@@ -582,9 +586,8 @@ class BaseActionTest extends TestCase
      */
     public function testGenericHandle()
     {
-        $Action = $this->getMockBuilder(BaseAction::class)
-            ->onlyMethods(['_request', 'getConfig'])
-            ->addMethods(['_handle'])
+        $Action = $this->getMockBuilder(TestAction::class)
+            ->onlyMethods(['_request', 'getConfig', '_handle'])
             ->setConstructorArgs([$this->Controller])
             ->getMock();
 
@@ -594,17 +597,17 @@ class BaseActionTest extends TestCase
         $Request
             ->expects($this->once())
             ->method('getMethod')
-            ->will($this->returnValue('GET'));
+            ->willReturn('GET');
 
         $Action
             ->expects($this->once())
             ->method('getConfig')
             ->with('enabled')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
         $Action
             ->expects($this->once())
             ->method('_request')
-            ->will($this->returnValue($Request));
+            ->willReturn($Request);
         $Action
             ->expects($this->once())
             ->method('_handle');
@@ -635,17 +638,17 @@ class BaseActionTest extends TestCase
         $Request
             ->expects($this->once())
             ->method('getMethod')
-            ->will($this->returnValue('GET'));
+            ->willReturn('GET');
 
         $Action
             ->expects($this->once())
             ->method('getConfig')
             ->with('enabled')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
         $Action
             ->expects($this->once())
             ->method('_request')
-            ->will($this->returnValue($Request));
+            ->willReturn($Request);
 
         $Action->handle();
     }

@@ -59,7 +59,7 @@ class CrudComponentTest extends TestCase
             ->getMock()
             ->withParam('action', 'index');
 
-        $this->request->expects($this->any())->method('is')->will($this->returnValue(true));
+        $this->request->expects($this->any())->method('is')->willReturn(true);
 
         $this->controller = $this->getMockBuilder(CrudExamplesController::class)
             ->onlyMethods(['redirect', 'render'])
@@ -80,7 +80,7 @@ class CrudComponentTest extends TestCase
 
         $this->Crud = new TestCrudComponent($this->Registry, $config);
         $this->Crud->beforeFilter(new Event('Controller.beforeFilter'));
-        $this->controller->Crud = $this->Crud;
+        $this->controller->components()->set('Crud', $this->Crud);
     }
 
     /**
@@ -237,7 +237,7 @@ class CrudComponentTest extends TestCase
         $this->request
             ->expects($this->once())
             ->method('getMethod')
-            ->will($this->returnValue('GET'));
+            ->willReturn('GET');
 
         $this->controller
             ->expects($this->once())
@@ -285,7 +285,7 @@ class CrudComponentTest extends TestCase
 
         $this->Crud = new TestCrudComponent($this->Registry, $config);
         $this->Crud->beforeFilter(new Event('Controller.beforeFilter'));
-        $this->controller->Crud = $this->Crud;
+        $this->controller->components()->set('Crud', $this->Crud);
 
         $this->Crud->beforeFilter(new Event('Controller.beforeFilter'));
         $result = $this->Crud->isActionMapped();
@@ -364,12 +364,12 @@ class CrudComponentTest extends TestCase
         $this->request
             ->expects($this->once())
             ->method('getMethod')
-            ->will($this->returnValue('GET'));
+            ->willReturn('GET');
 
         $this->request
             ->expects($this->once())
             ->method('getMethod')
-            ->will($this->returnValue('GET'));
+            ->willReturn('GET');
 
         $this->controller
             ->expects($this->once())
@@ -392,7 +392,7 @@ class CrudComponentTest extends TestCase
         $this->request
             ->expects($this->once())
             ->method('getMethod')
-            ->will($this->returnValue('GET'));
+            ->willReturn('GET');
 
         $this->controller
             ->expects($this->once())
@@ -444,7 +444,7 @@ class CrudComponentTest extends TestCase
         $request
             ->expects($this->once())
             ->method('getMethod')
-            ->will($this->returnValue('GET'));
+            ->willReturn('GET');
 
         $this->controller->setRequest($request);
 
@@ -873,7 +873,7 @@ class CrudComponentTest extends TestCase
     {
         $this->Crud = new CrudComponent($this->Registry, ['actions' => ['Crud.Index']]);
         $this->Crud->beforeFilter(new Event('Controller.beforeFilter'));
-        $this->controller->Crud = $this->Crud;
+        $this->controller->components()->set('Crud', $this->Crud);
         $this->controller->getTableLocator()->set('MyModel', new Table([
             'table' => 'posts',
             'alias' => 'MyModel',

@@ -46,7 +46,7 @@ class ApiListenerTest extends TestCase
             ->expects($this->once())
             ->method('_checkRequestType')
             ->with('api')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $expected = [
             'Crud.beforeHandle' => ['callable' => [$listener, 'beforeHandle'], 'priority' => 10],
@@ -78,7 +78,7 @@ class ApiListenerTest extends TestCase
             ->expects($this->once())
             ->method('_checkRequestType')
             ->with('api')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $expected = [];
         $result = $listener->implementedEvents();
@@ -138,17 +138,17 @@ class ApiListenerTest extends TestCase
             ->expects($this->once())
             ->method('_action')
             ->with()
-            ->will($this->returnValue($action));
+            ->willReturn($action);
         $action
             ->expects($this->once())
             ->method('getConfig')
             ->with('api.success')
-            ->will($this->returnValue(['code' => 200]));
+            ->willReturn(['code' => 200]);
         $listener
             ->expects($this->once())
             ->method('render')
             ->with($subject)
-            ->will($this->returnValue($response));
+            ->willReturn($response);
         $response
             ->expects($this->once())
             ->method('withStatus')
@@ -190,12 +190,12 @@ class ApiListenerTest extends TestCase
             ->expects($this->once())
             ->method('_action')
             ->with()
-            ->will($this->returnValue($action));
+            ->willReturn($action);
         $listener
             ->expects($this->once())
             ->method('render')
             ->with($subject)
-            ->will($this->returnValue($response));
+            ->willReturn($response);
         $response
             ->expects($this->once())
             ->method('withStatus')
@@ -239,17 +239,17 @@ class ApiListenerTest extends TestCase
             ->expects($this->once())
             ->method('_action')
             ->with()
-            ->will($this->returnValue($action));
+            ->willReturn($action);
         $action
             ->expects($this->once())
             ->method('getConfig')
             ->with('api.success')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
         $listener
             ->expects($this->once())
             ->method('render')
             ->with($subject)
-            ->will($this->returnValue($response));
+            ->willReturn($response);
         $response
             ->expects($this->never())
             ->method('withStatus');
@@ -285,12 +285,12 @@ class ApiListenerTest extends TestCase
             ->expects($this->once())
             ->method('_action')
             ->with()
-            ->will($this->returnValue($action));
+            ->willReturn($action);
         $action
             ->expects($this->once())
             ->method('getConfig')
             ->with('api.success')
-            ->will($this->returnValue(['exception' => ['SomethingExceptional']]));
+            ->willReturn(['exception' => ['SomethingExceptional']]);
         $listener
             ->expects($this->once())
             ->method('_exceptionResponse')
@@ -405,7 +405,6 @@ class ApiListenerTest extends TestCase
     /**
      * Test _exceptionResponse
      *
-     * @dataProvider dataExceptionResponse
      * @param array $apiConfig
      * @param string $exceptionClass
      * @param string $exceptionMessage
@@ -413,6 +412,7 @@ class ApiListenerTest extends TestCase
      * @param array $validationErrors
      * @return void
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataExceptionResponse')]
     public function testExceptionResponse(
         $apiConfig,
         $exceptionClass,
@@ -438,7 +438,7 @@ class ApiListenerTest extends TestCase
             $event->getSubject()->entity
                 ->expects($this->any())
                 ->method('getErrors')
-                ->will($this->returnValue($validationErrors));
+                ->willReturn($validationErrors);
         }
 
         $this->expectException($exceptionClass, $exceptionMessage, $exceptionCode);
@@ -475,15 +475,15 @@ class ApiListenerTest extends TestCase
         $listener
             ->expects($this->once())
             ->method('_controller')
-            ->will($this->returnValue($controller));
+            ->willReturn($controller);
         $listener
             ->expects($this->once())
             ->method('_action')
-            ->will($this->returnValue($action));
+            ->willReturn($action);
         $action
             ->expects($this->once())
             ->method('viewVar')
-            ->will($this->returnValue('items'));
+            ->willReturn('items');
 
         $this->setReflectionClassInstance($listener);
         $this->callProtectedMethod('_ensureSerialize', [], $listener);
@@ -512,9 +512,9 @@ class ApiListenerTest extends TestCase
     /**
      * Test SerializeTrait
      *
-     * @dataProvider dataSerializeTraitActions
      * @return void
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataSerializeTraitActions')]
     public function testEnsureSerializeWithSerializeTrait($action)
     {
         $listener = $this
@@ -538,11 +538,11 @@ class ApiListenerTest extends TestCase
         $listener
             ->expects($this->once())
             ->method('_controller')
-            ->will($this->returnValue($controller));
+            ->willReturn($controller);
         $listener
             ->expects($this->once())
             ->method('_action')
-            ->will($this->returnValue($action));
+            ->willReturn($action);
         $action
             ->expects($this->once())
             ->method('setConfig')
@@ -550,12 +550,12 @@ class ApiListenerTest extends TestCase
         $action
             ->expects($this->once())
             ->method('viewVar')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
         $action
             ->expects($this->once())
             ->method('getConfig')
             ->with('serialize')
-            ->will($this->returnValue(['something']));
+            ->willReturn(['something']);
 
         $this->setReflectionClassInstance($action);
         $this->callProtectedMethod('serialize', [['something']], $action);
@@ -599,7 +599,7 @@ class ApiListenerTest extends TestCase
         $listener
             ->expects($this->once())
             ->method('_controller')
-            ->will($this->returnValue($controller));
+            ->willReturn($controller);
         $listener
             ->expects($this->never())
             ->method('_action');
@@ -647,15 +647,15 @@ class ApiListenerTest extends TestCase
         $listener
             ->expects($this->once())
             ->method('_controller')
-            ->will($this->returnValue($controller));
+            ->willReturn($controller);
         $listener
             ->expects($this->once())
             ->method('_action')
-            ->will($this->returnValue($action));
+            ->willReturn($action);
         $action
             ->expects($this->once())
             ->method('viewVar')
-            ->will($this->returnValue('helloWorld'));
+            ->willReturn('helloWorld');
 
         $this->setReflectionClassInstance($listener);
         $this->callProtectedMethod('_ensureSerialize', [], $listener);
@@ -694,21 +694,21 @@ class ApiListenerTest extends TestCase
         $listener
             ->expects($this->once())
             ->method('_controller')
-            ->will($this->returnValue($controller));
+            ->willReturn($controller);
         $listener
             ->expects($this->once())
             ->method('_action')
-            ->will($this->returnValue($action));
+            ->willReturn($action);
         $controller
             ->expects($this->any())
             ->method('getName')
-            ->will($this->returnValue(''));
+            ->willReturn('');
         $action->expects($this->any())
             ->method('scope')
-            ->will($this->returnValue('table'));
+            ->willReturn('table');
         $action->expects($this->any())
             ->method('_controller')
-            ->will($this->returnValue($controller));
+            ->willReturn($controller);
 
         $this->setReflectionClassInstance($listener);
         $this->callProtectedMethod('_ensureSerialize', [], $listener);
@@ -743,7 +743,7 @@ class ApiListenerTest extends TestCase
         $listener
             ->expects($this->once())
             ->method('_controller')
-            ->will($this->returnValue($controller));
+            ->willReturn($controller);
         $controller
             ->expects($this->once())
             ->method('set')
@@ -785,16 +785,16 @@ class ApiListenerTest extends TestCase
         $listener
             ->expects($this->once())
             ->method('_controller')
-            ->will($this->returnValue($controller));
+            ->willReturn($controller);
         $listener
             ->expects($this->once())
             ->method('_action')
-            ->will($this->returnValue($action));
+            ->willReturn($action);
         $action
             ->expects($this->once())
             ->method('getConfig')
             ->with('api.success')
-            ->will($this->returnValue($config));
+            ->willReturn($config);
         $controller
             ->expects($this->once())
             ->method('set')
@@ -841,16 +841,16 @@ class ApiListenerTest extends TestCase
         $listener
             ->expects($this->once())
             ->method('_controller')
-            ->will($this->returnValue($controller));
+            ->willReturn($controller);
         $listener
             ->expects($this->once())
             ->method('_action')
-            ->will($this->returnValue($action));
+            ->willReturn($action);
         $action
             ->expects($this->once())
             ->method('getConfig')
             ->with('api.success')
-            ->will($this->returnValue($config));
+            ->willReturn($config);
         $controller
             ->expects($this->once())
             ->method('set')
@@ -892,16 +892,16 @@ class ApiListenerTest extends TestCase
         $listener
             ->expects($this->once())
             ->method('_controller')
-            ->will($this->returnValue($controller));
+            ->willReturn($controller);
         $listener
             ->expects($this->once())
             ->method('_action')
-            ->will($this->returnValue($action));
+            ->willReturn($action);
         $action
             ->expects($this->once())
             ->method('getConfig')
             ->with('api.success')
-            ->will($this->returnValue($config));
+            ->willReturn($config);
         $controller
             ->expects($this->once())
             ->method('set')
@@ -943,16 +943,16 @@ class ApiListenerTest extends TestCase
         $listener
             ->expects($this->once())
             ->method('_controller')
-            ->will($this->returnValue($controller));
+            ->willReturn($controller);
         $listener
             ->expects($this->once())
             ->method('_action')
-            ->will($this->returnValue($action));
+            ->willReturn($action);
         $action
             ->expects($this->once())
             ->method('getConfig')
             ->with('api.error')
-            ->will($this->returnValue($config));
+            ->willReturn($config);
         $controller
             ->expects($this->once())
             ->method('set')
@@ -988,7 +988,7 @@ class ApiListenerTest extends TestCase
         $listener
             ->expects($this->once())
             ->method('_controller')
-            ->will($this->returnValue($controller));
+            ->willReturn($controller);
         $controller
             ->expects($this->never())
             ->method('set');
@@ -1089,9 +1089,9 @@ class ApiListenerTest extends TestCase
     /**
      * testExpandPath
      *
-     * @dataProvider dataExpandPath
      * @return void
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataExpandPath')]
     public function testExpandPath($subject, $path, $expected)
     {
         $listener = $this
@@ -1135,12 +1135,12 @@ class ApiListenerTest extends TestCase
         $listener
             ->expects($this->once())
             ->method('_request')
-            ->will($this->returnValue($request));
+            ->willReturn($request);
         $listener
             ->expects($this->once())
             ->method('getConfig')
             ->with('detectors')
-            ->will($this->returnValue($detectors));
+            ->willReturn($detectors);
 
         $listener->setupDetectors();
 
@@ -1204,9 +1204,9 @@ class ApiListenerTest extends TestCase
     /**
      * testCheckRequestMethods
      *
-     * @dataProvider dataCheckRequestMethods
      * @return void
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataCheckRequestMethods')]
     public function testCheckRequestMethods($apiConfig, $exception, $requestMethods)
     {
         $listener = $this
@@ -1230,18 +1230,18 @@ class ApiListenerTest extends TestCase
         $listener
             ->expects($this->once())
             ->method('_action')
-            ->will($this->returnValue($action));
+            ->willReturn($action);
         $action
             ->expects($this->once())
             ->method('getConfig')
             ->with('api')
-            ->will($this->returnValue($apiConfig));
+            ->willReturn($apiConfig);
 
         if (!empty($apiConfig['methods'])) {
             $listener
                 ->expects($this->once())
                 ->method('_request')
-                ->will($this->returnValue($request));
+                ->willReturn($request);
 
             $withs = $returns = [];
             foreach ($requestMethods as $method => $bool) {
@@ -1321,12 +1321,12 @@ class ApiListenerTest extends TestCase
     {
         $controller = $this
             ->getMockBuilder(Controller::class)
-            ->addMethods(['foobar', 'setViewClasses'])
+            ->onlyMethods(['addViewClasses'])
             ->disableOriginalConstructor()
             ->getMock();
         $controller
             ->expects($this->once())
-            ->method('setViewClasses')
+            ->method('addViewClasses')
             ->with(['json' => JsonView::class, 'xml' => XmlView::class]);
 
         $apiListener = $this->getMockBuilder(ApiListener::class)
@@ -1337,7 +1337,7 @@ class ApiListenerTest extends TestCase
         $apiListener
             ->expects($this->once())
             ->method('_controller')
-            ->will($this->returnValue($controller));
+            ->willReturn($controller);
 
         $apiListener->injectViewClasses();
     }
