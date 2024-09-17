@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Crud\Test\TestCase\Action;
 
 use Crud\TestSuite\IntegrationTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Licensed under The MIT License
@@ -38,7 +39,7 @@ class IndexActionTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[\PHPUnit\Framework\Attributes\DataProvider('allHttpMethodProvider')]
+    #[DataProvider('allHttpMethodProvider')]
     public function testGet($method)
     {
         $this->_eventManager->on(

@@ -7,6 +7,7 @@ use Cake\Controller\Component\FlashComponent;
 use Cake\Core\Configure;
 use Cake\Routing\Router;
 use Crud\TestSuite\IntegrationTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Licensed under The MIT License
@@ -357,7 +358,7 @@ class AddActionTest extends IntegrationTestCase
      * @param  string $method
      * @return void
      */
-    #[\PHPUnit\Framework\Attributes\DataProvider('apiGetHttpMethodProvider')]
+    #[DataProvider('apiGetHttpMethodProvider')]
     public function testApiGet($method)
     {
         Router::createRouteBuilder('/')
@@ -389,7 +390,7 @@ class AddActionTest extends IntegrationTestCase
      * @param  string $method
      * @return void
      */
-    #[\PHPUnit\Framework\Attributes\DataProvider('apiUpdateHttpMethodProvider')]
+    #[DataProvider('apiUpdateHttpMethodProvider')]
     public function testApiCreate($method)
     {
         $this->_eventManager->on(
@@ -432,7 +433,7 @@ class AddActionTest extends IntegrationTestCase
      * @param  string $method
      * @return void
      */
-    #[\PHPUnit\Framework\Attributes\DataProvider('apiUpdateHttpMethodProvider')]
+    #[DataProvider('apiUpdateHttpMethodProvider')]
     public function testApiCreateError($method)
     {
         $this->_eventManager->on(
@@ -486,7 +487,7 @@ class AddActionTest extends IntegrationTestCase
      * @param  string $method
      * @return void
      */
-    #[\PHPUnit\Framework\Attributes\DataProvider('apiUpdateHttpMethodProvider')]
+    #[DataProvider('apiUpdateHttpMethodProvider')]
     public function testApiCreateErrors($method)
     {
         $this->_eventManager->on(

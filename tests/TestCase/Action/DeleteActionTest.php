@@ -5,6 +5,7 @@ namespace Crud\Test\TestCase\Action;
 
 use Cake\Controller\Component\FlashComponent;
 use Crud\TestSuite\IntegrationTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Licensed under The MIT License
@@ -44,7 +45,7 @@ class DeleteActionTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[\PHPUnit\Framework\Attributes\DataProvider('allHttpMethodProvider')]
+    #[DataProvider('allHttpMethodProvider')]
     public function testAllRequestMethods($method)
     {
         $this->_eventManager->on(
@@ -154,7 +155,7 @@ class DeleteActionTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[\PHPUnit\Framework\Attributes\DataProvider('allHttpMethodProvider')]
+    #[DataProvider('allHttpMethodProvider')]
     public function testStopBeforeRedirect()
     {
         $this->_eventManager->on(

@@ -19,6 +19,7 @@ use Crud\Event\Subject;
 use Crud\Listener\ApiListener;
 use Crud\Test\App\Controller\BlogsController;
 use Crud\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use StdClass;
 
 /**
@@ -412,7 +413,7 @@ class ApiListenerTest extends TestCase
      * @param array $validationErrors
      * @return void
      */
-    #[\PHPUnit\Framework\Attributes\DataProvider('dataExceptionResponse')]
+    #[DataProvider('dataExceptionResponse')]
     public function testExceptionResponse(
         $apiConfig,
         $exceptionClass,
@@ -514,7 +515,7 @@ class ApiListenerTest extends TestCase
      *
      * @return void
      */
-    #[\PHPUnit\Framework\Attributes\DataProvider('dataSerializeTraitActions')]
+    #[DataProvider('dataSerializeTraitActions')]
     public function testEnsureSerializeWithSerializeTrait($action)
     {
         $listener = $this
@@ -1091,7 +1092,7 @@ class ApiListenerTest extends TestCase
      *
      * @return void
      */
-    #[\PHPUnit\Framework\Attributes\DataProvider('dataExpandPath')]
+    #[DataProvider('dataExpandPath')]
     public function testExpandPath($subject, $path, $expected)
     {
         $listener = $this
@@ -1206,7 +1207,7 @@ class ApiListenerTest extends TestCase
      *
      * @return void
      */
-    #[\PHPUnit\Framework\Attributes\DataProvider('dataCheckRequestMethods')]
+    #[DataProvider('dataCheckRequestMethods')]
     public function testCheckRequestMethods($apiConfig, $exception, $requestMethods)
     {
         $listener = $this

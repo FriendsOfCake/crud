@@ -10,6 +10,7 @@ use Crud\Action\BaseAction;
 use Crud\Event\Subject;
 use Crud\Listener\RedirectListener;
 use Crud\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Licensed under The MIT License
@@ -456,7 +457,7 @@ class RedirectListenerTest extends TestCase
      *
      * @return void
      */
-    #[\PHPUnit\Framework\Attributes\DataProvider('dataProviderGetUrl')]
+    #[DataProvider('dataProviderGetUrl')]
     public function testGetUrl(Subject $subject, $url, $expected)
     {
         $listener = $this

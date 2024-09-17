@@ -5,6 +5,7 @@ namespace Crud\Test\TestCase\Action\Bulk;
 
 use Cake\Controller\Component\FlashComponent;
 use Crud\TestSuite\IntegrationTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Licensed under The MIT License
@@ -47,7 +48,7 @@ class ToggleActionTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[\PHPUnit\Framework\Attributes\DataProvider('allHttpMethodProvider')]
+    #[DataProvider('allHttpMethodProvider')]
     public function testAllRequestMethods($method)
     {
         $this->_eventManager->on(
