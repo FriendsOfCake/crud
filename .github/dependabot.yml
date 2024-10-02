@@ -5,3 +5,4 @@ updates:
     directory: "/docs"
     schedule:
       interval: "daily"
+    open-pull-requests-limit: 20
