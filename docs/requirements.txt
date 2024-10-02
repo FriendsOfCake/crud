@@ -3,7 +3,7 @@ Babel==2.9.1
 certifi==2023.7.22
 chardet==3.0.4
 docutils==0.14
-idna==2.7
+idna==3.7
 imagesize==0.7.1
 Jinja2==3.1.4
 MarkupSafe==0.23
