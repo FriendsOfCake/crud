@@ -11,7 +11,7 @@ Pygments==2.15.0
 pytz==2024.2
 requests==2.32.3
 six==1.11.0
-snowballstemmer==1.2.1
+snowballstemmer==2.2.0
 Sphinx==1.5.1
 sphinx-rtd-theme==0.1.9
 sphinxcontrib-phpdomain==0.12.0
