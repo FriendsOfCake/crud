@@ -218,6 +218,12 @@ the ``className`` configuration key for an action, and Crud will use that one in
 
 :doc:`Learn more about custom action classes </actions/custom>`.
 
+Model
+=====
+
+The actions will use the default model for the controller as per CakePHP's conventions,
+but you can also specify a different model to use using ``CrudComponent::useModel()``.
+
 Listeners
 =========
 
