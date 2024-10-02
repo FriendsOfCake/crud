@@ -10,7 +10,7 @@ MarkupSafe==2.1.5
 Pygments==2.15.0
 pytz==2024.2
 requests==2.32.3
-six==1.11.0
+six==1.16.0
 snowballstemmer==2.2.0
 Sphinx==8.0.2
 sphinx-rtd-theme==2.0.0
