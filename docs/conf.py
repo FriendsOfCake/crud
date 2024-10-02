@@ -19,9 +19,9 @@ maintainer = u'FriendsOfCake'
 project = u'crud'
 project_pretty_name = u'Crud'
 copyright = u'%d, Friends of Cake' % datetime.datetime.now().year
-version = '5.0'
-release = '5.0'
-html_title = 'Crud v5'
+version = '7.0'
+release = '7.0'
+html_title = 'Crud v7'
 html_context = {
     'maintainer': maintainer,
     'project_pretty_name': project_pretty_name,
