@@ -10,3 +10,4 @@ phpunit.xml.dist export-ignore
 tests export-ignore
 docs export-ignore
 .github export-ignore
+.readthedocs.yaml export-ignore
