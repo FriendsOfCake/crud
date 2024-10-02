@@ -8,7 +8,7 @@ imagesize==0.7.1
 Jinja2==3.1.4
 MarkupSafe==0.23
 Pygments==2.15.0
-pytz==2018.7
+pytz==2024.2
 requests==2.32.3
 six==1.11.0
 snowballstemmer==1.2.1
