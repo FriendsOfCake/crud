@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Crud\Controller\Component;
 
 use Cake\Controller\Component;
-use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
 use Cake\Core\App;
 use Cake\Datasource\EntityInterface;
@@ -138,22 +137,48 @@ class CrudComponent extends Component
     ];
 
     /**
-     * Constructor
+     * Initialize the component
      *
-     * @param \Cake\Controller\ComponentRegistry<\Cake\Controller\Controller> $collection A ComponentCollection this component
-     *   can use to lazy load its components.
-     * @param array $config Array of configuration settings.
+     * @param array $config Configuration values for component.
+     * @return void
      */
-    public function __construct(ComponentRegistry $collection, array $config = [])
+    public function initialize(array $config): void
     {
-        $config += ['actions' => [], 'listeners' => []];
-        $config['actions'] = $this->normalizeArray($config['actions']);
-        $config['listeners'] = $this->normalizeArray($config['listeners']);
+        parent::initialize($config);
 
-        $this->_controller = $collection->getController();
-        $this->_eventManager = $this->_controller->getEventManager();
+        $this->_controller ??= $this->getController();
+        $this->_eventManager ??= $this->_controller->getEventManager();
+        $this->_action ??= $this->_controller->getRequest()->getParam('action');
+    }
 
-        parent::__construct($collection, $config);
+    /**
+     * Set component config.
+     *
+     * It normalizes the 'actions' and 'listeners' arrays.
+     *
+     * @param array<string, mixed>|string $key The key to set, or a complete array of configs.
+     * @param mixed|null $value The value to set.
+     * @param bool $merge Whether to recursively merge or overwrite existing config, defaults to true.
+     * @return $this
+     */
+    public function setConfig(array|string $key, mixed $value = null, bool $merge = true)
+    {
+        if (is_array($key)) {
+            if (isset($key['actions'])) {
+                $key['actions'] = $this->normalizeArray($key['actions']);
+            }
+            if (isset($key['listeners'])) {
+                $key['listeners'] = $this->normalizeArray($key['listeners']);
+            }
+        } elseif ($key === 'actions') {
+            assert(is_array($value));
+            $value = $this->normalizeArray($value);
+        } elseif ($key === 'listeners') {
+            assert(is_array($value));
+            $value = $this->normalizeArray($value);
+        }
+
+        return parent::setConfig($key, $value, $merge);
     }
 
     /**
@@ -180,19 +205,6 @@ class CrudComponent extends Component
         }
 
         return $normal;
-    }
-
-    /**
-     * Add self to list of components capable of dispatching an action.
-     *
-     * @param array $config Configuration values for component.
-     * @return void
-     */
-    public function initialize(array $config): void
-    {
-        parent::initialize($config);
-
-        $this->_action = $this->getController()->getRequest()->getParam('action');
     }
 
     /**
