@@ -66,18 +66,19 @@ trait RedirectTrait
     protected function _redirectUrl(array|string|null $default = null): array|string
     {
         $request = $this->_request();
+        $redirectVar = $this->getConfig('redirectVar', 'redirect_url');
 
-        if (!empty($request->getData('_redirect_url'))) {
-            return $request->getData('_redirect_url');
+        if (!empty($request->getData("_{$redirectVar}"))) {
+            return $request->getData("_{$redirectVar}");
         }
-        if (!empty($request->getQuery('_redirect_url'))) {
-            return $request->getQuery('_redirect_url');
+        if (!empty($request->getQuery("_{$redirectVar}"))) {
+            return $request->getQuery("_{$redirectVar}");
         }
-        if (!empty($request->getData('redirect_url'))) {
-            return $request->getData('redirect_url');
+        if (!empty($request->getData($redirectVar))) {
+            return $request->getData($redirectVar);
         }
-        if (!empty($request->getQuery('redirect_url'))) {
-            return $request->getQuery('redirect_url');
+        if (!empty($request->getQuery($redirectVar))) {
+            return $request->getQuery($redirectVar);
         }
 
         return $default;
