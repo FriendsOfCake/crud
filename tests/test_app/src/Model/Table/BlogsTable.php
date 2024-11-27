@@ -10,6 +10,13 @@ class BlogsTable extends Table
 {
     public $customOptions;
 
+    public function initialize(array $config): void
+    {
+        parent::initialize($config);
+
+        $this->belongsTo('Users');
+    }
+
     /**
      * findWithCustomOptions
      *

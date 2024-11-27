@@ -19,7 +19,7 @@ class AddActionTest extends IntegrationTestCase
      *
      * @var array
      */
-    protected $fixtures = ['plugin.Crud.Blogs'];
+    protected $fixtures = ['plugin.Crud.Blogs', 'plugin.Crud.Users'];
 
     /**
      * Table class to mock on
@@ -111,6 +111,7 @@ class AddActionTest extends IntegrationTestCase
         $this->post('/blogs/add', [
             'name' => 'Hello World',
             'body' => 'Pretty hot body',
+            'user_id' => '0acad6f2-b47e-4fc1-9086-cbc906dc45fd',
         ]);
 
         $this->assertEvents(['beforeSave', 'afterSave', 'setFlash', 'beforeRedirect']);
@@ -157,6 +158,7 @@ class AddActionTest extends IntegrationTestCase
             'name' => 'Hello World',
             'body' => 'Pretty hot body',
             '_add' => 1,
+            'user_id' => '0acad6f2-b47e-4fc1-9086-cbc906dc45fd',
         ]);
 
         $this->assertEvents(['beforeSave', 'afterSave', 'setFlash', 'beforeRedirect']);
@@ -202,6 +204,7 @@ class AddActionTest extends IntegrationTestCase
             'name' => 'Hello World',
             'body' => 'Pretty hot body',
             '_edit' => 1,
+            'user_id' => '0acad6f2-b47e-4fc1-9086-cbc906dc45fd',
         ]);
 
         $this->assertEvents(['beforeSave', 'afterSave', 'setFlash', 'beforeRedirect']);
@@ -404,6 +407,7 @@ class AddActionTest extends IntegrationTestCase
         $this->{$method}('/blogs/add.json', [
             'name' => '6th blog post',
             'body' => 'Amazing blog post',
+            'user_id' => '0acad6f2-b47e-4fc1-9086-cbc906dc45fd',
         ]);
         $this->assertTrue($this->_subject->success);
         $this->assertTrue($this->_subject->created);

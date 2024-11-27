@@ -16,7 +16,7 @@ class LookupActionTest extends IntegrationTestCase
      *
      * @var array
      */
-    protected $fixtures = ['plugin.Crud.Blogs'];
+    protected $fixtures = ['plugin.Crud.Blogs', 'plugin.Crud.Users'];
 
     /**
      * Test with no extra options

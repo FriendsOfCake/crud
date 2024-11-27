@@ -16,7 +16,7 @@ class IndexActionTest extends IntegrationTestCase
      *
      * @var array
      */
-    protected $fixtures = ['plugin.Crud.Blogs'];
+    protected $fixtures = ['plugin.Crud.Blogs', 'plugin.Crud.Users'];
 
     /**
      * Data provider with all HTTP verbs
