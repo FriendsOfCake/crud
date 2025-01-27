@@ -64,8 +64,10 @@ class ApiQueryLogListener extends BaseListener
 
         foreach ($connections as $connectionName) {
             try {
-                $connection = $this->_getSource($connectionName);
-                $connection->getDriver()->setLogger(new QueryLogger());
+                $driver = $this->_getSource($connectionName)->getDriver();
+                if (method_exists($driver, 'setLogger')) {
+                    $driver->setLogger(new QueryLogger());
+                }
             } catch (MissingDatasourceConfigException $e) {
                 //Safe to ignore this :-)
             }
@@ -99,8 +101,16 @@ class ApiQueryLogListener extends BaseListener
 
         $queryLog = [];
         foreach ($sources as $source) {
-            $logger = $this->_getSource($source)->getDriver()->getLogger();
+            $driver = $this->_getSource($source)->getDriver();
+            if (!method_exists($driver, 'getLogger')) {
+                continue;
+            }
+
+            $logger = $driver->getLogger();
             if (method_exists($logger, 'getLogs')) {
+                /**
+                 * @var \Crud\Log\QueryLogger $logger
+                 */
                 $queryLog[$source] = $logger->getLogs();
             }
         }

@@ -14,6 +14,7 @@ use Closure;
  * For full copyright and license information, please see the LICENSE.txt
  *
  * @property \Crud\Controller\Component\CrudComponent $Crud
+ * @phpstan-ignore trait.unused
  */
 trait ControllerTrait
 {

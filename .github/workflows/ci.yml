@@ -14,7 +14,8 @@ permissions:
 jobs:
   testsuite:
     uses: ADmad/.github/.github/workflows/testsuite-with-db.yml@master
-    secrets: inherit
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   cs-stan:
     uses: ADmad/.github/.github/workflows/cs-stan.yml@master
