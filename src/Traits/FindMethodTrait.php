@@ -66,6 +66,7 @@ trait FindMethodTrait
         /**
          * @psalm-suppress PossiblyInvalidArgument
          * @psalm-suppress InvalidArrayOffset
+         * @phpstan-ignore argument.type
          */
         $query->where([current($query->aliasField($repository->getPrimaryKey())) => $id]);
 

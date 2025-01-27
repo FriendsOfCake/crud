@@ -607,7 +607,10 @@ class CrudComponent extends Component
             return null;
         }
 
-        /** @psalm-suppress PossiblyInvalidArgument */
+        /**
+         * @psalm-suppress PossiblyInvalidArgument
+         * @phpstan-ignore argument.type
+         */
         return $this->getConfig(sprintf('%s.%s', $type, $name));
     }
 
@@ -690,6 +693,7 @@ class CrudComponent extends Component
      */
     protected function _loadListeners(): void
     {
+        /** @var string $name */
         foreach (array_keys($this->getConfig('listeners')) as $name) {
             $this->_loadListener($name);
         }

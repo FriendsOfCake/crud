@@ -131,8 +131,14 @@ class ExceptionRenderer extends WebExceptionRenderer
         $queryLog = [];
         $sources = ConnectionManager::configured();
         foreach ($sources as $source) {
-            $logger = ConnectionManager::get($source)->getDriver()->getLogger();
+            $driver = ConnectionManager::get($source)->getDriver();
+            if (!method_exists($driver, 'getLogger')) {
+                continue;
+            }
+
+            $logger = $driver->getLogger();
             if ($logger && method_exists($logger, 'getLogs')) {
+                /** @var \Crud\Log\QueryLogger $logger */
                 $queryLog[$source] = $logger->getLogs();
             }
         }
