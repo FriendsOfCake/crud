@@ -4,11 +4,11 @@ declare(strict_types=1);
 namespace Crud\Listener;
 
 use Cake\Core\Configure;
-use Cake\Datasource\ConnectionInterface;
 use Cake\Datasource\ConnectionManager;
 use Cake\Datasource\Exception\MissingDatasourceConfigException;
 use Cake\Event\EventInterface;
 use Crud\Log\QueryLogger;
+use Crud\Traits\QueryLogTrait;
 
 /**
  * When loaded Crud API will include query logs in the response
@@ -23,6 +23,8 @@ use Crud\Log\QueryLogger;
  */
 class ApiQueryLogListener extends BaseListener
 {
+    use QueryLogTrait;
+
     /**
      * {@inheritDoc}
      *
@@ -60,11 +62,11 @@ class ApiQueryLogListener extends BaseListener
      */
     public function setupLogging(EventInterface $event): void
     {
-        $connections = $this->getConfig('connections') ?: $this->_getSources();
+        $connections = $this->getConfig('connections') ?: ConnectionManager::configured();
 
         foreach ($connections as $connectionName) {
             try {
-                $driver = $this->_getSource($connectionName)->getDriver();
+                $driver = ConnectionManager::get($connectionName)->getDriver();
                 if (method_exists($driver, 'setLogger')) {
                     $driver->setLogger(new QueryLogger());
                 }
@@ -87,35 +89,7 @@ class ApiQueryLogListener extends BaseListener
         }
 
         $this->_action()->setConfig('serialize.queryLog', 'queryLog');
-        $this->_controller()->set('queryLog', $this->_getQueryLogs());
-    }
-
-    /**
-     * Get the query logs for all sources
-     *
-     * @return array
-     */
-    protected function _getQueryLogs(): array
-    {
-        $sources = $this->_getSources();
-
-        $queryLog = [];
-        foreach ($sources as $source) {
-            $driver = $this->_getSource($source)->getDriver();
-            if (!method_exists($driver, 'getLogger')) {
-                continue;
-            }
-
-            $logger = $driver->getLogger();
-            if (method_exists($logger, 'getLogs')) {
-                /**
-                 * @var \Crud\Log\QueryLogger $logger
-                 */
-                $queryLog[$source] = $logger->getLogs();
-            }
-        }
-
-        return $queryLog;
+        $this->_controller()->set('queryLog', $this->getQueryLogs());
     }
 
     /**
@@ -125,29 +99,6 @@ class ApiQueryLogListener extends BaseListener
      */
     public function getQueryLogs(): array
     {
-        return $this->_getQueryLogs();
-    }
-
-    /**
-     * Get a list of sources defined in database.php
-     *
-     * @return array
-     * @codeCoverageIgnore
-     */
-    protected function _getSources(): array
-    {
-        return ConnectionManager::configured();
-    }
-
-    /**
-     * Get a specific data source
-     *
-     * @param string $source Datasource name
-     * @return \Cake\Datasource\ConnectionInterface
-     * @codeCoverageIgnore
-     */
-    protected function _getSource(string $source): ConnectionInterface
-    {
-        return ConnectionManager::get($source);
+        return $this->_getQueryLog();
     }
 }
