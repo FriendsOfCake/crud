@@ -52,46 +52,35 @@ trait RedirectTrait
      */
     protected function _refererRedirectUrl(array|string|null $default = null): array|string
     {
-        $controller = $this->_controller();
-
-        return $this->_redirectUrl($controller->referer($default, true));
+        return $this->_redirectUrl($this->_controller()->referer($default, true));
     }
 
     /**
      * Returns the _redirect_url for this request.
      *
-     * @param array|string|null $default Default URL to use if _redirect_url if not found in request or data.
+     * @param array|string $default Default URL to use if _redirect_url if not found in request or data.
      * @return array|string
      */
-    protected function _redirectUrl(array|string|null $default = null): array|string
+    protected function _redirectUrl(array|string $default): array|string
     {
         $request = $this->_request();
 
-        if (!empty($request->getData('_redirect_url'))) {
-            return $request->getData('_redirect_url');
-        }
-        if (!empty($request->getQuery('_redirect_url'))) {
-            return $request->getQuery('_redirect_url');
-        }
-        if (!empty($request->getData('redirect_url'))) {
-            return $request->getData('redirect_url');
-        }
-        if (!empty($request->getQuery('redirect_url'))) {
-            return $request->getQuery('redirect_url');
-        }
-
-        return $default;
+        return $request->getData('_redirect_url')
+            ?? $request->getQuery('_redirect_url')
+            ?? $request->getData('redirect_url')
+            ?? $request->getQuery('redirect_url')
+            ?? $default;
     }
 
     /**
      * Called for all redirects inside CRUD
      *
      * @param \Crud\Event\Subject $subject Event subject
-     * @param array|string|null $url URL
+     * @param array|string $url URL
      * @param int $status Status code
      * @return \Cake\Http\Response|null
      */
-    protected function _redirect(Subject $subject, string|array|null $url = null, int $status = 302): ?Response
+    protected function _redirect(Subject $subject, string|array $url, int $status = 302): ?Response
     {
         $url = $this->_redirectUrl($url);
 
