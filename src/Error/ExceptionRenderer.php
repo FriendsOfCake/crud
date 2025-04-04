@@ -66,9 +66,11 @@ class ExceptionRenderer extends WebExceptionRenderer
      * a MissingView exception
      *
      * @param string $template The template to render.
-     * @return \Cake\Http\Response
+     * @param bool $skipControllerCheck Skip checking controller for existence of
+     *   method matching the exception name.
+     * @return \Cake\Http\Response A response object that can be sent.
      */
-    protected function _outputMessage(string $template): Response
+    protected function _outputMessage(string $template, bool $skipControllerCheck = false): Response
     {
         $viewVars = ['success', 'data'];
         $this->controller->set('success', false);
@@ -85,7 +87,7 @@ class ExceptionRenderer extends WebExceptionRenderer
             $viewVars
         );
 
-        return parent::_outputMessage($template);
+        return parent::_outputMessage($template, $skipControllerCheck);
     }
 
     /**
