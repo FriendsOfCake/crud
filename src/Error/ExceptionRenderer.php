@@ -4,11 +4,11 @@ declare(strict_types=1);
 namespace Crud\Error;
 
 use Cake\Core\Configure;
-use Cake\Datasource\ConnectionManager;
 use Cake\Error\Debugger;
 use Cake\Error\Renderer\WebExceptionRenderer;
 use Cake\Http\Response;
 use Crud\Error\Exception\ValidationException;
+use Crud\Traits\QueryLogTrait;
 use Exception;
 use function Cake\Core\h;
 
@@ -20,6 +20,8 @@ use function Cake\Core\h;
  */
 class ExceptionRenderer extends WebExceptionRenderer
 {
+    use QueryLogTrait;
+
     /**
      * Renders validation errors and sends a 422 error code
      *
@@ -119,30 +121,5 @@ class ExceptionRenderer extends WebExceptionRenderer
         }
 
         return $data;
-    }
-
-    /**
-     * Helper method to get query log.
-     *
-     * @return array Query log.
-     */
-    protected function _getQueryLog(): array
-    {
-        $queryLog = [];
-        $sources = ConnectionManager::configured();
-        foreach ($sources as $source) {
-            $driver = ConnectionManager::get($source)->getDriver();
-            if (!method_exists($driver, 'getLogger')) {
-                continue;
-            }
-
-            $logger = $driver->getLogger();
-            if ($logger && method_exists($logger, 'getLogs')) {
-                /** @var \Crud\Log\QueryLogger $logger */
-                $queryLog[$source] = $logger->getLogs();
-            }
-        }
-
-        return $queryLog;
     }
 }
