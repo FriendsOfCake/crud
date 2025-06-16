@@ -3,14 +3,6 @@ API
 
 This listener allows you to easily create a JSON or XML Api built on top of Crud.
 
-Introduction
-------------
-.. note::
-
-  The ``API listener`` depends on the ``RequestHandler`` to be loaded **before** ``Crud``.
-
-`Please also see the CakePHP documentation on JSON and XML views <http://book.cakephp.org/5/en/views/json-and-xml-views.html>`_
-
 Setup
 -----
 
@@ -47,7 +39,6 @@ Attach it using components array, this is recommended if you want to attach it t
 
     public function initialize(): void
     {
-        $this->loadComponent('RequestHandler');
         $this->loadComponent('Crud.Crud', [
           'actions' => [
             'Crud.Index',
@@ -60,21 +51,9 @@ Attach it using components array, this is recommended if you want to attach it t
 Request detectors
 -----------------
 
-The Api Listener creates 3 new detectors in your ``Request`` object.
+The Api Listener will add a new `api` detector to your ``ServerRequest`` class.
 
-is('json')
-^^^^^^^^^^
-
-Checks if the extension of the request is ``.json`` or if the requester accepts json as part of the
-``HTTP accepts`` header.
-
-is('xml')
-^^^^^^^^^
-
-Checks if the extension of the request is ``.xml`` or if the requester accepts XML as part of the ``HTTP accepts``
-header.
-
-is('api')
+ServerRequest::is('api')
 ^^^^^^^^^
 
 Checking if the request is either ``is('json')`` or ``is('xml')``.
@@ -94,18 +73,32 @@ In case of an error, in order to get a standardized response in either
 ``json`` or ``xml`` - according to the API request type, for `api` requests,
 the default CakePHP exception renderer needs to be overridden.
 
-Set the ``Error.exceptionRenderer`` config in ``config/app.php`` to
-``\Crud\Error\ExceptionRenderer::class`` as following:
+Set the ``exceptionRenderer`` config for the ``ErrorHandlerMiddleware`` in your
+``Application::middleware()`` method in ``src/Application.php``.
 
 .. code-block:: php
 
-    'Error' => [
-        'errorLevel' => E_ALL,
-        'exceptionRenderer' => \Crud\Error\ExceptionRenderer::class,
-        'skipLog' => [],
-        'log' => true,
-        'trace' => true,
-    ],
+  $middlewareQueue->add(
+    new ErrorHandlerMiddleware(['exceptionRenderer' => \Crud\Error\ExceptionRenderer::class] + Configure::read('Error'), $this)
+  )
+
+You also need to update your ``ErrorController`` to use the ``JsonView`` or ``XmlView``
+classes for content negotiation.
+
+.. code-block:: php
+
+  // src/Controller/ErrorController.php
+
+  use Crud\View\JsonView;
+  use Crud\View\XmlView;
+
+  public function initialize(): void
+  {
+      $this->addViewClasses([
+        'json' => JsonView::class,
+        'xml' => XmlView::class,
+      ]);
+  }
 
 Request type enforcing
 ----------------------

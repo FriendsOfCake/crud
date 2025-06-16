@@ -32,7 +32,6 @@ we do this by enabling Crud in the ``AppController`` with the ``actions`` option
             parent::initialize();
 
             $this->loadComponent('Flash');
-            $this->loadComponent('RequestHandler');
             $this->loadComponent('Crud.Crud', [
                 'actions' => [
                     'Crud.Index',
