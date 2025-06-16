@@ -56,13 +56,6 @@ $cache = [
     'default' => [
         'engine' => 'File',
     ],
-    '_cake_core_' => [
-        'className' => 'File',
-        'prefix' => 'crud_myapp_cake_core_',
-        'path' => CACHE . 'persistent/',
-        'serialize' => true,
-        'duration' => '+10 seconds',
-    ],
     '_cake_model_' => [
         'className' => 'File',
         'prefix' => 'crud_my_app_cake_model_',
@@ -71,6 +64,24 @@ $cache = [
         'duration' => '+10 seconds',
     ],
 ];
+
+if (version_compare(Configure::version(), '5.1.0', '>=')) {
+    $cache['_cake_translations_'] = [
+        'className' => 'File',
+        'prefix' => 'crud_my_app_cake_translations_',
+        'path' => CACHE . 'persistent/',
+        'serialize' => true,
+        'duration' => '+10 seconds',
+    ];
+} else {
+    $cache['_cake_core_'] = [
+        'className' => 'File',
+        'prefix' => 'crud_my_app_cake_core_',
+        'path' => CACHE . 'persistent/',
+        'serialize' => true,
+        'duration' => '+10 seconds',
+    ];
+}
 
 Cache::setConfig($cache);
 Configure::write('Session', [
