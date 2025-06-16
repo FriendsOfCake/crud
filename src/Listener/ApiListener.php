@@ -333,7 +333,7 @@ class ApiListener extends BaseListener
     }
 
     /**
-     * Inject view classes into RequestHandler
+     * Add view classes to the controller
      *
      * @return void
      */
@@ -345,8 +345,7 @@ class ApiListener extends BaseListener
     /**
      * Get or set a viewClass
      *
-     * `$type` could be `json`, `xml` or any other valid type
-     *      defined by the `RequestHandler`
+     * `$type` could be `json`, `xml` or any other valid configured type
      *
      * `$class` could be any View class capable of handling
      *      the response format for the `$type`. Normal

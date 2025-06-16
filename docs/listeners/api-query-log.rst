@@ -40,7 +40,6 @@ attach it to all controllers, application wide
     {
         public function initialize(): void
         {
-            $this->loadComponent('RequestHandler');
             $this->loadComponent('Crud.Crud', [
                 'listeners' => [
                     'Crud.Api', // Required
