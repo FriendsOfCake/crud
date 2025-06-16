@@ -54,14 +54,14 @@ class SearchListener extends BaseListener
         if (!$repository->behaviors()->has('Search')) {
             throw new RuntimeException(sprintf(
                 'Missing Search.Search behavior on %s',
-                get_class($repository)
+                get_class($repository),
             ));
         }
 
         $event->getSubject()->query->find(
             'search',
             search: $this->_request()->getQuery(),
-            collection: $this->getConfig('collection')
+            collection: $this->getConfig('collection'),
         );
     }
 }

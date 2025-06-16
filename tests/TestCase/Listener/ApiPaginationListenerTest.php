@@ -136,7 +136,7 @@ class ApiPaginationListenerTest extends TestCase
                 'totalCount' => 50,
                 'perPage' => 10,
                 'count' => 10,
-            ]
+            ],
         );
 
         $Controller = new Controller($Request, 'MyModel');

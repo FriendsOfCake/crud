@@ -102,13 +102,13 @@ class AddActionTest extends IntegrationTestCase
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Successfully created blog'],
                             'key' => 'flash',
-                        ]
+                        ],
                     );
 
                 $this->_controller->components()->set('Flash', $component);
 
                 $this->_subscribeToEvents($this->_controller);
-            }
+            },
         );
 
         $this->post('/blogs/add', [
@@ -149,13 +149,13 @@ class AddActionTest extends IntegrationTestCase
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Successfully created blog'],
                             'key' => 'flash',
-                        ]
+                        ],
                     );
 
                 $this->_controller->components()->set('Flash', $component);
 
                 $this->_subscribeToEvents($this->_controller);
-            }
+            },
         );
 
         $this->post('/blogs/add', [
@@ -196,13 +196,13 @@ class AddActionTest extends IntegrationTestCase
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Successfully created blog'],
                             'key' => 'flash',
-                        ]
+                        ],
                     );
 
                 $this->_controller->components()->set('Flash', $component);
 
                 $this->_subscribeToEvents($this->_controller);
-            }
+            },
         );
 
         $this->post('/blogs/add', [
@@ -242,7 +242,7 @@ class AddActionTest extends IntegrationTestCase
                             'element' => 'default',
                             'params' => ['class' => 'message error', 'original' => 'Could not create blog'],
                             'key' => 'flash',
-                        ]
+                        ],
                     );
 
                 $this->_controller->components()->set('Flash', $component);
@@ -252,7 +252,7 @@ class AddActionTest extends IntegrationTestCase
                 $blogs = $this->getMockForModel(
                     $this->tableClass,
                     ['save'],
-                    ['alias' => 'Blogs', 'table' => 'blogs']
+                    ['alias' => 'Blogs', 'table' => 'blogs'],
                 );
                 $blogs
                     ->expects($this->once())
@@ -260,7 +260,7 @@ class AddActionTest extends IntegrationTestCase
                     ->willReturn(false);
 
                 $this->getTableLocator()->set('Blogs', $blogs);
-            }
+            },
         );
 
         $this->post('/blogs/add', [
@@ -298,7 +298,7 @@ class AddActionTest extends IntegrationTestCase
                             'element' => 'default',
                             'params' => ['class' => 'message error', 'original' => 'Could not create blog'],
                             'key' => 'flash',
-                        ]
+                        ],
                     );
 
                 $this->_controller->components()->set('Flash', $component);
@@ -314,7 +314,7 @@ class AddActionTest extends IntegrationTestCase
                             'message' => 'Name need to be at least 10 characters long',
                         ],
                     ]);
-            }
+            },
         );
 
         $this->post('/blogs/add', [
@@ -335,7 +335,7 @@ class AddActionTest extends IntegrationTestCase
         $this->assertStringContainsString(
             $expected,
             (string)$this->_response->getBody(),
-            'Could not find validation error in HTML'
+            'Could not find validation error in HTML',
         );
     }
 
@@ -411,7 +411,7 @@ class AddActionTest extends IntegrationTestCase
                 $this->_subscribeToEvents($this->_controller);
 
                 $this->_controller->Crud->addListener('api', 'Crud.Api');
-            }
+            },
         );
 
         $this->{$method}('/blogs/add.json', [
@@ -422,7 +422,7 @@ class AddActionTest extends IntegrationTestCase
         $this->assertTrue($this->_subject->created);
         $this->assertEquals(
             ['success' => true, 'data' => ['id' => 6]],
-            json_decode((string)$this->_response->getBody(), true)
+            json_decode((string)$this->_response->getBody(), true),
         );
     }
 
@@ -468,7 +468,7 @@ class AddActionTest extends IntegrationTestCase
                             'message' => 'Name need to be at least 10 characters long',
                         ],
                     ]);
-            }
+            },
         );
 
         $this->{$method}('/blogs/add.json', [
@@ -523,7 +523,7 @@ class AddActionTest extends IntegrationTestCase
                             'message' => 'Name need to be at least 10 characters long',
                         ],
                     ]);
-            }
+            },
         );
 
         $this->{$method}('/blogs/add.json', [
@@ -560,7 +560,7 @@ class AddActionTest extends IntegrationTestCase
                             'element' => 'default',
                             'params' => ['class' => 'message error', 'original' => 'Could not create blog'],
                             'key' => 'flash',
-                        ]
+                        ],
                     );
 
                 $this->_controller->components()->set('Flash', $component);
@@ -574,11 +574,11 @@ class AddActionTest extends IntegrationTestCase
                 $model = $this->getMockForModel(
                     $this->tableClass,
                     [],
-                    ['alias' => 'Blogs', 'table' => 'blogs']
+                    ['alias' => 'Blogs', 'table' => 'blogs'],
                 );
 
                 $this->getTableLocator()->set('Blogs', $model);
-            }
+            },
         );
 
         $this->post('/blogs/add');
@@ -614,7 +614,7 @@ class AddActionTest extends IntegrationTestCase
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Successfully created blog'],
                             'key' => 'flash',
-                        ]
+                        ],
                     );
 
                 $this->_controller->components()->set('Flash', $component);
@@ -629,11 +629,11 @@ class AddActionTest extends IntegrationTestCase
                 $model = $this->getMockForModel(
                     $this->tableClass,
                     [],
-                    ['alias' => 'Blogs', 'table' => 'blogs']
+                    ['alias' => 'Blogs', 'table' => 'blogs'],
                 );
 
                 $this->getTableLocator()->set('Blogs', $model);
-            }
+            },
         );
 
         $this->post('/blogs/add');

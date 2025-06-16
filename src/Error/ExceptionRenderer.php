@@ -51,7 +51,7 @@ class ExceptionRenderer extends WebExceptionRenderer
         $this->controller->set($sets);
         $this->controller->viewBuilder()->setOption(
             'serialize',
-            ['code', 'url', 'message', 'errorCount', 'errors']
+            ['code', 'url', 'message', 'errorCount', 'errors'],
         );
 
         return $this->_outputMessage('error400');
@@ -82,10 +82,7 @@ class ExceptionRenderer extends WebExceptionRenderer
                 $viewVars[] = 'queryLog';
             }
         }
-        $this->controller->viewBuilder()->setOption(
-            'serialize',
-            $viewVars
-        );
+        $this->controller->viewBuilder()->setOption('serialize', $viewVars);
 
         return parent::_outputMessage($template, $skipControllerCheck);
     }

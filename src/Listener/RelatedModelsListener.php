@@ -41,13 +41,8 @@ class RelatedModelsListener extends BaseListener
      */
     public function beforePaginate(EventInterface $event): void
     {
-        $method = 'contain';
-        if (method_exists($event->getSubject()->query, 'getContain')) {
-            $method = 'getContain';
-        }
-        $contained = $event->getSubject()->query->$method();
-
-        if (!empty($contained)) {
+        $contained = $event->getSubject()->query->getContain();
+        if ($contained !== []) {
             return;
         }
 
@@ -229,7 +224,7 @@ class RelatedModelsListener extends BaseListener
                 throw new RuntimeException(sprintf(
                     'Table "%s" is not associated with "%s"',
                     get_class($table),
-                    $association
+                    $association,
                 ));
             }
             $return[$associationClass->getName()] = $associationClass;

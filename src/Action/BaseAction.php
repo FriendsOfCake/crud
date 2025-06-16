@@ -74,7 +74,7 @@ abstract class BaseAction extends BaseObject
         throw new NotImplementedException(sprintf(
             'Action %s does not implement a handler for HTTP verb %s',
             static::class,
-            $method
+            $method,
         ));
     }
 
@@ -167,7 +167,7 @@ abstract class BaseAction extends BaseObject
         $config['text'] = Text::insert(
             $config['text'],
             $replacements + ['name' => $config['name']],
-            ['before' => '{', 'after' => '}']
+            ['before' => '{', 'after' => '}'],
         );
 
         /** @psalm-suppress InvalidArrayOffset */
@@ -305,7 +305,7 @@ abstract class BaseAction extends BaseObject
 
         if ($inflectionType === 'singular') {
             return strtolower(Inflector::humanize(
-                Inflector::singularize(Inflector::underscore($this->_model()->getAlias()))
+                Inflector::singularize(Inflector::underscore($this->_model()->getAlias())),
             ));
         }
 

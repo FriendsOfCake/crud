@@ -308,11 +308,7 @@ class RelatedModelsListenerTest extends TestCase
         $event = new Event('beforePaginate', $subject);
 
         $listener->beforePaginate($event);
-        if (method_exists($event->getSubject()->query, 'getContain')) {
-            $result = $event->getSubject()->query->getContain();
-        } else {
-            $result = $event->getSubject()->query->contain();
-        }
+        $result = $event->getSubject()->query->getContain();
 
         $this->assertEquals(['Users' => []], $result);
     }

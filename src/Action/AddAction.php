@@ -102,7 +102,7 @@ class AddAction extends BaseAction
             'success' => true,
             'entity' => $this->_entity(
                 $this->_request()->getQueryParams(),
-                ['validate' => false] + $this->saveOptions()
+                ['validate' => false] + $this->saveOptions(),
             ),
         ]);
 

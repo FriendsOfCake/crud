@@ -69,13 +69,13 @@ class SetValueActionTest extends IntegrationTestCase
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Set value successfully'],
                             'key' => 'flash',
-                        ]
+                        ],
                     );
 
                 $this->_controller->components()->set('Flash', $component);
 
                 $this->_subscribeToEvents($this->_controller);
-            }
+            },
         );
 
         $this->{$method}('/blogs/deactivateAll', [
@@ -115,7 +115,7 @@ class SetValueActionTest extends IntegrationTestCase
                             'element' => 'default',
                             'params' => ['class' => 'message error', 'original' => 'Could not set value'],
                             'key' => 'flash',
-                        ]
+                        ],
                     );
 
                 $this->_controller->components()->set('Flash', $component);
@@ -125,7 +125,7 @@ class SetValueActionTest extends IntegrationTestCase
                 $this->_controller->Crud->on('beforeBulk', function ($event) {
                     $event->stopPropagation();
                 });
-            }
+            },
         );
 
         $this->post('/blogs/deactivateAll', [
@@ -165,13 +165,13 @@ class SetValueActionTest extends IntegrationTestCase
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Set value successfully'],
                             'key' => 'flash',
-                        ]
+                        ],
                     );
 
                 $this->_controller->components()->set('Flash', $component);
 
                 $this->_subscribeToEvents($this->_controller);
-            }
+            },
         );
 
         $this->post('/users/deactivateAll', [

@@ -71,7 +71,7 @@ class BaseActionTest extends TestCase
             $this->Request,
             $this->Registry,
             $this->Controller,
-            $this->ActionClass
+            $this->ActionClass,
         );
     }
 
@@ -271,7 +271,7 @@ class BaseActionTest extends TestCase
                     'element' => $data['element'],
                     'params' => $data['params'],
                     'key' => $data['key'],
-                ]
+                ],
             );
         $this->Controller->components()->set('Flash', $flash);
 

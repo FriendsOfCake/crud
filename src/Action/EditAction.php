@@ -120,7 +120,7 @@ class EditAction extends BaseAction
         $entity = $this->_model()->patchEntity(
             $this->_findRecord($id, $subject),
             $this->_request()->getData(),
-            $this->saveOptions()
+            $this->saveOptions(),
         );
 
         $this->_trigger('beforeSave', $subject);

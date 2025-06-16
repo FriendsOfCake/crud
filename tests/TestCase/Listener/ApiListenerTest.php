@@ -419,7 +419,7 @@ class ApiListenerTest extends TestCase
         $exceptionClass,
         $exceptionMessage,
         $exceptionCode,
-        $validationErrors = []
+        $validationErrors = [],
     ) {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
@@ -491,7 +491,7 @@ class ApiListenerTest extends TestCase
 
         $this->assertEquals(
             ['success', 'data' => 'items'],
-            $controller->viewBuilder()->getOption('serialize')
+            $controller->viewBuilder()->getOption('serialize'),
         );
     }
 
@@ -566,7 +566,7 @@ class ApiListenerTest extends TestCase
 
         $this->assertEquals(
             ['success', 'something', 'data' => null],
-            $controller->viewBuilder()->getOption('serialize')
+            $controller->viewBuilder()->getOption('serialize'),
         );
     }
 
@@ -616,7 +616,7 @@ class ApiListenerTest extends TestCase
 
         $this->assertEquals(
             'hello world',
-            $controller->viewBuilder()->getOption('serialize')
+            $controller->viewBuilder()->getOption('serialize'),
         );
     }
 
@@ -663,7 +663,7 @@ class ApiListenerTest extends TestCase
 
         $this->assertEquals(
             ['success', 'data' => 'helloWorld'],
-            $controller->viewBuilder()->getOption('serialize')
+            $controller->viewBuilder()->getOption('serialize'),
         );
     }
 
@@ -716,7 +716,7 @@ class ApiListenerTest extends TestCase
 
         $this->assertEquals(
             ['success', 'data' => ''],
-            $controller->viewBuilder()->getOption('serialize')
+            $controller->viewBuilder()->getOption('serialize'),
         );
     }
 
@@ -1167,7 +1167,7 @@ class ApiListenerTest extends TestCase
         $request->clearDetectorCache();
         $this->assertFalse(
             $request->is('api'),
-            'A request with no extensions should not be considered an api request'
+            'A request with no extensions should not be considered an api request',
         );
     }
 
