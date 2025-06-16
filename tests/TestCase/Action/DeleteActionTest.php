@@ -155,7 +155,6 @@ class DeleteActionTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[DataProvider('allHttpMethodProvider')]
     public function testStopBeforeRedirect()
     {
         $this->_eventManager->on(
