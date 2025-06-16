@@ -108,7 +108,7 @@ abstract class BaseAction extends CrudBaseAction
         $primaryKey = $repository->getPrimaryKey();
 
         $query = $repository->{$method}()
-            ->where(fn ($exp) => $exp->in($primaryKey, $ids));
+            ->where(fn($exp) => $exp->in($primaryKey, $ids));
 
         $subject = $this->_subject();
         $subject->set([

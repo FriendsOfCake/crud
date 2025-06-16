@@ -93,7 +93,7 @@ class CrudComponentTest extends TestCase
             $this->request,
             $this->controller,
             $this->Crud,
-            $this->Registry
+            $this->Registry,
         );
 
         parent::tearDown();
@@ -605,7 +605,7 @@ class CrudComponentTest extends TestCase
 
         $this->assertEquals(
             ['className' => 'Crud.Api'],
-            $this->Crud->defaults('listeners', 'api')
+            $this->Crud->defaults('listeners', 'api'),
         );
     }
 
@@ -627,7 +627,7 @@ class CrudComponentTest extends TestCase
 
         $this->assertEquals(
             ['className' => 'Crud.Api', 'test' => 1],
-            $this->Crud->defaults('listeners', 'api')
+            $this->Crud->defaults('listeners', 'api'),
         );
     }
 
@@ -767,7 +767,7 @@ class CrudComponentTest extends TestCase
         $this->Crud->defaults(
             'listeners',
             ['translations', 'relatedModels'],
-            ['unit_test' => true]
+            ['unit_test' => true],
         );
 
         $config = $this->Crud->defaults('listeners', 'translations');

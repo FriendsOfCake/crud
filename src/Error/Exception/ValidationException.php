@@ -47,7 +47,7 @@ class ValidationException extends BadRequestException
             'A validation error occurred',
             '{0} validation errors occurred',
             $errorCount,
-            [$errorCount]
+            [$errorCount],
         );
 
         parent::__construct($this->message, $code, $previous);

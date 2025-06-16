@@ -47,7 +47,7 @@ class ViewActionTest extends IntegrationTestCase
             ['priority' => 11],
             function ($event) {
                 $this->_subscribeToEvents($this->_controller);
-            }
+            },
         );
 
         $this->{$method}('/blogs/view/1');
@@ -71,7 +71,7 @@ class ViewActionTest extends IntegrationTestCase
             function ($event) {
                 $this->_controller->Crud->action('view')->viewVar('item');
                 $this->_subscribeToEvents($this->_controller);
-            }
+            },
         );
 
         $this->get('/blogs/view/1');

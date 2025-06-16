@@ -69,13 +69,13 @@ class ToggleActionTest extends IntegrationTestCase
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Value toggled successfully'],
                             'key' => 'flash',
-                        ]
+                        ],
                     );
 
                 $this->_controller->components()->set('Flash', $component);
 
                 $this->_subscribeToEvents($this->_controller);
-            }
+            },
         );
 
         $this->{$method}('/blogs/toggleActiveAll', [
@@ -115,7 +115,7 @@ class ToggleActionTest extends IntegrationTestCase
                             'element' => 'default',
                             'params' => ['class' => 'message error', 'original' => 'Could not toggle value'],
                             'key' => 'flash',
-                        ]
+                        ],
                     );
 
                 $this->_controller->components()->set('Flash', $component);
@@ -125,7 +125,7 @@ class ToggleActionTest extends IntegrationTestCase
                 $this->_controller->Crud->on('beforeBulk', function ($event) {
                     $event->stopPropagation();
                 });
-            }
+            },
         );
 
         $this->post('/blogs/toggleActiveAll', [
@@ -165,13 +165,13 @@ class ToggleActionTest extends IntegrationTestCase
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Value toggled successfully'],
                             'key' => 'flash',
-                        ]
+                        ],
                     );
 
                 $this->_controller->components()->set('Flash', $component);
 
                 $this->_subscribeToEvents($this->_controller);
-            }
+            },
         );
 
         $this->post('/users/toggleActiveAll', [

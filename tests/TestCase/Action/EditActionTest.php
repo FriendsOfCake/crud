@@ -88,7 +88,7 @@ class EditActionTest extends IntegrationTestCase
             function ($event) {
                 $this->_controller->Crud->action('edit')
                     ->findMethod(['withCustomOptions' => ['foo' => 'bar']]);
-            }
+            },
         );
 
         $this->get('/blogs/edit/1');
@@ -120,13 +120,13 @@ class EditActionTest extends IntegrationTestCase
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Successfully updated blog'],
                             'key' => 'flash',
-                        ]
+                        ],
                     );
 
                 $this->_controller->components()->set('Flash', $component);
 
                 $this->_subscribeToEvents($this->_controller);
-            }
+            },
         );
 
         $this->post('/blogs/edit/1', [
@@ -165,7 +165,7 @@ class EditActionTest extends IntegrationTestCase
                             'element' => 'default',
                             'params' => ['class' => 'message error', 'original' => 'Could not update blog'],
                             'key' => 'flash',
-                        ]
+                        ],
                     );
 
                 $this->_controller->components()->set('Flash', $component);
@@ -175,7 +175,7 @@ class EditActionTest extends IntegrationTestCase
                 $blogs = $this->getMockForModel(
                     $this->tableClass,
                     ['save'],
-                    ['alias' => 'Blogs', 'table' => 'blogs']
+                    ['alias' => 'Blogs', 'table' => 'blogs'],
                 );
                 $blogs
                     ->expects($this->once())
@@ -183,7 +183,7 @@ class EditActionTest extends IntegrationTestCase
                     ->willReturn(false);
 
                 $this->getTableLocator()->set('Blogs', $blogs);
-            }
+            },
         );
 
         $this->put('/blogs/edit/1', [
@@ -221,7 +221,7 @@ class EditActionTest extends IntegrationTestCase
                             'element' => 'default',
                             'params' => ['class' => 'message error', 'original' => 'Could not update blog'],
                             'key' => 'flash',
-                        ]
+                        ],
                     );
 
                 $this->_controller->components()->set('Flash', $component);
@@ -237,7 +237,7 @@ class EditActionTest extends IntegrationTestCase
                             'message' => 'Name need to be at least 10 characters long',
                         ],
                     ]);
-            }
+            },
         );
 
         $this->put('/blogs/edit/1', [
@@ -258,7 +258,7 @@ class EditActionTest extends IntegrationTestCase
         $this->assertStringContainsString(
             $expected,
             (string)$this->_response->getBody(),
-            'Could not find validation error in HTML'
+            'Could not find validation error in HTML',
         );
     }
 
@@ -287,13 +287,13 @@ class EditActionTest extends IntegrationTestCase
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Successfully updated blog'],
                             'key' => 'flash',
-                        ]
+                        ],
                     );
 
                 $this->_controller->components()->set('Flash', $component);
 
                 $this->_subscribeToEvents($this->_controller);
-            }
+            },
         );
 
         $this->patch('/blogs/edit/1', [

@@ -69,13 +69,13 @@ class DeleteActionTest extends IntegrationTestCase
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Delete completed successfully'],
                             'key' => 'flash',
-                        ]
+                        ],
                     );
 
                 $this->_controller->components()->set('Flash', $component);
 
                 $this->_subscribeToEvents($this->_controller);
-            }
+            },
         );
 
         $this->{$method}('/blogs/deleteAll', [
@@ -115,7 +115,7 @@ class DeleteActionTest extends IntegrationTestCase
                             'element' => 'default',
                             'params' => ['class' => 'message error', 'original' => 'Could not complete deletion'],
                             'key' => 'flash',
-                        ]
+                        ],
                     );
 
                 $this->_controller->components()->set('Flash', $component);
@@ -125,7 +125,7 @@ class DeleteActionTest extends IntegrationTestCase
                 $this->_controller->Crud->on('beforeBulk', function ($event) {
                     $event->stopPropagation();
                 });
-            }
+            },
         );
 
         $this->post('/blogs/deleteAll', [
@@ -165,13 +165,13 @@ class DeleteActionTest extends IntegrationTestCase
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Delete completed successfully'],
                             'key' => 'flash',
-                        ]
+                        ],
                     );
 
                 $this->_controller->components()->set('Flash', $component);
 
                 $this->_subscribeToEvents($this->_controller);
-            }
+            },
         );
 
         $this->post('/users/deleteAll', [

@@ -181,9 +181,7 @@ class SearchListenerTest extends TestCase
     public function testInjectSearchWebserviceEndpoint()
     {
         if (!class_exists(EndpointRegistry::class)) {
-            $this->markTestSkipped(
-                'Muffin/Webservice plugin is not loaded.'
-            );
+            $this->markTestSkipped('Muffin/Webservice plugin is not loaded.');
         }
 
         $this->loadPlugins(['Search', 'Muffin/Webservice']);

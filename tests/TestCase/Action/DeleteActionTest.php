@@ -66,7 +66,7 @@ class DeleteActionTest extends IntegrationTestCase
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Successfully deleted blog'],
                             'key' => 'flash',
-                        ]
+                        ],
                     );
 
                 $this->_controller->components()->set('Flash', $component);
@@ -76,7 +76,7 @@ class DeleteActionTest extends IntegrationTestCase
                 $blogs = $this->getMockForModel(
                     $this->tableClass,
                     ['delete'],
-                    ['alias' => 'Blogs', 'table' => 'blogs']
+                    ['alias' => 'Blogs', 'table' => 'blogs'],
                 );
                 $blogs
                     ->expects($this->once())
@@ -84,7 +84,7 @@ class DeleteActionTest extends IntegrationTestCase
                     ->willReturn(true);
 
                 $this->getTableLocator()->set('Blogs', $blogs);
-            }
+            },
         );
 
         $this->{$method}('/blogs/delete/1');
@@ -119,7 +119,7 @@ class DeleteActionTest extends IntegrationTestCase
                             'element' => 'default',
                             'params' => ['class' => 'message error', 'original' => 'Could not delete blog'],
                             'key' => 'flash',
-                        ]
+                        ],
                     );
 
                 $this->_controller->components()->set('Flash', $component);
@@ -133,14 +133,14 @@ class DeleteActionTest extends IntegrationTestCase
                 $blogs = $this->getMockForModel(
                     $this->tableClass,
                     ['delete'],
-                    ['alias' => 'Blogs', 'table' => 'blogs']
+                    ['alias' => 'Blogs', 'table' => 'blogs'],
                 );
                 $blogs
                     ->expects($this->never())
                     ->method('delete');
 
                 $this->getTableLocator()->set('Blogs', $blogs);
-            }
+            },
         );
 
         $this->post('/blogs/delete/1');
@@ -176,7 +176,7 @@ class DeleteActionTest extends IntegrationTestCase
                             'element' => 'default',
                             'params' => ['class' => 'message success', 'original' => 'Successfully deleted blog'],
                             'key' => 'flash',
-                        ]
+                        ],
                     );
 
                 $this->_controller->components()->set('Flash', $component);
@@ -190,7 +190,7 @@ class DeleteActionTest extends IntegrationTestCase
                 $blogs = $this->getMockForModel(
                     $this->tableClass,
                     ['delete'],
-                    ['alias' => 'Blogs', 'table' => 'blogs']
+                    ['alias' => 'Blogs', 'table' => 'blogs'],
                 );
                 $blogs
                     ->expects($this->once())
@@ -198,7 +198,7 @@ class DeleteActionTest extends IntegrationTestCase
                     ->willReturn(true);
 
                 $this->getTableLocator()->set('Blogs', $blogs);
-            }
+            },
         );
 
         $this->delete('/blogs/delete/2');

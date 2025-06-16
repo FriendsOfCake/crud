@@ -224,7 +224,7 @@ class RelatedModelsListener extends BaseListener
                 throw new RuntimeException(sprintf(
                     'Table "%s" is not associated with "%s"',
                     get_class($table),
-                    $association
+                    $association,
                 ));
             }
             $return[$associationClass->getName()] = $associationClass;

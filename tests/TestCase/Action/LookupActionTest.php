@@ -30,7 +30,7 @@ class LookupActionTest extends IntegrationTestCase
             ['priority' => 11],
             function () {
                 $this->_subscribeToEvents($this->_controller);
-            }
+            },
         );
 
         $expected = [
@@ -59,7 +59,7 @@ class LookupActionTest extends IntegrationTestCase
             ['priority' => 11],
             function () {
                 $this->_subscribeToEvents($this->_controller);
-            }
+            },
         );
 
         $expected = [
@@ -88,7 +88,7 @@ class LookupActionTest extends IntegrationTestCase
             ['priority' => 11],
             function () {
                 $this->_subscribeToEvents($this->_controller);
-            }
+            },
         );
 
         $expected = [
@@ -119,7 +119,7 @@ class LookupActionTest extends IntegrationTestCase
                 $this->_controller->Crud->on('beforeLookup', function ($event) {
                     $event->getSubject()->query->where(['id <' => 2]);
                 });
-            }
+            },
         );
 
         $expected = [
@@ -145,7 +145,7 @@ class LookupActionTest extends IntegrationTestCase
                 $this->_subscribeToEvents($this->_controller);
                 $this->_controller->Crud->action('lookup')
                     ->findMethod(['withCustomOptions' => ['foo' => 'bar']]);
-            }
+            },
         );
 
         $this->get('/blogs/lookup.json');

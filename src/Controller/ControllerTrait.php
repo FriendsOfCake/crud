@@ -65,7 +65,7 @@ trait ControllerTrait
         if ($this->mappedAction) {
             $this->response = $this->Crud->execute(
                 $this->request->getParam('action'),
-                array_values($this->getRequest()->getParam('pass'))
+                array_values($this->getRequest()->getParam('pass')),
             );
 
             return;

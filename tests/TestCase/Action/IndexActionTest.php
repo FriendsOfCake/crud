@@ -47,13 +47,13 @@ class IndexActionTest extends IntegrationTestCase
             ['priority' => 11],
             function ($event) {
                 $this->_subscribeToEvents($this->_controller);
-            }
+            },
         );
 
         $this->{$method}('/blogs');
         $this->assertStringContainsString(
             'Page 1 of 2, showing 3 records out of 5 total',
-            (string)$this->_response->getBody()
+            (string)$this->_response->getBody(),
         );
         $this->assertEvents(['beforePaginate', 'afterPaginate', 'beforeRender']);
         $this->assertNotNull($this->viewVariable('viewVar'));
@@ -74,14 +74,14 @@ class IndexActionTest extends IntegrationTestCase
             function ($event) {
                 $this->_controller->Crud->action('index')->viewVar('items');
                 $this->_subscribeToEvents($this->_controller);
-            }
+            },
         );
 
         $this->get('/blogs');
 
         $this->assertStringContainsString(
             'Page 1 of 2, showing 3 records out of 5 total',
-            (string)$this->_response->getBody()
+            (string)$this->_response->getBody(),
         );
         $this->assertEvents(['beforePaginate', 'afterPaginate', 'beforeRender']);
         $this->assertNotNull($this->viewVariable('viewVar'));
@@ -103,13 +103,13 @@ class IndexActionTest extends IntegrationTestCase
                 $this->_controller->Crud->on('beforePaginate', function ($event) {
                     $event->getSubject()->query->where(['id <' => 2]);
                 });
-            }
+            },
         );
 
         $this->get('/blogs');
         $this->assertStringContainsString(
             'Page 1 of 1, showing 1 records out of 1 total',
-            (string)$this->_response->getBody()
+            (string)$this->_response->getBody(),
         );
     }
 
@@ -126,7 +126,7 @@ class IndexActionTest extends IntegrationTestCase
             function () {
                 $this->_controller->Crud->action('index')
                     ->findMethod(['withCustomOptions' => ['foo' => 'bar']]);
-            }
+            },
         );
 
         $this->get('/blogs');
@@ -145,7 +145,7 @@ class IndexActionTest extends IntegrationTestCase
             ['priority' => 11],
             function ($event) {
                 $this->_subscribeToEvents($this->_controller);
-            }
+            },
         );
 
         $this->get('/blogs?page=999&foo=bar');
