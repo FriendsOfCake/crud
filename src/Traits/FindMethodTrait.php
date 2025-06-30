@@ -63,12 +63,13 @@ trait FindMethodTrait
 
         [$finder, $options] = $this->_extractFinder();
         $query = $repository->find($finder, ...$options);
+        $primaryKey = $this->getConfig('primaryKey', $repository->getPrimaryKey());
         /**
          * @psalm-suppress PossiblyInvalidArgument
          * @psalm-suppress InvalidArrayOffset
          * @phpstan-ignore argument.type
          */
-        $query->where([current($query->aliasField($repository->getPrimaryKey())) => $id]);
+        $query->where([current($query->aliasField($primaryKey)) => $id]);
 
         $subject->set([
             'repository' => $repository,
