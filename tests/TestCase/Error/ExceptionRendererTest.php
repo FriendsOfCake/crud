@@ -16,7 +16,7 @@ use Crud\Log\QueryLogger;
 
 class ExceptionRendererTest extends TestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         Configure::write('debug', true);

@@ -123,7 +123,11 @@ class EditAction extends BaseAction
             $this->saveOptions(),
         );
 
-        $this->_trigger('beforeSave', $subject);
+        $event = $this->_trigger('beforeSave', $subject);
+        if ($event->isStopped()) {
+            return $this->_stopped($subject);
+        }
+
         /** @phpstan-ignore argument.type */
         if (call_user_func([$this->_model(), $this->saveMethod()], $entity, $this->saveOptions())) {
             return $this->_success($subject);
@@ -190,5 +194,27 @@ class EditAction extends BaseAction
         $this->setFlash('error', $subject);
 
         $this->_trigger('beforeRender', $subject);
+    }
+
+    /**
+     * Stopped callback
+     *
+     * @param \Crud\Event\Subject $subject Event subject
+     * @return \Cake\Http\Response|null
+     */
+    protected function _stopped(Subject $subject): ?Response
+    {
+        if (!isset($subject->success)) {
+            $subject->success = false;
+        }
+
+        if ($subject->success) {
+            return $this->_success($subject);
+        }
+
+        $subject->set(['success' => false]);
+        $this->setFlash('error', $subject);
+
+        return $this->_redirect($subject, ['action' => 'index']);
     }
 }

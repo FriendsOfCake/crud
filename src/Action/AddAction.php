@@ -116,8 +116,9 @@ class AddAction extends BaseAction
      */
     protected function _post(): ?Response
     {
+        $entity = $this->_entity($this->_request()->getData(), $this->saveOptions());
         $subject = $this->_subject([
-            'entity' => $this->_entity($this->_request()->getData(), $this->saveOptions()),
+            'entity' => $entity,
             'saveMethod' => $this->saveMethod(),
             'saveOptions' => $this->saveOptions(),
         ]);
@@ -127,9 +128,8 @@ class AddAction extends BaseAction
             return $this->_stopped($subject);
         }
 
-        $saveCallback = [$this->_model(), $subject->saveMethod];
         /** @phpstan-ignore argument.type */
-        if (call_user_func($saveCallback, $subject->entity, $subject->saveOptions)) {
+        if (call_user_func([$this->_model(), $this->saveMethod()], $entity, $this->saveOptions())) {
             return $this->_success($subject);
         }
 
