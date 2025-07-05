@@ -46,7 +46,7 @@ class CrudComponentTest extends TestCase
      *
      * Setup the classes the crud component needs to be testable
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
