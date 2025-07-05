@@ -6,6 +6,7 @@ namespace Crud\Action;
 use Cake\Http\Response;
 use Crud\Error\Exception\ValidationException;
 use Crud\Event\Subject;
+use Crud\Traits\FindMethodTrait;
 use Crud\Traits\RedirectTrait;
 use Crud\Traits\SaveMethodTrait;
 use Crud\Traits\SerializeTrait;
@@ -13,13 +14,14 @@ use Crud\Traits\ViewTrait;
 use Crud\Traits\ViewVarTrait;
 
 /**
- * Handles 'Add' Crud actions
+ * Handles 'Adit' ('Add'/'Edit' combined) Crud actions
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
-class AddAction extends BaseAction
+class AditAction extends BaseAction
 {
+    use FindMethodTrait;
     use RedirectTrait;
     use SaveMethodTrait;
     use SerializeTrait;
@@ -27,9 +29,11 @@ class AddAction extends BaseAction
     use ViewVarTrait;
 
     /**
-     * Default settings for 'add' actions
+     * Default settings for 'adit' actions
      *
      * `enabled` Is this crud action enabled or disabled
+     *
+     * `findMethod` The default `Model::find()` method for reading data
      *
      * `view` A map of the controller action and the view to render
      * If `NULL` (the default) the controller action name will be used
@@ -38,7 +42,7 @@ class AddAction extends BaseAction
      * to be used in select boxes. An array as value means it is enabled and represent the list
      * of model associations to be fetched
      *
-     * `saveOptions` Options array used for $options argument of newEntity() and save method.
+     * `saveOptions` Options array used for $options argument of patchEntity() and save method.
      * If you configure a key with your action name, it will override the default settings.
      *
      * @var array
@@ -46,20 +50,35 @@ class AddAction extends BaseAction
     protected array $_defaultConfig = [
         'enabled' => true,
         'scope' => 'entity',
-        'inflection' => 'singular',
+        'findMethod' => 'all',
         'saveMethod' => 'save',
         'view' => null,
-        'viewVar' => null,
         'relatedModels' => true,
-        'entityKey' => 'entity',
         'saveOptions' => [],
-        'api' => [
-            'methods' => ['put', 'post'],
+        'messages' => [
             'success' => [
-                'code' => 201,
-                'data' => [
-                    'entity' => ['id'],
-                ],
+                'text' => 'Successfully saved {name}',
+            ],
+            'error' => [
+                'text' => 'Could not save {name}',
+            ],
+        ],
+        'redirect' => [
+            'post_add' => [
+                'reader' => 'request.data',
+                'key' => '_add',
+                'url' => ['action' => 'adit'],
+            ],
+            'post_edit' => [
+                'reader' => 'request.data',
+                'key' => '_edit',
+                'url' => ['action' => 'adit', ['subject.key', 'id']],
+            ],
+        ],
+        'api' => [
+            'methods' => ['put', 'post', 'patch'],
+            'success' => [
+                'code' => 200,
             ],
             'error' => [
                 'exception' => [
@@ -68,66 +87,62 @@ class AddAction extends BaseAction
                 ],
             ],
         ],
-        'redirect' => [
-            'post_add' => [
-                'reader' => 'request.data',
-                'key' => '_add',
-                'url' => ['action' => 'add'],
-            ],
-            'post_edit' => [
-                'reader' => 'request.data',
-                'key' => '_edit',
-                'url' => ['action' => 'edit', ['entity.field', 'id']],
-            ],
-        ],
-        'messages' => [
-            'success' => [
-                'text' => 'Successfully created {name}',
-            ],
-            'error' => [
-                'text' => 'Could not create {name}',
-            ],
-        ],
         'serialize' => [],
     ];
 
     /**
      * HTTP GET handler
      *
+     * @param string|int|null $id Record id
      * @return void
+     * @throws \Cake\Http\Exception\NotFoundException If record not found
      */
-    protected function _get(): void
+    protected function _get(string|int|null $id = null): void
     {
-        $subject = $this->_subject([
-            'success' => true,
-            'entity' => $this->_entity(
-                $this->_request()->getQueryParams(),
-                ['validate' => false] + $this->saveOptions(),
-            ),
-        ]);
+        if ($id) {
+            $subject = $this->_subject();
+            $subject->set(['id' => $id]);
+            $subject->set(['entity' => $this->_findRecord($id, $subject)]);
+        } else {
+            $subject = $this->_subject([
+                'success' => true,
+                'entity' => $this->_entity(
+                    $this->_request()->getQueryParams(),
+                    ['validate' => false] + $this->saveOptions(),
+                ),
+            ]);
+        }
 
         $this->_trigger('beforeRender', $subject);
     }
 
     /**
-     * HTTP POST handler
+     * HTTP PUT handler
      *
+     * @param string|int|null $id Record id
      * @return \Cake\Http\Response|null
      */
-    protected function _post(): ?Response
+    protected function _put(string|int|null $id = null): ?Response
     {
-        $entity = $this->_entity($this->_request()->getData(), $this->saveOptions());
-        $subject = $this->_subject([
-            'entity' => $entity,
-            'saveMethod' => $this->saveMethod(),
-            'saveOptions' => $this->saveOptions(),
-        ]);
+        if ($id) {
+            $subject = $this->_subject();
+            $subject->set(['id' => $id]);
 
-        $event = $this->_trigger('beforeSave', $subject);
-        if ($event->isStopped()) {
-            return $this->_stopped($subject);
+            $entity = $this->_model()->patchEntity(
+                $this->_findRecord($id, $subject),
+                $this->_request()->getData(),
+                $this->saveOptions(),
+            );
+        } else {
+            $entity = $this->_entity($this->_request()->getData(), $this->saveOptions());
+            $subject = $this->_subject([
+                'entity' => $entity,
+                'saveMethod' => $this->saveMethod(),
+                'saveOptions' => $this->saveOptions(),
+            ]);
         }
 
+        $this->_trigger('beforeSave', $subject);
         /** @phpstan-ignore argument.type */
         if (call_user_func([$this->_model(), $this->saveMethod()], $entity, $this->saveOptions())) {
             return $this->_success($subject);
@@ -139,33 +154,49 @@ class AddAction extends BaseAction
     }
 
     /**
-     * HTTP PUT handler
+     * HTTP POST handler
      *
+     * Thin proxy for _put
+     *
+     * @param string|int|null $id Record id
      * @return \Cake\Http\Response|null
      */
-    protected function _put(): ?Response
+    protected function _post(string|int|null $id = null): ?Response
     {
-        return $this->_post();
+        return $this->_put($id);
     }
 
     /**
-     * Post success callback
+     * HTTP PATCH handler
+     *
+     * Thin proxy for _put
+     *
+     * @param string|int|null $id Record id
+     * @return \Cake\Http\Response|null
+     */
+    protected function _patch(string|int|null $id = null): ?Response
+    {
+        return $this->_put($id);
+    }
+
+    /**
+     * Success callback
      *
      * @param \Crud\Event\Subject $subject Event subject
      * @return \Cake\Http\Response|null
      */
     protected function _success(Subject $subject): ?Response
     {
-        $subject->set(['success' => true, 'created' => true]);
-
+        $subject->set(['success' => true, 'created' => false]);
         $this->_trigger('afterSave', $subject);
+
         $this->setFlash('success', $subject);
 
         return $this->_redirect($subject, ['action' => 'index']);
     }
 
     /**
-     * Post error callback
+     * Error callback
      *
      * @param \Crud\Event\Subject $subject Event subject
      * @return void
@@ -173,31 +204,10 @@ class AddAction extends BaseAction
     protected function _error(Subject $subject): void
     {
         $subject->set(['success' => false, 'created' => false]);
-
         $this->_trigger('afterSave', $subject);
+
         $this->setFlash('error', $subject);
+
         $this->_trigger('beforeRender', $subject);
-    }
-
-    /**
-     * Stopped callback
-     *
-     * @param \Crud\Event\Subject $subject Event subject
-     * @return \Cake\Http\Response|null
-     */
-    protected function _stopped(Subject $subject): ?Response
-    {
-        if (!isset($subject->success)) {
-            $subject->success = false;
-        }
-
-        if ($subject->success) {
-            return $this->_success($subject);
-        }
-
-        $subject->set(['success' => false]);
-        $this->setFlash('error', $subject);
-
-        return $this->_redirect($subject, ['action' => 'index']);
     }
 }
