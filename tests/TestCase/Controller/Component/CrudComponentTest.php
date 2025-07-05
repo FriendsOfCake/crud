@@ -871,22 +871,26 @@ class CrudComponentTest extends TestCase
      */
     public function testUseModel()
     {
-        $this->Crud = new CrudComponent($this->Registry, ['actions' => ['Crud.Index']]);
-        $this->Crud->beforeFilter(new Event('Controller.beforeFilter'));
-        $this->controller->components()->set('Crud', $this->Crud);
-        $this->controller->getTableLocator()->set('MyModel', new Table([
-            'table' => 'posts',
-            'alias' => 'MyModel',
-        ]));
-        $this->Crud->useModel('MyModel');
+        $this->deprecated(function () {
+            $this->Crud = new CrudComponent($this->Registry, ['actions' => ['Crud.Index']]);
+            $this->Crud->beforeFilter(new Event('Controller.beforeFilter'));
+            $this->controller->components()->set('Crud', $this->Crud);
+            $this->controller->getTableLocator()->set('MyModel', new Table([
+                'table' => 'posts',
+                'alias' => 'MyModel',
+            ]));
+            $this->Crud->useModel('MyModel');
 
-        $this->assertEquals('MyModel', $this->Crud->model()->getAlias());
+            $this->assertEquals('MyModel', $this->Crud->model()->getAlias());
+        });
     }
 
     public function testEntity(): void
     {
-        $result = $this->Crud->entity(['key' => 'value']);
-        $this->assertSame(['key' => 'value'], $result->toArray());
+        $this->deprecated(function () {
+            $result = $this->Crud->entity(['key' => 'value']);
+            $this->assertSame(['key' => 'value'], $result->toArray());
+        });
     }
 
     /**
