@@ -1,0 +1,46 @@
+<?php
+declare(strict_types=1);
+
+namespace Crud\Test\App\Controller;
+
+use Cake\Controller\Controller;
+use Crud\Controller\ControllerTrait;
+
+class AditBlogsController extends Controller
+{
+    use ControllerTrait;
+
+    protected array $paginate = ['limit' => 3];
+
+    public function initialize(): void
+    {
+        $this->loadComponent('Flash');
+        $this->loadComponent('Crud.Crud', [
+            'actions' => [
+                'Crud.Index',
+                'Crud.Adit',
+                'Crud.View',
+                'Crud.Delete',
+                'Crud.Lookup',
+                'deleteAll' => [
+                    'className' => 'Crud.Bulk/Delete',
+                ],
+                'toggleActiveAll' => [
+                    'className' => 'Crud.Bulk/Toggle',
+                    'field' => 'is_active',
+                ],
+                'deactivateAll' => [
+                    'className' => 'Crud.Bulk/SetValue',
+                    'field' => 'is_active',
+                    'value' => false,
+                ],
+            ],
+            'listeners' => [
+                'Crud.Api',
+                'Crud.RelatedModels',
+                'Crud.Redirect',
+            ],
+        ]);
+        $this->Crud->useModel('Blogs');
+    }
+}
