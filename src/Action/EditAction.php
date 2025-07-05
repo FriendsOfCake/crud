@@ -122,6 +122,11 @@ class EditAction extends BaseAction
             $this->_request()->getData(),
             $this->saveOptions(),
         );
+        $subject = $this->_subject([
+            'entity' => $entity,
+            'saveMethod' => $this->saveMethod(),
+            'saveOptions' => $this->saveOptions(),
+        ]);
 
         $event = $this->_trigger('beforeSave', $subject);
         if ($event->isStopped()) {
@@ -129,7 +134,7 @@ class EditAction extends BaseAction
         }
 
         /** @phpstan-ignore argument.type */
-        if (call_user_func([$this->_model(), $this->saveMethod()], $entity, $this->saveOptions())) {
+        if (call_user_func([$this->_model(), $subject->saveMethod], $subject->entity, $subject->saveOptions)) {
             return $this->_success($subject);
         }
 

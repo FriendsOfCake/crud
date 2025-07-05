@@ -129,7 +129,7 @@ class AddAction extends BaseAction
         }
 
         /** @phpstan-ignore argument.type */
-        if (call_user_func([$this->_model(), $this->saveMethod()], $entity, $this->saveOptions())) {
+        if (call_user_func([$this->_model(), $subject->saveMethod], $subject->entity, $subject->saveOptions)) {
             return $this->_success($subject);
         }
 
