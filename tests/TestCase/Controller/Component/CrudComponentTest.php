@@ -5,6 +5,7 @@ namespace Crud\TestCase\Controller\Crud;
 
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
+use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Http\Exception\BadRequestException;
@@ -881,6 +882,18 @@ class CrudComponentTest extends TestCase
         $this->Crud->useModel('MyModel');
 
         $this->assertEquals('MyModel', $this->Crud->model()->getAlias());
+    }
+
+    public function testEntity(): void
+    {
+        $result = $this->Crud->entity(['key' => 'value']);
+        $this->assertSame(['key' => 'value'], $result->toArray());
+    }
+
+    public function testEmptyEntity(): void
+    {
+        $result = $this->Crud->entity();
+        $this->assertInstanceOf(EntityInterface::class, $result);
     }
 
     /**

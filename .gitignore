@@ -3,6 +3,8 @@ docs/_build
 phpunit.xml
 vendor/
 composer.lock
-tmp
+tmp/
 .phpunit.cache
 .phpunit.result.cache
+.idea/
+/tools/

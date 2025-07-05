@@ -650,7 +650,7 @@ class CrudComponent extends Component
     }
 
     /**
-     * Returns new entity
+     * Returns new entity with data patched in.
      *
      * @param array $data Data
      * @return \Cake\Datasource\EntityInterface
@@ -658,6 +658,16 @@ class CrudComponent extends Component
     public function entity(array $data = []): EntityInterface
     {
         return $this->model()->newEntity($data);
+    }
+
+    /**
+     * Returns new empty entity.
+     *
+     * @return \Cake\Datasource\EntityInterface
+     */
+    public function emptyEntity(): EntityInterface
+    {
+        return $this->model()->newEmptyEntity();
     }
 
     /**
