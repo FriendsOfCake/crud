@@ -883,6 +883,12 @@ class CrudComponentTest extends TestCase
         $this->assertEquals('MyModel', $this->Crud->model()->getAlias());
     }
 
+    public function testEntity(): void
+    {
+        $result = $this->Crud->entity(['key' => 'value']);
+        $this->assertSame(['key' => 'value'], $result->toArray());
+    }
+
     /**
      * testLoadListener
      *

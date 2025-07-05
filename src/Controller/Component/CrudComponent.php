@@ -650,8 +650,9 @@ class CrudComponent extends Component
     }
 
     /**
-     * Returns new entity
+     * Returns new entity with data patched in.
      *
+     * @deprecated Directly use the table class.
      * @param array $data Data
      * @return \Cake\Datasource\EntityInterface
      */

@@ -9,7 +9,7 @@ https://crud.readthedocs.io/en/latest/installation.html
 
 # Introduction
 
-Crud was built to be scaffolding on steroids, and allow developers to have
+Crud was built to be scaffolding on steroids, and allows developers to have
 enough flexibility to use it for both rapid prototyping and production
 applications, even on the same code base -- saving you time.
 
