@@ -15,7 +15,7 @@ class SubjectTest extends TestCase
 {
     protected Subject $Subject;
 
-    public function setup(): void
+    protected function setUp(): void
     {
         parent::setup();
 
