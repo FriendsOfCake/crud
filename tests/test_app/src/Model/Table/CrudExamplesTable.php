@@ -17,8 +17,6 @@ class CrudExamplesTable extends Table
     protected ?string $_alias = 'CrudExamples';
 
     /**
-     * [initialize description]
-     *
      * @param array $config Config
      * @return void
      */
@@ -28,25 +26,21 @@ class CrudExamplesTable extends Table
     }
 
     /**
-     * [_findPublished description]
-     *
      * @param \Cake\ORM\Query\SelectQuery $query Config
      * @param array $options Options
      * @return void
      */
-    protected function _findPublished(SelectQuery $query, array $options)
+    protected function _findPublished(SelectQuery $query, array $options): void
     {
         $query->where(['published' => 'Y']);
     }
 
     /**
-     * [_findUnpublished description]
-     *
      * @param \Cake\ORM\Query\SelectQuery $query Config
      * @param array $options Options
      * @return void
      */
-    protected function _findUnpublished(SelectQuery $query, array $options)
+    protected function _findUnpublished(SelectQuery $query, array $options): void
     {
         $query->where(['published' => 'N']);
     }
