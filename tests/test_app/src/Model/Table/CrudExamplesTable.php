@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Crud\Test\App\Model\Table;
 
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 
 /**
@@ -17,8 +17,6 @@ class CrudExamplesTable extends Table
     protected ?string $_alias = 'CrudExamples';
 
     /**
-     * [initialize description]
-     *
      * @param array $config Config
      * @return void
      */
@@ -28,30 +26,22 @@ class CrudExamplesTable extends Table
     }
 
     /**
-     * [_findPublished description]
-     *
-     * @param Query $query Config
+     * @param \Cake\ORM\Query\SelectQuery $query Config
      * @param array $options Options
      * @return void
      */
-    protected function _findPublished(Query $query, array $options)
+    protected function _findPublished(SelectQuery $query, array $options): void
     {
         $query->where(['published' => 'Y']);
-
-        return $query;
     }
 
     /**
-     * [_findUnpublished description]
-     *
-     * @param Query $query Config
+     * @param \Cake\ORM\Query\SelectQuery $query Config
      * @param array $options Options
      * @return void
      */
-    protected function _findUnpublished(Query $query, array $options)
+    protected function _findUnpublished(SelectQuery $query, array $options): void
     {
         $query->where(['published' => 'N']);
-
-        return $query;
     }
 }

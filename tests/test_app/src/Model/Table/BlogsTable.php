@@ -11,13 +11,11 @@ class BlogsTable extends Table
     public array $customOptions;
 
     /**
-     * findWithCustomOptions
-     *
      * @param \Cake\ORM\Query\SelectQuery $query
      * @param mixed ...$options
      * @return \Cake\ORM\Query\SelectQuery
      */
-    public function findWithCustomOptions(SelectQuery $query, mixed ...$options)
+    public function findWithCustomOptions(SelectQuery $query, mixed ...$options): SelectQuery
     {
         $this->customOptions = $options;
 
