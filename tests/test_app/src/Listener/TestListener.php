@@ -9,7 +9,7 @@ class TestListener extends BaseListener
 {
     public $callCount = 0;
 
-    protected function setUp(): void
+    public function setup(): void
     {
         $this->callCount += 1;
     }

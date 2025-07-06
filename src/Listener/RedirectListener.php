@@ -48,7 +48,7 @@ class RedirectListener extends BaseListener
      *
      * @return void
      */
-    protected function setUp(): void
+    public function setup(): void
     {
         $this->reader('request.key', function (Subject $subject, $key = null) {
             $request = $this->_request();
