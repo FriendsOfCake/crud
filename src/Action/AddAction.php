@@ -127,9 +127,8 @@ class AddAction extends BaseAction
             return $this->_stopped($subject);
         }
 
-        $saveCallback = [$this->_model(), $subject->saveMethod];
         /** @phpstan-ignore argument.type */
-        if (call_user_func($saveCallback, $subject->entity, $subject->saveOptions)) {
+        if (call_user_func([$this->_model(), $subject->saveMethod], $subject->entity, $subject->saveOptions)) {
             return $this->_success($subject);
         }
 
