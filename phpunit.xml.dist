@@ -1,5 +1,13 @@
-<?xml version="1.0"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" colors="true" processIsolation="false" stopOnFailure="false" bootstrap="./tests/bootstrap.php" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.2/phpunit.xsd" cacheDirectory=".phpunit.cache">
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/12.0/phpunit.xsd"
+    colors="true"
+    processIsolation="false"
+    stopOnFailure="false"
+    failOnDeprecation="true"
+    displayDetailsOnTestsThatTriggerDeprecations="true"
+    bootstrap="./tests/bootstrap.php"
+    cacheDirectory=".phpunit.cache"
+>
     <testsuites>
         <testsuite name="Crud">
             <directory>tests/</directory>
@@ -10,6 +18,9 @@
     </extensions>
     <coverage/>
     <php>
+        <!-- E_ALL & ~E_USER_DEPRECATED (16383)-->
+        <!-- E_ALL (32767) -->
+        <ini name="error_reporting" value="32767"/>
         <env name="FIXTURE_SCHEMA_METADATA" value="./tests/schema.php"/>
     </php>
     <source>

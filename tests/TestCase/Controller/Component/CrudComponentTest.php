@@ -48,6 +48,8 @@ class CrudComponentTest extends TestCase
      */
     protected function setUp(): void
     {
+        error_reporting(E_ALL);
+
         parent::setUp();
 
         EventManager::instance(new TestCrudEventManager());
