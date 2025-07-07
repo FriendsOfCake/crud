@@ -1,4 +1,4 @@
-Pygments==2.18.0
+Pygments==2.19.2
 Sphinx==7.4.7
 sphinx-rtd-theme==2.0.0
 sphinxcontrib-phpdomain==0.12.0
