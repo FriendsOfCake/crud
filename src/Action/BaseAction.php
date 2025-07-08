@@ -154,7 +154,6 @@ abstract class BaseAction extends BaseObject
             throw new Exception(sprintf('Invalid message config for "%s" no text key found', $type));
         }
 
-        /** @psalm-suppress PossiblyInvalidArgument */
         $config['params']['original'] = ucfirst(str_replace('{name}', $config['name'], $config['text']));
 
         $domain = $this->getConfig('messages.domain');
@@ -170,7 +169,6 @@ abstract class BaseAction extends BaseObject
             ['before' => '{', 'after' => '}'],
         );
 
-        /** @psalm-suppress InvalidArrayOffset */
         $config['params']['class'] .= ' ' . $type;
 
         return $config;
@@ -230,7 +228,6 @@ abstract class BaseAction extends BaseObject
             return $this->getConfig('redirect');
         }
 
-        /** @psalm-suppress PossiblyNullArgument */
         $path = sprintf('redirect.%s', $name);
         if ($config === null) {
             return $this->getConfig($path);

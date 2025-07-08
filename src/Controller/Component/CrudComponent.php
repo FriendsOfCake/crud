@@ -334,14 +334,12 @@ class CrudComponent extends Component
     {
         if (is_array($action)) {
             foreach ($action as $realAction => $realView) {
-                /** @psalm-suppress UndefinedMethod */
                 $this->action($realAction)->view($realView);
             }
 
             return;
         }
 
-        /** @psalm-suppress UndefinedMethod */
         $this->action($action)->view($view);
     }
 
@@ -360,14 +358,12 @@ class CrudComponent extends Component
     {
         if (is_array($action)) {
             foreach ($action as $realAction => $realViewVar) {
-                /** @psalm-suppress UndefinedMethod */
                 $this->action($realAction)->viewVar($realViewVar);
             }
 
             return;
         }
 
-        /** @psalm-suppress UndefinedMethod */
         $this->action($action)->viewVar($viewVar);
     }
 
@@ -386,14 +382,12 @@ class CrudComponent extends Component
     {
         if (is_array($action)) {
             foreach ($action as $realAction => $realMethod) {
-                /** @psalm-suppress UndefinedMethod */
                 $this->action($realAction)->findMethod($realMethod);
             }
 
             return;
         }
 
-        /** @psalm-suppress UndefinedMethod */
         $this->action($action)->findMethod($method);
     }
 
@@ -493,7 +487,6 @@ class CrudComponent extends Component
     {
         if (strpos($name, '.') !== false) {
             [$plugin, $name] = pluginSplit($name);
-            /** @psalm-suppress PossiblyNullOperand */
             $className = $plugin . '.' . Inflector::camelize($name);
         }
 
@@ -601,7 +594,6 @@ class CrudComponent extends Component
         }
 
         /**
-         * @psalm-suppress PossiblyInvalidArgument
          * @phpstan-ignore argument.type
          */
         return $this->getConfig(sprintf('%s.%s', $type, $name));
@@ -729,7 +721,7 @@ class CrudComponent extends Component
                 throw new ListenerNotConfiguredException(sprintf('Listener "%s" is not configured', $name));
             }
 
-            /** @psalm-var class-string<\Crud\Listener\BaseListener>|null $className */
+            /** @var class-string<\Crud\Listener\BaseListener>|null $className */
             $className = App::className($config['className'], 'Listener', 'Listener');
             if (empty($className)) {
                 throw new MissingListenerException('Could not find listener class: ' . $config['className']);
@@ -766,7 +758,7 @@ class CrudComponent extends Component
                 throw new ActionNotConfiguredException(sprintf('Action "%s" has not been mapped', $name));
             }
 
-            /** @psalm-var class-string<\Crud\Action\BaseAction>|null */
+            /** @var class-string<\Crud\Action\BaseAction>|null */
             $className = App::className($config['className'], 'Action', 'Action');
             if (empty($className)) {
                 throw new MissingActionException('Could not find action class: ' . $config['className']);

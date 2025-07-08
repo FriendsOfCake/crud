@@ -109,7 +109,6 @@ class ApiListener extends BaseListener
             return null;
         }
 
-        /** @psalm-suppress ArgumentTypeCoercion */
         $response = $this->render($event->getSubject());
 
         if (!empty($apiConfig['code'])) {

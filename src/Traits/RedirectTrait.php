@@ -35,7 +35,6 @@ trait RedirectTrait
             return $this->getConfig('redirect');
         }
 
-        /** @psalm-suppress PossiblyNullArgument */
         $path = sprintf('redirect.%s', $name);
         if ($config === null) {
             return $this->getConfig($path);

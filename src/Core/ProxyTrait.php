@@ -124,7 +124,6 @@ trait ProxyTrait
      * Get the model instance
      *
      * @return \Cake\Datasource\RepositoryInterface
-     * @psalm-suppress MoreSpecificReturnType
      */
     protected function _model(): RepositoryInterface
     {
@@ -165,7 +164,6 @@ trait ProxyTrait
      */
     protected function _crud(): CrudComponent
     {
-        /** @psalm-suppress UndefinedMagicPropertyFetch */
         return $this->_controller->Crud;
     }
 }

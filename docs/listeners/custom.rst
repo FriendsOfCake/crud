@@ -23,9 +23,9 @@ the ``Crud.beforeFind`` event to the ``_beforeFind()`` method in the controller.
         ];
     }
 
-    public function _beforeFind(\Cake\Event\EventInterface $event, \Cake\ORM\Query $query)
+    public function _beforeFind(\Cake\Event\EventInterface $event, \Cake\ORM\Query\SelectQuery $query): void
     {
-
+      ...
     }
 
   }
