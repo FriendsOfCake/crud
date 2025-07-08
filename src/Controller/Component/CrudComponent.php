@@ -14,7 +14,6 @@ use Cake\Event\EventManagerInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\Http\Exception\NotFoundException;
-use Cake\Http\ServerRequest;
 use Cake\Utility\Inflector;
 use Crud\Action\BaseAction;
 use Crud\Error\Exception\ActionNotConfiguredException;
@@ -25,6 +24,7 @@ use Crud\Error\Exception\MissingListenerException;
 use Crud\Event\Subject;
 use Crud\Listener\BaseListener;
 use Psr\Http\Message\ResponseInterface;
+use function Cake\Core\deprecationWarning;
 use function Cake\Core\pluginSplit;
 
 /**
@@ -50,13 +50,6 @@ class CrudComponent extends Component
      * @var \Cake\Controller\Controller
      */
     protected Controller $_controller;
-
-    /**
-     * Reference to the current request.
-     *
-     * @var \Cake\Http\ServerRequest
-     */
-    protected ServerRequest $_request;
 
     /**
      * A flat array of the events triggered.
@@ -629,9 +622,16 @@ class CrudComponent extends Component
      *
      * @param string $modelName The name of the model to use.
      * @return void
+     * @deprecated 7.2.0 Set Controller::$defaultTable or Controller::$modelClass instead.
      */
     public function useModel(string $modelName): void
     {
+        deprecationWarning(
+            '7.2.0',
+            'CrudComponent::useModel() is deprecated. ' .
+            'Set Controller::$defaultTable or Controller::$modelClass instead.',
+        );
+
         $this->_modelName = $modelName;
     }
 
@@ -652,12 +652,18 @@ class CrudComponent extends Component
     /**
      * Returns new entity with data patched in.
      *
-     * @deprecated Directly use the table class.
      * @param array $data Data
      * @return \Cake\Datasource\EntityInterface
+     * @deprecated 7.2.0 Directly use the model's `newEntity()` method instead.
      */
     public function entity(array $data = []): EntityInterface
     {
+        deprecationWarning(
+            '7.2.0',
+            'CrudComponent::entity() is deprecated. ' .
+            "Directly use the model's `newEntity()` method instead.",
+        );
+
         return $this->model()->newEntity($data);
     }
 
@@ -665,9 +671,15 @@ class CrudComponent extends Component
      * Returns controller instance
      *
      * @return \Cake\Controller\Controller
+     * @deprecated 7.2.0 This method shouldn't be unused anymore.
      */
     public function controller(): Controller
     {
+        deprecationWarning(
+            '7.2.0',
+            'CrudComponent::controller() is deprecated.',
+        );
+
         return $this->_controller;
     }
 
