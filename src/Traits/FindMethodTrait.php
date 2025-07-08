@@ -64,8 +64,6 @@ trait FindMethodTrait
         [$finder, $options] = $this->_extractFinder();
         $query = $repository->find($finder, ...$options);
         /**
-         * @psalm-suppress PossiblyInvalidArgument
-         * @psalm-suppress InvalidArrayOffset
          * @phpstan-ignore argument.type
          */
         $query->where([current($query->aliasField($repository->getPrimaryKey())) => $id]);
@@ -102,7 +100,7 @@ trait FindMethodTrait
         $this->_trigger('recordNotFound', $subject);
 
         $message = $this->message('recordNotFound', compact('id'));
-        /** @psalm-var class-string<\Exception> $exceptionClass */
+        /** @var class-string<\Exception> $exceptionClass */
         $exceptionClass = $message['class'];
         throw new $exceptionClass($message['text'], $message['code']);
     }
