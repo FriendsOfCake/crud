@@ -48,13 +48,12 @@ class DeleteActionTest extends IntegrationTestCase
     #[DataProvider('allHttpMethodProvider')]
     public function testAllRequestMethods($method)
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function ($event) {
                 $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->setConstructorArgs([$this->_controller->components()])
+                    ->setConstructorArgs([$this->controller->components()])
                     ->getMock();
 
                 $component
@@ -69,9 +68,9 @@ class DeleteActionTest extends IntegrationTestCase
                         ],
                     );
 
-                $this->_controller->components()->set('Flash', $component);
+                $this->controller->components()->set('Flash', $component);
 
-                $this->_subscribeToEvents($this->_controller);
+                $this->subscribeToEvents($this->controller);
 
                 $blogs = $this->getMockForModel(
                     $this->tableClass,
@@ -85,12 +84,13 @@ class DeleteActionTest extends IntegrationTestCase
 
                 $this->getTableLocator()->set('Blogs', $blogs);
             },
+            ['priority' => 11],
         );
 
         $this->{$method}('/blogs/delete/1');
 
         $this->assertEvents(['beforeFind', 'afterFind', 'beforeDelete', 'afterDelete', 'setFlash', 'beforeRedirect']);
-        $this->assertTrue($this->_subject->success);
+        $this->assertTrue($this->subject->success);
         $this->assertRedirect('/blogs');
     }
 
@@ -101,13 +101,12 @@ class DeleteActionTest extends IntegrationTestCase
      */
     public function testStopDelete()
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function ($event) {
                 $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->setConstructorArgs([$this->_controller->components()])
+                    ->setConstructorArgs([$this->controller->components()])
                     ->getMock();
 
                 $component
@@ -122,11 +121,11 @@ class DeleteActionTest extends IntegrationTestCase
                         ],
                     );
 
-                $this->_controller->components()->set('Flash', $component);
+                $this->controller->components()->set('Flash', $component);
 
-                $this->_subscribeToEvents($this->_controller);
+                $this->subscribeToEvents($this->controller);
 
-                $this->_controller->Crud->on('beforeDelete', function ($event) {
+                $this->controller->Crud->on('beforeDelete', function ($event) {
                     $event->stopPropagation();
                 });
 
@@ -141,12 +140,13 @@ class DeleteActionTest extends IntegrationTestCase
 
                 $this->getTableLocator()->set('Blogs', $blogs);
             },
+            ['priority' => 11],
         );
 
         $this->post('/blogs/delete/1');
 
         $this->assertEvents(['beforeFind', 'afterFind', 'beforeDelete', 'setFlash', 'beforeRedirect']);
-        $this->assertFalse($this->_subject->success);
+        $this->assertFalse($this->subject->success);
         $this->assertRedirect('/blogs');
     }
 
@@ -157,13 +157,12 @@ class DeleteActionTest extends IntegrationTestCase
      */
     public function testStopBeforeRedirect()
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function ($event) {
                 $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->setConstructorArgs([$this->_controller->components()])
+                    ->setConstructorArgs([$this->controller->components()])
                     ->getMock();
 
                 $component
@@ -178,11 +177,11 @@ class DeleteActionTest extends IntegrationTestCase
                         ],
                     );
 
-                $this->_controller->components()->set('Flash', $component);
+                $this->controller->components()->set('Flash', $component);
 
-                $this->_subscribeToEvents($this->_controller);
+                $this->subscribeToEvents($this->controller);
 
-                $this->_controller->Crud->on('beforeRedirect', function ($event) {
+                $this->controller->Crud->on('beforeRedirect', function ($event) {
                     $event->stopPropagation();
                 });
 
@@ -198,12 +197,13 @@ class DeleteActionTest extends IntegrationTestCase
 
                 $this->getTableLocator()->set('Blogs', $blogs);
             },
+            ['priority' => 11],
         );
 
         $this->delete('/blogs/delete/2');
 
         $this->assertEvents(['beforeFind', 'afterFind', 'beforeDelete', 'afterDelete', 'setFlash', 'beforeRedirect']);
-        $this->assertTrue($this->_subject->success);
+        $this->assertTrue($this->subject->success);
         $this->assertNoRedirect();
     }
 }

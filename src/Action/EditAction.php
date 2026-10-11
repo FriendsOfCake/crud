@@ -47,7 +47,7 @@ class EditAction extends BaseAction
      *
      * @var array
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'enabled' => true,
         'scope' => 'entity',
         'findMethod' => 'all',
@@ -97,13 +97,13 @@ class EditAction extends BaseAction
      * @return void
      * @throws \Cake\Http\Exception\NotFoundException If record not found
      */
-    protected function _get(string|int|null $id = null): void
+    protected function handleGet(string|int|null $id = null): void
     {
-        $subject = $this->_subject();
+        $subject = $this->subject();
         $subject->set(['id' => $id]);
-        $subject->set(['entity' => $this->_findRecord($id, $subject)]);
+        $subject->set(['entity' => $this->findRecord($id, $subject)]);
 
-        $this->_trigger('beforeRender', $subject);
+        $this->trigger('beforeRender', $subject);
     }
 
     /**
@@ -112,24 +112,24 @@ class EditAction extends BaseAction
      * @param string|int|null $id Record id
      * @return \Cake\Http\Response|null
      */
-    protected function _put(string|int|null $id = null): ?Response
+    protected function handlePut(string|int|null $id = null): ?Response
     {
-        $subject = $this->_subject();
+        $subject = $this->subject();
         $subject->set(['id' => $id]);
 
-        $entity = $this->_model()->patchEntity(
-            $this->_findRecord($id, $subject),
-            $this->_request()->getData(),
+        $entity = $this->model()->patchEntity(
+            $this->findRecord($id, $subject),
+            $this->request()->getData(),
             $this->saveOptions(),
         );
 
-        $this->_trigger('beforeSave', $subject);
+        $this->trigger('beforeSave', $subject);
         /** @phpstan-ignore argument.type */
-        if (call_user_func([$this->_model(), $this->saveMethod()], $entity, $this->saveOptions())) {
-            return $this->_success($subject);
+        if (call_user_func([$this->model(), $this->saveMethod()], $entity, $this->saveOptions())) {
+            return $this->success($subject);
         }
 
-        $this->_error($subject);
+        $this->error($subject);
 
         return null;
     }
@@ -137,27 +137,27 @@ class EditAction extends BaseAction
     /**
      * HTTP POST handler
      *
-     * Thin proxy for _put
+     * Thin proxy for handlePut
      *
      * @param string|int|null $id Record id
      * @return \Cake\Http\Response|null
      */
-    protected function _post(string|int|null $id = null): ?Response
+    protected function handlePost(string|int|null $id = null): ?Response
     {
-        return $this->_put($id);
+        return $this->handlePut($id);
     }
 
     /**
      * HTTP PATCH handler
      *
-     * Thin proxy for _put
+     * Thin proxy for handlePut
      *
      * @param string|int|null $id Record id
      * @return \Cake\Http\Response|null
      */
-    protected function _patch(string|int|null $id = null): ?Response
+    protected function handlePatch(string|int|null $id = null): ?Response
     {
-        return $this->_put($id);
+        return $this->handlePut($id);
     }
 
     /**
@@ -166,14 +166,14 @@ class EditAction extends BaseAction
      * @param \Crud\Event\Subject $subject Event subject
      * @return \Cake\Http\Response|null
      */
-    protected function _success(Subject $subject): ?Response
+    protected function success(Subject $subject): ?Response
     {
         $subject->set(['success' => true, 'created' => false]);
-        $this->_trigger('afterSave', $subject);
+        $this->trigger('afterSave', $subject);
 
         $this->setFlash('success', $subject);
 
-        return $this->_redirect($subject, ['action' => 'index']);
+        return $this->redirect($subject, ['action' => 'index']);
     }
 
     /**
@@ -182,13 +182,13 @@ class EditAction extends BaseAction
      * @param \Crud\Event\Subject $subject Event subject
      * @return void
      */
-    protected function _error(Subject $subject): void
+    protected function error(Subject $subject): void
     {
         $subject->set(['success' => false, 'created' => false]);
-        $this->_trigger('afterSave', $subject);
+        $this->trigger('afterSave', $subject);
 
         $this->setFlash('error', $subject);
 
-        $this->_trigger('beforeRender', $subject);
+        $this->trigger('beforeRender', $subject);
     }
 }

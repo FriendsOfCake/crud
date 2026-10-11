@@ -73,7 +73,7 @@ Configuration
 -------------
 
 Configure this listener by setting the
-`CakePHP Pagination <http://book.cakephp.org/5/en/controllers/components/pagination.html>`_ options directly to the
+`CakePHP Pagination <http://book.cakephp.org/6.x/en/controllers/components/pagination.html>`_ options directly to the
 query object.
 
 .. code-block:: php

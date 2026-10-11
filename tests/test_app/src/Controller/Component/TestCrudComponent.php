@@ -13,11 +13,11 @@ use Crud\Controller\Component\CrudComponent;
 class TestCrudComponent extends CrudComponent
 {
     /**
-     * test visibility wrapper - access protected _modelName property
+     * test visibility wrapper - access protected modelName property
      */
     public function getModelName()
     {
-        return $this->_modelName;
+        return $this->modelName;
     }
 
     /**
@@ -25,6 +25,6 @@ class TestCrudComponent extends CrudComponent
      */
     public function setAction($name)
     {
-        $this->_action = $name;
+        $this->action = $name;
     }
 }

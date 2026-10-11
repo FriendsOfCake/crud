@@ -30,7 +30,7 @@ class ApiQueryLogListener extends BaseListener
      *
      * `connections` List of connection names to log. Empty means all defined connections.
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'connections' => [],
     ];
 
@@ -44,7 +44,7 @@ class ApiQueryLogListener extends BaseListener
      */
     public function implementedEvents(): array
     {
-        if (!$this->_checkRequestType('api')) {
+        if (!$this->checkRequestType('api')) {
             return [];
         }
 
@@ -88,8 +88,8 @@ class ApiQueryLogListener extends BaseListener
             return;
         }
 
-        $this->_action()->setConfig('serialize.queryLog', 'queryLog');
-        $this->_controller()->set('queryLog', $this->getQueryLogs());
+        $this->action()->setConfig('serialize.queryLog', 'queryLog');
+        $this->controller()->set('queryLog', $this->getQueryLogs());
     }
 
     /**
@@ -99,6 +99,6 @@ class ApiQueryLogListener extends BaseListener
      */
     public function getQueryLogs(): array
     {
-        return $this->_getQueryLog();
+        return $this->getQueryLog();
     }
 }

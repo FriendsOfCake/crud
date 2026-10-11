@@ -26,14 +26,14 @@ abstract class BaseObject implements EventListenerInterface
      *
      * @var \Cake\Controller\Controller
      */
-    protected Controller $_controller;
+    protected Controller $controller;
 
     /**
      * Default configuration
      *
      * @var array
      */
-    protected array $_defaultConfig = [];
+    protected array $defaultConfig = [];
 
     /**
      * Constructor
@@ -43,7 +43,7 @@ abstract class BaseObject implements EventListenerInterface
      */
     public function __construct(Controller $Controller, array $config = [])
     {
-        $this->_controller = $Controller;
+        $this->controller = $Controller;
         $this->setConfig($config);
     }
 
@@ -63,8 +63,8 @@ abstract class BaseObject implements EventListenerInterface
      * @param list<string>|string $method Method(s) to check for
      * @return bool
      */
-    protected function _checkRequestType(array|string $method): bool
+    protected function checkRequestType(array|string $method): bool
     {
-        return $this->_request()->is($method);
+        return $this->request()->is($method);
     }
 }

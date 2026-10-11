@@ -7,7 +7,7 @@ use Crud\Action\BaseAction;
 
 class TestGetAction extends BaseAction
 {
-    protected function _get()
+    protected function handleGet()
     {
     }
 }

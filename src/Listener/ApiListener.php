@@ -30,7 +30,7 @@ class ApiListener extends BaseListener
      *
      * @var array
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'viewClasses' => [
             'json' => JsonView::class,
             'xml' => XmlView::class,
@@ -65,7 +65,7 @@ class ApiListener extends BaseListener
     {
         $this->setupDetectors();
 
-        if (!$this->_checkRequestType('api')) {
+        if (!$this->checkRequestType('api')) {
             return [];
         }
 
@@ -88,7 +88,7 @@ class ApiListener extends BaseListener
      */
     public function beforeHandle(EventInterface $event): void
     {
-        $this->_checkRequestMethods();
+        $this->checkRequestMethods();
     }
 
     /**
@@ -100,16 +100,19 @@ class ApiListener extends BaseListener
      */
     public function respond(EventInterface $event): ?Response
     {
-        $key = $event->getSubject()->success ? 'success' : 'error';
-        $apiConfig = $this->_action()->getConfig('api.' . $key);
+        $subject = $event->getSubject();
+        assert($subject instanceof Subject);
+
+        $key = $subject->success ? 'success' : 'error';
+        $apiConfig = $this->action()->getConfig('api.' . $key);
 
         if (isset($apiConfig['exception'])) {
-            $this->_exceptionResponse($event, $apiConfig['exception']);
+            $this->exceptionResponse($event, $apiConfig['exception']);
 
             return null;
         }
 
-        $response = $this->render($event->getSubject());
+        $response = $this->render($subject);
 
         if (!empty($apiConfig['code'])) {
             $response = $response->withStatus($apiConfig['code']);
@@ -126,16 +129,16 @@ class ApiListener extends BaseListener
      * @return void
      * @throws \Cake\Http\Exception\MethodNotAllowedException
      */
-    protected function _checkRequestMethods(): void
+    protected function checkRequestMethods(): void
     {
-        $action = $this->_action();
+        $action = $this->action();
         $apiConfig = $action->getConfig('api');
 
         if (!isset($apiConfig['methods'])) {
             return;
         }
 
-        $request = $this->_request();
+        $request = $this->request();
         foreach ($apiConfig['methods'] as $method) {
             if ($request->is($method)) {
                 return;
@@ -153,15 +156,18 @@ class ApiListener extends BaseListener
      * @return void
      * @throws \Exception
      */
-    protected function _exceptionResponse(EventInterface $Event, array $exceptionConfig): void
+    protected function exceptionResponse(EventInterface $Event, array $exceptionConfig): void
     {
         $exceptionConfig = array_merge($this->getConfig('exception'), $exceptionConfig);
 
         $class = $exceptionConfig['class'];
 
         if ($exceptionConfig['type'] === 'validate') {
+            $subject = $Event->getSubject();
+            assert($subject instanceof Subject);
+
             /** @var \Exception $exception */
-            $exception = new $class($Event->getSubject()->entity);
+            $exception = new $class($subject->entity);
             throw $exception;
         }
 
@@ -179,11 +185,11 @@ class ApiListener extends BaseListener
     public function render(Subject $subject): Response
     {
         $this->injectViewClasses();
-        $this->_ensureSuccess($subject);
-        $this->_ensureData($subject);
-        $this->_ensureSerialize();
+        $this->ensureSuccess($subject);
+        $this->ensureData($subject);
+        $this->ensureSerialize();
 
-        return $this->_controller()->render();
+        return $this->controller()->render();
     }
 
     /**
@@ -191,9 +197,9 @@ class ApiListener extends BaseListener
      *
      * @return void
      */
-    protected function _ensureSerialize(): void
+    protected function ensureSerialize(): void
     {
-        $controller = $this->_controller();
+        $controller = $this->controller();
 
         if ($controller->viewBuilder()->getOption('serialize') !== null) {
             return;
@@ -202,7 +208,7 @@ class ApiListener extends BaseListener
         $serialize = [];
         $serialize[] = 'success';
 
-        $action = $this->_action();
+        $action = $this->action();
         if (method_exists($action, 'viewVar')) {
             $serialize['data'] = $action->viewVar();
         } else {
@@ -219,9 +225,9 @@ class ApiListener extends BaseListener
      * @param \Crud\Event\Subject $subject Subject
      * @return void
      */
-    protected function _ensureSuccess(Subject $subject): void
+    protected function ensureSuccess(Subject $subject): void
     {
-        $controller = $this->_controller();
+        $controller = $this->controller();
 
         if ($controller->viewBuilder()->getVar('success') !== null) {
             return;
@@ -236,10 +242,10 @@ class ApiListener extends BaseListener
      * @param \Crud\Event\Subject $subject Subject
      * @return void
      */
-    protected function _ensureData(Subject $subject): void
+    protected function ensureData(Subject $subject): void
     {
-        $controller = $this->_controller();
-        $action = $this->_action();
+        $controller = $this->controller();
+        $action = $this->action();
 
         if (method_exists($action, 'viewVar')) {
             $viewVar = $action->viewVar();
@@ -266,8 +272,8 @@ class ApiListener extends BaseListener
                     $valuePath = $keyPath;
                 }
 
-                $keyPath = $this->_expandPath($subject, $keyPath);
-                $valuePath = $this->_expandPath($subject, $valuePath);
+                $keyPath = $this->expandPath($subject, $keyPath);
+                $valuePath = $this->expandPath($subject, $valuePath);
 
                 $data = Hash::insert($data, $keyPath, Hash::get($subjectArray, $valuePath));
             }
@@ -292,7 +298,7 @@ class ApiListener extends BaseListener
 
         if (isset($config['data']['raw'])) {
             foreach ($config['data']['raw'] as $path => $value) {
-                $path = $this->_expandPath($subject, $path);
+                $path = $this->expandPath($subject, $path);
                 $data = Hash::insert($data, $path, $value);
             }
         }
@@ -315,7 +321,7 @@ class ApiListener extends BaseListener
      * @param string $path Path
      * @return string
      */
-    protected function _expandPath(Subject $subject, string $path): string
+    protected function expandPath(Subject $subject, string $path): string
     {
         $keys = [];
         $subjectArray = (array)$subject;
@@ -338,7 +344,7 @@ class ApiListener extends BaseListener
      */
     public function injectViewClasses(): void
     {
-        $this->_controller()->addViewClasses($this->getConfig('viewClasses'));
+        $this->controller()->addViewClasses($this->getConfig('viewClasses'));
     }
 
     /**
@@ -391,7 +397,7 @@ class ApiListener extends BaseListener
      */
     public function setupDetectors(): void
     {
-        $request = $this->_request();
+        $request = $this->request();
         $detectors = $this->getConfig('detectors');
 
         foreach ($detectors as $name => $config) {

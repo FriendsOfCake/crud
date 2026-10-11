@@ -22,7 +22,7 @@ class Subject
      *
      * @var array
      */
-    protected array $_events = [];
+    protected array $events = [];
 
     /**
      * Constructor
@@ -42,7 +42,7 @@ class Subject
      */
     public function addEvent(string $name): void
     {
-        $this->_events[] = $name;
+        $this->events[] = $name;
     }
 
     /**
@@ -52,7 +52,7 @@ class Subject
      */
     public function getEvents(): array
     {
-        return $this->_events;
+        return $this->events;
     }
 
     /**
@@ -64,7 +64,7 @@ class Subject
      */
     public function hasEvent(string $name): bool
     {
-        return in_array($name, $this->_events);
+        return in_array($name, $this->events);
     }
 
     /**
@@ -73,7 +73,7 @@ class Subject
      * @param array $fields Fields
      * @return $this
      */
-    public function set(array $fields)
+    public function set(array $fields): static
     {
         foreach ($fields as $k => $v) {
             $this->{$k} = $v;

@@ -27,14 +27,14 @@ abstract class BaseAction extends BaseObject
      *
      * @var bool
      */
-    protected bool $_responding = false;
+    protected bool $responding = false;
 
     /**
      * Default configuration
      *
      * @var array
      */
-    protected array $_defaultConfig = [];
+    protected array $defaultConfig = [];
 
     /**
      * Handle callback
@@ -56,14 +56,14 @@ abstract class BaseAction extends BaseObject
         }
 
         $methods = [
-            '_' . strtolower($this->_request()->getMethod()),
-            '_handle',
+            'handle' . strtolower($this->request()->getMethod()),
+            'handleRequest',
         ];
 
         foreach ($methods as $method) {
             if (method_exists($this, $method)) {
-                $this->_responding = true;
-                $this->_controller()->getEventManager()->on($this);
+                $this->responding = true;
+                $this->controller()->getEventManager()->on($this);
 
                 $closure = $this->$method(...);
 
@@ -79,13 +79,13 @@ abstract class BaseAction extends BaseObject
     }
 
     /**
-     * Getter for $_responding
+     * Getter for $responding
      *
      * @return bool
      */
     public function responding(): bool
     {
-        return $this->_responding;
+        return $this->responding;
     }
 
     /**
@@ -128,7 +128,7 @@ abstract class BaseAction extends BaseObject
      */
     public function message(string $type, array $replacements = []): array
     {
-        $crud = $this->_crud();
+        $crud = $this->crud();
 
         $config = $this->getConfig('messages.' . $type);
         if (!$config) {
@@ -185,16 +185,16 @@ abstract class BaseAction extends BaseObject
     public function setFlash(string $type, Subject $subject): void
     {
         $subject->set($this->message($type));
-        $event = $this->_trigger('setFlash', $subject);
+        $event = $this->trigger('setFlash', $subject);
         if ($event->isStopped()) {
             return;
         }
 
-        if (!$this->_controller()->components()->has('Flash')) {
+        if (!$this->controller()->components()->has('Flash')) {
             throw new RuntimeException('FlashComponent not loaded in controller.');
         }
 
-        $this->_controller()->Flash->set($subject->text, [
+        $this->controller()->Flash->set($subject->text, [
             'element' => $subject->element,
             'params' => $subject->params,
             'key' => $subject->key,
@@ -260,7 +260,7 @@ abstract class BaseAction extends BaseObject
             return false;
         }
 
-        $this->_controller()->set('success', $event->getSubject()->success);
+        $this->controller()->set('success', $event->getSubject()->success);
 
         return null;
     }
@@ -281,7 +281,7 @@ abstract class BaseAction extends BaseObject
         }
 
         if (!$this->getConfig('name')) {
-            $this->setConfig('name', $this->_deriveResourceName());
+            $this->setConfig('name', $this->deriveResourceName());
         }
 
         return $this->getConfig('name');
@@ -292,7 +292,7 @@ abstract class BaseAction extends BaseObject
      *
      * @return string
      */
-    protected function _deriveResourceName(): string
+    protected function deriveResourceName(): string
     {
         $inflectionType = $this->getConfig('inflection');
 
@@ -302,11 +302,11 @@ abstract class BaseAction extends BaseObject
 
         if ($inflectionType === 'singular') {
             return strtolower(Inflector::humanize(
-                Inflector::singularize(Inflector::underscore($this->_model()->getAlias())),
+                Inflector::singularize(Inflector::underscore($this->model()->getAlias())),
             ));
         }
 
-        return strtolower(Inflector::humanize(Inflector::underscore($this->_model()->getAlias())));
+        return strtolower(Inflector::humanize(Inflector::underscore($this->model()->getAlias())));
     }
 
     /**

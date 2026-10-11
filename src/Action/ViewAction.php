@@ -33,7 +33,7 @@ class ViewAction extends BaseAction
      *
      * @var array
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'enabled' => true,
         'scope' => 'entity',
         'findMethod' => 'all',
@@ -48,12 +48,12 @@ class ViewAction extends BaseAction
      * @param string|int|null $id Record id
      * @return void
      */
-    protected function _handle(string|int|null $id = null): void
+    protected function handleRequest(string|int|null $id = null): void
     {
-        $subject = $this->_subject();
+        $subject = $this->subject();
         $subject->set(['id' => $id]);
 
-        $this->_findRecord($id, $subject);
-        $this->_trigger('beforeRender', $subject);
+        $this->findRecord($id, $subject);
+        $this->trigger('beforeRender', $subject);
     }
 }

@@ -10,15 +10,15 @@ Three BulkAction classes exist in the core:
 - :doc:`SetValue</actions/bulk-set-value>`: Sets a field to a value for a set of entities
 - :doc:`Toggle</actions/bulk-toggle>`: Toggles the value of a boolean field for a set of entities
 
-To create your own BulkAction, simply create a new action class with a ``_bulk``
-method. This method takes a CakePHP ``Query`` object as its first argument
+To create your own BulkAction, simply create a new action class with a ``bulk``
+method. This method takes a ``Cake\Database\Query`` object as its first argument
 
 .. code-block:: phpinline
 
   <?php
   namespace App\Crud\Action;
 
-  use Cake\ORM\Query;
+  use Cake\Database\Query;
   use Crud\Action\Bulk\BaseAction;
 
   class ApproveAction extends BaseAction
@@ -27,10 +27,10 @@ method. This method takes a CakePHP ``Query`` object as its first argument
      * Set the value of the approved field to true
      * for a set of entities
      *
-     * @param \Cake\ORM\Query $query The query to act upon
+     * @param \Cake\Database\Query $query The query to act upon
      * @return boolean
      */
-    protected function _bulk(Query $query)
+    protected function bulk(Query $query)
     {
       $query->update()->set(['approved' => true]);
       $statement = $query->execute();

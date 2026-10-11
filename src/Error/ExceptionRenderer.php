@@ -54,7 +54,7 @@ class ExceptionRenderer extends WebExceptionRenderer
             ['code', 'url', 'message', 'errorCount', 'errors'],
         );
 
-        return $this->_outputMessage('error400');
+        return $this->outputMessage('error400');
     }
 
     /**
@@ -70,13 +70,13 @@ class ExceptionRenderer extends WebExceptionRenderer
      *   method matching the exception name.
      * @return \Cake\Http\Response A response object that can be sent.
      */
-    protected function _outputMessage(string $template, bool $skipControllerCheck = false): Response
+    protected function outputMessage(string $template, bool $skipControllerCheck = false): Response
     {
         $viewVars = ['success', 'data'];
         $this->controller->set('success', false);
-        $this->controller->set('data', $this->_getErrorData());
+        $this->controller->set('data', $this->getErrorData());
         if (Configure::read('debug')) {
-            $queryLog = $this->_getQueryLog();
+            $queryLog = $this->getQueryLog();
             if ($queryLog) {
                 $this->controller->set(compact('queryLog'));
                 $viewVars[] = 'queryLog';
@@ -84,7 +84,7 @@ class ExceptionRenderer extends WebExceptionRenderer
         }
         $this->controller->viewBuilder()->setOption('serialize', $viewVars);
 
-        return parent::_outputMessage($template, $skipControllerCheck);
+        return parent::outputMessage($template, $skipControllerCheck);
     }
 
     /**
@@ -92,7 +92,7 @@ class ExceptionRenderer extends WebExceptionRenderer
      *
      * @return array debugging data
      */
-    protected function _getErrorData(): array
+    protected function getErrorData(): array
     {
         $data = [];
 

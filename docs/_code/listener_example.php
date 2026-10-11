@@ -25,7 +25,8 @@ class Example extends \Crud\Listener\BaseListener
      */
     public function beforeRender(\Cake\Event\EventInterface $event)
     {
-        $this->_response()->header('X-Powered-By', 'CRUD 4.0');
+        $response = $this->response()->withHeader('X-Powered-By', 'CRUD 4.0');
+        $this->controller()->setResponse($response);
     }
 
 }

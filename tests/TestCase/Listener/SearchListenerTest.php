@@ -15,12 +15,14 @@ use Crud\Event\Subject;
 use Crud\Listener\SearchListener;
 use Crud\TestSuite\TestCase;
 use Muffin\Webservice\Model\EndpointRegistry;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use RuntimeException;
 
 /**
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
+#[AllowMockObjectsWithoutExpectations]
 class SearchListenerTest extends TestCase
 {
     protected function setUp(): void
@@ -83,7 +85,7 @@ class SearchListenerTest extends TestCase
             ->setMockClassName('SearchesTable')
             ->onlyMethods(['behaviors'])
             ->getMock();
-        $tableMock->expects($this->any())
+        $tableMock
             ->method('behaviors')
             ->willReturn($behaviorRegistryMock);
 
@@ -141,7 +143,7 @@ class SearchListenerTest extends TestCase
             ->setMockClassName('SearchTables')
             ->onlyMethods(['behaviors'])
             ->getMock();
-        $tableMock->expects($this->any())
+        $tableMock
             ->method('behaviors')
             ->willReturn($behaviorRegistryMock);
 

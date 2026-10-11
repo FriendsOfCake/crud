@@ -11,11 +11,13 @@ use Cake\Http\ServerRequest;
 use Crud\Action\BaseAction;
 use Crud\Listener\ApiPaginationListener;
 use Crud\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 /**
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
+#[AllowMockObjectsWithoutExpectations]
 class ApiPaginationListenerTest extends TestCase
 {
     /**
@@ -28,11 +30,11 @@ class ApiPaginationListenerTest extends TestCase
         $Instance = $this
             ->getMockBuilder(ApiPaginationListener::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['_checkRequestType'])
+            ->onlyMethods(['checkRequestType'])
             ->getMock();
         $Instance
             ->expects($this->once())
-            ->method('_checkRequestType')
+            ->method('checkRequestType')
             ->willReturn(true);
 
         $result = $Instance->implementedEvents();
@@ -65,15 +67,15 @@ class ApiPaginationListenerTest extends TestCase
         $Instance = $this
             ->getMockBuilder(ApiPaginationListener::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['_request', '_action', '_controller'])
+            ->onlyMethods(['request', 'action', 'controller'])
             ->getMock();
         $Instance
             ->expects($this->once())
-            ->method('_action')
+            ->method('action')
             ->willReturn($Action);
         $Instance
             ->expects($this->once())
-            ->method('_controller')
+            ->method('controller')
             ->willReturn($Controller);
 
         $Instance->beforeRender(new Event('something'));
@@ -101,15 +103,15 @@ class ApiPaginationListenerTest extends TestCase
         $Instance = $this
             ->getMockBuilder(ApiPaginationListener::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['_request', '_action', '_controller'])
+            ->onlyMethods(['request', 'action', 'controller'])
             ->getMock();
         $Instance
             ->expects($this->once())
-            ->method('_controller')
+            ->method('controller')
             ->willReturn($Controller);
         $Instance
             ->expects($this->once())
-            ->method('_action')
+            ->method('action')
             ->willReturn($Action);
 
         $Instance->beforeRender(new Event('something'));
@@ -155,15 +157,13 @@ class ApiPaginationListenerTest extends TestCase
         $Instance = $this
             ->getMockBuilder(ApiPaginationListener::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['_request', '_controller', '_action'])
+            ->onlyMethods(['request', 'controller', 'action'])
             ->getMock();
         $Instance
-            ->expects($this->any())
-            ->method('_controller')
+            ->method('controller')
             ->willReturn($Controller);
         $Instance
-            ->expects($this->any())
-            ->method('_action')
+            ->method('action')
             ->willReturn($Action);
 
         $Instance->beforeRender(new Event('something'));

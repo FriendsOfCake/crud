@@ -20,14 +20,14 @@ class ValidationException extends BadRequestException
      *
      * @var array
      */
-    protected array $_validationErrors = [];
+    protected array $validationErrors = [];
 
     /**
      * How many validation errors are there?
      *
      * @var int
      */
-    protected int $_validationErrorCount = 0;
+    protected int $validationErrorCount = 0;
 
     /**
      * Constructor
@@ -38,10 +38,10 @@ class ValidationException extends BadRequestException
      */
     public function __construct(EntityInterface $entity, int $code = 422, ?Throwable $previous = null)
     {
-        $this->_validationErrors = array_filter($entity->getErrors());
-        $flat = Hash::flatten($this->_validationErrors);
+        $this->validationErrors = array_filter($entity->getErrors());
+        $flat = Hash::flatten($this->validationErrors);
 
-        $errorCount = $this->_validationErrorCount = count($flat);
+        $errorCount = $this->validationErrorCount = count($flat);
         $this->message = __dn(
             'crud',
             'A validation error occurred',
@@ -60,7 +60,7 @@ class ValidationException extends BadRequestException
      */
     public function getValidationErrors(): array
     {
-        return $this->_validationErrors;
+        return $this->validationErrors;
     }
 
     /**
@@ -70,6 +70,6 @@ class ValidationException extends BadRequestException
      */
     public function getValidationErrorCount(): int
     {
-        return $this->_validationErrorCount;
+        return $this->validationErrorCount;
     }
 }

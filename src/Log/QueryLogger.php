@@ -13,7 +13,7 @@ class QueryLogger extends CakeQueryLogger
      *
      * @var array
      */
-    protected array $_logs = [];
+    protected array $logs = [];
 
     /**
      * Get logs
@@ -22,7 +22,7 @@ class QueryLogger extends CakeQueryLogger
      */
     public function getLogs(): array
     {
-        return $this->_logs;
+        return $this->logs;
     }
 
     /**
@@ -30,7 +30,7 @@ class QueryLogger extends CakeQueryLogger
      */
     public function log($level, string|Stringable $message, array $context = []): void
     {
-        $this->_logs[] = $context['query'];
+        $this->logs[] = $context['query'];
 
         parent::log($level, $message, $context);
     }

@@ -20,11 +20,13 @@ use Crud\Test\App\Action\TestAction;
 use Crud\Test\App\Action\TestGetAction;
 use Crud\TestSuite\TestCase;
 use Exception;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 /**
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
+#[AllowMockObjectsWithoutExpectations]
 class BaseActionTest extends TestCase
 {
     protected ServerRequest $Request;
@@ -55,11 +57,11 @@ class BaseActionTest extends TestCase
         $this->getTableLocator()->get('CrudExamples')->setAlias('MyModel');
 
         $this->actionClassName = $this->getMockBuilder(TestAction::class)
-            ->onlyMethods(['_handle'])
+            ->onlyMethods(['handleRequest'])
             ->disableOriginalConstructor()
             ->getMock();
         $this->ActionClass = new $this->actionClassName($this->Controller);
-        $this->_configureAction($this->ActionClass);
+        $this->configureAction($this->ActionClass);
     }
 
     public function tearDown(): void
@@ -75,7 +77,7 @@ class BaseActionTest extends TestCase
         );
     }
 
-    protected function _configureAction($action)
+    protected function configureAction($action)
     {
         $action->setConfig([
             'action' => 'add',
@@ -140,7 +142,7 @@ class BaseActionTest extends TestCase
     }
 
     /**
-     * Test that an enabled action will call _handle
+     * Test that an enabled action will call handleRequest
      *
      * @return void
      */
@@ -156,20 +158,18 @@ class BaseActionTest extends TestCase
             ->willReturn('GET');
 
         $Action = $this->getMockBuilder(TestAction::class)
-            ->onlyMethods(['_request', '_handle'])
+            ->onlyMethods(['request', 'handleRequest'])
             ->setConstructorArgs([$this->Controller])
             ->getMock();
         $Action
-            ->expects($this->any())
-            ->method('_request')
-            ->with()
+            ->method('request')
             ->willReturn($Request);
         $Action
             ->expects($this->once())
-            ->method('_handle')
+            ->method('handleRequest')
             ->willReturn(true);
 
-        $this->_configureAction($Action);
+        $this->configureAction($Action);
         $Action->setConfig('action', 'add');
 
         $expected = true;
@@ -513,7 +513,7 @@ class BaseActionTest extends TestCase
     /**
      * testHandle
      *
-     * Test that calling handle will invoke _handle
+     * Test that calling handle will invoke handleRequest
      * when the action is enabbled
      *
      * @return void
@@ -521,7 +521,7 @@ class BaseActionTest extends TestCase
     public function testHandle()
     {
         $Action = $this->getMockBuilder(TestGetAction::class)
-            ->onlyMethods(['_request', 'getConfig', '_get'])
+            ->onlyMethods(['request', 'getConfig', 'handleGet'])
             ->setConstructorArgs([$this->Controller])
             ->getMock();
 
@@ -540,11 +540,11 @@ class BaseActionTest extends TestCase
             ->willReturn(true);
         $Action
             ->expects($this->once())
-            ->method('_request')
+            ->method('request')
             ->willReturn($Request);
         $Action
             ->expects($this->once())
-            ->method('_get');
+            ->method('handleGet');
 
         $Action->handle();
     }
@@ -552,7 +552,7 @@ class BaseActionTest extends TestCase
     /**
      * testHandleDisabled
      *
-     * Test that calling handle will not invoke _handle
+     * Test that calling handle will not invoke handleRequest
      * when the action is disabled
      *
      * @return void
@@ -560,7 +560,7 @@ class BaseActionTest extends TestCase
     public function testHandleDisabled()
     {
         $Action = $this->getMockBuilder(TestAction::class)
-            ->onlyMethods(['getConfig', '_handle'])
+            ->onlyMethods(['getConfig', 'handleRequest'])
             ->setConstructorArgs([$this->Controller])
             ->getMock();
 
@@ -571,7 +571,7 @@ class BaseActionTest extends TestCase
             ->willReturn(false);
         $Action
             ->expects($this->never())
-            ->method('_handle');
+            ->method('handleRequest');
 
         $Action->handle();
     }
@@ -579,7 +579,7 @@ class BaseActionTest extends TestCase
     /**
      * testGenericHandle
      *
-     * Test that calling handle will invoke _handle
+     * Test that calling handle will invoke handleRequest
      * when the requestType handler is not available
      *
      * @return void
@@ -587,7 +587,7 @@ class BaseActionTest extends TestCase
     public function testGenericHandle()
     {
         $Action = $this->getMockBuilder(TestAction::class)
-            ->onlyMethods(['_request', 'getConfig', '_handle'])
+            ->onlyMethods(['request', 'getConfig', 'handleRequest'])
             ->setConstructorArgs([$this->Controller])
             ->getMock();
 
@@ -606,11 +606,11 @@ class BaseActionTest extends TestCase
             ->willReturn(true);
         $Action
             ->expects($this->once())
-            ->method('_request')
+            ->method('request')
             ->willReturn($Request);
         $Action
             ->expects($this->once())
-            ->method('_handle');
+            ->method('handleRequest');
 
         $Action->handle();
     }
@@ -618,7 +618,7 @@ class BaseActionTest extends TestCase
     /**
      * testHandleException
      *
-     * Test that calling handle will not invoke _handle
+     * Test that calling handle will not invoke handleRequest
      * when the action is disabled
      *
      * @return void
@@ -628,7 +628,7 @@ class BaseActionTest extends TestCase
         $this->expectException(NotImplementedException::class);
 
         $Action = $this->getMockBuilder(BaseAction::class)
-            ->onlyMethods(['_request', 'getConfig'])
+            ->onlyMethods(['request', 'getConfig'])
             ->setConstructorArgs([$this->Controller])
             ->getMock();
 
@@ -647,7 +647,7 @@ class BaseActionTest extends TestCase
             ->willReturn(true);
         $Action
             ->expects($this->once())
-            ->method('_request')
+            ->method('request')
             ->willReturn($Request);
 
         $Action->handle();

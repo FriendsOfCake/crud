@@ -19,6 +19,7 @@ use Crud\Event\Subject;
 use Crud\Listener\ApiListener;
 use Crud\Test\App\Controller\BlogsController;
 use Crud\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use StdClass;
 
@@ -26,6 +27,7 @@ use StdClass;
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
+#[AllowMockObjectsWithoutExpectations]
 class ApiListenerTest extends TestCase
 {
     /**
@@ -37,7 +39,7 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->onlyMethods(['setupDetectors', '_checkRequestType'])
+            ->onlyMethods(['setupDetectors', 'checkRequestType'])
             ->disableOriginalConstructor()
             ->getMock();
         $listener
@@ -45,7 +47,7 @@ class ApiListenerTest extends TestCase
             ->method('setupDetectors');
         $listener
             ->expects($this->once())
-            ->method('_checkRequestType')
+            ->method('checkRequestType')
             ->with('api')
             ->willReturn(true);
 
@@ -69,7 +71,7 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->onlyMethods(['setupDetectors', '_checkRequestType'])
+            ->onlyMethods(['setupDetectors', 'checkRequestType'])
             ->disableOriginalConstructor()
             ->getMock();
         $listener
@@ -77,7 +79,7 @@ class ApiListenerTest extends TestCase
             ->method('setupDetectors');
         $listener
             ->expects($this->once())
-            ->method('_checkRequestType')
+            ->method('checkRequestType')
             ->with('api')
             ->willReturn(false);
 
@@ -95,12 +97,12 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->onlyMethods(['_checkRequestMethods'])
+            ->onlyMethods(['checkRequestMethods'])
             ->disableOriginalConstructor()
             ->getMock();
         $listener
             ->expects($this->once())
-            ->method('_checkRequestMethods');
+            ->method('checkRequestMethods');
 
         $listener->beforeHandle(new Event('Crud.beforeHandle'));
     }
@@ -133,11 +135,11 @@ class ApiListenerTest extends TestCase
         $listener = $this
             ->getMockBuilder(ApiListener::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['_action', 'render'])
+            ->onlyMethods(['action', 'render'])
             ->getMock();
         $listener
             ->expects($this->once())
-            ->method('_action')
+            ->method('action')
             ->with()
             ->willReturn($action);
         $action
@@ -185,11 +187,11 @@ class ApiListenerTest extends TestCase
         $listener = $this
             ->getMockBuilder(ApiListener::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['_action', 'render'])
+            ->onlyMethods(['action', 'render'])
             ->getMock();
         $listener
             ->expects($this->once())
-            ->method('_action')
+            ->method('action')
             ->with()
             ->willReturn($action);
         $listener
@@ -234,11 +236,11 @@ class ApiListenerTest extends TestCase
         $listener = $this
             ->getMockBuilder(ApiListener::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['_action', 'render'])
+            ->onlyMethods(['action', 'render'])
             ->getMock();
         $listener
             ->expects($this->once())
-            ->method('_action')
+            ->method('action')
             ->with()
             ->willReturn($action);
         $action
@@ -280,11 +282,11 @@ class ApiListenerTest extends TestCase
         $listener = $this
             ->getMockBuilder(ApiListener::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['_action', 'render', '_exceptionResponse'])
+            ->onlyMethods(['action', 'render', 'exceptionResponse'])
             ->getMock();
         $listener
             ->expects($this->once())
-            ->method('_action')
+            ->method('action')
             ->with()
             ->willReturn($action);
         $action
@@ -294,7 +296,7 @@ class ApiListenerTest extends TestCase
             ->willReturn(['exception' => ['SomethingExceptional']]);
         $listener
             ->expects($this->once())
-            ->method('_exceptionResponse')
+            ->method('exceptionResponse')
             ->with($event, ['SomethingExceptional']);
         $listener
             ->expects($this->never())
@@ -404,7 +406,7 @@ class ApiListenerTest extends TestCase
     }
 
     /**
-     * Test _exceptionResponse
+     * Test exceptionResponse
      *
      * @param array $apiConfig
      * @param string $exceptionClass
@@ -437,7 +439,6 @@ class ApiListenerTest extends TestCase
             ]);
 
             $event->getSubject()->entity
-                ->expects($this->any())
                 ->method('getErrors')
                 ->willReturn($validationErrors);
         }
@@ -445,7 +446,7 @@ class ApiListenerTest extends TestCase
         $this->expectException($exceptionClass, $exceptionMessage, $exceptionCode);
 
         $this->setReflectionClassInstance($listener);
-        $this->callProtectedMethod('_exceptionResponse', [$event, $apiConfig], $listener);
+        $this->callProtectedMethod('exceptionResponse', [$event, $apiConfig], $listener);
     }
 
     /**
@@ -457,7 +458,7 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->onlyMethods(['_action', '_controller'])
+            ->onlyMethods(['action', 'controller'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -475,11 +476,11 @@ class ApiListenerTest extends TestCase
 
         $listener
             ->expects($this->once())
-            ->method('_controller')
+            ->method('controller')
             ->willReturn($controller);
         $listener
             ->expects($this->once())
-            ->method('_action')
+            ->method('action')
             ->willReturn($action);
         $action
             ->expects($this->once())
@@ -487,7 +488,7 @@ class ApiListenerTest extends TestCase
             ->willReturn('items');
 
         $this->setReflectionClassInstance($listener);
-        $this->callProtectedMethod('_ensureSerialize', [], $listener);
+        $this->callProtectedMethod('ensureSerialize', [], $listener);
 
         $this->assertEquals(
             ['success', 'data' => 'items'],
@@ -520,7 +521,7 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->onlyMethods(['_action', '_controller'])
+            ->onlyMethods(['action', 'controller'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -538,11 +539,11 @@ class ApiListenerTest extends TestCase
 
         $listener
             ->expects($this->once())
-            ->method('_controller')
+            ->method('controller')
             ->willReturn($controller);
         $listener
             ->expects($this->once())
-            ->method('_action')
+            ->method('action')
             ->willReturn($action);
         $action
             ->expects($this->once())
@@ -562,7 +563,7 @@ class ApiListenerTest extends TestCase
         $this->callProtectedMethod('serialize', [['something']], $action);
 
         $this->setReflectionClassInstance($listener);
-        $this->callProtectedMethod('_ensureSerialize', [], $listener);
+        $this->callProtectedMethod('ensureSerialize', [], $listener);
 
         $this->assertEquals(
             ['success', 'something', 'data' => null],
@@ -579,7 +580,7 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->onlyMethods(['_action', '_controller'])
+            ->onlyMethods(['action', 'controller'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -599,11 +600,11 @@ class ApiListenerTest extends TestCase
 
         $listener
             ->expects($this->once())
-            ->method('_controller')
+            ->method('controller')
             ->willReturn($controller);
         $listener
             ->expects($this->never())
-            ->method('_action');
+            ->method('action');
         $action
             ->expects($this->never())
             ->method('viewVar');
@@ -612,7 +613,7 @@ class ApiListenerTest extends TestCase
             ->method('set');
 
         $this->setReflectionClassInstance($listener);
-        $this->callProtectedMethod('_ensureSerialize', [], $listener);
+        $this->callProtectedMethod('ensureSerialize', [], $listener);
 
         $this->assertEquals(
             'hello world',
@@ -629,7 +630,7 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->onlyMethods(['_action', '_controller'])
+            ->onlyMethods(['action', 'controller'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -647,11 +648,11 @@ class ApiListenerTest extends TestCase
 
         $listener
             ->expects($this->once())
-            ->method('_controller')
+            ->method('controller')
             ->willReturn($controller);
         $listener
             ->expects($this->once())
-            ->method('_action')
+            ->method('action')
             ->willReturn($action);
         $action
             ->expects($this->once())
@@ -659,7 +660,7 @@ class ApiListenerTest extends TestCase
             ->willReturn('helloWorld');
 
         $this->setReflectionClassInstance($listener);
-        $this->callProtectedMethod('_ensureSerialize', [], $listener);
+        $this->callProtectedMethod('ensureSerialize', [], $listener);
 
         $this->assertEquals(
             ['success', 'data' => 'helloWorld'],
@@ -676,7 +677,7 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->onlyMethods(['_action', '_controller'])
+            ->onlyMethods(['action', 'controller'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -688,31 +689,30 @@ class ApiListenerTest extends TestCase
 
         $action = $this
             ->getMockBuilder(AddAction::class)
-            ->onlyMethods(['scope', '_controller'])
+            ->onlyMethods(['scope', 'controller'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $listener
             ->expects($this->once())
-            ->method('_controller')
+            ->method('controller')
             ->willReturn($controller);
         $listener
             ->expects($this->once())
-            ->method('_action')
+            ->method('action')
             ->willReturn($action);
         $controller
-            ->expects($this->any())
             ->method('getName')
             ->willReturn('');
-        $action->expects($this->any())
+        $action
             ->method('scope')
             ->willReturn('table');
-        $action->expects($this->any())
-            ->method('_controller')
+        $action
+            ->method('controller')
             ->willReturn($controller);
 
         $this->setReflectionClassInstance($listener);
-        $this->callProtectedMethod('_ensureSerialize', [], $listener);
+        $this->callProtectedMethod('ensureSerialize', [], $listener);
 
         $this->assertEquals(
             ['success', 'data' => ''],
@@ -729,7 +729,7 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->onlyMethods(['_controller'])
+            ->onlyMethods(['controller'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -743,7 +743,7 @@ class ApiListenerTest extends TestCase
 
         $listener
             ->expects($this->once())
-            ->method('_controller')
+            ->method('controller')
             ->willReturn($controller);
         $controller
             ->expects($this->once())
@@ -751,7 +751,7 @@ class ApiListenerTest extends TestCase
             ->with('success', true);
 
         $this->setReflectionClassInstance($listener);
-        $this->callProtectedMethod('_ensureSuccess', [$subject], $listener);
+        $this->callProtectedMethod('ensureSuccess', [$subject], $listener);
     }
 
     /**
@@ -763,7 +763,7 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->onlyMethods(['_controller', '_action'])
+            ->onlyMethods(['controller', 'action'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -785,11 +785,11 @@ class ApiListenerTest extends TestCase
 
         $listener
             ->expects($this->once())
-            ->method('_controller')
+            ->method('controller')
             ->willReturn($controller);
         $listener
             ->expects($this->once())
-            ->method('_action')
+            ->method('action')
             ->willReturn($action);
         $action
             ->expects($this->once())
@@ -802,7 +802,7 @@ class ApiListenerTest extends TestCase
             ->with('data', []);
 
         $this->setReflectionClassInstance($listener);
-        $this->callProtectedMethod('_ensureData', [$subject], $listener);
+        $this->callProtectedMethod('ensureData', [$subject], $listener);
     }
 
     /**
@@ -814,7 +814,7 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->onlyMethods(['_controller', '_action'])
+            ->onlyMethods(['controller', 'action'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -841,11 +841,11 @@ class ApiListenerTest extends TestCase
 
         $listener
             ->expects($this->once())
-            ->method('_controller')
+            ->method('controller')
             ->willReturn($controller);
         $listener
             ->expects($this->once())
-            ->method('_action')
+            ->method('action')
             ->willReturn($action);
         $action
             ->expects($this->once())
@@ -858,7 +858,7 @@ class ApiListenerTest extends TestCase
             ->with('data', ['modelClass' => 'MyModel', 'MyModel' => ['id' => 1]]);
 
         $this->setReflectionClassInstance($listener);
-        $this->callProtectedMethod('_ensureData', [$subject], $listener);
+        $this->callProtectedMethod('ensureData', [$subject], $listener);
     }
 
     /**
@@ -870,7 +870,7 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->onlyMethods(['_controller', '_action'])
+            ->onlyMethods(['controller', 'action'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -892,11 +892,11 @@ class ApiListenerTest extends TestCase
 
         $listener
             ->expects($this->once())
-            ->method('_controller')
+            ->method('controller')
             ->willReturn($controller);
         $listener
             ->expects($this->once())
-            ->method('_action')
+            ->method('action')
             ->willReturn($action);
         $action
             ->expects($this->once())
@@ -909,7 +909,7 @@ class ApiListenerTest extends TestCase
             ->with('data', ['MyModel' => ['id' => 1]]);
 
         $this->setReflectionClassInstance($listener);
-        $this->callProtectedMethod('_ensureData', [$subject], $listener);
+        $this->callProtectedMethod('ensureData', [$subject], $listener);
     }
 
     /**
@@ -921,7 +921,7 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->onlyMethods(['_controller', '_action'])
+            ->onlyMethods(['controller', 'action'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -943,11 +943,11 @@ class ApiListenerTest extends TestCase
 
         $listener
             ->expects($this->once())
-            ->method('_controller')
+            ->method('controller')
             ->willReturn($controller);
         $listener
             ->expects($this->once())
-            ->method('_action')
+            ->method('action')
             ->willReturn($action);
         $action
             ->expects($this->once())
@@ -960,7 +960,7 @@ class ApiListenerTest extends TestCase
             ->with('data', []);
 
         $this->setReflectionClassInstance($listener);
-        $this->callProtectedMethod('_ensureData', [$subject], $listener);
+        $this->callProtectedMethod('ensureData', [$subject], $listener);
     }
 
     /**
@@ -972,7 +972,7 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->onlyMethods(['_controller'])
+            ->onlyMethods(['controller'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -988,14 +988,14 @@ class ApiListenerTest extends TestCase
 
         $listener
             ->expects($this->once())
-            ->method('_controller')
+            ->method('controller')
             ->willReturn($controller);
         $controller
             ->expects($this->never())
             ->method('set');
 
         $this->setReflectionClassInstance($listener);
-        $this->callProtectedMethod('_ensureSuccess', [$subject], $listener);
+        $this->callProtectedMethod('ensureSuccess', [$subject], $listener);
     }
 
     /**
@@ -1102,7 +1102,7 @@ class ApiListenerTest extends TestCase
             ->getMock();
 
         $this->setReflectionClassInstance($listener);
-        $result = $this->callProtectedMethod('_expandPath', [$subject, $path], $listener);
+        $result = $this->callProtectedMethod('expandPath', [$subject, $path], $listener);
         $this->assertSame($expected, $result);
     }
 
@@ -1126,7 +1126,7 @@ class ApiListenerTest extends TestCase
 
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->onlyMethods(['_request', 'getConfig'])
+            ->onlyMethods(['request', 'getConfig'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -1135,7 +1135,7 @@ class ApiListenerTest extends TestCase
 
         $listener
             ->expects($this->once())
-            ->method('_request')
+            ->method('request')
             ->willReturn($request);
         $listener
             ->expects($this->once())
@@ -1212,7 +1212,7 @@ class ApiListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(ApiListener::class)
-            ->onlyMethods(['_action', '_request'])
+            ->onlyMethods(['action', 'request'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -1230,7 +1230,7 @@ class ApiListenerTest extends TestCase
 
         $listener
             ->expects($this->once())
-            ->method('_action')
+            ->method('action')
             ->willReturn($action);
         $action
             ->expects($this->once())
@@ -1241,7 +1241,7 @@ class ApiListenerTest extends TestCase
         if (!empty($apiConfig['methods'])) {
             $listener
                 ->expects($this->once())
-                ->method('_request')
+                ->method('request')
                 ->willReturn($request);
 
             $withs = $returns = [];
@@ -1257,7 +1257,7 @@ class ApiListenerTest extends TestCase
         } else {
             $listener
                 ->expects($this->never())
-                ->method('_request');
+                ->method('request');
         }
 
         if (is_string($exception)) {
@@ -1265,7 +1265,7 @@ class ApiListenerTest extends TestCase
         }
 
         $this->setReflectionClassInstance($listener);
-        $this->callProtectedMethod('_checkRequestMethods', [], $listener);
+        $this->callProtectedMethod('checkRequestMethods', [], $listener);
     }
 
     /**
@@ -1332,12 +1332,12 @@ class ApiListenerTest extends TestCase
 
         $apiListener = $this->getMockBuilder(ApiListener::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['_controller'])
+            ->onlyMethods(['controller'])
             ->getMock();
 
         $apiListener
             ->expects($this->once())
-            ->method('_controller')
+            ->method('controller')
             ->willReturn($controller);
 
         $apiListener->injectViewClasses();

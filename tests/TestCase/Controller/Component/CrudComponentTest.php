@@ -19,10 +19,12 @@ use Crud\Test\App\Event\TestCrudEventManager;
 use Crud\Test\App\Listener\TestListener;
 use Crud\TestSuite\TestCase;
 use Exception;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 /**
  * CrudComponentTestCase
  */
+#[AllowMockObjectsWithoutExpectations]
 class CrudComponentTest extends TestCase
 {
     /**
@@ -59,7 +61,7 @@ class CrudComponentTest extends TestCase
             ->getMock()
             ->withParam('action', 'index');
 
-        $this->request->expects($this->any())->method('is')->willReturn(true);
+        $this->request->method('is')->willReturn(true);
 
         $this->controller = $this->getMockBuilder(CrudExamplesController::class)
             ->onlyMethods(['redirect', 'render'])
@@ -117,12 +119,12 @@ class CrudComponentTest extends TestCase
             ],
         ];
         $Crud = $this->getMockBuilder(CrudComponent::class)
-            ->onlyMethods(['_loadListeners', 'trigger'])
+            ->onlyMethods(['loadListeners', 'trigger'])
             ->setConstructorArgs([$this->Registry, $config])
             ->getMock();
         $Crud
             ->expects($this->once())
-            ->method('_loadListeners');
+            ->method('loadListeners');
         $Crud
             ->expects($this->once())
             ->method('trigger');
@@ -901,7 +903,7 @@ class CrudComponentTest extends TestCase
         ]);
 
         $this->setReflectionClassInstance($this->Crud);
-        $listener = $this->callProtectedMethod('_loadListener', ['HasSetup'], $this->Crud);
+        $listener = $this->callProtectedMethod('loadListener', ['HasSetup'], $this->Crud);
         $this->assertSame(1, $listener->callCount, 'Setup should be called');
     }
 }

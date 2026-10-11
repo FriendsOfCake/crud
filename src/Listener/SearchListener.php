@@ -5,6 +5,7 @@ namespace Crud\Listener;
 
 use Cake\Event\EventInterface;
 use Cake\ORM\Table;
+use Crud\Event\Subject;
 use RuntimeException;
 
 class SearchListener extends BaseListener
@@ -14,7 +15,7 @@ class SearchListener extends BaseListener
      *
      * @var array
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'enabled' => [
             'Crud.beforeLookup',
             'Crud.beforePaginate',
@@ -48,7 +49,7 @@ class SearchListener extends BaseListener
             return;
         }
 
-        $repository = $this->_model();
+        $repository = $this->model();
         assert($repository instanceof Table);
 
         if (!$repository->behaviors()->has('Search')) {
@@ -58,9 +59,12 @@ class SearchListener extends BaseListener
             ));
         }
 
-        $event->getSubject()->query->find(
+        $subject = $event->getSubject();
+        assert($subject instanceof Subject);
+
+        $subject->query->find(
             'search',
-            search: $this->_request()->getQuery(),
+            search: $this->request()->getQuery(),
             collection: $this->getConfig('collection'),
         );
     }

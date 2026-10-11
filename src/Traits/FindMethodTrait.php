@@ -36,7 +36,7 @@ trait FindMethodTrait
      * @return array An array containing in the first position the finder name
      *   and in the second the options to be passed to it.
      */
-    protected function _extractFinder(): array
+    protected function extractFinder(): array
     {
         $finder = $this->findMethod();
         $options = [];
@@ -56,12 +56,12 @@ trait FindMethodTrait
      * @return \Cake\Datasource\EntityInterface
      * @throws \Exception
      */
-    protected function _findRecord(string|int|null $id, Subject $subject): EntityInterface
+    protected function findRecord(string|int|null $id, Subject $subject): EntityInterface
     {
-        $repository = $this->_model();
+        $repository = $this->model();
         assert($repository instanceof Table);
 
-        [$finder, $options] = $this->_extractFinder();
+        [$finder, $options] = $this->extractFinder();
         $query = $repository->find($finder, ...$options);
         /**
          * @phpstan-ignore argument.type
@@ -73,15 +73,15 @@ trait FindMethodTrait
             'query' => $query,
         ]);
 
-        $this->_trigger('beforeFind', $subject);
+        $this->trigger('beforeFind', $subject);
         $entity = $subject->query->first();
 
         if (!$entity) {
-            $this->_notFound($id, $subject);
+            $this->notFound($id, $subject);
         }
 
         $subject->set(['entity' => $entity, 'success' => true]);
-        $this->_trigger('afterFind', $subject);
+        $this->trigger('afterFind', $subject);
 
         return $entity;
     }
@@ -94,10 +94,10 @@ trait FindMethodTrait
      * @return void
      * @throws \Exception
      */
-    protected function _notFound(string|int|null $id, Subject $subject): void
+    protected function notFound(string|int|null $id, Subject $subject): void
     {
         $subject->set(['success' => false]);
-        $this->_trigger('recordNotFound', $subject);
+        $this->trigger('recordNotFound', $subject);
 
         $message = $this->message('recordNotFound', compact('id'));
         /** @var class-string<\Exception> $exceptionClass */

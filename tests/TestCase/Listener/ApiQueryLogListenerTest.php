@@ -17,19 +17,19 @@ use Crud\TestSuite\TestCase;
  */
 class ApiQueryLogListenerTest extends TestCase
 {
-    protected $_debug;
+    protected $debug;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->_debug = Configure::read('debug');
+        $this->debug = Configure::read('debug');
     }
 
     public function tearDown(): void
     {
         parent::tearDown();
-        Configure::write('debug', $this->_debug);
+        Configure::write('debug', $this->debug);
     }
 
     /**
@@ -42,11 +42,11 @@ class ApiQueryLogListenerTest extends TestCase
         $Instance = $this
             ->getMockBuilder(ApiQueryLogListener::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['_checkRequestType'])
+            ->onlyMethods(['checkRequestType'])
             ->getMock();
         $Instance
             ->expects($this->once())
-            ->method('_checkRequestType')
+            ->method('checkRequestType')
             ->with('api')
             ->willReturn(true);
 
@@ -69,11 +69,11 @@ class ApiQueryLogListenerTest extends TestCase
         $Instance = $this
             ->getMockBuilder(ApiQueryLogListener::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['_checkRequestType'])
+            ->onlyMethods(['checkRequestType'])
             ->getMock();
         $Instance
             ->expects($this->once())
-            ->method('_checkRequestType')
+            ->method('checkRequestType')
             ->with('api')
             ->willReturn(false);
 
@@ -139,15 +139,15 @@ class ApiQueryLogListenerTest extends TestCase
         $Instance = $this
             ->getMockBuilder(ApiQueryLogListener::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['getQueryLogs', '_action', '_controller'])
+            ->onlyMethods(['getQueryLogs', 'action', 'controller'])
             ->getMock();
         $Instance
             ->expects($this->once())
-            ->method('_action')
+            ->method('action')
             ->willReturn($Action);
         $Instance
             ->expects($this->once())
-            ->method('_controller')
+            ->method('controller')
             ->willReturn($Controller);
         $Instance
             ->expects($this->once())

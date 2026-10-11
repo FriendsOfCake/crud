@@ -15,105 +15,105 @@ Proxy methods
 
 These methods are available in all `CrudAction` and `CrudListener` objects.
 
-_crud()
+crud()
 -------
 
 Get the CrudComponent instance
 
 .. code-block:: phpinline
 
-	$this->_crud()
+	$this->crud()
 
-_action($name)
+action($name)
 --------------
 
 Get an CrudAction object by it's action name
 
 .. code-block:: phpinline
 
-	$this->_action()
-	$this->_action($name)
+	$this->action()
+	$this->action($name)
 
-_trigger($eventName, $data = [])
+trigger($eventName, $data = [])
 --------------------------------
 
 Trigger a :doc:`Crud Event<events>`
 
 .. code-block:: phpinline
 
-	$this->_trigger('beforeSave')
-	$this->_trigger('beforeSave', ['data' => 'keys'])
-	$this->_trigger('beforeSave', $this->_subject(['data' => 'keys']))
+	$this->trigger('beforeSave')
+	$this->trigger('beforeSave', ['data' => 'keys'])
+	$this->trigger('beforeSave', $this->subject(['data' => 'keys']))
 
-_listener($name)
+listener($name)
 ----------------
 
 Get a :doc:`Listener<listeners>` by its name
 
 .. code-block:: phpinline
 
-	$this->_listener('Api')
+	$this->listener('Api')
 
-_subject($additional = [])
+subject($additional = [])
 --------------------------
 
-Create a Crud Subject - used in ``$this->_trigger``
+Create a Crud Subject - used in ``$this->trigger``
 
 .. code-block:: phpinline
 
-	$this->_subject()
-	$this->_subject(['data' => 'keys'])
+	$this->subject()
+	$this->subject(['data' => 'keys'])
 
-_session()
+session()
 ----------
 
 Get the Session Component instance
 
 .. code-block:: phpinline
 
-	$this->_session()
+	$this->session()
 
-_controller()
+controller()
 -------------
 
 Get the controller for the current request
 
 .. code-block:: phpinline
 
-	$this->_controller()
+	$this->controller()
 
-_request()
+request()
 ----------
 
-Get the current ``Cake\Network\Request`` for this HTTP Request
+Get the current ``Cake\Http\ServerRequest`` for this HTTP Request
 
 .. code-block:: phpinline
 
-	$this->_request()
+	$this->request()
 
-_response()
+response()
 -----------
 
-Get the current ``Cake\Network\Response`` for this HTTP Request
+Get the current ``Cake\Http\Response`` for this HTTP Request
 
 .. code-block:: phpinline
 
-	$this->_response()
+	$this->response()
 
-_entity()
+entity()
 ---------
 
 Get the entity instance that is created from ``Controller::$modelClass``
 
 .. code-block:: phpinline
 
-	$this->_entity()
+	$this->entity()
 
-_table()
---------
+model()
+-------
 
-Get the table instance that is created from ``Controller::$modelClass``
+Get the table instance for the current request
 
 .. code-block:: phpinline
 
-	$this->_table()
+	$this->model()

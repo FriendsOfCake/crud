@@ -30,7 +30,7 @@ class DeleteAction extends BaseAction
      *
      * @var array
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'enabled' => true,
         'scope' => 'entity',
         'findMethod' => 'all',
@@ -59,26 +59,26 @@ class DeleteAction extends BaseAction
      * @param string|int|null $id Record id
      * @return \Cake\Http\Response|null
      */
-    protected function _post(string|int|null $id = null): ?Response
+    protected function handlePost(string|int|null $id = null): ?Response
     {
-        $subject = $this->_subject();
+        $subject = $this->subject();
         $subject->set(['id' => $id]);
 
-        $entity = $this->_findRecord($id, $subject);
+        $entity = $this->findRecord($id, $subject);
 
-        $event = $this->_trigger('beforeDelete', $subject);
+        $event = $this->trigger('beforeDelete', $subject);
         if ($event->isStopped()) {
-            return $this->_stopped($subject);
+            return $this->stopped($subject);
         }
 
         $method = $this->getConfig('deleteMethod');
-        if ($this->_model()->$method($entity)) {
-            $this->_success($subject);
+        if ($this->model()->$method($entity)) {
+            $this->success($subject);
         } else {
-            $this->_error($subject);
+            $this->error($subject);
         }
 
-        return $this->_redirect($subject, ['action' => 'index']);
+        return $this->redirect($subject, ['action' => 'index']);
     }
 
     /**
@@ -87,9 +87,9 @@ class DeleteAction extends BaseAction
      * @param string|int|null $id Record id
      * @return \Cake\Http\Response|null
      */
-    protected function _delete(string|int|null $id = null): ?Response
+    protected function handleDelete(string|int|null $id = null): ?Response
     {
-        return $this->_post($id);
+        return $this->handlePost($id);
     }
 
     /**
@@ -98,10 +98,10 @@ class DeleteAction extends BaseAction
      * @param \Crud\Event\Subject $subject Event subject
      * @return void
      */
-    protected function _success(Subject $subject): void
+    protected function success(Subject $subject): void
     {
         $subject->set(['success' => true]);
-        $this->_trigger('afterDelete', $subject);
+        $this->trigger('afterDelete', $subject);
 
         $this->setFlash('success', $subject);
     }
@@ -112,10 +112,10 @@ class DeleteAction extends BaseAction
      * @param \Crud\Event\Subject $subject Event subject
      * @return void
      */
-    protected function _error(Subject $subject): void
+    protected function error(Subject $subject): void
     {
         $subject->set(['success' => false]);
-        $this->_trigger('afterDelete', $subject);
+        $this->trigger('afterDelete', $subject);
 
         $this->setFlash('error', $subject);
     }
@@ -126,11 +126,11 @@ class DeleteAction extends BaseAction
      * @param \Crud\Event\Subject $subject Event subject
      * @return \Cake\Http\Response|null
      */
-    protected function _stopped(Subject $subject): ?Response
+    protected function stopped(Subject $subject): ?Response
     {
         $subject->set(['success' => false]);
         $this->setFlash('error', $subject);
 
-        return $this->_redirect($subject, ['action' => 'index']);
+        return $this->redirect($subject, ['action' => 'index']);
     }
 }

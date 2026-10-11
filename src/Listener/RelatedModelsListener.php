@@ -8,6 +8,7 @@ use Cake\Event\EventInterface;
 use Cake\ORM\Association;
 use Cake\ORM\Table;
 use Cake\Utility\Inflector;
+use Crud\Event\Subject;
 use RuntimeException;
 use function Cake\Core\pluginSplit;
 
@@ -41,7 +42,10 @@ class RelatedModelsListener extends BaseListener
      */
     public function beforePaginate(EventInterface $event): void
     {
-        $contained = $event->getSubject()->query->getContain();
+        $subject = $event->getSubject();
+        assert($subject instanceof Subject);
+
+        $contained = $subject->query->getContain();
         if ($contained !== []) {
             return;
         }
@@ -51,7 +55,7 @@ class RelatedModelsListener extends BaseListener
             return;
         }
 
-        $event->getSubject()->query->contain(array_keys($models));
+        $subject->query->contain(array_keys($models));
     }
 
     /**
@@ -86,7 +90,7 @@ class RelatedModelsListener extends BaseListener
             return;
         }
 
-        $controller = $this->_controller();
+        $controller = $this->controller();
 
         foreach ($models as $name => $association) {
             [, $associationName] = pluginSplit($association->getName());
@@ -96,11 +100,11 @@ class RelatedModelsListener extends BaseListener
             }
 
             $finder = $this->finder($association);
-            $query = $association->find($finder, ...$this->_findOptions($association));
-            $subject = $this->_subject(compact('name', 'viewVar', 'query', 'association', 'entity'));
-            $event = $this->_trigger('relatedModel', $subject);
+            $query = $association->find($finder, ...$this->findOptions($association));
+            $subject = $this->subject(compact('name', 'viewVar', 'query', 'association', 'entity'));
+            $this->trigger('relatedModel', $subject);
 
-            $controller->set($event->getSubject()->viewVar, $event->getSubject()->query->toArray());
+            $controller->set($subject->viewVar, $subject->query->toArray());
         }
     }
 
@@ -113,7 +117,7 @@ class RelatedModelsListener extends BaseListener
      * @param \Cake\ORM\Association $association The association that we process
      * @return array
      */
-    protected function _findOptions(Association $association): array
+    protected function findOptions(Association $association): array
     {
         return [
             'keyField' => $association->getBindingKey(),
@@ -171,10 +175,10 @@ class RelatedModelsListener extends BaseListener
     public function relatedModels(mixed $related = null, ?string $action = null): mixed
     {
         if ($related === null) {
-            return $this->_action($action)->getConfig('relatedModels');
+            return $this->action($action)->getConfig('relatedModels');
         }
 
-        return $this->_action($action)->setConfig('relatedModels', $related, false);
+        return $this->action($action)->setConfig('relatedModels', $related, false);
     }
 
     /**
@@ -188,7 +192,7 @@ class RelatedModelsListener extends BaseListener
     {
         $return = [];
 
-        $table = $this->_model();
+        $table = $this->model();
         assert($table instanceof Table);
 
         foreach ($table->associations()->keys() as $association) {
@@ -216,7 +220,7 @@ class RelatedModelsListener extends BaseListener
     {
         $return = [];
 
-        $table = $this->_model();
+        $table = $this->model();
         assert($table instanceof Table);
         foreach ($names as $association) {
             $associationClass = $table->associations()->get($association);
