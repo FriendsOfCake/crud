@@ -15,11 +15,11 @@ use Cake\Event\EventManager;
  */
 class TestCrudEventManager extends EventManager
 {
-    protected $_log = [];
+    protected $log = [];
 
     public function dispatch($event): EventInterface
     {
-        $this->_log[] = [
+        $this->log[] = [
             'name' => $event->getName(),
             'subject' => $event->getSubject(),
         ];
@@ -31,7 +31,7 @@ class TestCrudEventManager extends EventManager
     {
         $params += ['clear' => true, 'format' => 'names'];
 
-        $log = $this->_log;
+        $log = $this->log;
 
         if ($params['format'] === 'names') {
             $return = [];
@@ -42,7 +42,7 @@ class TestCrudEventManager extends EventManager
         }
 
         if ($params['clear']) {
-            $this->_log = [];
+            $this->log = [];
         }
 
         return $log;

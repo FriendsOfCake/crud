@@ -4,10 +4,10 @@ Custom Action Classes
 If you need to customize an action for any reason, you can create your own custom Crud action class.
 
 A Crud Action can respond to any ``HTTP`` verb (``GET``, ``POST``, ``PUT``, ``DELETE``).
-Each HTTP verb can be implemented as method, e.g. ``_get()`` for HTTP ``GET``,
-``_post()`` for HTTP ``POST`` and ``_put()`` for HTTP ``PUT``.
+Each HTTP verb can be implemented as method, e.g. ``handleGet()`` for HTTP ``GET``,
+``handlePost()`` for HTTP ``POST`` and ``handlePut()`` for HTTP ``PUT``.
 
-If no HTTP verb specific method is found in the class, ``_handle()`` will be executed.
+If no HTTP verb specific method is found in the class, ``handleRequest()`` will be executed.
 
 A default custom index action might be as simple as the following:
 
@@ -27,7 +27,7 @@ A default custom index action might be as simple as the following:
          *
          * @var array<string, mixed>
          */
-        protected array $_defaultConfig = [
+        protected array $defaultConfig = [
             'enabled' => true,
             'scope' => 'table',
             'findMethod' => 'all',
@@ -49,10 +49,10 @@ A default custom index action might be as simple as the following:
         *
         * @return void
         */
-        protected function _handle(): void
+        protected function handleRequest(): void
         {
-            $query = $this->_table()->find($this->findMethod());
-            $items = $this->_controller()->paginate($query);
+            $query = $this->model()->find($this->findMethod());
+            $items = $this->controller()->paginate($query);
         }
     }
 

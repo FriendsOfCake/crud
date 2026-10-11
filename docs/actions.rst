@@ -55,12 +55,12 @@ namespace your action class accordingly.
 Request Methods
 ---------------
 
-Next is the method ``_handle``. A Crud Action can respond to any HTTP verb
+Next is the method ``handleRequest``. A Crud Action can respond to any HTTP verb
 (``GET``, ``POST``, ``PUT``, ``DELETE``).
-Each HTTP verb can be implemented as method, e.g. ``_get()`` for HTTP GET,
-``_post()`` for HTTP POST and ``_put()`` for HTTP PUT.
+Each HTTP verb can be implemented as method, e.g. ``handleGet()`` for HTTP GET,
+``handlePost()`` for HTTP POST and ``handlePut()`` for HTTP PUT.
 
-If no HTTP verb specific method is found in the class, ``_handle()`` will be
+If no HTTP verb specific method is found in the class, ``handleRequest()`` will be
 executed.
 
 .. literalinclude:: _code/action_index.php
@@ -68,15 +68,15 @@ executed.
 	 :linenos:
 	 :emphasize-lines: 6-10
 
-You can treat the ``_handle()`` method as a catch-all, if your crud action
+You can treat the ``handleRequest()`` method as a catch-all, if your crud action
 wants to process all possible HTTP verbs.
 
 An advantage of this setup is that you can separate the logic on a request type
 level instead of mixing all of the logic into one big block of code.
 
-For example the :doc:`Edit Crud Action<actions/edit>` implements ``_get()``,
-``_post()`` and ``_put()`` methods. The ``_get()`` method simply reads the entity
-from the database and passes it to the form, while ``_put()`` handles validation
+For example the :doc:`Edit Crud Action<actions/edit>` implements ``handleGet()``,
+``handlePost()`` and ``handlePut()`` methods. The ``handleGet()`` method simply reads the entity
+from the database and passes it to the form, while ``handlePut()`` handles validation
 and saving the entity back to the database.
 
 Events & Subject
@@ -87,10 +87,10 @@ change its state between emitted events. This object is a ``Crud\Event\Subject``
 
 The real beauty of Crud is the events and the flexibility they provide.
 
-All calls to ``_trigger()`` emit an event, that you as a developer can listen to and inject your own application logic.
+All calls to ``trigger()`` emit an event, that you as a developer can listen to and inject your own application logic.
 These events are in no way magical, they are simply normal
-`CakePHP events <http://book.cakephp.org/5/en/core-libraries/events.html>`_, dispatched like all
-other `events in CakePHP <http://book.cakephp.org/5/en/core-libraries/events.html>`_.
+`CakePHP events <http://book.cakephp.org/6.x/en/core-libraries/events.html>`_, dispatched like all
+other `events in CakePHP <http://book.cakephp.org/6.x/en/core-libraries/events.html>`_.
 
 You can for example listen for the ``beforePaginate`` event and add conditions to your pagination query, just with a
 few lines of code. Those few lines of code is what makes your application unique. The rest of the code you would

@@ -42,18 +42,18 @@ class IndexActionTest extends IntegrationTestCase
     #[DataProvider('allHttpMethodProvider')]
     public function testGet($method)
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function ($event) {
-                $this->_subscribeToEvents($this->_controller);
+                $this->subscribeToEvents($this->controller);
             },
+            ['priority' => 11],
         );
 
         $this->{$method}('/blogs');
         $this->assertStringContainsString(
             'Page 1 of 2, showing 3 records out of 5 total',
-            (string)$this->_response->getBody(),
+            (string)$this->response->getBody(),
         );
         $this->assertEvents(['beforePaginate', 'afterPaginate', 'beforeRender']);
         $this->assertNotNull($this->viewVariable('viewVar'));
@@ -68,20 +68,20 @@ class IndexActionTest extends IntegrationTestCase
      */
     public function testGetWithViewVar()
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function ($event) {
-                $this->_controller->Crud->action('index')->viewVar('items');
-                $this->_subscribeToEvents($this->_controller);
+                $this->controller->Crud->action('index')->viewVar('items');
+                $this->subscribeToEvents($this->controller);
             },
+            ['priority' => 11],
         );
 
         $this->get('/blogs');
 
         $this->assertStringContainsString(
             'Page 1 of 2, showing 3 records out of 5 total',
-            (string)$this->_response->getBody(),
+            (string)$this->response->getBody(),
         );
         $this->assertEvents(['beforePaginate', 'afterPaginate', 'beforeRender']);
         $this->assertNotNull($this->viewVariable('viewVar'));
@@ -96,20 +96,20 @@ class IndexActionTest extends IntegrationTestCase
      */
     public function testModifyQueryInEvent()
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function () {
-                $this->_controller->Crud->on('beforePaginate', function ($event) {
+                $this->controller->Crud->on('beforePaginate', function ($event) {
                     $event->getSubject()->query->where(['id <' => 2]);
                 });
             },
+            ['priority' => 11],
         );
 
         $this->get('/blogs');
         $this->assertStringContainsString(
             'Page 1 of 1, showing 1 records out of 1 total',
-            (string)$this->_response->getBody(),
+            (string)$this->response->getBody(),
         );
     }
 
@@ -120,17 +120,17 @@ class IndexActionTest extends IntegrationTestCase
      */
     public function testGetWithCustomFinder()
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function () {
-                $this->_controller->Crud->action('index')
+                $this->controller->Crud->action('index')
                     ->findMethod(['withCustomOptions' => ['foo' => 'bar']]);
             },
+            ['priority' => 11],
         );
 
         $this->get('/blogs');
-        $this->assertSame(['foo' => 'bar'], $this->_controller->Blogs->customOptions);
+        $this->assertSame(['foo' => 'bar'], $this->controller->Blogs->customOptions);
     }
 
     /**
@@ -140,16 +140,16 @@ class IndexActionTest extends IntegrationTestCase
      */
     public function testForPageOutOfBounds()
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function ($event) {
-                $this->_subscribeToEvents($this->_controller);
+                $this->subscribeToEvents($this->controller);
             },
+            ['priority' => 11],
         );
 
         $this->get('/blogs?page=999&foo=bar');
-        $this->assertSame(302, $this->_response->getStatusCode());
-        $this->assertSame('http://localhost/blogs?page=2&foo=bar', $this->_response->getHeaderLine('Location'));
+        $this->assertSame(302, $this->response->getStatusCode());
+        $this->assertSame('http://localhost/blogs?page=2&foo=bar', $this->response->getHeaderLine('Location'));
     }
 }

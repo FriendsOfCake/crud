@@ -12,7 +12,7 @@ trait QueryLogTrait
      *
      * @return array
      */
-    protected function _getQueryLog(): array
+    protected function getQueryLog(): array
     {
         $queryLog = [];
 

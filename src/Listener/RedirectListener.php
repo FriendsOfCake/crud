@@ -22,7 +22,7 @@ class RedirectListener extends BaseListener
      *
      * @var array
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'readers' => [],
     ];
 
@@ -51,19 +51,19 @@ class RedirectListener extends BaseListener
     public function setup(): void
     {
         $this->reader('request.key', function (Subject $subject, $key = null) {
-            $request = $this->_request();
+            $request = $this->request();
 
             return $request->getParam($key, null);
         });
 
         $this->reader('request.data', function (Subject $subject, $key = null) {
-            $request = $this->_request();
+            $request = $this->request();
 
             return $request->getData($key);
         });
 
         $this->reader('request.query', function (Subject $subject, $key = null) {
-            $request = $this->_request();
+            $request = $this->request();
 
             return $request->getQuery($key);
         });
@@ -112,17 +112,17 @@ class RedirectListener extends BaseListener
         /** @var \Crud\Event\Subject $subject */
         $subject = $event->getSubject();
 
-        $redirects = $this->_action()->redirectConfig();
+        $redirects = $this->action()->redirectConfig();
         if (!$redirects) {
             return;
         }
 
         foreach ($redirects as $redirect) {
-            if (!$this->_getKey($subject, $redirect['reader'], $redirect['key'])) {
+            if (!$this->getKey($subject, $redirect['reader'], $redirect['key'])) {
                 continue;
             }
 
-            $subject->url = $this->_getUrl($subject, $redirect['url']);
+            $subject->url = $this->getUrl($subject, $redirect['url']);
             break;
         }
     }
@@ -138,7 +138,7 @@ class RedirectListener extends BaseListener
      * @return array
      * @throws \Exception
      */
-    protected function _getUrl(Subject $subject, array $url): array
+    protected function getUrl(Subject $subject, array $url): array
     {
         foreach ($url as $key => $value) {
             if (!is_array($value)) {
@@ -146,11 +146,11 @@ class RedirectListener extends BaseListener
             }
 
             if ($key === '?') {
-                $url[$key] = $this->_getUrl($subject, $value);
+                $url[$key] = $this->getUrl($subject, $value);
                 continue;
             }
 
-            $url[$key] = $this->_getKey($subject, $value[0], $value[1]);
+            $url[$key] = $this->getKey($subject, $value[0], $value[1]);
         }
 
         return $url;
@@ -165,7 +165,7 @@ class RedirectListener extends BaseListener
      * @return mixed
      * @throws \Exception if the reader is invalid
      */
-    protected function _getKey(Subject $subject, string $reader, string $key): mixed
+    protected function getKey(Subject $subject, string $reader, string $key): mixed
     {
         $callable = $this->reader($reader);
 

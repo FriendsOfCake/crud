@@ -49,9 +49,9 @@ trait RedirectTrait
      * @param array|string|null $default Default URL to use redirect_url is not found in request or data
      * @return array|string
      */
-    protected function _refererRedirectUrl(array|string|null $default = null): array|string
+    protected function refererRedirectUrl(array|string|null $default = null): array|string
     {
-        return $this->_redirectUrl($this->_controller()->referer($default, true));
+        return $this->redirectUrl($this->controller()->referer($default, true));
     }
 
     /**
@@ -60,9 +60,9 @@ trait RedirectTrait
      * @param array|string $default Default URL to use if _redirect_url if not found in request or data.
      * @return array|string
      */
-    protected function _redirectUrl(array|string $default): array|string
+    protected function redirectUrl(array|string $default): array|string
     {
-        $request = $this->_request();
+        $request = $this->request();
 
         return $request->getData('_redirect_url')
             ?? $request->getQuery('_redirect_url')
@@ -79,18 +79,18 @@ trait RedirectTrait
      * @param int $status Status code
      * @return \Cake\Http\Response|null
      */
-    protected function _redirect(Subject $subject, string|array $url, int $status = 302): ?Response
+    protected function redirect(Subject $subject, string|array $url, int $status = 302): ?Response
     {
-        $url = $this->_redirectUrl($url);
+        $url = $this->redirectUrl($url);
 
         $subject->url = $url;
         $subject->status = $status;
-        $event = $this->_trigger('beforeRedirect', $subject);
+        $event = $this->trigger('beforeRedirect', $subject);
 
         if ($event->isStopped()) {
-            return $this->_controller()->getResponse();
+            return $this->controller()->getResponse();
         }
 
-        return $this->_controller()->redirect($subject->url, $subject->status);
+        return $this->controller()->redirect($subject->url, $subject->status);
     }
 }

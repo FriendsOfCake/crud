@@ -29,7 +29,7 @@ abstract class BaseAction extends CrudBaseAction
      *
      * @var array
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'enabled' => true,
         'scope' => 'bulk',
         'queryType' => Query::TYPE_UPDATE,
@@ -48,23 +48,23 @@ abstract class BaseAction extends CrudBaseAction
      *
      * @return \Cake\Http\Response|null
      */
-    protected function _handle(): ?Response
+    protected function handleRequest(): ?Response
     {
-        $ids = $this->_processIds();
-        $subject = $this->_constructSubject($ids);
+        $ids = $this->processIds();
+        $subject = $this->constructSubject($ids);
 
-        $event = $this->_trigger('beforeBulk', $subject);
+        $event = $this->trigger('beforeBulk', $subject);
         if ($event->isStopped()) {
-            return $this->_stopped($subject);
+            return $this->stopped($subject);
         }
 
-        if ($this->_bulk($subject->query)) {
-            $this->_success($subject);
+        if ($this->bulk($subject->query)) {
+            $this->success($subject);
         } else {
-            $this->_error($subject);
+            $this->error($subject);
         }
 
-        return $this->_redirect($subject, ['action' => 'index']);
+        return $this->redirect($subject, ['action' => 'index']);
     }
 
     /**
@@ -72,9 +72,9 @@ abstract class BaseAction extends CrudBaseAction
      *
      * @return array
      */
-    protected function _processIds(): array
+    protected function processIds(): array
     {
-        $ids = $this->_controller()->getRequest()->getData('id');
+        $ids = $this->controller()->getRequest()->getData('id');
 
         if (!is_array($ids)) {
             throw new BadRequestException('Bad request data');
@@ -99,9 +99,9 @@ abstract class BaseAction extends CrudBaseAction
      * @param array $ids An array of ids to retrieve
      * @return \Crud\Event\Subject
      */
-    protected function _constructSubject(array $ids): Subject
+    protected function constructSubject(array $ids): Subject
     {
-        $repository = $this->_model();
+        $repository = $this->model();
         assert($repository instanceof Table);
 
         $method = strtolower($this->getConfig('queryType')) . 'Query';
@@ -110,7 +110,7 @@ abstract class BaseAction extends CrudBaseAction
         $query = $repository->{$method}()
             ->where(fn($exp) => $exp->in($primaryKey, $ids));
 
-        $subject = $this->_subject();
+        $subject = $this->subject();
         $subject->set([
             'ids' => $ids,
             'query' => $query,
@@ -126,10 +126,10 @@ abstract class BaseAction extends CrudBaseAction
      * @param \Crud\Event\Subject $subject Event subject
      * @return void
      */
-    protected function _success(Subject $subject): void
+    protected function success(Subject $subject): void
     {
         $subject->set(['success' => true]);
-        $this->_trigger('afterBulk', $subject);
+        $this->trigger('afterBulk', $subject);
 
         $this->setFlash('success', $subject);
     }
@@ -140,10 +140,10 @@ abstract class BaseAction extends CrudBaseAction
      * @param \Crud\Event\Subject $subject Event subject
      * @return void
      */
-    protected function _error(Subject $subject): void
+    protected function error(Subject $subject): void
     {
         $subject->set(['success' => false]);
-        $this->_trigger('afterBulk', $subject);
+        $this->trigger('afterBulk', $subject);
 
         $this->setFlash('error', $subject);
     }
@@ -154,12 +154,12 @@ abstract class BaseAction extends CrudBaseAction
      * @param \Crud\Event\Subject $subject Event subject
      * @return \Cake\Http\Response|null
      */
-    protected function _stopped(Subject $subject): ?Response
+    protected function stopped(Subject $subject): ?Response
     {
         $subject->set(['success' => false]);
         $this->setFlash('error', $subject);
 
-        return $this->_redirect($subject, ['action' => 'index']);
+        return $this->redirect($subject, ['action' => 'index']);
     }
 
     /**
@@ -168,5 +168,5 @@ abstract class BaseAction extends CrudBaseAction
      * @param \Cake\Database\Query $query The query to act upon
      * @return bool
      */
-    abstract protected function _bulk(Query $query): bool;
+    abstract protected function bulk(Query $query): bool;
 }

@@ -20,10 +20,10 @@ trait ProxyTrait
     /**
      * @var \Cake\Datasource\EntityInterface|null
      */
-    protected ?EntityInterface $_entity = null;
+    protected ?EntityInterface $entity = null;
 
     /**
-     * Proxy method for `$this->_crud()->action()`
+     * Proxy method for `$this->crud()->action()`
      *
      * Primarily here to ease unit testing
      *
@@ -31,13 +31,13 @@ trait ProxyTrait
      * @return \Crud\Action\BaseAction
      * @codeCoverageIgnore
      */
-    protected function _action(?string $name = null): BaseAction
+    protected function action(?string $name = null): BaseAction
     {
-        return $this->_crud()->action($name);
+        return $this->crud()->action($name);
     }
 
     /**
-     * Proxy method for `$this->_crud()->trigger()`
+     * Proxy method for `$this->crud()->trigger()`
      *
      * Primarily here to ease unit testing
      *
@@ -47,13 +47,13 @@ trait ProxyTrait
      * @throws \Exception
      * @codeCoverageIgnore
      */
-    protected function _trigger(string $eventName, ?Subject $data = null): EventInterface
+    protected function trigger(string $eventName, ?Subject $data = null): EventInterface
     {
-        return $this->_crud()->trigger($eventName, $data);
+        return $this->crud()->trigger($eventName, $data);
     }
 
     /**
-     * Proxy method for `$this->_crud()->listener()`
+     * Proxy method for `$this->crud()->listener()`
      *
      * Primarily here to ease unit testing
      *
@@ -63,9 +63,9 @@ trait ProxyTrait
      * @throws \Crud\Error\Exception\MissingListenerException
      * @codeCoverageIgnore
      */
-    protected function _listener(string $name): BaseListener
+    protected function listener(string $name): BaseListener
     {
-        return $this->_crud()->listener($name);
+        return $this->crud()->listener($name);
     }
 
     /**
@@ -76,48 +76,48 @@ trait ProxyTrait
      * @return \Cake\Http\Session
      * @codeCoverageIgnore
      */
-    protected function _session(): Session
+    protected function session(): Session
     {
-        return $this->_request()->getSession();
+        return $this->request()->getSession();
     }
 
     /**
-     * Proxy method for `$this->_container->_controller`
+     * Proxy method for `$this->_container->controller`
      *
      * Primarily here to ease unit testing
      *
      * @return \Cake\Controller\Controller
      * @codeCoverageIgnore
      */
-    protected function _controller(): Controller
+    protected function controller(): Controller
     {
-        return $this->_controller;
+        return $this->controller;
     }
 
     /**
-     * Proxy method for `$this->_container->_request`
+     * Proxy method for `$this->_container->request`
      *
      * Primarily here to ease unit testing
      *
      * @return \Cake\Http\ServerRequest
      * @codeCoverageIgnore
      */
-    protected function _request(): ServerRequest
+    protected function request(): ServerRequest
     {
-        return $this->_controller()->getRequest();
+        return $this->controller()->getRequest();
     }
 
     /**
-     * Proxy method for `$this->_controller()->getResponse()`
+     * Proxy method for `$this->controller()->getResponse()`
      *
      * Primarily here to ease unit testing
      *
      * @return \Cake\Http\Response
      * @codeCoverageIgnore
      */
-    protected function _response(): Response
+    protected function response(): Response
     {
-        return $this->_controller()->getResponse();
+        return $this->controller()->getResponse();
     }
 
     /**
@@ -125,9 +125,9 @@ trait ProxyTrait
      *
      * @return \Cake\Datasource\RepositoryInterface
      */
-    protected function _model(): RepositoryInterface
+    protected function model(): RepositoryInterface
     {
-        return $this->_crud()->model();
+        return $this->crud()->model();
     }
 
     /**
@@ -137,33 +137,33 @@ trait ProxyTrait
      * @param array $options A list of options for the object hydration.
      * @return \Cake\Datasource\EntityInterface
      */
-    protected function _entity(array $data = [], array $options = []): EntityInterface
+    protected function entity(array $data = [], array $options = []): EntityInterface
     {
-        if ($this->_entity && $data === []) {
-            return $this->_entity;
+        if ($this->entity && $data === []) {
+            return $this->entity;
         }
 
-        return $this->_model()->newEntity($data, $options);
+        return $this->model()->newEntity($data, $options);
     }
 
     /**
-     * Proxy method for `$this->_crud()->getSubject()`
+     * Proxy method for `$this->crud()->getSubject()`
      *
      * @param array $additional Array of subject properties to set
      * @return \Crud\Event\Subject
      */
-    protected function _subject(array $additional = []): Subject
+    protected function subject(array $additional = []): Subject
     {
         return new Subject($additional);
     }
 
     /**
-     * Proxy method for `$this->_controller->Crud`
+     * Proxy method for `$this->controller->Crud`
      *
      * @return \Crud\Controller\Component\CrudComponent
      */
-    protected function _crud(): CrudComponent
+    protected function crud(): CrudComponent
     {
-        return $this->_controller->Crud;
+        return $this->controller->Crud;
     }
 }

@@ -13,11 +13,13 @@ use Cake\ORM\Table;
 use Crud\Event\Subject;
 use Crud\Listener\RelatedModelsListener;
 use Crud\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 /**
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
+#[AllowMockObjectsWithoutExpectations]
 class RelatedModelsListenerTest extends TestCase
 {
     protected array $fixtures = ['core.NumberTrees'];
@@ -138,7 +140,7 @@ class RelatedModelsListenerTest extends TestCase
         $listener = $this
             ->getMockBuilder(RelatedModelsListener::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['relatedModels', '_model'])
+            ->onlyMethods(['relatedModels', 'model'])
             ->getMock();
         $table = $this
             ->getMockBuilder(Table::class)
@@ -158,7 +160,7 @@ class RelatedModelsListenerTest extends TestCase
 
         $listener
             ->expects($this->once())
-            ->method('_model')
+            ->method('model')
             ->withAnyParameters()
             ->willReturn($table);
         $table
@@ -201,7 +203,7 @@ class RelatedModelsListenerTest extends TestCase
         $listener = $this
             ->getMockBuilder(RelatedModelsListener::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['relatedModels', '_model'])
+            ->onlyMethods(['relatedModels', 'model'])
             ->getMock();
         $table = $this
             ->getMockBuilder(Table::class)
@@ -221,7 +223,7 @@ class RelatedModelsListenerTest extends TestCase
 
         $listener
             ->expects($this->once())
-            ->method('_model')
+            ->method('model')
             ->withAnyParameters()
             ->willReturn($table);
         $table
@@ -261,7 +263,6 @@ class RelatedModelsListenerTest extends TestCase
             ->getMock();
 
         $association
-            ->expects($this->any())
             ->method('getTarget')
             ->willReturn($model);
 
@@ -294,7 +295,6 @@ class RelatedModelsListenerTest extends TestCase
             ->getMock();
 
         $table
-            ->expects($this->any())
             ->method('getSchema')
             ->willReturn(new TableSchema('Users'));
 

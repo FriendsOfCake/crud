@@ -38,14 +38,14 @@
         }
     ],
     "require": {
-        "php": ">=8.1",
-        "cakephp/cakephp": "^5.0"
+        "php": ">=8.5",
+        "cakephp/cakephp": "^6.0@dev"
     },
     "require-dev": {
-        "friendsofcake/cakephp-test-utilities": "^3.0",
-        "friendsofcake/search": "^7.0",
-        "phpunit/phpunit": "^10.5.58 || ^11.5.3 || ^12.4",
-        "cakephp/cakephp-codesniffer": "^5.3"
+        "friendsofcake/cakephp-test-utilities": "dev-cake6",
+        "friendsofcake/search": "dev-cake6",
+        "phpunit/phpunit": "^13.0",
+        "cakephp/cakephp-codesniffer": "^6.0@dev"
     },
     "autoload": {
         "psr-4": {
@@ -85,5 +85,7 @@
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

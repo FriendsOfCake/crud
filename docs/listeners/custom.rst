@@ -7,7 +7,7 @@ Using a controller as a listener
 --------------------------------
 
 We override the ``implementedEvents()`` method in the controller, and bind
-the ``Crud.beforeFind`` event to the ``_beforeFind()`` method in the controller.
+the ``Crud.beforeFind`` event to the ``beforeFind()`` method in the controller.
 
 .. code-block:: phpinline
 
@@ -19,11 +19,11 @@ the ``Crud.beforeFind`` event to the ``_beforeFind()`` method in the controller.
     public function implementedEvents(): array
     {
         return parent::implementedEvents() + [
-            'Crud.beforeFind' => '_beforeFind'
+            'Crud.beforeFind' => 'beforeFind'
         ];
     }
 
-    public function _beforeFind(\Cake\Event\EventInterface $event, \Cake\ORM\Query\SelectQuery $query): void
+    public function beforeFind(\Cake\Event\EventInterface $event, \Cake\ORM\Query\SelectQuery $query): void
     {
       ...
     }
@@ -48,11 +48,11 @@ Creating your own listener class is very similar to using a controller as a list
       public function implementedEvents(): array
       {
           return [
-              'Crud.beforeFind' => '_beforeFind'
+              'Crud.beforeFind' => 'beforeFind'
           ];
       }
 
-      public function _beforeFind(Event $event)
+      public function beforeFind(Event $event)
       {
           Log::debug('Inside the listener!');
       }

@@ -24,9 +24,9 @@ class DeleteAction extends BaseAction
      */
     public function __construct(Controller $Controller, array $config = [])
     {
-        $this->_defaultConfig['queryType'] = Query::TYPE_DELETE;
+        $this->defaultConfig['queryType'] = Query::TYPE_DELETE;
 
-        $this->_defaultConfig['messages'] = [
+        $this->defaultConfig['messages'] = [
             'success' => [
                 'text' => 'Delete completed successfully',
             ],
@@ -44,7 +44,7 @@ class DeleteAction extends BaseAction
      * @param \Cake\Database\Query $query The query to act upon
      * @return bool
      */
-    protected function _bulk(Query $query): bool
+    protected function bulk(Query $query): bool
     {
         assert($query instanceof DeleteQuery);
 

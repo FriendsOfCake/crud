@@ -42,12 +42,12 @@ class ViewActionTest extends IntegrationTestCase
     #[DataProvider('allHttpMethodProvider')]
     public function testGet($method)
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function ($event) {
-                $this->_subscribeToEvents($this->_controller);
+                $this->subscribeToEvents($this->controller);
             },
+            ['priority' => 11],
         );
 
         $this->{$method}('/blogs/view/1');
@@ -65,13 +65,13 @@ class ViewActionTest extends IntegrationTestCase
      */
     public function testGetWithViewVar()
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function ($event) {
-                $this->_controller->Crud->action('view')->viewVar('item');
-                $this->_subscribeToEvents($this->_controller);
+                $this->controller->Crud->action('view')->viewVar('item');
+                $this->subscribeToEvents($this->controller);
             },
+            ['priority' => 11],
         );
 
         $this->get('/blogs/view/1');

@@ -25,12 +25,12 @@ class LookupActionTest extends IntegrationTestCase
      */
     public function testGet()
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function () {
-                $this->_subscribeToEvents($this->_controller);
+                $this->subscribeToEvents($this->controller);
             },
+            ['priority' => 11],
         );
 
         $expected = [
@@ -54,12 +54,12 @@ class LookupActionTest extends IntegrationTestCase
      */
     public function testGetWithCustomParams()
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function () {
-                $this->_subscribeToEvents($this->_controller);
+                $this->subscribeToEvents($this->controller);
             },
+            ['priority' => 11],
         );
 
         $expected = [
@@ -83,12 +83,12 @@ class LookupActionTest extends IntegrationTestCase
      */
     public function testGetWithCustomKeyValueFields()
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function () {
-                $this->_subscribeToEvents($this->_controller);
+                $this->subscribeToEvents($this->controller);
             },
+            ['priority' => 11],
         );
 
         $expected = [
@@ -112,14 +112,14 @@ class LookupActionTest extends IntegrationTestCase
      */
     public function testGetWithQueryModification()
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function () {
-                $this->_controller->Crud->on('beforeLookup', function ($event) {
+                $this->controller->Crud->on('beforeLookup', function ($event) {
                     $event->getSubject()->query->where(['id <' => 2]);
                 });
             },
+            ['priority' => 11],
         );
 
         $expected = [
@@ -138,17 +138,17 @@ class LookupActionTest extends IntegrationTestCase
      */
     public function testGetWithCustomFinder()
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function () {
-                $this->_subscribeToEvents($this->_controller);
-                $this->_controller->Crud->action('lookup')
+                $this->subscribeToEvents($this->controller);
+                $this->controller->Crud->action('lookup')
                     ->findMethod(['withCustomOptions' => ['foo' => 'bar']]);
             },
+            ['priority' => 11],
         );
 
         $this->get('/blogs/lookup.json');
-        $this->assertSame(['foo' => 'bar'], $this->_controller->Blogs->customOptions);
+        $this->assertSame(['foo' => 'bar'], $this->controller->Blogs->customOptions);
     }
 }

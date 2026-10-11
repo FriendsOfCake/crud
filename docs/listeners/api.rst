@@ -9,7 +9,7 @@ Setup
 Routing
 ^^^^^^^
 
-You need to tell the ``Router`` to `parse extensions <https://book.cakephp.org/5/en/development/routing.html#routing-file-extensions>`_ else it won't be able to process and render ``json`` and ``xml``
+You need to tell the ``Router`` to `parse extensions <https://book.cakephp.org/6.x/en/development/routing.html#routing-file-extensions>`_ else it won't be able to process and render ``json`` and ``xml``
 URL extension.
 
 Controller

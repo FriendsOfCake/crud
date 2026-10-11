@@ -27,7 +27,7 @@ class LookupAction extends BaseAction
      *
      * @var array
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'enabled' => true,
         'scope' => 'table',
         'findMethod' => 'list',
@@ -38,18 +38,18 @@ class LookupAction extends BaseAction
      *
      * @return void
      */
-    protected function _handle(): void
+    protected function handleRequest(): void
     {
-        [$finder, $options] = $this->_extractFinder();
-        $options = array_merge($options, $this->_getFindConfig());
-        $query = $this->_model()->find($finder, ...$options);
-        $subject = $this->_subject(['success' => true, 'query' => $query]);
+        [$finder, $options] = $this->extractFinder();
+        $options = array_merge($options, $this->getFindConfig());
+        $query = $this->model()->find($finder, ...$options);
+        $subject = $this->subject(['success' => true, 'query' => $query]);
 
-        $this->_trigger('beforeLookup', $subject);
-        $subject->set(['entities' => $this->_controller()->paginate($subject->query)]);
-        $this->_trigger('afterLookup', $subject);
+        $this->trigger('beforeLookup', $subject);
+        $subject->set(['entities' => $this->controller()->paginate($subject->query)]);
+        $this->trigger('afterLookup', $subject);
 
-        $this->_trigger('beforeRender', $subject);
+        $this->trigger('beforeRender', $subject);
     }
 
     /**
@@ -57,10 +57,10 @@ class LookupAction extends BaseAction
      *
      * @return array
      */
-    protected function _getFindConfig(): array
+    protected function getFindConfig(): array
     {
-        $request = $this->_request();
-        $model = $this->_model();
+        $request = $this->request();
+        $model = $this->model();
         assert($model instanceof Table);
 
         $columns = $model->getSchema()->columns();

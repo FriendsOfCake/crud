@@ -51,13 +51,12 @@ class SetValueActionTest extends IntegrationTestCase
     #[DataProvider('allHttpMethodProvider')]
     public function testAllRequestMethods($method)
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function ($event) {
                 $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->setConstructorArgs([$this->_controller->components()])
+                    ->setConstructorArgs([$this->controller->components()])
                     ->getMock();
 
                 $component
@@ -72,10 +71,11 @@ class SetValueActionTest extends IntegrationTestCase
                         ],
                     );
 
-                $this->_controller->components()->set('Flash', $component);
+                $this->controller->components()->set('Flash', $component);
 
-                $this->_subscribeToEvents($this->_controller);
+                $this->subscribeToEvents($this->controller);
             },
+            ['priority' => 11],
         );
 
         $this->{$method}('/blogs/deactivateAll', [
@@ -86,7 +86,7 @@ class SetValueActionTest extends IntegrationTestCase
         ]);
 
         $this->assertEvents(['beforeBulk', 'afterBulk', 'setFlash', 'beforeRedirect']);
-        $this->assertTrue($this->_subject->success);
+        $this->assertTrue($this->subject->success);
         $this->assertRedirect('/blogs');
     }
 
@@ -97,13 +97,12 @@ class SetValueActionTest extends IntegrationTestCase
      */
     public function testStopBeforeBulk()
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function ($event) {
                 $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->setConstructorArgs([$this->_controller->components()])
+                    ->setConstructorArgs([$this->controller->components()])
                     ->getMock();
 
                 $component
@@ -118,14 +117,15 @@ class SetValueActionTest extends IntegrationTestCase
                         ],
                     );
 
-                $this->_controller->components()->set('Flash', $component);
+                $this->controller->components()->set('Flash', $component);
 
-                $this->_subscribeToEvents($this->_controller);
+                $this->subscribeToEvents($this->controller);
 
-                $this->_controller->Crud->on('beforeBulk', function ($event) {
+                $this->controller->Crud->on('beforeBulk', function ($event) {
                     $event->stopPropagation();
                 });
             },
+            ['priority' => 11],
         );
 
         $this->post('/blogs/deactivateAll', [
@@ -136,7 +136,7 @@ class SetValueActionTest extends IntegrationTestCase
         ]);
 
         $this->assertEvents(['beforeBulk', 'setFlash', 'beforeRedirect']);
-        $this->assertFalse($this->_subject->success);
+        $this->assertFalse($this->subject->success);
         $this->assertRedirect('/blogs');
     }
 
@@ -147,13 +147,12 @@ class SetValueActionTest extends IntegrationTestCase
      */
     public function testUuidRequestData()
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function ($event) {
                 $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->setConstructorArgs([$this->_controller->components()])
+                    ->setConstructorArgs([$this->controller->components()])
                     ->getMock();
 
                 $component
@@ -168,10 +167,11 @@ class SetValueActionTest extends IntegrationTestCase
                         ],
                     );
 
-                $this->_controller->components()->set('Flash', $component);
+                $this->controller->components()->set('Flash', $component);
 
-                $this->_subscribeToEvents($this->_controller);
+                $this->subscribeToEvents($this->controller);
             },
+            ['priority' => 11],
         );
 
         $this->post('/users/deactivateAll', [
@@ -182,7 +182,7 @@ class SetValueActionTest extends IntegrationTestCase
         ]);
 
         $this->assertEvents(['beforeBulk', 'afterBulk', 'setFlash', 'beforeRedirect']);
-        $this->assertTrue($this->_subject->success);
+        $this->assertTrue($this->subject->success);
         $this->assertRedirect('/users');
     }
 }

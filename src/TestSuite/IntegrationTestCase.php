@@ -25,7 +25,7 @@ abstract class IntegrationTestCase extends TestCase
     /**
      * @var \Cake\Event\EventManagerInterface
      */
-    protected EventManagerInterface $_eventManager;
+    protected EventManagerInterface $eventManager;
 
     /**
      * [setUp description]
@@ -38,7 +38,7 @@ abstract class IntegrationTestCase extends TestCase
 
         $this->resetReflectionCache();
 
-        $this->_eventManager = EventManager::instance();
+        $this->eventManager = EventManager::instance();
 
         $existing = Configure::read('App.paths.templates');
         $existing[] = Plugin::path('Crud') . 'tests/test_app/templates/';

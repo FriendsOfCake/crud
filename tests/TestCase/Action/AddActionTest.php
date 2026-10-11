@@ -7,12 +7,14 @@ use Cake\Controller\Component\FlashComponent;
 use Cake\Core\Configure;
 use Cake\Routing\Router;
 use Crud\TestSuite\IntegrationTestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
+#[AllowMockObjectsWithoutExpectations]
 class AddActionTest extends IntegrationTestCase
 {
     /**
@@ -30,14 +32,14 @@ class AddActionTest extends IntegrationTestCase
     public string $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
 
     /**
-     * Test the normal HTTP GET flow of _get
+     * Test the normal HTTP GET flow of handleGet
      *
      * @return void
      */
     public function testActionGet()
     {
         $this->get('/blogs/add');
-        $result = (string)$this->_response->getBody();
+        $result = (string)$this->response->getBody();
 
         $expected = '<legend>New Blog</legend>';
         $this->assertStringContainsString($expected, $result, 'legend do not match the expected value');
@@ -53,7 +55,7 @@ class AddActionTest extends IntegrationTestCase
     }
 
     /**
-     * Test the normal HTTP GET flow of _get with query args
+     * Test the normal HTTP GET flow of handleGet with query args
      *
      * Providing ?name=test should fill out the value in the 'name' input field
      *
@@ -62,7 +64,7 @@ class AddActionTest extends IntegrationTestCase
     public function testActionGetWithQueryArgs()
     {
         $this->get('/blogs/add?name=test');
-        $result = (string)$this->_response->getBody();
+        $result = (string)$this->response->getBody();
 
         $expected = '<legend>New Blog</legend>';
         $this->assertStringContainsString($expected, $result, 'legend do not match the expected value');
@@ -84,13 +86,12 @@ class AddActionTest extends IntegrationTestCase
      */
     public function testActionPost()
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function ($event) {
                 $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->setConstructorArgs([$this->_controller->components()])
+                    ->setConstructorArgs([$this->controller->components()])
                     ->getMock();
 
                 $component
@@ -105,10 +106,11 @@ class AddActionTest extends IntegrationTestCase
                         ],
                     );
 
-                $this->_controller->components()->set('Flash', $component);
+                $this->controller->components()->set('Flash', $component);
 
-                $this->_subscribeToEvents($this->_controller);
+                $this->subscribeToEvents($this->controller);
             },
+            ['priority' => 11],
         );
 
         $this->post('/blogs/add', [
@@ -117,8 +119,8 @@ class AddActionTest extends IntegrationTestCase
         ]);
 
         $this->assertEvents(['beforeSave', 'afterSave', 'setFlash', 'beforeRedirect']);
-        $this->assertTrue($this->_subject->success);
-        $this->assertTrue($this->_subject->created);
+        $this->assertTrue($this->subject->success);
+        $this->assertTrue($this->subject->created);
 
         $this->assertRedirect('/blogs');
     }
@@ -131,13 +133,12 @@ class AddActionTest extends IntegrationTestCase
      */
     public function testActionPostWithAddRedirect()
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function ($event) {
                 $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->setConstructorArgs([$this->_controller->components()])
+                    ->setConstructorArgs([$this->controller->components()])
                     ->getMock();
 
                 $component
@@ -152,10 +153,11 @@ class AddActionTest extends IntegrationTestCase
                         ],
                     );
 
-                $this->_controller->components()->set('Flash', $component);
+                $this->controller->components()->set('Flash', $component);
 
-                $this->_subscribeToEvents($this->_controller);
+                $this->subscribeToEvents($this->controller);
             },
+            ['priority' => 11],
         );
 
         $this->post('/blogs/add', [
@@ -165,8 +167,8 @@ class AddActionTest extends IntegrationTestCase
         ]);
 
         $this->assertEvents(['beforeSave', 'afterSave', 'setFlash', 'beforeRedirect']);
-        $this->assertTrue($this->_subject->success);
-        $this->assertTrue($this->_subject->created);
+        $this->assertTrue($this->subject->success);
+        $this->assertTrue($this->subject->created);
         $this->assertRedirect('/blogs/add');
     }
 
@@ -178,13 +180,12 @@ class AddActionTest extends IntegrationTestCase
      */
     public function testActionPostWithEditRedirect()
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function ($event) {
                 $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->setConstructorArgs([$this->_controller->components()])
+                    ->setConstructorArgs([$this->controller->components()])
                     ->getMock();
 
                 $component
@@ -199,10 +200,11 @@ class AddActionTest extends IntegrationTestCase
                         ],
                     );
 
-                $this->_controller->components()->set('Flash', $component);
+                $this->controller->components()->set('Flash', $component);
 
-                $this->_subscribeToEvents($this->_controller);
+                $this->subscribeToEvents($this->controller);
             },
+            ['priority' => 11],
         );
 
         $this->post('/blogs/add', [
@@ -212,8 +214,8 @@ class AddActionTest extends IntegrationTestCase
         ]);
 
         $this->assertEvents(['beforeSave', 'afterSave', 'setFlash', 'beforeRedirect']);
-        $this->assertTrue($this->_subject->success);
-        $this->assertTrue($this->_subject->created);
+        $this->assertTrue($this->subject->success);
+        $this->assertTrue($this->subject->created);
         $this->assertRedirect('/blogs/edit/6');
     }
 
@@ -224,13 +226,12 @@ class AddActionTest extends IntegrationTestCase
      */
     public function testActionPostErrorSave()
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function ($event) {
                 $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->setConstructorArgs([$this->_controller->components()])
+                    ->setConstructorArgs([$this->controller->components()])
                     ->getMock();
 
                 $component
@@ -245,9 +246,9 @@ class AddActionTest extends IntegrationTestCase
                         ],
                     );
 
-                $this->_controller->components()->set('Flash', $component);
+                $this->controller->components()->set('Flash', $component);
 
-                $this->_subscribeToEvents($this->_controller);
+                $this->subscribeToEvents($this->controller);
 
                 $blogs = $this->getMockForModel(
                     $this->tableClass,
@@ -261,6 +262,7 @@ class AddActionTest extends IntegrationTestCase
 
                 $this->getTableLocator()->set('Blogs', $blogs);
             },
+            ['priority' => 11],
         );
 
         $this->post('/blogs/add', [
@@ -269,8 +271,8 @@ class AddActionTest extends IntegrationTestCase
         ]);
 
         $this->assertEvents(['beforeSave', 'afterSave', 'setFlash', 'beforeRender']);
-        $this->assertFalse($this->_subject->success);
-        $this->assertFalse($this->_subject->created);
+        $this->assertFalse($this->subject->success);
+        $this->assertFalse($this->subject->created);
     }
 
     /**
@@ -280,13 +282,12 @@ class AddActionTest extends IntegrationTestCase
      */
     public function testActionPostValidationErrors()
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function ($event) {
                 $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->setConstructorArgs([$this->_controller->components()])
+                    ->setConstructorArgs([$this->controller->components()])
                     ->getMock();
 
                 $component
@@ -301,11 +302,11 @@ class AddActionTest extends IntegrationTestCase
                         ],
                     );
 
-                $this->_controller->components()->set('Flash', $component);
+                $this->controller->components()->set('Flash', $component);
 
-                $this->_subscribeToEvents($this->_controller);
+                $this->subscribeToEvents($this->controller);
 
-                $this->_controller->Blogs
+                $this->controller->Blogs
                     ->getValidator()
                     ->requirePresence('name')
                     ->add('name', [
@@ -315,6 +316,7 @@ class AddActionTest extends IntegrationTestCase
                         ],
                     ]);
             },
+            ['priority' => 11],
         );
 
         $this->post('/blogs/add', [
@@ -324,8 +326,8 @@ class AddActionTest extends IntegrationTestCase
 
         $this->assertEvents(['beforeSave', 'afterSave', 'setFlash', 'beforeRender']);
 
-        $this->assertFalse($this->_subject->success);
-        $this->assertFalse($this->_subject->created);
+        $this->assertFalse($this->subject->success);
+        $this->assertFalse($this->subject->created);
 
         if (version_compare(Configure::version(), '4.3.0', '>=')) {
             $expected = '<div class="error-message" id="name-error">Name need to be at least 10 characters long</div>';
@@ -334,7 +336,7 @@ class AddActionTest extends IntegrationTestCase
         }
         $this->assertStringContainsString(
             $expected,
-            (string)$this->_response->getBody(),
+            (string)$this->response->getBody(),
             'Could not find validation error in HTML',
         );
     }
@@ -393,36 +395,36 @@ class AddActionTest extends IntegrationTestCase
     #[DataProvider('apiUpdateHttpMethodProvider')]
     public function testApiCreate($method)
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function ($event) {
                 $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->setConstructorArgs([$this->_controller->components()])
+                    ->setConstructorArgs([$this->controller->components()])
                     ->getMock();
 
                 $component
                     ->expects($this->never())
                     ->method('set');
 
-                $this->_controller->components()->set('Flash', $component);
+                $this->controller->components()->set('Flash', $component);
 
-                $this->_subscribeToEvents($this->_controller);
+                $this->subscribeToEvents($this->controller);
 
-                $this->_controller->Crud->addListener('api', 'Crud.Api');
+                $this->controller->Crud->addListener('api', 'Crud.Api');
             },
+            ['priority' => 11],
         );
 
         $this->{$method}('/blogs/add.json', [
             'name' => '6th blog post',
             'body' => 'Amazing blog post',
         ]);
-        $this->assertTrue($this->_subject->success);
-        $this->assertTrue($this->_subject->created);
+        $this->assertTrue($this->subject->success);
+        $this->assertTrue($this->subject->created);
         $this->assertEquals(
             ['success' => true, 'data' => ['id' => 6]],
-            json_decode((string)$this->_response->getBody(), true),
+            json_decode((string)$this->response->getBody(), true),
         );
     }
 
@@ -436,30 +438,29 @@ class AddActionTest extends IntegrationTestCase
     #[DataProvider('apiUpdateHttpMethodProvider')]
     public function testApiCreateError($method)
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function ($event) {
-                if (get_class($this->_controller) === 'Cake\Controller\ErrorController') {
+                if (get_class($this->controller) === 'Cake\Controller\ErrorController') {
                     return;
                 }
 
                 $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->setConstructorArgs([$this->_controller->components()])
+                    ->setConstructorArgs([$this->controller->components()])
                     ->getMock();
 
                 $component
                     ->expects($this->never())
                     ->method('set');
 
-                $this->_controller->components()->set('Flash', $component);
+                $this->controller->components()->set('Flash', $component);
 
-                $this->_subscribeToEvents($this->_controller);
+                $this->subscribeToEvents($this->controller);
 
-                $this->_controller->Crud->addListener('api', 'Crud.Api');
+                $this->controller->Crud->addListener('api', 'Crud.Api');
 
-                $this->_controller->Blogs
+                $this->controller->Blogs
                     ->getValidator()
                     ->requirePresence('name')
                     ->add('name', [
@@ -469,6 +470,7 @@ class AddActionTest extends IntegrationTestCase
                         ],
                     ]);
             },
+            ['priority' => 11],
         );
 
         $this->{$method}('/blogs/add.json', [
@@ -490,30 +492,29 @@ class AddActionTest extends IntegrationTestCase
     #[DataProvider('apiUpdateHttpMethodProvider')]
     public function testApiCreateErrors($method)
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function ($event) {
-                if (get_class($this->_controller) === 'Cake\Controller\ErrorController') {
+                if (get_class($this->controller) === 'Cake\Controller\ErrorController') {
                     return;
                 }
 
                 $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->setConstructorArgs([$this->_controller->components()])
+                    ->setConstructorArgs([$this->controller->components()])
                     ->getMock();
 
                 $component
                     ->expects($this->never())
                     ->method('set');
 
-                $this->_controller->components()->set('Flash', $component);
+                $this->controller->components()->set('Flash', $component);
 
-                $this->_subscribeToEvents($this->_controller);
+                $this->subscribeToEvents($this->controller);
 
-                $this->_controller->Crud->addListener('api', 'Crud.Api');
+                $this->controller->Crud->addListener('api', 'Crud.Api');
 
-                $this->_controller->Blogs
+                $this->controller->Blogs
                     ->getValidator()
                     ->requirePresence('name')
                     ->requirePresence('body')
@@ -524,6 +525,7 @@ class AddActionTest extends IntegrationTestCase
                         ],
                     ]);
             },
+            ['priority' => 11],
         );
 
         $this->{$method}('/blogs/add.json', [
@@ -542,13 +544,12 @@ class AddActionTest extends IntegrationTestCase
      */
     public function testStopAddWithDefaultSubjectSuccess()
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function ($event) {
                 $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->setConstructorArgs([$this->_controller->components()])
+                    ->setConstructorArgs([$this->controller->components()])
                     ->getMock();
 
                 $component
@@ -563,11 +564,11 @@ class AddActionTest extends IntegrationTestCase
                         ],
                     );
 
-                $this->_controller->components()->set('Flash', $component);
+                $this->controller->components()->set('Flash', $component);
 
-                $this->_subscribeToEvents($this->_controller);
+                $this->subscribeToEvents($this->controller);
 
-                $this->_controller->Crud->on('beforeSave', function ($event) {
+                $this->controller->Crud->on('beforeSave', function ($event) {
                     $event->stopPropagation();
                 });
 
@@ -579,12 +580,13 @@ class AddActionTest extends IntegrationTestCase
 
                 $this->getTableLocator()->set('Blogs', $model);
             },
+            ['priority' => 11],
         );
 
         $this->post('/blogs/add');
 
         $this->assertEvents(['beforeSave', 'setFlash', 'beforeRedirect']);
-        $this->assertFalse($this->_subject->success);
+        $this->assertFalse($this->subject->success);
         $this->assertRedirect('/blogs');
     }
 
@@ -596,13 +598,12 @@ class AddActionTest extends IntegrationTestCase
      */
     public function testStopAddWithManuallySetSubjectSuccess()
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function ($event) {
                 $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->setConstructorArgs([$this->_controller->components()])
+                    ->setConstructorArgs([$this->controller->components()])
                     ->getMock();
 
                 $component
@@ -617,11 +618,11 @@ class AddActionTest extends IntegrationTestCase
                         ],
                     );
 
-                $this->_controller->components()->set('Flash', $component);
+                $this->controller->components()->set('Flash', $component);
 
-                $this->_subscribeToEvents($this->_controller);
+                $this->subscribeToEvents($this->controller);
 
-                $this->_controller->Crud->on('beforeSave', function ($event) {
+                $this->controller->Crud->on('beforeSave', function ($event) {
                     $event->stopPropagation();
                     $event->getSubject()->success = true; // assert this
                 });
@@ -634,12 +635,13 @@ class AddActionTest extends IntegrationTestCase
 
                 $this->getTableLocator()->set('Blogs', $model);
             },
+            ['priority' => 11],
         );
 
         $this->post('/blogs/add');
 
         $this->assertEvents(['beforeSave', 'afterSave', 'setFlash', 'beforeRedirect']);
-        $this->assertTrue($this->_subject->success);
+        $this->assertTrue($this->subject->success);
         $this->assertRedirect('/blogs');
     }
 }

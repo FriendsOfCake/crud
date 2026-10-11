@@ -10,12 +10,14 @@ use Crud\Action\BaseAction;
 use Crud\Event\Subject;
 use Crud\Listener\RedirectListener;
 use Crud\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  */
+#[AllowMockObjectsWithoutExpectations]
 class RedirectListenerTest extends TestCase
 {
     /**
@@ -150,7 +152,7 @@ class RedirectListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(RedirectListener::class)
-            ->onlyMethods(['_request'])
+            ->onlyMethods(['request'])
             ->disableoriginalConstructor()
             ->getMock();
 
@@ -159,7 +161,7 @@ class RedirectListenerTest extends TestCase
         $subject = new Subject();
         $request = (new ServerRequest())->withParam('action', 'index');
 
-        $listener->expects($this->any())->method('_request')->willReturn($request);
+        $listener->method('request')->willReturn($request);
 
         $reader = $listener->reader('request.key');
         $result = $reader($subject, 'action');
@@ -178,7 +180,7 @@ class RedirectListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(RedirectListener::class)
-            ->onlyMethods(['_request'])
+            ->onlyMethods(['request'])
             ->disableoriginalConstructor()
             ->getMock();
 
@@ -187,7 +189,7 @@ class RedirectListenerTest extends TestCase
         $subject = new Subject();
         $request = (new ServerRequest())->withData('hello', 'world');
 
-        $listener->expects($this->any())->method('_request')->willReturn($request);
+        $listener->method('request')->willReturn($request);
 
         $reader = $listener->reader('request.data');
         $result = $reader($subject, 'hello');
@@ -206,7 +208,7 @@ class RedirectListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(RedirectListener::class)
-            ->onlyMethods(['_request'])
+            ->onlyMethods(['request'])
             ->disableoriginalConstructor()
             ->getMock();
 
@@ -215,7 +217,7 @@ class RedirectListenerTest extends TestCase
         $subject = new Subject();
         $request = (new ServerRequest())->withQueryParams(['hello' => 'world']);
 
-        $listener->expects($this->any())->method('_request')->willReturn($request);
+        $listener->method('request')->willReturn($request);
 
         $reader = $listener->reader('request.query');
         $result = $reader($subject, 'hello');
@@ -299,16 +301,16 @@ class RedirectListenerTest extends TestCase
 
         $listener = $this
             ->getMockBuilder(RedirectListener::class)
-            ->onlyMethods(['_action', '_getKey'])
+            ->onlyMethods(['action', 'getKey'])
             ->disableoriginalConstructor()
             ->getMock();
         $listener
             ->expects($this->once())
-            ->method('_action')
+            ->method('action')
             ->willReturn($action);
         $listener
             ->expects($this->never())
-            ->method('_getKey');
+            ->method('getKey');
 
         $subject = new Subject();
 
@@ -335,21 +337,21 @@ class RedirectListenerTest extends TestCase
 
         $listener = $this
             ->getMockBuilder(RedirectListener::class)
-            ->onlyMethods(['_action', '_getKey', '_getUrl'])
+            ->onlyMethods(['action', 'getKey', 'getUrl'])
             ->disableoriginalConstructor()
             ->getMock();
         $listener
             ->expects($this->once())
-            ->method('_action')
+            ->method('action')
             ->willReturn($action);
         $listener
             ->expects($this->once())
-            ->method('_getKey')
+            ->method('getKey')
             ->with($subject, 'request.key', 'hello')
             ->willReturn(false);
         $listener
             ->expects($this->never())
-            ->method('_getUrl');
+            ->method('getUrl');
 
         $listener->beforeRedirect(new Event('Crud.beforeRedirect', $subject));
     }
@@ -378,21 +380,21 @@ class RedirectListenerTest extends TestCase
 
         $listener = $this
             ->getMockBuilder(RedirectListener::class)
-            ->onlyMethods(['_action', '_getKey', '_getUrl'])
+            ->onlyMethods(['action', 'getKey', 'getUrl'])
             ->disableoriginalConstructor()
             ->getMock();
         $listener
             ->expects($this->once())
-            ->method('_action')
+            ->method('action')
             ->willReturn($action);
         $listener
             ->expects($this->once())
-            ->method('_getKey')
+            ->method('getKey')
             ->with($subject, 'request.key', 'hello')
             ->willReturn(true);
         $listener
             ->expects($this->once())
-            ->method('_getUrl')
+            ->method('getUrl')
             ->with($subject, ['action' => 'index'])
             ->willReturn(['action' => 'index']);
 
@@ -453,7 +455,7 @@ class RedirectListenerTest extends TestCase
     }
 
     /**
-     * Test _getUrl
+     * Test getUrl
      *
      * @return void
      */
@@ -462,7 +464,7 @@ class RedirectListenerTest extends TestCase
     {
         $listener = $this
             ->getMockBuilder(RedirectListener::class)
-            ->onlyMethods(['_request'])
+            ->onlyMethods(['request'])
             ->disableoriginalConstructor()
             ->getMock();
 
@@ -473,15 +475,13 @@ class RedirectListenerTest extends TestCase
         }
 
         $listener
-            ->expects($this->any())
-            ->method('_request')
-            ->with()
+            ->method('request')
             ->willReturn($request);
         $listener->setup();
 
         $this->setReflectionClassInstance($listener);
 
-        $result = $this->callProtectedMethod('_getUrl', [$subject, $url], $listener);
+        $result = $this->callProtectedMethod('getUrl', [$subject, $url], $listener);
         $this->assertEquals($expected, $result);
     }
 }

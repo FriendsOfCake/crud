@@ -62,7 +62,7 @@ So, our new Blog needs a Posts controller to allow us to create, read, update an
 This is all the code we need in the ``PostsController`` as Crud will scaffold the controller actions for us.
 
 If you are not using `Crud-View <https://github.com/FriendsOfCake/crud-view>`_ then you will have
-to `bake your templates <http://book.cakephp.org/5/en/bake/usage.html>`_.
+to `bake your templates <http://book.cakephp.org/6.x/en/bake/usage.html>`_.
 
 .. code-block:: sh
 

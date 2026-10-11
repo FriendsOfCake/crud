@@ -25,7 +25,7 @@ class ApiPaginationListener extends BaseListener
      */
     public function implementedEvents(): array
     {
-        if (!$this->_checkRequestType('api')) {
+        if (!$this->checkRequestType('api')) {
             return [];
         }
 
@@ -44,12 +44,12 @@ class ApiPaginationListener extends BaseListener
     {
         $viewVar = 'data';
 
-        $action = $this->_action();
+        $action = $this->action();
         if (method_exists($action, 'viewVar')) {
             $viewVar = $action->viewVar();
         }
 
-        $paginatedResultset = $this->_controller()->viewBuilder()->getVar($viewVar);
+        $paginatedResultset = $this->controller()->viewBuilder()->getVar($viewVar);
 
         if (!$paginatedResultset instanceof PaginatedInterface) {
             return;
@@ -65,7 +65,7 @@ class ApiPaginationListener extends BaseListener
             'per_page' => $paginatedResultset->perPage(),
         ];
 
-        $this->_controller()->set('pagination', $paginationResponse);
-        $this->_action()->setConfig('serialize.pagination', 'pagination');
+        $this->controller()->set('pagination', $paginationResponse);
+        $this->action()->setConfig('serialize.pagination', 'pagination');
     }
 }

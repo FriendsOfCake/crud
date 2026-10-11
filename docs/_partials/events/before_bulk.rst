@@ -1,7 +1,7 @@
 Crud.beforeBulk
 ^^^^^^^^^^^^^^^
 
-This event is emitted before ``_bulk()`` is called on a Bulk Crud action.
+This event is emitted before ``bulk()`` is called on a Bulk Crud action.
 
 The :ref:`Crud Subject <crud-subject>` contains the following keys:
 

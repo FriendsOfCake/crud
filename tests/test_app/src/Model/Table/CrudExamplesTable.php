@@ -14,7 +14,7 @@ use Cake\ORM\Table;
  */
 class CrudExamplesTable extends Table
 {
-    protected ?string $_alias = 'CrudExamples';
+    protected ?string $alias = 'CrudExamples';
 
     /**
      * @param array $config Config
@@ -30,7 +30,7 @@ class CrudExamplesTable extends Table
      * @param array $options Options
      * @return void
      */
-    protected function _findPublished(SelectQuery $query, array $options): void
+    protected function findPublished(SelectQuery $query, array $options): void
     {
         $query->where(['published' => 'Y']);
     }
@@ -40,7 +40,7 @@ class CrudExamplesTable extends Table
      * @param array $options Options
      * @return void
      */
-    protected function _findUnpublished(SelectQuery $query, array $options): void
+    protected function findUnpublished(SelectQuery $query, array $options): void
     {
         $query->where(['published' => 'N']);
     }

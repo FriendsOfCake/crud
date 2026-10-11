@@ -7,7 +7,7 @@ use Crud\Action\BaseAction;
 
 class TestAction extends BaseAction
 {
-    protected function _handle()
+    protected function handleRequest()
     {
     }
 }

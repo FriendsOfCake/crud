@@ -28,14 +28,14 @@ class EditActionTest extends IntegrationTestCase
     public string $tableClass = 'Crud\Test\App\Model\Table\BlogsTable';
 
     /**
-     * Test the normal HTTP GET flow of _get
+     * Test the normal HTTP GET flow of handleGet
      *
      * @return void
      */
     public function testActionGet()
     {
         $this->get('/blogs/edit/1');
-        $result = (string)$this->_response->getBody();
+        $result = (string)$this->response->getBody();
 
         $expected = '<legend>Edit Blog</legend>';
         $this->assertStringContainsString($expected, $result, 'legend do not match the expected value');
@@ -51,7 +51,7 @@ class EditActionTest extends IntegrationTestCase
     }
 
     /**
-     * Test the normal HTTP GET flow of _get with query args
+     * Test the normal HTTP GET flow of handleGet with query args
      *
      * Providing ?name=test should fill out the value in the 'name' input field
      *
@@ -60,7 +60,7 @@ class EditActionTest extends IntegrationTestCase
     public function testActionGetWithQueryArgs()
     {
         $this->get('/blogs/edit/1?name=test');
-        $result = (string)$this->_response->getBody();
+        $result = (string)$this->response->getBody();
 
         $expected = '<legend>Edit Blog</legend>';
         $this->assertStringContainsString($expected, $result, 'legend do not match the expected value');
@@ -82,17 +82,17 @@ class EditActionTest extends IntegrationTestCase
      */
     public function testCustomFinder()
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function ($event) {
-                $this->_controller->Crud->action('edit')
+                $this->controller->Crud->action('edit')
                     ->findMethod(['withCustomOptions' => ['foo' => 'bar']]);
             },
+            ['priority' => 11],
         );
 
         $this->get('/blogs/edit/1');
-        $this->assertSame(['foo' => 'bar'], $this->_controller->Blogs->customOptions);
+        $this->assertSame(['foo' => 'bar'], $this->controller->Blogs->customOptions);
     }
 
     /**
@@ -102,13 +102,12 @@ class EditActionTest extends IntegrationTestCase
      */
     public function testActionPost()
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function ($event) {
                 $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->setConstructorArgs([$this->_controller->components()])
+                    ->setConstructorArgs([$this->controller->components()])
                     ->getMock();
 
                 $component
@@ -123,10 +122,11 @@ class EditActionTest extends IntegrationTestCase
                         ],
                     );
 
-                $this->_controller->components()->set('Flash', $component);
+                $this->controller->components()->set('Flash', $component);
 
-                $this->_subscribeToEvents($this->_controller);
+                $this->subscribeToEvents($this->controller);
             },
+            ['priority' => 11],
         );
 
         $this->post('/blogs/edit/1', [
@@ -135,8 +135,8 @@ class EditActionTest extends IntegrationTestCase
         ]);
 
         $this->assertEvents(['beforeFind', 'afterFind', 'beforeSave', 'afterSave', 'setFlash', 'beforeRedirect']);
-        $this->assertTrue($this->_subject->success);
-        $this->assertFalse($this->_subject->created);
+        $this->assertTrue($this->subject->success);
+        $this->assertFalse($this->subject->created);
         $this->assertRedirect('/blogs');
     }
 
@@ -147,13 +147,12 @@ class EditActionTest extends IntegrationTestCase
      */
     public function testActionPostErrorSave()
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function ($event) {
                 $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->setConstructorArgs([$this->_controller->components()])
+                    ->setConstructorArgs([$this->controller->components()])
                     ->getMock();
 
                 $component
@@ -168,9 +167,9 @@ class EditActionTest extends IntegrationTestCase
                         ],
                     );
 
-                $this->_controller->components()->set('Flash', $component);
+                $this->controller->components()->set('Flash', $component);
 
-                $this->_subscribeToEvents($this->_controller);
+                $this->subscribeToEvents($this->controller);
 
                 $blogs = $this->getMockForModel(
                     $this->tableClass,
@@ -184,6 +183,7 @@ class EditActionTest extends IntegrationTestCase
 
                 $this->getTableLocator()->set('Blogs', $blogs);
             },
+            ['priority' => 11],
         );
 
         $this->put('/blogs/edit/1', [
@@ -192,8 +192,8 @@ class EditActionTest extends IntegrationTestCase
         ]);
 
         $this->assertEvents(['beforeFind', 'afterFind', 'beforeSave', 'afterSave', 'setFlash', 'beforeRender']);
-        $this->assertFalse($this->_subject->success);
-        $this->assertFalse($this->_subject->created);
+        $this->assertFalse($this->subject->success);
+        $this->assertFalse($this->subject->created);
     }
 
     /**
@@ -203,13 +203,12 @@ class EditActionTest extends IntegrationTestCase
      */
     public function testActionPostValidationErrors()
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function ($event) {
                 $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->setConstructorArgs([$this->_controller->components()])
+                    ->setConstructorArgs([$this->controller->components()])
                     ->getMock();
 
                 $component
@@ -224,11 +223,11 @@ class EditActionTest extends IntegrationTestCase
                         ],
                     );
 
-                $this->_controller->components()->set('Flash', $component);
+                $this->controller->components()->set('Flash', $component);
 
-                $this->_subscribeToEvents($this->_controller);
+                $this->subscribeToEvents($this->controller);
 
-                $this->_controller->Blogs
+                $this->controller->Blogs
                     ->getValidator()
                     ->requirePresence('name')
                     ->add('name', [
@@ -238,6 +237,7 @@ class EditActionTest extends IntegrationTestCase
                         ],
                     ]);
             },
+            ['priority' => 11],
         );
 
         $this->put('/blogs/edit/1', [
@@ -247,8 +247,8 @@ class EditActionTest extends IntegrationTestCase
 
         $this->assertEvents(['beforeFind', 'afterFind', 'beforeSave', 'afterSave', 'setFlash', 'beforeRender']);
 
-        $this->assertFalse($this->_subject->success);
-        $this->assertFalse($this->_subject->created);
+        $this->assertFalse($this->subject->success);
+        $this->assertFalse($this->subject->created);
 
         if (version_compare(Configure::version(), '4.3.0', '>=')) {
             $expected = '<div class="error-message" id="name-error">Name need to be at least 10 characters long</div>';
@@ -257,7 +257,7 @@ class EditActionTest extends IntegrationTestCase
         }
         $this->assertStringContainsString(
             $expected,
-            (string)$this->_response->getBody(),
+            (string)$this->response->getBody(),
             'Could not find validation error in HTML',
         );
     }
@@ -269,13 +269,12 @@ class EditActionTest extends IntegrationTestCase
      */
     public function testActionPatch()
     {
-        $this->_eventManager->on(
+        $this->eventManager->on(
             'Controller.initialize',
-            ['priority' => 11],
             function ($event) {
                 $component = $this->getMockBuilder(FlashComponent::class)
                     ->onlyMethods(['set'])
-                    ->setConstructorArgs([$this->_controller->components()])
+                    ->setConstructorArgs([$this->controller->components()])
                     ->getMock();
 
                 $component
@@ -290,10 +289,11 @@ class EditActionTest extends IntegrationTestCase
                         ],
                     );
 
-                $this->_controller->components()->set('Flash', $component);
+                $this->controller->components()->set('Flash', $component);
 
-                $this->_subscribeToEvents($this->_controller);
+                $this->subscribeToEvents($this->controller);
             },
+            ['priority' => 11],
         );
 
         $this->patch('/blogs/edit/1', [
@@ -302,8 +302,8 @@ class EditActionTest extends IntegrationTestCase
         ]);
 
         $this->assertEvents(['beforeFind', 'afterFind', 'beforeSave', 'afterSave', 'setFlash', 'beforeRedirect']);
-        $this->assertTrue($this->_subject->success);
-        $this->assertFalse($this->_subject->created);
+        $this->assertTrue($this->subject->success);
+        $this->assertFalse($this->subject->created);
         $this->assertRedirect('/blogs');
     }
 }

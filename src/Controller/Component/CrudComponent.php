@@ -42,56 +42,56 @@ class CrudComponent extends Component
      *
      * @var string
      */
-    protected string $_action;
+    protected string $action;
 
     /**
      * Reference to the current controller.
      *
      * @var \Cake\Controller\Controller
      */
-    protected Controller $_controller;
+    protected Controller $controller;
 
     /**
      * Reference to the current request.
      *
      * @var \Cake\Http\ServerRequest
      */
-    protected ServerRequest $_request;
+    protected ServerRequest $request;
 
     /**
      * A flat array of the events triggered.
      *
      * @var array
      */
-    protected array $_eventLog = [];
+    protected array $eventLog = [];
 
     /**
      * Reference to the current event manager.
      *
      * @var \Cake\Event\EventManagerInterface
      */
-    protected EventManagerInterface $_eventManager;
+    protected EventManagerInterface $eventManager;
 
     /**
      * This is the model name of the current model.
      *
      * @var string|null
      */
-    protected ?string $_modelName = null;
+    protected ?string $modelName = null;
 
     /**
      * List of listener objects attached to Crud.
      *
      * @var array<\Crud\Listener\BaseListener>
      */
-    protected array $_listenerInstances = [];
+    protected array $listenerInstances = [];
 
     /**
      * List of crud actions.
      *
      * @var array<\Crud\Action\BaseAction>
      */
-    protected array $_actionInstances = [];
+    protected array $actionInstances = [];
 
     /**
      * Components settings.
@@ -111,7 +111,7 @@ class CrudComponent extends Component
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'actions' => [],
         'eventPrefix' => 'Crud',
         'listeners' => [],
@@ -146,9 +146,9 @@ class CrudComponent extends Component
     {
         parent::initialize($config);
 
-        $this->_controller ??= $this->getController();
-        $this->_eventManager ??= $this->_controller->getEventManager();
-        $this->_action ??= $this->_controller->getRequest()->getParam('action');
+        $this->controller ??= $this->getController();
+        $this->eventManager ??= $this->controller->getEventManager();
+        $this->action ??= $this->controller->getRequest()->getParam('action');
     }
 
     /**
@@ -161,7 +161,7 @@ class CrudComponent extends Component
      * @param bool $merge Whether to recursively merge or overwrite existing config, defaults to true.
      * @return $this
      */
-    public function setConfig(array|string $key, mixed $value = null, bool $merge = true)
+    public function setConfig(array|string $key, mixed $value = null, bool $merge = true): static
     {
         if (is_array($key)) {
             if (isset($key['actions'])) {
@@ -216,7 +216,7 @@ class CrudComponent extends Component
      */
     public function beforeFilter(EventInterface $event): void
     {
-        $this->_loadListeners();
+        $this->loadListeners();
         $this->trigger('beforeFilter');
     }
 
@@ -229,7 +229,7 @@ class CrudComponent extends Component
      */
     public function startup(EventInterface $event): void
     {
-        $this->_loadListeners();
+        $this->loadListeners();
         $this->trigger('startup');
     }
 
@@ -243,19 +243,20 @@ class CrudComponent extends Component
      */
     public function execute(?string $controllerAction = null, array $args = []): ResponseInterface
     {
-        $this->_loadListeners();
+        $this->loadListeners();
 
-        $this->_action = $controllerAction ?? $this->_action;
+        $this->action = $controllerAction ?? $this->action;
 
-        $action = $this->_action;
+        $action = $this->action;
         if ($args === []) {
             $args = $this->getController()->getRequest()->getParam('pass');
         }
 
         try {
-            $event = $this->trigger('beforeHandle', $this->getSubject(compact('args', 'action')));
+            $subject = $this->getSubject(compact('args', 'action'));
+            $this->trigger('beforeHandle', $subject);
 
-            $response = $this->action($event->getSubject()->action)->handle($event->getSubject()->args);
+            $response = $this->action($subject->action)->handle($subject->args);
             if ($response instanceof ResponseInterface) {
                 return $response;
             }
@@ -274,7 +275,7 @@ class CrudComponent extends Component
             $view = $crudAction->view();
         }
 
-        return $this->_controller->render($view);
+        return $this->controller->render($view);
     }
 
     /**
@@ -288,12 +289,12 @@ class CrudComponent extends Component
     public function action(?string $name = null): BaseAction
     {
         if ($name === null) {
-            $name = $this->_action;
+            $name = $this->action;
         }
 
         $name = Inflector::variable($name);
 
-        return $this->_loadAction($name);
+        return $this->loadAction($name);
     }
 
     /**
@@ -432,7 +433,7 @@ class CrudComponent extends Component
     public function isActionMapped(?string $action = null): bool
     {
         if ($action === null) {
-            $action = $this->_action;
+            $action = $this->action;
         }
 
         $action = Inflector::variable($action);
@@ -448,17 +449,17 @@ class CrudComponent extends Component
      *
      * @param array|string $events Name of the Crud Event you want to attach to controller.
      * @param callable $callback Callable method or closure to be executed on event.
-     * @param array $options Used to set the `priority` and `passParams` flags to the listener.
+     * @param array $options Used to set the `priority` flag for the listener.
      * @return void
      */
     public function on(array|string $events, callable $callback, array $options = []): void
     {
         foreach ((array)$events as $event) {
             if (!str_contains($event, '.')) {
-                $event = $this->_config['eventPrefix'] . '.' . $event;
+                $event = $this->config['eventPrefix'] . '.' . $event;
             }
 
-            $this->_eventManager->on($event, $options, $callback);
+            $this->eventManager->on($event, $callback, $options);
         }
     }
 
@@ -472,7 +473,7 @@ class CrudComponent extends Component
      */
     public function listener(string $name): BaseListener
     {
-        return $this->_loadListener($name);
+        return $this->loadListener($name);
     }
 
     /**
@@ -516,13 +517,13 @@ class CrudComponent extends Component
             return false;
         }
 
-        if (isset($this->_listenerInstances[$name])) {
-            $this->_eventManager->off($this->_listenerInstances[$name]);
-            unset($this->_listenerInstances[$name]);
+        if (isset($this->listenerInstances[$name])) {
+            $this->eventManager->off($this->listenerInstances[$name]);
+            unset($this->listenerInstances[$name]);
         }
 
         unset($listeners[$name]);
-        $this->_config['listeners'] = $listeners;
+        $this->config['listeners'] = $listeners;
 
         return true;
     }
@@ -543,7 +544,7 @@ class CrudComponent extends Component
      */
     public function trigger(string $eventName, Subject|array|null $data = null): EventInterface
     {
-        $eventName = $this->_config['eventPrefix'] . '.' . $eventName;
+        $eventName = $this->config['eventPrefix'] . '.' . $eventName;
 
         $Subject = $data instanceof Subject ? $data : $this->getSubject($data ?? []);
         $Subject->addEvent($eventName);
@@ -553,7 +554,7 @@ class CrudComponent extends Component
         }
 
         $Event = new Event($eventName, $Subject);
-        $Event = $this->_eventManager->dispatch($Event);
+        $Event = $this->eventManager->dispatch($Event);
 
         if ($Event->getResult() instanceof ResponseInterface) {
             $Exception = new CrudException();
@@ -573,7 +574,7 @@ class CrudComponent extends Component
      */
     public function logEvent(string $eventName, Subject $subject): void
     {
-        $this->_eventLog[] = [$eventName, $subject];
+        $this->eventLog[] = [$eventName, $subject];
     }
 
     /**
@@ -613,7 +614,7 @@ class CrudComponent extends Component
      */
     public function eventLog(): array
     {
-        return $this->_eventLog;
+        return $this->eventLog;
     }
 
     /**
@@ -624,7 +625,7 @@ class CrudComponent extends Component
      */
     public function useModel(string $modelName): void
     {
-        $this->_modelName = $modelName;
+        $this->modelName = $modelName;
     }
 
     /**
@@ -634,11 +635,11 @@ class CrudComponent extends Component
      */
     public function model(): RepositoryInterface
     {
-        if (method_exists($this->_controller, 'fetchModel')) {
-            return $this->_controller->fetchModel($this->_modelName);
+        if (method_exists($this->controller, 'fetchModel')) {
+            return $this->controller->fetchModel($this->modelName);
         }
 
-        return $this->_controller->fetchTable($this->_modelName);
+        return $this->controller->fetchTable($this->modelName);
     }
 
     /**
@@ -660,7 +661,7 @@ class CrudComponent extends Component
      */
     public function controller(): Controller
     {
-        return $this->_controller;
+        return $this->controller;
     }
 
     /**
@@ -684,11 +685,11 @@ class CrudComponent extends Component
      * @throws \Crud\Error\Exception\ListenerNotConfiguredException
      * @throws \Crud\Error\Exception\MissingListenerException
      */
-    protected function _loadListeners(): void
+    protected function loadListeners(): void
     {
         /** @var string $name */
         foreach (array_keys($this->getConfig('listeners')) as $name) {
-            $this->_loadListener($name);
+            $this->loadListener($name);
         }
     }
 
@@ -700,9 +701,9 @@ class CrudComponent extends Component
      * @throws \Crud\Error\Exception\ListenerNotConfiguredException
      * @throws \Crud\Error\Exception\MissingListenerException
      */
-    protected function _loadListener(string $name): BaseListener
+    protected function loadListener(string $name): BaseListener
     {
-        if (!isset($this->_listenerInstances[$name])) {
+        if (!isset($this->listenerInstances[$name])) {
             $config = $this->getConfig('listeners.' . $name);
 
             if (!$config) {
@@ -715,18 +716,18 @@ class CrudComponent extends Component
                 throw new MissingListenerException('Could not find listener class: ' . $config['className']);
             }
 
-            $this->_listenerInstances[$name] = new $className($this->_controller);
+            $this->listenerInstances[$name] = new $className($this->controller);
             unset($config['className']);
-            $this->_listenerInstances[$name]->setConfig($config);
+            $this->listenerInstances[$name]->setConfig($config);
 
-            $this->_eventManager->on($this->_listenerInstances[$name]);
+            $this->eventManager->on($this->listenerInstances[$name]);
 
-            if (is_callable([$this->_listenerInstances[$name], 'setup'])) {
-                $this->_listenerInstances[$name]->setup();
+            if (is_callable([$this->listenerInstances[$name], 'setup'])) {
+                $this->listenerInstances[$name]->setup();
             }
         }
 
-        return $this->_listenerInstances[$name];
+        return $this->listenerInstances[$name];
     }
 
     /**
@@ -737,9 +738,9 @@ class CrudComponent extends Component
      * @throws \Crud\Error\Exception\ActionNotConfiguredException
      * @throws \Crud\Error\Exception\MissingActionException
      */
-    protected function _loadAction(string $name): BaseAction
+    protected function loadAction(string $name): BaseAction
     {
-        if (!isset($this->_actionInstances[$name])) {
+        if (!isset($this->actionInstances[$name])) {
             $config = $this->getConfig('actions.' . $name);
 
             if (!$config) {
@@ -752,11 +753,11 @@ class CrudComponent extends Component
                 throw new MissingActionException('Could not find action class: ' . $config['className']);
             }
 
-            $this->_actionInstances[$name] = new $className($this->_controller);
+            $this->actionInstances[$name] = new $className($this->controller);
             unset($config['className']);
-            $this->_actionInstances[$name]->setConfig($config);
+            $this->actionInstances[$name]->setConfig($config);
         }
 
-        return $this->_actionInstances[$name];
+        return $this->actionInstances[$name];
     }
 }

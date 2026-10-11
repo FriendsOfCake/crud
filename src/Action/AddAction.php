@@ -43,7 +43,7 @@ class AddAction extends BaseAction
      *
      * @var array
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'enabled' => true,
         'scope' => 'entity',
         'inflection' => 'singular',
@@ -96,17 +96,17 @@ class AddAction extends BaseAction
      *
      * @return void
      */
-    protected function _get(): void
+    protected function handleGet(): void
     {
-        $subject = $this->_subject([
+        $subject = $this->subject([
             'success' => true,
-            'entity' => $this->_entity(
-                $this->_request()->getQueryParams(),
+            'entity' => $this->entity(
+                $this->request()->getQueryParams(),
                 ['validate' => false] + $this->saveOptions(),
             ),
         ]);
 
-        $this->_trigger('beforeRender', $subject);
+        $this->trigger('beforeRender', $subject);
     }
 
     /**
@@ -114,26 +114,26 @@ class AddAction extends BaseAction
      *
      * @return \Cake\Http\Response|null
      */
-    protected function _post(): ?Response
+    protected function handlePost(): ?Response
     {
-        $subject = $this->_subject([
-            'entity' => $this->_entity($this->_request()->getData(), $this->saveOptions()),
+        $subject = $this->subject([
+            'entity' => $this->entity($this->request()->getData(), $this->saveOptions()),
             'saveMethod' => $this->saveMethod(),
             'saveOptions' => $this->saveOptions(),
         ]);
 
-        $event = $this->_trigger('beforeSave', $subject);
+        $event = $this->trigger('beforeSave', $subject);
         if ($event->isStopped()) {
-            return $this->_stopped($subject);
+            return $this->stopped($subject);
         }
 
-        $saveCallback = [$this->_model(), $subject->saveMethod];
+        $saveCallback = [$this->model(), $subject->saveMethod];
         /** @phpstan-ignore argument.type */
         if (call_user_func($saveCallback, $subject->entity, $subject->saveOptions)) {
-            return $this->_success($subject);
+            return $this->success($subject);
         }
 
-        $this->_error($subject);
+        $this->error($subject);
 
         return null;
     }
@@ -143,9 +143,9 @@ class AddAction extends BaseAction
      *
      * @return \Cake\Http\Response|null
      */
-    protected function _put(): ?Response
+    protected function handlePut(): ?Response
     {
-        return $this->_post();
+        return $this->handlePost();
     }
 
     /**
@@ -154,14 +154,14 @@ class AddAction extends BaseAction
      * @param \Crud\Event\Subject $subject Event subject
      * @return \Cake\Http\Response|null
      */
-    protected function _success(Subject $subject): ?Response
+    protected function success(Subject $subject): ?Response
     {
         $subject->set(['success' => true, 'created' => true]);
 
-        $this->_trigger('afterSave', $subject);
+        $this->trigger('afterSave', $subject);
         $this->setFlash('success', $subject);
 
-        return $this->_redirect($subject, ['action' => 'index']);
+        return $this->redirect($subject, ['action' => 'index']);
     }
 
     /**
@@ -170,13 +170,13 @@ class AddAction extends BaseAction
      * @param \Crud\Event\Subject $subject Event subject
      * @return void
      */
-    protected function _error(Subject $subject): void
+    protected function error(Subject $subject): void
     {
         $subject->set(['success' => false, 'created' => false]);
 
-        $this->_trigger('afterSave', $subject);
+        $this->trigger('afterSave', $subject);
         $this->setFlash('error', $subject);
-        $this->_trigger('beforeRender', $subject);
+        $this->trigger('beforeRender', $subject);
     }
 
     /**
@@ -185,19 +185,19 @@ class AddAction extends BaseAction
      * @param \Crud\Event\Subject $subject Event subject
      * @return \Cake\Http\Response|null
      */
-    protected function _stopped(Subject $subject): ?Response
+    protected function stopped(Subject $subject): ?Response
     {
         if (!isset($subject->success)) {
             $subject->success = false;
         }
 
         if ($subject->success) {
-            return $this->_success($subject);
+            return $this->success($subject);
         }
 
         $subject->set(['success' => false]);
         $this->setFlash('error', $subject);
 
-        return $this->_redirect($subject, ['action' => 'index']);
+        return $this->redirect($subject, ['action' => 'index']);
     }
 }

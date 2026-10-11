@@ -21,7 +21,7 @@ trait CrudTestTrait
      *
      * @var \Crud\Event\Subject
      */
-    protected Subject $_subject;
+    protected Subject $subject;
 
     /**
      * Subscribe to Crud.beforeRender and Crud.beforeRedirect events
@@ -29,23 +29,23 @@ trait CrudTestTrait
      * This is the two 'final' emitted events after a CRUD life cycle,
      * and thus will hold the final object
      *
-     * It's stored in the `$this->_subject` property
+     * It's stored in the `$this->subject` property
      *
      * @param \Cake\Controller\Controller|null $controller Controller
      * @return void
      */
-    protected function _subscribeToEvents(?Controller $controller = null): void
+    protected function subscribeToEvents(?Controller $controller = null): void
     {
         if ($controller === null) {
             $controller = $this->controller;
         }
 
         $controller->Crud->on('beforeRender', function ($event): void {
-            $this->_subject = $event->getSubject();
+            $this->subject = $event->getSubject();
         });
 
         $controller->Crud->on('beforeRedirect', function ($event): void {
-            $this->_subject = $event->getSubject();
+            $this->subject = $event->getSubject();
         });
     }
 
@@ -63,7 +63,7 @@ trait CrudTestTrait
     public function assertEvents(array $expected, EventInterface|array|null $actual = null): void
     {
         if ($actual === null) {
-            $actual = $this->_subject;
+            $actual = $this->subject;
         }
 
         if ($actual instanceof EventInterface) {

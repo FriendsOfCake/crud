@@ -11,9 +11,11 @@ use Cake\Http\ServerRequest;
 use Cake\ORM\Entity;
 use Cake\TestSuite\TestCase;
 use Crud\Error\Exception\ValidationException;
-use Crud\Error\ExceptionRenderer;
 use Crud\Log\QueryLogger;
+use Crud\Test\App\Error\TestExceptionRenderer;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 class ExceptionRendererTest extends TestCase
 {
     protected function setUp(): void
@@ -31,17 +33,7 @@ class ExceptionRendererTest extends TestCase
             ->setConstructorArgs([new ServerRequest()])
             ->getMock();
 
-        $Renderer = $this->getMockBuilder(ExceptionRenderer::class)
-            ->onlyMethods(['_getController'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $Renderer
-            ->expects($this->once())
-            ->method('_getController')
-            ->with()
-            ->willReturn($Controller);
-
-        $Renderer->__construct($Exception);
+        $Renderer = new TestExceptionRenderer($Exception, null, $Controller);
         $Renderer->render();
 
         $serialize = $Controller->viewBuilder()->getOption('serialize');
@@ -106,17 +98,7 @@ class ExceptionRendererTest extends TestCase
             ->setConstructorArgs([new ServerRequest()])
             ->getMock();
 
-        $Renderer = $this->getMockBuilder(ExceptionRenderer::class)
-            ->onlyMethods(['_getController'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $Renderer
-            ->expects($this->once())
-            ->method('_getController')
-            ->with()
-            ->willReturn($Controller);
-
-        $Renderer->__construct($Exception);
+        $Renderer = new TestExceptionRenderer($Exception, null, $Controller);
         $Renderer->render();
 
         $serialize = $Controller->viewBuilder()->getOption('serialize');
@@ -177,17 +159,7 @@ class ExceptionRendererTest extends TestCase
             ->setConstructorArgs([new ServerRequest()])
             ->getMock();
 
-        $Renderer = $this->getMockBuilder(ExceptionRenderer::class)
-            ->onlyMethods(['_getController'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $Renderer
-            ->expects($this->once())
-            ->method('_getController')
-            ->with()
-            ->willReturn($Controller);
-
-        $Renderer->__construct($Exception);
+        $Renderer = new TestExceptionRenderer($Exception, null, $Controller);
         $Renderer->render();
 
         $serialize = $Controller->viewBuilder()->getOption('serialize');
@@ -238,17 +210,7 @@ class ExceptionRendererTest extends TestCase
             ->setConstructorArgs([new ServerRequest()])
             ->getMock();
 
-        $Renderer = $this->getMockBuilder(ExceptionRenderer::class)
-            ->onlyMethods(['_getController'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $Renderer
-            ->expects($this->once())
-            ->method('_getController')
-            ->with()
-            ->willReturn($Controller);
-
-        $Renderer->__construct($Exception);
+        $Renderer = new TestExceptionRenderer($Exception, null, $Controller);
         $Renderer->render();
 
         $serialize = $Controller->viewBuilder()->getOption('serialize');
@@ -299,17 +261,7 @@ class ExceptionRendererTest extends TestCase
             ->setConstructorArgs([new ServerRequest()])
             ->getMock();
 
-        $Renderer = $this->getMockBuilder(ExceptionRenderer::class)
-            ->onlyMethods(['_getController'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $Renderer
-            ->expects($this->once())
-            ->method('_getController')
-            ->with()
-            ->willReturn($Controller);
-
-        $Renderer->__construct($Exception);
+        $Renderer = new TestExceptionRenderer($Exception, null, $Controller);
         $Renderer->render();
 
         $serialize = $Controller->viewBuilder()->getOption('serialize');
@@ -364,17 +316,7 @@ class ExceptionRendererTest extends TestCase
             ->setConstructorArgs([new ServerRequest()])
             ->getMock();
 
-        $Renderer = $this->getMockBuilder(ExceptionRenderer::class)
-            ->onlyMethods(['_getController'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $Renderer
-            ->expects($this->once())
-            ->method('_getController')
-            ->with()
-            ->willReturn($Controller);
-
-        $Renderer->__construct($Exception);
+        $Renderer = new TestExceptionRenderer($Exception, null, $Controller);
         $Renderer->render();
 
         $expected = [
@@ -406,17 +348,7 @@ class ExceptionRendererTest extends TestCase
             ->setConstructorArgs([new ServerRequest()])
             ->getMock();
 
-        $Renderer = $this->getMockBuilder(ExceptionRenderer::class)
-            ->onlyMethods(['_getController'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $Renderer
-            ->expects($this->once())
-            ->method('_getController')
-            ->with()
-            ->willReturn($Controller);
-
-        $Renderer->__construct($Exception);
+        $Renderer = new TestExceptionRenderer($Exception, null, $Controller);
         $Renderer->render();
 
         $result = $Controller->viewBuilder()->getVar('data');
@@ -457,17 +389,7 @@ class ExceptionRendererTest extends TestCase
             ->setConstructorArgs([new ServerRequest()])
             ->getMock();
 
-        $Renderer = $this->getMockBuilder(ExceptionRenderer::class)
-            ->onlyMethods(['_getController'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $Renderer
-            ->expects($this->once())
-            ->method('_getController')
-            ->with()
-            ->willReturn($Controller);
-
-        $Renderer->__construct($Exception);
+        $Renderer = new TestExceptionRenderer($Exception, null, $Controller);
         $Renderer->render();
 
         $expected = [

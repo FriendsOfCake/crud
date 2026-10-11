@@ -8,30 +8,30 @@ class Index extends BaseAction
      *
      * @return \Cake\Http\Response|null
      */
-    protected function _handle(): ?Response
+    protected function handleRequest(): ?Response
     {
-        [$finder, $options] = $this->_extractFinder();
-        $query = $this->_model()->find($finder, ...$options);
-        $subject = $this->_subject(['success' => true, 'query' => $query]);
+        [$finder, $options] = $this->extractFinder();
+        $query = $this->model()->find($finder, ...$options);
+        $subject = $this->subject(['success' => true, 'query' => $query]);
 
-        $this->_trigger('beforePaginate', $subject);
+        $this->trigger('beforePaginate', $subject);
         try {
-            $items = $this->_controller()->paginate($subject->query);
+            $items = $this->controller()->paginate($subject->query);
         } catch (NotFoundException $e) {
             /** @var \Cake\Core\Exception\CakeException $previous */
             $previous = $e->getPrevious();
             $pagingParams = $previous->getAttributes()['pagingParams'];
 
-            $url = Router::reverseToArray($this->_request());
+            $url = Router::reverseToArray($this->request());
             $url['?']['page'] = $pagingParams['pageCount'];
 
-            return $this->_controller()->redirect($url);
+            return $this->controller()->redirect($url);
         }
 
         $subject->set(['entities' => $items]);
 
-        $this->_trigger('afterPaginate', $subject);
-        $this->_trigger('beforeRender', $subject);
+        $this->trigger('afterPaginate', $subject);
+        $this->trigger('beforeRender', $subject);
 
         return null;
     }

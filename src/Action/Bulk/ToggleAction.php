@@ -27,7 +27,7 @@ class ToggleAction extends BaseAction
      */
     public function __construct(Controller $Controller, array $config = [])
     {
-        $this->_defaultConfig['messages'] = [
+        $this->defaultConfig['messages'] = [
             'success' => [
                 'text' => 'Value toggled successfully',
             ],
@@ -45,13 +45,13 @@ class ToggleAction extends BaseAction
      * @return \Cake\Http\Response|null
      * @throws \Crud\Error\Exception\ActionNotConfiguredException
      */
-    protected function _handle(): ?Response
+    protected function handleRequest(): ?Response
     {
         if (!$this->getConfig('field')) {
             throw new ActionNotConfiguredException('No field value specified');
         }
 
-        return parent::_handle();
+        return parent::handleRequest();
     }
 
     /**
@@ -60,7 +60,7 @@ class ToggleAction extends BaseAction
      * @param \Cake\Database\Query $query The query to act upon
      * @return bool
      */
-    protected function _bulk(Query $query): bool
+    protected function bulk(Query $query): bool
     {
         assert($query instanceof UpdateQuery);
 
