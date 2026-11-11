@@ -5,6 +5,7 @@ namespace Crud\Test\TestCase\Action;
 
 use Cake\Controller\Component\FlashComponent;
 use Cake\Core\Configure;
+use Cake\Datasource\EntityInterface;
 use Crud\TestSuite\IntegrationTestCase;
 
 /**
@@ -305,5 +306,188 @@ class EditActionTest extends IntegrationTestCase
         $this->assertTrue($this->subject->success);
         $this->assertFalse($this->subject->created);
         $this->assertRedirect('/blogs');
+    }
+
+    /**
+     * Test the flow when the beforeSave event is stopped using the default
+     * subject `success` state (false).
+     *
+     * @return void
+     */
+    public function testStopEditWithDefaultSubjectSuccess()
+    {
+        $this->eventManager->on(
+            'Controller.initialize',
+            function ($event) {
+                $component = $this->getMockBuilder(FlashComponent::class)
+                    ->onlyMethods(['set'])
+                    ->setConstructorArgs([$this->controller->components()])
+                    ->getMock();
+
+                $component
+                    ->expects($this->once())
+                    ->method('set')
+                    ->with(
+                        'Could not update blog',
+                        [
+                            'element' => 'default',
+                            'params' => ['class' => 'message error', 'original' => 'Could not update blog'],
+                            'key' => 'flash',
+                        ],
+                    );
+
+                $this->controller->components()->set('Flash', $component);
+
+                $this->subscribeToEvents($this->controller);
+
+                $this->controller->Crud->on('beforeSave', function ($event) {
+                    $event->stopPropagation();
+                });
+
+                $blogs = $this->getMockForModel(
+                    $this->tableClass,
+                    ['save'],
+                    ['alias' => 'Blogs', 'table' => 'blogs'],
+                );
+                $blogs
+                    ->expects($this->never())
+                    ->method('save');
+
+                $this->getTableLocator()->set('Blogs', $blogs);
+            },
+            ['priority' => 11],
+        );
+
+        $this->put('/blogs/edit/1', [
+            'name' => 'Hello World',
+            'body' => 'Pretty hot body',
+        ]);
+
+        $this->assertEvents(['beforeFind', 'afterFind', 'beforeSave', 'setFlash', 'beforeRedirect']);
+        $this->assertFalse($this->subject->success);
+        $this->assertRedirect('/blogs');
+    }
+
+    /**
+     * Test the flow when the beforeSave event is stopped using manually
+     * set non-default subject `success` state (true).
+     *
+     * @return void
+     */
+    public function testStopEditWithManuallySetSubjectSuccess()
+    {
+        $this->eventManager->on(
+            'Controller.initialize',
+            function ($event) {
+                $component = $this->getMockBuilder(FlashComponent::class)
+                    ->onlyMethods(['set'])
+                    ->setConstructorArgs([$this->controller->components()])
+                    ->getMock();
+
+                $component
+                    ->expects($this->once())
+                    ->method('set')
+                    ->with(
+                        'Successfully updated blog',
+                        [
+                            'element' => 'default',
+                            'params' => ['class' => 'message success', 'original' => 'Successfully updated blog'],
+                            'key' => 'flash',
+                        ],
+                    );
+
+                $this->controller->components()->set('Flash', $component);
+
+                $this->subscribeToEvents($this->controller);
+
+                $this->controller->Crud->on('beforeSave', function ($event) {
+                    $event->stopPropagation();
+                    $event->getSubject()->success = true; // assert this
+                });
+
+                $blogs = $this->getMockForModel(
+                    $this->tableClass,
+                    ['save'],
+                    ['alias' => 'Blogs', 'table' => 'blogs'],
+                );
+                $blogs
+                    ->expects($this->never())
+                    ->method('save');
+
+                $this->getTableLocator()->set('Blogs', $blogs);
+            },
+            ['priority' => 11],
+        );
+
+        $this->post('/blogs/edit/1', [
+            'name' => 'Hello World',
+            'body' => 'Pretty hot body',
+        ]);
+
+        $this->assertEvents(['beforeFind', 'afterFind', 'beforeSave', 'afterSave', 'setFlash', 'beforeRedirect']);
+        $this->assertTrue($this->subject->success);
+        $this->assertRedirect('/blogs');
+    }
+
+    /**
+     * Test the beforeSave subject carries the entity, saveMethod and saveOptions
+     *
+     * @return void
+     */
+    public function testBeforeSaveSubjectKeys()
+    {
+        $this->eventManager->on(
+            'Controller.initialize',
+            function ($event) {
+                $this->subscribeToEvents($this->controller);
+            },
+            ['priority' => 11],
+        );
+
+        $this->post('/blogs/edit/1', [
+            'name' => 'Hello World',
+            'body' => 'Pretty hot body',
+        ]);
+
+        $this->assertEvents(['beforeFind', 'afterFind', 'beforeSave', 'afterSave', 'setFlash', 'beforeRedirect']);
+        $this->assertSame('save', $this->subject->saveMethod);
+        $this->assertSame([], $this->subject->saveOptions);
+        $this->assertInstanceOf(EntityInterface::class, $this->subject->entity);
+        $this->assertSame('Hello World', $this->subject->entity->name);
+    }
+
+    /**
+     * Test modifications of the beforeSave subject entity are passed to save()
+     *
+     * @return void
+     */
+    public function testBeforeSaveSubjectEntityModification()
+    {
+        $this->eventManager->on(
+            'Controller.initialize',
+            function ($event) {
+                $this->subscribeToEvents($this->controller);
+
+                $this->controller->Crud->on('beforeSave', function ($event) {
+                    $event->getSubject()->entity->set('name', 'Changed by listener');
+                });
+            },
+            ['priority' => 11],
+        );
+
+        $this->post('/blogs/edit/1', [
+            'name' => 'Hello World',
+            'body' => 'Pretty hot body',
+        ]);
+
+        $this->assertEvents(['beforeFind', 'afterFind', 'beforeSave', 'afterSave', 'setFlash', 'beforeRedirect']);
+        $this->assertRedirect('/blogs');
+
+        $entity = $this->getTableLocator()->get('Blogs')
+            ->find()
+            ->where(['id' => 1])
+            ->first();
+        $this->assertNotNull($entity, 'The saved record was not found');
+        $this->assertSame('Changed by listener', $entity->name);
     }
 }
