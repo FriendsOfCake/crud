@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Crud\Test\TestCase\Action;
 
 use Crud\TestSuite\IntegrationTestCase;
+use function Cake\Database\Expression\lessThan;
 
 /**
  * Licensed under The MIT License
@@ -116,7 +117,7 @@ class LookupActionTest extends IntegrationTestCase
             'Controller.initialize',
             function () {
                 $this->controller->Crud->on('beforeLookup', function ($event) {
-                    $event->getSubject()->query->where(['id <' => 2]);
+                    $event->getSubject()->query->where(['id' => lessThan(2)]);
                 });
             },
             ['priority' => 11],

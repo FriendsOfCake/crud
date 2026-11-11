@@ -5,6 +5,7 @@ namespace Crud\Test\TestCase\Action;
 
 use Crud\TestSuite\IntegrationTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use function Cake\Database\Expression\lessThan;
 
 /**
  * Licensed under The MIT License
@@ -100,7 +101,7 @@ class IndexActionTest extends IntegrationTestCase
             'Controller.initialize',
             function () {
                 $this->controller->Crud->on('beforePaginate', function ($event) {
-                    $event->getSubject()->query->where(['id <' => 2]);
+                    $event->getSubject()->query->where(['id' => lessThan(2)]);
                 });
             },
             ['priority' => 11],
